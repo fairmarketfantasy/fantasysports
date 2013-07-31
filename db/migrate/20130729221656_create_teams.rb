@@ -14,6 +14,6 @@ class CreateTeams < ActiveRecord::Migration
       t.text :standings
       t.timestamps
     end
-
+    add_index :teams, :abbrev
   end
 end

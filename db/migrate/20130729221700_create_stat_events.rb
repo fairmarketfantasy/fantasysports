@@ -1,27 +1,5 @@
 class CreateStatEvents < ActiveRecord::Migration
   def change
-    <player id="6cb6226e-f08c-4192-95f1-69709ed686c6" name="Eli Manning" jersey="10" position="QB" team="NYG">
-      <passing att="1" cmp="1" yds="5" sk="0" sk_yds="0" td="0" int="0" fd="0" sfty="0" rz_att="0"/>
-    </player>
-    <player id="439874cf-4057-4a7b-922b-f77a90a5bba2" name="Sean Lee" jersey="50" position="LB" team="DAL">
-      <defense tackle="1" ast="0" category="defense" tlost="0" sack="0" sack_yds="0.0" sfty="0" int="0" force_fum="0"/>
-    </player>
-    <player id="51545c6d-3132-4477-8f51-df5c29ed971e" name="Victor Cruz" jersey="80" position="WR" team="NYG">
-      <receiving tar="1" rec="1" yds="5" yac="5" td="0" fum="0" fd="0" rz_tar="0"/>
-    </player>
-
-
-      <play id="9293b376-5526-413c-96fe-e85bdd36be76" clock="03:50" type="pass" sequence="58" updated="2012-09-06T01:39:44+00:00" side="NYG" yard_line="18" down="3" yfd="8" formation="Shotgun" direction="Right" distance="Long">
-        <participants>
-          <player id="6cb6226e-f08c-4192-95f1-69709ed686c6" name="Eli Manning" jersey="10" position="QB" team="NYG"/>
-          <player id="0ca741f8-58bd-4933-9d5c-0e04de3f4cff" name="Martellus Bennett" jersey="85" position="TE" team="NYG"/>
-        </participants>
-        <summary>10-E.Manning incomplete. Intended for 85-M.Bennett.</summary>
-        <links>
-          <link rel="summary" href="/2012/REG/1/DAL/NYG/plays/9293b376-5526-413c-96fe-e85bdd36be76.xml" type="application/xml"/>
-        </links>
-      </play>
-
 =begin
   passing: 
     att: attempt 
@@ -184,13 +162,16 @@ class CreateStatEvents < ActiveRecord::Migration
 =end
 
     create_table :stat_events do |t|
-      t.integer :game_event_id
-      t.integer :player_id
+      t.integer :game_id, :null => false
+      t.integer :game_event_id, :null => false
+      t.integer :player_id, :null => false
       t.string :type, :null => false
       t.text :data, :null => false # Some combination of the above
       t.string :point_type, :null => false
       t.decimal :point_value, :null => false
     end
+    add_index :stat_events, :game_id
+    add_index :stat_events, :game_event_id
 
     create_table :game_events do |t|
       t.string :stats_id
@@ -202,5 +183,8 @@ class CreateStatEvents < ActiveRecord::Migration
       t.text :data
       t.timestamps
     end
+    add_index :game_events, :game_id
+    add_index :game_events, :stats_id
+    add_index :game_events, :sequence_number
   end
 end

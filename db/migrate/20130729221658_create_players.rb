@@ -16,8 +16,12 @@ class CreatePlayers < ActiveRecord::Migration
       t.string :salary
       t.integer :total_games, :null => false, :default => 0
       t.integer :total_points, :null => false, :default => 0
-      t.decimal :point_per_game
+      t.decimal :points_per_game
       t.timestamps
     end
+
+    add_index :players, :stats_id
+    add_index :players, :team_id
+    add_index :players, :points_per_game
   end
 end
