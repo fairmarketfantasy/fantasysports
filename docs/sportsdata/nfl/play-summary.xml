@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started at Thu Sep 06 00:44:22 +0000 2012 -->
+<play xmlns="http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd" id="28140456-0132-4829-ae38-d68e10a5acc9" game="8c0bce5a-7ca2-41e5-9838-d1b8c356ddc3" type="pass" official="true" clock="14:49" quarter="1" controller="NYG" updated="2012-09-06T00:44:21+00:00" direction="Middle" distance="Short">
+  <summary>10-E.Manning complete to 80-V.Cruz. 80-V.Cruz to NYG 21 for 5 yards (50-S.Lee).</summary>
+  <start_situation team="NYG" side="NYG" yard_line="16" down="2" yfd="10"/>
+  <end_situation team="NYG" side="NYG" yard_line="21" down="3" yfd="5"/>
+  <statistics>
+    <player id="6cb6226e-f08c-4192-95f1-69709ed686c6" name="Eli Manning" jersey="10" position="QB" team="NYG">
+      <passing att="1" cmp="1" yds="5" sk="0" sk_yds="0" td="0" int="0" fd="0" sfty="0" rz_att="0"/>
+    </player>
+    <player id="439874cf-4057-4a7b-922b-f77a90a5bba2" name="Sean Lee" jersey="50" position="LB" team="DAL">
+      <defense tackle="1" ast="0" category="defense" tlost="0" sack="0" sack_yds="0.0" sfty="0" int="0" force_fum="0"/>
+    </player>
+    <player id="51545c6d-3132-4477-8f51-df5c29ed971e" name="Victor Cruz" jersey="80" position="WR" team="NYG">
+      <receiving tar="1" rec="1" yds="5" yac="5" td="0" fum="0" fd="0" rz_tar="0"/>
+    </player>
+  </statistics>
+</play>
+<!-- Generation finished at Thu Sep 06 00:44:22 +0000 2012 -->

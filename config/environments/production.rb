@@ -1,4 +1,5 @@
 Fantasysports::Application.configure do
+  SPORTS_DATA_API_KEY = "un32n24mu43xpmk594dzvm2p"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
