@@ -1,8 +1,19 @@
 class CreateGames < ActiveRecord::Migration
   def change
+    create_table :venues do |t|
+      t.string :stats_id
+      t.string :country
+      t.string :state
+      t.string :city
+      t.string :type
+      t.string :name
+      t.string :surface
+    end
     create_table :games do |t|
+      t.string :stats_id, :null => false
       t.integer :home_team_id, :null => false
       t.integer :away_team_id, :null => false
+      t.string :status, :null => false
       t.date :game_day, :null => false
       t.timestamp :game_time, :null => false
       t.timestamps
