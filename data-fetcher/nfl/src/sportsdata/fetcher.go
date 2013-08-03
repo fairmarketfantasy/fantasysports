@@ -31,12 +31,14 @@ func (f Fetcher) GetSchedule() []*models.Game {
   url := fmt.Sprintf(baseUrl + "%d/%s/schedule.xml", f.Year, f.NflSeason)
   return ParseXml(f.FetchMethod(url), ParseGames).([]*models.Game)
 }
-/*
+
 func (f Fetcher) GetPlayByPlay(awayTeam string, homeTeam string) []models.GameEvent {
   // GET Play-By-Play nfl-t1/:year/:nfl_season/:nfl_season_week/:away_team/:home_team/pbp.xml
   url := fmt.Sprintf(baseUrl + "%d/%s/%d/%s/%s/pbp.xml", f.Year, f.NflSeason, f.NflSeasonWeek, awayTeam, homeTeam)
+  return ParseXml(f.FetchMethod(url), ParsePlayByPlay).([]*models.GameEvent)
 }
 
+/*
 func (f Fetcher) GetPlay(awayTeam string, homeTeam string, playid string) []models.StatEvent {
   // GET Play Summary nfl-t1/:year/:nfl_season/:nfl_season_week/:away_team/:home_team/plays/:play_id.xml
   url := fmt.Sprintf(baseUrl + "%d/%s/%d/%s/%s/plays/%s.xml", f.Year, f.NflSeason, f.NflSeasonWeek, awayTeam, homeTeam)
