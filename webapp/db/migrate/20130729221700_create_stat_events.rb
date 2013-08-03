@@ -169,13 +169,14 @@ class CreateStatEvents < ActiveRecord::Migration
       t.text :data, :null => false # Some combination of the above
       t.string :point_type, :null => false
       t.decimal :point_value, :null => false
+      t.timestamps
     end
     add_index :stat_events, :game_id
     add_index :stat_events, :game_event_id
 
     create_table :game_events do |t|
       t.string :stats_id
-      t.string :sequence_number, :null => false
+      t.integer :sequence_number, :null => false
       t.integer :game_id, :null => false
       t.string :type, :null => false
       t.string :summary, :null => false
