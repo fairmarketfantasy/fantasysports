@@ -4,10 +4,12 @@ import (
   "flag"
   "reflect"
   "log"
-  "sportsdata"
+  "nfl"
+  "lib/fetchers"
 )
 
-var fetch = flag.String("fetch", "", "What to fetch: teams|schedule|roster")
+var sport = flag.String("sport", "nfl" /* Temporary default */, "What sport to fetch: nfl")
+var fetch = flag.String("fetch", "", "What data to fetch: teams|schedule|roster")
 
 // This takes a slice of pointers and prints 'em out
 func PrintPtrs(ptrs interface{}) {
@@ -21,7 +23,7 @@ func PrintPtrs(ptrs interface{}) {
 
 func main() {
   flag.Parse()
-  fetcher := sportsdata.Fetcher{2012, "REG", 1, sportsdata.FileFetcher}
+  fetcher := nfl.Fetcher{2012, "REG", 1, fetchers.FileFetcher}
 
   switch *fetch {
     case "teams":

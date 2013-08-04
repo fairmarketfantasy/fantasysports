@@ -1,4 +1,4 @@
-package sportsdata
+package fetchers
 
 import (
   "log"
