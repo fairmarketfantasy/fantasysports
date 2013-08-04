@@ -1,5 +1,6 @@
 ENV["RAILS_ENV"] ||= "test"
 require File.expand_path('../../config/environment', __FILE__)
+begin; require 'turn/autorun'; rescue LoadError; end
 require 'rails/test_help'
 
 class ActiveSupport::TestCase
