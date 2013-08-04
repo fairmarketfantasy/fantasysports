@@ -3,7 +3,7 @@ package nfl
 import (
 //  "io"
   "encoding/xml"
-  //"log"
+  "log"
   "nfl/models"
   "lib/parsers"
  // "reflect"
@@ -15,6 +15,8 @@ const timeFormat = "2006-01-02T15:04:05-07:00" // Reference time format
 
 
 // TODO: figure out inheritance?
+// TODO: Consider this next time: https://github.com/metaleap/go-xsd
+
 type ParseState struct {
   InElement *xml.StartElement // Tracks where we are in our traversal
   InElementName string 
@@ -27,6 +29,11 @@ type ParseState struct {
   SeasonType string
   SeasonWeek int
   CurrentGame *models.Game
+  CurrentQuarter int
+  ActingTeam string
+  CurrentTeam *models.Team
+  CurrentPlayer *models.Player
+  CurrentEvent *models.GameEvent
 }
 func (state *ParseState) CurrentElement() *xml.StartElement {
   return state.InElement
@@ -43,6 +50,75 @@ func (state *ParseState) SetDecoder(decoder *xml.Decoder) {
 func (state *ParseState) SetCurrentElement(element *xml.StartElement) {
   state.InElement = element
 }
+func (state *ParseState) FindNextStartElement(elementName string) *xml.StartElement {
+  for {
+    t, _ := state.GetDecoder().Token()
+    if t == nil {
+      return nil
+    }
+    // Inspect the type of the token just read.
+    switch element := t.(type) {
+    case xml.StartElement:
+      // If we just read a StartElement token
+      state.SetCurrentElement(&element)
+      if element.Name.Local == elementName {
+        return &element
+      }
+    default:
+    }
+  }
+}
+
+func buildPlayer(element *xml.StartElement) *models.Player {
+  var player = models.Player{}
+  player.StatsId = parsers.FindAttrByName(element.Attr, "id")
+  player.Name = parsers.FindAttrByName(element.Attr, "name_full")
+  player.NameAbbr = parsers.FindAttrByName(element.Attr, "name_abbr")
+  player.Birthdate = parsers.FindAttrByName(element.Attr, "birthdate")
+  player.Status = parsers.FindAttrByName(element.Attr, "status")
+  player.Position = parsers.FindAttrByName(element.Attr, "position")
+  player.JerseyNumber, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "jersey_number"))
+  player.College = parsers.FindAttrByName(element.Attr, "college")
+  player.Height, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "height"))
+  player.Weight, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "weight"))
+  return &player
+}
+
+func buildEvent(element *xml.StartElement) *models.GameEvent {
+  var event = models.GameEvent{}
+  event.StatsId = parsers.FindAttrByName(element.Attr, "id")
+  event.Clock = parsers.FindAttrByName(element.Attr, "clock")
+  event.Type = parsers.FindAttrByName(element.Attr, "type")
+  event.SequenceNumber, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "sequence"))
+  // event.Data = ...
+  event.GameEventData = models.GameEventData{}
+  err := parsers.InitFromAttrs(*element, &event.GameEventData)
+  if err != nil {
+    log.Println(err) 
+  }
+  return &event
+}
+
+func buildGame(element *xml.StartElement) *models.Game {
+  var game = models.Game{}
+  game.StatsId = parsers.FindAttrByName(element.Attr, "id")
+  game.GameTime, _ = time.Parse(timeFormat, parsers.FindAttrByName(element.Attr, "scheduled"))
+  game.GameDay = game.GameTime.Truncate(time.Hour * 24)
+  game.HomeTeam = parsers.FindAttrByName(element.Attr, "home")
+  game.AwayTeam = parsers.FindAttrByName(element.Attr, "away")
+  game.Status = parsers.FindAttrByName(element.Attr, "status")
+  return &game
+}
+
+func buildTeam(element *xml.StartElement) *models.Team {
+  var team = models.Team{}
+  //decoder.DecodeElement(&team, &element)
+  team.Abbrev = parsers.FindAttrByName(element.Attr, "id")
+  team.Name = parsers.FindAttrByName(element.Attr, "name")
+  team.Market = parsers.FindAttrByName(element.Attr, "market")
+  team.Country = "USA"
+  return &team
+}
 
 // Returns a models.Team object
 func ParseStandings(state *ParseState) *models.Team {
@@ -56,15 +132,10 @@ func ParseStandings(state *ParseState) *models.Team {
     state.Division = parsers.FindAttrByName(state.CurrentElement().Attr, "name")
 
   case "team":
-    var team = models.Team{}
-    //decoder.DecodeElement(&team, &element)
-    team.Abbrev = parsers.FindAttrByName(state.CurrentElement().Attr, "id")
-    team.Name = parsers.FindAttrByName(state.CurrentElement().Attr, "name")
-    team.Market = parsers.FindAttrByName(state.CurrentElement().Attr, "market")
-    team.Country = "USA"
+    team := buildTeam(state.CurrentElement())
     team.Conference = state.Conference
     team.Division = state.Division
-    return &team
+    return team
 
   default:
   }
@@ -85,18 +156,12 @@ func ParseGames(state *ParseState) *models.Game {
 
   case "game":
     count++
-    var game = models.Game{}
-    game.StatsId = parsers.FindAttrByName(state.CurrentElement().Attr, "id")
+    game := buildGame(state.CurrentElement())
     game.SeasonType = state.SeasonType
     game.SeasonWeek = state.SeasonWeek
     game.SeasonYear = state.SeasonYear
-    game.GameTime, _ = time.Parse(timeFormat, parsers.FindAttrByName(state.CurrentElement().Attr, "scheduled"))
-    game.GameDay = game.GameTime.Truncate(time.Hour * 24)
-    game.HomeTeam = parsers.FindAttrByName(state.CurrentElement().Attr, "home")
-    game.AwayTeam = parsers.FindAttrByName(state.CurrentElement().Attr, "away")
-    game.Status = parsers.FindAttrByName(state.CurrentElement().Attr, "status")
-    state.CurrentGame = &game;
-    return &game
+    state.CurrentGame = game;
+    return game
 
   case "venue":
     venue := models.Venue{}
@@ -120,12 +185,70 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
   switch state.CurrentElementName() {
 
   case "game":
+    game := buildGame(state.CurrentElement())
+    game.SeasonType = state.SeasonType
+    game.SeasonWeek = state.SeasonWeek
+    game.SeasonYear = state.SeasonYear
+    state.CurrentGame = game;
 
   case "summary":
+    if state.CurrentEvent != nil { // We have a play summary 
+      t, _ := state.GetDecoder().Token()
+      state.CurrentEvent.Summary = string([]byte(t.(xml.CharData)))
+    } else {  // We have a game summary
+      home := state.FindNextStartElement("home")
+      away := state.FindNextStartElement("away")
+      state.CurrentGame.HomeTeamStatus = models.TeamStatus{}
+      state.CurrentGame.AwayTeamStatus = models.TeamStatus{}
+      err := parsers.InitFromAttrs(*home, &state.CurrentGame.HomeTeamStatus)
+      if err != nil {
+        log.Println(err) 
+      }
+      err = parsers.InitFromAttrs(*away, &state.CurrentGame.AwayTeamStatus)
+      if err != nil {
+        log.Println(err) 
+      }
+    }
+
+  case "quarter":
+    state.CurrentQuarter, _ = strconv.Atoi(parsers.FindAttrByName(state.CurrentElement().Attr, "number"))
+
+  case "event":
+    event := buildEvent(state.CurrentElement())
+    event.GameStatsId = state.CurrentGame.StatsId
+    state.CurrentEvent = event
+    return event
+
+  case "drive":
+    state.ActingTeam = parsers.FindAttrByName(state.CurrentElement().Attr, "team")
+
+  case "play":
+    event := buildEvent(state.CurrentElement())
+    event.GameStatsId = state.CurrentGame.StatsId
+    state.CurrentEvent = event
+    return event
+
     
-  case "venue":
   default:
   }
   return nil
   
+}
+
+func ParseRoster(state *ParseState) *models.Player {
+  switch state.CurrentElementName() {
+    case "team":
+      state.CurrentTeam = buildTeam(state.CurrentElement())
+    case "player":
+      player := buildPlayer(state.CurrentElement())
+      player.Team = *state.CurrentTeam
+      state.CurrentPlayer = player
+      return player
+    case "injury":
+      err := parsers.InitFromAttrs(*state.CurrentElement(), &state.CurrentPlayer.PlayerStatus)
+      if err != nil {
+        log.Println(err) 
+      }
+  }
+  return nil
 }

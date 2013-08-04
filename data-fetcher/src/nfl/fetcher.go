@@ -35,17 +35,18 @@ func (f Fetcher) GetPlayByPlay(awayTeam string, homeTeam string) []*models.GameE
   return parsers.ParseXml(f.FetchMethod(url), ParsePlayByPlay).([]*models.GameEvent)
 }
 
+func (f Fetcher) GetTeamRoster(team string) []*models.Player {
+  //GET Team Roster nfl-t1/teams/:team/roster.xml
+  url := fmt.Sprintf(baseUrl + "teams/%s/roster.xml", team)
+  return parsers.ParseXml(f.FetchMethod(url), ParseRoster).([]*models.Player)
+}
+
 /*
 func (f Fetcher) GetPlay(awayTeam string, homeTeam string, playid string) []models.StatEvent {
   // GET Play Summary nfl-t1/:year/:nfl_season/:nfl_season_week/:away_team/:home_team/plays/:play_id.xml
   url := fmt.Sprintf(baseUrl + "%d/%s/%d/%s/%s/plays/%s.xml", f.Year, f.NflSeason, f.NflSeasonWeek, awayTeam, homeTeam)
 }
 
-func (f Fetcher) GetTeamRoster(team string) []models.Player {
-  //GET Team Roster nfl-t1/teams/:team/roster.xml
-  url := fmt.Sprintf(baseUrl + "%s/roster.xml", team)
-
-}
 
 func (f Fetcher) GetGameRoster(awayTeam string, homeTeam string) []models.Player {
   // GET Game Roster nfl-t1/:year/:nfl_season/:nfl_season_week/:away_team/:home_team/roster.xml

@@ -21,6 +21,12 @@
   <player id="1670a774-4e0f-4474-b1d7-c665b6e4e4ec" name_full="George Selvie" name_first="George" name_last="Selvie" name_abbr="G.Selvie" birthdate="1987-03-06" birth_place="Pensacola, FL, USA" high_school="Pine Forest (FL)" height="76" weight="251" college="South Florida" position="DE" jersey_number="98" status="ACT" salary="0" experience="4" draft_pick="226" draft_round="7" draft_team="STL">
   </player>
   <player id="d94137f2-99a9-4be0-ac1d-319b075d7e2c" name_full="Nick Hayden" name_first="Nick" name_last="Hayden" name_abbr="N.Hayden" birthdate="1986-02-04" birth_place="Hartland, WI, USA" high_school="Arrowhead (WI)" height="76" weight="292" college="Wisconsin" position="DT" jersey_number="96" status="ACT" salary="0" experience="3" draft_pick="181" draft_round="6" draft_team="CAR">
+    <injuries>
+      <injury id="75a1df12-6b30-4776-9907-d225607ba57b" start_date="2012-09-04T00:00:00+00:00" game_status="QST" practice_status="Limited Participation">
+        <description>Shoulder</description>
+        <notes/>
+      </injury>
+    </injuries>
   </player>
   <player id="cc852f05-a588-4470-8981-0410bb8f1f2f" name_full="Eric Frampton" name_first="Eric" name_last="Frampton" name_abbr="E.Frampton" birthdate="1984-02-06" birth_place="San Jose, CA, USA" high_school="Oak Grove (CA)" height="71" weight="205" college="Washington State" position="SAF" jersey_number="41" status="ACT" salary="0" experience="7" draft_pick="165" draft_round="5" draft_team="DET">
   </player>
