@@ -7,6 +7,7 @@ import (
   "errors"
   "strconv"
   "time"
+//  "log"
 )
 
 func FindAttrByName(attrs []xml.Attr, name string) string {
@@ -18,10 +19,10 @@ func FindAttrByName(attrs []xml.Attr, name string) string {
   return ""
 }
 
-func InitFromAttr(element xml.StartElement, value interface{}) error {
-  val := reflect.ValueOf(value)
+func InitFromAttrs(element xml.StartElement, value interface{}) error {
+  val := reflect.Indirect(reflect.ValueOf(value))
   if !val.CanSet() {
-    panic("Value %s passed to InitFromAttr is not settable")
+    panic("Value %s passed to InitFromAttrs is not settable")
   }
   for _, attr := range(element.Attr) {
     key := attr.Name.Local
@@ -68,16 +69,18 @@ func InitFromAttr(element xml.StartElement, value interface{}) error {
           return errors.New("arg " + key + " as int: " + err.Error())
         }
         v = x
-      // TODO: Fix this
       case reflect.Struct:
         if field.Type().String() != "time.Time" {
           return errors.New("unsupported struct type in Scan: " + field.Type().String())
         }
-        x, err := time.Parse("2006-01-02 15:04:05", data)
+        x, err := time.Parse("2006-01-02T15:04:05-07:00", data) // Reference time format
         if err != nil {
-          x, err = time.Parse("2006-01-02 15:04:05.000 -0700", data)
+          x, err = time.Parse("2006-01-02 15:04:05", data)
           if err != nil {
-            return errors.New("unsupported time format: " + data)
+            x, err = time.Parse("2006-01-02 15:04:05.000 -0700", data)
+            if err != nil {
+              return errors.New("unsupported time format: " + data)
+            }
           }
         }
         v = x
