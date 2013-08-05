@@ -9,6 +9,9 @@ Fantasysports::Application.routes.draw do
   get '/about' => 'pages#about'
   get '/sign_up' => 'pages#sign_up'
 
+  #for /users/:id
+  resources :users, only: [:show]
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
