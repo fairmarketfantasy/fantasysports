@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started at Thu Sep 06 01:29:27 +0000 2012 -->
+<play xmlns="http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd" id="349beb66-b53f-4a76-b655-64204ee1fe46" game="8c0bce5a-7ca2-41e5-9838-d1b8c356ddc3" type="kick" official="true" clock="09:10" quarter="2" controller="NYG" updated="2012-09-06T01:29:27+00:00">
+  <summary>9-L.Tynes kicks 67 yards from NYG 35. 28-F.Jones to DAL 20 for 22 yards (31-W.Hill).</summary>
+  <start_situation team="NYG" side="NYG" yard_line="35"/>
+  <end_situation team="DAL" side="DAL" yard_line="20" down="1" yfd="10"/>
+  <statistics>
+    <player id="f0085214-6339-4843-a6c9-8ae118422284" name="Felix Jones" jersey="28" position="RB" team="DAL">
+      <kick_return returns="1" yds="22" fc="0" td="0"/>
+    </player>
+    <player id="9e207df9-c9d2-405b-b70f-782fc8ba1c8e" name="Will Hill" jersey="31" position="SAF" team="NYG">
+      <defense tackle="1" ast="0" category="special_team" tlost="0" sack="0" sack_yds="0.0" sfty="0" int="0" force_fum="0"/>
+    </player>
+    <player id="97cebfd1-f7d0-4fc7-b3d8-6d2308e992e3" name="Lawrence Tynes" jersey="9" position="K" team="NYG">
+      <kickoffs kicks="1" yds="67" net_yds="45" endzone="1" in20="0" tb="0" ret="1"/>
+    </player>
+  </statistics>
+</play>
+<!-- Generation finished at Thu Sep 06 01:29:28 +0000 2012 -->
+

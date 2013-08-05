@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started at Thu Sep 06 02:29:42 +0000 2012 -->
+<play xmlns="http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd" id="da2d5acd-79e8-49c9-8e7d-0e861d1abb38" game="8c0bce5a-7ca2-41e5-9838-d1b8c356ddc3" type="extrapoint" official="true" clock="05:13" quarter="3" controller="NYG" updated="2012-09-06T02:29:42+00:00">
+  <summary>9-L.Tynes extra point is good.</summary>
+  <start_situation team="NYG" side="DAL" yard_line="7"/>
+  <end_situation team="NYG" side="NYG" yard_line="35"/>
+  <score type="extrapoint" points="1"/>
+  <statistics>
+    <player id="97cebfd1-f7d0-4fc7-b3d8-6d2308e992e3" name="Lawrence Tynes" jersey="9" position="K" team="NYG">
+      <extra_point att="1" made="1" blk="0"/>
+    </player>
+  </statistics>
+</play>
+<!-- Generation finished at Thu Sep 06 02:29:42 +0000 2012 -->
+

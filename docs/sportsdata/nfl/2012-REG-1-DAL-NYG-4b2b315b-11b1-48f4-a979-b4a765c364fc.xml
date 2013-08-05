@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started at Thu Sep 06 02:12:05 +0000 2012 -->
+<play xmlns="http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd" id="4b2b315b-11b1-48f4-a979-b4a765c364fc" game="8c0bce5a-7ca2-41e5-9838-d1b8c356ddc3" type="kick" official="true" clock="15:00" quarter="3" controller="NYG" updated="2012-09-06T02:12:05+00:00">
+  <summary>9-L.Tynes kicks 73 yards from NYG 35 to DAL End Zone. 28-F.Jones, touchback.</summary>
+  <start_situation team="NYG" side="NYG" yard_line="35"/>
+  <end_situation team="DAL" side="DAL" yard_line="20" down="1" yfd="10"/>
+  <statistics>
+    <player id="97cebfd1-f7d0-4fc7-b3d8-6d2308e992e3" name="Lawrence Tynes" jersey="9" position="K" team="NYG">
+      <kickoffs kicks="1" yds="73" net_yds="45" endzone="1" in20="0" tb="1" ret="0"/>
+    </player>
+  </statistics>
+</play>
+<!-- Generation finished at Thu Sep 06 02:12:05 +0000 2012 -->
+

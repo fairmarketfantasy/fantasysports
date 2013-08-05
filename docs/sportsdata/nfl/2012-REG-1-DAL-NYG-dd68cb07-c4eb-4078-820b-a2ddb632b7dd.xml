@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started at Thu Sep 06 01:12:54 +0000 2012 -->
+<play xmlns="http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd" id="dd68cb07-c4eb-4078-820b-a2ddb632b7dd" game="8c0bce5a-7ca2-41e5-9838-d1b8c356ddc3" type="rush" official="true" clock=":58" quarter="1" controller="NYG" updated="2012-09-06T01:12:54+00:00" direction="Right">
+  <summary>44-A.Bradshaw to DAL 45 for 5 yards (97-J.Hatcher).</summary>
+  <start_situation team="NYG" side="NYG" yard_line="50" down="2" yfd="7"/>
+  <end_situation team="NYG" side="DAL" yard_line="45" down="3" yfd="2"/>
+  <statistics>
+    <player id="8f22eb36-5282-407a-b6f9-f9b62e5f7318" name="Ahmad Bradshaw" jersey="44" position="RB" team="NYG">
+      <rushing att="1" yds="5" td="0" fum="0" sfty="0" fd="0" rz_att="0"/>
+    </player>
+    <player id="75f4e314-a25d-4833-b39e-02014853d7bb" name="Jason Hatcher" jersey="97" position="DT" team="DAL">
+      <defense tackle="1" ast="0" category="defense" tlost="0" sack="0" sack_yds="0.0" sfty="0" int="0" force_fum="0"/>
+    </player>
+  </statistics>
+</play>
+<!-- Generation finished at Thu Sep 06 01:12:54 +0000 2012 -->
+
