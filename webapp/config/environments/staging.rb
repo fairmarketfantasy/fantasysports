@@ -1,7 +1,7 @@
 Fantasysports::Application.configure do
   SPORTS_DATA_API_KEY = "un32n24mu43xpmk594dzvm2p"
-  FACEBOOK_APP_ID = "517379538328159"
-  FACEBOOK_APP_SECRET = "b5f7da9efda8f522a5af6d37c9f68454"
+  FACEBOOK_APP_ID = "436114143174192"
+  FACEBOOK_APP_SECRET = "0f99d3d28ef7d84d6b55cdb78c238b61"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -47,10 +47,6 @@ Fantasysports::Application.configure do
 
   # Set to :debug to see everything in the log.
   config.log_level = :info
-
-
-  #devise told me to: #TODO, set it as the real host
-  config.action_mailer.default_url_options = { :host => '' }
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
