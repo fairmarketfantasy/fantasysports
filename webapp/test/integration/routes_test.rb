@@ -22,4 +22,8 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_routing({path: "/users", method: :post}, {controller: "devise/registrations", action: "create"})
   end
 
+  test "get to /users/:id route" do
+    assert_routing({path: "/users/1", method: :get}, {controller: "users", action: "show", id: '1'})
+  end
+
 end
