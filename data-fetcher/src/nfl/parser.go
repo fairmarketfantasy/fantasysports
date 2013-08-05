@@ -252,3 +252,42 @@ func ParseRoster(state *ParseState) *models.Player {
   }
   return nil
 }
+
+func ParsePlaySummary(state *ParseState) *models.StatEvent {
+  switch state.CurrentElementName() {
+    case "play":
+      event := buildEvent(state.CurrentElement())
+      event.GameStatsId = parsers.FindAttrByName(state.CurrentElement().Attr, "game")
+      state.CurrentEvent = event
+    case "player":
+      player := buildPlayer(state.CurrentElement())
+      state.CurrentPlayer = player
+    // http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd
+    // TODO: this
+    case "defense":
+    case "rushing":
+    case "receiving":
+    case "punt_return":
+    case "punting":
+    case "penalty":
+    case "passing":
+    case "kick_return":
+    case "kickoffs":
+    case "interception_return":
+    case "fumble_return":
+    case "field_goal_return":
+    case "field_goal":
+    case "extra_point":
+    case "two_point_conversion":
+  }
+  return nil
+  /*Id int
+  GameId int
+  GameEventId int
+  GameEventStatsId string
+  PlayerId int
+  Type string
+  Data string
+  PointType string
+  PointValue float64*/
+}

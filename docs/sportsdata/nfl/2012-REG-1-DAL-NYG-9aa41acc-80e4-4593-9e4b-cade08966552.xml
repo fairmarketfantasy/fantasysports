@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started at Thu Sep 06 01:16:42 +0000 2012 -->
+<play xmlns="http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd" id="9aa41acc-80e4-4593-9e4b-cade08966552" game="8c0bce5a-7ca2-41e5-9838-d1b8c356ddc3" type="punt" official="true" clock="13:36" quarter="2" controller="NYG" updated="2012-09-06T01:16:41+00:00">
+  <summary>5-S.Weatherford punts 45 yards from DAL 45 to DAL End Zone. touchback.</summary>
+  <start_situation team="NYG" side="DAL" yard_line="45" down="4" yfd="14"/>
+  <end_situation team="DAL" side="DAL" yard_line="20" down="1" yfd="10"/>
+  <statistics>
+    <player id="2d7263cd-2437-46a8-bca6-a224576e3063" name="Steve Weatherford" jersey="5" position="P" team="NYG">
+      <punting punts="1" yds="45" net_yds="25" blk="0" in20="0" tb="1" ret="0"/>
+    </player>
+  </statistics>
+</play>
+<!-- Generation finished at Thu Sep 06 01:16:42 +0000 2012 -->
+

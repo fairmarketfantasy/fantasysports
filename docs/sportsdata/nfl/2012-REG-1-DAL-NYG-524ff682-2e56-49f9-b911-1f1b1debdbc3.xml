@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started at Thu Sep 06 01:26:58 +0000 2012 -->
+<play xmlns="http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd" id="524ff682-2e56-49f9-b911-1f1b1debdbc3" game="8c0bce5a-7ca2-41e5-9838-d1b8c356ddc3" type="fieldgoal" official="true" clock="09:14" quarter="2" controller="NYG" updated="2012-09-06T01:26:58+00:00">
+  <summary>9-L.Tynes 22 yards Field Goal is Good.</summary>
+  <start_situation team="NYG" side="DAL" yard_line="12" down="4" yfd="5"/>
+  <end_situation team="NYG" side="NYG" yard_line="35"/>
+  <score type="fieldgoal" points="3"/>
+  <statistics>
+    <player id="97cebfd1-f7d0-4fc7-b3d8-6d2308e992e3" name="Lawrence Tynes" jersey="9" position="K" team="NYG">
+      <field_goal att="1" made="1" yds="22" att_yds="22" blk="0" ret="0"/>
+    </player>
+  </statistics>
+</play>
+<!-- Generation finished at Thu Sep 06 01:26:59 +0000 2012 -->
+

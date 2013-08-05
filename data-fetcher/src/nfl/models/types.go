@@ -4,11 +4,6 @@ import (
   "time"
 )
 
-type Sport struct {
-  Id int
-  Name string
-}
-
 type Team struct {
   Id int 
   SportId int
@@ -104,6 +99,7 @@ type StatEvent struct {
   Id int
   GameId int
   GameEventId int
+  GameEventStatsId string
   PlayerId int
   Type string
   Data string

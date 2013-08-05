@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started at Thu Sep 06 01:32:58 +0000 2012 -->
+<play xmlns="http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd" id="2de651f6-52a0-4f3d-a5bf-7ebc9a5a95b4" game="8c0bce5a-7ca2-41e5-9838-d1b8c356ddc3" type="penalty" official="false" clock="07:20" quarter="2" controller="DAL" updated="2012-09-06T01:32:57+00:00">
+  <summary>Penalty on DAL 68-D.Free, False start, 5 yards, enforced at DAL 35. No Play.</summary>
+  <start_situation team="DAL" side="DAL" yard_line="35" down="2" yfd="7"/>
+  <end_situation team="DAL" side="DAL" yard_line="30" down="2" yfd="12"/>
+  <statistics>
+    <player id="b3eadf6a-2c55-4b53-b5be-74fdb6700627" name="Doug Free" jersey="68" position="OT" team="DAL">
+      <penalty yds="5" fd="0" abbr="ofs"/>
+    </player>
+  </statistics>
+</play>
+<!-- Generation finished at Thu Sep 06 01:32:58 +0000 2012 -->
+

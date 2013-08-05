@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started at Thu Sep 06 02:30:00 +0000 2012 -->
+<play xmlns="http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd" id="03a77e6e-8377-47fb-8b84-38ae40a03ed6" game="8c0bce5a-7ca2-41e5-9838-d1b8c356ddc3" type="rush" official="true" clock="05:19" quarter="3" controller="NYG" updated="2012-09-06T02:29:59+00:00" direction="Left">
+  <summary>44-A.Bradshaw runs 10 yards for a touchdown.</summary>
+  <start_situation team="NYG" side="DAL" yard_line="10" down="1" yfd="10"/>
+  <end_situation team="NYG" side="DAL" yard_line="2"/>
+  <score type="touchdown" points="6"/>
+  <statistics>
+    <player id="8f22eb36-5282-407a-b6f9-f9b62e5f7318" name="Ahmad Bradshaw" jersey="44" position="RB" team="NYG">
+      <rushing att="1" yds="10" td="1" fum="0" sfty="0" fd="1" rz_att="1"/>
+    </player>
+  </statistics>
+</play>
+<!-- Generation finished at Thu Sep 06 02:30:00 +0000 2012 -->
+

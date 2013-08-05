@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130805030230) do
+ActiveRecord::Schema.define(version: 20130804081134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,18 +43,18 @@ ActiveRecord::Schema.define(version: 20130805030230) do
   create_table "game_events", force: true do |t|
     t.string   "stats_id"
     t.string   "sequence_number", null: false
-    t.integer  "game_id",         null: false
     t.string   "type",            null: false
     t.string   "summary",         null: false
     t.string   "clock",           null: false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "game_stats_id",   null: false
   end
 
-  add_index "game_events", ["game_id"], name: "index_game_events_on_game_id", using: :btree
+  add_index "game_events", ["game_stats_id"], name: "index_game_events_on_game_stats_id", using: :btree
   add_index "game_events", ["sequence_number"], name: "index_game_events_on_sequence_number", using: :btree
-  add_index "game_events", ["stats_id"], name: "index_game_events_on_stats_id", using: :btree
+  add_index "game_events", ["stats_id"], name: "index_game_events_on_stats_id", unique: true, using: :btree
 
   create_table "games", force: true do |t|
     t.string   "stats_id",     null: false
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 20130805030230) do
   add_index "games", ["game_day"], name: "index_games_on_game_day", using: :btree
   add_index "games", ["game_time"], name: "index_games_on_game_time", using: :btree
   add_index "games", ["home_team_id", "away_team_id", "game_day"], name: "index_games_on_home_team_id_and_away_team_id_and_game_day", unique: true, using: :btree
-  add_index "games", ["stats_id"], name: "index_games_on_stats_id", using: :btree
+  add_index "games", ["stats_id"], name: "index_games_on_stats_id", unique: true, using: :btree
 
   create_table "players", force: true do |t|
     t.string   "stats_id"
@@ -85,16 +85,13 @@ ActiveRecord::Schema.define(version: 20130805030230) do
     t.string   "position"
     t.integer  "jersey_number"
     t.string   "status"
-    t.string   "salary"
-    t.integer  "total_games",     default: 0, null: false
-    t.integer  "total_points",    default: 0, null: false
-    t.decimal  "points_per_game"
+    t.integer  "total_games",   default: 0, null: false
+    t.integer  "total_points",  default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "players", ["points_per_game"], name: "index_players_on_points_per_game", using: :btree
-  add_index "players", ["stats_id"], name: "index_players_on_stats_id", using: :btree
+  add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
   add_index "players", ["team_id"], name: "index_players_on_team_id", using: :btree
 
   create_table "sports", force: true do |t|
@@ -106,17 +103,17 @@ ActiveRecord::Schema.define(version: 20130805030230) do
   add_index "sports", ["name"], name: "index_sports_on_name", unique: true, using: :btree
 
   create_table "stat_events", force: true do |t|
-    t.integer "game_id",       null: false
-    t.integer "game_event_id", null: false
-    t.integer "player_id",     null: false
-    t.string  "type",          null: false
-    t.text    "data",          null: false
-    t.string  "point_type",    null: false
-    t.decimal "point_value",   null: false
+    t.string  "type",                null: false
+    t.text    "data",                null: false
+    t.string  "point_type",          null: false
+    t.decimal "point_value",         null: false
+    t.string  "player_stats_id",     null: false
+    t.string  "game_stats_id",       null: false
+    t.string  "game_event_stats_id", null: false
   end
 
-  add_index "stat_events", ["game_event_id"], name: "index_stat_events_on_game_event_id", using: :btree
-  add_index "stat_events", ["game_id"], name: "index_stat_events_on_game_id", using: :btree
+  add_index "stat_events", ["game_stats_id"], name: "index_stat_events_on_game_stats_id", using: :btree
+  add_index "stat_events", ["player_stats_id", "game_event_stats_id", "type"], name: "unique_stat_events", unique: true, using: :btree
 
   create_table "teams", force: true do |t|
     t.integer  "sport_id",   null: false
@@ -134,6 +131,7 @@ ActiveRecord::Schema.define(version: 20130805030230) do
     t.datetime "updated_at"
   end
 
+  add_index "teams", ["abbrev", "sport_id"], name: "index_teams_on_abbrev_and_sport_id", unique: true, using: :btree
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
 
   create_table "users", force: true do |t|
