@@ -11,23 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130804081134) do
+ActiveRecord::Schema.define(version: 20130806072637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "contest_rosters", force: true do |t|
-    t.integer  "owner_id",   null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "contest_rosters_players", force: true do |t|
-    t.integer "player_id",         null: false
-    t.integer "contest_roster_id", null: false
-  end
-
-  add_index "contest_rosters_players", ["player_id", "contest_roster_id"], name: "contest_rosters_players_index", unique: true, using: :btree
 
   create_table "contests", force: true do |t|
     t.integer  "owner",      null: false
@@ -38,7 +25,10 @@ ActiveRecord::Schema.define(version: 20130804081134) do
     t.datetime "end_time"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "market_id",  null: false
   end
+
+  add_index "contests", ["market_id"], name: "index_contests_on_market_id", using: :btree
 
   create_table "game_events", force: true do |t|
     t.string   "stats_id"
@@ -72,6 +62,37 @@ ActiveRecord::Schema.define(version: 20130804081134) do
   add_index "games", ["home_team_id", "away_team_id", "game_day"], name: "index_games_on_home_team_id_and_away_team_id_and_game_day", unique: true, using: :btree
   add_index "games", ["stats_id"], name: "index_games_on_stats_id", unique: true, using: :btree
 
+  create_table "market_orders", force: true do |t|
+    t.integer  "market_id",       null: false
+    t.integer  "contest_id",      null: false
+    t.integer  "roster_id",       null: false
+    t.string   "action",          null: false
+    t.integer  "player_id",       null: false
+    t.decimal  "price",           null: false
+    t.boolean  "rejected"
+    t.string   "rejected_reason"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "market_players", force: true do |t|
+    t.integer "market_id",     null: false
+    t.integer "player_id",     null: false
+    t.decimal "initial_price", null: false
+  end
+
+  add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
+
+  create_table "markets", force: true do |t|
+    t.string   "name"
+    t.integer  "shadow_bets",     null: false
+    t.integer  "shadow_bet_rate", null: false
+    t.datetime "opened_at",       null: false
+    t.datetime "closed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "players", force: true do |t|
     t.string   "stats_id"
     t.integer  "sport_id"
@@ -93,6 +114,35 @@ ActiveRecord::Schema.define(version: 20130804081134) do
 
   add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
   add_index "players", ["team_id"], name: "index_players_on_team_id", using: :btree
+
+  create_table "rosters", force: true do |t|
+    t.integer  "owner_id",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "market_id",                        null: false
+    t.integer  "contest_id",                       null: false
+    t.integer  "buy_in",                           null: false
+    t.decimal  "remaining_salary",                 null: false
+    t.boolean  "is_valid",         default: false, null: false
+    t.integer  "final_points"
+    t.integer  "finish_place"
+    t.decimal  "amount_paid"
+    t.datetime "paid_at"
+    t.boolean  "cancelled",        default: false, null: false
+    t.string   "cancelled_cause"
+    t.datetime "cancelled_at"
+  end
+
+  add_index "rosters", ["cancelled"], name: "index_rosters_on_cancelled", using: :btree
+  add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
+  add_index "rosters", ["market_id"], name: "index_rosters_on_market_id", using: :btree
+
+  create_table "rosters_players", force: true do |t|
+    t.integer "player_id",         null: false
+    t.integer "contest_roster_id", null: false
+  end
+
+  add_index "rosters_players", ["player_id", "contest_roster_id"], name: "contest_rosters_players_index", unique: true, using: :btree
 
   create_table "sports", force: true do |t|
     t.string   "name",       null: false
