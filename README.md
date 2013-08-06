@@ -35,6 +35,6 @@ rails s
 ```
 
 ## The data fetcher
-Install gpk: https://github.com/gopack/gpk
+
 
 

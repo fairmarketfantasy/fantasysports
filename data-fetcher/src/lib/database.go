@@ -7,7 +7,7 @@ import (
   "time"
   "log"
 
-  "github.com/astaxie/beedb"
+  "github.com/mikejihbe/beedb"
 _ "github.com/bmizerany/pq"
 )
 
