@@ -11,9 +11,10 @@ import (
 )
 
 // Major options
-var sport = flag.String("sport", "nfl" /* Temporary default */, "REQUIRED: What sport to fetch: nfl")
+var sport = flag.String("sport", "NFL" /* Temporary default */, "REQUIRED: What sport to fetch: nfl")
 var fetch = flag.String("fetch", "", `What data to fetch:
       init
+      seed
       roster -team DAL
       teams -year 2012 -season PRE|REG|PST
       schedule -year 2012 -season PRE|REG|PST
