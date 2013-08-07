@@ -1,13 +1,24 @@
 package models
 
 import (
+  "lib"
+  "lib/model"
   "time"
 )
 
+type NflModel struct {
+  model.ModelBase
+}
+
+func (m *NflModel) GetDb() *model.DB {
+  return lib.Db("NFL")
+}
+
 type Team struct {
+  NflModel
   Id int 
-  SportId int
-  Abbrev string
+  SportId int `modl:"key"`
+  Abbrev string `modl:"key"`
   Name string
   Conference string
   Division string
@@ -27,8 +38,9 @@ type Weather struct {
 }
 
 type Venue struct {
+  NflModel
   Id int
-  StatsId string
+  StatsId string `modl:"key"`
   Country string
   State string
   City string
@@ -45,8 +57,9 @@ type TeamStatus struct {
 }
 
 type Game struct {
+  NflModel
   Id int
-  StatsId string
+  StatsId string `modl:"key"`
   SeasonType string
   SeasonYear int
   SeasonWeek int
@@ -74,8 +87,9 @@ type PlayerStatus struct {
 }
 
 type Player struct {
+  NflModel
   Id int
-  StatsId string
+  StatsId string `modl:"key"`
   SportId int
   TeamId int
   Team Team
@@ -96,12 +110,13 @@ type Player struct {
 }
 
 type StatEvent struct {
+  NflModel
   Id int
   GameId int
   GameEventId int
-  GameEventStatsId string
-  PlayerId int
-  Type string
+  GameEventStatsId string `modl:"key"`
+  PlayerStatsId string `modl:"key"`
+  Type string `modl:"key"`
   Data string
   PointType string
   PointValue float64
@@ -115,7 +130,9 @@ type GameEventData struct {
 }
 
 type GameEvent struct {
-  StatsId string
+  NflModel
+  Id int
+  StatsId string `modl:"key"`
   SequenceNumber int
   GameId int
   GameStatsId string

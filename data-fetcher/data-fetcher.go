@@ -5,9 +5,9 @@ import (
   "reflect"
   "log"
   "nfl"
-  "lib/fetchers"
   "lib"
-  "models"
+  "lib/fetchers"
+  "lib/model"
 )
 
 // Major options
@@ -41,6 +41,16 @@ func PrintPtrs(ptrs interface{}) {
   }
 }
 
+func saveAll(list interface{}) {
+  val := reflect.ValueOf(list)
+  for i := 0; i < val.Len(); i++ {
+    err := model.Save(val.Index(i).Interface().(model.Model))
+    if err != nil {
+      log.Println(err)
+      return
+    }
+  }
+}
 
 func main() {
   flag.Parse()
@@ -49,10 +59,10 @@ func main() {
   switch *fetch {
     case "init":
       log.Println("Initializing sports")
-      for _, sport := range(models.Sports) {
-        s := models.Sport{}
+      for _, sport := range(lib.Sports) {
+        s := lib.Sport{}
         s.Name = sport
-        err := lib.Db("").Save(&s)
+        err := model.Save(&s)
         if err != nil {
           log.Println(err)
         }
@@ -61,29 +71,31 @@ func main() {
     case "teams":
       log.Println("Fetching Team data")
       teams := fetcher.GetStandings()
-      for _, team := range(teams) {
-        lib.Db(*sport).Save(team)
-      }
+      saveAll(teams)
       PrintPtrs(teams)
 
     case "schedule":
       log.Println("Fetching Schedule data")
       games := fetcher.GetSchedule()
+      saveAll(games)
       PrintPtrs(games)
 
     case "pbp":
       log.Println("Fetching play by play data")
-      events := fetcher.GetPlayByPlay(*awayTeam, *homeTeam)
-      PrintPtrs(events)
+      plays := fetcher.GetPlayByPlay(*awayTeam, *homeTeam)
+      saveAll(plays)
+      PrintPtrs(plays)
 
     case "roster":
       log.Println("Fetching Roster data")
-      roster := fetcher.GetTeamRoster(*team)
-      PrintPtrs(roster)
+      players := fetcher.GetTeamRoster(*team)
+      saveAll(players)
+      PrintPtrs(players)
 
     case "play":
-      log.Println("Fetching Roster data")
+      log.Println("Fetching play summary data")
       statEvents := fetcher.GetPlaySummary(*awayTeam, *homeTeam, *playId)
+      saveAll(statEvents)
       PrintPtrs(statEvents)
 
     case "serve":
