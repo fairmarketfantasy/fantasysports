@@ -36,5 +36,8 @@ rails s
 
 ## The data fetcher
 
-
+Seed some data:
+```
+rake seed:nfl_data --trace
+```
 
