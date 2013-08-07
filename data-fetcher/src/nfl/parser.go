@@ -69,7 +69,7 @@ func (state *ParseState) FindNextStartElement(elementName string) *xml.StartElem
   }
 }
 
-func buildStat(state ParseState) *models.StatEvent {
+func buildStat(state *ParseState) *models.StatEvent {
   var stat = models.StatEvent{}
   /*element := state.CurrentElement()
   stat.Type = element.Name.Local
@@ -79,7 +79,7 @@ func buildStat(state ParseState) *models.StatEvent {
   stat.GameStatsId = state.CurrentEvent.GameStatsId
   stat.GameEventStatsId = state.CurrentEvent.StatsId
   stat.PlayerStatsId = state.CurrentPlayer.StatsId
-  return stat
+  return &stat
 }
 func buildPlayer(element *xml.StartElement) *models.Player {
   var player = models.Player{}
@@ -276,35 +276,35 @@ func ParsePlaySummary(state *ParseState) *models.StatEvent {
       state.CurrentPlayer = player
     // http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd
     // TODO: this
-    case type:= "defense":
+    case "defense":
       return buildStat(state)
-    case type:= "rushing":
+    case "rushing":
       return buildStat(state)
-    case type:= "receiving":
+    case "receiving":
       return buildStat(state)
-    case type:= "punt_return":
+    case "punt_return":
       return buildStat(state)
-    case type:= "punting":
+    case "punting":
       return buildStat(state)
-    case type:= "penalty":
+    case "penalty":
       return buildStat(state)
-    case type:= "passing":
+    case "passing":
       return buildStat(state)
-    case type:= "kick_return":
+    case "kick_return":
       return buildStat(state)
-    case type:= "kickoffs":
+    case "kickoffs":
       return buildStat(state)
-    case type:= "interception_return":
+    case "interception_return":
       return buildStat(state)
-    case type:= "fumble_return":
+    case "fumble_return":
       return buildStat(state)
-    case type:= "field_goal_return":
+    case "field_goal_return":
       return buildStat(state)
-    case type:= "field_goal":
+    case "field_goal":
       return buildStat(state)
-    case type:= "extra_point":
+    case "extra_point":
       return buildStat(state)
-    case type:= "two_point_conversion":
+    case "two_point_conversion":
       return buildStat(state)
   }
   return nil

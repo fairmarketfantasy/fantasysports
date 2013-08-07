@@ -112,8 +112,7 @@ type Player struct {
 type StatEvent struct {
   NflModel
   Id int
-  GameId int
-  GameEventId int
+  GameStatsId string
   GameEventStatsId string `modl:"key"`
   PlayerStatsId string `modl:"key"`
   Type string `modl:"key"`
