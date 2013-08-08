@@ -5,6 +5,7 @@ import (
   "reflect"
   "log"
   "nfl"
+  "nfl/models"
   "lib"
   "lib/fetchers"
   "lib/model"
@@ -41,10 +42,10 @@ func PrintPtrs(ptrs interface{}) {
   }
 }
 
-func saveAll(list interface{}) {
+func saveAll(orm model.Orm, list interface{}) {
   val := reflect.ValueOf(list)
   for i := 0; i < val.Len(); i++ {
-    err := model.Save(val.Index(i).Interface().(model.Model))
+    err := orm.Save(val.Index(i).Interface().(model.Model))
     if err != nil {
       log.Println(err)
       return
@@ -55,6 +56,14 @@ func saveAll(list interface{}) {
 func main() {
   flag.Parse()
   fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
+  var orm model.Orm
+  if *fetch == "init" {
+    ormType := model.OrmBase{}
+    orm = ormType.Init(lib.DbInit(""))
+  } else {
+    ormType := models.NflOrm{}
+    orm = ormType.Init(lib.DbInit("NFL"))
+  }
 
   switch *fetch {
     case "init":
@@ -62,7 +71,7 @@ func main() {
       for _, sport := range(lib.Sports) {
         s := lib.Sport{}
         s.Name = sport
-        err := model.Save(&s)
+        err := orm.Save(&s)
         if err != nil {
           log.Println(err)
         }
@@ -71,31 +80,31 @@ func main() {
     case "teams":
       log.Println("Fetching Team data")
       teams := fetcher.GetStandings()
-      saveAll(teams)
+      saveAll(orm, teams)
       PrintPtrs(teams)
 
     case "schedule":
       log.Println("Fetching Schedule data")
       games := fetcher.GetSchedule()
-      saveAll(games)
-      PrintPtrs(games)
+      saveAll(orm, games)
+      //PrintPtrs(games)
 
     case "pbp":
       log.Println("Fetching play by play data")
       plays := fetcher.GetPlayByPlay(*awayTeam, *homeTeam)
-      saveAll(plays)
+      saveAll(orm, plays)
       PrintPtrs(plays)
 
     case "roster":
       log.Println("Fetching Roster data")
       players := fetcher.GetTeamRoster(*team)
-      saveAll(players)
+      saveAll(orm, players)
       PrintPtrs(players)
 
     case "play":
       log.Println("Fetching play summary data")
       statEvents := fetcher.GetPlaySummary(*awayTeam, *homeTeam, *playId)
-      saveAll(statEvents)
+      saveAll(orm, statEvents)
       PrintPtrs(statEvents)
 
     case "serve":
