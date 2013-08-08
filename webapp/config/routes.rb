@@ -12,6 +12,8 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:show]
 
+  resources :players, only: [:index]
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
