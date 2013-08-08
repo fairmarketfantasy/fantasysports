@@ -10,6 +10,7 @@ import (
 )
 func z() { log.Println("HERE") }
 
+
 type NflOrm struct {
   model.OrmBase
 }

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-  "log"
+  //"log"
 )
 
 var OnDebug = false
@@ -393,8 +393,6 @@ func (orm *Model) Save(output interface{}) error {
 		structVal := structPtr.Elem()
 		structField := structVal.FieldByName(orm.PrimaryKey)
 		id, err := orm.Insert(results)
-    log.Println(id)
-    log.Println(err)
 		if err != nil {
 			return err
 		}

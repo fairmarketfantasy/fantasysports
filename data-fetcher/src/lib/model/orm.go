@@ -12,6 +12,7 @@ type Orm interface {
   Init(*beedb.Model, map[string]interface{}) Orm
   GetDb() *beedb.Model
   Save(Model) error
+  SaveAll(interface{})
 }
 
 // Our beedb wrapper
@@ -52,6 +53,18 @@ func (o *OrmBase) Save(m Model) error {
   }
   return nil
 }
+
+func (orm *OrmBase) SaveAll(list interface{}) {
+  val := reflect.ValueOf(list)
+  for i := 0; i < val.Len(); i++ {
+    err := orm.Save(val.Index(i).Interface().(Model))
+    if err != nil {
+      log.Println(err)
+      return
+    }
+  }
+}
+
 
 // OrmBase Helpers
 
