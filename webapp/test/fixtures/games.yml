@@ -1,0 +1,8 @@
+one:
+  id: 1
+  stats_id: 1
+  home_team_id: 1
+  away_team_id: 2
+  status: on time
+  game_day: <%= Date.today %>
+  game_time: <%= Time.now %>

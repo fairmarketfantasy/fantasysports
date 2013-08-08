@@ -6,7 +6,7 @@ class Devise::RegistrationsControllerTest < ActionController::TestCase
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  test "get home" do
+  test "post to users" do
     assert_difference("User.count", 1) do
       xhr :post, :create, user: {name: "Terry P", email: "auseremail@gmail.com", password: "1234abcd", password_confirmation: "1234abcd"}
     end

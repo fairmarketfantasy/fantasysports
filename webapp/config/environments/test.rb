@@ -1,4 +1,7 @@
 Fantasysports::Application.configure do
+  SPORTS_DATA_API_KEY = "un32n24mu43xpmk594dzvm2p"
+  FACEBOOK_APP_ID = "162183927304348"
+  FACEBOOK_APP_SECRET = "657c1163073b2b31ea66e13670473a28"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # The test environment is used exclusively to run your application's
@@ -30,6 +33,8 @@ Fantasysports::Application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
+  #devise told me to: 
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
