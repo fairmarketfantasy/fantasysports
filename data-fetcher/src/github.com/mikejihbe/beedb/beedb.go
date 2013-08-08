@@ -8,11 +8,13 @@ import (
 	"strconv"
 	"strings"
 	"time"
-  //"log"
+  "log"
 )
 
 var OnDebug = false
 var PluralizeTableNames = false
+
+
 
 type Model struct {
 	Db              *sql.DB
@@ -391,6 +393,8 @@ func (orm *Model) Save(output interface{}) error {
 		structVal := structPtr.Elem()
 		structField := structVal.FieldByName(orm.PrimaryKey)
 		id, err := orm.Insert(results)
+    log.Println(id)
+    log.Println(err)
 		if err != nil {
 			return err
 		}
@@ -451,7 +455,10 @@ func (orm *Model) Insert(properties map[string]interface{}) (int64, error) {
 	if orm.ParamIdentifier == "pg" {
 		statement = fmt.Sprintf("%v RETURNING %v", statement, snakeCasedName(orm.PrimaryKey))
 		var id int64
-		orm.Db.QueryRow(statement, args...).Scan(&id)
+		err := orm.Db.QueryRow(statement, args...).Scan(&id)
+    if err != nil {
+			return -1, err
+    }
 		return id, nil
 	} else {
 		res, err := orm.Exec(statement, args...)
