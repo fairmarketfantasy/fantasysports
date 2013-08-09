@@ -2,9 +2,9 @@ package main
 
 import (
   "flag"
-  "reflect"
   "log"
   "nfl"
+  "nfl/models"
   "lib"
   "lib/fetchers"
   "lib/model"
@@ -33,28 +33,17 @@ var awayTeam = flag.String("away", "DAL", "Away team of game to fetch. Only pass
 var playId = flag.String("playId", "28140456-0132-4829-ae38-d68e10a5acc9", "PlayId of the summary to fetch. Only pass with play.")
 
 
-// This takes a slice of pointers and prints 'em out
-func PrintPtrs(ptrs interface{}) {
-  val := reflect.ValueOf(ptrs)
-  for i := 0; i < val.Len(); i++ {
-    log.Printf("%v\n", val.Index(i).Interface())
-  }
-}
-
-func saveAll(list interface{}) {
-  val := reflect.ValueOf(list)
-  for i := 0; i < val.Len(); i++ {
-    err := model.Save(val.Index(i).Interface().(model.Model))
-    if err != nil {
-      log.Println(err)
-      return
-    }
-  }
-}
-
 func main() {
   flag.Parse()
   fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
+  var orm model.Orm
+  if *fetch == "init" {
+    ormType := model.OrmBase{}
+    orm = ormType.Init(lib.DbInit(""))
+  } else {
+    ormType := models.NflOrm{}
+    orm = ormType.Init(lib.DbInit("NFL"))
+  }
 
   switch *fetch {
     case "init":
@@ -62,7 +51,7 @@ func main() {
       for _, sport := range(lib.Sports) {
         s := lib.Sport{}
         s.Name = sport
-        err := model.Save(&s)
+        err := orm.Save(&s)
         if err != nil {
           log.Println(err)
         }
@@ -71,35 +60,37 @@ func main() {
     case "teams":
       log.Println("Fetching Team data")
       teams := fetcher.GetStandings()
-      saveAll(teams)
-      PrintPtrs(teams)
+      orm.SaveAll(teams)
+      lib.PrintPtrs(teams)
 
     case "schedule":
       log.Println("Fetching Schedule data")
       games := fetcher.GetSchedule()
-      saveAll(games)
-      PrintPtrs(games)
+      orm.SaveAll(games)
+      lib.PrintPtrs(games)
 
     case "pbp":
       log.Println("Fetching play by play data")
       plays := fetcher.GetPlayByPlay(*awayTeam, *homeTeam)
-      saveAll(plays)
-      PrintPtrs(plays)
+      orm.SaveAll(plays)
+      lib.PrintPtrs(plays)
 
     case "roster":
       log.Println("Fetching Roster data")
       players := fetcher.GetTeamRoster(*team)
-      saveAll(players)
-      PrintPtrs(players)
+      orm.SaveAll(players)
+      lib.PrintPtrs(players)
 
     case "play":
       log.Println("Fetching play summary data")
       statEvents := fetcher.GetPlaySummary(*awayTeam, *homeTeam, *playId)
-      saveAll(statEvents)
-      PrintPtrs(statEvents)
+      orm.SaveAll(statEvents)
+      lib.PrintPtrs(statEvents)
 
     case "serve":
-      log.Println("Continuously fetching data for your pleasure.")
+      log.Println("Periodically fetching data for your pleasure.")
+      mgr := nfl.FetchManager{Orm: orm, Fetcher: fetcher}
+      mgr.Startup()
 
     default:
       flag.PrintDefaults()

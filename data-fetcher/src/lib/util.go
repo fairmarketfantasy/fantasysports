@@ -1,8 +1,18 @@
 package lib
 
 import (
-
+  "reflect"
+  "log"
 )
+
+// This takes a slice of pointers and prints 'em out
+func PrintPtrs(ptrs interface{}) {
+  val := reflect.ValueOf(ptrs)
+  for i := 0; i < val.Len(); i++ {
+    log.Printf("%v\n", val.Index(i).Interface())
+  }
+}
+
 
 func SnakeCase(name string) string {
   newstr := make([]rune, 0)

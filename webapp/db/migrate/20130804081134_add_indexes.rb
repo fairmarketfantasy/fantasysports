@@ -8,7 +8,6 @@ class AddIndexes < ActiveRecord::Migration
     remove_index :players, :stats_id
     add_index :players, :stats_id, :unique => true
     remove_column :players, :salary
-    remove_column :players, :points_per_game
 
     remove_column :stat_events, :game_id
     remove_column :stat_events, :game_event_id
