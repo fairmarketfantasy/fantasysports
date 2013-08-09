@@ -26,4 +26,8 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_routing({path: "/users/1", method: :get}, {controller: "users", action: "show", id: '1'})
   end
 
+  test "players index" do
+    assert_routing({path: "/players", method: :get}, {controller: "players", action: "index"})
+  end
+
 end
