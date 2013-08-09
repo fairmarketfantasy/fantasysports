@@ -3,9 +3,11 @@ package fetchers
 import (
   "log"
   "io"
+  "io/ioutil"
   "time"
 
   "net/http"
+  "net/url"
   "crypto/tls"
   "github.com/mreiferson/go-httpclient"
 )
@@ -24,25 +26,41 @@ var client = &http.Client{
 }
 
 // You must close the returned value
-func makeRequestWithRetries(url string, tries int) io.ReadCloser {
-  req, _ := http.NewRequest("GET", url, nil)
+func makeRequestWithRetries(u string, tries int) io.ReadCloser {
+  req, _ := http.NewRequest("GET", u, nil)
   req.Header.Add("User-Agent", "fair-fantasy-sports/fetcher")
   resp, err := client.Do(req)
   if (err != nil) {
     // This handles timeouts, 500s, etc 
     if (tries > 0) {
-      return makeRequestWithRetries(url, tries - 1)
+      return makeRequestWithRetries(u, tries - 1)
     } else {
-      log.Panicf("Request to %s failed: %s\n", url, err)
+  //    if (resp.StatusCode != 200) {
+        defer resp.Body.Close()
+        body, err := ioutil.ReadAll(resp.Body)
+        log.Panicf("Request to %s failed: returned status code %i\nBody:\n%s", u, resp.StatusCode, body)
+   //   }
+      log.Panicf("Request to %s failed: %s\n", u, err)
     }
-  }
-  if (resp.StatusCode != 200) {
-    defer resp.Body.Close()
-    log.Panicf("Request to %s failed: returned status code %i\n", url, resp.StatusCode)
   }
   return resp.Body
 }
 
-func HttpFetcher(url string) io.ReadCloser {
-  return makeRequestWithRetries(url, 1)
+func makeRequest(u string) io.ReadCloser {
+  log.Println(u)
+  // Set the SportsData API key
+  urlObj, err := url.Parse(u)
+  if err != nil {
+    log.Printf("Failed to parse url %s: %s\n", u, err)
+  }
+  query := urlObj.Query()
+  query.Add("api_key", "un32n24mu43xpmk594dzvm2p")
+  urlObj.RawQuery = query.Encode()
+
+  return makeRequestWithRetries(urlObj.String(), 1)
 }
+
+func HttpFetcher(u string) io.ReadCloser {
+  return makeRequest(u)
+}
+
