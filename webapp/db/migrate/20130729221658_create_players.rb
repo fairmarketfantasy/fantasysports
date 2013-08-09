@@ -21,6 +21,5 @@ class CreatePlayers < ActiveRecord::Migration
 
     add_index :players, :stats_id
     add_index :players, :team_id
-    add_index :players, :points_per_game
   end
 end

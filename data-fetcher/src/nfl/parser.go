@@ -239,7 +239,6 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
     event.GameStatsId = state.CurrentGame.StatsId
     state.CurrentEvent = event
     return event
-
     
   default:
   }

@@ -2,7 +2,6 @@ package lib
 
 import (
   "database/sql"
-  "lib/model"
 
   "github.com/mikejihbe/beedb"
 _ "github.com/bmizerany/pq"
@@ -20,23 +19,26 @@ func  getDb() *beedb.Model {
   // construct a gorp DbMap
   db := beedb.New(rawdb, "pg")
   orm = &db
-  //beedb.OnDebug=true
-  beedb.OnDebug=false
+  beedb.OnDebug=true
+ // beedb.OnDebug=false
   beedb.PluralizeTableNames=true
   return orm
 }
 
 // This is the public interface to get a DB handle
 
-func Db(sportName string) *model.DB {
+func DbInit(sportName string) (*beedb.Model, map[string]interface{}){
   var sport Sport
   db := getDb()
+  if sportName == "" {
+    return db, make(map[string]interface{})
+}
   err := db.Where("name = $1", sportName).Find(&sport)
   if err != nil && sportName != "" {
     panic(err)
   }
   defaultAttributes := make(map[string]interface{})
   defaultAttributes["SportId"] = sport.Id
-  return &model.DB{db, defaultAttributes}
+  return db, defaultAttributes
 }
 
