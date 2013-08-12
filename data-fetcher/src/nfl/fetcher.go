@@ -19,7 +19,7 @@ type Fetcher struct {
 var baseUrl = "http://api.sportsdatallc.org/nfl-t1/"
 func (f Fetcher) GetStandings() []*models.Team {
   // GET Standings nfl-t1/teams/:year/:nfl_season/standings.xml
-  url := fmt.Sprintf(baseUrl + "%d/%s/standings.xml", f.Year, f.NflSeason)
+  url := fmt.Sprintf(baseUrl + "teams/%d/%s/standings.xml", f.Year, f.NflSeason)
   return parsers.ParseXml(f.FetchMethod(url), ParseStandings).([]*models.Team)
 }
 

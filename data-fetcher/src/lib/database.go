@@ -19,8 +19,8 @@ func  getDb() *beedb.Model {
   // construct a gorp DbMap
   db := beedb.New(rawdb, "pg")
   orm = &db
-  beedb.OnDebug=true
- // beedb.OnDebug=false
+ // beedb.OnDebug=true
+  beedb.OnDebug=false
   beedb.PluralizeTableNames=true
   return orm
 }

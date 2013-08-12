@@ -1,3 +1,8 @@
+pricingFunction:
+  type: linear
+  a: 100000
+  b: 1000
+
 database:
   driverClass: org.postgresql.Driver
   url: jdbc:postgresql://localhost:5432
