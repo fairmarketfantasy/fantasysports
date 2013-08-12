@@ -7,5 +7,6 @@ namespace :seed do
     `GOPATH=#{root} go run #{root}/data-fetcher.go -year 2012 -fetch roster`
     `GOPATH=#{root} go run #{root}/data-fetcher.go -year 2012 -fetch pbp`
     `GOPATH=#{root} go run #{root}/data-fetcher.go -year 2012 -fetch stats`
+    `GOPATH=#{root} go run #{root}/data-fetcher.go -year 2012 -fetch serve`
   end
 end
