@@ -23,11 +23,13 @@ func (mgr *FetchManager) Startup() {
 
 func (mgr *FetchManager) Daily() { 
   // Refresh all games for each season
-  games := make([]*models.Game, 256)
+  games := make([]*models.Game, 0)
   for _, seasonType := range(NflSeasons) {
     mgr.Fetcher.NflSeason = seasonType
     games = append(games, mgr.refreshGames()...)
   }
+
+  //lib.PrintPtrs(games)
 
   // Set the fetcher to the correct dates / seasons, etc
   mgr.refreshFetcher(games)

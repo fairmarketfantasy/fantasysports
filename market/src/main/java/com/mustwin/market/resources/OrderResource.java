@@ -1,12 +1,11 @@
 package com.mustwin.market.resources;
 
-import com.google.common.base.Optional;
+import com.mustwin.market.api.MarketOrder;
+import com.mustwin.market.core.MarketMaker;
 import com.yammer.metrics.annotation.Timed;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.validation.Valid;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -17,12 +16,15 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class OrderResource {
 
-    public OrderResource() {
+    private final MarketMaker marketMaker;
+
+    public OrderResource(MarketMaker marketMaker) {
+        this.marketMaker = marketMaker;
     }
 
-    @GET
+    @POST
     @Timed
-    public String sayHello(@QueryParam("name") Optional<String> name) {
-        return "hi";
+    public MarketOrder process(@Valid MarketOrder order) {
+        return marketMaker.handleOrder(order);
     }
 }

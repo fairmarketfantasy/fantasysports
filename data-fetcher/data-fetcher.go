@@ -3,6 +3,7 @@ package main
 import (
   "flag"
   "log"
+  "time"
   "nfl"
   "nfl/models"
   "lib"
@@ -22,8 +23,17 @@ var fetch = flag.String("fetch", "", `What data to fetch:
       play -year 2012 -season PRE|REG|PST -week 3 -away DAL -home NYG -playId 28140456-0132-4829-ae38-d68e10a5acc9
 `)
 
+func defaultYear() int {
+  now := time.Now()
+  defaultNflYear := now.Year()
+  if (now.Month() < time.July){
+    // We actually want last year's season
+    defaultNflYear = defaultNflYear -1
+  }
+  return defaultNflYear
+}
 // Minor options
-var year = flag.Int("year", 2012, "Year to scope the fetch.")
+var year = flag.Int("year", defaultYear(), "Year to scope the fetch.")
 var season = flag.String("season", "REG", "Season to fetch, one of PRE|REG|POST.")
 var week = flag.Int("week", 1, "Team to fetch. Only pass with pbp")
 
@@ -35,7 +45,8 @@ var playId = flag.String("playId", "28140456-0132-4829-ae38-d68e10a5acc9", "Play
 
 func main() {
   flag.Parse()
-  fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
+  //fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
+  fetcher := nfl.Fetcher{*year, *season, *week, fetchers.HttpFetcher}
   var orm model.Orm
   if *fetch == "init" {
     ormType := model.OrmBase{}
