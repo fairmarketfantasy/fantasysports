@@ -42,26 +42,45 @@ func (mgr *FetchManager) Daily() error {
   for _, team := range(teams) {
     mgr.refreshTeamRosters(team.Abbrev)
   }
+
+  // Schedule jobs to collect play stats
   for _, game := range(games) {
     mgr.schedulePbpCollection(game)
   }
 
+  // Create markets for 
+  mgr.createMarkets(games)
+
   return nil
 }
-/*
+
 func (mgr *FetchManager) createMarkets(games []*models.Game) {
-  var possibleMarkets = map[time.Time][]*models.Game
+  possibleMarkets := make(map[string][]*models.Game, 0)
   for i := 0; i < len(games); i++ {
-    append(possibleMarkets[games[i].GameTime], games[i])
+    key := games[i].GameDay.String()
+    _, found := possibleMarkets[key]
+    if !found {
+      possibleMarkets[key] = make([]*models.Game, 0)
+    }
+    possibleMarkets[key] = append(possibleMarkets[key], games[i])
   }
-  log.Println(possibleMarkets)
-  for date, daysGames := range(possibleMarkets) {
+  for _, daysGames := range(possibleMarkets) {
     if len(daysGames) > 1 {
-      market := Market{}
+      market := models.Market{}
+      market.ShadowBets = 1000
+      market.ShadowBetRate = 0.75
+      market.ExposedAt = daysGames[0].GameDay.Add(-6 * 24 * time.Hour)
+      market.OpenedAt = daysGames[0].GameDay.Add(-6 * 24 * time.Hour)
+      market.ClosedAt = daysGames[0].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
+      log.Printf("Creating a market closing on %s with %d games", market.ClosedAt, len(daysGames))
+      mgr.Orm.Save(&market)
+      for _, game := range(daysGames) {
+        mktGame := models.GamesMarket{GameStatsId: game.StatsId, MarketId: market.Id}
+        mgr.Orm.Save(&mktGame)
+      }
     }
   }
 }
-*/
 
 // Assumes games are in chronological order now
 func (mgr *FetchManager) refreshFetcher(games []*models.Game) {

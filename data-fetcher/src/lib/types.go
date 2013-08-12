@@ -16,22 +16,3 @@ type Sport struct {
   UpdatedAt time.Time
 }
 
-type Market struct {
-  model.ModelBase
-  Id int
-  SportId int
-  ShadowBets int
-  ShadowBetRate int
-  ExposedAt time.Time
-  OpenedAt time.Time
-  ClosedAt time.Time
-  CreatedAt time.Time
-  UpdatedAt time.Time
-}
-
-type GamesMarket struct {
-  model.ModelBase
-  Id int
-  MarketId int
-  GameId int
-}
