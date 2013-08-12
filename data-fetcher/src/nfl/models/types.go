@@ -56,7 +56,7 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
       //orm = orm.Where(fmt.Sprintf("%s = $1", lib.SnakeCase(field.Name)), val.FieldByIndex(field.Index).Interface())
     }
   }
-  if len(args) > 1 {
+  if len(args) > 0 {
     whereStr := ""
     i := 0
     vals := make([]interface{}, 0)
@@ -68,6 +68,7 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
       whereStr += fmt.Sprintf("%s = $%d", key, i)
       vals = append(vals, val)
     }
+    log.Println(whereStr)
     orm = orm.Where(whereStr, vals...)
   }
 
