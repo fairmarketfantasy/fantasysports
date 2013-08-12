@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130812202035) do
+ActiveRecord::Schema.define(version: 20130812215355) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(version: 20130812202035) do
 
   create_table "markets", force: true do |t|
     t.string   "name"
-    t.integer  "shadow_bets",     null: false
+    t.decimal  "shadow_bets",     null: false
     t.integer  "shadow_bet_rate", null: false
     t.datetime "opened_at"
     t.datetime "closed_at"

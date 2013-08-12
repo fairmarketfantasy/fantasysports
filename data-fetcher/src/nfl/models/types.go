@@ -19,6 +19,28 @@ type NflModel struct {
   model.ModelBase
 }
 
+
+// Todo: move these to lib.types once we refactor the "unique model" functionality
+type Market struct {
+  NflModel
+  Id int
+  SportId int `model:"key"`
+  ShadowBets int
+  ShadowBetRate float64
+  ExposedAt time.Time
+  OpenedAt time.Time
+  ClosedAt time.Time `model:"key"`
+  CreatedAt time.Time
+  UpdatedAt time.Time
+}
+
+type GamesMarket struct {
+  NflModel
+  Id int
+  MarketId int `model:"key"`
+  GameStatsId string `model:"key"`
+}
+
 // This basically arranges things so that this updates changed attributes of unique objects, and only saves them if they didn't exist to begin with
 func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
   val := reflect.Indirect(reflect.ValueOf(m))

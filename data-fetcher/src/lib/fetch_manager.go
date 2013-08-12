@@ -35,6 +35,7 @@ func (f *FetchManagerBase) Schedule(name string, futureTime time.Time, fn func()
   }
   if !found {
     time.AfterFunc(futureTime.Sub(time.Now()), fn)
+    log.Printf("Scheduling %s at %s", name, futureTime)
     f.Tasks[name] = futureTime
   } 
 }
