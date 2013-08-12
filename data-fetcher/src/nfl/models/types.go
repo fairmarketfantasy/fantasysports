@@ -24,13 +24,29 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
   val := reflect.Indirect(reflect.ValueOf(m))
   valType := reflect.TypeOf(m).Elem()
   orm := db.GetDb()
+  var args = make(map[string]interface{})
   // Find all key tags and build query to find unique object
   for i := 0; i < valType.NumField(); i++ {
     field := valType.Field(i)
     tag := field.Tag
     if tag.Get("model") == "key" || reflect.ValueOf(tag).String() == "key" {
-      orm = orm.Where(fmt.Sprintf("%s = $1", lib.SnakeCase(field.Name)), val.FieldByIndex(field.Index).Interface())
+      args[lib.SnakeCase(field.Name)] = val.FieldByIndex(field.Index).Interface()
+      //orm = orm.Where(fmt.Sprintf("%s = $1", lib.SnakeCase(field.Name)), val.FieldByIndex(field.Index).Interface())
     }
+  }
+  if len(args) > 1 {
+    whereStr := ""
+    i := 0
+    vals := make([]interface{}, 0)
+    for key, val := range(args) {
+      i++
+      if i > 1 {
+        whereStr += " AND "
+      }
+      whereStr += fmt.Sprintf("%s = $%d", key, i)
+      vals = append(vals, val)
+    }
+    orm = orm.Where(whereStr, vals...)
   }
 
   // Fetch it
@@ -154,14 +170,51 @@ type Player struct {
 type StatEvent struct {
   NflModel
   Id int
-  GameStatsId string
-  GameEventStatsId string `model:"key"`
+  GameStatsId string `model:"key"`
   PlayerStatsId string `model:"key"`
   Type string `model:"key"`
   Data string
-  PointType string
+//  PointType string
   PointValue float64
+  CreatedAt time.Time
+  UpdatedAt time.Time
 }
+
+// Used by defenseParser
+func (se *StatEvent) AddOpposingTeamScore(score int) {
+  // opponent score pts
+  // 0: 10pts
+  // 2-6: 7pts
+  // 7-13: 4pts
+  // 14-17: 1pts
+  // 22-27: -1pts
+  // 28-34: -4pts
+  // 35-45: -7pts
+  // >46: -10pts
+  pts := 0
+  switch {
+  case score == 0:
+    pts = 10
+  case score <= 6:
+    pts = 7
+  case score <= 13:
+    pts = 4
+  case score <= 17:
+    pts = 1
+  case score <= 22:
+    pts = 0
+  case score <= 27:
+    pts = -1
+  case score <= 34:
+    pts = -4
+  case score <= 45:
+    pts = -7
+  case score > 45:
+    pts = -10
+  }
+  se.PointValue += float64(pts)
+}
+
 
 type GameEventData struct {
   Side string

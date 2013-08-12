@@ -20,10 +20,11 @@ var fetch = flag.String("fetch", "", `What data to fetch:
       teams -year 2012 -season PRE|REG|PST
       schedule -year 2012 -season PRE|REG|PST
       pbp -year 2012 -season PRE|REG|PST -week 3 -away DAL -home NYG
-      play -year 2012 -season PRE|REG|PST -week 3 -away DAL -home NYG -playId 28140456-0132-4829-ae38-d68e10a5acc9
+      stats -year 2012 -season PRE|REG|PST -week 3 -away DAL -home NYG
 `)
 
 func defaultYear() int {
+return 2012
   now := time.Now()
   defaultNflYear := now.Year()
   if (now.Month() < time.July){
@@ -92,16 +93,16 @@ func main() {
       orm.SaveAll(players)
       lib.PrintPtrs(players)
 
-    case "play":
+    case "stats":
       log.Println("Fetching play summary data")
-      statEvents := fetcher.GetPlaySummary(*awayTeam, *homeTeam, *playId)
+      statEvents := fetcher.GetGameStatistics(*awayTeam, *homeTeam)
       orm.SaveAll(statEvents)
       lib.PrintPtrs(statEvents)
 
     case "serve":
       log.Println("Periodically fetching data for your pleasure.")
       mgr := nfl.FetchManager{Orm: orm, Fetcher: fetcher}
-      mgr.Startup()
+      mgr.Start(&mgr)
 
     default:
       flag.PrintDefaults()
