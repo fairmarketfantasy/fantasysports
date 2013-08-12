@@ -5,6 +5,7 @@ import (
   "lib/model"
   "nfl/models"
   "time"
+  "log"
 )
 
 
@@ -17,11 +18,11 @@ type FetchManager struct {
   Orm model.Orm
 }
 
-func (mgr *FetchManager) Startup() { 
-  mgr.Daily() 
+func (mgr *FetchManager) Startup() error { 
+  return mgr.Daily() 
 }
 
-func (mgr *FetchManager) Daily() { 
+func (mgr *FetchManager) Daily() error { 
   // Refresh all games for each season
   games := make([]*models.Game, 0)
   for _, seasonType := range(NflSeasons) {
@@ -31,7 +32,7 @@ func (mgr *FetchManager) Daily() {
 
   //lib.PrintPtrs(games)
 
-  // Set the fetcher to the correct dates / seasons, etc
+// Set the fetcher to the correct dates / seasons, etc
   mgr.refreshFetcher(games)
 
   // Grab the latest standings for this season
@@ -41,12 +42,26 @@ func (mgr *FetchManager) Daily() {
   for _, team := range(teams) {
     mgr.refreshTeamRosters(team.Abbrev)
   }
+  for _, game := range(games) {
+    mgr.schedulePbpCollection(game)
+  }
 
-  // TODO
-  // Schedule PBP retrievals for 10 mins prior to kickoff (DON'T DO THIS TWICE, startup and daily)
-  // At end of games, refresh standings for season we are in
+  return nil
 }
-
+/*
+func (mgr *FetchManager) createMarkets(games []*models.Game) {
+  var possibleMarkets = map[time.Time][]*models.Game
+  for i := 0; i < len(games); i++ {
+    append(possibleMarkets[games[i].GameTime], games[i])
+  }
+  log.Println(possibleMarkets)
+  for date, daysGames := range(possibleMarkets) {
+    if len(daysGames) > 1 {
+      market := Market{}
+    }
+  }
+}
+*/
 
 // Assumes games are in chronological order now
 func (mgr *FetchManager) refreshFetcher(games []*models.Game) {
@@ -62,35 +77,66 @@ func (mgr *FetchManager) refreshFetcher(games []*models.Game) {
 }
 
 func (mgr *FetchManager) refreshStandings() []*models.Team {
+  log.Println("Fetching teams")
   teams := mgr.Fetcher.GetStandings()
   mgr.Orm.SaveAll(teams)
   return teams
 }
 
 func (mgr *FetchManager) refreshGames() []*models.Game {
+  log.Println("Fetching games")
   games := mgr.Fetcher.GetSchedule()
   mgr.Orm.SaveAll(games)
   return games
 }
 
 func (mgr *FetchManager) refreshTeamRosters(team string) {
+  log.Printf("Fetching %s players", team)
   players := mgr.Fetcher.GetTeamRoster(team)
   mgr.Orm.SaveAll(players)
 }
 
-func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
-  mgr.Schedule(game.GameTime.Add(-5*time.Minute), func(){
-     // TODO: see if streaming http client works...
+func (mgr *FetchManager) refreshGameStatistics(game *models.Game) {
+  log.Printf("Fetching stats for game %s", game.StatsId)
+  // EPIC FUCKING TODO: don't save all of these every time, add a cache layer that checks to see if they're updated
+  stats:= mgr.Fetcher.GetGameStatistics(game.AwayTeam, game.HomeTeam)
+  mgr.Orm.SaveAll(stats)
+}
 
-     /*
-      Setup a timer to fetch data every n seconds. 
-      Parse all data (keeping a counter for where to save from) or just new data
-      save it
-      fetch summary and scoring data  for each no play in parallel
-      save that
-      detect end of game, refresh standings and schedule refresh standings 1min and 10 min
-      */
-  })
+func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
+  POLLING_PERIOD := 10 * time.Second
+  currentSequenceNumber := -1
+  gameover := false
+  if game.GameTime.After(time.Now()) {
+    var poll = func(){}
+    poll = func() {
+      dirty := false
+      gameEvents := mgr.Fetcher.GetPlayByPlay(game.AwayTeam, game.HomeTeam)
+      for i, event := range(gameEvents) {
+        if event.SequenceNumber < currentSequenceNumber {
+          continue
+        }
+        mgr.Orm.Save(event)
+        currentSequenceNumber = i
+        dirty = true
+        if event.Type == "gameover" {
+          gameover = true
+        }
+      }
+      if dirty {
+        mgr.refreshGameStatistics(game)
+        if gameover {
+          mgr.refreshStandings()
+          // And refresh 'em again later just in case
+          time.AfterFunc(1 * time.Minute, func() { mgr.refreshStandings() })
+          time.AfterFunc(10 * time.Minute, func() { mgr.refreshStandings() })
+          return
+        }
+      }
+      time.AfterFunc(POLLING_PERIOD, poll)
+    }
+    mgr.Schedule("nfl-pbp-" + game.StatsId, game.GameTime.Add(-5*time.Minute), poll)
+  }
 }
 
 /*

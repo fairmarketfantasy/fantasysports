@@ -41,8 +41,9 @@ func (f Fetcher) GetTeamRoster(team string) []*models.Player {
   return parsers.ParseXml(f.FetchMethod(url), ParseRoster).([]*models.Player)
 }
 
-func (f Fetcher) GetPlaySummary(awayTeam string, homeTeam string, playId string) []*models.StatEvent {
-  // GET Play Summary nfl-t1/:year/:nfl_season/:nfl_season_week/:away_team/:home_team/plays/:play_id.xml
-  url := fmt.Sprintf(baseUrl + "%d/%s/%d/%s/%s/plays/%s.xml", f.Year, f.NflSeason, f.NflSeasonWeek, awayTeam, homeTeam, playId)
-  return parsers.ParseXml(f.FetchMethod(url), ParsePlaySummary).([]*models.StatEvent)
+func (f Fetcher) GetGameStatistics(awayTeam string, homeTeam string) []*models.StatEvent {
+  // GET nfl-t1/2012/REG/1/DAL/NYG/statistics.xml
+  url := fmt.Sprintf(baseUrl + "%d/%s/%d/%s/%s/statistics.xml", f.Year, f.NflSeason, f.NflSeasonWeek, awayTeam, homeTeam)
+  return parsers.ParseXml(f.FetchMethod(url), ParseGameStatistics).([]*models.StatEvent)
 }
+

@@ -34,9 +34,16 @@ type ParseState struct {
   CurrentTeam *models.Team
   CurrentPlayer *models.Player
   CurrentEvent *models.GameEvent
+  CurrentPositionParser func(*ParseState) *models.StatEvent
+  TeamCount int
+  TeamScore int
+  DefensePlayerScores []*models.StatEvent
 }
 func (state *ParseState) CurrentElement() *xml.StartElement {
   return state.InElement
+}
+func (state *ParseState) CurrentElementAttr(name string) string {
+  return parsers.FindAttrByName(state.InElement.Attr, name)
 }
 func (state *ParseState) CurrentElementName() string {
   return state.InElement.Name.Local
@@ -69,18 +76,6 @@ func (state *ParseState) FindNextStartElement(elementName string) *xml.StartElem
   }
 }
 
-func buildStat(state *ParseState) *models.StatEvent {
-  var stat = models.StatEvent{}
-  /*element := state.CurrentElement()
-  stat.Type = element.Name.Local
-  stat.Data = 
-  stat.PointType = 
-  stat.PointValue = */
-  stat.GameStatsId = state.CurrentEvent.GameStatsId
-  stat.GameEventStatsId = state.CurrentEvent.StatsId
-  stat.PlayerStatsId = state.CurrentPlayer.StatsId
-  return &stat
-}
 func buildPlayer(element *xml.StartElement) *models.Player {
   var player = models.Player{}
   player.StatsId = parsers.FindAttrByName(element.Attr, "id")
@@ -264,55 +259,188 @@ func ParseRoster(state *ParseState) *models.Player {
   return nil
 }
 
-func ParsePlaySummary(state *ParseState) *models.StatEvent {
+func buildStatEvent(state *ParseState) *models.StatEvent{
+  var event = models.StatEvent{}
+  event.GameStatsId = state.CurrentGame.StatsId
+  event.PlayerStatsId = state.CurrentElementAttr("id")
+  event.Data = ""
+  return &event
+}
+
+func defenseParser(state *ParseState) *models.StatEvent {
+  // td +3
+  // int +2
+  // fum_recovery +2
+  // sfty +2
+  // sack +1
+  event := buildStatEvent(state)
+  fumble_recoveries, _ := strconv.Atoi(state.CurrentElementAttr("fum_rec"))
+  interceptions, _ := strconv.Atoi(state.CurrentElementAttr("int"))
+  int_touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("int_td"))
+  fum_touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("fum_td"))
+  safeties, _ := strconv.Atoi(state.CurrentElementAttr("sfty"))
+  sack, _ := strconv.Atoi(state.CurrentElementAttr("sack"))
+  event.PointValue = float64(3 * (int_touchdowns + fum_touchdowns) + 2 * interceptions + 2 * fumble_recoveries + 2 * safeties + 1 * sack)
+  state.DefensePlayerScores = append(state.DefensePlayerScores, event)
+  event.Type = "defense"
+  if (state.TeamCount > 1) {
+    event.AddOpposingTeamScore(state.TeamScore)
+  }
+  return event
+}
+
+func rushingReceivingParser(state *ParseState) *models.StatEvent {
+  // td +6
+  // yds +1 per 10 yds 
+  // -2 per fumble lost
+  event := buildStatEvent(state)
+  fumbles, _ := strconv.Atoi(state.CurrentElementAttr("fum"))
+  yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
+  touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
+  event.PointValue = float64(6 * touchdowns + 1 * yards / 10 - 2 * fumbles)
+  return event
+}
+
+func rushingParser(state *ParseState) *models.StatEvent {
+  event := rushingReceivingParser(state)
+  event.Type = "rushing"
+  return event
+}
+
+func receivingParser(state *ParseState) *models.StatEvent {
+  event := rushingReceivingParser(state)
+  event.Type = "receiving"
+  return event
+}
+
+func puntReturnParser(state *ParseState) *models.StatEvent {
+  // td +6
+  // yds +1 per 10 yds 
+  yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
+  touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
+  event := buildStatEvent(state)
+  event.PointValue = float64(6 * touchdowns + 1 * yards / 10)
+  event.Type = "punt_return"
+  return event
+}
+
+func passingParser(state *ParseState) *models.StatEvent {
+  // td +4
+  // yds +1 per 25 yds 
+  // -2 per interception
+  yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
+  touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
+  interceptions, _ := strconv.Atoi(state.CurrentElementAttr("int"))
+  event := buildStatEvent(state)
+  event.Type = "passing"
+  event.PointValue = float64(6 * touchdowns + 1 * yards / 10 - 2 * interceptions)
+  return event
+}
+
+func kickReturnParser(state *ParseState) *models.StatEvent {
+  // td +6
+  // 1 pt per 10 yds  
+  yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
+  touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
+  event := buildStatEvent(state)
+  event.Type = "kick_return"
+  event.PointValue = float64(6 * touchdowns + 1 * yards / 10)
+  return event
+}
+
+func fieldGoalParser(state *ParseState) *models.StatEvent {
+  // success +5 per 50+ yd
+  // success +4 per 40-49 yd
+  // success +3 per <= 39+ yd
+  // -2 per missed fg 0-39 yds
+  // -1 per missed fg 40-49 yds
+  att19, _ := strconv.Atoi(state.CurrentElementAttr("att_19"))
+  made19, _ := strconv.Atoi(state.CurrentElementAttr("made_19"))
+  att29, _ := strconv.Atoi(state.CurrentElementAttr("att_29"))
+  made29, _ := strconv.Atoi(state.CurrentElementAttr("made_29"))
+  att39, _ := strconv.Atoi(state.CurrentElementAttr("att_39"))
+  made39, _ := strconv.Atoi(state.CurrentElementAttr("made_39"))
+  att49, _ := strconv.Atoi(state.CurrentElementAttr("att_49"))
+  made49, _ := strconv.Atoi(state.CurrentElementAttr("made_49"))
+  //att50, _ := strconv.Atoi(state.CurrentElementAttr("att_50"))
+  made50, _ := strconv.Atoi(state.CurrentElementAttr("made_50"))
+  event := buildStatEvent(state)
+  event.Type = "field_goal"
+  event.PointValue = float64(5 * made50 + 4 * made49 + 3 * (made39 + made29 + made19) - 2 * (att19 + att29 + att39 - made19 - made29 - made39) - 1 * (att49 - made49))
+  return event
+}
+
+func extraPointParser(state *ParseState) *models.StatEvent {
+  // +1 per extra point made
+  made, _ := strconv.Atoi(state.CurrentElementAttr("made"))
+  event := buildStatEvent(state)
+  event.Type = "extra_point"
+  event.PointValue = float64(made)
+  return event
+}
+
+func twoPointConvParser(state *ParseState) *models.StatEvent {
+  // success +2
+  att, _ := strconv.Atoi(state.CurrentElementAttr("att"))
+  failed, _ := strconv.Atoi(state.CurrentElementAttr("failed"))
+  event := buildStatEvent(state)
+  event.Type = "two_point_conversion"
+  event.PointValue = float64(2 * (att - failed))
+  return event
+}
+
+
+func ParseGameStatistics(state *ParseState) *models.StatEvent {
   switch state.CurrentElementName() {
-    case "play":
-      event := buildEvent(state.CurrentElement())
-      event.GameStatsId = parsers.FindAttrByName(state.CurrentElement().Attr, "game")
-      state.CurrentEvent = event
+    case "game":
+      game := buildGame(state.CurrentElement())
+      state.CurrentGame = game
+    case "team":
+      state.TeamCount++
+      oldTeamScore := state.TeamScore
+      state.TeamScore, _ = strconv.Atoi(state.CurrentElementAttr("points"))
+      if state.TeamCount > 1 {
+        // They don't include summary data in these responses, so we handle defensive "points scored against" here
+        for _, event := range(state.DefensePlayerScores) {
+          event.AddOpposingTeamScore(state.TeamScore)
+        }
+        state.TeamScore = oldTeamScore // this will be added inline when TeamCount > 1 in defenseParser
+      }
     case "player":
-      player := buildPlayer(state.CurrentElement())
-      state.CurrentPlayer = player
-    // http://feed.elasticstats.com/schema/nfl/extended-play-v1.0.xsd
-    // TODO: this
+      if state.CurrentPositionParser != nil {
+        return state.CurrentPositionParser(state)
+      }
+      return nil
     case "defense":
-      return buildStat(state)
+      state.CurrentPositionParser = defenseParser
     case "rushing":
-      return buildStat(state)
+      state.CurrentPositionParser = rushingParser
     case "receiving":
-      return buildStat(state)
+      state.CurrentPositionParser = receivingParser
     case "punt_return":
-      return buildStat(state)
-    case "punting":
-      return buildStat(state)
-    case "penalty":
-      return buildStat(state)
+      state.CurrentPositionParser = puntReturnParser
     case "passing":
-      return buildStat(state)
+      state.CurrentPositionParser = passingParser
     case "kick_return":
-      return buildStat(state)
-    case "kickoffs":
-      return buildStat(state)
-    case "interception_return":
-      return buildStat(state)
-    case "fumble_return":
-      return buildStat(state)
-    case "field_goal_return":
-      return buildStat(state)
+      state.CurrentPositionParser = kickReturnParser
     case "field_goal":
-      return buildStat(state)
+      state.CurrentPositionParser = fieldGoalParser
     case "extra_point":
-      return buildStat(state)
+      state.CurrentPositionParser = extraPointParser
     case "two_point_conversion":
-      return buildStat(state)
+      state.CurrentPositionParser = twoPointConvParser
+    case "kickoffs":
+      state.CurrentPositionParser = nil
+    case "first_downs":
+      state.CurrentPositionParser = nil
+    case "fumbles":
+      state.CurrentPositionParser = nil
+    case "penalty":
+      state.CurrentPositionParser = nil
+    case "touchdowns":
+      state.CurrentPositionParser = nil
+    case "punting":
+      state.CurrentPositionParser = nil
   }
   return nil
-  /*Id int
-  GameStatsId string
-  GameEventStatsId string
-  PlayerStatsId string
-  Type string
-  Data string
-  PointType string
-  PointValue float64*/
 }

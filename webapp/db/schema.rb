@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130809230432) do
+ActiveRecord::Schema.define(version: 20130812202035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20130809230432) do
 
   create_table "game_events", force: true do |t|
     t.string   "stats_id"
-    t.string   "sequence_number", null: false
+    t.integer  "sequence_number", null: false
     t.string   "type",            null: false
     t.string   "summary",         null: false
     t.string   "clock",           null: false
@@ -65,6 +65,11 @@ ActiveRecord::Schema.define(version: 20130809230432) do
   add_index "games", ["game_day"], name: "index_games_on_game_day", using: :btree
   add_index "games", ["game_time"], name: "index_games_on_game_time", using: :btree
   add_index "games", ["stats_id"], name: "index_games_on_stats_id", unique: true, using: :btree
+
+  create_table "games_markets", force: true do |t|
+    t.integer "game_stats_id"
+    t.integer "market_id"
+  end
 
   create_table "market_orders", force: true do |t|
     t.integer  "market_id",       null: false
@@ -158,17 +163,16 @@ ActiveRecord::Schema.define(version: 20130809230432) do
   add_index "sports", ["name"], name: "index_sports_on_name", unique: true, using: :btree
 
   create_table "stat_events", force: true do |t|
-    t.string  "type",                null: false
-    t.text    "data",                null: false
-    t.string  "point_type",          null: false
-    t.decimal "point_value",         null: false
-    t.string  "player_stats_id",     null: false
-    t.string  "game_stats_id",       null: false
-    t.string  "game_event_stats_id", null: false
+    t.string   "type",            null: false
+    t.text     "data",            null: false
+    t.decimal  "point_value",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "player_stats_id", null: false
+    t.string   "game_stats_id",   null: false
   end
 
   add_index "stat_events", ["game_stats_id"], name: "index_stat_events_on_game_stats_id", using: :btree
-  add_index "stat_events", ["player_stats_id", "game_event_stats_id", "type"], name: "unique_stat_events", unique: true, using: :btree
 
   create_table "teams", force: true do |t|
     t.integer  "sport_id",   null: false
