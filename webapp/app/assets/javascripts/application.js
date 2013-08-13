@@ -12,4 +12,5 @@
 //
 //= require jquery-2.0.3.min.js
 //= require angular-1.0.7.min.js
+//= require jsonh
 //= require_tree .
