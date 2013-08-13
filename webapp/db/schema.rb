@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130813004535) do
+ActiveRecord::Schema.define(version: 20130813185841) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(version: 20130813004535) do
     t.integer "market_id",     null: false
     t.integer "player_id",     null: false
     t.decimal "initial_price", null: false
+    t.decimal "bets"
   end
 
   add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
@@ -102,6 +103,7 @@ ActiveRecord::Schema.define(version: 20130813004535) do
     t.datetime "updated_at"
     t.datetime "published_at"
     t.string   "state"
+    t.decimal  "total_bets"
   end
 
   create_table "players", force: true do |t|
@@ -149,11 +151,11 @@ ActiveRecord::Schema.define(version: 20130813004535) do
   add_index "rosters", ["market_id"], name: "index_rosters_on_market_id", using: :btree
 
   create_table "rosters_players", force: true do |t|
-    t.integer "player_id",         null: false
-    t.integer "contest_roster_id", null: false
+    t.integer "player_id", null: false
+    t.integer "roster_id", null: false
   end
 
-  add_index "rosters_players", ["player_id", "contest_roster_id"], name: "contest_rosters_players_index", unique: true, using: :btree
+  add_index "rosters_players", ["player_id", "roster_id"], name: "contest_rosters_players_index", unique: true, using: :btree
 
   create_table "sports", force: true do |t|
     t.string   "name",       null: false
