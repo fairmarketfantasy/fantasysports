@@ -1,4 +1,5 @@
 one:
   id: 1
-  name: "Michael Jordan"
+  name: Michael Jordan
   team_id: 1
+  stats_id: adf8328
