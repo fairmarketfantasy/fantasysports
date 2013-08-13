@@ -12,6 +12,9 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:show]
 
+  #for /games/:game_stats_id
+  resources :games, only: [:show]
+
   resources :players, only: [:index]
 
   # Example of regular route:
