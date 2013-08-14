@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class RoutesTest < ActionDispatch::IntegrationTest
+class OtherRoutesTest < ActionDispatch::IntegrationTest
 
   test "home route" do
     assert_routing({path: "/", method: :get}, { controller: "pages", action: "index" })

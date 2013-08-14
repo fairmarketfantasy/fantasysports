@@ -17,6 +17,13 @@ Fantasysports::Application.routes.draw do
 
   resources :players, only: [:index]
 
+  resources :markets, only: [:index] do
+    member do
+      get 'contests'
+      post 'contests'
+    end
+  end
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

@@ -1,0 +1,15 @@
+one:
+  id: 1
+  game_stats_id: 8c0bce5a
+  sequence_number: 1
+  type: rushing
+  summary: Romo shit a brick
+  clock: 34s
+
+two:
+  id: 2
+  game_stats_id: 8c0bce5a
+  sequence_number: 2
+  type: rushing
+  summary: Romo shit a brick
+  clock: 34s

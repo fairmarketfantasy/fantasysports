@@ -1,6 +1,6 @@
 one:
   id: 1
-  name: "Vincent Vega"
-  email: "vincent@pulp.com"
+  name: Vincent Vega
+  unconfirmed_email: vincent@pulp.com
   encrypted_password: <%= BCrypt::Password.create("12345abcdE") %>
   confirmed_at: <%= DateTime.now %>
