@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class RoutesTest < ActionDispatch::IntegrationTest
+class OtherRoutesTest < ActionDispatch::IntegrationTest
 
   test "home route" do
     assert_routing({path: "/", method: :get}, { controller: "pages", action: "index" })
@@ -33,10 +33,6 @@ class RoutesTest < ActionDispatch::IntegrationTest
   test "games show" do
     g = games(:one)
     assert_routing({path: "/games/#{g.stats_id}", method: :get}, {controller: "games", action: "show", id: g.stats_id})
-  end
-
-  test "markets index" do
-    assert_routing({path: "/markets", method: :get}, {controller: "markets", action: "index"})
   end
 
 end
