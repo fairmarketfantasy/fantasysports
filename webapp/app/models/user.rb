@@ -19,4 +19,12 @@ class User < ActiveRecord::Base
     end
     user
   end
+
+  def confirmation_required?
+    false
+  end
+
+  def email
+    self[:email].blank? ? self.unconfirmed_email : self[:email]
+  end
 end
