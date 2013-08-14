@@ -33,7 +33,7 @@ func (mgr *FetchManager) Daily() error {
   //lib.PrintPtrs(games)
 
 // Set the fetcher to the correct dates / seasons, etc
-/*
+
   mgr.refreshFetcher(games)
 
   // Grab the latest standings for this season
@@ -48,7 +48,7 @@ func (mgr *FetchManager) Daily() error {
   for _, game := range(games) {
     mgr.schedulePbpCollection(game)
   }
-*/
+
   // Create markets for 
   mgr.createMarkets(games)
 

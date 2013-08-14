@@ -49,7 +49,7 @@ func (o *OrmBase) Save(m Model) error {
     return err
   }
   if cont {
-    return o.GetDb().Save(reflect.ValueOf(m).Interface())
+    return o.GetDb().Save(m)
   }
   return nil
 }
