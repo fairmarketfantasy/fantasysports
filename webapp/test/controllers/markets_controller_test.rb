@@ -13,8 +13,20 @@ class MarketsControllerTest < ActionController::TestCase
   #   xhr :get, :contests, {id: m.id}
   # end
 
-  # test "post :id/contests" do
-  #   m = markets(:one)
-  #   xhr :post, :contests, {id: m.id}
-  # end
+  test "post :id/contests unauthenticated" do
+    m = markets(:one)
+    assert_no_difference("Contest.count", 1) do
+      xhr :post, :contests, {id: m.id, emails: ["yodawg@yo.com", "royale@cheese.com"], type: "194", user_cap: 5}
+    end
+    assert_response :unauthorized
+  end
+
+  test "post :id/contests authenticated" do
+    m = markets(:one)
+    sign_in users(:one)
+    assert_difference("Contest.count", 1) do
+      xhr :post, :contests, {id: m.id, emails: ["yodawg@yo.com", "royale@cheese.com"], type: "194", user_cap: 5}
+    end
+    assert_response :success
+  end
 end

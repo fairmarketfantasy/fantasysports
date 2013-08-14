@@ -4,8 +4,10 @@ class User < ActiveRecord::Base
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable
-  has_many :contest_rosters
   devise :omniauthable, :omniauth_providers => [:facebook]
+
+  has_many :contest_rosters, class_name: "Roster", foreign_key: :owner_id
+  has_many :contests, foreign_key: :owner
 
 
   def self.find_for_facebook_oauth(auth)
