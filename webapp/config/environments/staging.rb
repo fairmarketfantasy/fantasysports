@@ -2,6 +2,8 @@ Fantasysports::Application.configure do
   SPORTS_DATA_API_KEY = "un32n24mu43xpmk594dzvm2p"
   FACEBOOK_APP_ID = "436114143174192"
   FACEBOOK_APP_SECRET = "0f99d3d28ef7d84d6b55cdb78c238b61"
+  AWS_ACCESS_KEY="AKIAJXV4UPD3IV4JK6DA"
+  AWS_SECRET_KEY="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"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
