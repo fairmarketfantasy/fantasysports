@@ -3,7 +3,7 @@ class GamesController < ApplicationController
 
   def show
     game_stats_id = params[:id]
-    @stat_events = StatEvent.where(game_stats_id: game_stats_id)
+    @game_events = GameEvent.where(game_stats_id: game_stats_id)
   end
 
 end
