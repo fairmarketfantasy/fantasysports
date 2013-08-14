@@ -11,6 +11,15 @@ class MarketsController < ApplicationController
       # Default to today’s contests. List all open public contests, 
       # private contests (that are visible to me if logged in) and in-progress contests matching the criteria
     elsif request.post?
+      authenticate_user!
+      market   = Market.find(params[:id])
+      user_cap = params[:user_cap]
+      type     = params[:type]
+      invitees = params[:emails]
+      market.contests.create!(owner:    current_user,
+                              user_cap: user_cap,
+                              buy_in:   10,
+                              type:     type)
       # Authenticated.  This challenges a specific person to a head to head. 
       # Takes a list of email addresses, a market, a type (“194” is the only type supported for now) and a max number of users.
       # Create a new, private contest in the market.  Create a roster for this user and this contest.  Charge them for entry.  
