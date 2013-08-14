@@ -25,9 +25,11 @@ type Market struct {
   NflModel
   Id int
   SportId int `model:"key"`
+  TotalBets int
   ShadowBets int
   ShadowBetRate float64
-  ExposedAt time.Time
+  PublishedAt time.Time
+  State string
   OpenedAt time.Time
   ClosedAt time.Time `model:"key"`
   CreatedAt time.Time
@@ -68,7 +70,6 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
       whereStr += fmt.Sprintf("%s = $%d", key, i)
       vals = append(vals, val)
     }
-    log.Println(whereStr)
     orm = orm.Where(whereStr, vals...)
   }
 
