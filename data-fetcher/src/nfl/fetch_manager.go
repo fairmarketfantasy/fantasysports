@@ -33,6 +33,7 @@ func (mgr *FetchManager) Daily() error {
   //lib.PrintPtrs(games)
 
 // Set the fetcher to the correct dates / seasons, etc
+
   mgr.refreshFetcher(games)
 
   // Grab the latest standings for this season
@@ -69,7 +70,7 @@ func (mgr *FetchManager) createMarkets(games []*models.Game) {
       market := models.Market{}
       market.ShadowBets = 1000
       market.ShadowBetRate = 0.75
-      market.ExposedAt = daysGames[0].GameDay.Add(-6 * 24 * time.Hour)
+      market.PublishedAt = daysGames[0].GameDay.Add(-6 * 24 * time.Hour)
       market.OpenedAt = daysGames[0].GameDay.Add(-6 * 24 * time.Hour)
       market.ClosedAt = daysGames[0].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
       log.Printf("Creating a market closing on %s with %d games", market.ClosedAt, len(daysGames))
