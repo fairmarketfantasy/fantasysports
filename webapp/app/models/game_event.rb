@@ -5,4 +5,6 @@ class GameEvent < ActiveRecord::Base
   self.inheritance_column = :_type_disabled
 
   validates :sequence_number, :type, :summary, :clock, :game_stats_id, presence: true
+
+  scope :after_seq_number, ->(sq){ where("sequence_number > #{sq}") }
 end
