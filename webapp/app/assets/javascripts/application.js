@@ -10,9 +10,13 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+
+// Angular libraries and dependencies
+
 //= require jquery-2.0.3.min.js
-//= require angular-1.0.7.min.js
 //= require jsonh
+//= require angular-1.0.7.min.js
+//= require angular-flash.min.js
 
 // Our angular app
 //= require angular_deps.js
