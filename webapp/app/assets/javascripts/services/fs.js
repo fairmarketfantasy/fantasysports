@@ -1,7 +1,7 @@
 angular.module('app.services')
   .factory('fsAPIInterceptor', ['models', 'flash', '$injector', function(models, flash, $injector) {
 // TODO: this is where jsonH stuff will go
-/*    var $dialog;
+    var $dialog;
     return function(promise) {
       var success = function(resp) {
         if (resp.headers()['content-type']  === "application/json; charset=utf-8") {
@@ -9,6 +9,7 @@ angular.module('app.services')
         }
         return resp;
       }, failure = function(resp) {
+        // TODO: we'll need to impement this again
         if(resp.status == 403) {
           var dialogOpts = {
             backdrop: true,
@@ -34,15 +35,15 @@ angular.module('app.services')
         return null;
       }
       return promise.then(success, failure);
-    };*/
+    };
   }])
  .factory('fs', ['$http', function($http) {
     return {
-   /*   rules: {
-        create: function(rule) {
-          return $http({method: 'POST', url: '/rules', data: rule });
+      markets: {
+        list: function() {
+          return $http({method: 'GET', url: '/markets'});
         }
-      }*/
+      }
     }
   }])
 
