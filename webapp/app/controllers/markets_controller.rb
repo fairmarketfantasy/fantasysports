@@ -3,6 +3,10 @@ class MarketsController < ApplicationController
   def index
     page = params[:page] || 1
     @markets = Market.page(page)
+    #build this JSON somehwere else...
+    render json: {data: JSONH.pack(@markets.map{|m| {id: m.id, name: m.name, shadow_bets: m.shadow_bets,
+                                                    shadow_bet_rate: m.shadow_bet_rate, opened_at: m.opened_at,
+                                                    closed_at: m.closed_at, sport_id: m.sport_id, total_bets: m.total_bets} }) }
   end
 
   def contests

@@ -28,6 +28,7 @@ class ContestTest < ActiveSupport::TestCase
     describe "#invite" do
       it "should send an email to the invitee" do
         assert_difference("ActionMailer::Base.deliveries.size", 1) do
+          c = contests(:one)
           c.invite("yodawg@gmail.com")
         end
       end

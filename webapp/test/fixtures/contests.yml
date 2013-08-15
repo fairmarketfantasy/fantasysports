@@ -1,0 +1,7 @@
+one:
+  id: 1
+  owner: 1
+  type: '194'
+  buy_in: '10'
+  market_id: 1
+  invitation_code: <%= SecureRandom.urlsafe_base64 %>

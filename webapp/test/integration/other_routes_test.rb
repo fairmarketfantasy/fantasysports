@@ -35,4 +35,10 @@ class OtherRoutesTest < ActionDispatch::IntegrationTest
     assert_routing({path: "/games/#{g.stats_id}", method: :get}, {controller: "games", action: "show", id: g.stats_id})
   end
 
+  test "join_contest/" do
+    code = "123"
+    assert_equal join_contest_path(code), "/join_contest/#{code}"
+    assert_routing({path: "/join_contest/#{code}", method: :get}, {controller: "contests", action: "join", invitation_code: code})
+  end
+
 end

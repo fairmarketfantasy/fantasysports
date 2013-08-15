@@ -9,6 +9,8 @@ Fantasysports::Application.routes.draw do
   get '/about' => 'pages#about'
   get '/sign_up' => 'pages#sign_up'
 
+  get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
+
   #for /users/:id
   resources :users, only: [:show]
 
