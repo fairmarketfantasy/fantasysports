@@ -1,4 +1,5 @@
 Fantasysports::Application.configure do
+  SITE = "staging.fanfairfantasy.com"
   SPORTS_DATA_API_KEY = "un32n24mu43xpmk594dzvm2p"
   FACEBOOK_APP_ID = "436114143174192"
   FACEBOOK_APP_SECRET = "0f99d3d28ef7d84d6b55cdb78c238b61"

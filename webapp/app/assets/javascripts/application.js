@@ -13,4 +13,15 @@
 //= require jquery-2.0.3.min.js
 //= require angular-1.0.7.min.js
 //= require jsonh
-//= require_tree .
+
+// Our angular app
+//= require angular_deps.js
+//= require_tree ./controllers
+//= require_tree ./directives
+//= require_tree ./services
+//= require_tree ./filters
+//= require angular_app.js
+
+
+
+
