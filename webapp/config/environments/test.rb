@@ -1,4 +1,5 @@
 Fantasysports::Application.configure do
+  SITE = "localhost:3000"
   SPORTS_DATA_API_KEY = "un32n24mu43xpmk594dzvm2p"
   FACEBOOK_APP_ID = "162183927304348"
   FACEBOOK_APP_SECRET = "657c1163073b2b31ea66e13670473a28"
