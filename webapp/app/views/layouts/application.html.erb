@@ -58,6 +58,9 @@
     <strong class="alert-heading"></strong>
     <span class="alert-message">{{flash.message}}</span>
   </div>
+  <div id="login-buttons" ng-controller="LoginController" ng-hide="currentUser()">
+    <a href="javascript://" class="btn btn-oauth facebook" ng-click="login('facebook')"><span class="icon icon-facebook">Facebook</span></a> 
+  </div>
   <div class="content">
     <div id="content" ng-view>
     </div>
@@ -68,6 +71,9 @@
     site: "<%= SITE %>",
     currentUser: <%= (current_user.to_json.html_safe) || 'null' %>,
     isUserAdmin: <%= current_user && current_user.admin? || false %>,
+  };
+  window.setCurrentUser = function(user) {
+    window.App.currentUser = user;
   };
 </script>
 

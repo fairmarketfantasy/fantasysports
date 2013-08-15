@@ -4,6 +4,6 @@ angular.module("app.controllers")
   $scope.fs = fs;
 
   $scope.currentUser = function(){
-    return PageData.currentUser;
+    return window.App.currentUser;
   };
 }])
