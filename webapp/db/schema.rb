@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130814022648) do
+ActiveRecord::Schema.define(version: 20130815042952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -198,11 +198,11 @@ ActiveRecord::Schema.define(version: 20130814022648) do
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
 
   create_table "users", force: true do |t|
-    t.string   "name",                                null: false
+    t.string   "name",                                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
+    t.string   "email",                  default: "",    null: false
+    t.string   "encrypted_password",     default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -217,6 +217,7 @@ ActiveRecord::Schema.define(version: 20130814022648) do
     t.datetime "confirmed_at"
     t.string   "unconfirmed_email"
     t.datetime "confirmation_sent_at"
+    t.boolean  "admin",                  default: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
