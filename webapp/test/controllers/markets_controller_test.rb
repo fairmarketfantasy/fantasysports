@@ -16,7 +16,7 @@ class MarketsControllerTest < ActionController::TestCase
   test "post :id/contests unauthenticated" do
     m = markets(:one)
     assert_no_difference("Contest.count", 1) do
-      xhr :post, :contests, {id: m.id, emails: ["yodawg@yo.com", "royale@cheese.com"], type: "194", user_cap: 5}
+      xhr :post, :contests, {id: m.id, emails: ["yodawg@yo.com", "royale@cheese.com"], type: "194"}
     end
     assert_response :unauthorized
   end
@@ -25,7 +25,7 @@ class MarketsControllerTest < ActionController::TestCase
     m = markets(:one)
     sign_in users(:one)
     assert_difference("Contest.count", 1) do
-      xhr :post, :contests, {id: m.id, emails: ["yodawg@yo.com", "royale@cheese.com"], type: "194", user_cap: 5}
+      xhr :post, :contests, {id: m.id, emails: ["yodawg@yo.com"], buy_in: 40, type: "194"}
     end
     assert_response :success
   end
