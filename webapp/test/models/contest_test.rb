@@ -8,8 +8,7 @@ class ContestTest < ActiveSupport::TestCase
     let(:c) { Contest.new(owner:     u,
                           type:      "194",
                           buy_in:    10,
-                          market_id: m.id,
-                          invitees:  ["yodawg@xhibit.com"]) }
+                          market_id: m.id) }
     describe "create" do
       it "should create a contest for the owner" do
         assert_difference("User.find(#{u.id}).contests.count", 1) do
@@ -26,10 +25,10 @@ class ContestTest < ActiveSupport::TestCase
       end
     end
 
-    describe "#invite_emails" do
+    describe "#invite" do
       it "should send an email to the invitee" do
         assert_difference("ActionMailer::Base.deliveries.size", 1) do
-          c.send(:invite_emails)
+          c.invite("yodawg@gmail.com")
         end
       end
     end
