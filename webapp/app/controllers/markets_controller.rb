@@ -16,14 +16,12 @@ class MarketsController < ApplicationController
       user_cap = params[:user_cap]
       type     = params[:type]
       invitees = params[:emails]
+      buy_in   = params[:buy_in]
       market.contests.create!(owner:    current_user,
                               user_cap: user_cap,
-                              buy_in:   10,
-                              type:     type)
-      # Authenticated.  This challenges a specific person to a head to head. 
-      # Takes a list of email addresses, a market, a type (“194” is the only type supported for now) and a max number of users.
-      # Create a new, private contest in the market.  Create a roster for this user and this contest.  Charge them for entry.  
-      # Send their friend(s) an email challenging them to join the league and create their own fantasy sports roster.
+                              buy_in:   buy_in,
+                              type:     type,
+                              invitees: params[:email])
     end
   end
 

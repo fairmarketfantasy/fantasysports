@@ -4,6 +4,8 @@ class Contest < ActiveRecord::Base
   #to not use the type column and instead tell our inheritance column is something that doesn't exist
   self.inheritance_column = :_type_disabled
 
+  attr_accessor :invitees
+
   belongs_to :sport
   belongs_to :market
   has_many :games
@@ -12,7 +14,7 @@ class Contest < ActiveRecord::Base
 
   # TODO: decide how to represent contest type, which could be multiple types. Bitmap? Another relation?
 
-  after_create :create_owners_roster!
+  after_create :create_owners_roster!, :invite_emails
 
   validates :owner, :type, :buy_in, :market_id, presence: true
 
@@ -23,5 +25,11 @@ class Contest < ActiveRecord::Base
                                       contest_id:       id,
                                       buy_in:           buy_in
                                         )
+    end
+
+    def invite_emails
+      invitees && invitees.each do |invitee|
+        ContestMailer.invite(self, invitee).deliver
+      end
     end
 end
