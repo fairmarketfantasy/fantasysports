@@ -1,14 +1,81 @@
 <!DOCTYPE html>
-<html>
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
+<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
+<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
+<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <!--<![endif]-->
 <head>
-  <title>Fantasysports</title>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+  <!-- http://docs.angularjs.org/guide/ie -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-<%= yield %>
+  <!-- CSS DIFF -->
+  <meta name="viewport" content="width=1200">
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+
+  <%
+    title = @page_title || 'Irregardless'
+    description = @page_description || 'Irregardless is a crowd-sourced style guide that aims to help make writing easier.'
+    keywords = @page_keywords || ''                                                                                                                             
+    tagline = "Better than soap to the mouth!"
+  %>  
+  <title><%= title %></title>
+
+  <!-- TODO: Fill in the og goodness -->
+  <!-- og: == 'Open Graph Protocol' - Makes you Facebook "Like" Button & Sharing Friendly -->
+  <meta name="title" content="<%= title %>" property="og:title" />
+  <meta name="og:type" content="<%= @og_type || '' %>" property="og:type" />
+  <meta name="og:url" content="<%= @og_url || '' %>" property="og:url" />
+  <meta name="og:image" content="<%= @og_image || '' %>" property="og:image" />
+  <meta name="og:site_name" content="<%= @og_site || '' %>" property="og:site_name" />
+  <meta name="fb:app_id" content="<%= nil %>" property="fb:app_id" />
+  <meta name="fb:admins" content="" property="fb:admins" />
+  <meta name="description" content="<%= description %>" property="og:description" />
+  <meta name="copyright" content="RedPen Corp" />
+  <meta name="author" content="MustWin, LLC" />
+
+  <!-- SEO -->
+  <meta name="description" content="<%= description %>"/>
+  <meta name="keywords" content="<%= keywords %>"/>
+
+  <%= csrf_meta_tags %>
+  <%= stylesheet_link_tag "eeze", "app", :media => "all" %>
+
+  <!-- TODO: make these icons -->
+  <link rel="shortcut icon" href="<%= asset_path 'irregardless.ico' %>"/>
+  <link rel="apple-touch-icon" href="<%= asset_path 'irregardless-i-128.png' %>"/>
+
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body ng-controller="ApplicationController">
+  <!-- Subscribe to all flash messages. https://github.com/wmluke/angular-flash -->
+  <div flash-alert active-class="in" class="flash alert fade">
+    <strong class="alert-heading"></strong>
+    <span class="alert-message">{{flash.message}}</span>
+  </div>
+  <div class="content">
+    <div id="content" ng-view>
+    </div>
+  </div>
+<!-- Setup some handy globals -->
+<script type="text/javascript">
+  window.App = {
+    site: "<%= SITE %>",
+    currentUser: <%= (current_user.to_json.html_safe) || 'null' %>,
+    isUserAdmin: <%= current_user && current_user.admin? || false %>,
+  };
+</script>
+
+<%= javascript_include_tag "application" %>
+<%= yield :javascript %>
+
+<!-- TODO: Add Google analytics -->
 
 </body>
 </html>
+
