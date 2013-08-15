@@ -1,11 +1,11 @@
 APP_NAME = 'fantasysports'
 BASE_DIR = "/www/#{APP_NAME}/current"
-PID_PATH = "#{BASE_DIR}/pids/puma.pid"
+PID_PATH = "#{BASE_DIR}/webapp/pids/puma.pid"
 God.watch do |w|
   w.name = "puma"
   w.start = "bundle exec puma -t 0:16 -w 2 -e #{ENV["RAILS_ENV"]} -b unix://#{BASE_DIR}/tmp/puma.sock --pidfile #{PID_PATH}"
-  w.dir = BASE_DIR
-  w.log = BASE_DIR + '/log/access.log'
+  w.dir = BASE_DIR + '/webapp'
+  w.log = BASE_DIR + '/webapp/log/access.log'
   w.stop          = "kill -s TERM $(cat #{PID_PATH})"
   w.restart       = "kill -s USR2 $(cat #{PID_PATH})"
   w.pid_file      = PID_PATH
