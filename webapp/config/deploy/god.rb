@@ -4,7 +4,7 @@ PID_PATH = "#{BASE_DIR}/webapp/pids/puma.pid"
 
 God.watch do |w|
   w.name = "puma"
-  w.start = "bundle exec puma -t 0:16 -w 2 -e production -b unix://#{BASE_DIR}/tmp/puma.sock --pidfile #{PID_PATH}"
+  w.start = "bundle exec puma -t 0:16 -w 2 -e production -b unix://#{BASE_DIR}/webapp/tmp/puma.sock --pidfile #{PID_PATH}"
   w.dir = BASE_DIR + '/webapp'
   w.log = BASE_DIR + '/webapp/log/access.log'
   w.stop          = "kill -s TERM $(cat #{PID_PATH})"
