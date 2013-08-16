@@ -10,8 +10,8 @@ angular.module('app.services')
         return resp;
       }, failure = function(resp) {
         // TODO: we'll need to implement this again
-        /*if(resp.status == 403) {
-          var dialogOpts = {
+        if(resp.status == 403) {
+        /*  var dialogOpts = {
             backdrop: true,
             keyboard: true,
             backdropClick: true,
