@@ -1,6 +1,12 @@
 one:
   id: 1
   name: Vincent Vega
-  unconfirmed_email: vincent@pulp.com
+  email: vincent@pulp.com
   encrypted_password: <%= BCrypt::Password.create("12345abcdE") %>
   confirmed_at: <%= DateTime.now %>
+
+two:
+  id: 2
+  name: Tiger Woods
+  email: tiger@woods.com
+  encrypted_password: <%= BCrypt::Password.create("12345abcdE") %>
