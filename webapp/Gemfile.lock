@@ -136,6 +136,8 @@ GEM
     rdoc (3.12.2)
       json (~> 1.4)
     ref (1.0.5)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     sdoc (0.3.20)
       json (>= 1.1.3)
       rdoc (~> 3.10)
@@ -149,6 +151,9 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
+    stripe (1.8.5)
+      multi_json (>= 1.0.4, < 2)
+      rest-client (~> 1.4)
     therubyracer (0.11.4)
       libv8 (~> 3.11.8.12)
       ref
@@ -185,5 +190,6 @@ DEPENDENCIES
   puma
   rails (= 4.0.0)
   sdoc
+  stripe
   therubyracer
   uglifier (>= 1.3.0)
