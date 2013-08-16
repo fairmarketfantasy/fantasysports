@@ -5,6 +5,9 @@ Fantasysports::Application.configure do
   FACEBOOK_APP_SECRET = "b5f7da9efda8f522a5af6d37c9f68454"
   AWS_ACCESS_KEY="AKIAJXV4UPD3IV4JK6DA"
   AWS_SECRET_KEY="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"
+
+  STRIPE_SECRET = "sk_test_yYZU66ChxfF3LhCJvDYQTCNr"
+  STRIPE_KEY = "pk_test_IJGbzv2tpcV1TAAwaEP8MDuJ"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
