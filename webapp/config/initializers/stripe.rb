@@ -1,1 +1,1 @@
-Stripe.api_key = STRIPE_SECRECT
+Stripe.api_key = STRIPE_SECRET
