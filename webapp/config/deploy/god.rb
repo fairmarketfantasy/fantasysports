@@ -1,7 +1,7 @@
 APP_NAME = 'fantasysports'
 BASE_DIR = "/www/#{APP_NAME}/current"
 PID_PATH = "#{BASE_DIR}/webapp/pids/"
-GOD.pid_file_directory = PID_PATH
+God.pid_file_directory = PID_PATH
 God.watch do |w|
   w.name = "puma"
   w.start = "bundle exec puma -t 0:16 -w 2 -e production -b unix://#{BASE_DIR}/webapp/tmp/puma.sock --pidfile #{PID_PATH}/puma.pid"
