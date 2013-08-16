@@ -14,6 +14,12 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:show]
 
+  resources :contests, only: [] do
+    member do
+      post 'join'
+    end
+  end
+
   #for /games/:game_stats_id
   resources :games, only: [:show]
 
