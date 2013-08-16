@@ -41,4 +41,9 @@ class OtherRoutesTest < ActionDispatch::IntegrationTest
     assert_routing({path: "/join_contest/#{code}", method: :get}, {controller: "contests", action: "join", invitation_code: code})
   end
 
+  test "contests/:id/join" do
+    c = contests(:one)
+    assert_routing({path: "/contests/#{c.id}/join", method: :post}, {controller: "contests", action: "join", id: c.id.to_s})
+  end
+
 end
