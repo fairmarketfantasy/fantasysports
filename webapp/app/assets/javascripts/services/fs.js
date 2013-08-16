@@ -9,8 +9,8 @@ angular.module('app.services')
         }
         return resp;
       }, failure = function(resp) {
-        // TODO: we'll need to impement this again
-        if(resp.status == 403) {
+        // TODO: we'll need to implement this again
+        /*if(resp.status == 403) {
           var dialogOpts = {
             backdrop: true,
             keyboard: true,
@@ -24,7 +24,7 @@ angular.module('app.services')
             var d = $dialog.dialog(dialogOpts);
             d.open();
           };
-          openLoginModal();
+          openLoginModal();*/
         } else if (resp.data.error) {
           flash.error = resp.data.error;
         } else {
