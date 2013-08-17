@@ -49,6 +49,11 @@ angular.module('app.services')
         list: function() {
           return $http({method: 'GET', url: '/markets'});
         }
+      },
+      games: {
+        list: function(market_id) {
+          return $http({method: 'GET', url: '/games/for_market/' + market_id});
+        }
       }
     }
   }])

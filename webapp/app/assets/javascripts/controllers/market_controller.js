@@ -2,6 +2,10 @@ angular.module("app.controllers")
 .controller('MarketController', ['$scope', '$routeParams', function($scope, $routeParams) {
   $scope.fs.markets.show($routeParams.id).then(function(market) {
     $scope.market = market;
+  });
+
+  $scope.fs.games.list($routeParams.id).then(function(games) {
+    $scope.games = games;
   })
 
   $scope.contests = [

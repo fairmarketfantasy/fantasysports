@@ -21,7 +21,11 @@ Fantasysports::Application.routes.draw do
   end
 
   #for /games/:game_stats_id
-  resources :games, only: [:show]
+  resources :games, only: [:show] do
+    collection do
+      get 'for_market/:id', :action => 'for_market'
+    end
+  end
 
   resources :players, only: [:index]
 
