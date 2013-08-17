@@ -4,7 +4,7 @@ PID_PATH = "#{BASE_DIR}/shared/pids"
 God.pid_file_directory = PID_PATH
 God.watch do |w|
   w.name = "puma"
-  w.start = "bundle exec puma -t 0:16 -w 2 -e production -b unix://#{BASE_DIR}/shared/tmp/puma.sock --pidfile #{PID_PATH}/puma.pid"
+  w.start = "bundle exec puma -t 0:16 -w 2 -e #{ENV['RAILS_ENV']} -b unix://#{BASE_DIR}/shared/tmp/puma.sock --pidfile #{PID_PATH}/puma.pid"
   w.dir = BASE_DIR + '/current/webapp'
   w.log = BASE_DIR + '/shared/log/puma.log'
   w.env = {"RAILS_ENV" => "production"}
