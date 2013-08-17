@@ -5,7 +5,7 @@ angular.module('app.services')
     return function(promise) {
       var success = function(resp) {
         if (resp.headers()['content-type']  === "application/json; charset=utf-8") {
-          return models.handleAPIResp(resp.data);
+          return JSONH.unpack(resp.data.data)
         }
         return resp;
       }, failure = function(resp) {
@@ -45,5 +45,8 @@ angular.module('app.services')
         }
       }
     }
+  }])
+  .config(['$httpProvider', function($httpProvider) {
+    $httpProvider.responseInterceptors.push('fsAPIInterceptor');
   }])
 
