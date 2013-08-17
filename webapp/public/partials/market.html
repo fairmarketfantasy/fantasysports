@@ -1,0 +1,17 @@
+<div ng-controller="MarketController">
+  <h2>Contests on {{day(market.closed_at)}}</h2>
+
+  <h3>Games</h3>
+  <ul>
+    <li ng-repeat="game in games">
+      {{game.away_team}} @ {{game.home_team}}
+    </li>
+  </ul>
+
+  <h3>Contests</h3>
+  <ul>
+    <li ng-repeat="contest in contests">
+      {{contests[$index]}}
+    </li>
+  </ul>
+</div>

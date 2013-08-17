@@ -19,6 +19,8 @@ query = Chef::Search::Query.new
 task :production do 
   query_string = "recipes:#{application} AND chef_environment:production"
   nodes = query.search('node', query_string).first rescue []
+  pp nodes
+  exit
   role :app, *nodes.map{|n| n.ec2.public_hostname }
 end
 task :staging do 

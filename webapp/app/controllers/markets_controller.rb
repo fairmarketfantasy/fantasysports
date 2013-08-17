@@ -10,6 +10,11 @@ class MarketsController < ApplicationController
                                                     closed_at: m.closed_at, sport_id: m.sport_id, total_bets: m.total_bets} }) }
   end
 
+  def show
+    @market = Market.find(params[:id])
+    render json: @market.to_json
+  end
+
   def contests
     if request.get?
       # Optionally Authenticated. Takes options in this format: {day: ‘2013-07-23’, after: ‘2013-07-22’, page: 1}. 

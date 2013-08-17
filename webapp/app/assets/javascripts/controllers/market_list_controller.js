@@ -6,12 +6,8 @@ angular.module("app.controllers")
 
   $scope.day = function(timeStr) {
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    var then = Date.parse(timeStr)
-      , now = (new Date()).setHours(0,0,0,0);
-    if (then - now < 24 * 60 * 60 * 1000 ) {
-      return "Today"
-    }
-    return "on " + days[(new Date(then)).getDay()];
+    var day = moment(timeStr)
+    return 'on ' + day.format("dddd, MMMM Do YYYY, h:mm:ss a");
   }
 }])
 
