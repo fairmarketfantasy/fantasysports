@@ -36,7 +36,7 @@ class CustomerObject < ActiveRecord::Base
         currency: "usd",
         customer: stripe_id,
       })
-      increase_balance(amount)
+      increase_balance(resp.amount)
       resp
     rescue Stripe::CardError => e
       #card has been declined, handle this exception and log it somewhere
