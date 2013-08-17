@@ -30,7 +30,7 @@ angular.module('app.services')
         } else {
           flash.error = "Oops, something went wrong, try again later";
         }
-        console && console.log('RedPen API Error: ');
+        console && console.log('API Error: ');
         console.log(resp);
         return null;
       }

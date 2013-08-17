@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130816134233) do
+ActiveRecord::Schema.define(version: 20130817031710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,6 +78,8 @@ ActiveRecord::Schema.define(version: 20130816134233) do
     t.string  "game_stats_id", null: false
     t.integer "market_id"
   end
+
+  add_index "games_markets", ["market_id", "game_stats_id"], name: "index_games_markets_on_market_id_and_game_stats_id", unique: true, using: :btree
 
   create_table "market_orders", force: true do |t|
     t.integer  "market_id",       null: false

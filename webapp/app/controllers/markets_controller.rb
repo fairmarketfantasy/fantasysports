@@ -2,7 +2,8 @@ class MarketsController < ApplicationController
 
   def index
     page = params[:page] || 1
-    @markets = Market.page(page)
+    @markets = Market.where(['opened_at > ? AND closed_at > ?', Time.now, Time.now]).order('closed_at asc').page(page)
+    Rails.logger.debug(@markets.all.to_a)
     #build this JSON somehwere else...
     render json: {data: JSONH.pack(@markets.map{|m| {id: m.id, name: m.name, shadow_bets: m.shadow_bets,
                                                     shadow_bet_rate: m.shadow_bet_rate, opened_at: m.opened_at,
