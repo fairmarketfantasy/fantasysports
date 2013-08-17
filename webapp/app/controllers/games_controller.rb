@@ -8,4 +8,8 @@ class GamesController < ApplicationController
     @game_events.after_seq_number(seq_num) if params[:sequence_number]
   end
 
+  def for_market
+    @market = Market.find(params[:id])
+    render_api_response @market.games.order('game_time asc')
+  end
 end
