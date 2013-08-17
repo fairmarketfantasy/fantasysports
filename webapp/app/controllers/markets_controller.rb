@@ -2,7 +2,7 @@ class MarketsController < ApplicationController
 
   def index
     page = params[:page] || 1
-    @markets = Market.opened_after(Time.now).closed_after(Time.now).order_closed_asc.page(page)
+    @markets = Market.opened_after(Time.now).closed_after(Time.now).page(page).order('closed_at asc')
     Rails.logger.debug(@markets.to_a)
     #build this JSON somehwere else...
     if @markets.any?
