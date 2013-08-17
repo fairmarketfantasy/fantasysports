@@ -36,6 +36,7 @@ namespace :deploy do
  task :update_code do 
     run "sudo chef-client"
  end #override this task to prevent capistrano to upload on servers
+ task :create_symlink do ; end #don't create the current symlink to the last release
  task :symlink do ; end #don't create the current symlink to the last release
  namespace :assets do
    task :precompile do ; end
