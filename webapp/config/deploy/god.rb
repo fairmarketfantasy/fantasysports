@@ -7,7 +7,7 @@ God.watch do |w|
   w.start = "bundle exec puma -t 0:16 -w 2 -e #{ENV['RAILS_ENV']} -b unix://#{BASE_DIR}/shared/tmp/puma.sock --pidfile #{PID_PATH}/puma.pid"
   w.dir = BASE_DIR + '/current/webapp'
   w.log = BASE_DIR + '/shared/log/puma.log'
-  w.env = {"RAILS_ENV" => "production"}
+  w.env = {"RAILS_ENV" => ENV['RAILS_ENV']}
   w.stop          = "kill -s TERM $(cat #{PID_PATH}/puma.pid)"
   w.restart       = "kill -s USR2 $(cat #{PID_PATH}/puma.pid)"
   w.pid_file      = PID_PATH + "/puma.pid"
