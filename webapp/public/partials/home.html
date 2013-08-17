@@ -1,1 +1,6 @@
-Made it to HOME
+<h3>Upcoming contests</h3>
+<ul ng-controller="MarketListController">
+  <li ng-repeat="market in markets">
+  Games {{day(market.closed_at)}}
+  </li>
+</ul>
