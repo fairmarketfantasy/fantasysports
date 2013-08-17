@@ -5,7 +5,10 @@ angular.module('app.services')
     return function(promise) {
       var success = function(resp) {
         if (resp.headers()['content-type']  === "application/json; charset=utf-8") {
-          return JSONH.unpack(resp.data.data)
+          if (resp.data.data) {
+            return JSONH.unpack(resp.data.data);
+          }
+          return resp.data;
         }
         return resp;
       }, failure = function(resp) {
@@ -40,6 +43,9 @@ angular.module('app.services')
  .factory('fs', ['$http', function($http) {
     return {
       markets: {
+        show: function(id) {
+          return $http({method: 'GET', url: '/markets/' + id});
+        },
         list: function() {
           return $http({method: 'GET', url: '/markets'});
         }

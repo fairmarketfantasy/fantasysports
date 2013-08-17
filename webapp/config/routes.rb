@@ -25,7 +25,7 @@ Fantasysports::Application.routes.draw do
 
   resources :players, only: [:index]
 
-  resources :markets, only: [:index] do
+  resources :markets, only: [:index, :show] do
     member do
       get 'contests'
       post 'contests'
