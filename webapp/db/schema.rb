@@ -32,10 +32,11 @@ ActiveRecord::Schema.define(version: 20130817031710) do
   add_index "contests", ["market_id"], name: "index_contests_on_market_id", using: :btree
 
   create_table "customer_objects", force: true do |t|
-    t.string   "stripe_id",  null: false
-    t.integer  "user_id",    null: false
+    t.string   "stripe_id",              null: false
+    t.integer  "user_id",                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "balance",    default: 0
   end
 
   create_table "game_events", force: true do |t|

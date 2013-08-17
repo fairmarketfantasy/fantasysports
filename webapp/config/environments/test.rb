@@ -3,8 +3,8 @@ Fantasysports::Application.configure do
   SPORTS_DATA_API_KEY = "un32n24mu43xpmk594dzvm2p"
   FACEBOOK_APP_ID = "162183927304348"
   FACEBOOK_APP_SECRET = "657c1163073b2b31ea66e13670473a28"
-  STRIPE_PUBLISHABLE  = "pk_a3gdaHTfXJ2KTlM4GhBGwK8HmWQvB"
-  STRIPE_SECRECT      = "5B95wcyZt8TpaQqUmBNqeObQQMa7oweD"
+  STRIPE_SECRET = "sk_test_yYZU66ChxfF3LhCJvDYQTCNr"
+  STRIPE_KEY = "pk_test_IJGbzv2tpcV1TAAwaEP8MDuJ"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # The test environment is used exclusively to run your application's

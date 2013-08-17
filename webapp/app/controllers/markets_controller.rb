@@ -2,12 +2,17 @@ class MarketsController < ApplicationController
 
   def index
     page = params[:page] || 1
-    @markets = Market.where(['opened_at > ? AND closed_at > ?', Time.now, Time.now]).order('closed_at asc').page(page)
-    Rails.logger.debug(@markets.all.to_a)
+    @markets = Market.opened_after(Time.now).closed_after(Time.now).order_closed_asc.page(page)
+    Rails.logger.debug(@markets.to_a)
     #build this JSON somehwere else...
-    render json: {data: JSONH.pack(@markets.map{|m| {id: m.id, name: m.name, shadow_bets: m.shadow_bets,
+    if @markets.any?
+      render json: {data: JSONH.pack(@markets.map{|m| {id: m.id, name: m.name, shadow_bets: m.shadow_bets,
                                                     shadow_bet_rate: m.shadow_bet_rate, opened_at: m.opened_at,
                                                     closed_at: m.closed_at, sport_id: m.sport_id, total_bets: m.total_bets} }) }
+    else
+      #JSONH shits itself if @markets is empty
+      render json: {data: []}
+    end
   end
 
   def show

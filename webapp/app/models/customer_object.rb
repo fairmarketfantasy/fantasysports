@@ -31,14 +31,23 @@ class CustomerObject < ActiveRecord::Base
     #strip api require charging at least 50 cents
     amount = amount_in_cents.to_i
     begin
-      Stripe::Charge.create({
+      resp = Stripe::Charge.create({
         amount:   amount,
         currency: "usd",
         customer: stripe_id,
       })
+      increase_balance(amount)
+      resp
     rescue Stripe::CardError => e
       #card has been declined, handle this exception and log it somewhere
       raise e
+    end
+  end
+
+  def increase_balance(amount)
+    ActiveRecord::Base.transaction do
+      self.balance += amount
+      self.save
     end
   end
 
