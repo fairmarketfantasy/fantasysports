@@ -1,5 +1,9 @@
 class ContestsController < ApplicationController
 
+  def for_market
+
+  end
+
   def join
     if request.get?
       #this is the inbound link from the invite code
