@@ -1,11 +1,12 @@
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-  protect_from_forgery with: :exception
+  protect_from_forgery
 
-
+  rescue_from 'HttpException', :with => :http_exception_handler
 
   before_filter :configure_permitted_parameters, if: :devise_controller?
+  before_filter :authenticate_user!
 
   protected
 
@@ -20,5 +21,19 @@ class ApplicationController < ActionController::Base
       opts[:serializer] = ApiArraySerializer
     end
     render opts
+  end
+
+  def http_exception_handler(e)
+    render :status => e.code, :json => {error: e.message}
+  end
+
+  after_filter  :set_csrf_cookie_for_ng
+
+  def set_csrf_cookie_for_ng
+      cookies['XSRF-TOKEN'] = form_authenticity_token if protect_against_forgery?
+  end
+
+  def verified_request?
+    form_authenticity_token == request.headers['HTTP_X_XSRF_TOKEN'] || super
   end
 end

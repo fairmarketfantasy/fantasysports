@@ -1,5 +1,6 @@
 class Team < ActiveRecord::Base
-  has_many :players
+  self.primary_key = "abbrev"
+  has_many :players, :foreign_key => 'team'
   belongs_to :sport
 
   validates :sport_id, :abbrev, :name, :conference, :division, presence: true

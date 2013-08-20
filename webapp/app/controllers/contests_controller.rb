@@ -10,7 +10,12 @@ class ContestsController < ApplicationController
       # params[:invitation_code]
       render json: {success: "success"}
     elsif request.post?
-      #this actually joins them into the contest
+      # Submit your roster to the contest
+      roster = Roster.find(params[:roster_id])
+      # TODO: validate roster
+      Contest.submit_roster(roster)
+      render json: roster
     end
   end
+
 end

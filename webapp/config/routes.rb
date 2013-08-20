@@ -14,6 +14,9 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:show]
 
+  resources :rosters, only: [:create] do
+  end
+
   resources :contests, only: [] do
     collection do
       get 'for_market/:id', :action => 'for_market'

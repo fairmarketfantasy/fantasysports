@@ -70,7 +70,7 @@
 <script type="text/javascript">
   window.App = {
     site: "<%= SITE %>",
-    currentUser: <%= (current_user.to_json.html_safe) || 'null' %>,
+    currentUser: <%= (UserSerializer.new(current_user, scope: current_user).to_json.html_safe) || 'null' %>,
     isUserAdmin: <%= current_user && current_user.admin? || false %>,
   };
   window.setCurrentUser = function(user) {

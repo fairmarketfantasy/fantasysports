@@ -12,6 +12,9 @@ angular.module('app.services')
         }
         return resp;
       }, failure = function(resp) {
+        if(resp.status == 402) {
+          // TODO: implement payment modal
+        }
         // TODO: we'll need to implement this again
         if(resp.status == 403) {
         /*  var dialogOpts = {
@@ -50,9 +53,20 @@ angular.module('app.services')
           return $http({method: 'GET', url: '/markets'});
         }
       },
+      contests: {
+        join: function(market_id, type, buy_in) {
+          return $http({method: 'POST', url: '/rosters', data: {market_id: market_id, contest_type: type, buy_in: buy_in}})
+        }
+      },
       games: {
         list: function(market_id) {
           return $http({method: 'GET', url: '/games/for_market/' + market_id});
+        }
+      },
+      players: {
+        list: function(market_id, opts) {
+          opts = opts || {}
+          return $http({method: 'GET', url: '/players/', params: angular.extend(opts, {market_id: market_id})});
         }
       }
     }
