@@ -164,7 +164,7 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
     // Technically, this is a little janky. We should set these after successful save, maybe do this loop again?
     // Set fields that were set on the existing object but not the one passed in. This returns "id" and other things.
     if valueToString(newFieldVal) == valueToString(reflect.Zero(field.Type)) && valueToString(existingVal.FieldByName(field.Name)) != valueToString(reflect.Zero(field.Type)) {
-      log.Printf("Setting val %s to %s\n", field.Name, existingVal.FieldByName(field.Name).Interface())
+      //log.Printf("Setting val %s to %s\n", field.Name, existingVal.FieldByName(field.Name).Interface())
       val.FieldByName(field.Name).Set(existingVal.FieldByName(field.Name))
     }
 
@@ -267,6 +267,17 @@ type Player struct {
   TotalPoints int
   CreatedAt time.Time
   UpdatedAt time.Time
+}
+
+func (p *Player) BeforeSave(db model.Orm, m model.Model) (error, bool) {
+  var team = Team{}
+  err := db.GetDb().Where("abbrev = $1", p.Team.Abbrev).Find(&team)
+  if err != nil {
+    log.Println("Team not found, player not associated")
+  }
+  log.Printf("SETTING TEAM TO %d", team.Id)
+  p.TeamId = team.Id
+  return p.NflModel.BeforeSave(db, m)
 }
 
 type StatEvent struct {
