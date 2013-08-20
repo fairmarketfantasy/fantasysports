@@ -10,10 +10,11 @@ class Roster < ActiveRecord::Base
 #state: "in_progress", "cancelled", "submitted"
 
   def self.new_contest_roster(user, contest)
-    Roster.create(
+    Roster.create!(
       :owner => user,
       :market_id => contest.market_id,
       :contest_id => contest.id,
+      :contest_type => contest.type,
       :buy_in => contest.buy_in,
       :remaining_salary => 100000,
       :state => 'in_progress',
