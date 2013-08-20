@@ -1,18 +1,19 @@
 class WebhooksController < ApplicationController
 
   def new
-    event_json = JSON.parse(request.body.read)
-    case event_json.class
+    event_json = JSON.parse(request.body.read).with_indifferent_access
+    case event_json[:type]
     #freeze customer object when a dispute is created
-    when Stripe::Dispute
+    when "charge.dispute.created"
       dispute         = event_json
-      charge_id       = dispute.charge
-      charge          = Stripe::Charge.retrieve(id)
-      customer        = charge.card.customer
-      customer_object = Customer.find_by(stripe_id: customer)
-      customer_object.update_attributes(locked: true, locked_reason: dispute.reason)
+      charge_id       = dispute[:charge]
+      customer_object = CustomerObject.find_by_charge_id(charge_id)
+      customer_object.update_attributes(locked: true, locked_reason: dispute[:reason])
+      render json: {message: "got the webhook"}, status: :ok
     end
   end
+
+  private
 
 
 end

@@ -4,8 +4,10 @@ require 'rails/test_help'
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'mocha/setup'
 
 class ActiveSupport::TestCase
+
   ActiveRecord::Migration.check_pending!
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
