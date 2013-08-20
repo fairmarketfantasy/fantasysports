@@ -19,7 +19,7 @@ class ContestTest < ActiveSupport::TestCase
 
     describe "#create_owners_roster!" do
       it "should create a roster for the owner" do
-        assert_difference("User.find(#{u.id}).contest_rosters.count", 1) do
+        assert_difference("User.find(#{u.id}).rosters.count", 1) do
           c.save!
         end
       end

@@ -6,6 +6,8 @@ class Contest < ActiveRecord::Base
   has_many :transaction_records
   belongs_to :owner, class_name: "User", foreign_key: :owner
 
+  self.inheritance_column = :_type_disabled
+
   # TODO: decide how to represent contest type, which could be multiple types. Bitmap? Another relation?
 
   after_create :create_owners_roster!
@@ -20,12 +22,7 @@ class Contest < ActiveRecord::Base
   private
 
     def create_owners_roster!
-      owner.contest_rosters.create!(  market_id:        market_id,
-                                      contest_id:       id,
-                                      buy_in:           buy_in,
-                                      contest_type:     type,
-                                      state:            "in_progress"
-                                        )
+      Roster.new_contest_roster(owner, self)
     end
 
     def set_invitation_code
