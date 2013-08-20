@@ -3,17 +3,21 @@ class Roster < ActiveRecord::Base
   belongs_to :contest
   belongs_to :owner, class_name: "User", foreign_key: :owner_id
 
-  before_validation :set_remaining_salary
+  validates :state, :inclusion => {in: %w( in_progress cancelled submitted ) }
 
   validates :owner_id, :market_id, :contest_id, :buy_in, :remaining_salary, :contest_type, :state, presence: true
 
 #state: "in_progress", "cancelled", "submitted"
 
-  private
-
-    def set_remaining_salary
-      self.remaining_salary = 100
-    end
-
+  def self.new_contest_roster(user, contest)
+    Roster.create(
+      :owner => user,
+      :market_id => contest.market_id,
+      :contest_id => contest.id,
+      :buy_in => contest.buy_in,
+      :remaining_salary => 100000,
+      :state => 'in_progress',
+    )
+  end
 
 end
