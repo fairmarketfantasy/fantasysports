@@ -1,27 +1,32 @@
 angular.module("app.controllers")
-.controller('MarketController', ['$scope', '$routeParams', function($scope, $routeParams) {
+.controller('MarketController', ['$scope', '$routeParams', '$location', function($scope, $routeParams, $location) {
   $scope.fs.markets.show($routeParams.id).then(function(market) {
     $scope.market = market;
   });
 
+  var teamsToGames = {};
   $scope.fs.games.list($routeParams.id).then(function(games) {
     $scope.games = games;
-  })
-
-  $scope.contests = [
-    "100k",
-    "194s $1",
-    "194s $10",
-    "194s $50",
-    "970s $1",
-    "970s $10",
-    "970s $50",
-    "h2h"
-  ];
+    _.each(games, function(game) {
+      teamsToGames[game.home_team] = game;
+      teamsToGames[game.away_team] = game;
+    });
+  });
 
   $scope.day = function(timeStr) {
     var day = moment(timeStr)
-    return 'on ' + day.format("dddd, MMMM Do YYYY, h:mm:ss a");
+    return day.format("dddd, MMMM Do YYYY, h:mm:ss a");
+  }
+
+  $scope.gameFromTeam = function(team) {
+    var game = teamsToGames[team.abbrev];
+    return game.away_team + ' @ ' + game.home_team
+  };
+
+  $scope.joinContest = function(type, buy_in) {
+    $scope.fs.contests.join($scope.market.id, type, buy_in).then(function(data){
+      $scope.roster = data;
+    })
   }
 }])
 

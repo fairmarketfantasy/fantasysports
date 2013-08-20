@@ -3,8 +3,6 @@ angular.module('app', ['app.services', 'app.directives', 'app.filters', 'app.con
     $routeProvider.
       when('/', {templateUrl: '/partials/home.html', controller: 'HomeController'}).
       when('/market/:id', {templateUrl: '/partials/market.html', controller: 'MarketController'}).
-      /*when('/upload', {templateUrl: '/partials/upload_document.html', controller: 'DocumentEditorController'})
-      when('/style_guides/:id', {templateUrl: '/partials/style_guide.html', controller: 'StyleGuideController'}).*/
     //...
       otherwise({redirectTo: '/'});
   }]).

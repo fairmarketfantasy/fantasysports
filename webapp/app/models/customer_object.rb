@@ -43,7 +43,7 @@ class CustomerObject < ActiveRecord::Base
         currency: "usd",
         customer: stripe_id,
       })
-      increase_balance(resp.amount)
+      increase_balance(resp.amount, 'deposit')
       resp
     rescue Stripe::CardError => e
       #card has been declined, handle this exception and log it somewhere
@@ -51,13 +51,23 @@ class CustomerObject < ActiveRecord::Base
     end
   end
 
-  def increase_balance(amount)
+  def increase_balance(amount, event)
     ActiveRecord::Base.transaction do
       self.balance += amount
+      TransactionRecord.create!(:user => self.user, :event => event, :amount => amount)
       self.save
     end
   end
 
+  def decrease_balance(amount, event)
+    ActiveRecord::Base.transaction do
+      self.reload
+      raise HttpException.new(402, "Insufficient funds") if self.balance - amount < 0
+      self.balance -= amount
+      TransactionRecord.create!(:user => self.user, :event => event, :amount => -amount)
+      self.save
+    end
+  end
 
   private
 
