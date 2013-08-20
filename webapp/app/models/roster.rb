@@ -5,8 +5,9 @@ class Roster < ActiveRecord::Base
 
   before_validation :set_remaining_salary
 
-  validates :owner_id, :market_id, :contest_id, :buy_in, :remaining_salary, presence: true
+  validates :owner_id, :market_id, :contest_id, :buy_in, :remaining_salary, :contest_type, :state, presence: true
 
+#state: "in_progress", "cancelled", "submitted"
 
   private
 
