@@ -251,8 +251,7 @@ type Player struct {
   Id int
   StatsId string `model:"key"`
   SportId int
-  TeamId int
-  Team Team
+  Team string
   Name string
   NameAbbr string
   Birthdate string
@@ -267,17 +266,6 @@ type Player struct {
   TotalPoints int
   CreatedAt time.Time
   UpdatedAt time.Time
-}
-
-func (p *Player) BeforeSave(db model.Orm, m model.Model) (error, bool) {
-  var team = Team{}
-  err := db.GetDb().Where("abbrev = $1", p.Team.Abbrev).Find(&team)
-  if err != nil {
-    log.Println("Team not found, player not associated")
-  }
-  log.Printf("SETTING TEAM TO %d", team.Id)
-  p.TeamId = team.Id
-  return p.NflModel.BeforeSave(db, m)
 }
 
 type StatEvent struct {

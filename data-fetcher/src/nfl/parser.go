@@ -247,7 +247,7 @@ func ParseRoster(state *ParseState) *models.Player {
       state.CurrentTeam = buildTeam(state.CurrentElement())
     case "player":
       player := buildPlayer(state.CurrentElement())
-      player.Team = *state.CurrentTeam
+      player.Team = state.CurrentTeam.Abbrev
       state.CurrentPlayer = player
       return player
     case "injury":

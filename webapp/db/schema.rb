@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130819230410) do
+ActiveRecord::Schema.define(version: 20130820233659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -123,7 +123,6 @@ ActiveRecord::Schema.define(version: 20130819230410) do
   create_table "players", force: true do |t|
     t.string   "stats_id"
     t.integer  "sport_id"
-    t.integer  "team_id"
     t.string   "name"
     t.string   "name_abbr"
     t.string   "birthdate"
@@ -137,10 +136,11 @@ ActiveRecord::Schema.define(version: 20130819230410) do
     t.integer  "total_points",  default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "team"
   end
 
   add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
-  add_index "players", ["team_id"], name: "index_players_on_team_id", using: :btree
+  add_index "players", ["team"], name: "index_players_on_team", using: :btree
 
   create_table "rosters", force: true do |t|
     t.integer  "owner_id",         null: false
