@@ -36,6 +36,10 @@ Fantasysports::Application.routes.draw do
     end
   end
 
+  #Stripe webhooks
+  post '/webhooks', to: "webhooks#new"
+
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
