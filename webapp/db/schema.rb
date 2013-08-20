@@ -143,24 +143,23 @@ ActiveRecord::Schema.define(version: 20130819200144) do
   add_index "players", ["team_id"], name: "index_players_on_team_id", using: :btree
 
   create_table "rosters", force: true do |t|
-    t.integer  "owner_id",                         null: false
+    t.integer  "owner_id",         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "market_id",                        null: false
-    t.integer  "contest_id",                       null: false
-    t.integer  "buy_in",                           null: false
-    t.decimal  "remaining_salary",                 null: false
-    t.boolean  "is_valid",         default: false, null: false
+    t.integer  "market_id",        null: false
+    t.integer  "contest_id"
+    t.integer  "buy_in",           null: false
+    t.decimal  "remaining_salary", null: false
     t.integer  "final_points"
     t.integer  "finish_place"
     t.decimal  "amount_paid"
     t.datetime "paid_at"
-    t.boolean  "cancelled",        default: false, null: false
     t.string   "cancelled_cause"
     t.datetime "cancelled_at"
+    t.string   "contest_type",     null: false
+    t.string   "state",            null: false
   end
 
-  add_index "rosters", ["cancelled"], name: "index_rosters_on_cancelled", using: :btree
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
   add_index "rosters", ["market_id"], name: "index_rosters_on_market_id", using: :btree
 
