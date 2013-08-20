@@ -26,7 +26,9 @@ class Contest < ActiveRecord::Base
     def create_owners_roster!
       owner.contest_rosters.create!(  market_id:        market_id,
                                       contest_id:       id,
-                                      buy_in:           buy_in
+                                      buy_in:           buy_in,
+                                      contest_type:     type,
+                                      state:            "in_progress"
                                         )
     end
 
