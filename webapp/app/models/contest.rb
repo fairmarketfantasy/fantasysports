@@ -1,13 +1,9 @@
 class Contest < ActiveRecord::Base
-  #because we have a column named "type" ActiveRecord gets all cute and tries to think
-  #we are doing Single Table Inheritace, however we are not so lets just tell Active Record
-  #to not use the type column and instead tell our inheritance column is something that doesn't exist
-  self.inheritance_column = :_type_disabled
-
   belongs_to :sport
   belongs_to :market
   has_many :games
   has_many :rosters
+  has_many :transaction_records
   belongs_to :owner, class_name: "User", foreign_key: :owner
 
   # TODO: decide how to represent contest type, which could be multiple types. Bitmap? Another relation?

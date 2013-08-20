@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   devise :omniauthable, :omniauth_providers => [:facebook]
 
-  has_many :contest_rosters, class_name: "Roster", foreign_key: :owner_id
+  has_many :rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner
   has_one  :customer_object
 
@@ -29,5 +29,9 @@ class User < ActiveRecord::Base
 
   def email
     self[:email].blank? ? self.unconfirmed_email : self[:email]
+  end
+
+  def in_progress_roster
+    rosters.where(:state => 'in_progress').first
   end
 end
