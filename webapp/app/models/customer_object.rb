@@ -27,6 +27,13 @@ class CustomerObject < ActiveRecord::Base
     super({stripe_id: resp.id, user_id: user.id})
   end
 
+  ##Talk to Stripe API
+  def self.find_by_charge_id(id)
+    charge          = Stripe::Charge.retrieve(id)
+    customer        = charge.card.customer
+    self.find_by(stripe_id: customer)
+  end
+
   def charge(amount_in_cents)
     #strip api require charging at least 50 cents
     amount = amount_in_cents.to_i
