@@ -15,6 +15,10 @@ Fantasysports::Application.routes.draw do
   resources :users, only: [:show]
 
   resources :contests, only: [] do
+    collection do
+      get 'for_market/:id', :action => 'for_market'
+    end
+
     member do
       post 'join'
     end
