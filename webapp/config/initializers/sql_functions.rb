@@ -1,9 +1,2 @@
-yaml = Yaml.load_file(File.join(Rails.root, 'config', 'database.yml'))[Rails.env]
-env = {
-  PGHOST: yaml['host'],
-  PGDATABASE: yaml['database'],
-  PGPASSWORD: yaml['password'],
-  PGUSER: yaml['username'],
-}
+MarketOrder.load_sql_functions if Rails.env == 'development'
 
-system(env, "psql < #{File.join(Rails.root, '..', 'market', 'market.sql') } )
