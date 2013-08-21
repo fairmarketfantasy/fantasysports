@@ -1,7 +1,3 @@
- event      | character varying(255) | not null
- user_id    | integer                | 
- contest_id | integer                | 
- amount     | integer                | 
 class TransactionRecordValidator < ActiveModel::Validator
   def validate(record)
     if TransactionRecord::CONTEST_TYPES.include(record.event) && record.contest_id.nil?
