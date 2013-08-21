@@ -14,7 +14,7 @@ class PlayersController < ApplicationController
         @players.public_send(s, val)
       end
     end
-    render_api_response @players
+    render_api_response @players.limit(50)
   end
 
 end
