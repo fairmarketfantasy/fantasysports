@@ -20,15 +20,22 @@ angular.module("app.controllers")
   $scope.addPlayer = function(player) {
     var index = _.findIndex($scope.roster.players, function(p) { return p.position == player.position && !p.id; })
     if (index >= 0) {
-      $scope.roster.players[index] = player;
+      $scope.fs.rosters.add_player($scope.roster.id, player.id).then(function(market_order) {
+        $scope.roster.remaining_salary -= market_order.price;
+        player.purchase_price = market_order.price;
+        $scope.roster.players[index] = player;
+      });
     } else {
       flash.error = "No room for another " + player.position + " in your roster.";
     }
   };
 
   $scope.removePlayer = function(player) {
-    var index = _.findIndex($scope.players, function(p) { return p.id == player.id; })
-    $scope.roster.players[index] = {position: player.position};
+    $scope.fs.rosters.remove_player($scope.roster.id, player.id).then(function(market_order) {
+      $scope.roster.remaining_salary += market_order.price;
+      var index = _.findIndex($scope.players, function(p) { return p.id == player.id; })
+      $scope.roster.players[index] = {position: player.position};
+    });
   };
 
   $scope.notInRoster = function(player) {

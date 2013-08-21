@@ -71,10 +71,10 @@ angular.module('app.services')
       },
       rosters: {
         add_player: function(roster_id, player_id) {
-
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/add_player/' + player_id});
         },
         remove_player: function(roster_id, player_id) {
-
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/remove_player/' + player_id});
         }
       },
     }
