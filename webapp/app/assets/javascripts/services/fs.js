@@ -68,7 +68,15 @@ angular.module('app.services')
           opts = opts || {}
           return $http({method: 'GET', url: '/players/', params: angular.extend(opts, {market_id: market_id})});
         }
-      }
+      },
+      rosters: {
+        add_player: function(roster_id, player_id) {
+
+        },
+        remove_player: function(roster_id, player_id) {
+
+        }
+      },
     }
   }])
   .config(['$httpProvider', function($httpProvider) {

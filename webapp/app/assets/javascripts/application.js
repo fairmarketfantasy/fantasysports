@@ -19,7 +19,6 @@
 //= require angular-1.0.7.min.js
 //= require angular-flash.min.js
 //= require moment.min.js
-//= require buckets-minified.js
 
 // Our angular app
 //= require angular_deps.js

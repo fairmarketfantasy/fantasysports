@@ -7,5 +7,16 @@ class RostersController < ApplicationController
     render_api_response roster
   end
 
+  def add_player
+    roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]).first
+    player = Player.find(params[:player_id])
+    roster.add_player(player)
+  end
+
+  def remove_player
+    roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]).first
+    player = Player.find(params[:player_id])
+    roster.remove_player(player)
+  end
 end
 
