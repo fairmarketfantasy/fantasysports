@@ -59,7 +59,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="player in players">
+        <tr ng-repeat="player in players | filter:notInRoster">
           <td>{{player.status}}</td>
           <td>{{player.name}}</td>
           <td>{{player.position}}</td>
@@ -85,13 +85,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="(position, player) in roster.players">
-          <td>{{position}}</td>
+        <tr ng-repeat="player in roster.players">
+          <td>{{player.position}}</td>
           <td>{{player.name}}</td>
           <td>{{player.game}}</td>
           <td>{{player.ppg}}</td>
           <td>{{player.purchase_price}}</td>
-          <td>{{player.salary - player.purchase_price}}</td>
+          <td>{{player.salary - roster.players[position].purchase_price}}</td>
           <td><a href="javascript://" ng-click="removePlayer(player)">Remove</a></td>
         </tr>
       </tbody>

@@ -23,6 +23,7 @@ class Roster < ActiveRecord::Base
       :buy_in => buy_in,
       :remaining_salary => 100000,
       :state => 'in_progress',
+      :positions => Positions.for_sport_id(market.sport_id),
     )
   end
 

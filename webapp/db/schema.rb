@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130820233659) do
+ActiveRecord::Schema.define(version: 20130821082715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -158,6 +158,7 @@ ActiveRecord::Schema.define(version: 20130820233659) do
     t.datetime "cancelled_at"
     t.string   "contest_type",     null: false
     t.string   "state",            null: false
+    t.string   "positions"
   end
 
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
