@@ -27,4 +27,15 @@ class Roster < ActiveRecord::Base
     )
   end
 
+  def add_player(player)
+      MarketOrder.buy(self, player)
+  end
+
+  def remove_player(player)
+      MarketOrder.sell(self, player)
+  end
+
+  protected
+
+
 end
