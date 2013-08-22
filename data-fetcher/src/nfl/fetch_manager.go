@@ -24,7 +24,7 @@ func (mgr *FetchManager) Startup() error {
 
 func (mgr *FetchManager) Daily() error { 
   // Refresh all games for each season
-  games := make([]*models.Game, 0)
+  /*games := make([]*models.Game, 0)
   for _, seasonType := range(NflSeasons) {
     mgr.Fetcher.NflSeason = seasonType
     games = append(games, mgr.refreshGames()...)
@@ -35,7 +35,7 @@ func (mgr *FetchManager) Daily() error {
 // Set the fetcher to the correct dates / seasons, etc
 
   mgr.refreshFetcher(games)
-
+*/
   // Grab the latest standings for this season
   teams := mgr.refreshStandings()
 
@@ -43,7 +43,7 @@ func (mgr *FetchManager) Daily() error {
   for _, team := range(teams) {
     mgr.refreshTeamRosters(team.Abbrev)
   }
-
+/*
   // Schedule jobs to collect play stats
   for _, game := range(games) {
     mgr.schedulePbpCollection(game)
@@ -51,8 +51,21 @@ func (mgr *FetchManager) Daily() error {
 
   // Create markets for 
   mgr.createMarkets(games)
-
+*/
   return nil
+}
+
+// TODO: Remove this, it will be handled by the publish task
+func (mgr *FetchManager) savePlayersForMarket(market models.Market, teamAbbrev string) {
+  var players []models.Player
+  err := mgr.Orm.GetDb().Where("team = $1", teamAbbrev).FindAll(&players)
+  if err != nil {
+    log.Println(err)
+  }
+  for _, player := range(players) {
+    mktPlayer := models.MarketPlayer{MarketId: market.Id, PlayerId: player.Id, InitialPrice: 1000.0}
+    mgr.Orm.GetDb().Save(&mktPlayer)
+  }
 }
 
 func (mgr *FetchManager) createMarkets(games []*models.Game) {
@@ -78,6 +91,8 @@ func (mgr *FetchManager) createMarkets(games []*models.Game) {
       for _, game := range(daysGames) {
         mktGame := models.GamesMarket{GameStatsId: game.StatsId, MarketId: market.Id}
         mgr.Orm.Save(&mktGame)
+        mgr.savePlayersForMarket(market, game.HomeTeam)
+        mgr.savePlayersForMarket(market, game.AwayTeam)
       }
     }
   }

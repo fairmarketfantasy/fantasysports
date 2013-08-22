@@ -37,6 +37,14 @@ type Market struct {
   UpdatedAt time.Time
 }
 
+type MarketPlayer struct {
+  NflModel
+  Id int
+  MarketId int `model:"key"`
+  PlayerId int `model:"key"`
+  InitialPrice float64
+}
+
 type GamesMarket struct {
   NflModel
   Id int
