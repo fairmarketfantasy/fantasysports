@@ -10,22 +10,30 @@ angular.module("app.controllers")
     });
 
     // One time initializer
+    var existingPlayers = $scope.roster.players;
     $scope.roster.players = [];
     $scope.position_list = $scope.roster.positions.split(',');
     _.each($scope.position_list, function(str) {
       $scope.roster.players.push({position: str});
     });
+    _.each(existingPlayers, function(p) {
+      $scope.addPlayer(p, true);
+    });
   };
   $scope.$watch('roster', updatePlayers);
 
-  $scope.addPlayer = function(player) {
+  $scope.addPlayer = function(player, init) {
     var index = _.findIndex($scope.roster.players, function(p) { return p.position == player.position && !p.id; })
     if (index >= 0) {
-      $scope.fs.rosters.add_player($scope.roster.id, player.id).then(function(market_order) {
-        $scope.roster.remaining_salary -= market_order.price;
-        player.purchase_price = market_order.price;
+      if (init) { // Used for adding initial players from an existing roster
         $scope.roster.players[index] = player;
-      });
+      } else {
+        $scope.fs.rosters.add_player($scope.roster.id, player.id).then(function(market_order) {
+          $scope.roster.remaining_salary -= market_order.price;
+          player.purchase_price = market_order.price;
+          $scope.roster.players[index] = player;
+        });
+      }
     } else {
       flash.error = "No room for another " + player.position + " in your roster.";
     }

@@ -20,5 +20,10 @@ class RostersController < ApplicationController
     order = roster.remove_player(player)
     render_api_response order
   end
+
+  def show
+    roster = Roster.find(params[:id])
+    render_api_response roster
+  end
 end
 

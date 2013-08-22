@@ -1,3 +1,4 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :name, :admin, :email, :in_progress_roster
+  attributes :id, :name, :admin, :email
+  has_one :in_progress_roster
 end
