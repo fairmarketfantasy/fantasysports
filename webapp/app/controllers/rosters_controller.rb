@@ -10,13 +10,15 @@ class RostersController < ApplicationController
   def add_player
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
     player = Player.find(params[:player_id])
-    roster.add_player(player)
+    order = roster.add_player(player)
+    render_api_response order
   end
 
   def remove_player
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
     player = Player.find(params[:player_id])
-    roster.remove_player(player)
+    order = roster.remove_player(player)
+    render_api_response order
   end
 end
 

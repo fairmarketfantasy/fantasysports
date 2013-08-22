@@ -2,19 +2,20 @@ angular.module("app.controllers")
 .controller('RosterController', ['$scope', '$routeParams', '$location', 'flash', function($scope, $routeParams, $location, flash) {
 
   var updatePlayers = function() {
+    if (!$scope.roster) {
+      return;
+    }
     $scope.fs.players.list($scope.roster.market_id).then(function(players) {
       $scope.players = players;
     });
 
     // One time initializer
     $scope.roster.players = [];
-    _.each($scope.position_list = $scope.roster.positions.split(','), function(str) {
+    $scope.position_list = $scope.roster.positions.split(',');
+    _.each($scope.position_list, function(str) {
       $scope.roster.players.push({position: str});
     });
   };
-  if ($scope.roster) {
-    updatePlayers();
-  }
   $scope.$watch('roster', updatePlayers);
 
   $scope.addPlayer = function(player) {

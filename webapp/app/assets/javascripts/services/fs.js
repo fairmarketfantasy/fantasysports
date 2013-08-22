@@ -16,7 +16,7 @@ angular.module('app.services')
           // TODO: implement payment modal
         }
         // TODO: we'll need to implement this again
-        if(resp.status == 403) {
+        if (resp.status == 403) {
         /*  var dialogOpts = {
             backdrop: true,
             keyboard: true,

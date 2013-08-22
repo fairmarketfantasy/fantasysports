@@ -11,6 +11,6 @@ class Positions
   end
 
   def self.default_NFL
-    'QB,RB,RB,WR,WR,WR,D,K,TE'
+    'QB,RB,RB,WR,WR,WR,DEF,K,TE'
   end
 end

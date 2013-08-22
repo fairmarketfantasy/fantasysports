@@ -5,12 +5,13 @@ $$ LANGUAGE SQL IMMUTABLE;
 
 
 /* buy a player for a roster */
-CREATE OR REPLACE FUNCTION buy(_roster_id integer, _player_id integer) RETURNS SETOF market_orders AS $$
+CREATE OR REPLACE FUNCTION buy(_roster_id integer, _player_id integer) RETURNS market_orders AS $$
 DECLARE
 	_roster rosters;
 	_bets numeric;
 	_total_bets numeric;
 	_price numeric;
+  retval market_orders;
 BEGIN
 	SELECT * from rosters where id = _roster_id INTO _roster FOR UPDATE;
 	IF NOT FOUND THEN
@@ -45,19 +46,21 @@ BEGIN
 	UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
 	UPDATE market_players SET bets = bets + _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
 	UPDATE rosters SET remaining_salary = remaining_salary - _price where id = _roster_id;
-	RETURN QUERY INSERT INTO market_orders (market_id, contest_id, roster_id, action, player_id, price)
-		VALUES (_roster.market_id, _roster.contest_id, _roster_id, 'buy', _player_id, _price) RETURNING *;
+	INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
+		   VALUES (_roster.market_id, _roster_id, 'buy', _player_id, _price) RETURNING * INTO retval;
+  RETURN retval;
 END;
 $$ LANGUAGE plpgsql;
 
 
 /* sell a player on a roster */
-CREATE OR REPLACE FUNCTION sell(_roster_id integer, _player_id integer) RETURNS SETOF market_orders AS $$
+CREATE OR REPLACE FUNCTION sell(_roster_id integer, _player_id integer) RETURNS market_orders AS $$
 DECLARE
 	_roster rosters;
 	_bets numeric;
 	_total_bets numeric;
 	_price numeric;
+  retval market_orders;
 BEGIN
 	SELECT * from rosters where id = _roster_id INTO _roster FOR UPDATE;
 	IF NOT FOUND THEN
@@ -89,8 +92,9 @@ BEGIN
 	UPDATE markets SET total_bets = total_bets - _roster.buy_in WHERE id = _roster.market_id;
 	UPDATE market_players SET bets = bets - _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
 	UPDATE rosters set remaining_salary = remaining_salary + _price where id = _roster_id;
-	RETURN QUERY INSERT INTO market_orders (market_id, contest_id, roster_id, action, player_id, price)
-		VALUES (_roster.market_id, _roster.contest_id, _roster_id, 'sell', _player_id, _price) RETURNING *;
+	INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
+	  	VALUES (_roster.market_id, _roster_id, 'sell', _player_id, _price) RETURNING * INTO retval;
+  RETURN retval;
 END;
 $$ LANGUAGE plpgsql;
 
