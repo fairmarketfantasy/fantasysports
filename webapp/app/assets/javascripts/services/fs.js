@@ -75,7 +75,10 @@ angular.module('app.services')
         },
         remove_player: function(roster_id, player_id) {
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/remove_player/' + player_id});
-        }
+        },
+        list: function(roster_id) {
+          return $http({method: 'GET', url: '/players/for_roster/' + roster_id});
+        },
       },
     }
   }])

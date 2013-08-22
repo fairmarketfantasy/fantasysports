@@ -1,7 +1,8 @@
 class Roster < ActiveRecord::Base
-  has_and_belongs_to_many :players, join_table: 'rosters_players', foreign_key: "contest_roster_id"
+  has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players', foreign_key: "roster_id"
   belongs_to :contest
   belongs_to :owner, class_name: "User", foreign_key: :owner_id
+  has_many :market_orders
 
   validates :state, :inclusion => {in: %w( in_progress cancelled submitted ) }
 
@@ -34,8 +35,5 @@ class Roster < ActiveRecord::Base
   def remove_player(player)
       MarketOrder.sell_player(self, player)
   end
-
-  protected
-
 
 end

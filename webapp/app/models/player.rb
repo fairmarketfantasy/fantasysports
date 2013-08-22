@@ -12,4 +12,9 @@ class Player < ActiveRecord::Base
   scope :on_team,      ->(team)    { where(team: team)}
   scope :in_market,    ->(market)     { where(team: market.games.map{|g| g.teams.map(&:abbrev)}.flatten) }
   scope :in_game,      ->(game)       { Player.where(team: game.teams.pluck(:abbrev)) }
+  scope :with_purchase_price,      -> { select('players.*, purchase_price') } # Must also join rosters_players
+
+  def purchase_price
+    self[:purchase_price]
+  end
 end

@@ -17,4 +17,10 @@ class PlayersController < ApplicationController
     render_api_response @players.limit(50)
   end
 
+  def for_roster
+    roster = Roster.find(params[:id])
+    players = roster.players.with_purchase_price
+    render_api_response players
+  end
+
 end

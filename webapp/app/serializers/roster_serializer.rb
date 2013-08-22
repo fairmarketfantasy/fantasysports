@@ -17,4 +17,6 @@ class RosterSerializer < ActiveModel::Serializer
       :created_at, 
       :updated_at
 
+  has_many :players
+
 end
