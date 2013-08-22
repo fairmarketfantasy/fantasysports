@@ -2,18 +2,17 @@ class MarketOrder < ActiveRecord::Base
 
   # stubs
   def self.buy_player(roster, player)
-    order = self.connection.execute("SELECT buy(#{roster.id}, #{player.id})")
-    Rails.logger.debug(order)
-    return market_order
+    execSqlFunc do
+      self.find_by_sql("SELECT * from buy(#{roster.id}, #{player.id})")[0]
+    end
   end
 
   # stubs
   def self.sell_player(roster, player)
-    order = self.connection.execute("SELECT sell(#{roster.id}, #{player.id})")
-    Rails.logger.debug(order)
-    return market_order
+    execSqlFunc do
+      self.find_by_sql("SELECT sell(#{roster.id}, #{player.id})")[0]
+    end
   end
-
 
   # THIS IS A UTILITY FUNCTION, DO NOT CALL IT FROM THE APPLICATION
   def self.load_sql_functions
@@ -25,5 +24,16 @@ class MarketOrder < ActiveRecord::Base
       'PGUSER'     => yaml['username'],
     }
     system(env, "psql < #{File.join(Rails.root, '..', 'market', 'market.sql') }" )
+  end
+
+  protected
+
+  def self.execSqlFunc
+    begin
+      yield
+    rescue ActiveRecord::StatementInvalid => e
+       # TODO: clean up error handling
+      raise HttpException.new(409, e.message)
+    end
   end
 end

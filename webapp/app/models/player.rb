@@ -2,6 +2,10 @@ class Player < ActiveRecord::Base
   belongs_to :sport
   belongs_to :team, :foreign_key => 'team'
   has_many :stat_events
+
+  # Some positions are never used in NFL
+  default_scope { where("position NOT IN('OLB', 'OL')") }
+
   has_and_belongs_to_many :rosters, join_table: 'rosters_players', association_foreign_key: "contest_roster_id"
 
   scope :autocomplete, ->(str)        { where("name ilike '%#{str}%'") }
