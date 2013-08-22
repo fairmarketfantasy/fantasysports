@@ -76,6 +76,13 @@ func (state *ParseState) FindNextStartElement(elementName string) *xml.StartElem
   }
 }
 
+func contains(list []string, elem string) bool { 
+  for _, t := range list { if t == elem { return true } } 
+  return false 
+} 
+
+var defensivePositions = []string{"NT", "DT", "DE", "LB", "NB", "CB", "S"}
+
 func buildPlayer(element *xml.StartElement) *models.Player {
   var player = models.Player{}
   player.StatsId = parsers.FindAttrByName(element.Attr, "id")
@@ -84,6 +91,9 @@ func buildPlayer(element *xml.StartElement) *models.Player {
   player.Birthdate = parsers.FindAttrByName(element.Attr, "birthdate")
   player.Status = parsers.FindAttrByName(element.Attr, "status")
   player.Position = parsers.FindAttrByName(element.Attr, "position")
+  if contains(defensivePositions, player.Position) {
+    player.Position = "DEF"
+  }
   player.JerseyNumber, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "jersey_number"))
   player.College = parsers.FindAttrByName(element.Attr, "college")
   player.Height, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "height"))
