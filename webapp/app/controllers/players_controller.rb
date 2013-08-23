@@ -7,14 +7,15 @@ class PlayersController < ApplicationController
     @players = @players.autocomplete(params[:autocomplete]) if params[:autocomplete]
 
     game = params[:game] ? Game.find(params[:game]) : nil
-    scopes = { in_game: game, in_contest: params[:contest].presence }
+    scopes = { in_game: game, in_contest: params[:contest].presence, in_position: params[:position].presence }
+
 
     scopes.each do |s, val|
       if val
-        @players.public_send(s, val)
+        @players = @players.public_send(s, val)
       end
     end
-    render_api_response @players.limit(50)
+    render_api_response @players.limit(50).page(params[:page] || 1)
   end
 
   def for_roster

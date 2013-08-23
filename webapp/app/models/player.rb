@@ -9,9 +9,10 @@ class Player < ActiveRecord::Base
   has_and_belongs_to_many :rosters, join_table: 'rosters_players', association_foreign_key: "contest_roster_id"
 
   scope :autocomplete, ->(str)        { where("name ilike '%#{str}%'") }
-  scope :on_team,      ->(team)       { where(team: team.abbrev)}
+  scope :on_team,      ->(team)       { where(team: team)}
   scope :in_market,    ->(market)     { where(team: market.games.map{|g| g.teams.map(&:abbrev)}.flatten) }
-  scope :in_game,      ->(game)       { Player.where(team: game.teams.pluck(:abbrev)) }
+  scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
+  scope :in_position,  ->(position)   { where(position: position) }
   scope :with_purchase_price,      -> { select('players.*, purchase_price') } # Must also join rosters_players
 
   def purchase_price
