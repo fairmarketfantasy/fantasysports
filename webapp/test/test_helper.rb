@@ -4,7 +4,6 @@ require 'rails/test_help'
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'minitest/pride'
-require 'mocha/setup'
 
 class ActiveSupport::TestCase
 
@@ -26,9 +25,104 @@ class ActiveSupport::TestCase
   register_spec_type self do |desc|
     desc < ActiveRecord::Base if desc.is_a? Class
   end
+
+
+  include FactoryGirl::Syntax::Methods
+
+  def setup_simple_market
+    @market = create :market
+    @team1 = create :team1
+    @team2 = create :team2
+    @team2 = create :team2
+    @game = create :game
+    @players = Positions.default_NFL.split(',').map do |position|
+      player = create :player, :team => [@team1.abbrev, @team2.abbrev].rand, :position => position
+      @market.players << player
+      player
+    end
+    @market.save!
+  end
 end
 
 
 class ActionController::TestCase
   include Devise::TestHelpers
+
 end
+
+
+FactoryGirl.define do
+  sequence :email do |n|
+    "email#{n}@domain.com"
+  end
+
+  sequence(:random_string) {|n| (0...8).map{(65+rand(26)).chr}.join }
+
+  factory :user do
+    first_name "user"
+    last_name "footballfan"
+    email { generate(:email) }
+    password "123456"
+    password_confirmation "123456"
+  end
+
+  factory :team1 do
+    sport_id 1
+    abbrev 'GB'
+    name 'Packers'
+    conference 'NFC'
+    division 'NFC North'
+    market 'Green Bay'
+    state 'Wisconsin'
+    country 'USA'
+  end
+
+  factory :team2 do
+    sport_id 1
+    abbrev 'SF'
+    name '49ers'
+    conference 'NFC'
+    division 'NFC West'
+    market 'San Francisco'
+    state 'California'
+    country 'USA'
+  end
+
+  factory :player do
+    stats_id { generate(:random_string) }
+    sport_id 1
+    name "Spock"
+  end
+
+  factory :game do
+    stats_id { generate(:random_string) }
+    status 'created' # TODO: figure out what these are
+    game_day Time.now.tomorrow.beginning_of_day
+    game_time Time.now.tomorrow
+    home_team 'GB'
+    away_team 'SF'
+  end
+
+  factory :opened_market do
+    shadow_bets 1000
+    shadow_bet_rate 0.75
+    published_at Time.now - 4000
+    opened_at Time.now - 1000
+    closed_at nil
+    state 'opened' # TODO: check this
+    total_bets 5000
+    sport_id 1
+  end
+
+  factory :roster do
+    owner user
+    market opened_market
+    buy_in 10
+    remaining_salary 100000
+    state 'in_progress'
+    positions Positions.default_NFL
+  end
+end
+
+# Yes, apparently this is supposed to be at the bottom.  I just work here.
+require 'mocha/setup'
