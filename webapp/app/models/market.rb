@@ -1,6 +1,8 @@
 class Market < ActiveRecord::Base
   has_many :games_markets
   has_many :games, :through => :games_markets
+  has_many :market_players
+  has_many :players, :through => :market_players
   has_many :contests
   belongs_to :sport
 
