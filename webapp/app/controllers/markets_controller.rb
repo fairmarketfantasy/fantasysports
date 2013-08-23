@@ -1,4 +1,5 @@
 class MarketsController < ApplicationController
+  skip_before_filter :authenticate_user!
 
   def index
     page = params[:page] || 1
