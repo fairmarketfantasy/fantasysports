@@ -1,8 +1,8 @@
 one:
   id: 1
   stats_id: 8c0bce5a
-  home_team: Bulls
-  away_team: Bills
+  home_team: BLS
+  away_team: BIS
   status: on time
   game_day: <%= Date.today %>
   game_time: <%= Time.now %>

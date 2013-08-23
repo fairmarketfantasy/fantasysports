@@ -2,6 +2,10 @@ require 'test_helper'
 
 class WebhooksControllerTest < ActionController::TestCase
 
+  def setup
+    sign_in(users(:one))
+  end
+
   def wh_dispute_stub
     {
       id: "evt_DJFeM6xRbjB7pl",
