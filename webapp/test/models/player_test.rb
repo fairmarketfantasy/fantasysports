@@ -24,13 +24,9 @@ class PlayerTest < ActiveSupport::TestCase
       end
 
       describe ".on_team" do
-        let(:team_id) { teams(:one).id }
+        let(:team) { teams(:one) }
         it "should return players on a team" do
-          Player.on_team(team_id).must_include(mj)
-        end
-
-        it "should not return players on a nonexistent team" do
-          Player.on_team(10000).must_be_empty
+          Player.on_team(team).must_include(mj)
         end
       end
 
