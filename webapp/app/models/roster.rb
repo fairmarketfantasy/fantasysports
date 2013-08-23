@@ -9,6 +9,8 @@ class Roster < ActiveRecord::Base
 
   validates :owner_id, :market_id, :buy_in, :remaining_salary, :contest_type, :state, presence: true
 
+  before_destroy :cleanup_players
+
   def self.generate_contest_roster(user, market, contest_type, buy_in)
     if !Contest.valid_contest?(contest_type, buy_in)
       raise HttpException.new(400, "Invalid contest type/buy in")
@@ -29,6 +31,17 @@ class Roster < ActiveRecord::Base
     )
   end
 
+  def submit!
+    owner = self.owner
+    raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(self.buy_in)
+    self.transaction do
+      owner.customer_object.decrease_balance(roster.buy_in, 'buy_in', self.id)
+      self.state = 'submitted'
+      self.submitted_at = Time.now
+      self.save!
+    end
+  end
+
   def add_player(player)
       MarketOrder.buy_player(self, player)
   end
@@ -37,7 +50,6 @@ class Roster < ActiveRecord::Base
       MarketOrder.sell_player(self, player)
   end
 
-  before_destroy :cleanup_players
   def cleanup_players
     players.each{|p| remove_player(p) }
   end

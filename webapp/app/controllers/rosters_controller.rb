@@ -26,6 +26,12 @@ class RostersController < ApplicationController
     render_api_response roster
   end
 
+  def submit
+    roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
+    roster.submit!
+    render_api_response roster
+  end
+
   def destroy
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
     roster.destroy!

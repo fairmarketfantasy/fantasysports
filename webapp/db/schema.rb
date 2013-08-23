@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130822184226) do
+ActiveRecord::Schema.define(version: 20130823090650) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -213,13 +213,13 @@ ActiveRecord::Schema.define(version: 20130822184226) do
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
 
   create_table "transaction_records", force: true do |t|
-    t.string  "event",      null: false
+    t.string  "event",     null: false
     t.integer "user_id"
-    t.integer "contest_id"
+    t.integer "roster_id"
     t.integer "amount"
   end
 
-  add_index "transaction_records", ["contest_id"], name: "index_transaction_records_on_contest_id", using: :btree
+  add_index "transaction_records", ["roster_id"], name: "index_transaction_records_on_roster_id", using: :btree
   add_index "transaction_records", ["user_id"], name: "index_transaction_records_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
