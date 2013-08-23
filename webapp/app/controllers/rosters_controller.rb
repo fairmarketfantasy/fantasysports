@@ -25,5 +25,11 @@ class RostersController < ApplicationController
     roster = Roster.find(params[:id])
     render_api_response roster
   end
+
+  def destroy
+    roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
+    roster.destroy!
+    render :nothing => true, :status => :ok
+  end
 end
 

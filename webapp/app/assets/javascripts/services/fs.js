@@ -79,6 +79,9 @@ angular.module('app.services')
         list: function(roster_id) {
           return $http({method: 'GET', url: '/players/for_roster/' + roster_id});
         },
+        cancel: function(roster_id) {
+          return $http({method: 'DELETE', url: '/rosters/' + roster_id});
+        },
       },
     }
   }])
