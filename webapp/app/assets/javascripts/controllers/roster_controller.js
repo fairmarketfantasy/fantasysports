@@ -1,19 +1,19 @@
 angular.module("app.controllers")
 .controller('RosterController', ['$scope', '$routeParams', '$location', 'flash', function($scope, $routeParams, $location, flash) {
+  $scope.filter = null;
 
   var updatePlayers = function() {
     if (!$scope.roster) {
       return;
     }
-    $scope.fs.players.list($scope.roster.market_id).then(function(players) {
-      $scope.players = players;
-    });
+
+    $scope.filterPlayers();
 
     // One time initializer
     var existingPlayers = $scope.roster.players;
     $scope.roster.players = [];
-    $scope.position_list = $scope.roster.positions.split(',');
-    _.each($scope.position_list, function(str) {
+    $scope.positionList = $scope.roster.positions.split(',');
+    _.each($scope.positionList, function(str) {
       $scope.roster.players.push({position: str});
     });
     _.each(existingPlayers, function(p) {
@@ -22,8 +22,14 @@ angular.module("app.controllers")
   };
   $scope.$watch('roster', updatePlayers);
 
+  $scope.filterPlayers = function(opts) {
+    $scope.fs.players.list($scope.roster.market_id, opts).then(function(players) {
+      $scope.players = players;
+    });
+  };
+
   $scope.addPlayer = function(player, init) {
-    var index = _.findIndex($scope.roster.players, function(p) { return p.position == player.position && !p.id; })
+    var index = _.findIndex($scope.roster.players, function(p) { return p.position == player.position && !p.id; });
     if (index >= 0) {
       if (init) { // Used for adding initial players from an existing roster
         $scope.roster.players[index] = player;
@@ -42,18 +48,18 @@ angular.module("app.controllers")
   $scope.removePlayer = function(player) {
     $scope.fs.rosters.remove_player($scope.roster.id, player.id).then(function(market_order) {
       $scope.roster.remaining_salary += market_order.price;
-      var index = _.findIndex($scope.players, function(p) { return p.id == player.id; })
+      var index = _.findIndex($scope.players, function(p) { return p.id === player.id; });
       $scope.roster.players[index] = {position: player.position};
     });
   };
 
   $scope.notInRoster = function(player) {
-    return !_.any($scope.roster.players, function(p) { return p.id == player.id });
+    return !_.any($scope.roster.players, function(p) { return p.id === player.id; });
   };
 
   var isValidRoster = function() {
-    return _.all($scope.roster.players, function(p) { return p.id });
-  }
+    return _.all($scope.roster.players, function(p) { return p.id; });
+  };
 
 }]);
 

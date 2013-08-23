@@ -44,6 +44,26 @@
   </div>
 
   <div ng-controller="RosterController" ng-show="roster">
+    <ul>
+      <li><a href="javascript://" ng-click="filter = 'my-players'">My players</a></li>
+      <li><a href="javascript://" ng-click="filter = 'positions'">Positions</a></li>
+      <li><a href="javascript://" ng-click="filter = 'games'">Games</a></li>
+    </ul>
+    <ul>
+      <li ng-show="filter == 'positions'">
+        <ul>
+          <li ng-repeat="position in positionList">
+            <a ng-click="filterPlayers({position: position})" href="javascript://">{{position}}</a>
+          <li>
+        </ul>
+      </li>
+      <li ng-show="filter == 'games'">
+        <!-- TODO: make this a dropdown -->
+        <select ng-options="game as gameFromTeam(game.home_team) for game in games" ng-model="game" ng-change="filterPlayers({game: game.id})">
+        </select>
+      </li>
+    </ul>
+
     <h2>Players</h2>
     
     <table>
@@ -63,7 +83,7 @@
           <td>{{player.status}}</td>
           <td>{{player.name}}</td>
           <td>{{player.position}}</td>
-          <td>{{gameFromTeam(player.team)}}</td>
+          <td>{{gameFromTeam(player.team.Abbrev)}}</td>
           <td>{{player.ppg}}</td>
           <td>{{player.salary}}</td>
           <td><a href="javascript://" ng-click="addPlayer(player)">Add</a></td>
@@ -91,9 +111,9 @@
           <td>{{player.name}}</td>
           <td>{{player.game}}</td>
           <td>{{player.ppg}}</td>
-          <td>{{player.purchase_price}}</td>
-          <td>{{player.salary - roster.players[position].purchase_price}}</td>
-          <td><a href="javascript://" ng-click="removePlayer(player)">Remove</a></td>
+          <td>{{player.purchase_price | emptyIfZero }}</td>
+          <td>{{player.salary - roster.players[position].purchase_price | emptyIfZero }}</td>
+          <td><a ng-show="player.id" href="javascript://" ng-click="removePlayer(player)">Remove</a></td>
         </tr>
       </tbody>
     </table>

@@ -19,7 +19,7 @@ angular.module("app.controllers")
   }
 
   $scope.gameFromTeam = function(team) {
-    var game = teamsToGames[team.abbrev];
+    var game = teamsToGames[team];
     return game && (game.away_team + ' @ ' + game.home_team)
   };
 
