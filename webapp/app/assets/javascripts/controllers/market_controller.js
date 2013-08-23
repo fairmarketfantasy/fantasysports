@@ -26,8 +26,17 @@ angular.module("app.controllers")
   $scope.joinContest = function(type, buy_in) {
     $scope.fs.contests.join($scope.market.id, type, buy_in).then(function(data){
       $scope.roster = data;
+      window.App.in_progress_roster = data;
     })
-  }
+  };
+
+  $scope.deleteRoster = function(opts) {
+    $scope.fs.rosters.cancel($scope.roster.id).then(function(data) {
+      $scope.roster = null;
+      window.App.in_progress_roster = null;
+    });
+  };
+
 }])
 
 

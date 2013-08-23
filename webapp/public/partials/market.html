@@ -44,6 +44,7 @@
   </div>
 
   <div ng-controller="RosterController" ng-show="roster">
+    <a href="javascript://" ng-click="deleteRoster()">Cancel entry</a>
     <ul>
       <li><a href="javascript://" ng-click="filter = 'my-players'">My players</a></li>
       <li><a href="javascript://" ng-click="filter = 'positions'">Positions</a></li>

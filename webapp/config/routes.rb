@@ -14,7 +14,7 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:show]
 
-  resources :rosters, only: [:create, :show] do
+  resources :rosters, only: [:create, :show, :destroy] do
     member do
       post 'add_player/:player_id', :action => 'add_player'
       post 'remove_player/:player_id', :action => 'remove_player'
