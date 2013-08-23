@@ -1,6 +1,6 @@
 class TransactionRecordValidator < ActiveModel::Validator
   def validate(record)
-    if TransactionRecord::CONTEST_TYPES.include(record.event) && record.contest_id.nil?
+    if TransactionRecord::CONTEST_TYPES.include?(record.event) && record.contest_id.nil?
       record.errors[:contest_id] = "Contest_id is required for #{record.event} types"
     end
   end

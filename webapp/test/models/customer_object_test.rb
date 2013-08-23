@@ -29,7 +29,7 @@ class CustomerObjectTest < ActiveSupport::TestCase
       end
 
       it "should invoke the #increase_balance method" do
-        customer_object.expects(:increase_balance).with(amt)
+        customer_object.expects(:increase_balance).with(amt, 'deposit')
         customer_object.charge(amt)
       end
 
@@ -46,7 +46,9 @@ class CustomerObjectTest < ActiveSupport::TestCase
 
       it "should increase by the amount" do
         assert_difference("CustomerObject.find(#{customer_object.id}).balance", amt) do
-          customer_object.increase_balance(amt)
+          assert_difference("TransactionRecord.count", 1) do
+            customer_object.increase_balance(amt, 'deposit')
+          end
         end
       end
     end
