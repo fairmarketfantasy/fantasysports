@@ -13,7 +13,7 @@ class TransactionRecord < ActiveRecord::Base
   validates_with TransactionRecordValidator
 
   belongs_to :user
-  belongs_to :contest
+  belongs_to :roster
 
   def self.validate_contest(contest)
     if contest.transactions.sum(amount) != 0

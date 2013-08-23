@@ -38,7 +38,7 @@ angular.module('app.services')
         }
         console && console.log('API Error: ');
         console.log(resp);
-        return null;
+        return null; // TODO: this doesn't signal failure...figure out how to do that
       }
       return promise.then(success, failure);
     };
@@ -78,6 +78,9 @@ angular.module('app.services')
         },
         list: function(roster_id) {
           return $http({method: 'GET', url: '/players/for_roster/' + roster_id});
+        },
+        submit: function(roster_id) {
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/submit'});
         },
         cancel: function(roster_id) {
           return $http({method: 'DELETE', url: '/rosters/' + roster_id});

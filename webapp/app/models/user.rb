@@ -34,4 +34,10 @@ class User < ActiveRecord::Base
   def in_progress_roster
     rosters.where(:state => 'in_progress').first
   end
+
+  def can_charge?(amount)
+    return false unless customer_object
+    return false if customer_object.balance - amount < 0
+    return true
+  end
 end

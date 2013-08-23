@@ -13,6 +13,7 @@ angular.module("app.controllers")
     var existingPlayers = $scope.roster.players;
     $scope.roster.players = [];
     $scope.positionList = $scope.roster.positions.split(',');
+    $scope.uniqPositionList = _.uniq($scope.roster.positions.split(','));
     _.each($scope.positionList, function(str) {
       $scope.roster.players.push({position: str});
     });
@@ -54,10 +55,16 @@ angular.module("app.controllers")
   };
 
   $scope.notInRoster = function(player) {
+    if (!$scope.roster) {
+      return true;
+    }
     return !_.any($scope.roster.players, function(p) { return p.id === player.id; });
   };
 
-  var isValidRoster = function() {
+  $scope.isValidRoster = function() {
+    if (!$scope.roster) {
+      return false;
+    }
     return _.all($scope.roster.players, function(p) { return p.id; });
   };
 

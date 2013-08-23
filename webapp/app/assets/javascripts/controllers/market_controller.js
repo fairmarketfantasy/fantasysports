@@ -14,9 +14,9 @@ angular.module("app.controllers")
   });
 
   $scope.day = function(timeStr) {
-    var day = moment(timeStr)
+    var day = moment(timeStr);
     return day.format("dddd, MMMM Do YYYY, h:mm:ss a");
-  }
+  };
 
   $scope.gameFromTeam = function(team) {
     var game = teamsToGames[team];
@@ -25,17 +25,28 @@ angular.module("app.controllers")
 
   $scope.joinContest = function(type, buy_in) {
     $scope.fs.contests.join($scope.market.id, type, buy_in).then(function(data){
-      $scope.roster = data;
-      window.App.in_progress_roster = data;
-    })
-  };
-
-  $scope.deleteRoster = function(opts) {
-    $scope.fs.rosters.cancel($scope.roster.id).then(function(data) {
-      $scope.roster = null;
-      window.App.in_progress_roster = null;
+      setCurrentRoster(data);
     });
   };
+
+  var setCurrentRoster = function(roster) {
+    $scope.roster = roster;
+    window.App.in_progress_roster = roster;
+  }
+
+  $scope.deleteRoster = function() {
+    $scope.fs.rosters.cancel($scope.roster.id).then(function(data) {
+      setCurrentRoster(null);
+    });
+  };
+
+  $scope.submitRoster = function() {
+    $scope.fs.rosters.submit($scope.roster.id).then(function(data) {
+      // TODO: open dialog, ask if user wants to submit another roster
+    console.log('success');
+      setCurrentRoster(null);
+    },function(data){ console.log("FAIL"); });
+  }
 
 }])
 
