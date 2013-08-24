@@ -68,6 +68,11 @@ GEM
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    factory_girl (4.2.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.2.1)
+      factory_girl (~> 4.2.0)
+      railties (>= 3.0.0)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
     god (0.13.2)
@@ -211,6 +216,8 @@ DEPENDENCIES
   chef (~> 11.6.0)
   debugger
   devise
+  factory_girl
+  factory_girl_rails (~> 4.0)
   god
   jbuilder (~> 1.2)
   kaminari
