@@ -4,6 +4,7 @@ require 'rails/test_help'
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'debugger'
 
 class ActiveSupport::TestCase
 
@@ -30,13 +31,12 @@ class ActiveSupport::TestCase
   include FactoryGirl::Syntax::Methods
 
   def setup_simple_market
-    @market = create :market
+    @market = create :open_market
     @team1 = create :team1
-    @team2 = create :team2
     @team2 = create :team2
     @game = create :game
     @players = Positions.default_NFL.split(',').map do |position|
-      player = create :player, :team => [@team1.abbrev, @team2.abbrev].rand, :position => position
+      player = create :player, :team => [@team1, @team2].sample, :position => position
       @market.players << player
       player
     end
@@ -59,14 +59,13 @@ FactoryGirl.define do
   sequence(:random_string) {|n| (0...8).map{(65+rand(26)).chr}.join }
 
   factory :user do
-    first_name "user"
-    last_name "footballfan"
+    name "user footballfan"
     email { generate(:email) }
     password "123456"
     password_confirmation "123456"
   end
 
-  factory :team1 do
+  factory :team1, class: Team do
     sport_id 1
     abbrev 'GB'
     name 'Packers'
@@ -77,7 +76,7 @@ FactoryGirl.define do
     country 'USA'
   end
 
-  factory :team2 do
+  factory :team2, class: Team do
     sport_id 1
     abbrev 'SF'
     name '49ers'
@@ -103,7 +102,7 @@ FactoryGirl.define do
     away_team 'SF'
   end
 
-  factory :opened_market do
+  factory :open_market, class: Market  do
     shadow_bets 1000
     shadow_bet_rate 0.75
     published_at Time.now - 4000
@@ -115,12 +114,13 @@ FactoryGirl.define do
   end
 
   factory :roster do
-    owner user
-    market opened_market
+    association :owner, factory: :user
+    association :market, factory: :open_market
     buy_in 10
     remaining_salary 100000
     state 'in_progress'
     positions Positions.default_NFL
+    contest_type "970"
   end
 end
 
