@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130823090650) do
+ActiveRecord::Schema.define(version: 20130824042127) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,7 +99,7 @@ ActiveRecord::Schema.define(version: 20130823090650) do
   create_table "market_players", force: true do |t|
     t.integer "market_id",     null: false
     t.integer "player_id",     null: false
-    t.decimal "initial_price", null: false
+    t.decimal "initial_price"
     t.decimal "bets"
   end
 

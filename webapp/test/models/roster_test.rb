@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RosterTest < ActiveSupport::TestCase
 
-   def setup
+  setup do
     setup_simple_market
     @roster = create(:roster, :market => @market)
   end 
@@ -10,7 +10,6 @@ class RosterTest < ActiveSupport::TestCase
   test "adding or removing players from roster affects salary" do
     player = @players[0]
     initial_cap = @roster.remaining_salary
-    initial_salary = player.salary
     assert_difference(@roster.remaining_salary, -player.salary) do
       @roster.add_player player
     end
