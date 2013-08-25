@@ -44,11 +44,11 @@ class Roster < ActiveRecord::Base
   end
 
   def add_player(player)
-      MarketOrder.buy_player(self, player)
+    MarketOrder.buy_player(self, player)
   end
 
   def remove_player(player)
-      MarketOrder.sell_player(self, player)
+    MarketOrder.sell_player(self, player)
   end
 
   def cleanup_players
