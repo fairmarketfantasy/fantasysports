@@ -18,6 +18,8 @@ create user fantasysports with password 'F4n7a5y' superuser;
 In your terminal:
 ```
 rake db:migrate
+rake db:setup_functions
+rake db:seed
 ```
 
 ## The rails app
