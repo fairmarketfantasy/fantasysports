@@ -2,7 +2,7 @@ require 'test_helper'
 
 class WebhooksControllerTest < ActionController::TestCase
 
-  def setup
+  setup do
     sign_in(users(:one))
   end
 

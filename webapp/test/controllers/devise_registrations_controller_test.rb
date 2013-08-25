@@ -2,7 +2,7 @@ require 'test_helper'
 
 class Devise::RegistrationsControllerTest < ActionController::TestCase
 
-  def setup
+  setup do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 

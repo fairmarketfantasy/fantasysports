@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class ContestsControllerTest < ActionController::TestCase
-  def setup
+  setup do
     sign_in(users(:one))
   end
 

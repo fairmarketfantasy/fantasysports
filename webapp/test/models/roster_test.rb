@@ -31,7 +31,7 @@ class RosterTest < ActiveSupport::TestCase
   end
 
   test "submitting an incomplete roster fails" do
-    assert_raise StandardError do
+    assert_raise HttpException do
       @roster.submit!
     end
   end

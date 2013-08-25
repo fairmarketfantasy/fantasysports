@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20130824042127) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "contests", force: true do |t|
     t.integer  "owner",           null: false
     t.string   "type",            null: false
