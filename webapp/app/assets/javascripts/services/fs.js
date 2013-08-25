@@ -45,6 +45,11 @@ angular.module('app.services')
   }])
  .factory('fs', ['$http', function($http) {
     return {
+      user: {
+        logout: function(){
+          return $http({method: 'DELETE', url: '/users/sign_out'});
+        }
+      },
       markets: {
         show: function(id) {
           return $http({method: 'GET', url: '/markets/' + id});

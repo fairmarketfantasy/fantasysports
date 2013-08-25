@@ -61,6 +61,9 @@
   <div id="login-buttons" ng-controller="LoginController" ng-hide="currentUser()">
     <a href="javascript://" class="btn btn-oauth facebook" ng-click="login('facebook')"><span class="icon icon-facebook">Facebook</span></a> 
   </div>
+  <div ng-show="currentUser()">
+    <a href="javascript://" ng-click="logout()">Logout</a>
+  </div>
   <div class="content">
     <h1><%= Rails.env %></h1>
     <div id="content" ng-view>
