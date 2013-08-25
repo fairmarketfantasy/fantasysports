@@ -48,6 +48,9 @@ angular.module('app.services')
       user: {
         logout: function(){
           return $http({method: 'DELETE', url: '/users/sign_out'});
+        },
+        create: function(user_attrs){
+          return $http({method: 'POST', url: '/users', data: {user: user_attrs}});
         }
       },
       markets: {
