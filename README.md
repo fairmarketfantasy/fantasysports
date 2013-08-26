@@ -40,30 +40,33 @@ rails s
 Seed some data:
 ```
 rake seed:nfl_data --trace
+```
 
 *new*
+
 you can also run the data fetcher outside the rake task,
 which should save a considerable amount of memory
 (since all rake tasks create a new ruby env, but we don't need it
 because we're just starting some go code)
 
 `cd` to datafetcher dir
+```
 export GOPATH=`pwd`
 export PATH=$PATH:$GOPATH/bin
 go install github.com/MustWin/datafetcher/
-
+```
 There should be no errors reported to stdout.
 This will create the bin and pkg directories in your current directory, and in the bin dir you'll find a binary called datafetcher. And finally, to run it:
-
+```
 datafetcher -fetch serve
-
+```
 To fetch in the background:
+```
 nohup datafetcher -fetch serve > datafetcher.log 2>&1 & echo $! > datafetcher.pid
-
+```
 This sends the output to datafetcher.log and the pid to datafetcher.pid
 To kill the task, just kill -9 the pid in the file.
 
-```
 
 ## The SQL Functions that buy, sell, and update the market
 `cd` to market directory
