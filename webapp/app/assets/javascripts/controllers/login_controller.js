@@ -10,7 +10,7 @@ angular.module("app.controllers")
   $scope.login = function(service) {
     if(service === 'email'){
       fs.user.login($scope.user).then(function(resp){
-        console.log(resp);
+        window.setCurrentUser(resp);
       });
     } else {
       window.open('/users/auth/' + service, '', serviceSizes[service]);
