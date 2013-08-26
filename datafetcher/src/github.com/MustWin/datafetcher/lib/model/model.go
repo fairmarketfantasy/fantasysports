@@ -4,25 +4,23 @@ import (
 //  "log"
 )
 
-
-
 type Model interface {
-  Valid() bool
-  Errors() []error
-  BeforeSave(Orm, Model) (error, bool)
+	Valid() bool
+	Errors() []error
+	BeforeSave(Orm, Model) (error, bool)
 }
 
 type ModelBase struct {
 }
 
 func (m *ModelBase) Valid() bool {
-  return true
+	return true
 }
 
 func (m *ModelBase) Errors() []error {
-  return nil
+	return nil
 }
 
 func (m *ModelBase) BeforeSave(Orm, Model) (error, bool) {
-  return nil, true
+	return nil, true
 }

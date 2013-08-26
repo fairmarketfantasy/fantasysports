@@ -4,8 +4,8 @@ import (
 //  "io"
   "encoding/xml"
   "log"
-  "nfl/models"
-  "lib/parsers"
+  "github.com/MustWin/datafetcher/nfl/models"
+  "github.com/MustWin/datafetcher/lib/parsers"
  // "reflect"
   "strconv"
   "time"
@@ -19,7 +19,7 @@ const timeFormat = "2006-01-02T15:04:05-07:00" // Reference time format
 
 type ParseState struct {
   InElement *xml.StartElement // Tracks where we are in our traversal
-  InElementName string 
+  InElementName string
   Decoder *xml.Decoder
 
   // Possibly useful for statekeeping as we're going through things
@@ -76,10 +76,10 @@ func (state *ParseState) FindNextStartElement(elementName string) *xml.StartElem
   }
 }
 
-func contains(list []string, elem string) bool { 
-  for _, t := range list { if t == elem { return true } } 
-  return false 
-} 
+func contains(list []string, elem string) bool {
+  for _, t := range list { if t == elem { return true } }
+  return false
+}
 
 var defensivePositions = []string{"NT", "DT", "DE", "LB", "NB", "CB", "S"}
 
@@ -111,7 +111,7 @@ func buildEvent(element *xml.StartElement) *models.GameEvent {
   event.GameEventData = models.GameEventData{}
   err := parsers.InitFromAttrs(*element, &event.GameEventData)
   if err != nil {
-    log.Println(err) 
+    log.Println(err)
   }
   return &event
 }
@@ -209,7 +209,7 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
     state.CurrentGame = game;
 
   case "summary":
-    if state.CurrentEvent != nil { // We have a play summary 
+    if state.CurrentEvent != nil { // We have a play summary
       t, _ := state.GetDecoder().Token()
       state.CurrentEvent.Summary = string([]byte(t.(xml.CharData)))
     } else {  // We have a game summary
@@ -219,11 +219,11 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
       state.CurrentGame.AwayTeamStatus = models.TeamStatus{}
       err := parsers.InitFromAttrs(*home, &state.CurrentGame.HomeTeamStatus)
       if err != nil {
-        log.Println(err) 
+        log.Println(err)
       }
       err = parsers.InitFromAttrs(*away, &state.CurrentGame.AwayTeamStatus)
       if err != nil {
-        log.Println(err) 
+        log.Println(err)
       }
     }
 
@@ -244,11 +244,11 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
     event.GameStatsId = state.CurrentGame.StatsId
     state.CurrentEvent = event
     return event
-    
+
   default:
   }
   return nil
-  
+
 }
 
 func ParseRoster(state *ParseState) *models.Player {
@@ -263,7 +263,7 @@ func ParseRoster(state *ParseState) *models.Player {
     case "injury":
       err := parsers.InitFromAttrs(*state.CurrentElement(), &state.CurrentPlayer.PlayerStatus)
       if err != nil {
-        log.Println(err) 
+        log.Println(err)
       }
   }
   return nil
@@ -301,7 +301,7 @@ func defenseParser(state *ParseState) *models.StatEvent {
 
 func rushingReceivingParser(state *ParseState) *models.StatEvent {
   // td +6
-  // yds +1 per 10 yds 
+  // yds +1 per 10 yds
   // -2 per fumble lost
   event := buildStatEvent(state)
   fumbles, _ := strconv.Atoi(state.CurrentElementAttr("fum"))
@@ -325,7 +325,7 @@ func receivingParser(state *ParseState) *models.StatEvent {
 
 func puntReturnParser(state *ParseState) *models.StatEvent {
   // td +6
-  // yds +1 per 10 yds 
+  // yds +1 per 10 yds
   yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
   touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
   event := buildStatEvent(state)
@@ -336,7 +336,7 @@ func puntReturnParser(state *ParseState) *models.StatEvent {
 
 func passingParser(state *ParseState) *models.StatEvent {
   // td +4
-  // yds +1 per 25 yds 
+  // yds +1 per 25 yds
   // -2 per interception
   yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
   touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
@@ -349,7 +349,7 @@ func passingParser(state *ParseState) *models.StatEvent {
 
 func kickReturnParser(state *ParseState) *models.StatEvent {
   // td +6
-  // 1 pt per 10 yds  
+  // 1 pt per 10 yds
   yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
   touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
   event := buildStatEvent(state)

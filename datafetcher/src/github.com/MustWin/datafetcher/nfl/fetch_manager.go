@@ -1,9 +1,9 @@
 package nfl
 
 import (
-  "lib"
-  "lib/model"
-  "nfl/models"
+  "github.com/MustWin/datafetcher/lib"
+  "github.com/MustWin/datafetcher/lib/model"
+  "github.com/MustWin/datafetcher/nfl/models"
   "time"
   "log"
 )
@@ -18,11 +18,11 @@ type FetchManager struct {
   Orm model.Orm
 }
 
-func (mgr *FetchManager) Startup() error { 
-  return mgr.Daily() 
+func (mgr *FetchManager) Startup() error {
+  return mgr.Daily()
 }
 
-func (mgr *FetchManager) Daily() error { 
+func (mgr *FetchManager) Daily() error {
   // Refresh all games for each season
   /*games := make([]*models.Game, 0)
   for _, seasonType := range(NflSeasons) {
@@ -49,7 +49,7 @@ func (mgr *FetchManager) Daily() error {
     mgr.schedulePbpCollection(game)
   }
 
-  // Create markets for 
+  // Create markets for
   mgr.createMarkets(games)
 */
   return nil

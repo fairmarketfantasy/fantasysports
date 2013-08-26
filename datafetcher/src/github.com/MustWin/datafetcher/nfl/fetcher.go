@@ -1,18 +1,18 @@
 package nfl
 
 import (
-  "nfl/models"
-  "lib/fetchers"
-  "lib/parsers"
+  "github.com/MustWin/datafetcher/nfl/models"
+  "github.com/MustWin/datafetcher/lib/fetchers"
+  "github.com/MustWin/datafetcher/lib/parsers"
   //"io"
   "fmt"
 )
 
-// Initialize these with these set  year int, seasonType string, seasonWeek string, 
+// Initialize these with these set  year int, seasonType string, seasonWeek string,
 type Fetcher struct {
   Year int
   NflSeason string // PRE | REG | PST
-  NflSeasonWeek int 
+  NflSeasonWeek int
   FetchMethod fetchers.FetchMethod
 }
 
