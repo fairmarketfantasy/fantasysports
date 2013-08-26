@@ -51,6 +51,9 @@ angular.module('app.services')
         },
         create: function(user_attrs){
           return $http({method: 'POST', url: '/users', data: {user: user_attrs}});
+        },
+        login: function(user_attrs){
+          return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});
         }
       },
       markets: {
