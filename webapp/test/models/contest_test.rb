@@ -3,8 +3,11 @@ require 'test_helper'
 class ContestTest < ActiveSupport::TestCase
   describe Contest do
 
+    before(:all) do
+      setup_simple_market
+    end
     let(:u) { users(:one) }
-    let(:m) { markets(:one) }
+    let(:m) { @market }
     let(:c) { Contest.new(owner:     u,
                           type:      "194",
                           buy_in:    10,
