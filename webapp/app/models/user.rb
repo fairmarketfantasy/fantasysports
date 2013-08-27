@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   has_many :rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner
   has_one  :customer_object
+  has_many :recipients
 
 
   def self.find_for_facebook_oauth(auth)
