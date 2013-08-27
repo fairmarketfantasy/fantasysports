@@ -1,8 +1,8 @@
 package models
 
 import (
-  "lib"
-  "lib/model"
+  "github.com/MustWin/datafetcher/lib"
+  "github.com/MustWin/datafetcher/lib/model"
   "time"
   "reflect"
   "log"
@@ -54,7 +54,7 @@ type GamesMarket struct {
 
 func valueToString(val reflect.Value) string {
   kind := val.Kind()
-  
+
   switch kind {
   case reflect.Bool:
     if val.Bool() {
@@ -187,7 +187,7 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
 
 type Team struct {
   NflModel
-  Id int 
+  Id int
   SportId int `model:"key"`
   Abbrev string `model:"key"`
   Name string

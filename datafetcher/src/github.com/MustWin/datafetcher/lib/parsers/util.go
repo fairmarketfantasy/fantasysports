@@ -3,7 +3,7 @@ package parsers
 import (
   "encoding/xml"
   "reflect"
-  "lib"
+  "github.com/MustWin/datafetcher/lib"
   "errors"
   "strconv"
   "time"
