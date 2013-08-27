@@ -16,6 +16,7 @@
 //= require jquery-2.0.3.min.js
 //= require underscore-min.js
 //= require jsonh
+//= require init-stripe
 //= require angular-1.0.7.min.js
 //= require angular-flash.min.js
 //= require moment.min.js
