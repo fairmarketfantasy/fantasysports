@@ -3,6 +3,8 @@ class Recipient < ActiveRecord::Base
   belongs_to :user
   has_one    :customer_object, through: :user
 
+  validates :stripe_id, :user_id, :legal_name, :routing, :account_num, presence: true
+
   def self.create(args={})
     user  = args[:user]
     raise ArgumentError, "Must be a confirmed user to create a recipient" unless user.confirmed?

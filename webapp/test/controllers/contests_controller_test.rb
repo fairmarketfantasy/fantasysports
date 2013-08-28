@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ContestsControllerTest < ActionController::TestCase
   setup do
-    sign_in(users(:one))
+    sign_in(create(:user))
   end
 
   test "join action" do

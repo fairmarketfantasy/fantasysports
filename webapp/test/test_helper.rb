@@ -122,6 +122,13 @@ FactoryGirl.define do
     positions Positions.default_NFL
     contest_type "970"
   end
+
+  #valid account creds
+  factory :good_recipient, class: Recipient do
+    stripe_id     { generate(:random_string) }
+    account_num '000123456789'
+    routing     '110000000'
+  end
 end
 
 # Yes, apparently this is supposed to be at the bottom.  I just work here.

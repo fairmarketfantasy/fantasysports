@@ -3,6 +3,7 @@ angular.module('app', ['app.services', 'app.directives', 'app.filters', 'app.con
     $routeProvider.
       when('/', {templateUrl: '/partials/home.html', controller: 'HomeController'}).
       when('/market/:id', {templateUrl: '/partials/market.html', controller: 'MarketController'}).
+      when('/account', {templateUrl: '/partials/account.html', controller: 'AccountController'}).
     //...
       otherwise({redirectTo: '/'});
   }]).
