@@ -56,6 +56,11 @@ angular.module('app.services')
           return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});
         }
       },
+      account: {
+        get_recipients: function(){
+          return $http({method: 'GET', url: '/account/recipients'});
+        }
+      },
       markets: {
         show: function(id) {
           return $http({method: 'GET', url: '/markets/' + id});

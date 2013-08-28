@@ -15,6 +15,12 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:show]
 
+  resources :account, only: [] do
+    collection do
+      get 'recipients'
+    end
+  end
+
   resources :rosters, only: [:create, :show, :destroy] do
     member do
       post 'submit', :action => 'submit'
