@@ -18,17 +18,18 @@ BEGIN
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'roster % does not exist', _roster_id;
 	END IF;
-	
-	SELECT bets FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id INTO _bets;
+
+	SELECT bets FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
+			(locked_at is null or locked_at > CURRENT_TIMESTAMP) INTO _bets;
 	IF NOT FOUND THEN
-		RAISE EXCEPTION 'player % could not be found in market %', _player_id, _roster.market_id;
+		RAISE EXCEPTION 'player % could not be found in market or is locked%', _player_id, _roster.market_id;
 	END IF;
-		
+
 	SELECT total_bets from markets WHERE id = _roster.market_id INTO _total_bets;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'could not find total_bets in market %', _roster.market_id;
 	END IF;
-	
+
 	PERFORM id FROM rosters_players WHERE roster_id = _roster_id AND player_id = _player_id;
 	IF NOT FOUND THEN
 		_buy_in := _roster.buy_in;
@@ -36,7 +37,7 @@ BEGIN
 	END IF;
 	SELECT price(_bets, _total_bets, _buy_in) INTO _price;
 END;
-$$ LANGUAGE plpgsql;	
+$$ LANGUAGE plpgsql;
 
 
 /* buy a player for a roster */
@@ -66,16 +67,18 @@ BEGIN
 	IF _total_bets IS NULL THEN
 		RAISE EXCEPTION 'total_bets is null for market %', _roster.market_id;
 	END IF;
-	SELECT bets FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id INTO _bets;
-	--RAISE NOTICE 'bets for player %: %', _player_id, _bets;
+
+	SELECT bets FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
+			(locked_at is null or locked_at > CURRENT_TIMESTAMP) INTO _bets;
 	IF NOT FOUND THEN
-		RAISE EXCEPTION 'could not find player %', _player_id;
+		RAISE EXCEPTION 'could not find player % or player is locked', _player_id;
 	END IF;
-	--RAISE NOTICE 'price(%, %, %)', _bets, _total_bets, _roster.buy_in;
+
 	select price(_bets, _total_bets, _roster.buy_in) INTO _price;
 	IF _price > _roster.remaining_salary THEN
 		RAISE EXCEPTION 'roster % does not have sufficient funds (%) to purchase player % for %', _roster_id, _roster.remaining_salary, _player_id, _price;
 	END IF;
+
 	--perform the updates.
 	INSERT INTO rosters_players(player_id, roster_id) values (_player_id, _roster_id);
 	UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
@@ -114,12 +117,13 @@ BEGIN
 	IF _total_bets IS NULL THEN
 		RAISE EXCEPTION 'total_bets is null for market %', _roster.market_id;
 	END IF;
-	SELECT bets FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id INTO _bets;
-	--RAISE NOTICE 'bets for player %: %', _player_id, _bets;
+
+	SELECT bets FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
+			(locked_at is null or locked_at > CURRENT_TIMESTAMP) INTO _bets;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'could not find player %', _player_id;
 	END IF;
-	--RAISE NOTICE 'price(%, %, %)', _bets, _total_bets, _roster.buy_in;
+
 	select price(_bets, _total_bets, 0) INTO _price;
 
 	--perform the updates.
@@ -141,11 +145,11 @@ BEGIN
 	delete from rosters;
 	delete from market_orders;
 
-	insert into markets values (1, 'test', 300, 1, 
-	CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 
+	insert into markets values (1, 'test', 300, 1,
+	CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
 	'published', 300, 1);
 
-	insert into players(id, name, total_games, total_points) values 
+	insert into players(id, name, total_games, total_points) values
 	(1, 'bob', 0, 0),
 	(2, 'jim', 0, 0),
 	(3, 'tom', 0, 0);
@@ -155,11 +159,11 @@ BEGIN
 	(2, 1, 1, 10, 100000, 'h2h', 'active'),
 	(3, 1, 1, 10, 100000, 'h2h', 'active');
 
-	INSERT INTO market_players VALUES 
+	INSERT INTO market_players VALUES
 	(1, 1, 1, 0, 100),
 	(2, 1, 2, 0, 100),
 	(3, 1, 3, 0, 100);
-	
+
 END;
 $$ LANGUAGE plpgsql;
 
