@@ -3,6 +3,7 @@ package lib
 import (
 	"log"
 	"reflect"
+	"unicode"
 )
 
 // This takes a slice of pointers and prints 'em out
@@ -18,15 +19,14 @@ func SnakeCase(name string) string {
 	firstTime := true
 
 	for _, chr := range name {
-		if isUpper := 'A' <= chr && chr <= 'Z'; isUpper {
-			if firstTime == true {
-				firstTime = false
-			} else {
+		if !firstTime {
+			if unicode.IsUpper(chr) {
 				newstr = append(newstr, '_')
 			}
-			chr -= ('A' - 'a')
+		} else {
+			firstTime = false
 		}
-		newstr = append(newstr, chr)
+		newstr = append(newstr, unicode.ToLower(chr))
 	}
 	return string(newstr)
 }
@@ -39,7 +39,7 @@ func CamelCase(name string) string {
 		switch {
 		case upNextChar:
 			upNextChar = false
-			chr -= ('a' - 'A')
+			chr = unicode.ToUpper(chr)
 		case chr == '_':
 			upNextChar = true
 			continue
