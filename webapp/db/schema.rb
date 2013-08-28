@@ -11,10 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130827004116) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 20130828025536) do
 
   create_table "contests", force: true do |t|
     t.integer  "owner",           null: false
@@ -97,10 +94,11 @@ ActiveRecord::Schema.define(version: 20130827004116) do
   end
 
   create_table "market_players", force: true do |t|
-    t.integer "market_id",     null: false
-    t.integer "player_id",     null: false
-    t.decimal "initial_price"
-    t.decimal "bets"
+    t.integer  "market_id",                 null: false
+    t.integer  "player_id",                 null: false
+    t.decimal  "shadow_bets"
+    t.decimal  "bets",        default: 0.0
+    t.datetime "locked_at"
   end
 
   add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
