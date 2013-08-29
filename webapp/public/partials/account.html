@@ -1,6 +1,10 @@
 <h3>This is your Account</h3>
 <div ng-repeat="recipient in recipients">
-  {{ recipient }}
+  <ul>
+    <li>Legal Name: {{ recipient.legal_name }}</li>
+    <li>Routing: {{ recipient.routing }}</li>
+    <li>Account Num: {{ recipient.account_num }}</li>
+  </ul>
 </div>
 
 <h4>Add a New Account for Deposits<h4>
