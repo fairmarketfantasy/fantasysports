@@ -7,10 +7,11 @@ angular.module("app.controllers")
 
   $scope.newRecipient = {};
   $scope.createRecipient = function(){
-    console.log('createredip');
     fs.recipients.create($scope.newRecipient).then(function(resp){
-      if(resp.errors.length){
+      if(resp.errors && resp.errors.length){
         flash.error = resp.errors[0];
+      } else {
+        $scope.recipients.push(resp);
       }
     });
   };
