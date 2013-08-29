@@ -42,6 +42,13 @@ class ActiveSupport::TestCase
     end
     @market.save!
   end
+
+  #returns hash with routing and account_num
+  def valid_account_creds
+    build(:good_recipient, stripe_id: nil).attributes.select do |a|
+      [:routing, :account_num].include?(a.to_sym)
+    end
+  end
 end
 
 
@@ -61,6 +68,7 @@ FactoryGirl.define do
   factory :user do
     name "user footballfan"
     email { generate(:email) }
+    confirmed_at { Time.now }
     password "123456"
     password_confirmation "123456"
   end

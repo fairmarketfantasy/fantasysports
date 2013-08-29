@@ -4,14 +4,19 @@ class Recipient < ActiveRecord::Base
   has_one    :customer_object, through: :user
 
   validates :stripe_id, :user_id, :legal_name, :routing, :account_num, presence: true
+  validate  :user_must_be_confirmed
+
+  def user_must_be_confirmed
+    errors.add(:user, "must be confirmed") unless user.confirmed?
+  end
 
   def self.create(args={})
     user  = args[:user]
-    raise ArgumentError, "Must be a confirmed user to create a recipient" unless user.confirmed?
-    name        = args[:name] || user.name
+    name        = args[:legal_name] || user.name
     account_num = args[:account_num]
     routing     = args[:routing]
-    resp = Stripe::Recipient.create({
+    # begin
+      resp = Stripe::Recipient.create({
                                       name:  name,
                                       type:  "individual",
                                       email: user.email,
@@ -20,6 +25,9 @@ class Recipient < ActiveRecord::Base
                                                       account_number: account_num
                                                     }
                                     })
+    # rescue => e
+      #TODO handle bad request, i.e. routing number must be 9 chars, etc...
+    # end
     super({ user_id:     user.id,
             stripe_id:   resp.id,
             legal_name:  resp.name,

@@ -50,7 +50,4 @@ class OtherRoutesTest < ActionDispatch::IntegrationTest
     assert_routing({path: "/webhooks", method: :post}, { controller: "webhooks", action: "new" })
   end
 
-  test "account route" do
-    assert_routing({path: "/account/recipients", method: :get}, { controller: "account", action: "recipients" })
-  end
 end
