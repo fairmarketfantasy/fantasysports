@@ -1,3 +1,10 @@
-<div ng-controller="AccountController">
-  <h3>This is your Account</h3>
+<h3>This is your Account</h3>
+<div ng-repeat="recipient in recipients">
+  {{ recipient }}
 </div>
+
+<h4>Add a New Account for Deposits<h4>
+<input type="text" placeholder="account number" ng-model="newRecipient.account_num"/>
+<input type="text" placeholder="routing" ng-model="newRecipient.routing"/>
+<input type="text" placeholder="legal name" ng-model="newRecipient.legal_name"/>
+<a href="javascript://" ng-click="createRecipient()">Save</a>
