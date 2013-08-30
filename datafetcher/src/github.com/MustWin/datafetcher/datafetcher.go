@@ -101,6 +101,14 @@ func main() {
 		orm.SaveAll(statEvents)
 		lib.PrintPtrs(statEvents)
 
+	case "all":
+		log.Println("Fetching teams, schedule, pbp, roster, and stats")
+		orm.SaveAll(fetcher.GetStandings())
+		orm.SaveAll(fetcher.GetSchedule())
+		orm.SaveAll(fetcher.GetPlayByPlay(*awayTeam, *homeTeam))
+		orm.SaveAll(fetcher.GetTeamRoster(*team))
+		orm.SaveAll(fetcher.GetGameStatistics(*awayTeam, *homeTeam))
+
 	case "serve":
 		log.Println("Periodically fetching data for your pleasure.")
 		mgr := nfl.FetchManager{Orm: orm, Fetcher: fetcher}
