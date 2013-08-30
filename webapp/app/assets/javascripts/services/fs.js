@@ -64,6 +64,14 @@ angular.module('app.services')
           return $http({method: 'POST', url: '/recipients', data: {recipient: recipient_attrs}});
         }
       },
+      cards: {
+        list: function(){
+          return $http({method: 'GET', url: '/cards'});
+        },
+        create: function(token){
+          return $http({method: 'POST', url: '/cards', data: {card: {token: token}}});
+        }
+      },
       markets: {
         show: function(id) {
           return $http({method: 'GET', url: '/markets/' + id});

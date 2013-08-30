@@ -21,8 +21,7 @@ class CustomerObject < ActiveRecord::Base
     end
     resp = Stripe::Customer.create({
                                       description: "Customer for #{user.email}",
-                                      card: card,
-                                      token: token
+                                      card: card || token
                                     })
     super({stripe_id: resp.id, user_id: user.id})
   end
@@ -69,10 +68,8 @@ class CustomerObject < ActiveRecord::Base
     end
   end
 
-  private
-
-    def retrieve
-      Stripe::Customer.retrieve(stripe_id)
-    end
+  def retrieve
+    Stripe::Customer.retrieve(stripe_id)
+  end
 
 end
