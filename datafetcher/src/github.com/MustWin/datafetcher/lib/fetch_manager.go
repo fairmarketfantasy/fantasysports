@@ -3,7 +3,6 @@ package lib
 import (
 	"github.com/robfig/cron"
 	"log"
-	"sync"
 	"time"
 )
 
@@ -42,10 +41,7 @@ func (f *FetchManagerBase) Schedule(name string, futureTime time.Time, fn func()
 
 // Calls to Start block
 func (f *FetchManagerBase) Start(fm FetchManager) {
-	var wg sync.WaitGroup
-	wg.Add(1)
 	fm.Startup()
 	fm.ScheduleCron("0 0 0 * * *", func() { fm.Daily() })
 	f.Runner.Start()
-	wg.Wait()
 }

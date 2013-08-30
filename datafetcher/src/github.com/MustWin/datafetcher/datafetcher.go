@@ -7,6 +7,7 @@ import (
 	"github.com/MustWin/datafetcher/lib/model"
 	"github.com/MustWin/datafetcher/nfl"
 	"github.com/MustWin/datafetcher/nfl/models"
+	"github.com/MustWin/datafetcher/market"
 	"log"
 	"time"
 	"fmt"
@@ -45,10 +46,19 @@ var homeTeam = flag.String("home", "NYG", "Home team of game to fetch. Only pass
 var awayTeam = flag.String("away", "DAL", "Away team of game to fetch. Only pass with pbp")
 var playId = flag.String("playId", "28140456-0132-4829-ae38-d68e10a5acc9", "PlayId of the summary to fetch. Only pass with play.")
 
+// to run market tender
+var marketWait = flag.String("marketWait", "5s", "amount of time to sleep between market check-ups, in time.Duration (ie 2m = 2 minutes)")
+var tendMarket bool
+
+func init() {
+	flag.BoolVar(&tendMarket, "market", false, "keep market up to date")
+	flag.BoolVar(&tendMarket, "m", false, "keep market up to date (shorthand")
+}
+
 func main() {
 	flag.Parse()
 	fmt.Println("fetching data for year", *year)
-	//fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
+	// fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
 	fetcher := nfl.Fetcher{*year, *season, *week, fetchers.HttpFetcher}
 	var orm model.Orm
 	if *fetch == "init" {
@@ -63,13 +73,13 @@ func main() {
 	case "init":
 		log.Println("Initializing sports")
 		for _, sport := range lib.Sports {
-			s := lib.Sport{}
-			s.Name = sport
+			s := lib.Sport{Name:sport}
 			err := orm.Save(&s)
 			if err != nil {
 				log.Println(err)
+			} else {
+				log.Println("Added " + sport)
 			}
-			log.Println("Added " + sport)
 		}
 	case "teams":
 		log.Println("Fetching Team data")
@@ -116,6 +126,14 @@ func main() {
 
 	default:
 		flag.PrintDefaults()
-
 	}
+
+	if tendMarket {
+		// use this goroutine to tend the market
+		market.Keep(&orm, *marketWait)
+	} else if *fetch == "serve" {
+		//block the current goroutine indefinitely
+		<- make(chan bool)
+	}
+
 }
