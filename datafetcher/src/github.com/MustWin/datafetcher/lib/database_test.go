@@ -1,8 +1,8 @@
 package lib
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 //test the beedb model. mostly for my own edification
@@ -18,5 +18,6 @@ func TestGetDb(t *testing.T) {
 	}
 	fmt.Printf("attributes: %v\n", attrs)
 
-}
 
+
+}

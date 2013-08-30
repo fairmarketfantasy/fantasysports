@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
 // "log"
 )
 
@@ -155,9 +156,9 @@ func scanStructIntoMap(obj interface{}) (map[string]interface{}, error) {
 
 		mapKey := snakeCasedName(fieldName)
 		value := dataStruct.FieldByName(fieldName)
-    if value.Kind().String() != "struct" || value.Type().String() == "time.Time" { 
-		  mapped[mapKey] = value.Interface()
-    }
+		if value.Kind().String() != "struct" || value.Type().String() == "time.Time" {
+			mapped[mapKey] = value.Interface()
+		}
 	}
 
 	return mapped, nil

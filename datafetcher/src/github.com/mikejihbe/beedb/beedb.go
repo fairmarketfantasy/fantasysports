@@ -8,13 +8,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
-  //"log"
+	//"log"
 )
 
 var OnDebug = false
 var PluralizeTableNames = false
-
-
 
 type Model struct {
 	Db              *sql.DB
@@ -36,15 +34,15 @@ type Model struct {
 }
 
 /**
- * Add New sql.DB in the future i will add ConnectionPool.Get() 
+ * Add New sql.DB in the future i will add ConnectionPool.Get()
  */
 func New(db *sql.DB, options ...interface{}) (m Model) {
-  if len(options) == 0 {
-    m = Model{Db: db, Adapter: "default"}
-  } else {
-    m = Model{Db: db, Adapter: options[0].(string)}
-  }
-  m.InitModel()
+	if len(options) == 0 {
+		m = Model{Db: db, Adapter: "default"}
+	} else {
+		m = Model{Db: db, Adapter: options[0].(string)}
+	}
+	m.InitModel()
 	return
 }
 
@@ -273,21 +271,25 @@ func (orm *Model) FindMap() (resultsSlice []map[string][]byte, err error) {
 			case reflect.String:
 				str = vv.String()
 				result[key] = []byte(str)
-			//时间类型	
+			//时间类型
 			case reflect.Struct:
 				str = rawValue.Interface().(time.Time).Format("2006-01-02 15:04:05.000 -0700")
 				result[key] = []byte(str)
 			case reflect.Bool:
-				if (vv.Bool()) {
-				  result[key] = []byte("1")
+				if vv.Bool() {
+					result[key] = []byte("1")
 				} else {
-				  result[key] = []byte("0")
+					result[key] = []byte("0")
 				}
 			}
 		}
 		resultsSlice = append(resultsSlice, result)
 	}
 	return resultsSlice, nil
+}
+
+func (orm *Model) GetSql() string {
+	return orm.generateSql()
 }
 
 func (orm *Model) generateSql() (a string) {
@@ -454,9 +456,9 @@ func (orm *Model) Insert(properties map[string]interface{}) (int64, error) {
 		statement = fmt.Sprintf("%v RETURNING %v", statement, snakeCasedName(orm.PrimaryKey))
 		var id int64
 		err := orm.Db.QueryRow(statement, args...).Scan(&id)
-    if err != nil {
+		if err != nil {
 			return -1, err
-    }
+		}
 		return id, nil
 	} else {
 		res, err := orm.Exec(statement, args...)
@@ -669,23 +671,23 @@ func (orm *Model) InitModel() {
 	orm.HavingStr = ""
 	orm.ParamIteration = 1
 	switch orm.Adapter {
-  case "default":
-    orm.ColumnStr = "*"
-    orm.PrimaryKey = "Id"
-    orm.QuoteIdentifier = "`"
-    orm.ParamIdentifier = "?"
-    orm.ParamIteration = 1
-  case "pg":
+	case "default":
+		orm.ColumnStr = "*"
+		orm.PrimaryKey = "Id"
+		orm.QuoteIdentifier = "`"
+		orm.ParamIdentifier = "?"
+		orm.ParamIteration = 1
+	case "pg":
 		orm.ColumnStr = "id"
-    orm.PrimaryKey = "Id"
-    orm.QuoteIdentifier = "\""
-    orm.ParamIdentifier = orm.Adapter
-    orm.ParamIteration = 1
+		orm.PrimaryKey = "Id"
+		orm.QuoteIdentifier = "\""
+		orm.ParamIdentifier = orm.Adapter
+		orm.ParamIteration = 1
 	case "mssql":
 		orm.ColumnStr = "id"
-    orm.PrimaryKey = "id"
-    orm.QuoteIdentifier = ""
-    orm.ParamIdentifier = orm.Adapter
-    orm.ParamIteration = 1
+		orm.PrimaryKey = "id"
+		orm.QuoteIdentifier = ""
+		orm.ParamIdentifier = orm.Adapter
+		orm.ParamIteration = 1
 	}
 }

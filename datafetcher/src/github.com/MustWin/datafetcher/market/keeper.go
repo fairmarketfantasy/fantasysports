@@ -1,23 +1,33 @@
 package market
 
 import (
-	"log"
 	_ "github.com/MustWin/datafetcher/lib"
 	"github.com/MustWin/datafetcher/lib/model"
 	"github.com/MustWin/datafetcher/nfl/models"
+	"log"
 	"time"
 )
 
-func Keep(orm *model.Orm, waitTime string) {
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
+
+var orm *model.Orm
+
+func SetOrm(_orm *model.Orm) {
+	orm = _orm
+}
+
+func Keep(waitTime string) {
 	log.Println("Keeping the market(s) tidy, wait time", waitTime)
 	waitDuration, err := time.ParseDuration(waitTime)
-	if (err != nil) {
+	if err != nil {
 		log.Panic("could not parse market wait ", err)
 	}
 	for {
-		publish(orm)
-		open(orm)
-		close(orm)
+		publish()
+		open()
+		close()
 		time.Sleep(waitDuration)
 	}
 }
@@ -25,17 +35,30 @@ func Keep(orm *model.Orm, waitTime string) {
 //find markets that need to be published
 // ie published_at is < now and state is empty
 // for each, publish()
-func publish(orm *model.Orm) {
+func publish() {
 	log.Println("finding markets to publish")
 	var markets []models.Market
-	(*orm).GetDb().Where("published_at < $1 and (state is null or state = $2", time.Now(), "").FindAll(&markets)
+	(*orm).GetDb().Where("published_at <= $1 and (state is null or state = $2)", time.Now(), "").FindAll(&markets)
+	sql := (*orm).GetDb().Where("published_at <= $1 and (state is null or state = $2)", time.Now(), "").GetSql()
+	log.Println("sql: ", sql)
 	log.Printf("found %v markets to publish\n", len(markets))
+	for _, market := range markets {
+		publishMarket(&market)
+	}
 }
 
-func open(orm *model.Orm) {
+func publishMarket(market *models.Market) {
+	log.Println("publishing market", market.Id)
+	market.State = "published"
+	market.PublishedAt = time.Now()
+	(*orm).Save(market)
+	log.Println("published market")
+}
+
+func open() {
 	log.Println("opening markets")
 }
 
-func close(orm *model.Orm) {
+func close() {
 	log.Println("closing markets")
 }
