@@ -1,10 +1,10 @@
 package main
 
 import (
-	_ "github.com/go-sql-driver/mysql"
 	"database/sql"
 	"fmt"
 	"github.com/astaxie/beedb"
+	_ "github.com/go-sql-driver/mysql"
 	"strconv"
 	"time"
 )
@@ -116,7 +116,7 @@ func update() {
 }
 
 func updatesql() {
-	//original SQL update 
+	//original SQL update
 	t := make(map[string]interface{})
 	t["username"] = "updateastaxie"
 	//update one
@@ -126,7 +126,7 @@ func updatesql() {
 }
 
 func findmap() {
-	//Original SQL Backinfo resultsSlice []map[string][]byte 
+	//Original SQL Backinfo resultsSlice []map[string][]byte
 	//default PrimaryKey id
 	c, _ := orm.
 		SetTable("userinfo").
@@ -138,7 +138,7 @@ func findmap() {
 }
 
 func groupby() {
-	//Original SQL Group By 
+	//Original SQL Group By
 	b, _ := orm.SetTable("userinfo").GroupBy("username").Having("username='updateastaxie'").FindMap()
 	fmt.Println(b)
 }

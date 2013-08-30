@@ -2,9 +2,9 @@ package lib
 
 import (
 	"database/sql"
-	"log"
 	_ "github.com/bmizerany/pq"
 	"github.com/mikejihbe/beedb"
+	"log"
 )
 
 var orm *beedb.Model
@@ -19,7 +19,7 @@ func init() {
 	bdb := beedb.New(db, "pg")
 	orm = &bdb
 
- 	beedb.OnDebug=true
+	beedb.OnDebug = true
 	beedb.OnDebug = false
 	beedb.PluralizeTableNames = true
 }

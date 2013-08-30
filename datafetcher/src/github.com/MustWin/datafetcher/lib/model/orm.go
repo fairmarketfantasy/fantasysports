@@ -34,14 +34,13 @@ func (o *OrmBase) GetDb() *beedb.Model {
 }
 
 func (o *OrmBase) Save(m Model) error {
-	ptr := reflect.ValueOf(m)
-	val := reflect.Indirect(ptr)
+	val := reflect.Indirect(reflect.ValueOf(m))
 	if !val.CanSet() {
-		panic("Value %s passed to Save is not settable")
+		log.Panic("Value %s passed to Save is not settable", m)
 	}
 
 	// Set CreatedAt, UpdatedAt, etc
-	setConventionalAttributes(val)
+	setTimeStamps(val)
 	setDefaultAttributes(val, o.DefaultAttributes)
 
 	err, cont := m.BeforeSave(o, m)
@@ -65,25 +64,15 @@ func (orm *OrmBase) SaveAll(list interface{}) {
 	}
 }
 
-// OrmBase Helpers
-// var zeroTime time.Time
+var zeroTime time.Time
 
-func setConventionalAttributes(val reflect.Value) {
-	// Check for created at
-	field := val.FieldByName("CreatedAt")
-	if field.IsValid() {
-		// interfaces don't equal eachother even if the values are the same, so we compare strings
-		if field.String() == reflect.Zero(field.Type()).String() {
-			field.Set(reflect.ValueOf(time.Now()))
-		}
+func setTimeStamps(val reflect.Value) {
+	if createdAt := val.FieldByName("CreatedAt"); createdAt.IsValid() && createdAt.Interface() == zeroTime {
+		createdAt.Set(reflect.ValueOf(time.Now()))
 	}
-
-	// Check for updated at
-	field = val.FieldByName("UpdatedAt")
-	if field.IsValid() {
-		field.Set(reflect.ValueOf(time.Now()))
+	if updatedAt := val.FieldByName("UpdatedAt"); updatedAt.IsValid() {
+		updatedAt.Set(reflect.ValueOf(time.Now()))
 	}
-
 }
 
 func setDefaultAttributes(val reflect.Value, attributes map[string]interface{}) {

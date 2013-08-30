@@ -2,15 +2,15 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/MustWin/datafetcher/lib"
 	"github.com/MustWin/datafetcher/lib/fetchers"
 	"github.com/MustWin/datafetcher/lib/model"
+	"github.com/MustWin/datafetcher/market"
 	"github.com/MustWin/datafetcher/nfl"
 	"github.com/MustWin/datafetcher/nfl/models"
-	"github.com/MustWin/datafetcher/market"
 	"log"
 	"time"
-	"fmt"
 )
 
 // Major options
@@ -73,7 +73,7 @@ func main() {
 	case "init":
 		log.Println("Initializing sports")
 		for _, sport := range lib.Sports {
-			s := lib.Sport{Name:sport}
+			s := lib.Sport{Name: sport}
 			err := orm.Save(&s)
 			if err != nil {
 				log.Println(err)
@@ -130,10 +130,11 @@ func main() {
 
 	if tendMarket {
 		// use this goroutine to tend the market
-		market.Keep(&orm, *marketWait)
+		market.SetOrm(&orm)
+		market.Keep(*marketWait)
 	} else if *fetch == "serve" {
 		//block the current goroutine indefinitely
-		<- make(chan bool)
+		<-make(chan bool)
 	}
 
 }

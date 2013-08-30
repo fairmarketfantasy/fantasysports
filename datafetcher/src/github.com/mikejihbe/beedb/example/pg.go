@@ -106,7 +106,7 @@ func update() {
 }
 
 func updatesql() {
-	//original SQL update 
+	//original SQL update
 	t := make(map[string]interface{})
 	t["username"] = "updateastaxie"
 	//update one
@@ -116,14 +116,14 @@ func updatesql() {
 }
 
 func findmap() {
-	//Original SQL Backinfo resultsSlice []map[string][]byte 
+	//Original SQL Backinfo resultsSlice []map[string][]byte
 	//default PrimaryKey id
 	c, _ := orm.SetTable("userinfo").SetPK("uid").Where(2).Select("uid,username").FindMap()
 	fmt.Println(c)
 }
 
 func groupby() {
-	//Original SQL Group By 
+	//Original SQL Group By
 	b, _ := orm.SetTable("userinfo").GroupBy("username").Having("username='updateastaxie'").Select("username").FindMap()
 	fmt.Println(b)
 }
