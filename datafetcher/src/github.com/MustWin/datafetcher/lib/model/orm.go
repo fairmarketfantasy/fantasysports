@@ -66,6 +66,7 @@ func (orm *OrmBase) SaveAll(list interface{}) {
 }
 
 // OrmBase Helpers
+// var zeroTime time.Time
 
 func setConventionalAttributes(val reflect.Value) {
 	// Check for created at
