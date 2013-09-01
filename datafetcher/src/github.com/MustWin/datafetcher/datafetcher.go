@@ -6,7 +6,6 @@ import (
 	"github.com/MustWin/datafetcher/lib"
 	"github.com/MustWin/datafetcher/lib/fetchers"
 	"github.com/MustWin/datafetcher/lib/model"
-	"github.com/MustWin/datafetcher/market"
 	"github.com/MustWin/datafetcher/nfl"
 	"github.com/MustWin/datafetcher/nfl/models"
 	"log"
@@ -45,15 +44,6 @@ var team = flag.String("team", "DAL", "Team to fetch. Only pass with roster")
 var homeTeam = flag.String("home", "NYG", "Home team of game to fetch. Only pass with pbp")
 var awayTeam = flag.String("away", "DAL", "Away team of game to fetch. Only pass with pbp")
 var playId = flag.String("playId", "28140456-0132-4829-ae38-d68e10a5acc9", "PlayId of the summary to fetch. Only pass with play.")
-
-// to run market tender
-var marketWait = flag.String("marketWait", "5s", "amount of time to sleep between market check-ups, in time.Duration (ie 2m = 2 minutes)")
-var tendMarket bool
-
-func init() {
-	flag.BoolVar(&tendMarket, "market", false, "keep market up to date")
-	flag.BoolVar(&tendMarket, "m", false, "keep market up to date (shorthand")
-}
 
 func main() {
 	flag.Parse()
@@ -123,18 +113,11 @@ func main() {
 		log.Println("Periodically fetching data for your pleasure.")
 		mgr := nfl.FetchManager{Orm: orm, Fetcher: fetcher}
 		mgr.Start(&mgr)
+		//block the current goroutine indefinitely
+		<-make(chan bool)
 
 	default:
 		flag.PrintDefaults()
-	}
-
-	if tendMarket {
-		// use this goroutine to tend the market
-		market.SetOrm(&orm)
-		market.Keep(*marketWait)
-	} else if *fetch == "serve" {
-		//block the current goroutine indefinitely
-		<-make(chan bool)
 	}
 
 }

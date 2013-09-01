@@ -8,6 +8,7 @@ class Market < ActiveRecord::Base
 
   validates :shadow_bets, :shadow_bet_rate, presence: true
 
+  scope :published_after,   ->(time) { where('published_at > ?', time)}
   scope :opened_after,      ->(time) { where("opened_at > ?", time) }
   scope :closed_after,      ->(time) { where('closed_at > ?', time) }
 

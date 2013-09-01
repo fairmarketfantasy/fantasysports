@@ -168,6 +168,78 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+------------------------- publish markets ------------------------
+
+
+CREATE OR REPLACE FUNCTION publish_market(_market_id integer) RETURNS VOID AS $$
+DECLARE
+	_total_ppg numeric;
+	_market markets;
+	_game games;
+	_bets numeric;
+BEGIN
+	--ensure that the market exists and may be published
+	SELECT * FROM markets WHERE id = _market_id AND published_at < CURRENT_TIMESTAMP AND 
+			(state is null OR state = '') FOR UPDATE into _market;
+	IF NOT FOUND THEN
+		RAISE NOTICE 'market % is not publishable', _market_id;
+		RETURN;
+	END IF;
+
+	--check that shadow_bets is something reasonable
+	IF _market.shadow_bets = 0 THEN
+		RAISE NOTICE 'shadow bets is 0, setting to 1000';
+		UPDATE markets set shadow_bets = 1000 where id = _market_id;
+	END IF;
+
+	--just to be safe, re-set the total bets to shadow bets
+	UPDATE markets set total_bets = shadow_bets where id = _market_id;
+
+	--ensure that the market has games and the games have players
+	PERFORM game_stats_id from games_markets where market_id = _market_id;
+	IF NOT FOUND THEN
+		UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP where id = _market_id;
+		RAISE NOTICE 'market % has no associated games -- will be closed', _market_id;
+		return;
+	END IF;
+
+	--ensure that there are no associated market_players, rosters, rosters_players, 
+	DELETE FROM market_players WHERE market_id = _market_id;
+	DELETE FROM market_orders where market_id = _market_id;
+	DELETE FROM rosters where market_id = _market_id;
+
+	--get the total ppg
+	select sum(
+		(total_points + .01) / (total_games + .1) -- ghetto lagrangian filtering
+	)
+	from players where team in (
+		select home_team from games g, games_markets gm where gm.market_id = _market_id and g.stats_id = gm.game_stats_id union
+		select away_team from games g, games_markets gm where gm.market_id = _market_id and g.stats_id = gm.game_stats_id)
+	INTO _total_ppg;
+
+	--for each game, enter players into market_players with the game's start time as their lock date
+	INSERT INTO market_players (market_id, player_id, shadow_bets, bets, locked_at)
+		SELECT 
+			_market_id, p.id, 
+			(((p.total_points + .01) / (p.total_games + .1)) / _total_ppg) * _market.shadow_bets, 
+			(((p.total_points + .01) / (p.total_games + .1)) / _total_ppg) * _market.shadow_bets, 
+			g.game_time
+		FROM players p, games g, games_markets gm WHERE
+		gm.market_id = _market_id AND
+		g.stats_id = gm.game_stats_id AND
+		(p.team = g.home_team OR p.team = g.away_team);
+
+	--set market to published
+	UPDATE markets SET state = 'published' where id = _market_id;
+	RAISE NOTICE 'published market %', _market_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+
 
 
 
