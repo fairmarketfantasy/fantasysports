@@ -22,18 +22,18 @@ func (mgr *FetchManager) Startup() error {
 
 func (mgr *FetchManager) Daily() error {
 	// Refresh all games for each season
-	/*games := make([]*models.Game, 0)
-	  for _, seasonType := range(NflSeasons) {
-	    mgr.Fetcher.NflSeason = seasonType
-	    games = append(games, mgr.refreshGames()...)
-	  }
+	games := make([]*models.Game, 0)
+	for _, seasonType := range NflSeasons {
+		mgr.Fetcher.NflSeason = seasonType
+		games = append(games, mgr.refreshGames()...)
+	}
 
-	  //lib.PrintPtrs(games)
+	//lib.PrintPtrs(games)
 
 	// Set the fetcher to the correct dates / seasons, etc
 
-	  mgr.refreshFetcher(games)
-	*/
+	mgr.refreshFetcher(games)
+
 	// Grab the latest standings for this season
 	teams := mgr.refreshStandings()
 
@@ -41,15 +41,15 @@ func (mgr *FetchManager) Daily() error {
 	for _, team := range teams {
 		mgr.refreshTeamRosters(team.Abbrev)
 	}
-	/*
-	   // Schedule jobs to collect play stats
-	   for _, game := range(games) {
-	     mgr.schedulePbpCollection(game)
-	   }
 
-	   // Create markets for
-	   mgr.createMarkets(games)
-	*/
+	// Schedule jobs to collect play stats
+	for _, game := range games {
+		mgr.schedulePbpCollection(game)
+	}
+
+	// Create markets for
+	mgr.createMarkets(games)
+
 	return nil
 }
 
