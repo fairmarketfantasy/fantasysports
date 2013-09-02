@@ -11,10 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130828025536) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 20130902001651) do
 
   create_table "contests", force: true do |t|
     t.integer  "owner",           null: false
@@ -97,19 +94,20 @@ ActiveRecord::Schema.define(version: 20130828025536) do
   end
 
   create_table "market_players", force: true do |t|
-    t.integer  "market_id",                 null: false
-    t.integer  "player_id",                 null: false
+    t.integer  "market_id",                         null: false
+    t.integer  "player_id",                         null: false
     t.decimal  "shadow_bets"
-    t.decimal  "bets",        default: 0.0
+    t.decimal  "bets",                default: 0.0
     t.datetime "locked_at"
+    t.decimal  "initial_shadow_bets"
   end
 
   add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
 
   create_table "markets", force: true do |t|
     t.string   "name"
-    t.decimal  "shadow_bets",     null: false
-    t.decimal  "shadow_bet_rate", null: false
+    t.decimal  "shadow_bets",         null: false
+    t.decimal  "shadow_bet_rate",     null: false
     t.datetime "opened_at"
     t.datetime "closed_at"
     t.datetime "created_at"
@@ -117,7 +115,8 @@ ActiveRecord::Schema.define(version: 20130828025536) do
     t.datetime "published_at"
     t.string   "state"
     t.decimal  "total_bets"
-    t.integer  "sport_id",        null: false
+    t.integer  "sport_id",            null: false
+    t.decimal  "initial_shadow_bets"
   end
 
   create_table "players", force: true do |t|
