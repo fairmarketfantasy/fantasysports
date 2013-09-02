@@ -1,3 +1,6 @@
+
+------------------------------------- PRICE --------------------------------------------
+
 /* The pricing function. Right now, it's a straight linear shot and assumes a 100k salary cap with a 1k minimum price */
 CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, OUT _price numeric ) RETURNS numeric AS $$
 BEGIN 
@@ -5,8 +8,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
+------------------------------------------ Player Prices -----------------------------------------
 
---------- BUY prices for all players in the market. returns the player_id and the price -----------------
+--BUY prices for all players in the market. returns the player_id and the price
 CREATE OR REPLACE FUNCTION buy_prices(_roster_id integer) 
 RETURNS TABLE(_player_id integer, _price numeric) AS $$
 BEGIN
@@ -22,7 +26,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--------------- SELL prices for all players in the roster, as well as the price paid --------------------
+-- SELL prices for all players in the roster, as well as the price paid
 -- returns player_id, current SELL price of player, and the purchase price
 CREATE OR REPLACE FUNCTION sell_prices(_roster_id integer) 
 RETURNS TABLE(_player_id integer, _price numeric, _purchase_price numeric) AS $$
@@ -216,9 +220,10 @@ BEGIN
 	END IF;
 
 	--ensure that there are no associated market_players, market_orders, or rosters. 
-	--TODO: this is nice for dev but may be a little dangerous in production
+	--TODO: this is nice for dev and testing but may be a little dangerous in production
 	DELETE FROM market_players WHERE market_id = _market_id;
 	DELETE FROM market_orders where market_id = _market_id;
+	DELETE FROM rosters_players WHERE roster_id IN (SELECT roster_id FROM rosters WHERE market_id = _market_id);
 	DELETE FROM rosters where market_id = _market_id;
 
 	--get the total ppg
@@ -261,6 +266,9 @@ DECLARE
 	_market markets;
 	_real_bets numeric;
 	_new_shadow_bets numeric := 0;
+	_price numeric;
+	_market_player market_players;
+	_roster_id integer;
 BEGIN
 	--ensure that the market exists and may be opened
 	SELECT * FROM markets WHERE id = _market_id AND state = 'published' FOR UPDATE into _market;
@@ -292,9 +300,26 @@ BEGIN
 
 	IF _new_shadow_bets = 0 THEN
 		RAISE NOTICE 'opening market %', _market_id;
+
+		--remove all shadow bets from the market
 		UPDATE markets SET shadow_bets = 0, total_bets = _real_bets, 
 			state='opened', opened_at = CURRENT_TIMESTAMP WHERE id = _market_id;
+
+		--remove shadow bets from all players in the market
 		UPDATE market_players SET bets = bets-shadow_bets, shadow_bets = 0 where market_id = _market_id;
+
+		--update purchase price for all orders yet placed - in both market_order and rosters_players
+	    FOR _market_player IN SELECT * FROM market_players where market_id = _market_id LOOP
+	    	SELECT price(_market_player.bets, _market.total_bets, 0) INTO _price;
+	    	UPDATE rosters_players SET purchase_price = _price WHERE player_id = _market_player.player_id;
+	    	UPDATE market_orders SET price = _price WHERE player_id = _player_id;
+	    END LOOP;
+
+	    --update the remaining salary for all rosters in the market
+	    FOR _roster_id IN SELECT id FROM rosters WHERE market_id = _market_id LOOP
+	    	UPDATE rosters SET remaining_salary = 100000 - (SELECT sum(price) FROM market_orders WHERE roster_id = _roster_id) WHERE id = _roster_id;
+	    END LOOP;
+
 	ELSE 
 		RAISE NOTICE 'updating published market to % shadow bets', _new_shadow_bets;
 		UPDATE markets SET shadow_bets = _new_shadow_bets, total_bets = _real_bets + _new_shadow_bets WHERE id = _market_id;
@@ -303,6 +328,31 @@ BEGIN
 			shadow_bets = (initial_shadow_bets / _market.initial_shadow_bets) * _new_shadow_bets
 		where market_id = _market_id;
 	END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+---------------------------------- close market --------------------------------------
+
+--if given an opened market that is due to close, closes the market.
+--besides setting the state of the market to closed, it also 
+CREATE OR REPLACE FUNCTION close_market(_market_id integer) RETURNS VOID AS $$
+DECLARE
+	_market markets;
+	_real_bets numeric;
+	_new_shadow_bets numeric := 0;
+BEGIN
+	--ensure that the market exists and may be opened
+	SELECT * FROM markets WHERE id = _market_id AND state = 'opened' AND closed_at <= CURRENT_TIMESTAMP FOR UPDATE into _market;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'market % is not closable', _market_id;
+	END IF;
+
+	--update the market
+	UPDATE markets SET state = closed, closed_at = CURRENT_TIMESTAMP where id = _market_id;
+
+	--I think I'll do the rest in ruby.
+
 END;
 $$ LANGUAGE plpgsql;
 
