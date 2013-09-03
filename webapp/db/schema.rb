@@ -27,6 +27,9 @@ ActiveRecord::Schema.define(version: 20130903141910) do
 
   add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "contests", force: true do |t|
     t.integer  "owner",           null: false
     t.string   "type",            null: false
