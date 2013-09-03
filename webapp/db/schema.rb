@@ -11,7 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130902001651) do
+ActiveRecord::Schema.define(version: 20130903141910) do
+
+  create_table "contest_types", force: true do |t|
+    t.integer "market_id",        null: false
+    t.string  "name",             null: false
+    t.text    "description"
+    t.integer "max_entries",      null: false
+    t.integer "buy_in",           null: false
+    t.decimal "rake",             null: false
+    t.text    "payout_structure", null: false
+    t.integer "user_id"
+    t.boolean "private"
+  end
+
+  add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
 
   create_table "contests", force: true do |t|
     t.integer  "owner",           null: false
@@ -163,13 +177,14 @@ ActiveRecord::Schema.define(version: 20130902001651) do
     t.datetime "paid_at"
     t.string   "cancelled_cause"
     t.datetime "cancelled_at"
-    t.string   "contest_type",     null: false
     t.string   "state",            null: false
     t.string   "positions"
     t.datetime "submitted_at"
+    t.integer  "contest_type_id",  null: false
   end
 
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
+  add_index "rosters", ["contest_type_id"], name: "index_rosters_on_contest_type_id", using: :btree
   add_index "rosters", ["market_id"], name: "index_rosters_on_market_id", using: :btree
   add_index "rosters", ["submitted_at"], name: "index_rosters_on_submitted_at", using: :btree
 
