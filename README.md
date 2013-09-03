@@ -67,6 +67,19 @@ nohup datafetcher -fetch serve > datafetcher.log 2>&1 & echo $! > datafetcher.pi
 This sends the output to datafetcher.log and the pid to datafetcher.pid
 To kill the task, just kill -9 the pid in the file.
 
+##Market maintenance task
+`rake market:tend[wait_time]`
+This will publish, open, and close all markets, wait a bit, and do it all over again. Forever.
+It is okay if this runs on multiple machines at once -- the open and close scripts can't affect one another (they block each other on the db)
+The wait_time is optional, the default value is 60 seconds.
+If you are playing around and want to publish, open or close markets, you can call these rake tasks:
+```
+rake market:publish
+rake market:open
+rake market:close
+```
+Or you can do it in sql as described below.
+
 
 ## The SQL Functions that buy, sell, and update the market
 `cd` to market directory
