@@ -5,6 +5,7 @@ class Contest < ActiveRecord::Base
   has_many :rosters
   has_many :transaction_records
   belongs_to :owner, class_name: "User", foreign_key: :owner
+  belongs_to :contest_type
 
   TYPES = {
     "100k" => [{buy_in: 10, team_limit: 10000}],

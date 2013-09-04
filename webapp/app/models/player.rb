@@ -14,6 +14,8 @@ class Player < ActiveRecord::Base
   scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
   scope :in_position,  ->(position)   { where(position: position) }
   scope :with_purchase_price,      -> { select('players.*, purchase_price') } # Must also join rosters_players
+  scope :with_buy_price, -> { select('players.*, buy_prices.buy_price')} #Must join buy_prices
+  scope :with_sell_price, -> { select('players.*, sell_prices.purchase_price, sell_prices.sell_price from players')} #join sell_prices
 
   def purchase_price
     self[:purchase_price]
