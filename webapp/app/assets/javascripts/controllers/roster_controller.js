@@ -48,7 +48,7 @@ angular.module("app.controllers")
 
   $scope.removePlayer = function(player) {
     $scope.fs.rosters.remove_player($scope.roster.id, player.id).then(function(market_order) {
-      $scope.roster.remaining_salary += market_order.price;
+      $scope.roster.remaining_salary = parseFloat($scope.roster.remaining_salary) + parseFloat(market_order.price);
       var index = _.findIndex($scope.players, function(p) { return p.id === player.id; });
       $scope.roster.players[index] = {position: player.position};
     });
