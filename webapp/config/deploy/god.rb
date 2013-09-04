@@ -18,8 +18,8 @@ end
 
 God.watch do |w|
   w.name = "datafetcher"
-  w.start = "go run #{root}/src/github.com/MustWin/datafetcher/datafetcher.go -year 2013 -fetch serve"
-  w.dir = BASE_DIR + '/current/webapp'
+  w.dir = BASE_DIR + '/current/datafetcher'
+  w.start = "go run #{w.dir}/src/github.com/MustWin/datafetcher/datafetcher.go -year 2013 -fetch serve"
   w.log = BASE_DIR + '/shared/log/datafetcher.log'
   w.pid_file      = PID_PATH + "/datafetcher.pid"
   w.env = {"PATH" => "$PATH:/usr/local/go/bin",
