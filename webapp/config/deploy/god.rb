@@ -16,6 +16,19 @@ God.watch do |w|
   w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
 end
 
+God.watch do |w|
+  w.name = "datafetcher"
+  w.start = "bundle exec rake seed:nfl_data"
+  w.dir = BASE_DIR + '/current/webapp'
+  w.log = BASE_DIR + '/shared/log/datafetcher.log'
+  w.pid_file      = PID_PATH + "/datafetcher.pid"
+  w.env = {"RAILS_ENV" => ENV['RAILS_ENV'],
+           "PIDFILE" => w.pid_file}
+  w.stop          = "kill -s TERM $(cat #{PID_PATH}/puma.pid)"
+  w.start_grace   = 5.seconds
+  w.restart_grace = 5.seconds
+  w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
+end
 =begin
 God.watch do |w|
   w.name = "search"
