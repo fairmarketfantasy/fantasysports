@@ -44,10 +44,25 @@ class ActiveSupport::TestCase
   end
 
   #returns hash with routing and account_num
-  def valid_account_creds
-    build(:good_recipient, stripe_id: nil).attributes.select do |a|
-      [:routing, :account_num].include?(a.to_sym)
-    end
+  def valid_account_token
+    Stripe::Token.create(
+      :bank_account => {
+        :country => "US",
+        :routing_number => "110000000",
+        :account_number => "000123456789",
+      },
+    ).id
+  end
+
+  def valid_card_token
+    Stripe::Token.create(
+      :card => {
+        :number => "4242424242424242",
+        :exp_month => 9,
+        :exp_year => 2014,
+        :cvc => "314"
+      }
+    ).id
   end
 end
 
@@ -129,13 +144,6 @@ FactoryGirl.define do
     state 'in_progress'
     positions Positions.default_NFL
     contest_type "970"
-  end
-
-  #valid account creds
-  factory :good_recipient, class: Recipient do
-    stripe_id     { generate(:random_string) }
-    account_num '000123456789'
-    routing     '110000000'
   end
 end
 

@@ -2,28 +2,22 @@ class CustomerObject < ActiveRecord::Base
 
   belongs_to :user
 
-  #takes {token: "string", user: user, card: {}}
-  #must supply either a token from stripe.js or a card object
-  # card object:
-  #      {
-  #         number:    "4242424242424242",
-  #         exp_month: 10,
-  #         exp_year:  2015,
-  #         cvc:       123,
-  #         name:      "Jack Johnson"
-  #       }
   def self.create(args={})
     token = args[:token]
-    card  = args[:card]
     user  = args[:user]
-    unless token || card
-      raise ArgumentError, "Must supply either a token from stripe.js or a card"
+    unless token
+      raise ArgumentError, "Must supply a card token from stripe.js"
     end
     resp = Stripe::Customer.create({
                                       description: "Customer for #{user.email}",
-                                      card: card || token
+                                      card: token
                                     })
     super({stripe_id: resp.id, user_id: user.id})
+  end
+
+  def add_a_card(token)
+    stripe_obj = self.retrieve
+    stripe_obj.cards.create({card: token})
   end
 
   ##Talk to Stripe API

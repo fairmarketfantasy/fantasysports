@@ -2,14 +2,14 @@
 <div ng-repeat="recipient in recipients">
   <ul>
     <li>Legal Name: {{ recipient.legal_name }}</li>
-    <li>Routing: {{ recipient.routing }}</li>
-    <li>Account Num: {{ recipient.account_num }}</li>
+    <li>Bank: {{ recipient.bank_name }}</li>
+    <li>Last 4: {{ recipient.last4 }}</li>
   </ul>
 </div>
 
 <h4>Add a New Account for Deposits<h4>
-<input type="text" placeholder="account number" ng-model="newRecipient.account_num"/>
-<input type="text" placeholder="routing" ng-model="newRecipient.routing"/>
+<input type="text" placeholder="account number" ng-model="newAccount.accountNumber"/>
+<input type="text" placeholder="routing" ng-model="newAccount.routingNumber"/>
 <input type="text" placeholder="legal name" ng-model="newRecipient.legal_name"/>
 <a href="javascript://" ng-click="createRecipient()">Save</a>
 
