@@ -7,7 +7,6 @@
 
 namespace :seed do
   task :nfl_data do
-    
     File.open(ENV['PIDFILE'], 'w') { |f| f << Process.pid } if ENV['PIDFILE']
     #ensure that another datafetcher task is not running
     root = File.join(Rails.root, '..', 'datafetcher')

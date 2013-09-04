@@ -1,8 +1,7 @@
 namespace :market do
 
   task :tend, [:wait_time] => :environment do |t, args|
-    MarketOrder.load_sql_functions
-
+    File.open(ENV['PIDFILE'], 'w') { |f| f << Process.pid } if ENV['PIDFILE']
   	wait_time = 60
   	if not args.wait_time.nil?
   		wait_time = Integer(args.wait_time)
