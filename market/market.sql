@@ -23,8 +23,7 @@ BEGIN
 		r.id = _roster_id AND
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
-		mp.player_id NOT IN (SELECT player_id FROM rosters_players where roster_id = _roster_id)
-		ORDER BY mp.player_id;
+		mp.player_id NOT IN (SELECT rosters_players.player_id FROM rosters_players where roster_id = _roster_id);
 END;
 $$ LANGUAGE plpgsql;
 
@@ -37,10 +36,11 @@ RETURNS TABLE(player_id integer, sell_price numeric, purchase_price numeric) AS 
 BEGIN
 	RETURN QUERY
 	SELECT mp.player_id, price(mp.bets, m.total_bets, 0), rp.purchase_price
-	FROM market_players mp, markets m, rosters r, rosters_players rp
+	FROM market_players mp, markets m, rosters_players rp, rosters r
 	WHERE
 		r.id = _roster_id AND
-		rp.roster_id = _roster_id AND
+		mp.market_id = r.market_id AND
+		rp.roster_id = r.id AND
 		mp.player_id = rp.player_id AND
 		r.market_id = m.id
 	ORDER by mp.player_id;
