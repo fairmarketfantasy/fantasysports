@@ -9,7 +9,7 @@ class Roster < ActiveRecord::Base
 
   validates :state, :inclusion => {in: %w( in_progress cancelled submitted ) }
 
-  validates :owner_id, :market_id, :buy_in, :remaining_salary, :contest_type, :state, presence: true
+  validates :owner_id, :market_id, :buy_in, :remaining_salary, :contest_type_id, :state, presence: true
 
   before_destroy :cleanup_players
 
@@ -25,7 +25,7 @@ class Roster < ActiveRecord::Base
     r = Roster.create!(
       :owner => user,
       :market_id => market.id,
-      :contest_type => contest_type,
+      :contest_type_id => contest_type_id,
       :buy_in => buy_in,
       :remaining_salary => 100000,
       :state => 'in_progress',

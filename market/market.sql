@@ -11,8 +11,10 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 ------------------------------------------ Player Prices -----------------------------------------
 
 --BUY prices for all players in the market. returns the player_id and the price
+DROP FUNCTION buy_prices(integer);
+
 CREATE OR REPLACE FUNCTION buy_prices(_roster_id integer)
-RETURNS TABLE(_player_id integer, _price numeric) AS $$
+RETURNS TABLE(player_id integer, buy_price numeric) AS $$
 BEGIN
 	RETURN QUERY
 	SELECT mp.player_id, price(mp.bets, m.total_bets, r.buy_in)
@@ -28,8 +30,10 @@ $$ LANGUAGE plpgsql;
 
 -- SELL prices for all players in the roster, as well as the price paid
 -- returns player_id, current SELL price of player, and the purchase price
+DROP FUNCTION sell_prices(integer);
+
 CREATE OR REPLACE FUNCTION sell_prices(_roster_id integer)
-RETURNS TABLE(_player_id integer, _price numeric, _purchase_price numeric) AS $$
+RETURNS TABLE(player_id integer, sell_price numeric, purchase_price numeric) AS $$
 BEGIN
 	RETURN QUERY
 	SELECT mp.player_id, price(mp.bets, m.total_bets, 0), rp.purchase_price
@@ -252,6 +256,20 @@ BEGIN
 
 	--set market to published
 	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP where id = _market_id;
+
+	--TEMPORARY: add contest types to market
+	INSERT INTO contest_types(market_id, name, description, max_entries, buy_in, rake, payout_structure) VALUES
+	(_market_id, '100k', '100k lalapalooza!', 0, 10, 0.03, '[50000, 25000, 12000, 6000, 3000, 2000, 1000, 500, 500]'),
+	(_market_id, '970', 'Free contest, winner gets 10 FanFrees!', 10, 0, 0, '[F10]'),
+	(_market_id, '970', '10 teams, $2 entry fee, winner takes home $19.40', 10, 2, 0.03, '[19.40]'),
+	(_market_id, '970', '10 teams, $10 entrye fee, winner takes home $97.00', 10, 10, 0.03, '[97]'),
+	(_market_id, '194', 'Free contest, top 25 winners get 2 FanFrees!', 50, 0, 0, '[F2]'),
+	(_market_id, '194', '50 teams, $2 entry fee, top 25 winners take home $3.88', 50, 2, 0.03, '{0-24: 3.88}'),
+	(_market_id, '194', '50 teams, $10 entrye fee, top 25 winners take home $19.40', 50, 10, 0.03, '{0-24: 19.40}'),
+	(_market_id, 'h2h', 'Free h2h contest, winner gets 1 FanFree!', 2, 0, 0, '[F1]'),
+	(_market_id, 'h2h', 'h2h contest, $2 entry fee, winner takes home $3.88', 2, 2, 0.03, '[3.88]'),
+	(_market_id, 'h2h', 'h2h contest, $10 entry fee, winner takes home $19.40', 2, 10, 0.03, '[19.40]');
+
 	RAISE NOTICE 'published market %', _market_id;
 END;
 $$ LANGUAGE plpgsql;
