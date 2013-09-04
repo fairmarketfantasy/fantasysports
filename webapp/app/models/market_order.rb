@@ -11,7 +11,7 @@ class MarketOrder < ActiveRecord::Base
   # stubs
   def self.sell_player(roster, player)
     execSqlFunc do
-      self.find_by_sql("SELECT sell(#{roster.id}, #{player.id})")[0]
+      self.find_by_sql("SELECT * from sell(#{roster.id}, #{player.id})")[0]
     end
   end
 

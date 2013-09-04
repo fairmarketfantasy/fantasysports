@@ -3,7 +3,6 @@ class RosterSerializer < ActiveModel::Serializer
       :owner_id, 
       :market_id, 
       :state, 
-      :contest_type, 
       :contest_id, 
       :buy_in, 
       :remaining_salary, 
@@ -18,5 +17,6 @@ class RosterSerializer < ActiveModel::Serializer
       :updated_at
 
   has_many :players
+  has_one :contest_type
 
 end

@@ -3,6 +3,7 @@ class Roster < ActiveRecord::Base
   has_many :rosters_players, :dependent => :destroy
   belongs_to :market
   belongs_to :contest
+  belongs_to :contest_type
   belongs_to :owner, class_name: "User", foreign_key: :owner_id
   has_many :market_orders
 

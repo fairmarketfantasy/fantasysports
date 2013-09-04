@@ -12,7 +12,7 @@ class ContestType < ActiveRecord::Migration
   		t.boolean :private, :null => true
   	end
   	remove_column :rosters, :contest_type, :string
-  	add_column :rosters, :contest_type_id, :integer, :null => false
+  	add_column :rosters, :contest_type_id, :integer, :null => false, :default => 0
   	add_index :rosters, :contest_type_id
   	add_index :contest_types, :market_id
   end
