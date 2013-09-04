@@ -69,7 +69,7 @@ angular.module('app.services')
           return $http({method: 'GET', url: '/cards'});
         },
         create: function(token){
-          return $http({method: 'POST', url: '/cards', data: {card: {token: token}}});
+          return $http({method: 'POST', url: '/cards', data: {token: token}});
         }
       },
       markets: {

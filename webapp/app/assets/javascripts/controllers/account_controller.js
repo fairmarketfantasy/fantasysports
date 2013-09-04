@@ -10,15 +10,23 @@ angular.module("app.controllers")
   });
 
   $scope.newRecipient = $scope.newRecipient || {};
-  $scope.newcard      = $scope.newcard      || {};
+  $scope.newAccount   = $scope.newAccount   || {};
   $scope.cardInfo     = $scope.cardInfo     || {};
 
   $scope.createRecipient = function(){
-    fs.recipients.create($scope.newRecipient).then(function(resp){
-      if(resp.errors && resp.errors.length){
-        flash.error = resp.errors[0];
+    $scope.newAccount.country = 'US';
+    Stripe.bankAccount.createToken($scope.newAccount, function(st, resp){
+      if(st === 200){
+        $scope.newRecipient.token = resp['id'];
+        fs.recipients.create($scope.newRecipient).then(function(resp){
+          if(resp.error){
+            flash.error = resp.error;
+          } else {
+            $scope.recipients.push(resp.data[0]);
+          }
+        });
       } else {
-        $scope.recipients.push(resp);
+        flash.error = resp.error.message;
       }
     });
   };

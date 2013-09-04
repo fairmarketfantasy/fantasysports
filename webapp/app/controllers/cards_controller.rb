@@ -9,15 +9,16 @@ class CardsController < ApplicationController
   end
 
   def create
-    begin
-      co = CustomerObject.create(user: current_user, token: params[:card][:token])
-    rescue => e
-      err = e.message
-    end
-    if co
+    # begin
+      if co = current_user.customer_object
+        co.add_a_card(params[:token])
+      else
+        co = CustomerObject.create(user: current_user, token: params[:token])
+      end
       render_api_response co
-    else
-      render json: {error: err}
-    end
+    # rescue => e
+    #   msg = e.try(:message)
+    #   render json: {error: msg || e}
+    # end
   end
 end

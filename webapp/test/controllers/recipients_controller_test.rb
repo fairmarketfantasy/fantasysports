@@ -13,7 +13,7 @@ class RecipientsControllerTest < ActionController::TestCase
 
   test "creating a recipient" do
     assert_difference("Recipient.count", 1) do
-      xhr :post, :create, {recipient: {legal_name: @user.name}.merge(valid_account_creds)}
+      xhr :post, :create, {recipient: {legal_name: @user.name, token: valid_account_token}}
       assert_response :success
     end
   end
