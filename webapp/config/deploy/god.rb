@@ -22,7 +22,7 @@ God.watch do |w|
   w.dir = BASE_DIR + '/current/webapp'
   w.log = BASE_DIR + '/shared/log/datafetcher.log'
   w.pid_file      = PID_PATH + "/datafetcher.pid"
-  w.env = {"PATH" => "$PATH:/usr/local/go/bin"
+  w.env = {"PATH" => "$PATH:/usr/local/go/bin",
            "GOPATH" => "#{BASE_DIR}/current/datafetcher",
            "RAILS_ENV" => ENV['RAILS_ENV'],
            "PIDFILE" => w.pid_file}
