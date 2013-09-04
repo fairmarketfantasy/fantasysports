@@ -22,7 +22,7 @@ angular.module('app.services')
             keyboard: true,
             backdropClick: true,
             dialogClass: 'modal signin-modal',
-            templateUrl: 'partials/login_modal.html',
+            templateUrl: 'assets/login_modal.html',
             controller: 'LoginController'
           };
           $dialog = $injector.get('$dialog');
