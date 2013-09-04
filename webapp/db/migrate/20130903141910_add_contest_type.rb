@@ -1,4 +1,4 @@
-class ContestType < ActiveRecord::Migration
+class AddContestType < ActiveRecord::Migration
   def change
   	create_table :contest_types do |t|
   		t.integer :market_id, :null => false
