@@ -15,7 +15,6 @@ import (
 // Major options
 var sport = flag.String("sport", "NFL" /* Temporary default */, "REQUIRED: What sport to fetch: nfl")
 var fetch = flag.String("fetch", "", `What data to fetch:
-      init
       seed
       roster -team DAL
       teams -year 2012 -season PRE|REG|PST
@@ -51,26 +50,15 @@ func main() {
 	// fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
 	fetcher := nfl.Fetcher{*year, *season, *week, fetchers.HttpFetcher}
 	var orm model.Orm
-	if *fetch == "init" {
-		ormType := model.OrmBase{}
-		orm = ormType.Init(lib.DbInit(""))
-	} else {
-		ormType := models.NflOrm{}
-		orm = ormType.Init(lib.DbInit("NFL"))
-	}
+	var ormType model.Orm
+
+	ormType = &model.OrmBase{}
+	orm = ormType.Init(lib.DbInit(""))
+	lib.InitSports()
+	ormType = &models.NflOrm{}
+	orm = ormType.Init(lib.DbInit("NFL"))
 
 	switch *fetch {
-	case "init":
-		log.Println("Initializing sports")
-		for _, sport := range lib.Sports {
-			s := lib.Sport{Name: sport}
-			err := orm.Save(&s)
-			if err != nil {
-				log.Println(err)
-			} else {
-				log.Println("Added " + sport)
-			}
-		}
 	case "teams":
 		log.Println("Fetching Team data")
 		teams := fetcher.GetStandings()
