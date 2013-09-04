@@ -24,7 +24,21 @@ God.watch do |w|
   w.pid_file      = PID_PATH + "/datafetcher.pid"
   w.env = {"RAILS_ENV" => ENV['RAILS_ENV'],
            "PIDFILE" => w.pid_file}
-  w.stop          = "kill -s TERM $(cat #{PID_PATH}/puma.pid)"
+  w.stop          = "kill -s TERM $(cat #{w.pid_file})"
+  w.start_grace   = 5.seconds
+  w.restart_grace = 5.seconds
+  w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
+end
+
+God.watch do |w|
+  w.name = "markettender"
+  w.start = "bundle exec rake market:tend"
+  w.dir = BASE_DIR + '/current/webapp'
+  w.log = BASE_DIR + '/shared/log/markettender.log'
+  w.pid_file      = PID_PATH + "/markettender.pid"
+  w.env = {"RAILS_ENV" => ENV['RAILS_ENV'],
+           "PIDFILE" => w.pid_file}
+  w.stop          = "kill -s TERM $(cat #{w.pid_file})"
   w.start_grace   = 5.seconds
   w.restart_grace = 5.seconds
   w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
