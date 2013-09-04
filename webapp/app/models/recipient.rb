@@ -1,4 +1,5 @@
 class Recipient < ActiveRecord::Base
+  attr_accessor :token, :name
 
   belongs_to :user
   has_one    :customer_object, through: :user
@@ -6,24 +7,23 @@ class Recipient < ActiveRecord::Base
   validate  :user_must_be_confirmed
   validates :stripe_id, :user_id, presence: true
 
+  before_validation :set_stripe_id, on: :create
+
   def user_must_be_confirmed
     errors.add(:user, "must be confirmed") unless user.confirmed?
   end
 
-  def self.create(args={})
-    token      = args[:token]
-    user       = args[:user]
-    legal_name = args[:legal_name]
+  def set_stripe_id
     unless token
       raise ArgumentError, "Must supply a bank account token from stripe.js"
     end
     resp = Stripe::Recipient.create({
-                                      name: legal_name,
+                                      name: name,
                                       type:  "individual",
                                       email: user.email,
                                       bank_account: token
                                     })
-    super({stripe_id: resp.id, user_id: user.id})
+    self.stripe_id = resp.id
   end
 
   def transfer(amount)

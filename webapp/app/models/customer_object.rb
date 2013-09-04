@@ -1,10 +1,12 @@
 class CustomerObject < ActiveRecord::Base
+  attr_accessor :token
 
   belongs_to :user
 
-  def self.create(args={})
-    token = args[:token]
-    user  = args[:user]
+  before_validation :set_stripe_id, on: :create
+
+
+  def set_stripe_id
     unless token
       raise ArgumentError, "Must supply a card token from stripe.js"
     end
@@ -12,7 +14,7 @@ class CustomerObject < ActiveRecord::Base
                                       description: "Customer for #{user.email}",
                                       card: token
                                     })
-    super({stripe_id: resp.id, user_id: user.id})
+    self.stripe_id = resp.id
   end
 
   def add_a_card(token)

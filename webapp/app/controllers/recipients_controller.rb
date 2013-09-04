@@ -22,7 +22,7 @@ class RecipientsController < ApplicationController
   private
 
     def recipient_params
-      params.require(:recipient).permit(:legal_name, :token)
+      params.require(:recipient).permit(:name, :token)
     end
 
 end
