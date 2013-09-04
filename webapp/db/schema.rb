@@ -13,9 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20130903141910) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "contest_types", force: true do |t|
     t.integer "market_id",        null: false
     t.string  "name",             null: false
@@ -167,23 +164,23 @@ ActiveRecord::Schema.define(version: 20130903141910) do
   end
 
   create_table "rosters", force: true do |t|
-    t.integer  "owner_id",                     null: false
+    t.integer  "owner_id",         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "market_id",                    null: false
+    t.integer  "market_id",        null: false
     t.integer  "contest_id"
-    t.integer  "buy_in",                       null: false
-    t.decimal  "remaining_salary",             null: false
+    t.integer  "buy_in",           null: false
+    t.decimal  "remaining_salary", null: false
     t.integer  "final_points"
     t.integer  "finish_place"
     t.decimal  "amount_paid"
     t.datetime "paid_at"
     t.string   "cancelled_cause"
     t.datetime "cancelled_at"
-    t.string   "state",                        null: false
+    t.string   "state",            null: false
     t.string   "positions"
     t.datetime "submitted_at"
-    t.integer  "contest_type_id",  default: 0, null: false
+    t.integer  "contest_type_id",  null: false
   end
 
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree

@@ -4,6 +4,7 @@ class Market < ActiveRecord::Base
   has_many :market_players
   has_many :players, :through => :market_players
   has_many :contests
+  has_many :contest_types
   belongs_to :sport
 
   validates :shadow_bets, :shadow_bet_rate, presence: true
