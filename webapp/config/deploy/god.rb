@@ -18,11 +18,13 @@ end
 
 God.watch do |w|
   w.name = "datafetcher"
-  w.start = "bundle exec rake seed:nfl_data"
+  w.start = "go run #{root}/src/github.com/MustWin/datafetcher/datafetcher.go -year 2013 -fetch serve"
   w.dir = BASE_DIR + '/current/webapp'
   w.log = BASE_DIR + '/shared/log/datafetcher.log'
   w.pid_file      = PID_PATH + "/datafetcher.pid"
-  w.env = {"RAILS_ENV" => ENV['RAILS_ENV'],
+  w.env = {"PATH" => "$PATH:/usr/local/go/bin",
+           "GOPATH" => "#{BASE_DIR}/current/datafetcher",
+           "RAILS_ENV" => ENV['RAILS_ENV'],
            "PIDFILE" => w.pid_file}
   w.stop          = "kill -s TERM $(cat #{w.pid_file})"
   w.start_grace   = 5.seconds

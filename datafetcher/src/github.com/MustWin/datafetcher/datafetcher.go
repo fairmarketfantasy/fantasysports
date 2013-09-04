@@ -8,9 +8,31 @@ import (
 	"github.com/MustWin/datafetcher/lib/model"
 	"github.com/MustWin/datafetcher/nfl"
 	"github.com/MustWin/datafetcher/nfl/models"
+	"io"
 	"log"
+	"os"
+	"strconv"
 	"time"
 )
+
+// Write a pid file
+func writePid() {
+	pid := os.Getpid()
+	pidfile := os.ExpandEnv("$PIDFILE")
+	log.Printf("Opening pidfile %s: %d", pidfile, pid)
+	if pidfile != "" {
+		file, err := os.Create(pidfile)
+		if err != nil {
+			log.Fatal("Couldn't open pidfile " + pidfile)
+		}
+		io.WriteString(file, strconv.Itoa(pid))
+		defer func() {
+			if err = file.Close(); err != nil {
+				log.Fatal("Couldn't close pidfile " + pidfile + ". " + err.Error())
+			}
+		}()
+	}
+}
 
 // Major options
 var sport = flag.String("sport", "NFL" /* Temporary default */, "REQUIRED: What sport to fetch: nfl")
@@ -98,6 +120,7 @@ func main() {
 		orm.SaveAll(fetcher.GetGameStatistics(*awayTeam, *homeTeam))
 
 	case "serve":
+		writePid()
 		log.Println("Periodically fetching data for your pleasure.")
 		mgr := nfl.FetchManager{Orm: orm, Fetcher: fetcher}
 		mgr.Start(&mgr)
