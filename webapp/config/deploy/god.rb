@@ -9,8 +9,8 @@ God.watch do |w|
   w.log = BASE_DIR + '/shared/log/puma.log'
   w.env = {"RAILS_ENV" => ENV['RAILS_ENV']}
   w.pid_file      = PID_PATH + "/puma.pid"
-  w.stop          = "kill -s TERM $(cat #{w.pid_file})"
-  w.restart       = "kill -s USR2 $(cat #{w.pid_file})"
+  w.stop          = -> { `kill -s TERM #{IO.read(w.pid_file)}` }
+  w.restart       = -> { `kill -s USR2 #{IO.read(w.pid_file)}` }
   w.start_grace   = 20.seconds
   w.restart_grace = 20.seconds
   w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
