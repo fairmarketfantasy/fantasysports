@@ -24,7 +24,7 @@ angular.module("app.controllers")
   $scope.$watch('roster', updatePlayers);
 
   $scope.filterPlayers = function(opts) {
-    $scope.fs.players.list($scope.roster.market_id, opts).then(function(players) {
+    $scope.fs.players.list($scope.roster.id, opts).then(function(players) {
       $scope.players = players;
     });
   };

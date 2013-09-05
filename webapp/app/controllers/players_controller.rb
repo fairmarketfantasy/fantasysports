@@ -2,8 +2,8 @@ class PlayersController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    market = Market.find(params[:market_id])
-    @players = Player.in_market(market)
+    roster = Roster.find(params[:roster_id])
+    @players = roster.purchasable_players
     @players = @players.autocomplete(params[:autocomplete]) if params[:autocomplete]
 
     game = params[:game] ? Game.find(params[:game]) : nil
