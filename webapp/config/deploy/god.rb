@@ -17,34 +17,35 @@ God.watch do |w|
 end
 
 God.watch do |w|
+  pid_file = PID_PATH + "/datafetcher.pid"
   w.name = "datafetcher"
   w.dir = BASE_DIR + '/current/datafetcher'
   w.start = "go run #{w.dir}/src/github.com/MustWin/datafetcher/datafetcher.go -year 2013 -fetch serve"
   w.log = BASE_DIR + '/shared/log/datafetcher.log'
-  w.pid_file      = PID_PATH + "/datafetcher.pid"
   w.env = {"PATH" => "$PATH:/usr/local/go/bin",
            "GOPATH" => "#{BASE_DIR}/current/datafetcher",
            "RAILS_ENV" => ENV['RAILS_ENV'],
-           "PIDFILE" => w.pid_file}
-  w.stop          = "kill -s TERM $(cat #{w.pid_file})"
+           "PIDFILE" => pid_file}
+  w.stop          = -> { `kill -s KILL #{IO.read(pid_file)}` }
   w.start_grace   = 5.seconds
   w.restart_grace = 5.seconds
   w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
 end
 
 God.watch do |w|
+  pid_file = PID_PATH + "/markettender.pid"
   w.name = "markettender"
   w.start = "bundle exec rake market:tend"
   w.dir = BASE_DIR + '/current/webapp'
   w.log = BASE_DIR + '/shared/log/markettender.log'
-  w.pid_file      = PID_PATH + "/markettender.pid"
   w.env = {"RAILS_ENV" => ENV['RAILS_ENV'],
-           "PIDFILE" => w.pid_file}
-  w.stop          = "kill -s TERM $(cat #{w.pid_file})"
+           "PIDFILE" => pid_file}
+  w.stop          = -> { `kill -s KILL #{IO.read(pid_file)}` }
   w.start_grace   = 5.seconds
   w.restart_grace = 5.seconds
   w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
 end
+
 =begin
 God.watch do |w|
   w.name = "search"
