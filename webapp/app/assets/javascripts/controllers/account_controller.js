@@ -51,7 +51,8 @@ angular.module("app.controllers")
   $scope.addMoney = function(){
     var amt = ($scope.chargeAmt * 100); //dollars to cents
     fs.user.addMoney(amt).then(function(resp){
-      console.log(resp);
+      window.App.currentUser.balance = resp.balance;
+      $scope.chargeAmt = null;
     });
   };
 
