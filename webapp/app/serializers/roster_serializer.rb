@@ -16,7 +16,11 @@ class RosterSerializer < ActiveModel::Serializer
       :created_at, 
       :updated_at
 
-  has_many :players
   has_one :contest_type
+  has_many :players
+
+  def players
+    object.sellable_players
+  end
 
 end
