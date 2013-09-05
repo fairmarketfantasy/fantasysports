@@ -46,6 +46,10 @@ class CustomerObject < ActiveRecord::Base
     end
   end
 
+  def balance_in_dollars
+    sprintf( '%.2f', (balance/100) )
+  end
+
   def increase_balance(amount, event)
     ActiveRecord::Base.transaction do
       self.balance += amount
