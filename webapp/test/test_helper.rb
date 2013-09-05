@@ -37,6 +37,21 @@ class ActiveSupport::TestCase
 
   include FactoryGirl::Syntax::Methods
 
+  def setup_new_market
+    @team1 = create :team1
+    @team2 = create :team2
+    @game = create :game
+    @players = Positions.default_NFL.split(',').map do |position|
+      player = create :player, :team => @team1, :position => position
+      player = create :player, :team => @team2, :position => position
+    end
+    @market = create :new_market
+    @market.games_markets << GamesMarket.create(
+      market_id: @market.id,
+      game_stats_id: @game.stats_id)
+    @market.save!
+  end
+
   def setup_simple_market
     @market = create :open_market
     @team1 = create :team1
@@ -138,6 +153,16 @@ FactoryGirl.define do
     closed_at nil
     state 'opened' # TODO: check this
     total_bets 5000
+    sport_id 1
+  end
+
+  factory :new_market, class: Market do
+    shadow_bets 1000
+    shadow_bet_rate 0.5
+    published_at Time.now - 4000
+    opened_at Time.now - 1000
+    closed_at Time.now - 100
+    total_bets 0
     sport_id 1
   end
 

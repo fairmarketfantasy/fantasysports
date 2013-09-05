@@ -29,6 +29,6 @@ class Player < ActiveRecord::Base
     select(
       "players.*, sell_prices.purchase_price as purchase_price, sell_prices.sell_price as sell_price"
     ).joins( "JOIN sell_prices(#{roster.id}) as sell_prices on sell_prices.player_id = players.id")
-  } #join sell prices
+  }
 
 end
