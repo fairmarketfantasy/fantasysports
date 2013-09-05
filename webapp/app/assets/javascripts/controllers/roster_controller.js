@@ -38,6 +38,7 @@ angular.module("app.controllers")
         $scope.fs.rosters.add_player($scope.roster.id, player.id).then(function(market_order) {
           $scope.roster.remaining_salary -= market_order.price;
           player.purchase_price = market_order.price;
+          player.sell_price = market_order.price;
           $scope.roster.players[index] = player;
         });
       }
