@@ -2,10 +2,10 @@ angular.module('app.controllers', [])
 angular.module('app.directives', [])
 angular.module('app.services', ['fs.data'])
 angular.module('app.filters', [])
-angular.module('app.templates', []).run(function($templateCache) {
+angular.module('app.templates', [ ]).run(function($templateCache) {
   <% if !Rails.env == 'development' %>
     <% Dir.glob(Rails.root.join('app','assets','templates')).each do |f| %>
-      $templateCache.put("/assets/<%= File.basename(f) %>", <%= File.read(f).to_json %>);
+      $templateCache.put("<%= asset_path(File.basename(f) ) %>", <%= File.read(f).to_json %>);
     <% end %>
   <% end %>
 })
