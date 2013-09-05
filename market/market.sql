@@ -198,9 +198,8 @@ $$ LANGUAGE plpgsql;
 
 --TODO: check close date is start time of latest game?
 DROP FUNCTION publish_market(integer);
-CREATE OR REPLACE FUNCTION publish_market(_market_id integer) RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION publish_market(_market_id integer, OUT _market markets) RETURNS markets AS $$
 DECLARE
-	_market markets;
 	_total_ppg numeric;
 	_game games;
 	_bets numeric;
@@ -267,7 +266,7 @@ BEGIN
 	UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets where market_id = _market_id;
 
 	--set market to published
-	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP where id = _market_id;
+	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP where id = _market_id returning * into _market;
 
 	--TEMPORARY: add contest types to market
 	INSERT INTO contest_types(market_id, name, description, max_entries, buy_in, rake, payout_structure) VALUES
@@ -371,23 +370,19 @@ $$ LANGUAGE plpgsql;
 --if given an opened market that is due to close, closes the market.
 --besides setting the state of the market to closed, it also
 DROP FUNCTION close_market(integer);
-CREATE OR REPLACE FUNCTION close_market(_market_id integer) RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION close_market(_market_id integer, out _market markets) RETURNS markets AS $$
 DECLARE
-	_market markets;
 	_real_bets numeric;
 	_new_shadow_bets numeric := 0;
 BEGIN
-	--ensure that the market exists and may be opened
+	--ensure that the market exists and may be closed
 	SELECT * FROM markets WHERE id = _market_id AND state = 'opened' AND closed_at <= CURRENT_TIMESTAMP FOR UPDATE into _market;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % is not closable', _market_id;
 	END IF;
 
 	--update the market
-	UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP where id = _market_id;
-
-	--I think I'll do the rest in ruby.
-
+	UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP where id = _market_id returning * into _market;
 END;
 $$ LANGUAGE plpgsql;
 
