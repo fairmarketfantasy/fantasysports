@@ -237,27 +237,44 @@
   }
 }
 
+.btn {
+  background-color: @blueDark;
+}
+.btn.btn-primary, .label-primary {
+  background-color: @greenDark;
+}
+.btn.btn-success, .label-success {
+  background-color: @green;
+}
+.btn.btn-warning, .label-warning {
+  background-color: @orange;
+  color: @black;
+}
+.btn.btn-danger, .label-danger {
+  background-color: @red;
+}
+
 // SOCIAL BUTTONS
 // ----------------------
 
 // Set the backgrounds
 // -------------------------
-.btn-social-pinterest {
+.btn.btn-social-pinterest {
   .swap-social-button(@social-pinterest);
 }
-.btn-social-linkedin {
+.btn.btn-social-linkedin {
   .swap-social-button(@social-linkedin)
 }
-.btn-social-stumbleupon {
+.btn.btn-social-stumbleupon {
   .swap-social-button(@social-stumbleupon);
 }
-.btn-social-googleplus {
+.btn.btn-social-googleplus {
   .swap-social-button(@social-googleplus);
 }
-.btn-social-facebook {
+.btn.btn-social-facebook {
   .swap-social-button(@social-facebook);
 }
-.btn-social-twitter {
+.btn.btn-social-twitter {
   .swap-social-button(@social-twitter);
 }
 
