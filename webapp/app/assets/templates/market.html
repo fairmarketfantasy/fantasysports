@@ -10,6 +10,8 @@
   <div ng-hide="roster">
     <h3>Contests</h3>
     <ul>
+      <!-- all these ng-clicks to joinContest, need to pass in  contest_type_id
+          instead of the string '100k' or '970' or '194', etc-->
       <li class="contest_type">
         <h2><a ng-click="joinContest('100k', 10)">100k</a></h2>
       </li>
