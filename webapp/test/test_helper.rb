@@ -143,7 +143,7 @@ FactoryGirl.define do
     remaining_salary 100000
     state 'in_progress'
     positions Positions.default_NFL
-    contest_type "970"
+    association :contest_type
   end
 
   factory :contest_type do
