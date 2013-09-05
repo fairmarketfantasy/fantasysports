@@ -14,12 +14,12 @@ class Roster < ActiveRecord::Base
 
   before_destroy :cleanup_players
 
-  def purchasable_playesr
-    self.players.purchasable_for_roster(self)
+  def purchasable_players
+    Player.purchasable_for_roster(self)
   end
 
   def sellable_players
-    self.players.sellable_for_roster(self)
+    Player.sellable_for_roster(self)
   end
 
   def self.generate_contest_roster(user, market, contest_type, buy_in)
