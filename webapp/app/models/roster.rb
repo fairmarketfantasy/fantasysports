@@ -63,7 +63,7 @@ class Roster < ActiveRecord::Base
     owner = self.owner
     raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(self.buy_in)
     self.transaction do
-      owner.customer_object.decrease_balance(roster.buy_in, 'buy_in', self.id)
+      owner.customer_object.decrease_balance(self.buy_in, 'buy_in', self.id)
       self.state = 'submitted'
       self.submitted_at = Time.now
       self.save!

@@ -49,6 +49,7 @@ group :test do
   gem 'pry'
   gem 'factory_girl'
   gem "factory_girl_rails", "~> 4.0"
+  gem 'mustwin-stripe-ruby-mock', '>= 1.8.4.9'
 end
 
 group :development do

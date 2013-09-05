@@ -3,7 +3,6 @@ class MarketOrder < ActiveRecord::Base
 
   # stubs
   def self.buy_player(roster, player)
-    puts "buying player #{player.id} for roster #{roster.id}"
     execSqlFunc do
       self.find_by_sql("SELECT * from buy(#{roster.id}, #{player.id})")[0]
     end
