@@ -17,7 +17,7 @@ body {
 }
 
 body.guide {
-  background-color: @offWhite;
+  background-color: @white;
 }
 
 .txt-white {
@@ -32,13 +32,34 @@ body.guide {
   color: @red;
 }
 
-.btn {
+.btn, .special {
   font-family: @special;
 }
 
+.tilt {
+  font-family: @specialItalic;  
+}
+
 p {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.3;
+}
+
+.btn {
+  background-color: @blueDark;
+}
+.btn.btn-primary, .label-primary {
+  background-color: @greenDark;
+}
+.btn.btn-success, .label-success {
+  background-color: @green;
+}
+.btn.btn-warning, .label-warning {
+  background-color: @orange;
+  color: @black;
+}
+.btn.btn-danger, .label-danger {
+  background-color: @red;
 }
 
 .landing-container {
@@ -54,7 +75,7 @@ p {
 
 .right-content {
   float: right;
-  padding-top: 13%;
+  padding-top: 11%;
   text-align: center;
 }
 
@@ -72,6 +93,7 @@ p {
   font-size: 24px;
   margin-bottom: 14px;
   margin-top: 0;
+  color: @redDark;
 }
 
 .sign-up-text {
@@ -258,6 +280,9 @@ header {
 .btn.btn-small {
   padding: 6px 13px 4px;
   color: @black;
+}
+.guide .btn.btn-small {
+  color: @white;
 }
 
 .padded-content {
