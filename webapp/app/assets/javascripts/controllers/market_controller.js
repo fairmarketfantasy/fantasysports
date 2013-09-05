@@ -56,8 +56,8 @@ angular.module("app.controllers")
     console.log('success');
       setCurrentRoster(null);
     },function(data){ console.log("FAIL"); });
-  }
+  };
 
-}])
+}]);
 
 

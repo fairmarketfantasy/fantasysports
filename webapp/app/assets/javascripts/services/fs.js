@@ -97,9 +97,9 @@ angular.module('app.services')
         }
       },
       players: {
-        list: function(market_id, opts) {
+        list: function(roster_id, opts) {
           opts = opts || {}
-          return $http({method: 'GET', url: '/players/', params: angular.extend(opts, {market_id: market_id})});
+          return $http({method: 'GET', url: '/players/', params: angular.extend(opts, {roster_id: roster_id})});
         }
       },
       rosters: {

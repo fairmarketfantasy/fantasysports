@@ -1,5 +1,21 @@
 class PlayerSerializer < ActiveModel::Serializer
-  attributes :id, :stats_id, :team, :sport_id, :name, :name_abbr, :birthdate, :height, :weight, :college, :position, :jersey_number, :status, :ppg, :purchase_price
+  attributes :id, 
+      :stats_id, 
+      :team, 
+      :sport_id, 
+      :name, 
+      :name_abbr, 
+      :birthdate, 
+      :height, 
+      :weight, 
+      :college, 
+      :position, 
+      :jersey_number, 
+      :status, 
+      :ppg, 
+      :purchase_price,
+      :buy_price,
+      :sell_price
 
   def team
     object[:team]

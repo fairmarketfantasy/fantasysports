@@ -66,7 +66,7 @@
           <td>{{player.position}}</td>
           <td>{{gameFromTeam(player.team.Abbrev)}}</td>
           <td>{{player.ppg}}</td>
-          <td>{{player.salary}}</td>
+          <td>{{player.buy_price}}</td>
           <td><a href="javascript://" ng-click="addPlayer(player)">Add</a></td>
         </tr>
       </tbody>
@@ -93,7 +93,7 @@
           <td>{{player.game}}</td>
           <td>{{player.ppg}}</td>
           <td>{{player.purchase_price | emptyIfZero }}</td>
-          <td>{{player.salary - roster.players[position].purchase_price | emptyIfZero }}</td>
+          <td>{{player.sell_price - player.purchase_price }}</td>
           <td><a ng-show="player.id" href="javascript://" ng-click="removePlayer(player)">Remove</a></td>
         </tr>
       </tbody>
