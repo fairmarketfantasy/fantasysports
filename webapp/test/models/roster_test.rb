@@ -44,4 +44,17 @@ class RosterTest < ActiveSupport::TestCase
     assert_equal  initial_balance - @roster.buy_in, owner.customer_object.reload.balance
   end
 
+  test "cancelling roster cleans up after itself" do
+    player = @roster.purchasable_players.first
+    market = @roster.market
+    assert_difference ['RostersPlayer.count', 'MarketOrder.count'], 1 do
+      @roster.add_player player
+    end
+    bets = market.total_bets
+    assert_difference ['RostersPlayer.count', 'MarketOrder.count'], -1 do
+      @roster.destroy
+    end
+    assert_equal market.reload.total_bets, bets, "destroying roster decreases total bets"
+  end
+
 end
