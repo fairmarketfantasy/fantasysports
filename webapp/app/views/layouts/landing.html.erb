@@ -41,7 +41,7 @@
   <meta name="keywords" content="<%= keywords %>"/>
 
   <%= csrf_meta_tags %>
-  <%= stylesheet_link_tag "application", "flat-ui", "fonts", "fmf", :media => "all" %>
+  <%= stylesheet_link_tag "application", "flat-ui", "fmf", :media => "all" %>
 
   <!-- TODO: make these icons -->
   <link rel="shortcut icon" href="<%= asset_path 'fanfairfantasy.ico' %>"/>
@@ -55,92 +55,21 @@
 
 <body ng-controller="ApplicationController">
 
-  <!-- This should be hodden when there's no flash <div flash-alert active-class="in" class="flash alert fade">
-    <strong class="alert-heading"></strong>
-    <span class="alert-message">{{flash.message}}</span>
-  </div> -->
-  
-  <!-- This is where you work your magic, do your best! -->
-  <header class="full">
-    <div class="container">
-    <div class="row top-nav">
-      <div class="span9">
-        <h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1> <span class="sub-title">Advanced market-driven pricing and the lowest rake in the industry!</span>
+  <div class="landing-container">
+    <div class="span4 right-content">
+      <div class="login-buttons">
+        <h2 class="sign-up-heading">Market Driven Player Pricing &amp; the Lowest Rake in Daily Fantasy Sports!</h2>
+        <p class="sign-up-text">At Fair Market Fantasy you can play daily and weekly fantasy football leagues for real money! Our player prices are set in real time, based on market demand, and our rake is only 3% (compared to 10% elsewhere.) Sign up and feel the difference!</p>
+
+        <p><a href="" class="btn btn-large btn-block btn-danger">Sign Up, Now!</a></p>
+        <p><a href="javascript://" class="btn btn-large btn-block btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Sign Up with Facebook</a></p>
       </div>
-      <div class="span3">
-        <div class="links text-right">
-          <a class="sub-title txt-green-hover" href="#">Support</a>
-          <a class="sub-title txt-green-hover" href="#">Cash Out</a>
-        </div>
-      </div>
+
     </div>
+    
   </div>
-    <div class="container">
-
-    <div class="row header-bottom">
-      <div class="span3 user-container text-center">
-        <div class="clearfix user-box">
-          <%= image_tag "sample-user.png", :class => "user-avatar" %>
-          <div class="user-info">
-            <span class="user-name">Wil Everts</span>
-            <span class="user-alias"><a class="txt-white txt-green-hover" href="#">cousinwil</a></span>
-            <a class="user-logout txt-red-hover" href="#">(sign out)</a>
-          </div>
-        </div>
-        <div class="user-dash clearfix">
-          <div class="user-balance">$3,412.17<br><small>balance</small></div>
-          <div class="user-bonus">$108.17<br><small>pending bonus</small></div>
-        </div>        
-        <div class="user-dash no-border clearfix">
-          <div class="user-balance"><a class="btn btn-small btn-success" href="#">Add Funds</a></div>
-          <div class="user-bonus"><a class="btn btn-small btn-warning" href="#">Refer Friends</a></div>
-        </div>
 
 
-      </div>
-    </div>
-    </div>
-  </header>
-  
-  <article>
-    <div class="container">
-
-    <div class="row">
-      <div class="span3 user-navigation">
-        <ul class="nav">
-          <li class="nav-item">Home</li>
-          <li class="nav-item">Fantasy Games</li>
-          <li class="nav-item">Rules and Scoring</li>
-          <li class="nav-item">Promos</li>
-          <li class="nav-item">Leaderboard</li>
-          <li class="nav-item end">Support</li>
-        </ul>
-      </div>
-      <div class="span9 page-content">
-        <div class="padded-content">
-          <div id="login-buttons" ng-controller="LoginController" ng-hide="currentUser()">
-            <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
-            <input type='text' ng-model="user.email" placeholder="Email" />
-            <input type='password' ng-model="user.password" placeholder="Password"/>
-            <a href="javascript://" class="btn btn-success" ng-click="login('email')">Log In</a>
-          </div>
-          <div ng-show="currentUser()">
-            <a href="javascript://" ng-click="logout()">Logout</a>
-          </div>
-          <div class="content">
-            <div id="content" ng-view>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>
-  
-  </article>
-
-  <footer class="full-row">
-  
-  </footer>
 <!-- Setup some handy globals -->
 <script type="text/javascript">
   window.App = {

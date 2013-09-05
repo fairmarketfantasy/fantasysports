@@ -7,6 +7,8 @@ Fantasysports::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'pages#index'
   get '/terms' => 'pages#terms'
+  get '/guide' => 'pages#guide'
+  get '/landing' => 'pages#landing'
   get '/about' => 'pages#about'
   get '/sign_up' => 'pages#sign_up'
 
