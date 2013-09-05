@@ -13,7 +13,11 @@ Fantasysports::Application.routes.draw do
   get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
 
   #for /users/:id
-  resources :users, only: [:show]
+  resources :users, only: [:show] do
+    collection do
+      post 'add_money', action: :add_money
+    end
+  end
 
   resources :recipients, only: [:index, :create]
 

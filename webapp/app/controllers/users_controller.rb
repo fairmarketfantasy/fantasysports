@@ -5,4 +5,13 @@ class UsersController < ApplicationController
     user = User.find(params[:id])
     render_api_response user
   end
+
+  def add_money
+    unless params[:amount]
+      render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
+    end
+    if current_user.customer_object.charge(params[:amount])
+      render_api_response current_user
+    end
+  end
 end
