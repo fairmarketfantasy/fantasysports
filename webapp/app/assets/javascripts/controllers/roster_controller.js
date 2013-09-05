@@ -23,6 +23,7 @@ angular.module("app.controllers")
 
   var filterOpts = {};
   var fetchPlayers = function() {
+    if (!$scope.roster) { return; }
     $scope.fs.players.list($scope.roster.id, filterOpts).then(function(players) {
       $scope.players = players;
     });
