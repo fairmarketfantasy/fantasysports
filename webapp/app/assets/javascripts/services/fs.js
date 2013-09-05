@@ -81,8 +81,8 @@ angular.module('app.services')
         }
       },
       contests: {
-        join: function(market_id, type, buy_in) {
-          return $http({method: 'POST', url: '/rosters', data: {market_id: market_id, contest_type: type, buy_in: buy_in}})
+        join: function(market_id, type_id, buy_in) {
+          return $http({method: 'POST', url: '/rosters', data: {market_id: market_id, contest_type_id: type_id, buy_in: buy_in}});
         }
       },
       games: {

@@ -20,11 +20,11 @@ angular.module("app.controllers")
 
   $scope.gameFromTeam = function(team) {
     var game = teamsToGames[team];
-    return game && (game.away_team + ' @ ' + game.home_team)
+    return game && (game.away_team + ' @ ' + game.home_team);
   };
 
-  $scope.joinContest = function(type, buy_in) {
-    $scope.fs.contests.join($scope.market.id, type, buy_in).then(function(data){
+  $scope.joinContest = function(type_id, buy_in) {
+    $scope.fs.contests.join($scope.market.id, type_id, buy_in).then(function(data){
       setCurrentRoster(data);
     });
   };
@@ -32,7 +32,7 @@ angular.module("app.controllers")
   var setCurrentRoster = function(roster) {
     $scope.roster = roster;
     window.App.in_progress_roster = roster;
-  }
+  };
 
   $scope.deleteRoster = function() {
     $scope.fs.rosters.cancel($scope.roster.id).then(function(data) {
