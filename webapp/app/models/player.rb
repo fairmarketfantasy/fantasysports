@@ -3,8 +3,6 @@ class Player < ActiveRecord::Base
   belongs_to :team, :foreign_key => 'team'
   has_many :stat_events
 
-  attr_accessor :buy_price, :sell_price, :purchase_price
-
   def purchase_price; self[:purchase_price]; end
   def buy_price; self[:buy_price]; end
   def sell_price; self[:sell_price]; end
@@ -20,10 +18,15 @@ class Player < ActiveRecord::Base
   scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
   scope :in_position,  ->(position)   { where(position: position) }
   scope :with_purchase_price,      -> { select('players.*, purchase_price') } # Must also join rosters_players
-  scope :with_buy_price, ->  { select("players.*, bp.buy_price as buy_price")}
-  scope :with_sell_price, -> { select("players.*, sell_prices.purchase_price as purchase_price, sell_prices.sell_price as sell_price") } #join sell prices
+  scope :purchasable_for_roster, -> (roster) { 
+    select(
+      "players.*, buy_prices.buy_price as buy_price"
+    ).joins("JOIN buy_prices(#{roster.id}) as buy_prices on buy_prices.player_id = players.id")
+  }
+  scope :sellable_for_roster, -> (roster) { 
+    select(
+      "players.*, sell_prices.purchase_price as purchase_price, sell_prices.sell_price as sell_price"
+    ).joins( "JOIN sell_prices(#{roster.id}) as sell_prices on sell_prices.player_id = players.id")
+  } #join sell prices
 
-  def purchase_price
-    self[:purchase_price]
-  end
 end
