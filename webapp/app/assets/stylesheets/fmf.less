@@ -1,0 +1,270 @@
+@import "config";
+@import "mixins";
+@import "variables";
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+  margin-bottom: 0;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: @special;
+  margin: 0;
+}
+
+body {
+  background-color: @grayDark;
+  color: @black;
+}
+
+body.guide {
+  background-color: @offWhite;
+}
+
+.txt-white {
+  color: @white;
+}
+
+.txt-green, .txt-green-hover:hover {
+  color: @green;
+}
+
+.txt-red, .txt-red-hover:hover {
+  color: @red;
+}
+
+.btn {
+  font-family: @special;
+}
+
+p {
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.landing-container {
+  background-image: asset-url('bg-landing.jpg');
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  background-size: contain;
+  min-height: 900px;
+  width: 100%;
+  background-position: top right;
+  background-repeat: no-repeat;
+}
+
+.right-content {
+  float: right;
+  padding-top: 13%;
+  text-align: center;
+}
+
+.login-buttons {
+  width: 86%;
+  padding: 3%;
+  margin: 0 auto;
+  background-color: rgba(250,250,250,0.7);
+  color: black;
+  .border-radius(6px);
+  border: solid 2px rgba(0,0,0,0.3);
+}
+
+.sign-up-heading {
+  font-size: 24px;
+  margin-bottom: 14px;
+  margin-top: 0;
+}
+
+.sign-up-text {
+  margin-bottom: 14px;
+}
+
+.fui-facebook {
+  margin-right: 2px;
+}
+
+header {
+  height: 300px;
+  background-image: asset-url('bg-blur-big.png');
+  background-repeat: no-repeat;
+  background-position: center -470px;
+  border-bottom: 3px solid @grayLight;
+  position: relative;
+  width: 100%;
+  padding: 0;
+}
+
+.header-bottom {
+  position: relative;
+  top: 17px;
+}
+
+.user-container {
+  height: 200px;
+  .border-radius(8px 0 0 0);
+  background-color: rgba(29,29,29,0.5);
+  .box-shadow(0 0 3px rgba(0,0,0,.6));
+  border-left: 1px solid @white;
+  border-top: 1px solid @white;
+}
+
+.user-navigation {
+}
+
+.page-content {
+  background-color: @white;
+  min-height: 900px;
+  position: relative;
+  top: -230px;
+  left: -30px;
+  .border-radius(8px 8px 0 0); 
+  .box-shadow(0 0 3px rgba(0,0,0,.6));
+}
+
+.overflow {
+  overflow: visible;
+}
+
+.top-nav {
+  height: 54px;
+}
+
+.logo-font {
+  font-family: @special;
+  color: @redDark;
+  font-size: 34px;
+  line-height: 68px;
+  text-shadow: 1px 1px 0 @offWhite, -1px -1px 0 @offWhite, 1px -1px 0 @offWhite,
+            -1px 1px 0 @offWhite, 3px 3px 5px @grayDark;
+  display: inline-block;
+}
+
+.sub-title {
+  font-style: italic;
+  font-weight: 100;
+  color: @white;
+  line-height: 80px;
+  margin-left: 8px;
+}
+
+.links {
+  padding-right: 50px;
+}
+
+.logo-slash {
+  font-family: @specialItalic;
+  color: @red;  
+}
+.user-box {
+  width: 90%;
+  margin: 12px auto;
+  padding-bottom: 12px;
+  border-bottom: 1px solid @offWhite;
+  overflow: hidden;
+}
+
+.user-avatar {
+  .border-radius(2px);
+  border: 1px solid @offWhite;
+  float: left;
+  width: 60px;
+  margin: 0 12px 0 2px;
+}
+.user-info {
+  float: left;
+  max-width: 60%;
+  text-align: left;
+}
+
+.user-name {
+  font-size: 20px;
+  color: @offWhite;
+  display: block;
+  font-weight: 400;
+}
+
+.user-alias {
+  display: block;
+  font-size: 16px;
+  color: @offWhite;
+  font-weight: 200;
+  margin-bottom: 1px;
+}
+
+.user-logout {
+  color: @grayLight;
+  font-weight: 200;  
+  font-size: 14px;
+}
+
+.user-dash {
+  width: 90%;
+  margin: 0 auto 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid @offWhite;
+}
+
+.user-balance {
+  color: @offWhite;
+  font-size: 16px;
+  line-height: .8;
+  margin-bottom: 2px;
+  width: 48%;
+  padding: 0 1%;
+  float: left;
+  border-right: 1px solid @grayLight;
+}
+.user-bonus {
+  color: @orange;
+  font-size: 16px;
+  line-height: .8;
+  width: 47%;
+  padding: 0 1%;
+  float: right;
+}
+.no-border {
+  border: none;
+  margin: 0 auto;
+  .user-balance {
+    border: none;
+  }
+  .user-bonus {
+    width: 48%;
+  }
+}
+
+.nav {
+  width: 94%;
+  padding: 0 3%;
+  overflow: hidden;
+  font-family: @special;
+  font-size: 16px;
+  color: @grayDark;
+  background-color: @offWhite;
+  .border-radius(0 0 0 8px);
+  border-left: 1px solid @offWhite;
+  border-bottom: 1px solid @offWhite;
+}
+.nav-item {
+  line-height: 24px;
+  padding: 8px;
+  border-bottom: 1px solid @grayLight;
+}
+.end {
+  border-bottom: none;
+}
+.btn {
+  padding: 9px 12px 8px;
+}
+.btn.btn-small {
+  padding: 6px 13px 4px;
+  color: @black;
+}
+
+.padded-content {
+  width: 94%;
+  padding: 3%;
+}
+
+.sign-up {
+  margin: 20px 0;
+}
