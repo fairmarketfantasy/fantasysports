@@ -19,6 +19,14 @@ angular.module('app.filters')
       return input.substring(0,1).toUpperCase()+input.substring(1);
     };
   })
+  .filter('freeIfZero', function() {
+    return function(input, scope) {
+      if (input === 0) {
+        return "Free";
+      }
+      return input;
+    };
+  })
   .filter('emptyIfZero', function() {
     return function(input, scope) {
       if (input === 0) {
