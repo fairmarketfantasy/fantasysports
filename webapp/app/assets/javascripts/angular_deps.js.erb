@@ -3,9 +3,16 @@ angular.module('app.directives', [])
 angular.module('app.services', ['fs.data'])
 angular.module('app.filters', [])
 angular.module('app.templates', [ ]).run(function($templateCache) {
-  <% if !Rails.env == 'development' %>
-    <% Dir.glob(Rails.root.join('app','assets','templates')).each do |f| %>
-      $templateCache.put("<%= asset_path(File.basename(f) ) %>", <%= File.read(f).to_json %>);
+  <% if false && !Rails.env == 'development' # TODO: put this back in%>
+      <% Dir.glob(Rails.root.join('app','assets','templates', '*')).each do |f| 
+        base = File.basename(f)
+        if base.ends_with?('.erb')
+          base = base.gsub(/.erb$/, '')
+      %>
+          $templateCache.put("<%= asset_path(base) %>", <%= ERB.new(File.read(f)).result(binding).to_json %>);
+      <% else %>
+          $templateCache.put("<%= asset_path(base) %>", <%= File.read(f).to_json %>);
+      <% end %>
     <% end %>
   <% end %>
 })
