@@ -19,15 +19,15 @@ class MarketsController < ApplicationController
       # private contests (that are visible to me if logged in) and in-progress contests matching the criteria
     elsif request.post?
       authenticate_user!
-      market   = Market.find(params[:id])
-      user_cap = params[:user_cap]
-      type     = params[:type]
-      invitees = params[:emails]
-      buy_in   = params[:buy_in]
-      contest = market.contests.create!(owner:    current_user,
-                                        user_cap: user_cap,
-                                        buy_in:   buy_in,
-                                        type:     type)
+      market       = Market.find(params[:id])
+      user_cap     = params[:user_cap]
+      contest_type = ContestType.find(params[:contest_type_id])
+      invitees     = params[:emails]
+      buy_in       = params[:buy_in]
+      contest = market.contests.create!(owner:        current_user,
+                                        user_cap:     user_cap,
+                                        buy_in:       buy_in,
+                                        contest_type: contest_type)
       invitees.each do |email|
         contest.invite(email)
       end

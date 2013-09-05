@@ -19,9 +19,6 @@ class Roster < ActiveRecord::Base
   end
 
   def self.generate_contest_roster(user, market, contest_type, buy_in)
-    if !Contest.valid_contest?(contest_type, buy_in)
-      raise HttpException.new(400, "Invalid contest type/buy in")
-    end
 
     if user.in_progress_roster
       raise HttpException.new(409, "You may only have one roster in progress at a time.")
@@ -30,7 +27,7 @@ class Roster < ActiveRecord::Base
     r = Roster.create!(
       :owner => user,
       :market_id => market.id,
-      :contest_type_id => contest_type_id,
+      :contest_type_id => contest_type.id,
       :buy_in => buy_in,
       :remaining_salary => 100000,
       :state => 'in_progress',

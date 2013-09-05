@@ -145,6 +145,15 @@ FactoryGirl.define do
     positions Positions.default_NFL
     contest_type "970"
   end
+
+  factory :contest_type do
+    association :market, factory: :open_market
+    name "some contest type"
+    max_entries 100
+    buy_in 10
+    rake 1
+    payout_structure 'some payout structure'
+  end
 end
 
 # Yes, apparently this is supposed to be at the bottom.  I just work here.
