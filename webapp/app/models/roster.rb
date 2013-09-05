@@ -14,12 +14,12 @@ class Roster < ActiveRecord::Base
 
   before_destroy :cleanup_players
 
-  def players_with_prices
-    Player.with_sell_price.joins("join sell_prices(#{self.id}) as sell_prices on sell_prices.player_id = players.id")
+  def purchasable_playesr
+    self.players.purchasable_for_roster(self)
   end
 
-  def players_for_purchase
-    Player.with_buy_price.joins("join buy_prices(#{self.id}) as buy_prices on buy_prices.player_id = players.id")
+  def sellable_players
+    self.players.sellable_for_roster(self)
   end
 
   def self.generate_contest_roster(user, market, contest_type, buy_in)
