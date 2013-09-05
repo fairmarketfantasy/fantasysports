@@ -5,6 +5,7 @@ class CustomerObjectSerializer < ActiveModel::Serializer
     stripe_obj = object.retrieve
     stripe_obj.cards.data.map do |card|
       { id:          card.id,
+        name:        card.name,
         last4:       card.last4,
         type:        card.type,
         exp_month:   card.exp_month,
