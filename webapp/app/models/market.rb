@@ -15,4 +15,8 @@ class Market < ActiveRecord::Base
 
   paginates_per 25
 
+  def accepting_rosters?
+    ['published', 'opened'].include?(self.state)
+  end
+
 end

@@ -18,11 +18,13 @@ class Player < ActiveRecord::Base
   scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
   scope :in_position,  ->(position)   { where(position: position) }
   scope :with_purchase_price,      -> { select('players.*, purchase_price') } # Must also join rosters_players
+
   scope :purchasable_for_roster, -> (roster) { 
     select(
       "players.*, buy_prices.buy_price as buy_price"
     ).joins("JOIN buy_prices(#{roster.id}) as buy_prices on buy_prices.player_id = players.id")
   }
+
   scope :sellable_for_roster, -> (roster) { 
     select(
       "players.*, sell_prices.purchase_price as purchase_price, sell_prices.sell_price as sell_price"

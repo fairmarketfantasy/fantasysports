@@ -13,6 +13,16 @@ angular.module("app.controllers")
     });
   });
 
+  $scope.fs.contests.for_market($routeParams.id).then(function(contestTypes) {
+    $scope.contestClasses = {};
+    _.each(contestTypes, function(type) {
+      if (!$scope.contestClasses[type.name]) {
+        $scope.contestClasses[type.name] = [];
+      }
+      $scope.contestClasses[type.name].push(type);
+    });
+  });
+
   $scope.day = function(timeStr) {
     var day = moment(timeStr);
     return day.format("dddd, MMMM Do YYYY, h:mm:ss a");
@@ -23,20 +33,22 @@ angular.module("app.controllers")
     return game && (game.away_team + ' @ ' + game.home_team);
   };
 
-  $scope.joinContest = function(type_id, buy_in) {
-    $scope.fs.contests.join($scope.market.id, type_id, buy_in).then(function(data){
-      setCurrentRoster(data);
+  $scope.joinContest = function(contestType) {
+    $scope.fs.contests.join(contestType.id).then(function(data){
+      $scope.setRoster(data, true);
     });
   };
 
-  var setCurrentRoster = function(roster) {
+  $scope.setRoster = function(roster, inProgress) {
     $scope.roster = roster;
-    window.App.in_progress_roster = roster;
+    if (inProgress) {
+      window.App.in_progress_roster = roster;
+    }
   };
 
   $scope.deleteRoster = function() {
     $scope.fs.rosters.cancel($scope.roster.id).then(function(data) {
-      setCurrentRoster(null);
+      $scope.setRoster(null, true);
     });
   };
 
@@ -44,10 +56,10 @@ angular.module("app.controllers")
     $scope.fs.rosters.submit($scope.roster.id).then(function(data) {
       // TODO: open dialog, ask if user wants to submit another roster
     console.log('success');
-      setCurrentRoster(null);
+      $scope.setRoster(null, true);
     },function(data){ console.log("FAIL"); });
-  }
+  };
 
-}])
+}]);
 
 

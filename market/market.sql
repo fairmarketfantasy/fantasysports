@@ -1,7 +1,15 @@
+-- Handy helper to drop a bunch of functions
+--SELECT 'DROP FUNCTION ' || n.nspname  || '.' || p.proname
+        --|| '(' || pg_catalog.pg_get_function_identity_arguments(p.oid) || ');'
+--FROM   pg_catalog.pg_proc p
+--LEFT   JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+--WHERE  p.proname IN('price', 'sell', 'get_price', 'close_market', 'buy_prices', 'sell_prices', 'publicsh_market', 'open_market', 'buy')
+
 
 ------------------------------------- PRICE --------------------------------------------
 
 /* The pricing function. Right now, it's a straight linear shot and assumes a 100k salary cap with a 1k minimum price */
+DROP FUNCTION price(numeric, numeric, numeric, OUT numeric);
 CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, OUT _price numeric ) RETURNS numeric AS $$
 BEGIN
 	SELECT GREATEST(1000, (bets + buy_in) * 100000 / (total_bets + buy_in)) INTO _price;
@@ -50,6 +58,7 @@ $$ LANGUAGE plpgsql;
 
 /* get the price of a player for a roster. if the roster has the player, returns the sell price. if the roster
 does not have the player, returns the buy price */
+DROP FUNCTION get_price(integer, integer, OUT numeric);
 CREATE OR REPLACE FUNCTION get_price(_roster_id integer, _player_id integer, OUT _price numeric) RETURNS numeric AS $$
 DECLARE
 	_roster rosters;
@@ -85,6 +94,7 @@ $$ LANGUAGE plpgsql;
 ------------------------------------------ BUY ---------------------------------------
 
 /* buy a player for a roster */
+DROP FUNCTION buy(integer, integer);
 CREATE OR REPLACE FUNCTION buy(_roster_id integer, _player_id integer) RETURNS market_orders AS $$
 DECLARE
 	_roster rosters;
@@ -137,6 +147,7 @@ $$ LANGUAGE plpgsql;
 ------------------------------------------------- SELL ----------------------------------------------------
 
 /* sell a player on a roster */
+DROP FUNCTION sell(integer, integer);
 CREATE OR REPLACE FUNCTION sell(_roster_id integer, _player_id integer) RETURNS market_orders AS $$
 DECLARE
 	_roster rosters;
@@ -186,6 +197,7 @@ $$ LANGUAGE plpgsql;
 ------------------------- publish markets ------------------------
 
 --TODO: check close date is start time of latest game?
+DROP FUNCTION publish_market(integer);
 CREATE OR REPLACE FUNCTION publish_market(_market_id integer) RETURNS VOID AS $$
 DECLARE
 	_market markets;
@@ -358,6 +370,7 @@ $$ LANGUAGE plpgsql;
 
 --if given an opened market that is due to close, closes the market.
 --besides setting the state of the market to closed, it also
+DROP FUNCTION close_market(integer);
 CREATE OR REPLACE FUNCTION close_market(_market_id integer) RETURNS VOID AS $$
 DECLARE
 	_market markets;

@@ -8,9 +8,9 @@ angular.module('app', [
       'angular-flash.flash-alert-directive']).
   config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
-      when('/', {templateUrl: '/assets/home.html', controller: 'HomeController'}).
-      when('/market/:id', {templateUrl: '/assets/market.html', controller: 'MarketController'}).
-      when('/account', {templateUrl: '/assets/account.html', controller: 'AccountController'}).
+      when('/', {templateUrl: '<%= asset_path("home.html") %>', controller: 'HomeController'}).
+      when('/market/:id', {templateUrl: '<%= asset_path("market.html") %> ', controller: 'MarketController'}).
+      when('/account', {templateUrl: '<%= asset_path("account.html") %>', controller: 'AccountController'}).
     //...
       otherwise({redirectTo: '/'});
   }]).

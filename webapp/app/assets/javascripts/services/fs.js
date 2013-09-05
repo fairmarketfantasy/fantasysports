@@ -84,8 +84,11 @@ angular.module('app.services')
         }
       },
       contests: {
-        join: function(market_id, type_id, buy_in) {
-          return $http({method: 'POST', url: '/rosters', data: {market_id: market_id, contest_type_id: type_id, buy_in: buy_in}});
+        for_market: function(market_id) {
+          return $http({method: 'GET', url: '/contests/for_market/' + market_id });
+        },
+        join: function(contest_type_id) {
+          return $http({method: 'POST', url: '/rosters', data: {contest_type_id: contest_type_id}});
         }
       },
       games: {
@@ -94,9 +97,9 @@ angular.module('app.services')
         }
       },
       players: {
-        list: function(market_id, opts) {
+        list: function(roster_id, opts) {
           opts = opts || {}
-          return $http({method: 'GET', url: '/players/', params: angular.extend(opts, {market_id: market_id})});
+          return $http({method: 'GET', url: '/players/', params: angular.extend(opts, {roster_id: roster_id})});
         }
       },
       rosters: {
@@ -105,6 +108,9 @@ angular.module('app.services')
         },
         remove_player: function(roster_id, player_id) {
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/remove_player/' + player_id});
+        },
+        show: function(id) {
+          return $http({method: 'GET', url: '/rosters/' + id});
         },
         list: function(roster_id) {
           return $http({method: 'GET', url: '/players/for_roster/' + roster_id});

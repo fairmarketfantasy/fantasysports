@@ -4,11 +4,18 @@ require 'rails/test_help'
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'stripe_mock'
 require 'debugger'
+
+MarketOrder.load_sql_functions
+
 
 class ActiveSupport::TestCase
 
   ActiveRecord::Migration.check_pending!
+
+  setup { StripeMock.start }
+  teardown { StripeMock.stop }
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   #
@@ -45,24 +52,17 @@ class ActiveSupport::TestCase
 
   #returns hash with routing and account_num
   def valid_account_token
-    Stripe::Token.create(
+    StripeMock.generate_card_token(
       :bank_account => {
         :country => "US",
         :routing_number => "110000000",
         :account_number => "000123456789",
-      },
-    ).id
+      }
+    )
   end
 
   def valid_card_token
-    Stripe::Token.create(
-      :card => {
-        :number => "4242424242424242",
-        :exp_month => 9,
-        :exp_year => 2014,
-        :cvc => "314"
-      }
-    ).id
+    StripeMock.generate_card_token(last4: "4242", exp_year: 2017)
   end
 end
 
@@ -86,6 +86,11 @@ FactoryGirl.define do
     confirmed_at { Time.now }
     password "123456"
     password_confirmation "123456"
+  end
+
+  factory :customer_object do
+    balance 100
+    token { generate(:random_string) }
   end
 
   factory :team1, class: Team do
