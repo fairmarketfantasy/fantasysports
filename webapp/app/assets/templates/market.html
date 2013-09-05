@@ -12,35 +12,13 @@
     <ul>
       <!-- all these ng-clicks to joinContest, need to pass in  contest_type_id
           instead of the string '100k' or '970' or '194', etc-->
-      <li class="contest_type">
-        <h2><a ng-click="joinContest('100k', 10)">100k</a></h2>
-      </li>
-      <li class="contest_type">
-        <h2>970s</h2>
+      <li ng-repeat="(contestClass, contestTypes) in contestClasses">
+        <h2>{{contestClass}}</h2>
         <ul class="contests">
-          <li><a href="javascript://" ng-click="joinContest('970', 0)">Free</a></li>
-          <li><a href="javascript://" ng-click="joinContest('970', 2)">$2</a></li>
-          <li><a href="javascript://" ng-click="joinContest('970', 10)">$10</a></li>
+          <li ng-repeat="contestType in contestTypes">
+            <a href="javascript://" ng-click="joinContest(contestType)">{{ contestType.buy_in | freeIfZero }}</a>
+          </li>
         </ul>
-      </li>
-      <li class="contest_type">
-        <h2>194s</h2>
-        <ul class="contests">
-          <li><a href="javascript://" ng-click="joinContest('194', 0)">Free</a></li>
-          <li><a href="javascript://" ng-click="joinContest('194', 2)">$2</a></li>
-          <li><a href="javascript://" ng-click="joinContest('194', 10)">$10</a></li>
-        </ul>
-      </li>
-      <li class="contest_type">
-        <h2>H2H</h2>
-        <ul class="contests">
-          <li><a href="javascript://" ng-click="joinContest('h2h', 0)">Free</a></li>
-          <li><a href="javascript://" ng-click="joinContest('h2h', 2)">$2</a></li>
-          <li><a href="javascript://" ng-click="joinContest('h2h', 10)">$10</a></li>
-        </ul>
-      </li>
-      <li class="contest_type">
-      <h2><a ng-click="createH2H()">Challenge a friend to a H2H</a></h2>
       </li>
     </ul>
   </div>
@@ -57,7 +35,7 @@
         <ul>
           <li ng-repeat="position in uniqPositionList">
             <a ng-click="filterPlayers({position: position})" href="javascript://">{{position}}</a>
-          <li>
+          </li>
         </ul>
       </li>
       <li ng-show="filter == 'games'">
@@ -88,7 +66,7 @@
           <td>{{player.position}}</td>
           <td>{{gameFromTeam(player.team.Abbrev)}}</td>
           <td>{{player.ppg}}</td>
-          <td>{{player.salary}}</td>
+          <td>{{player.buy_price}}</td>
           <td><a href="javascript://" ng-click="addPlayer(player)">Add</a></td>
         </tr>
       </tbody>
@@ -115,7 +93,7 @@
           <td>{{player.game}}</td>
           <td>{{player.ppg}}</td>
           <td>{{player.purchase_price | emptyIfZero }}</td>
-          <td>{{player.salary - roster.players[position].purchase_price | emptyIfZero }}</td>
+          <td>{{player.sell_price - player.purchase_price }}</td>
           <td><a ng-show="player.id" href="javascript://" ng-click="removePlayer(player)">Remove</a></td>
         </tr>
       </tbody>

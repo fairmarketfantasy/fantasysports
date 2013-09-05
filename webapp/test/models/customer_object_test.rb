@@ -28,8 +28,9 @@ class CustomerObjectTest < ActiveSupport::TestCase
 
       it "should raise if charge fails" do
         lambda{
+          StripeMock.prepare_card_error(:card_declined)
           resp = user.customer_object.charge(20)
-        }.must_raise Stripe::InvalidRequestError
+        }.must_raise Stripe::CardError
       end
     end
 

@@ -22,20 +22,22 @@ class Roster < ActiveRecord::Base
     Player.sellable_for_roster(self)
   end
 
-  def self.generate_contest_roster(user, market, contest_type, buy_in)
+  def self.generate_contest_roster(user, contest_type)
 
     if user.in_progress_roster
       raise HttpException.new(409, "You may only have one roster in progress at a time.")
     end
 
+    raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
+
     r = Roster.create!(
       :owner => user,
-      :market_id => market.id,
+      :market_id => contest_type.market.id,
       :contest_type_id => contest_type.id,
-      :buy_in => buy_in,
+      :buy_in => contest_type.buy_in,
       :remaining_salary => 100000,
       :state => 'in_progress',
-      :positions => Positions.for_sport_id(market.sport_id),
+      :positions => Positions.for_sport_id(contest_type.market.sport_id),
     )
   end
 
@@ -61,7 +63,7 @@ class Roster < ActiveRecord::Base
     owner = self.owner
     raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(self.buy_in)
     self.transaction do
-      owner.customer_object.decrease_balance(roster.buy_in, 'buy_in', self.id)
+      owner.customer_object.decrease_balance(self.buy_in, 'buy_in', self.id)
       self.state = 'submitted'
       self.submitted_at = Time.now
       self.save!

@@ -7,8 +7,6 @@ angular.module("app.controllers")
       return;
     }
 
-    $scope.filterPlayers();
-
     // One time initializer
     var existingPlayers = $scope.roster.players;
     $scope.roster.players = [];
@@ -23,11 +21,38 @@ angular.module("app.controllers")
   };
   $scope.$watch('roster', updatePlayers);
 
-  $scope.filterPlayers = function(opts) {
-    $scope.fs.players.list($scope.roster.market_id, opts).then(function(players) {
+  var filterOpts = {};
+  var fetchPlayers = function() {
+    if (!$scope.roster) { return; }
+    $scope.fs.players.list($scope.roster.id, filterOpts).then(function(players) {
       $scope.players = players;
     });
   };
+
+  fetchPlayers();
+
+  var fetchRoster = function() {
+    if (!$scope.roster) {
+      return;
+    }
+    $scope.fs.rosters.show($scope.roster.id).then(function(roster){
+      $scope.setRoster(roster);
+    });
+  };
+
+  if ($scope.pollInterval === undefined) {
+    $scope.pollInterval = setInterval(function() {
+      fetchPlayers();
+      fetchRoster();
+    }, 5000);
+  }
+
+  $scope.filterPlayers = function(opts) {
+    filterOpts = opts;
+    fetchPlayers();
+  };
+
+
 
   $scope.addPlayer = function(player, init) {
     var index = _.findIndex($scope.roster.players, function(p) { return p.position == player.position && !p.id; });
@@ -38,6 +63,7 @@ angular.module("app.controllers")
         $scope.fs.rosters.add_player($scope.roster.id, player.id).then(function(market_order) {
           $scope.roster.remaining_salary -= market_order.price;
           player.purchase_price = market_order.price;
+          player.sell_price = market_order.price;
           $scope.roster.players[index] = player;
         });
       }
@@ -49,7 +75,7 @@ angular.module("app.controllers")
   $scope.removePlayer = function(player) {
     $scope.fs.rosters.remove_player($scope.roster.id, player.id).then(function(market_order) {
       $scope.roster.remaining_salary = parseFloat($scope.roster.remaining_salary) + parseFloat(market_order.price);
-      var index = _.findIndex($scope.players, function(p) { return p.id === player.id; });
+      var index = _.findIndex($scope.roster.players, function(p) { return p.id === player.id; });
       $scope.roster.players[index] = {position: player.position};
     });
   };
