@@ -13,6 +13,16 @@ angular.module("app.controllers")
     });
   });
 
+  $scope.fs.contests.for_market($routeParams.id).then(function(contestTypes) {
+    $scope.contestClasses = {};
+    _.each(contestTypes, function(type) {
+      if (!$scope.contestClasses[type.name]) {
+        $scope.contestClasses[type.name] = [];
+      }
+      $scope.contestClasses[type.name].push(type);
+    });
+  });
+
   $scope.day = function(timeStr) {
     var day = moment(timeStr);
     return day.format("dddd, MMMM Do YYYY, h:mm:ss a");
@@ -23,8 +33,8 @@ angular.module("app.controllers")
     return game && (game.away_team + ' @ ' + game.home_team);
   };
 
-  $scope.joinContest = function(type_id, buy_in) {
-    $scope.fs.contests.join($scope.market.id, type_id, buy_in).then(function(data){
+  $scope.joinContest = function(contestType) {
+    $scope.fs.contests.join(contestType.id).then(function(data){
       setCurrentRoster(data);
     });
   };

@@ -2,9 +2,8 @@ class RostersController < ApplicationController
 
   # Create a roster for a contest type
   def create
-    market = Market.find(params[:market_id])
     contest_type = ContestType.find(params[:contest_type_id])
-    roster = Roster.generate_contest_roster(current_user, market, contest_type, params[:buy_in])
+    roster = Roster.generate_contest_roster(current_user, contest_type)
     render_api_response roster
   end
 
