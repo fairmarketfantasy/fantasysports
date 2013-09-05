@@ -1,7 +1,7 @@
 class Roster < ActiveRecord::Base
   has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players', foreign_key: "roster_id"
 
-  has_many :rosters_players, :dependent => :destroy
+  has_many :rosters_players
   belongs_to :market
   belongs_to :contest
   belongs_to :contest_type
@@ -30,7 +30,7 @@ class Roster < ActiveRecord::Base
 
     raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
 
-    r = Roster.create!(
+     Roster.create!(
       :owner => user,
       :market_id => contest_type.market.id,
       :contest_type_id => contest_type.id,
@@ -80,6 +80,7 @@ class Roster < ActiveRecord::Base
 
   def cleanup_players
     players.each{|p| remove_player(p) }
+    market_orders.destroy_all
   end
 
 end

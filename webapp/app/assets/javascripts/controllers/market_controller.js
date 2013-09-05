@@ -49,6 +49,7 @@ angular.module("app.controllers")
   $scope.deleteRoster = function() {
     $scope.fs.rosters.cancel($scope.roster.id).then(function(data) {
       $scope.setRoster(null, true);
+      $location.path('/');
     });
   };
 
