@@ -9,7 +9,7 @@ class ContestTest < ActiveSupport::TestCase
     let(:u) { users(:one) }
     let(:m) { @market }
     let(:c) { Contest.new(owner:     u,
-                          type:      "194",
+                          contest_type:  create(:contest_type),
                           buy_in:    10,
                           market_id: m.id) }
     describe "create" do

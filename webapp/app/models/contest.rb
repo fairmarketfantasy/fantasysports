@@ -32,11 +32,7 @@ class Contest < ActiveRecord::Base
   after_create :create_owners_roster!
   before_save :set_invitation_code, on: :create
 
-  validates :owner, :type, :buy_in, :market_id, presence: true
-
-  def self.valid_contest?(type, buy_in)
-    TYPES[type].select{|h| h['buy_in'] == buy_in}
-  end
+  validates :owner, :contest_type_id, :buy_in, :market_id, presence: true
 
   def invite(email)
     ContestMailer.invite(self, email).deliver
@@ -54,7 +50,7 @@ class Contest < ActiveRecord::Base
   private
 
     def create_owners_roster!
-      Roster.generate_contest_roster(owner, market, type, buy_in)
+      Roster.generate_contest_roster(owner, market, contest_type, buy_in)
     end
 
     def set_invitation_code
