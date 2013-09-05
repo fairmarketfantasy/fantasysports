@@ -1,3 +1,10 @@
+-- Handy helper to drop a bunch of functions
+--SELECT 'DROP FUNCTION ' || n.nspname  || '.' || p.proname
+        --|| '(' || pg_catalog.pg_get_function_identity_arguments(p.oid) || ');'
+--FROM   pg_catalog.pg_proc p
+--LEFT   JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+--WHERE  p.proname IN('price', 'sell', 'get_price', 'close_market', 'buy_prices', 'sell_prices', 'publicsh_market', 'open_market', 'buy')
+
 
 ------------------------------------- PRICE --------------------------------------------
 

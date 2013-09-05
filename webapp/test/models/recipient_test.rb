@@ -3,7 +3,11 @@ require 'test_helper'
 class RecipientTest < ActiveSupport::TestCase
 
   describe Recipient do
-    let(:user)       { create(:user) }
+    let(:user) { 
+      user = create(:user) 
+      user.customer_object = create(:customer_object, user: user)
+      user
+    }
 
     describe "invalid .create" do
 

@@ -30,6 +30,7 @@ GEM
     arel (4.0.0)
     atomic (1.1.13)
     bcrypt-ruby (3.1.1)
+    blankslate (3.1.2)
     builder (3.1.4)
     capistrano (2.15.5)
       highline
@@ -54,6 +55,7 @@ GEM
     coderay (1.0.9)
     columnize (0.3.6)
     commonjs (0.2.6)
+    dante (0.1.5)
     debugger (1.6.1)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -85,6 +87,11 @@ GEM
     jbuilder (1.5.0)
       activesupport (>= 3.0.0)
       multi_json (>= 1.2.0)
+    jimson-temp (0.9.5)
+      blankslate (>= 3.1.2)
+      multi_json (~> 1.0)
+      rack (~> 1.4)
+      rest-client (~> 1.0)
     json (1.7.7)
     jwt (0.1.8)
       multi_json (>= 1.5)
@@ -114,6 +121,10 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.7.9)
     multipart-post (1.2.0)
+    mustwin-stripe-ruby-mock (1.8.4.10)
+      dante (>= 0.1.5)
+      jimson-temp
+      stripe (>= 1.8.4)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
@@ -228,6 +239,7 @@ DEPENDENCIES
   kaminari
   less-rails
   mocha
+  mustwin-stripe-ruby-mock (>= 1.8.4.9)
   omniauth
   omniauth-facebook
   pg
