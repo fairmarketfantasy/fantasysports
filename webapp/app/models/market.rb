@@ -32,9 +32,10 @@ class Market < ActiveRecord::Base
     Market.find_by_sql("select * from close_market(#{self.id})")[0]
   end
 
-  #look for players and remove them from the market and update the magic proportion
-  def adjust
-    puts "TODO: this"
+  #look for players in games that have started and remove them from the market
+  #and update the price multiplier
+  def lock_players
+    Market.find_by_sql("SELECT * from lock_players(#{self.id})")[0]
   end
 
 end

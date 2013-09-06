@@ -8,6 +8,23 @@ class RosterTest < ActiveSupport::TestCase
     @roster = create(:roster, :market => @market)
   end 
 
+  test "fill randomly" do
+    setup_multi_day_market
+    @market.publish
+
+    #find a $10 contest_type in the market's contest types
+    contest_type = @market.contest_types.where(:buy_in => 10).first
+
+    #create a roster and have it buy things
+    roster = create(:roster, :market => @market, :contest_type => contest_type)
+    assert roster.purchasable_players.length == 36, "36 players for sale (9x4)"
+    roster.fill_randomly
+    # roster.reload
+    assert roster.players.length == 9, "roster should be filled, but only had #{roster.players.length}"
+    assert roster.remaining_salary < 100000
+    # puts "remaining salary: #{roster.remaining_salary}"
+   end
+
   test "adding or removing players from roster affects salary" do
     player = @roster.purchasable_players.first
     initial_cap = @roster.remaining_salary

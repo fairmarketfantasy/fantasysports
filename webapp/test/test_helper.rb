@@ -37,6 +37,26 @@ class ActiveSupport::TestCase
 
   include FactoryGirl::Syntax::Methods
 
+  def setup_multi_day_market
+    @teams = [create(:team1, :abbrev => "AA"),
+              create(:team1, :abbrev => "BB"),
+              create(:team1, :abbrev => "CC"),
+              create(:team1, :abbrev => "DD")]
+    @games = [create(:game, :home_team => @teams[0], :away_team => @teams[1]),
+              create(:game, :home_team => @teams[2], :away_team => @teams[3])]
+    @teams.each do |team|
+      @players = Positions.default_NFL.split(',').map do |position|
+        player = create :player, :team => team, :position => position
+      end
+    end
+    @market = create :new_market
+    @games.each do |game|
+      @market.games_markets << GamesMarket.create(
+        market_id: @market.id,
+        game_stats_id: game.stats_id)
+    end
+  end
+
   def setup_new_market
     @team1 = create :team1
     @team2 = create :team2
