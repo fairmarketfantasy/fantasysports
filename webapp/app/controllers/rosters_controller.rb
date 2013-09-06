@@ -1,6 +1,6 @@
 class RostersController < ApplicationController
   def mine
-    render_api_response current_user.rosters
+    render_api_response current_user.rosters.active
   end
 
   # Create a roster for a contest type

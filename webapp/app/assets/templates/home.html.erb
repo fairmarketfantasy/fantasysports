@@ -1,6 +1,13 @@
 <div class="sign-up" ng-include=" 'assets/signup.html' ">
 </div>
 
+<h3>My Rosters</h3>
+<ul>
+  <li ng-repeat="roster in rosters">
+    <a href="#/market/{{roster.market_id}}?roster_id={{roster.id}}">${{roster.buy_in}} {{roster.contest_type.name}}</a>
+  </li>
+</ul>
+
 <h3>Upcoming contests</h3>
 <ul ng-controller="MarketListController">
   <li ng-repeat="market in markets">

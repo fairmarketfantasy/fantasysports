@@ -8,12 +8,12 @@
     </li>
   </ul>
 
-  <div ng-show="justSubmittedRoster">
+  <div ng-show="rosters.justSubmittedRoster">
     Your roster is looking great! Now that it's perfect, should we <a href="javascript://">Challenge some friends</a> or enter another contest?
-    <a href="javascript://" ng-click="clearJustSubmittedRoster()">No thanks, I'm done</a>
+    <a href="javascript://" ng-click="rosters.reset()">No thanks, I'm done</a>
   </div>
 
-  <div ng-hide="roster">
+  <div ng-hide="rosters.inProgressRoster">
     <h3>Contests</h3>
     <ul>
       <!-- all these ng-clicks to joinContest, need to pass in  contest_type_id
@@ -29,7 +29,7 @@
     </ul>
   </div>
 
-  <div ng-controller="RosterController" ng-show="roster">
+  <div ng-controller="RosterController" ng-show="rosters.inProgressRoster">
     <a href="javascript://" ng-click="deleteRoster()">Cancel entry</a>
     <ul>
       <li><a href="javascript://" ng-click="filter = 'my-players'">My players</a></li>
@@ -39,7 +39,7 @@
     <ul>
       <li ng-show="filter == 'positions'">
         <ul>
-          <li ng-repeat="position in uniqPositionList">
+          <li ng-repeat="position in rosters.uniqPositionList">
             <a ng-click="filterPlayers({position: position})" href="javascript://">{{position}}</a>
           </li>
         </ul>
@@ -73,13 +73,13 @@
           <td>{{gameFromTeam(player.team.Abbrev)}}</td>
           <td>{{player.ppg}}</td>
           <td>{{player.buy_price}}</td>
-          <td><a href="javascript://" ng-click="addPlayer(player)">Add</a></td>
+          <td><a href="javascript://" ng-click="rosters.addPlayer(player)">Add</a></td>
         </tr>
       </tbody>
     </table>
   
     <h2>Roster</h2>
-    <p>Remaining Salary: {{roster.remaining_salary}}</p>
+    <p>Remaining Salary: {{rosters.currentRoster.remaining_salary}}</p>
     <table>
       <thead>
         <tr>
@@ -93,18 +93,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="player in roster.players">
+        <tr ng-repeat="player in rosters.currentRoster.players">
           <td>{{player.position}}</td>
           <td>{{player.name}}</td>
           <td>{{player.game}}</td>
           <td>{{player.ppg}}</td>
           <td>{{player.purchase_price | emptyIfZero }}</td>
           <td>{{player.sell_price - player.purchase_price }}</td>
-          <td><a ng-show="player.id" href="javascript://" ng-click="removePlayer(player)">Remove</a></td>
+          <td><a ng-show="player.id" href="javascript://" ng-click="rosters.removePlayer(player)">Remove</a></td>
         </tr>
       </tbody>
     </table>
-    <a ng-click="submitRoster()" href="javascript://" ng-show="isValidRoster() && roster.state == 'in_progress'">Submit this roster</a>
-    <a ng-click="setRoster(null, true)" href="javascript://" ng-show="isValidRoster() && roster.state == 'submitted'">Finish</a>
+    <a ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
+    <a ng-click="rosters.reset()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
   </div>
 </div>
