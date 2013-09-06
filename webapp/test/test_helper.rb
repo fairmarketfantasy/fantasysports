@@ -38,10 +38,10 @@ class ActiveSupport::TestCase
   include FactoryGirl::Syntax::Methods
 
   def setup_multi_day_market
-    @teams = [create(:team1),
-              create(:team2),
-              create(:team1, :abbrev => "AA"),
-              create(:team2, :abbrev => "BB")]
+    @teams = [create(:team1, :abbrev => "AA"),
+              create(:team1, :abbrev => "BB"),
+              create(:team1, :abbrev => "CC"),
+              create(:team1, :abbrev => "DD")]
     @games = [create(:game, :home_team => @teams[0], :away_team => @teams[1]),
               create(:game, :home_team => @teams[2], :away_team => @teams[3])]
     @teams.each do |team|

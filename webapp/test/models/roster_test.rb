@@ -22,7 +22,7 @@ class RosterTest < ActiveSupport::TestCase
     # roster.reload
     assert roster.players.length == 9, "roster should be filled, but only had #{roster.players.length}"
     assert roster.remaining_salary < 100000
-    puts "remaining salary: #{roster.remaining_salary}"
+    # puts "remaining salary: #{roster.remaining_salary}"
    end
 
   test "adding or removing players from roster affects salary" do
