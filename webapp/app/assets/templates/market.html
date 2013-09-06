@@ -30,7 +30,7 @@
   </div>
 
   <div ng-controller="RosterController" ng-show="rosters.inProgressRoster">
-    <a href="javascript://" ng-click="deleteRoster()">Cancel entry</a>
+    <a href="javascript://" ng-click="rosters.cancel()">Cancel entry</a>
     <ul>
       <li><a href="javascript://" ng-click="filter = 'my-players'">My players</a></li>
       <li><a href="javascript://" ng-click="filter = 'positions'">Positions</a></li>

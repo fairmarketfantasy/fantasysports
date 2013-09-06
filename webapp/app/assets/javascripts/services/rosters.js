@@ -80,7 +80,7 @@ angular.module('app.data')
           flash.error("You can only cancel rosters that are in progress");
           return;
         }
-        fs.rosters.cancel(rosterId).then(function(data) {
+        fs.rosters.cancel(this.currentRoster.id).then(function(data) {
           self.reset();
           $location.path('/');
         });
