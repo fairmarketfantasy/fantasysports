@@ -16,6 +16,7 @@ class RosterSerializer < ActiveModel::Serializer
       :created_at, 
       :updated_at
 
+  has_one :contest
   has_one :contest_type
   has_many :players
 

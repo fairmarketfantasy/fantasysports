@@ -3,7 +3,7 @@ class MarketsController < ApplicationController
 
   def index
     page = params[:page] || 1
-    @markets = Market.opened_after(Time.now).closed_after(Time.now).page(page).order('closed_at asc')
+    @markets = Market.where(:state  => ['published', 'opened']).page(page).order('closed_at asc').limit(5)
     render_api_response @markets
   end
 
