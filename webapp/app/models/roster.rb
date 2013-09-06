@@ -74,4 +74,36 @@ class Roster < ActiveRecord::Base
     owner.customer_object.increase_balance(self.buy_in, 'canceled_roster')
   end
 
+  require 'set'
+
+  #buys random players to fill up the roster (all empty positions)
+  #how randomly? well, that may change, but for now it's pretty random.
+  def fill_randomly
+    #find which positions to fill
+    positions = self.positions.split(',') #TODO- could cache this
+    pos_taken = self.players.collect(&:position)
+    pos_taken.each do |pos|
+      i = positions.index(pos)
+      positions.delete_at(i) if not i.nil?
+    end
+    return if positions.length == 0
+    #pick players that fill those positions
+    for_sale = self.purchasable_players
+    #organize players by position
+    for_sale_by_pos = {}
+    positions.each { |pos| for_sale_by_pos[pos] = []}
+    for_sale.each do |player|
+      for_sale_by_pos[player.position] << player if for_sale_by_pos.include? player.position
+    end
+    #sample players from each position and add to roster
+    positions.each do |pos|
+      players = for_sale_by_pos[pos]
+      player = players.sample
+      next if player.nil?
+      players.delete(player)
+      self.add_player(player)
+    end
+    self.reload 
+  end
+
 end
