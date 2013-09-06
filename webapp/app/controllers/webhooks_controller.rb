@@ -1,4 +1,5 @@
 class WebhooksController < ApplicationController
+  skip_before_filter :authenticate_user!
 
   def new
     event_json = JSON.parse(request.body.read).with_indifferent_access

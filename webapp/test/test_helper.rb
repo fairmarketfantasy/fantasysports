@@ -182,6 +182,15 @@ FactoryGirl.define do
     association :contest_type
   end
 
+  factory :contest do
+    association :contest_type
+    association :owner, factory: :user
+    association :market, factory: :open_market
+    invitation_code { generate(:random_string) }
+    buy_in 10
+
+  end
+
   factory :contest_type do
     association :market, factory: :open_market
     name "some contest type"

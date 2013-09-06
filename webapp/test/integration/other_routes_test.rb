@@ -35,8 +35,8 @@ class OtherRoutesTest < ActionDispatch::IntegrationTest
   end
 
   test "games show" do
-    g = games(:one)
-    assert_routing({path: "/games/#{g.stats_id}", method: :get}, {controller: "games", action: "show", id: g.stats_id})
+    game = create(:game)
+    assert_routing({path: "/games/#{game.stats_id}", method: :get}, {controller: "games", action: "show", id: game.stats_id})
   end
 
   test "join_contest/" do
@@ -46,8 +46,9 @@ class OtherRoutesTest < ActionDispatch::IntegrationTest
   end
 
   test "contests/:id/join" do
-    c = contests(:one)
-    assert_routing({path: "/contests/#{c.id}/join", method: :post}, {controller: "contests", action: "join", id: c.id.to_s})
+    user = create(:paid_user)
+    contest = create(:contest, owner: user)
+    assert_routing({path: "/contests/#{contest.id}/join", method: :post}, {controller: "contests", action: "join", id: contest.id.to_s})
   end
 
   test "webhooks route" do

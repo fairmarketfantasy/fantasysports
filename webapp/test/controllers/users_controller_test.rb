@@ -3,8 +3,8 @@ require 'test_helper'
 class UsersControllerTest < ActionController::TestCase
 
   setup do
-    @user = create(:user)
-    @co   = customer_objects(:one)
+    @user = create(:paid_user)
+    @customer_object = @user.customer_object
     @amount = 5000
   end
 
@@ -15,8 +15,8 @@ class UsersControllerTest < ActionController::TestCase
 
   test "add_money" do
     sign_in(@user)
-    @controller.current_user.stubs(:customer_object).returns(@co)
-    assert_difference("CustomerObject.find(#{@co.id}).balance", @amount) do
+    @controller.current_user.stubs(:customer_object).returns(@customer_object)
+    assert_difference('@customer_object.balance', @amount) do
       xhr :post, :add_money, {amount: @amount}
     end
     assert_response :success
