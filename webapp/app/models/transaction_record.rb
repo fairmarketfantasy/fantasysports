@@ -9,7 +9,7 @@ end
 class TransactionRecord < ActiveRecord::Base
   CONTEST_TYPES = %w( entry_fee payout rake )
   validates_presence_of :user
-  validates :event, inclusion: { in: CONTEST_TYPES + %w( deposit withdrawal buy_in) }
+  validates :event, inclusion: { in: CONTEST_TYPES + %w( deposit withdrawal buy_in canceled_roster) }
   validates_with TransactionRecordValidator
 
   belongs_to :user
