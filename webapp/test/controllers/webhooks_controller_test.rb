@@ -3,7 +3,10 @@ require 'test_helper'
 class WebhooksControllerTest < ActionController::TestCase
 
   setup do
-    sign_in(users(:one))
+    user = create(:paid_user)
+    @request.env["RAW_POST_DATA"] = wh_dispute_stub.to_json
+    @customer_object = user.customer_object
+    CustomerObject.stubs(:find_by_charge_id).returns(@customer_object)
   end
 
   def wh_dispute_stub
@@ -26,11 +29,8 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test "post dispute" do
-    @request.env["RAW_POST_DATA"] = wh_dispute_stub.to_json
-    co = customer_objects(:one)
-    CustomerObject.stubs(:find_by_charge_id).returns(co)
     post :new
-    assert co.locked, "Customer object should be locked"
+    assert @customer_object.locked, "Customer object should be locked"
     assert_response :success
   end
 end

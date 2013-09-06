@@ -11,10 +11,10 @@ class PlayersControllerTest < ActionController::TestCase
   end
 
   test "index action authenticated" do
-    sign_in users(:one)
-    m = @market
-    ac = "Michael Jor"
-    xhr :get, :index, {autocomplete: "Michael Jor", team: 1, game: '8c0bce5a', in_contest: 3, roster_id: @roster.id}
+    sign_in create(:user)
+    game = create(:game)
+    autocomplete = "Michael Jor"
+    xhr :get, :index, {autocomplete: "Michael Jor", team: 1, game: game.stats_id, in_contest: 3, roster_id: @roster.id}
     assert_response :success
     assert assigns(:players)
   end

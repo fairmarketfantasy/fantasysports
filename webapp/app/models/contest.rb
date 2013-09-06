@@ -35,6 +35,7 @@ class Contest < ActiveRecord::Base
   validates :owner, :contest_type_id, :buy_in, :market_id, presence: true
 
   def invite(email)
+    self.save if self.new_record?
     ContestMailer.invite(self, email).deliver
   end
 

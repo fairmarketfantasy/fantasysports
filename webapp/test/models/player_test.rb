@@ -34,7 +34,7 @@ class PlayerTest < ActiveSupport::TestCase
       # end
 
       describe ".in_game" do
-        let(:game) { games(:one) }
+        let(:game) { create(:game, home_team: 'BLS', away_team: 'BIS') }
         it "should return players in a game" do
           Player.in_game(game).must_include(mj)
         end

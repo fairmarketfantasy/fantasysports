@@ -1,7 +1,0 @@
-one:
-  id: 1
-  owner: 1
-  contest_type_id: 1
-  buy_in: '10'
-  market_id: 1
-  invitation_code: <%= SecureRandom.urlsafe_base64 %>
