@@ -8,11 +8,11 @@ class Roster < ActiveRecord::Base
   belongs_to :owner, class_name: "User", foreign_key: :owner_id
   has_many :market_orders
 
-  validates :state, :inclusion => {in: %w( in_progress cancelled submitted ) }
+  validates :state, :inclusion => {in: %w( in_progress canceled submitted ) }
 
   validates :owner_id, :market_id, :buy_in, :remaining_salary, :contest_type_id, :state, presence: true
 
-  before_destroy :cleanup_players
+  before_destroy :cleanup
 
   def purchasable_players
     Player.purchasable_for_roster(self)
@@ -22,25 +22,6 @@ class Roster < ActiveRecord::Base
     Player.sellable_for_roster(self)
   end
 
-  def self.generate_contest_roster(user, contest_type)
-
-    if user.in_progress_roster
-      raise HttpException.new(409, "You may only have one roster in progress at a time.")
-    end
-
-    raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
-
-     Roster.create!(
-      :owner => user,
-      :market_id => contest_type.market.id,
-      :contest_type_id => contest_type.id,
-      :buy_in => contest_type.buy_in,
-      :remaining_salary => 100000,
-      :state => 'in_progress',
-      :positions => Positions.for_sport_id(contest_type.market.sport_id),
-    )
-  end
-
   #create a roster
   def self.generate(user, contest_type)
 
@@ -48,11 +29,12 @@ class Roster < ActiveRecord::Base
       raise HttpException.new(409, "You may only have one roster in progress at a time.")
     end
 
-    raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(contest_type.buy_in)
+    raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
+    raise HttpException.new(402, "Insufficient funds") unless user.can_charge?(contest_type.buy_in)
 
+    roster = nil
     self.transaction do
-      user.customer_object.decrease_balance(self.buy_in, 'buy_in', self.id)
-      Roster.create!(
+      roster = Roster.create!(
         :owner_id => user.id,
         :market_id => contest_type.market_id,
         :contest_type_id => contest_type.id,
@@ -61,7 +43,9 @@ class Roster < ActiveRecord::Base
         :state => 'in_progress',
         :positions => Positions.for_sport_id(contest_type.market.sport_id),
       )
+      user.customer_object.decrease_balance(contest_type.buy_in, 'buy_in', roster.id)
     end
+    roster
   end
 
   def build_from_existing(roster)
@@ -84,9 +68,10 @@ class Roster < ActiveRecord::Base
     MarketOrder.sell_player(self, player)
   end
 
-  def cleanup_players
+  def cleanup
     players.each{|p| remove_player(p) }
     market_orders.destroy_all
+    owner.customer_object.increase_balance(self.buy_in, 'canceled_roster')
   end
 
 end

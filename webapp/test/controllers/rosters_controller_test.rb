@@ -3,7 +3,7 @@ require 'test_helper'
 class RostersControllerTest < ActionController::TestCase
   setup do
     setup_simple_market
-    sign_in(create(:user))
+    sign_in(create(:paid_user))
     @ct = create(:contest_type)
   end
 

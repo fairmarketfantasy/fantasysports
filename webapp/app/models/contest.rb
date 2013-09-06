@@ -50,7 +50,7 @@ class Contest < ActiveRecord::Base
   private
 
     def create_owners_roster!
-      Roster.generate_contest_roster(owner, contest_type)
+      Roster.generate(owner, contest_type)
     end
 
     def set_invitation_code

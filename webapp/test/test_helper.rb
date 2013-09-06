@@ -101,6 +101,12 @@ FactoryGirl.define do
     confirmed_at { Time.now }
     password "123456"
     password_confirmation "123456"
+
+    factory :paid_user do
+      after(:create) do |user|
+        user.customer_object = create(:customer_object, user: user)
+      end
+    end
   end
 
   factory :customer_object do
@@ -167,7 +173,7 @@ FactoryGirl.define do
   end
 
   factory :roster do
-    association :owner, factory: :user
+    association :owner, factory: :paid_user
     association :market, factory: :open_market
     buy_in 10
     remaining_salary 100000

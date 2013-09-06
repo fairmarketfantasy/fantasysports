@@ -33,16 +33,19 @@ class RosterTest < ActiveSupport::TestCase
     assert_equal player.buy_price, initial_salary
   end
 
-  test "submitting roster decreases account balance" do
-    owner = @roster.owner
-    owner.customer_object = create(:customer_object, user: owner)
-    initial_balance = owner.customer_object.balance
-    @players.each{|p| @roster.add_player(p) }
-
+  test "creating and canceling roster affects account balance" do
+    user = create(:user)
+    user.customer_object = create(:customer_object, user: user)
+    initial_balance = user.customer_object.balance
+    roster = nil
     assert_difference("TransactionRecord.count", 1) do
-      @roster.submit!
+      roster = Roster.generate(user, @market.contest_types.where(:buy_in => 10).first)
     end
-    assert_equal  initial_balance - @roster.buy_in, owner.customer_object.reload.balance
+    assert_equal  initial_balance - 10, user.customer_object.reload.balance
+    assert_difference("TransactionRecord.count", 1) do
+      roster.destroy
+    end
+    assert_equal  initial_balance, user.customer_object.reload.balance
   end
 
   test "cancelling roster cleans up after itself" do

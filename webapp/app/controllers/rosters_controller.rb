@@ -4,7 +4,7 @@ class RostersController < ApplicationController
   def create
     contest_type = ContestType.find(params[:contest_type_id])
     existing_roster = Roster.find(params[:copy_roster_id]) if params[:copy_roster_id]
-    roster = Roster.generate_contest_roster(current_user, contest_type)
+    roster = Roster.generate(current_user, contest_type)
     roster.build_from_existing(existing_roster) if existing_roster
     render_api_response roster
   end
@@ -35,7 +35,7 @@ class RostersController < ApplicationController
   end
 
   def destroy
-    roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
+    roster = Roster.where(["owner_id = ? AND id = ? and state = 'in_progress'", current_user.id, params[:id]]).first
     roster.destroy!
     render :nothing => true, :status => :ok
   end

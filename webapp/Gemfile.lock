@@ -121,7 +121,7 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.7.9)
     multipart-post (1.2.0)
-    mustwin-stripe-ruby-mock (1.8.4.10)
+    mustwin-stripe-ruby-mock (1.8.5.00)
       dante (>= 0.1.5)
       jimson-temp
       stripe (>= 1.8.4)
@@ -239,7 +239,7 @@ DEPENDENCIES
   kaminari
   less-rails
   mocha
-  mustwin-stripe-ruby-mock (>= 1.8.4.9)
+  mustwin-stripe-ruby-mock (>= 1.8.5.00)
   omniauth
   omniauth-facebook
   pg
