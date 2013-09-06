@@ -3,7 +3,9 @@ class RostersController < ApplicationController
   # Create a roster for a contest type
   def create
     contest_type = ContestType.find(params[:contest_type_id])
+    existing_roster = Roster.find(params[:copy_roster_id]) if params[:copy_roster_id]
     roster = Roster.generate_contest_roster(current_user, contest_type)
+    roster.build_from_existing(existing_roster) if existing_roster
     render_api_response roster
   end
 

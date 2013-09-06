@@ -34,7 +34,7 @@ angular.module("app.controllers")
   };
 
   $scope.joinContest = function(contestType) {
-    $scope.fs.contests.join(contestType.id).then(function(data){
+    $scope.fs.contests.join(contestType.id, $scope.justSubmittedRoster && $scope.justSubmittedRoster.id).then(function(data){
       $scope.setRoster(data, true);
     });
   };
@@ -46,6 +46,10 @@ angular.module("app.controllers")
     }
   };
 
+  $scope.setJustSubmittedRoster = function(roster) {
+    $scope.justSubmittedRoster = roster;
+  };
+
   $scope.deleteRoster = function() {
     $scope.fs.rosters.cancel($scope.roster.id).then(function(data) {
       $scope.setRoster(null, true);
@@ -53,12 +57,10 @@ angular.module("app.controllers")
     });
   };
 
-  $scope.submitRoster = function() {
-    $scope.fs.rosters.submit($scope.roster.id).then(function(data) {
-      // TODO: open dialog, ask if user wants to submit another roster
-    console.log('success');
-      $scope.setRoster(null, true);
-    },function(data){ console.log("FAIL"); });
+  $scope.clearJustSubmittedRoster = function() {
+    $scope.justSubmittedRoster = null;
+    $location.path('/');
+    flash.success = "Awesome, You're IN. Good luck!";
   };
 
 }]);

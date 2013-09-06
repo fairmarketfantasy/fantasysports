@@ -87,11 +87,19 @@ angular.module("app.controllers")
     return !_.any($scope.roster.players, function(p) { return p.id === player.id; });
   };
 
+  // Super simple validation function. We don't actually care what's in here
   $scope.isValidRoster = function() {
-    if (!$scope.roster) {
+    if (!$scope.roster || _.filter($scope.roster.players, function(p) { return p.id }).length < 1) {
       return false;
     }
-    return _.all($scope.roster.players, function(p) { return p.id; });
+    return true;
+  };
+
+  $scope.submitRoster = function() {
+    $scope.fs.rosters.submit($scope.roster.id).then(function(roster) {
+      $scope.setRoster(null, true);
+      $scope.setJustSubmittedRoster(roster);
+    });
   };
 
 }]);

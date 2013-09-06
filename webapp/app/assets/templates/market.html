@@ -7,6 +7,12 @@
       {{game.away_team}} @ {{game.home_team}}
     </li>
   </ul>
+
+  <div ng-show="justSubmittedRoster">
+    Your roster is looking great! Now that it's perfect, should we <a href="javascript://">Challenge some friends</a> or enter another contest?
+    <a href="javascript://" ng-click="clearJustSubmittedRoster()">No thanks, I'm done</a>
+  </div>
+
   <div ng-hide="roster">
     <h3>Contests</h3>
     <ul>
@@ -99,5 +105,6 @@
       </tbody>
     </table>
     <a ng-click="submitRoster()" href="javascript://" ng-show="isValidRoster() && roster.state == 'in_progress'">Submit this roster</a>
+    <a ng-click="setRoster(null, true)" href="javascript://" ng-show="isValidRoster() && roster.state == 'submitted'">Finish</a>
   </div>
 </div>

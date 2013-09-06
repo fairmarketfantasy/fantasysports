@@ -87,8 +87,8 @@ angular.module('app.services')
         for_market: function(market_id) {
           return $http({method: 'GET', url: '/contests/for_market/' + market_id });
         },
-        join: function(contest_type_id) {
-          return $http({method: 'POST', url: '/rosters', data: {contest_type_id: contest_type_id}});
+        join: function(contest_type_id, copy_roster_id) {
+          return $http({method: 'POST', url: '/rosters', data: {contest_type_id: contest_type_id, copy_roster_id: copy_roster_id}});
         }
       },
       games: {
