@@ -16,6 +16,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
+
+
+
 ------------------------------------------ Player Prices -----------------------------------------
 
 --BUY prices for all players in the market. returns the player_id and the price
@@ -385,6 +388,43 @@ BEGIN
 	UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP where id = _market_id returning * into _market;
 END;
 $$ LANGUAGE plpgsql;
+
+
+---------------------------------- lock players ---------------------------------
+
+DROP FUNCTION lock_players(integer);
+
+--removes locked players from the market and updates the price multiplier
+CREATE OR REPLACE FUNCTION lock_players(_market_id integer, OUT _market markets) RETURNS markets AS $$
+DECLARE
+	_locked_bets numeric := 0;
+	_now timestamp;
+BEGIN
+	--ensure that the market exists and may be closed
+	PERFORM id FROM markets WHERE id = _market_id FOR UPDATE;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'market % not found', _market_id;
+	END IF;
+
+	--for each locked player that has not been removed: lock the player and sum the bets
+	select CURRENT_TIMESTAMP INTO _now;
+
+	select sum(bets) from market_players
+		where market_id = _market_id and locked_at < _now and locked = false 
+		INTO _locked_bets;
+
+	update market_players set locked = true
+		where market_id = _market_id and locked_at < _now and locked = false;
+
+	--update the price multiplier
+	update markets set 
+		total_bets = total_bets - _locked_bets, 
+		price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
+		where id = _market_id returning * into _market;
+	
+END;
+$$ LANGUAGE plpgsql;
+
 
 
 
