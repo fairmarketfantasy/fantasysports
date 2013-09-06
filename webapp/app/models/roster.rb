@@ -48,26 +48,32 @@ class Roster < ActiveRecord::Base
       raise HttpException.new(409, "You may only have one roster in progress at a time.")
     end
 
-    r = Roster.create!(
-      :owner_id => user.id,
-      :market_id => contest_type.market_id,
-      :contest_type_id => contest_type.id,
-      :buy_in => contest_type.buy_in,
-      :remaining_salary => 100000,
-      :state => 'in_progress',
-      :positions => Positions.for_sport_id(contest_type.market.sport_id),
-    )
+    raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(contest_type.buy_in)
+
+    self.transaction do
+      user.customer_object.decrease_balance(self.buy_in, 'buy_in', self.id)
+      Roster.create!(
+        :owner_id => user.id,
+        :market_id => contest_type.market_id,
+        :contest_type_id => contest_type.id,
+        :buy_in => contest_type.buy_in,
+        :remaining_salary => 100000,
+        :state => 'in_progress',
+        :positions => Positions.for_sport_id(contest_type.market.sport_id),
+      )
+    end
+  end
+
+  def build_from_existing(roster)
+    roster.players.each do |player|
+      self.add_player(player)
+    end
   end
 
   def submit!
-    owner = self.owner
-    raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(self.buy_in)
-    self.transaction do
-      owner.customer_object.decrease_balance(self.buy_in, 'buy_in', self.id)
-      self.state = 'submitted'
-      self.submitted_at = Time.now
-      self.save!
-    end
+    self.state = 'submitted'
+    self.submitted_at = Time.now
+    self.save!
   end
 
   def add_player(player)
