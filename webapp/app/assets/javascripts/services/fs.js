@@ -112,8 +112,8 @@ angular.module('app.services')
         show: function(id) {
           return $http({method: 'GET', url: '/rosters/' + id});
         },
-        list: function(roster_id) {
-          return $http({method: 'GET', url: '/players/for_roster/' + roster_id});
+        mine: function() {
+          return $http({method: 'GET', url: '/contests/mine'});
         },
         submit: function(roster_id) {
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/submit'});
