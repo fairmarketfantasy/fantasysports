@@ -9,7 +9,7 @@ class MarketTest < ActiveSupport::TestCase
   # assert that the prices
   # roster 2 buys some players. repeat process
   # test "players pulled out of markets when game happens" do
-  test "current" do
+  test "lock players TODO unfinished" do
     setup_multi_day_market
     @market.publish
 
