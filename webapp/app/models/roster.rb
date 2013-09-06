@@ -8,11 +8,13 @@ class Roster < ActiveRecord::Base
   belongs_to :owner, class_name: "User", foreign_key: :owner_id
   has_many :market_orders
 
-  validates :state, :inclusion => {in: %w( in_progress canceled submitted ) }
+  validates :state, :inclusion => {in: %w( in_progress canceled submitted finished) }
 
   validates :owner_id, :market_id, :buy_in, :remaining_salary, :contest_type_id, :state, presence: true
 
   before_destroy :cleanup
+
+  scope :active, -> { where(state: ['in_progress', 'submitted'])}
 
   def purchasable_players
     Player.purchasable_for_roster(self)
