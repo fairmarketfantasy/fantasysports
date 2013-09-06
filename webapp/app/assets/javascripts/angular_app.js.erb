@@ -1,17 +1,28 @@
 angular.module('app', [
       'app.services',
+      'app.data',
       'app.directives',
       'app.filters',
       'app.controllers',
       'app.templates',
       'angular-flash.service',
-      'angular-flash.flash-alert-directive']).
-  config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+      'angular-flash.flash-alert-directive'])
+.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
       when('/', {templateUrl: '<%= asset_path("home.html") %>', controller: 'HomeController'}).
       when('/market/:id', {templateUrl: '<%= asset_path("market.html") %> ', controller: 'MarketController'}).
       when('/account', {templateUrl: '<%= asset_path("account.html") %>', controller: 'AccountController'}).
     //...
       otherwise({redirectTo: '/'});
-  }]).
-  run(function(){ }); // initialization
+  }])
+.run(['$rootScope', '$location', 'rosters', 'flash', function($rootScope, $location, rosters, flash) {
+    // register listener to watch route changes
+    $rootScope.$on( "$routeChangeStart", function(event, next, current) {
+      var roster = rosters.inProgressRoster;
+      if (roster) {
+        flash.success = "Looks like you already have a roster going.  Let's finish entering!";
+        $location.path('/market/' + roster.market_id)
+        rosters.selectRoster(roster);
+      }
+    });
+ }])

@@ -1,5 +1,5 @@
 angular.module('app.services')
-  .factory('fsAPIInterceptor', ['models', 'flash', '$injector', function(models, flash, $injector) {
+  .factory('fsAPIInterceptor', ['flash', '$injector', function(flash, $injector) {
 // TODO: this is where jsonH stuff will go
     var $dialog;
     return function(promise) {
@@ -113,7 +113,7 @@ angular.module('app.services')
           return $http({method: 'GET', url: '/rosters/' + id});
         },
         mine: function() {
-          return $http({method: 'GET', url: '/contests/mine'});
+          return $http({method: 'GET', url: '/rosters/mine'});
         },
         submit: function(roster_id) {
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/submit'});

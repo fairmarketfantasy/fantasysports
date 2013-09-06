@@ -26,6 +26,9 @@ Fantasysports::Application.routes.draw do
   resources :cards, only: [:index, :create]
 
   resources :rosters, only: [:create, :show, :destroy] do
+    collection do
+      get 'mine', :action => 'mine'
+    end
     member do
       post 'submit', :action => 'submit'
       post 'add_player/:player_id', :action => 'add_player'

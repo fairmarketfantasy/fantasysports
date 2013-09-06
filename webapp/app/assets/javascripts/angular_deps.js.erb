@@ -1,7 +1,8 @@
-angular.module('app.controllers', [])
-angular.module('app.directives', [])
-angular.module('app.services', ['fs.data'])
-angular.module('app.filters', [])
+angular.module('app.controllers', []);
+angular.module('app.directives', []);
+angular.module('app.services', []);
+angular.module('app.data', ['app.services']);
+angular.module('app.filters', []);
 angular.module('app.templates', [ ]).run(function($templateCache) {
   <% if false && !Rails.env == 'development' # TODO: put this back in%>
       <% Dir.glob(Rails.root.join('app','assets','templates', '*')).each do |f| 
@@ -15,4 +16,4 @@ angular.module('app.templates', [ ]).run(function($templateCache) {
       <% end %>
     <% end %>
   <% end %>
-})
+});

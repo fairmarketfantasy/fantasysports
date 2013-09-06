@@ -1,8 +1,10 @@
 angular.module("app.controllers")
-.controller('MarketController', ['$scope', '$routeParams', '$location', function($scope, $routeParams, $location) {
+.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', function($scope, rosters, $routeParams, $location) {
   $scope.fs.markets.show($routeParams.id).then(function(market) {
     $scope.market = market;
   });
+
+  $scope.rosters = rosters;
 
   var teamsToGames = {};
   $scope.fs.games.list($routeParams.id).then(function(games) {
@@ -34,27 +36,17 @@ angular.module("app.controllers")
   };
 
   $scope.joinContest = function(contestType) {
-    $scope.fs.contests.join(contestType.id, $scope.justSubmittedRoster && $scope.justSubmittedRoster.id).then(function(data){
-      $scope.setRoster(data, true);
+    $scope.fs.contests.join(contestType.id, rosters.justSubmittedRoster && rosters.justSubmittedRoster.id).then(function(data){
+      rosters.selectRoster(data);
     });
-  };
-
-  $scope.setRoster = function(roster, inProgress) {
-    $scope.roster = roster;
-    if (inProgress) {
-      window.App.in_progress_roster = roster;
-    }
   };
 
   $scope.setJustSubmittedRoster = function(roster) {
     $scope.justSubmittedRoster = roster;
   };
 
-  $scope.deleteRoster = function() {
-    $scope.fs.rosters.cancel($scope.roster.id).then(function(data) {
-      $scope.setRoster(null, true);
-      $location.path('/');
-    });
+  $scope.cancelRoster = function() {
+    rosters.cancel();
   };
 
   $scope.clearJustSubmittedRoster = function() {
