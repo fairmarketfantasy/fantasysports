@@ -3,7 +3,8 @@ require 'test_helper'
 class RosterTest < ActiveSupport::TestCase
 
   setup do
-    setup_simple_market
+    setup_new_market
+    @market.publish
     @roster = create(:roster, :market => @market)
   end 
 
@@ -47,10 +48,12 @@ class RosterTest < ActiveSupport::TestCase
   test "cancelling roster cleans up after itself" do
     player = @roster.purchasable_players.first
     market = @roster.market
+    market.reload
+    bets = market.total_bets
+    assert bets == 1000
     assert_difference ['RostersPlayer.count', 'MarketOrder.count'], 1 do
       @roster.add_player player
     end
-    bets = market.total_bets
     assert_difference ['RostersPlayer.count', 'MarketOrder.count'], -1 do
       @roster.destroy
     end
