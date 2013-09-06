@@ -5,6 +5,7 @@ import (
 	"github.com/MustWin/datafetcher/lib/model"
 	"github.com/MustWin/datafetcher/nfl/models"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -66,33 +67,47 @@ func (mgr *FetchManager) savePlayersForMarket(market models.Market, teamAbbrev s
 	}
 }
 
-func (mgr *FetchManager) createMarkets(games []*models.Game) {
-	possibleMarkets := make(map[string][]*models.Game, 0)
-	for i := 0; i < len(games); i++ {
-		key := games[i].GameDay.String()
-		_, found := possibleMarkets[key]
-		if !found {
-			possibleMarkets[key] = make([]*models.Game, 0)
-		}
-		possibleMarkets[key] = append(possibleMarkets[key], games[i])
+func appendForKey(key string, markets map[string][]*models.Game, value *models.Game) {
+	_, found := markets[key]
+	if !found {
+		markets[key] = make([]*models.Game, 0)
 	}
-	for _, daysGames := range possibleMarkets {
-		if len(daysGames) > 1 {
-			market := models.Market{}
-			market.ShadowBets = 1000
-			market.ShadowBetRate = 0.75
-			market.PublishedAt = daysGames[0].GameDay.Add(-6 * 24 * time.Hour)
-			market.OpenedAt = daysGames[0].GameDay.Add(-6 * 24 * time.Hour)
-			market.ClosedAt = daysGames[0].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
-			log.Printf("Creating a market closing on %s with %d games", market.ClosedAt, len(daysGames))
-			mgr.Orm.Save(&market)
-			for _, game := range daysGames {
-				mktGame := models.GamesMarket{GameStatsId: game.StatsId, MarketId: market.Id}
-				mgr.Orm.Save(&mktGame)
-				mgr.savePlayersForMarket(market, game.HomeTeam)
-				mgr.savePlayersForMarket(market, game.AwayTeam)
-			}
-		}
+	markets[key] = append(markets[key], value)
+}
+
+func (mgr *FetchManager) createMarket(name string, games []*models.Game) {
+	market := models.Market{}
+	market.Name = name
+	market.ShadowBets = 1000
+	market.ShadowBetRate = 0.75
+	market.PublishedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
+	market.OpenedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
+	market.ClosedAt = games[0].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
+	log.Printf("Creating market %s closing on %s with %d games", market.Name, market.ClosedAt, len(games))
+	mgr.Orm.Save(&market)
+	for _, game := range games {
+		mktGame := models.GamesMarket{GameStatsId: game.StatsId, MarketId: market.Id}
+		mgr.Orm.Save(&mktGame)
+		mgr.savePlayersForMarket(market, game.HomeTeam)
+		mgr.savePlayersForMarket(market, game.AwayTeam)
+	}
+}
+
+func (mgr *FetchManager) createMarkets(games []*models.Game) {
+	log.Printf("HERE")
+	dayMarkets := make(map[string][]*models.Game, 0)
+	weekMarkets := make(map[string][]*models.Game, 0)
+	for i := 0; i < len(games); i++ {
+		dayKey := games[i].GameDay.String()
+		weekKey := strconv.Itoa(games[i].SeasonWeek)
+		appendForKey(dayKey, dayMarkets, games[i])
+		appendForKey(weekKey, weekMarkets, games[i])
+	}
+	for _, daysGames := range dayMarkets {
+		mgr.createMarket(daysGames[0].GameDay.Format("Mon @ 3:04 MST"), daysGames)
+	}
+	for _, weekGames := range weekMarkets {
+		mgr.createMarket("Week "+strconv.Itoa(weekGames[0].SeasonWeek), weekGames)
 	}
 }
 
@@ -119,6 +134,7 @@ func (mgr *FetchManager) refreshStandings() []*models.Team {
 func (mgr *FetchManager) refreshGames() []*models.Game {
 	log.Println("Fetching games")
 	games := mgr.Fetcher.GetSchedule()
+	log.Println(games)
 	mgr.Orm.SaveAll(games)
 	return games
 }
