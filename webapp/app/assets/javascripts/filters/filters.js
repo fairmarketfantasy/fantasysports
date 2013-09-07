@@ -34,4 +34,9 @@ angular.module('app.filters')
       }
       return input;
     };
+  })
+  .filter('shortFormTime', function() {
+    return function(input, scope) {
+      return moment(input).format("ddd DD @ h:mm");
+    };
   });
