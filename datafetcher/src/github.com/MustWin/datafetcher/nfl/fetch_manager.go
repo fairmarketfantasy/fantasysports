@@ -36,12 +36,12 @@ func (mgr *FetchManager) Daily() error {
 	mgr.refreshFetcher(games)
 
 	// Grab the latest standings for this season
-		teams := mgr.refreshStandings()
+	teams := mgr.refreshStandings()
 
 	// Refresh rosters for each team
 	for _, team := range teams {
-			mgr.refreshTeamRosters(team.Abbrev)
-	}/
+		mgr.refreshTeamRosters(team.Abbrev)
+	}
 
 	// Schedule jobs to collect play stats
 	for _, game := range games {
