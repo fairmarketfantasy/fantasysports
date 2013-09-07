@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('LoginController', ['$scope', '$dialog', function($scope, $dialog) {
+.controller('LoginController', ['$scope', '$dialog', 'fs', function($scope, $dialog, fs) {
 
   $scope.signUpModal = function(){
     var dialogOpts = {
