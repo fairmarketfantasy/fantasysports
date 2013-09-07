@@ -13,4 +13,12 @@ angular.module("app.controllers")
     $scope.signInForm = !$scope.signInForm;
   };
 
+  $scope.isValid = function(){
+    var required       = ($scope.user.name && $scope.user.email && $scope.user.password && $scope.user.password_confirmation);
+    var passLength     = ($scope.user.password.length >= 8);
+    var matchingPass   = ($scope.user.password === $scope.user.password_confirmation);
+
+    return required && passLength && matchingPass;
+  };
+
 }]);
