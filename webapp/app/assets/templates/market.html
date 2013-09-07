@@ -4,7 +4,7 @@
   <h3>Games</h3>
   <ul>
     <li ng-repeat="game in games">
-      {{game.away_team}} @ {{game.home_team}}
+      {{game.away_team}} @ {{game.home_team}} {{game.networkl}} on {{game.game_time | shortFormTime}}
     </li>
   </ul>
 

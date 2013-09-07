@@ -36,12 +36,12 @@ func (mgr *FetchManager) Daily() error {
 	mgr.refreshFetcher(games)
 
 	// Grab the latest standings for this season
-	teams := mgr.refreshStandings()
+		teams := mgr.refreshStandings()
 
 	// Refresh rosters for each team
 	for _, team := range teams {
-		mgr.refreshTeamRosters(team.Abbrev)
-	}
+			mgr.refreshTeamRosters(team.Abbrev)
+	}/
 
 	// Schedule jobs to collect play stats
 	for _, game := range games {
@@ -94,17 +94,16 @@ func (mgr *FetchManager) createMarket(name string, games []*models.Game) {
 }
 
 func (mgr *FetchManager) createMarkets(games []*models.Game) {
-	log.Printf("HERE")
 	dayMarkets := make(map[string][]*models.Game, 0)
 	weekMarkets := make(map[string][]*models.Game, 0)
 	for i := 0; i < len(games); i++ {
 		dayKey := games[i].GameDay.String()
-		weekKey := strconv.Itoa(games[i].SeasonWeek)
+		weekKey := games[i].SeasonType + "-" + strconv.Itoa(games[i].SeasonWeek)
 		appendForKey(dayKey, dayMarkets, games[i])
 		appendForKey(weekKey, weekMarkets, games[i])
 	}
 	for _, daysGames := range dayMarkets {
-		mgr.createMarket(daysGames[0].GameDay.Format("Mon @ 3:04 MST"), daysGames)
+		mgr.createMarket("", daysGames)
 	}
 	for _, weekGames := range weekMarkets {
 		mgr.createMarket("Week "+strconv.Itoa(weekGames[0].SeasonWeek), weekGames)
