@@ -4,7 +4,8 @@ angular.module("app.controllers")
   $scope.signInForm = false;
   $scope.signUp = function() {
     fs.user.create($scope.user).then(function(resp){
-      console.log(resp);
+      // console.log(resp);
+      window.location.reload(true);
     });
   };
 
