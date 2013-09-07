@@ -31,6 +31,15 @@ class User < ActiveRecord::Base
     self[:email].blank? ? self.unconfirmed_email : self[:email]
   end
 
+  def image_url
+    if self[:image_url]
+      self[:image_url]
+    else
+      gravatar_id = Digest::MD5.hexdigest(email.downcase)
+      "http://www.gravatar.com/avatar/#{gravatar_id}"
+    end
+  end
+
   def in_progress_roster
     rosters.where(:state => 'in_progress').first
   end
