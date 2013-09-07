@@ -13,14 +13,13 @@ class User < ActiveRecord::Base
 
 
   def self.find_for_facebook_oauth(auth)
-    user = User.find_by(email: auth.info.email)
-    unless user
-      user = User.create( name:     auth.extra.raw_info.name,
-                          provider: auth.provider,
-                          uid:      auth.uid,
-                          email:    auth.info.email,
-                          password: Devise.friendly_token[0,20])
-    end
+    user = User.where(uid: auth.uid, provider: auth.provider).first_or_create
+    user.update_attributes(
+      name:      auth.extra.raw_info.name,
+      email:     auth.info.email,
+      image_url: auth.info.image,
+      password:  Devise.friendly_token[0,20]
+    )
     user
   end
 

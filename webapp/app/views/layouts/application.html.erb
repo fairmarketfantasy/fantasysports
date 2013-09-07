@@ -80,20 +80,21 @@
     <div class="row header-bottom">
       <div class="span3 user-container text-center">
         <div class="clearfix user-box">
-          <%= image_tag "sample-user.png", :class => "user-avatar" %>
+          <img ng-src="{{currentUser().image_url}}" class='user-avatar'/>
+          <%#= image_tag "sample-user.png", :class => "user-avatar" %>
           <div class="user-info">
-            <span class="user-name">Wil Everts</span>
-            <span class="user-alias"><a class="txt-white txt-green-hover" href="#">cousinwil</a></span>
-            <a class="user-logout txt-red-hover" href="#">(sign out)</a>
+            <span class="user-name">{{ currentUser().name }}</span>
+            <!-- I don't think we have user alais -->
+            <!-- <span class="user-alias"><a class="txt-white txt-green-hover" href="#">cousinwil</a></span> -->
+            <a class="user-logout txt-red-hover" href="javascript://" ng-click="logout()">(sign out)</a>
           </div>
         </div>
         <div class="user-dash clearfix">
-          <div class="user-balance">$3,412.17<br><small>balance</small></div>
-          <div class="user-bonus">$108.17<br><small>pending bonus</small></div>
+          <div class="user-balance no-border">{{ currentUser().balance }}<small>balance</small></div>
         </div>        
         <div class="user-dash no-border clearfix">
           <div class="user-balance"><a class="btn btn-small btn-success" href="#">Add Funds</a></div>
-          <div class="user-bonus"><a class="btn btn-small btn-warning" href="#">Refer Friends</a></div>
+          <div class="user-alias"><a class="btn btn-small btn-warning" href="#">Refer Friends</a></div>
         </div>
 
 
