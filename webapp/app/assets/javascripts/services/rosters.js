@@ -88,6 +88,8 @@ angular.module('app.data')
     };
   }])
 .run(['$rootScope', 'rosters', function($rootScope, rosters) {
-  rosters.inProgressRoster = window.App.currentUser.in_progress_roster;
+  if(window.App.currentUser){
+    rosters.inProgressRoster = window.App.currentUser.in_progress_roster;
+  }
 }]);
 

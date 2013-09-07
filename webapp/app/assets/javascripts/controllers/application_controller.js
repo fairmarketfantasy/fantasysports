@@ -7,10 +7,10 @@ angular.module("app.controllers")
     return window.App.currentUser;
   };
 
-  $scope.logout = function(){
-    fs.user.logout().then(function(resp){
-      window.App.currentUser = null;
-    });
-  };
+  // $scope.logout = function(){
+  //   fs.user.logout().then(function(resp){
+  //     window.App.currentUser = null;
+  //   });
+  // };
 
 }]);
