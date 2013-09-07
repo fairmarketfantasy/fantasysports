@@ -6,7 +6,8 @@ angular.module('app', [
       'app.controllers',
       'app.templates',
       'angular-flash.service',
-      'angular-flash.flash-alert-directive'])
+      'angular-flash.flash-alert-directive',
+      'ui.bootstrap'])
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
       when('/', {templateUrl: '<%= asset_path("home.html") %>', controller: 'HomeController'}).

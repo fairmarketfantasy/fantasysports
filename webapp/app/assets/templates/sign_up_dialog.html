@@ -1,0 +1,23 @@
+<div ng-controller="SignUpDialogController">
+  <div class='modal-header'>
+    <h3 ng-hide="signInForm">Sign Up</h3>
+    <h3 ng-show="signInForm">Sign In</h3>
+  </div>
+  <div class='modal-body'>
+    <input type='text' placeholder='Name' ng-hide='signInForm' ng-model="user.name" class='mvm' /><br />
+    <input type='text' placeholder='Email' ng-model="user.email" class='mvm' /><br />
+    <input type='password' placeholder='Password' ng-model="user.password" class='mvm' /><br />
+    <input type='password' placeholder='Confirm' ng-hide='signInForm' ng-model="user.password_confirmation" class='mvm'/><br />
+    <div class='mvm' ng-hide='signInForm'>
+      Have an account?&nbsp<a href="javascript://" ng-click="toggleSignInForm()">Sign In</a>
+    </div>
+    <div class='mvm' ng-show='signInForm'>
+      Not a member?&nbsp<a href="javascript://" ng-click="toggleSignInForm()">Sign Up</a>
+    </div>
+  </div>
+  <div class='modal-footer'>
+    <a href="javascript://" class="btn btn-primary" ng-hide='signInForm' ng-click="signUp()">Sign Up</a>
+    <a href="javascript://" class="btn btn-primary" ng-show='signInForm' ng-click="signUp()">Sign In</a>
+    <a href="javascript://" class="btn" ng-click="closeDialog()">close</a>
+  </div>
+</div>

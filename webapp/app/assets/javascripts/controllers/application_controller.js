@@ -7,6 +7,11 @@ angular.module("app.controllers")
     return window.App.currentUser;
   };
 
+  $scope.closeDialog = function(){
+    //why doesn't this fire from the signup dialog??
+    console.log('fasdf');
+  };
+
   // $scope.logout = function(){
   //   fs.user.logout().then(function(resp){
   //     window.App.currentUser = null;
