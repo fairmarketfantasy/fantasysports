@@ -2,6 +2,9 @@ class PagesController < ApplicationController
   skip_before_filter :authenticate_user!
 
   def index
+    unless current_user
+      render layout: 'landing'
+    end
   end
 
   def landing
