@@ -27,60 +27,6 @@ namespace :market do
   task :close => :environment do
   	close_markets
   end
-
-  task :fake => :environment do
-    market = Market.find(25)
-    contest_types = market.contest_types
-    contest_type = nil
-    contest_types.each do |ct|
-      if ct.buy_in == 10
-        contest_type = ct
-        break
-      end
-    end
-    print "contest type: #{contest_type.inspect}\n"
-    #create a bunch of users and, for each user, a roster. then buy players
-    #create a map[position: list of players]
-    players_by_position = {}
-    market.players.each do |player|
-      players = players_by_position[player.position]
-      if players.nil?
-        players = []
-        players_by_position[player.position] = players
-      end
-      players << player
-    end
-
-    200.times do |i|
-      user = User.find_by_email("fake#{i}@fake.com")
-      if user.nil?
-        puts "creating user #{i} with a roster"
-        user = User.create( name:     "fake",
-                            provider: "fake",
-                            uid:      "fake",
-                            email:    "fake#{i}@fake.com",
-                            password: Devise.friendly_token[0,20])
-      end
-      roster = user.in_progress_roster
-      if roster.nil?
-        roster = Roster.generate_contest_roster(user, contest_type)
-      end
-      if roster.players.length == 0
-        puts "buying players for roster #{roster.id}"
-        Positions.default_NFL.split(',').map do |position|
-          player = players_by_position[position].sample
-          begin
-            roster.add_player(player)
-          rescue Error
-            puts "woops"
-          end
-        end
-      end
-      puts "roster #{roster.id} has #{roster.players.length} players"
-    end
-
-  end
-
 end
 
 def publish_markets
@@ -88,7 +34,8 @@ def publish_markets
 	markets.each do |market|
 		puts "#{Time.now} -- publishing market #{market.id}"
     market.publish
-	end
+  end
+
 end
 
 def open_markets

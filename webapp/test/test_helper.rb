@@ -37,6 +37,7 @@ class ActiveSupport::TestCase
 
   include FactoryGirl::Syntax::Methods
 
+  #creates one market with 2 games, 4 teams, and 36 players. market is not published.
   def setup_multi_day_market
     @teams = [create(:team1, :abbrev => "AA"),
               create(:team1, :abbrev => "BB"),
@@ -57,7 +58,8 @@ class ActiveSupport::TestCase
     end
   end
 
-  def setup_new_market
+  #creates a published market with one game, two teams, and 18 players
+  def setup_simple_market
     @team1 = create :team1
     @team2 = create :team2
     @game = create :game
@@ -70,19 +72,7 @@ class ActiveSupport::TestCase
       market_id: @market.id,
       game_stats_id: @game.stats_id)
     @market.save!
-  end
-
-  def setup_simple_market
-    @market = create :open_market
-    @team1 = create :team1
-    @team2 = create :team2
-    @game = create :game
-    @players = Positions.default_NFL.split(',').map do |position|
-      player = create :player, :team => [@team1, @team2].sample, :position => position
-      @market.players << player
-      player
-    end
-    @market.save!
+    @market.publish
   end
 
   #returns hash with routing and account_num
