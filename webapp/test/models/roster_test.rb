@@ -3,8 +3,7 @@ require 'test_helper'
 class RosterTest < ActiveSupport::TestCase
 
   setup do
-    setup_new_market
-    @market.publish
+    setup_simple_market
     @roster = create(:roster, :market => @market)
   end 
 
@@ -38,6 +37,7 @@ class RosterTest < ActiveSupport::TestCase
     assert_equal @roster.remaining_salary, initial_cap
   end 
 
+  #purchasing a player causes the price to go up
   test "market affects player prices" do
     player = @roster.purchasable_players.first
     @other_roster = create(:roster, :market => @market)
