@@ -1,0 +1,6 @@
+<ul ng-controller="MarketListController">
+  <li ng-repeat="market in markets">
+    <a href="#/market/{{market.id}}">{{market.name}} {{market.closed_at | shortFormTime}} </a>
+  </li>
+</ul>
+
