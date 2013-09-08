@@ -14,26 +14,6 @@
   <input type="text" placeholder="legal name" ng-model="newRecipient.name"/>
   <a href="javascript://" ng-click="createRecipient()">Save</a>
 
-  <hr />
-
-  <h3>Your Credit Cards</h3>
-  <div ng-hide="cards.length">
-    You don't have any cards, add some.
-  </div>
-  <div ng-repeat="card in cards">
-    <ul>
-      <li>Name: {{ card.name }}
-      </li>
-      <li>Month: {{ card.exp_month }}
-      </li>
-      <li>Year: {{ card.exp_year }}
-      </li>
-      <li>Last 4: {{ card.last4 }}
-      </li>
-      <li>Zip: {{ card.address_zip }}
-      </li>
-    </ul>
-  </div>
 </div>
 
 <div style="margin-bottom: 300px"></div>

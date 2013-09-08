@@ -10,15 +10,11 @@
   </div>
   <div ng-repeat="card in cards">
     <ul>
-      <li>Name: {{ card.name }}
-      </li>
-      <li>Month: {{ card.exp_month }}
-      </li>
-      <li>Year: {{ card.exp_year }}
-      </li>
-      <li>Last 4: {{ card.last4 }}
-      </li>
-      <li>Zip: {{ card.address_zip }}
+      <li class='unstyled inline-block card-token pam' ng-repeat="card in cards">
+        {{ card.name }} {{ card.last4 }} {{ card.exp_month }} {{ card.exp_year }}
+        <span class='' tooltip-html-unsafe="{{ confirmDelete(card.id) }}" tooltip-placement='right' tooltip-trigger='click'>
+          x
+        </span>
       </li>
     </ul>
   </div>
