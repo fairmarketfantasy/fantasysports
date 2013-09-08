@@ -79,12 +79,14 @@
 
     <div class="row header-bottom">
       <div class="span3 user-container text-center">
-        <div class="clearfix user-box">
+        <div class="clearfix user-box" ng-cloak>
           <img ng-src="{{currentUser().image_url}}" class='user-avatar'/>
           <div class="user-info">
             <span class="user-name">{{ currentUser().name }}</span>
-            <!-- I don't think we have user alais -->
-            <!-- <span class="user-alias"><a class="txt-white txt-green-hover" href="#">cousinwil</a></span> -->
+            <% if false %>
+              <!-- I don't think we have user alais -->
+              <!-- <span class="user-alias"><a class="txt-white txt-green-hover" href="#">cousinwil</a></span> -->
+            <% end %>
             <%= link_to '(sign out)', destroy_user_session_path, class: 'user-logout txt-red-hover' %>
           </div>
         </div>
@@ -92,8 +94,11 @@
           <div class="user-balance no-border">{{ currentUser().balance }}<small>balance</small></div>
         </div>        
         <div class="user-dash no-border clearfix">
-          <div class="user-balance"><a class="btn btn-small btn-success" href="#">Add Funds</a></div>
-          <div class="user-alias"><a class="btn btn-small btn-warning" href="#">Refer Friends</a></div>
+          <div class="user-balance"><a class="btn btn-small btn-success" href="javascript://" ng-click="addFunds()">Add Funds</a></div>
+          <% if false %>
+            <!-- I don't think we are doing refer friends at the moment -->
+            <!-- <div class="user-alias"><a class="btn btn-small btn-warning" href="javascript://">Refer Friends</a></div> -->
+          <% end %>
         </div>
 
 

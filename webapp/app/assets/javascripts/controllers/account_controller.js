@@ -5,13 +5,8 @@ angular.module("app.controllers")
     $scope.recipients = resp;
   });
 
-  fs.cards.list().then(function(resp){
-    $scope.cards = resp.cards;
-  });
-
   $scope.newRecipient = $scope.newRecipient || {};
   $scope.newAccount   = $scope.newAccount   || {};
-  $scope.cardInfo     = $scope.cardInfo     || {};
 
   $scope.createRecipient = function(){
     $scope.newAccount.country = 'US';

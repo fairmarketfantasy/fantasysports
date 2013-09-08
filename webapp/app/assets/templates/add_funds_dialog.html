@@ -1,0 +1,42 @@
+<div class='modal-header'>
+  <h3>Your Credit Cards</h3>
+</div>
+<div class='modal-body'>
+  <div class='alert alert-error' ng-hide="cards.length">
+    You don't have any cards, add one.
+  </div>
+  <div class='alert alert-success' ng-show='cards.length'>
+    Account Balance: <span class='balance phm'>${{ currentUser().balance }}</span>
+  </div>
+  <div ng-repeat="card in cards">
+    <ul>
+      <li>Name: {{ card.name }}
+      </li>
+      <li>Month: {{ card.exp_month }}
+      </li>
+      <li>Year: {{ card.exp_year }}
+      </li>
+      <li>Last 4: {{ card.last4 }}
+      </li>
+      <li>Zip: {{ card.address_zip }}
+      </li>
+    </ul>
+  </div>
+  <div ng-show='addNewCard' class='credit-card'>
+    <h6>Add a New Card</h6>
+    <input type="text" class='card-name'   placeholder="name"        ng-model="cardInfo.name"/><br />
+    <input type="text" class='mvm card-number' placeholder="4444-4444-4444-4444" ng-model="cardInfo.number"/><br />
+    <input type="text" class='mtm card-cvc'    placeholder="cvc"         ng-model="cardInfo.cvc"/>
+    <input type="text" class='mtm mls mrs card-month'  placeholder="exp mo"   ng-model="cardInfo.exp_month"/>
+    <input type="text" class='mtm card-year'   placeholder="exp yr"   ng-model="cardInfo.exp_year"/><br />
+    <input type="text" class='mtm mrm card-zip'    placeholder="zip"         ng-model="cardInfo.address_zip"/>
+    <a href="javascript://" ng-click="saveCard()" class='mtm btn btn-primary'>Save</a>
+  </div>
+  <div ng-show='cards.length'>
+    Greater than $5<br />
+    <input type='text' ng-model="chargeAmt" placeholder="Amount"/> <a href="javascript://" ng-click="addMoney()">Add Money</a>
+  </div>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn" ng-click="closeDialog()">close</a>
+</div>
