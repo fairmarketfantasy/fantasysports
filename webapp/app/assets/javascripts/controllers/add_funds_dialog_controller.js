@@ -6,10 +6,11 @@ angular.module("app.controllers")
 
   fs.cards.list().then(function(resp){
     $scope.cards = resp.cards || [];
-    $scope.addNewCard = !$scope.cards.length;
   });
 
-  $scope.addNewCard = false;
+  $scope.addNewCard = function(){
+    return !$scope.cards.length;
+  };
 
   $scope.saveCard = function(){
     Stripe.card.createToken($scope.cardInfo, function(st, resp){
@@ -34,6 +35,15 @@ angular.module("app.controllers")
       window.App.currentUser.balance = resp.balance;
       $scope.chargeAmt = null;
     });
+  };
+
+  $scope.confirmDelete = function(cardId){
+    return "<div class='pam'>Are you sure?<br/><a class='btn btn-mini btn-danger mtm' ng-click='deleteCard(cardId)'>Yes, delete</a></div>";
+  };
+
+  $scope.deleteCard = function(cardId){
+    console.log(cardId);
+    //TODO implement card deletion
   };
 
 }]);
