@@ -5,9 +5,5 @@
   </li>
 </ul>
 
-<h3>Upcoming contests</h3>
-<ul ng-controller="MarketListController">
-  <li ng-repeat="market in markets">
-    <a href="#/market/{{market.id}}">{{market.name}} {{market.closed_at | shortFormTime}} </a>
-  </li>
-</ul>
+<h3>Upcoming games</h3>
+<div ng-include="'<%= asset_path('market_list.html') %>'"></div>

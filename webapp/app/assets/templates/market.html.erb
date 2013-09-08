@@ -1,3 +1,4 @@
+<div ng-include="'<%= asset_path('market_list.html') %>'"></div>
 <div ng-controller="MarketController">
   <h2>Contests on {{day(market.closed_at)}}</h2>
 
@@ -10,7 +11,7 @@
 
   <div ng-show="rosters.justSubmittedRoster">
     Your roster is looking great! Now that it's perfect, should we <a href="javascript://">Challenge some friends</a> or enter another contest?
-    <a href="javascript://" ng-click="rosters.reset()">No thanks, I'm done</a>
+    <a href="#/" ng-click="rosters.reset()">No thanks, I'm done</a>
   </div>
 
   <div ng-hide="rosters.inProgressRoster">
