@@ -17,14 +17,9 @@ class MarketTest < ActiveSupport::TestCase
     contest_type = @market.contest_types.where(:buy_in => 10).first
     assert !contest_type.nil?, "contest type can't be nil"
 
-    #create some roster and have it buy things
-    roster = create(:roster, :market => @market, :contest_type => contest_type)
-    assert roster.purchasable_players.length == 36, "should be 36 players"
-    roster.fill_randomly
-    #buy more players randomly
-    10.times {
-      roster = create(:roster, :market => @market, :contest_type => contest_type)
-      roster.fill_randomly
+    #buy some players randomly
+    20.times {
+      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly
     }
 
     #open the market. ensure that shadow bets are removed
@@ -34,8 +29,7 @@ class MarketTest < ActiveSupport::TestCase
 
     #print out the current prices
     roster = create(:roster, :market => @market, :contest_type => contest_type)
-    prices1 = roster.purchasable_players.collect(&:buy_price)
-    # puts "prices before game 1: ", prices1
+    prices1 = roster.purchasable_players
 
     #now make a game happen by setting the locked_at to the past for the first 18 players
     @market.market_players.first(18).each do |mp|
@@ -45,10 +39,27 @@ class MarketTest < ActiveSupport::TestCase
     @market.lock_players
 
     #ensure that there are only 18 available players
-    assert roster.purchasable_players.length == 18, "expected 18 for sale, found #{roster.purchasable_players.length}"
+    prices2 = roster.purchasable_players
+    assert prices2.length == 18, "expected 18 for sale, found #{roster.purchasable_players.length}"
 
-    # puts game0.stats_id
-    # assert game0.length == 1 && game0[0].id == @games[0].id, "expected game #{@games[0].id}, found game #{game0.id}"
+    #ensure that the prices for those 18 haven't changed
+    p1 = Hash[prices1.map { |p| [p.id, p.buy_price] }]
+    prices2.each do |p|
+      # puts "player #{p.id}: #{p1[p.id]} -> #{p.buy_price}"
+      assert (p1[p.id] - p.buy_price).abs < 1, "price equality? player #{p.id}: #{p1[p.id]} -> #{p.buy_price}"
+    end
+
+    #buy more players randomly
+    20.times {
+      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly
+    }
+
+    prices3 = roster.purchasable_players
+    #see how much the mean price has changed
+    avg2 = prices2.collect(&:buy_price).reduce(:+)/18
+    avg3 = prices3.collect(&:buy_price).reduce(:+)/18
+    # puts "average price moved from #{avg2.round(2)} to #{avg3.round(2)}"
+    # assert (avg2-avg3).abs < 1000
   end
 
   test "publish open and close" do
