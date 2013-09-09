@@ -8,7 +8,6 @@
 ------------------------------------- PRICE --------------------------------------------
 
 /* The pricing function. Right now, it's a straight linear shot and assumes a 100k salary cap with a 1k minimum price */
-DROP FUNCTION price(numeric, numeric, numeric);
 DROP FUNCTION price(numeric, numeric, numeric, numeric);
 
 CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric) RETURNS numeric AS $$
@@ -29,7 +28,7 @@ RETURNS TABLE(player_id integer, buy_price numeric) AS $$
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
 		mp.locked = false AND
-		mp.player_id NOT IN (SELECT rosters_players.player_id FROM rosters_players where roster_id = $1);
+		mp.player_id NOT IN (SELECT rosters_players.player_id FROM rosters_players WHERE roster_id = $1);
 $$ LANGUAGE SQL;
 
 -- SELL prices for all players in the roster, as well as the price paid
@@ -62,7 +61,7 @@ DECLARE
 	_price numeric;
   retval market_orders;
 BEGIN
-	SELECT * FROM rosters where id = _roster_id INTO _roster FOR UPDATE;
+	SELECT * FROM rosters WHERE id = _roster_id INTO _roster FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'roster % does not exist', _roster_id;
 	END IF;
@@ -100,7 +99,7 @@ BEGIN
 	INSERT INTO rosters_players(player_id, roster_id, purchase_price) values (_player_id, _roster_id, _price);
 	UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
 	UPDATE market_players SET bets = bets + _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
-	UPDATE rosters SET remaining_salary = remaining_salary - _price where id = _roster_id;
+	UPDATE rosters SET remaining_salary = remaining_salary - _price WHERE id = _roster_id;
 	INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 		   VALUES (_roster.market_id, _roster_id, 'buy', _player_id, _price) RETURNING * INTO retval;
   	RETURN retval;
@@ -119,7 +118,7 @@ DECLARE
 	_price numeric;
   	retval market_orders;
 BEGIN
-	SELECT * from rosters where id = _roster_id INTO _roster FOR UPDATE;
+	SELECT * from rosters WHERE id = _roster_id INTO _roster FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'roster % does not exist', _roster_id;
 	END IF;
@@ -173,6 +172,7 @@ DECLARE
 	_total_ppg numeric;
 	_game games;
 	_bets numeric;
+	_price_multiplier numeric;
 BEGIN
 	--ensure that the market exists and may be published
 	SELECT * FROM markets WHERE id = _market_id AND published_at < CURRENT_TIMESTAMP AND
@@ -189,16 +189,16 @@ BEGIN
 
 	--make sure the shadow bet rate is reasonable
 	IF _market.shadow_bet_rate <= 0 THEN
-		UPDATE markets set shadow_bet_rate = 1 where id = _market_id;
+		UPDATE markets set shadow_bet_rate = 1 WHERE id = _market_id;
 	END IF;
 
 	--just to be safe, re-set the total bets to shadow bets
 	UPDATE markets set total_bets = shadow_bets, initial_shadow_bets = shadow_bets, price_multiplier = 1 WHERE id = _market_id;
 
 	--ensure that the market has games and the games have players
-	PERFORM game_stats_id from games_markets where market_id = _market_id;
+	PERFORM game_stats_id from games_markets WHERE market_id = _market_id;
 	IF NOT FOUND THEN
-		UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP where id = _market_id;
+		UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP WHERE id = _market_id;
 		RAISE NOTICE 'market % has no associated games -- will be closed', _market_id;
 		return;
 	END IF;
@@ -206,16 +206,16 @@ BEGIN
 	--ensure that there are no associated market_players, market_orders, or rosters.
 	--TODO: this is nice for dev and testing but may be a little dangerous in production
 	DELETE FROM market_players WHERE market_id = _market_id;
-	DELETE FROM market_orders where market_id = _market_id;
+	DELETE FROM market_orders WHERE market_id = _market_id;
 	DELETE FROM rosters_players WHERE roster_id IN (SELECT roster_id FROM rosters WHERE market_id = _market_id);
-	DELETE FROM rosters where market_id = _market_id;
+	DELETE FROM rosters WHERE market_id = _market_id;
 
 	--get the total ppg. use ghetto lagrangian filtering
 	SELECT sum((total_points + .01) / (total_games + .1))
-		FROM players where team in (
-			SELECT home_team from games g, games_markets gm where gm.market_id = _market_id and g.stats_id = gm.game_stats_id
+		FROM players WHERE team in (
+			SELECT home_team from games g, games_markets gm WHERE gm.market_id = _market_id and g.stats_id = gm.game_stats_id
 			UNION
-			SELECT away_team from games g, games_markets gm where gm.market_id = _market_id and g.stats_id = gm.game_stats_id
+			SELECT away_team from games g, games_markets gm WHERE gm.market_id = _market_id and g.stats_id = gm.game_stats_id
 		) INTO _total_ppg;
 
 	-- insert players into market. use the first game time for which the player is participating and calculate shadow bets.
@@ -232,11 +232,16 @@ BEGIN
 			(p.team = g.home_team OR p.team = g.away_team)
 		GROUP BY p.id;
 
+
 	--set bets and initial_shadow_bets shadow bets for all those players we just added - avoids calculating it thrice per player
 	UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets WHERE market_id = _market_id;
 
 	--set market to published
-	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP WHERE id = _market_id returning * into _market;
+	--price multiplier so that prices are more consistent across contests with different numbers of players
+	SELECT GREATEST(1, count(id)/18.0) from market_players WHERE market_id = _market_id INTO _price_multiplier;
+	
+	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = _price_multiplier 
+		WHERE id = _market_id returning * into _market;
 
 	RAISE NOTICE 'published market %', _market_id;
 END;
@@ -292,10 +297,10 @@ BEGIN
 			state='opened', opened_at = CURRENT_TIMESTAMP WHERE id = _market_id;
 
 		--remove shadow bets from all players in the market
-		UPDATE market_players SET bets = bets-shadow_bets, shadow_bets = 0 where market_id = _market_id;
+		UPDATE market_players SET bets = bets-shadow_bets, shadow_bets = 0 WHERE market_id = _market_id;
 
 		--update purchase price for all orders yet placed - in both market_order and rosters_players
-	    FOR _market_player IN SELECT * FROM market_players where market_id = _market_id LOOP
+	    FOR _market_player IN SELECT * FROM market_players WHERE market_id = _market_id LOOP
 	    	SELECT price(_market_player.bets, _market.total_bets, 0, _market.price_multiplier) INTO _price;
 	    	UPDATE rosters_players SET purchase_price = _price WHERE player_id = _market_player.player_id;
 	    	UPDATE market_orders SET price = _price WHERE player_id = _market_player.player_id;
@@ -339,7 +344,7 @@ BEGIN
 	END IF;
 
 	--update the market
-	UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP where id = _market_id returning * into _market;
+	UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP WHERE id = _market_id returning * into _market;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -364,21 +369,87 @@ BEGIN
 	select CURRENT_TIMESTAMP INTO _now;
 
 	select sum(bets) from market_players
-		where market_id = _market_id and locked_at < _now and locked = false 
+		WHERE market_id = _market_id and locked_at < _now and locked = false 
 		INTO _locked_bets;
 
 	update market_players set locked = true
-		where market_id = _market_id and locked_at < _now and locked = false;
+		WHERE market_id = _market_id and locked_at < _now and locked = false;
 
-	--update the price multiplier
-	update markets set 
-		total_bets = total_bets - _locked_bets, 
-		price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
-		where id = _market_id returning * into _market;
+	IF _locked_bets > 0 THEN
+		--update the price multiplier
+		update markets set 
+			total_bets = total_bets - _locked_bets, 
+			price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
+			WHERE id = _market_id returning * into _market;
+	END IF;
 	
 END;
 $$ LANGUAGE plpgsql;
 
+-------------------------Allocate Rosters to Contests ----------------------------
+
+DROP FUNCTION allocate_rosters(integer);
+
+CREATE OR REPLACE FUNCTION allocate_rosters(_market_id integer, OUT _market markets) RETURNS markets AS $$
+DECLARE
+	_roster rosters;
+	_contest_type contest_types;
+	_contest contests;
+BEGIN
+	--ensure that the market exists and may be closed
+	select * FROM markets WHERE id = _market_id and state = 'closed' into _market FOR UPDATE;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'market % not found or rosters already allocated', _market_id;
+	END IF;
+
+	--right now, the only contests are private contests. all other rosters are associated with contest types.
+	--update all private contests with the number of associated rosters
+	UPDATE contests set num_rosters = (select count(*) from rosters 
+		WHERE rosters.cancelled = false and rosters.market_id = _market_id and rosters.contest_id = contests.id) 
+		WHERE market_id = _market_id;
+
+	-- remove rosters from private contests that are over-filled. should be none
+	FOR _contest IN SELECT * FROM contests WHERE market_id = _market_id AND num_rosters > user_cap LOOP
+		UPDATE rosters set contest_id = null WHERE id in 
+			(SELECT id from rosters WHERE contest_id = _contest.id ORDER BY submitted_at OFFSET _contest.user_cap);
+	END LOOP;
+
+	-- delete contests that are under-filled
+	UPDATE rosters SET contest_id = null, cancelled_cause = 'private contest under-enrolled' WHERE 
+		market_id = _market_id and cancelled = false and contest_id IN 
+		(SELECT id FROM contests WHERE market_id = _market_id AND num_rosters < user_cap);
+
+	DELETE FROM contests WHERE market_id = _market_id AND num_rosters < user_cap;
+
+	--for the remaining rosters: allocate rosters one at a time.
+	--the user_cap = 0 exception is to accomodate the 100k contest and other contests that might not have a cap
+	FOR _roster IN SELECT * FROM rosters WHERE market_id = _market_id and contest_id is null and cancelled = false 
+			ORDER BY submitted_at LOOP
+		SELECT * from contests WHERE id = _roster.contest_type_id AND (num_rosters < user_cap OR user_cap = 0) 
+			LIMIT 1 INTO _contest;
+		IF NOT FOUND THEN
+			RAISE NOTICE 'creating contest of type %', _roster.contest_type_id;
+			SELECT * from contest_types WHERE id = _roster.contest_type_id INTO _contest_type;
+			INSERT INTO contests(owner_id, buy_in, user_cap, created_at, updated_at, market_id, contest_type_id) values
+			(1, _contest_type.buy_in, _contest_type.max_entries, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, _market_id, _contest_type.id)
+			RETURNING * INTO _contest;
+		END IF;
+		UPDATE rosters SET contest_id = _contest.id WHERE id = _roster.id;
+		UPDATE contests SET num_rosters = num_rosters + 1 WHERE id = _contest.id;
+    END LOOP;
+
+    --cancel rosters in contests that are not full
+    UPDATE rosters SET contest_id = null, cancelled = true, cancelled_cause = 'contest under-enrolled', 
+    	cancelled_at = CURRENT_TIMESTAMP 
+    	WHERE market_id = _market_id and cancelled = false and contest_id IN 
+		(SELECT id FROM contests WHERE market_id = _market_id AND (num_rosters < user_cap AND user_cap > 0));
+
+	DELETE FROM contests WHERE market_id = _market_id AND num_rosters < user_cap;
+
+    UPDATE markets SET state = 'rosters_allocated' WHERE id = _market_id RETURNING * into _market;
+	
+END;
+$$ LANGUAGE plpgsql;
 
 
 
