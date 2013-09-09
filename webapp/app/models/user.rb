@@ -45,6 +45,7 @@ class User < ActiveRecord::Base
   end
 
   def can_charge?(amount)
+    return true if amount == 0
     return false unless customer_object
     return false if customer_object.balance - amount < 0
     return true
