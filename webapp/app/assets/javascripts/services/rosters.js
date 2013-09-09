@@ -1,5 +1,5 @@
 angular.module('app.data')
-  .factory('rosters', ['fs', 'flash', function(fs, flash) {
+  .factory('rosters', ['fs', '$q', '$location', 'flash', function(fs, $q, $location, flash) {
     var rosterData = {};
     return new function() {
       var fetchRoster = function(id) {
@@ -9,8 +9,40 @@ angular.module('app.data')
       this.inProgressRoster = null;
       this.justSubmittedRoster = null;
 
-      this.startRoster = function() {
+      // TODO: maybe make this the only public function for fetching mine?
+      this.mine = function() {
+        return _.filter(rosterData, function(roster) {
+          return roster.owner_id === window.App.currentUser.id;
+        });
+      };
 
+      this.fetch = function(id) {
+        if (rosterData[id]) {
+          var fakeDeferred = $q.defer();
+          fakeDeferred.resolve(rosterData[id]);
+          return fakeDeferred.promise;
+        } else {
+          return fs.rosters.show(id).then(function(roster) {
+            rosterData[roster.id] = roster;
+            return roster;
+          });
+        }
+      };
+
+      var fetchMineMemo = false;
+      this.fetchMine = function() {
+        if (fetchMineMemo) {
+          var fakeDeferred = $q.defer();
+          fakeDeferred.resolve(this.mine());
+          return fakeDeferred.promise;
+        }
+        return fs.rosters.mine().then(function(rosters) {
+          _.each(rosters, function(roster) {
+            rosterData[roster.id] = roster;
+          });
+          fetchMineMemo = true;
+          return rosters;
+        });
       };
 
       this.selectRoster = function(roster) {
@@ -85,7 +117,7 @@ angular.module('app.data')
           $location.path('/');
         });
       };
-    };
+    }();
   }])
 .run(['$rootScope', 'rosters', function($rootScope, rosters) {
   if(window.App.currentUser){

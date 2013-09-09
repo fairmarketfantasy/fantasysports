@@ -76,6 +76,14 @@ class Roster < ActiveRecord::Base
     owner.customer_object.increase_balance(self.buy_in, 'canceled_roster')
   end
 
+  def live?
+    MarketPlayer.players_live?(rosters_players)
+  end
+
+  def next_game_time
+    MarketPlayer.next_game_time_for_players(rosters_players)
+  end
+
   #buys random players to fill up the roster (all empty positions)
   #how randomly? well, that may change, but for now it's pretty random.
   def fill_randomly

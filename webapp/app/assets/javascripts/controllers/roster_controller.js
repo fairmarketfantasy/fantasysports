@@ -1,8 +1,20 @@
 angular.module("app.controllers")
-.controller('RosterController', ['$scope', 'rosters', '$routeParams', '$location', 'flash', function($scope, rosters, $routeParams, $location, flash) {
+.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', 'flash', function($scope, rosters, markets, $routeParams, $location, flash) {
   $scope.filter = null;
   $scope.rosters = rosters;
-  //$scope.$watch('roster', updatePlayers);
+  $scope.markets = markets;
+
+  var teamsToGames = {};
+  markets.fetch($routeParams.market_id).then(function(market) {
+    $scope.market = market;
+    markets.gamesFor(market.id).then(function(games) {
+      $scope.games = games;
+      _.each(games, function(game) {
+        teamsToGames[game.home_team] = game;
+        teamsToGames[game.away_team] = game;
+      });
+    });
+  });
 
   var filterOpts = {};
   var fetchPlayers = function() {
@@ -13,6 +25,12 @@ angular.module("app.controllers")
   };
 
   fetchPlayers();
+
+  if (!rosters.currentRoster && $routeParams.roster_id) {
+    rosters.fetch($routeParams.roster_id).then(function(roster) {
+      rotsers.selectRoster(roster);
+    })
+  }
 
   var fetchRoster = function() {
     if (!rosters.currentRoster) {
@@ -49,6 +67,12 @@ angular.module("app.controllers")
     }
     return !_.any(rosters.currentRoster.players, function(p) { return p.id === player.id; });
   };
+
+  $scope.gameFromTeam = function(team) {
+    var game = teamsToGames[team];
+    return game && (game.away_team + ' @ ' + game.home_team);
+  };
+
 }]);
 
 

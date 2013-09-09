@@ -10,6 +10,7 @@ require 'debugger'
 MarketOrder.load_sql_functions
 
 
+
 class ActiveSupport::TestCase
 
   ActiveRecord::Migration.check_pending!
@@ -52,9 +53,7 @@ class ActiveSupport::TestCase
     end
     @market = create :new_market
     @games.each do |game|
-      @market.games_markets << GamesMarket.create(
-        market_id: @market.id,
-        game_stats_id: game.stats_id)
+      GamesMarket.create(market_id: @market.id, game_stats_id: game.stats_id)
     end
   end
 
@@ -63,16 +62,15 @@ class ActiveSupport::TestCase
     @team1 = create :team1
     @team2 = create :team2
     @game = create :game
-    @players = Positions.default_NFL.split(',').map do |position|
+    @players = Positions.default_NFL.split(',').each do |position|
       player = create :player, :team => @team1, :position => position
       player = create :player, :team => @team2, :position => position
     end
     @market = create :new_market
-    @market.games_markets << GamesMarket.create(
-      market_id: @market.id,
-      game_stats_id: @game.stats_id)
-    @market.save!
+    GamesMarket.create(market_id: @market.id, game_stats_id: @game.stats_id)
     @market.publish
+    @market.add_default_contests
+    @market.reload
   end
 
   #returns hash with routing and account_num
