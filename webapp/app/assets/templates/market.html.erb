@@ -3,8 +3,8 @@
   <h2>Contests on {{day(market.closed_at)}}</h2>
 
   <h3>Games</h3>
-  <ul>
-    <li ng-repeat="game in games">
+  <ul class="games">
+    <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
       {{game.away_team}} @ {{game.home_team}} {{game.networkl}} on {{game.game_time | shortFormTime}}
     </li>
   </ul>
@@ -31,7 +31,7 @@
   </div>
 
   <div ng-controller="RosterController" ng-show="rosters.inProgressRoster">
-    <a href="javascript://" ng-click="rosters.cancel()">Cancel entry</a>
+    <a href="#/" ng-click="rosters.cancel()">Cancel entry</a>
     <ul>
       <li><a href="javascript://" ng-click="filter = 'my-players'">My players</a></li>
       <li><a href="javascript://" ng-click="filter = 'positions'">Positions</a></li>

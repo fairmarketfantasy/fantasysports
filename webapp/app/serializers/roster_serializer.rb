@@ -14,7 +14,9 @@ class RosterSerializer < ActiveModel::Serializer
       :cancelled_at, 
       :positions,
       :created_at, 
-      :updated_at
+      :updated_at,
+      :next_game_time,
+      :live
 
   has_one :contest
   has_one :contest_type
@@ -22,6 +24,10 @@ class RosterSerializer < ActiveModel::Serializer
 
   def players
     object.sellable_players
+  end
+
+  def live
+    object.live?
   end
 
 end

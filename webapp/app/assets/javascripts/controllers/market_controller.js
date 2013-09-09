@@ -30,6 +30,10 @@ angular.module("app.controllers")
     return day.format("dddd, MMMM Do YYYY, h:mm:ss a");
   };
 
+  $scope.gameStarted = function(game) {
+    return new Date(game.game_time) < new Date();
+  }
+
   $scope.gameFromTeam = function(team) {
     var game = teamsToGames[team];
     return game && (game.away_team + ' @ ' + game.home_team);
