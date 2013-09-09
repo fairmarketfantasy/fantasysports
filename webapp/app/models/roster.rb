@@ -27,10 +27,7 @@ class Roster < ActiveRecord::Base
   #create a roster
   def self.generate(user, contest_type)
 
-    if user.in_progress_roster
-      raise HttpException.new(409, "You may only have one roster in progress at a time.")
-    end
-
+    raise HttpException.new(409, "You may only have one roster in progress at a time.") if user.in_progress_roster
     raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
     raise HttpException.new(402, "Insufficient funds") unless user.can_charge?(contest_type.buy_in)
 
@@ -45,7 +42,7 @@ class Roster < ActiveRecord::Base
         :state => 'in_progress',
         :positions => Positions.for_sport_id(contest_type.market.sport_id),
       )
-      user.customer_object.decrease_balance(contest_type.buy_in, 'buy_in', roster.id)
+      user.customer_object.decrease_balance(contest_type.buy_in, 'buy_in', roster.id) if contest_type.buy_in > 0
     end
     roster
   end
