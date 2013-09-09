@@ -11,6 +11,7 @@ namespace :market do
   		puts "#{Time.now} -- inspecting markets"
 	  	publish_markets
 	  	open_markets
+      lock_players
 	  	close_markets
 	  	sleep wait_time
   	end
@@ -21,7 +22,11 @@ namespace :market do
   end
 
   task :open => :environment do
-  	open_markets
+    open_markets
+  end  
+
+  task :lock_players => :environment do
+    lock_players
   end
 
   task :close => :environment do
@@ -33,24 +38,39 @@ def publish_markets
 	markets = Market.where("published_at <= ? AND (state is null or state='')", Time.now)
 	markets.each do |market|
 		puts "#{Time.now} -- publishing market #{market.id}"
-    market.publish
+    market = market.publish
+    if market.state == 'published'
+      market.add_default_contests
+    end
   end
-
 end
 
 def open_markets
 	markets = Market.where("state = 'published'")
 	markets.each do |market|
 		puts "#{Time.now} -- opening market #{market.id}"
-    market.open
+    market = market.open
+    if market.state = 'opened'
+      market.notify_market_open_event
+    end
 	end
+end
+
+def lock_players
+  markets = Market.where("state = 'opened'")
+  markets.each do |market|
+    puts "#{Time.now} -- locking players in market #{market.id}"
+    market.lock_players
+  end
 end
 
 def close_markets
 	markets = Market.where("closed_at <= ? AND state = 'opened'", Time.now)
 	markets.each do |market|
 		puts "#{Time.now} -- closing market #{market.id}"
-    market.close
+    market = market.close
+    if market.state = 'closed'
+      allocate_rosters
+    end
 	end
-
 end

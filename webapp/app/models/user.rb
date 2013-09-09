@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   devise :omniauthable, :omniauth_providers => [:facebook]
 
   has_many :rosters, foreign_key: :owner_id
-  has_many :contests, foreign_key: :owner
+  has_many :contests, foreign_key: :owner_id
   has_one  :customer_object
   has_many :recipients
 

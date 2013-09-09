@@ -12,7 +12,7 @@ class ContestTest < ActiveSupport::TestCase
                              market_id: @market.id)
     end
 
-    describe "create" do
+    describe "#make_private" do
       it "should create a contest for the owner" do
         assert_difference("@user.contests.count", 1) do
           @contest.save!
@@ -23,7 +23,7 @@ class ContestTest < ActiveSupport::TestCase
     describe "#create_owners_roster!" do
       it "should create a roster for the owner" do
         assert_difference("@user.rosters.count", 1) do
-          @contest.save!
+          @contest.make_private
         end
       end
     end
@@ -31,6 +31,7 @@ class ContestTest < ActiveSupport::TestCase
     describe "#invite" do
       it "should send an email to the invitee" do
         assert_difference("ActionMailer::Base.deliveries.size", 1) do
+          @contest.make_private
           @contest.invite("yodawg@gmail.com")
         end
       end
