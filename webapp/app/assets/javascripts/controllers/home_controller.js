@@ -1,5 +1,6 @@
 angular.module("app.controllers")
-.controller('HomeController', ['$scope', function($scope) {
-
+.controller('HomeController', ['$scope', 'rosters', function($scope, rosters) {
+  $scope.rosters = rosters;
+  rosters.fetchMine();
 }]);
 
