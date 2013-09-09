@@ -12,7 +12,7 @@ class RosterTest < ActiveSupport::TestCase
     @market.publish
 
     #find a $10 contest_type in the market's contest types
-    contest_type = @market.contest_types.where(:buy_in => 10).first
+    contest_type = create(:contest_type, :market => @market)
 
     #create a roster and have it buy things
     roster = create(:roster, :market => @market, :contest_type => contest_type)

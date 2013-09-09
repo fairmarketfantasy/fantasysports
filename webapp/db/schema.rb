@@ -11,10 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130907032924) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 20130908154407) do
 
   create_table "contest_types", force: true do |t|
     t.integer "market_id",        null: false
@@ -31,16 +28,17 @@ ActiveRecord::Schema.define(version: 20130907032924) do
   add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
 
   create_table "contests", force: true do |t|
-    t.integer  "owner",           null: false
-    t.integer  "buy_in",          null: false
+    t.integer  "owner_id",                    null: false
+    t.integer  "buy_in",                      null: false
     t.integer  "user_cap"
     t.datetime "start_time"
     t.datetime "end_time"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "market_id",       null: false
-    t.string   "invitation_code", null: false
-    t.integer  "contest_type_id", null: false
+    t.integer  "market_id",                   null: false
+    t.string   "invitation_code"
+    t.integer  "contest_type_id",             null: false
+    t.integer  "num_rosters",     default: 0
   end
 
   add_index "contests", ["market_id"], name: "index_contests_on_market_id", using: :btree
@@ -166,23 +164,24 @@ ActiveRecord::Schema.define(version: 20130907032924) do
   end
 
   create_table "rosters", force: true do |t|
-    t.integer  "owner_id",                     null: false
+    t.integer  "owner_id",                         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "market_id",                    null: false
+    t.integer  "market_id",                        null: false
     t.integer  "contest_id"
-    t.integer  "buy_in",                       null: false
-    t.decimal  "remaining_salary",             null: false
+    t.integer  "buy_in",                           null: false
+    t.decimal  "remaining_salary",                 null: false
     t.integer  "final_points"
     t.integer  "finish_place"
     t.decimal  "amount_paid"
     t.datetime "paid_at"
     t.string   "cancelled_cause"
     t.datetime "cancelled_at"
-    t.string   "state",                        null: false
+    t.string   "state",                            null: false
     t.string   "positions"
     t.datetime "submitted_at"
-    t.integer  "contest_type_id",  default: 0, null: false
+    t.integer  "contest_type_id",  default: 0,     null: false
+    t.boolean  "cancelled",        default: false
   end
 
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree

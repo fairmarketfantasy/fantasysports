@@ -24,10 +24,15 @@ class MarketsController < ApplicationController
       contest_type = ContestType.find(params[:contest_type_id])
       invitees     = params[:emails]
       buy_in       = params[:buy_in]
-      contest = market.contests.create!(owner:        current_user,
-                                        user_cap:     user_cap,
-                                        buy_in:       buy_in,
-                                        contest_type: contest_type)
+
+      contest = Contest.create!(
+        market: market,
+        owner: current_user,
+        user_cap: user_cap,
+        buy_in: buy_in,
+        contest_type: contest_type
+        )
+      contest.make_private
       invitees.each do |email|
         contest.invite(email)
       end
