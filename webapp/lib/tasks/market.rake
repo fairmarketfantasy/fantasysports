@@ -70,7 +70,7 @@ def close_markets
 		puts "#{Time.now} -- closing market #{market.id}"
     market = market.close
     if market.state = 'closed'
-      allocate_rosters
+      market.allocate_rosters
     end
 	end
 end

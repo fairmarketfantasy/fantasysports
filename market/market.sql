@@ -375,11 +375,13 @@ BEGIN
 	update market_players set locked = true
 		WHERE market_id = _market_id and locked_at < _now and locked = false;
 
-	--update the price multiplier
-	update markets set 
-		total_bets = total_bets - _locked_bets, 
-		price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
-		WHERE id = _market_id returning * into _market;
+	IF _locked_bets > 0 THEN
+		--update the price multiplier
+		update markets set 
+			total_bets = total_bets - _locked_bets, 
+			price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
+			WHERE id = _market_id returning * into _market;
+	END IF;
 	
 END;
 $$ LANGUAGE plpgsql;
