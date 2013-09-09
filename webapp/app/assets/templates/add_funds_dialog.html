@@ -10,15 +10,31 @@
   </div>
   <div ng-repeat="card in cards">
     <ul>
-      <li class='unstyled inline-block card-token pam' ng-repeat="card in cards">
-        {{ card.name }} {{ card.last4 }} {{ card.exp_month }} {{ card.exp_year }}
-        <span class='' tooltip-html-unsafe="{{ confirmDelete(card.id) }}" tooltip-placement='right' tooltip-trigger='click'>
-          x
-        </span>
+      <li class='unstyled inline-block card-token pam' ng-class="{default: card.default}" ng-repeat="card in cards">
+        <div class='relative pull-right delete-card'>
+          <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
+          <div ng-show="showConfirm(card.id)" class='absolute card-confirm-delete tooltip right fade in'>
+            <div class='tooltip-arrow'>
+            </div>
+            <div class='tooltip-inner'>
+              <div class='pam'>
+                Are you sure?<br />
+                <a class='btn btn-mini btn-danger mtm' ng-click='deleteCard(card.id)'>Yes, delete</a>
+                <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class='overflow-hide'>
+          {{ card.name }}<br />
+        </div>
+        <div class='ptm'>
+          xxxx-xxxx-{{ card.last4 }}
+        </div>
       </li>
     </ul>
   </div>
-  <div ng-show='addNewCard' class='credit-card'>
+  <div ng-show='addNewCard()' class='credit-card'>
     <h6>Add a New Card</h6>
     <input type="text" class='card-name'   placeholder="name"        ng-model="cardInfo.name"/><br />
     <input type="text" class='mvm card-number' placeholder="4444-4444-4444-4444" ng-model="cardInfo.number"/><br />
@@ -29,8 +45,9 @@
     <a href="javascript://" ng-click="saveCard()" class='mtm btn btn-primary'>Save</a>
   </div>
   <div ng-show='cards.length'>
-    Greater than $5<br />
-    <input type='text' ng-model="chargeAmt" placeholder="Amount"/> <a href="javascript://" ng-click="addMoney()">Add Money</a>
+    $<input type='text' ng-model="chargeAmt" placeholder="Amount" class='add-funds-input mls'/>
+    <a href="javascript://" class='btn btn-primary' ng-click="addFunds()">Add Money</a><br />
+    <span class='muted tilt'>*At least $5.</span>
   </div>
 </div>
 <div class='modal-footer'>

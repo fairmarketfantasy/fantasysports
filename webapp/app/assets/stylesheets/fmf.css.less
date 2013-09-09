@@ -296,6 +296,9 @@ header {
 /*
   Add Funds Modal
 */
+.add-funds-input {
+  width: 60px;
+}
 .credit-card {
   width: 50%;
   margin: auto;
@@ -316,7 +319,18 @@ header {
   width: 55px;
 }
 .card-token {
-  background: @emerland;
-  color: @white;
+  background: mix(@inverse, @base, 90%);
+  color: mix(@base, @inverse, 65%);
+  border: 2px solid mix(@firm, @alert-border, 5%);
   .border-radius(4px);
+  &.default {
+    border: 2px solid @firm;
+  }
+}
+.delete-card {
+  margin-top: -10px;
+}
+.card-confirm-delete {
+  top: -40px;
+  right: -218px
 }

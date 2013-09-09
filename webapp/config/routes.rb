@@ -23,7 +23,7 @@ Fantasysports::Application.routes.draw do
 
   resources :recipients, only: [:index, :create]
 
-  resources :cards, only: [:index, :create]
+  resources :cards, only: [:index, :create, :destroy]
 
   resources :rosters, only: [:create, :show, :destroy] do
     collection do

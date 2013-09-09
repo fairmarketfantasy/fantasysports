@@ -73,6 +73,9 @@ angular.module('app.services')
         },
         create: function(token){
           return $http({method: 'POST', url: '/cards', data: {token: token}});
+        },
+        destroy: function(cardId){
+          return $http({method: 'DELETE', url: '/cards/' + cardId});
         }
       },
       markets: {

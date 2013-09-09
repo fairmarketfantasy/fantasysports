@@ -5,6 +5,11 @@ class CustomerObject < ActiveRecord::Base
 
   before_validation :set_stripe_id, on: :create
 
+  #override reload to nil out memoized stripe object
+  def reload
+    @strip_object = nil
+    super
+  end
 
   def set_stripe_id
     unless token
@@ -17,9 +22,20 @@ class CustomerObject < ActiveRecord::Base
     self.stripe_id = resp.id
   end
 
+  def cards
+    stripe_object.cards
+  end
+
+  def default_card_id
+    stripe_object.default_card
+  end
+
   def add_a_card(token)
-    stripe_obj = self.retrieve
-    stripe_obj.cards.create({card: token})
+    stripe_object.cards.create({card: token})
+  end
+
+  def delete_card(card_id)
+    stripe_object.cards.retrieve(card_id).delete()
   end
 
   ##Talk to Stripe API
@@ -68,8 +84,9 @@ class CustomerObject < ActiveRecord::Base
     end
   end
 
-  def retrieve
-    Stripe::Customer.retrieve(stripe_id)
+  def stripe_object
+    #memoize stripe object
+    @strip_object ||= Stripe::Customer.retrieve(stripe_id)
   end
 
 end
