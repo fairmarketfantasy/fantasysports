@@ -9,8 +9,6 @@ class Contest < ActiveRecord::Base
 
   self.inheritance_column = :_type_disabled
 
-  # TODO: decide how to represent contest type, which could be multiple types. Bitmap? Another relation?
-
   # after_create :create_owners_roster!
   # before_save :set_invitation_code, on: :create
 

@@ -1,47 +1,49 @@
 angular.module("app.controllers")
-.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', function($scope, rosters, $routeParams, $location) {
-  $scope.fs.markets.show($routeParams.id).then(function(market) {
-    $scope.market = market;
-  });
+.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', function($scope, rosters, $routeParams, $location, marketService) {
+  $scope.marketService = marketService;
 
+  marketService.fetchUpcoming($routeParams.market_id);
   $scope.rosters = rosters;
 
-  var teamsToGames = {};
-  $scope.fs.games.list($routeParams.id).then(function(games) {
-    $scope.games = games;
-    _.each(games, function(game) {
-      teamsToGames[game.home_team] = game;
-      teamsToGames[game.away_team] = game;
-    });
-  });
 
-  $scope.fs.contests.for_market($routeParams.id).then(function(contestTypes) {
-    $scope.contestClasses = {};
-    _.each(contestTypes, function(type) {
-      if (!$scope.contestClasses[type.name]) {
-        $scope.contestClasses[type.name] = [];
-      }
-      $scope.contestClasses[type.name].push(type);
+  var reloadMarket = function() {
+    if (!marketService.currentMarket) {
+      return;
+    }
+    marketService.gamesFor(marketService.currentMarket.id).then(function(games) {
+      $scope.games = games;
+    })
+
+    $scope.fs.contests.for_market(marketService.currentMarket.id).then(function(contestTypes) {
+      $scope.contestClasses = {};
+      _.each(contestTypes, function(type) {
+        if (!$scope.contestClasses[type.name]) {
+          $scope.contestClasses[type.name] = [];
+        }
+        $scope.contestClasses[type.name].push(type);
+      });
     });
+  }
+  $scope.$watch('marketService.currentMarket', reloadMarket);
+  $scope.$watch('$routeParams.market_id', function() {
+    if ($routeParams.market_id) {
+      marketService.selectMarket($routeParams.market_id);
+    }
   });
 
   $scope.day = function(timeStr) {
     var day = moment(timeStr);
-    return day.format("dddd, MMMM Do YYYY, h:mm:ss a");
+    return day.format("ddd, MMM Do , h:mm a");
   };
 
   $scope.gameStarted = function(game) {
     return new Date(game.game_time) < new Date();
   }
 
-  $scope.gameFromTeam = function(team) {
-    var game = teamsToGames[team];
-    return game && (game.away_team + ' @ ' + game.home_team);
-  };
-
   $scope.joinContest = function(contestType) {
     $scope.fs.contests.join(contestType.id, rosters.justSubmittedRoster && rosters.justSubmittedRoster.id).then(function(data){
       rosters.selectRoster(data);
+      $location.path('/' + marketService.currentMarket.id + '/' + data.id);
     });
   };
 
@@ -50,7 +52,9 @@ angular.module("app.controllers")
   };
 
   $scope.cancelRoster = function() {
+    var path = '/market/' + marketService.currentMarket.id;
     rosters.cancel();
+    $location.path(path);
   };
 
   $scope.clearJustSubmittedRoster = function() {
@@ -60,5 +64,3 @@ angular.module("app.controllers")
   };
 
 }]);
-
-

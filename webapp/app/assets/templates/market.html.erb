@@ -1,8 +1,13 @@
-<div ng-include="'<%= asset_path('market_list.html') %>'"></div>
 <div ng-controller="MarketController">
-  <h2>Contests on {{day(market.closed_at)}}</h2>
+  <ul >
+    <li ng-repeat="market in marketService.upcoming">
+      <a href="#/market/{{market.id}}">{{market.name}} {{market.closed_at | shortFormTime}} </a>
+    </li>
+  </ul>
 
-  <h3>Games</h3>
+  <h4>{{day(market.closed_at)}}</h4>
+
+  <h5>Games</h5>
   <ul class="games">
     <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
       {{game.away_team}} @ {{game.home_team}} {{game.networkl}} on {{game.game_time | shortFormTime}}
@@ -30,82 +35,4 @@
     </ul>
   </div>
 
-  <div ng-controller="RosterController" ng-show="rosters.inProgressRoster">
-    <a href="#/" ng-click="rosters.cancel()">Cancel entry</a>
-    <ul>
-      <li><a href="javascript://" ng-click="filter = 'my-players'">My players</a></li>
-      <li><a href="javascript://" ng-click="filter = 'positions'">Positions</a></li>
-      <li><a href="javascript://" ng-click="filter = 'games'">Games</a></li>
-    </ul>
-    <ul>
-      <li ng-show="filter == 'positions'">
-        <ul>
-          <li ng-repeat="position in rosters.uniqPositionList">
-            <a ng-click="filterPlayers({position: position})" href="javascript://">{{position}}</a>
-          </li>
-        </ul>
-      </li>
-      <li ng-show="filter == 'games'">
-        <!-- TODO: make this a dropdown -->
-        <select ng-options="game as gameFromTeam(game.home_team) for game in games" ng-model="game" ng-change="filterPlayers({game: game.id})">
-        </select>
-      </li>
-    </ul>
-
-    <h2>Players</h2>
-    
-    <table>
-      <thead>
-        <tr>
-          <th ng-click="sort('status')">Status</th>
-          <th ng-click="sort('name')">Name</th>
-          <th ng-click="sort('position')">Position</th>
-          <th ng-click="sort('game')">Game</th>
-          <th ng-click="sort('ppg')">PPG</th>
-          <th ng-click="sort('salary')">Salary</th>
-          <th>Add</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="player in players | filter:notInRoster">
-          <td>{{player.status}}</td>
-          <td>{{player.name}}</td>
-          <td>{{player.position}}</td>
-          <td>{{gameFromTeam(player.team.Abbrev)}}</td>
-          <td>{{player.ppg}}</td>
-          <td>{{player.buy_price}}</td>
-          <td><a href="javascript://" ng-click="rosters.addPlayer(player)">Add</a></td>
-        </tr>
-      </tbody>
-    </table>
-  
-    <h2>Roster</h2>
-    <p>Remaining Salary: {{rosters.currentRoster.remaining_salary}}</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Position</th>
-          <th>Name</th>
-          <th>Game</th>
-          <th>PPG</th>
-          <th>Purchase Price</th>
-          <th>Price Differential</th>
-          <th>Remove</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="player in rosters.currentRoster.players">
-          <td>{{player.position}}</td>
-          <td>{{player.name}}</td>
-          <td>{{player.game}}</td>
-          <td>{{player.ppg}}</td>
-          <td>{{player.purchase_price | emptyIfZero }}</td>
-          <td>{{player.sell_price - player.purchase_price }}</td>
-          <td><a ng-show="player.id" href="javascript://" ng-click="rosters.removePlayer(player)">Remove</a></td>
-        </tr>
-      </tbody>
-    </table>
-    <a ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
-    <a ng-click="rosters.reset()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
-  </div>
 </div>

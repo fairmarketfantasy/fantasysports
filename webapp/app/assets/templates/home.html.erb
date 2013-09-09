@@ -1,9 +1,9 @@
 <h3>My Rosters</h3>
 <ul>
   <li ng-repeat="roster in rosters.mine()">
-    <a href="#/market/{{roster.market_id}}?roster_id={{roster.id}}">${{roster.buy_in}} {{roster.contest_type.name}} - <span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span></a>
+    <a href="#/market/{{roster.market_id}}/roster/{{roster.id}}">${{roster.buy_in}} {{roster.contest_type.name}} - <span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span></a>
   </li>
 </ul>
 
-<h3>Upcoming games</h3>
-<div ng-include="'<%= asset_path('market_list.html') %>'"></div>
+<h3>Upcoming Contests</h3>
+<div ng-include="'<%= asset_path('market.html') %>'"></div>

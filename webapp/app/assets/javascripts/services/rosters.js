@@ -1,5 +1,5 @@
 angular.module('app.data')
-  .factory('rosters', ['fs', '$q', 'flash', function(fs, $q, flash) {
+  .factory('rosters', ['fs', '$q', '$location', 'flash', function(fs, $q, $location, flash) {
     var rosterData = {};
     return new function() {
       var fetchRoster = function(id) {
@@ -16,8 +16,17 @@ angular.module('app.data')
         });
       };
 
-      this.startRoster = function() {
-
+      this.fetch = function(id) {
+        if (rosterData[id]) {
+          var fakeDeferred = $q.defer();
+          fakeDeferred.resolve(rosterData[id]);
+          return fakeDeferred.promise;
+        } else {
+          return fs.rosters.show(id).then(function(roster) {
+            rosterData[roster.id] = roster;
+            return roster;
+          });
+        }
       };
 
       var fetchMineMemo = false;
@@ -108,7 +117,7 @@ angular.module('app.data')
           $location.path('/');
         });
       };
-    };
+    }();
   }])
 .run(['$rootScope', 'rosters', function($rootScope, rosters) {
   if(window.App.currentUser){
