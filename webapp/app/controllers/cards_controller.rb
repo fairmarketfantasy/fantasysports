@@ -15,10 +15,15 @@ class CardsController < ApplicationController
       else
         customer_object = CustomerObject.create(user: current_user, token: params[:token])
       end
-      render_api_response customer_object
+      render_api_response customer_object.reload
     # rescue => e
     #   msg = e.try(:message)
     #   render json: {error: msg || e}
     # end
+  end
+
+  def destroy
+    current_user.customer_object.delete_card(params[:id])
+    render_api_response current_user.customer_object.reload
   end
 end

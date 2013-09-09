@@ -3,6 +3,7 @@ angular.module("app.controllers")
 
   $scope.currentUser = currentUser;
   $scope.cardInfo    = $scope.cardInfo     || {};
+  $scope.cards       = $scope.cards        || [];
 
   fs.cards.list().then(function(resp){
     $scope.cards = resp.cards || [];
@@ -20,7 +21,7 @@ angular.module("app.controllers")
           if(resp.error){
             flash.error = resp.error;
           } else {
-            $scope.cards = resp.cards;
+            $scope.cards = resp.cards || [];
           }
         });
       } else {
@@ -29,7 +30,7 @@ angular.module("app.controllers")
     });
   };
 
-  $scope.addMoney = function(){
+  $scope.addFunds = function(){
     var amt = ($scope.chargeAmt * 100); //dollars to cents
     fs.user.addMoney(amt).then(function(resp){
       window.App.currentUser.balance = resp.balance;
@@ -37,13 +38,28 @@ angular.module("app.controllers")
     });
   };
 
-  $scope.confirmDelete = function(cardId){
-    return "<div class='pam'>Are you sure?<br/><a class='btn btn-mini btn-danger mtm' ng-click='deleteCard(cardId)'>Yes, delete</a></div>";
+
+  //$scope.confirm keeps track of what confirm tooltip is showing...
+  //triggerConfirm sets a property, showConfirm the showing-state for a card
+  //, and closeConfirm sets not-showing-state for a card
+  $scope.confirm = $scope.confirm || {};
+
+  $scope.triggerConfirm = function(cardId){
+    $scope.confirm[cardId] = true;
+  };
+
+  $scope.showConfirm = function(cardId){
+    return $scope.confirm[cardId];
+  };
+
+  $scope.closeConfirm = function(cardId){
+    delete($scope.confirm[cardId]);
   };
 
   $scope.deleteCard = function(cardId){
-    console.log(cardId);
-    //TODO implement card deletion
+    fs.cards.destroy(cardId).then(function(resp){
+      $scope.cards = resp.cards || [];
+    });
   };
 
 }]);

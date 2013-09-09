@@ -9,6 +9,11 @@ class Recipient < ActiveRecord::Base
 
   before_validation :set_stripe_id, on: :create
 
+  def reload
+    @stripe_object = nil
+    super
+  end
+
   def user_must_be_confirmed
     errors.add(:user, "must be confirmed") unless user.confirmed?
   end
@@ -52,7 +57,7 @@ class Recipient < ActiveRecord::Base
 
   def stripe_object
     #memoize the retrieving of the stripe object...
-    @so ||= Stripe::Recipient.retrieve(stripe_id)
+    @stripe_object ||= Stripe::Recipient.retrieve(stripe_id)
   end
 
   # # go fetch it again
