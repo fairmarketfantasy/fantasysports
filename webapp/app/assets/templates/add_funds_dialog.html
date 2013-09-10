@@ -1,54 +1,62 @@
 <div class='modal-header'>
-  <h3>Your Credit Cards</h3>
+  <h3 class='inline-block'>Your Credit Cards</h3>
+  <p class='inline-block pull-right' ng-show='cards.length'>
+    Balance: <span class='balance'>${{ currentUser().balance }}</span>
+  </p>
 </div>
-<div class='modal-body'>
-  <div class='alert alert-error' ng-hide="cards.length">
-    You don't have any cards, add one.
-  </div>
-  <div class='alert alert-success' ng-show='cards.length'>
-    Account Balance: <span class='balance phm'>${{ currentUser().balance }}</span>
-  </div>
-  <div ng-repeat="card in cards">
-    <ul>
-      <li class='unstyled inline-block card-token pam' ng-class="{default: card.default}" ng-repeat="card in cards">
-        <div class='relative pull-right delete-card'>
-          <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
-          <div ng-show="showConfirm(card.id)" class='absolute card-confirm-delete tooltip right fade in'>
-            <div class='tooltip-arrow'>
-            </div>
-            <div class='tooltip-inner'>
-              <div class='pam'>
-                Are you sure?<br />
-                <a class='btn btn-mini btn-danger mtm' ng-click='deleteCard(card.id)'>Yes, delete</a>
-                <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
+<div class='modal-body' ng-show='loaded'>
+    <div class='alert alert-error' ng-bind="errorMessage" ng-show='errorMessage'>
+    </div>
+    <div class='clearfix'>
+      <ul class='unstlyed card-list no-no'>
+        <li class='inline-block pas mhs card' ng-repeat="card in cards" ng-class="{default: card.default}">
+          <div class='card-token pam mam'>
+            <div class='relative pull-right delete-card'>
+              <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
+              <div ng-show="showConfirm(card.id)" class='absolute card-confirm-delete tooltip right fade in'>
+                <div class='tooltip-arrow'>
+                </div>
+                <div class='tooltip-inner'>
+                  <div class='pam'>
+                    Are you sure?<br />
+                    <a class='btn btn-mini btn-danger mtm' ng-click='deleteCard(card.id)'>Yes, delete</a>
+                    <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
+                  </div>
+                </div>
               </div>
             </div>
+            <div class='overflow-hide'>
+              {{ card.name }}<br />
+            </div>
+            <div class='ptm'>
+              xxxx-xxxx-{{ card.last4 }}
+            </div>
           </div>
-        </div>
-        <div class='overflow-hide'>
-          {{ card.name }}<br />
-        </div>
-        <div class='ptm'>
-          xxxx-xxxx-{{ card.last4 }}
-        </div>
-      </li>
-    </ul>
-  </div>
-  <div ng-show='addNewCard()' class='credit-card'>
-    <h6>Add a New Card</h6>
-    <input type="text" class='card-name'   placeholder="name"        ng-model="cardInfo.name"/><br />
-    <input type="text" class='mvm card-number' placeholder="4444-4444-4444-4444" ng-model="cardInfo.number"/><br />
-    <input type="text" class='mtm card-cvc'    placeholder="cvc"         ng-model="cardInfo.cvc"/>
-    <input type="text" class='mtm mls mrs card-month'  placeholder="exp mo"   ng-model="cardInfo.exp_month"/>
-    <input type="text" class='mtm card-year'   placeholder="exp yr"   ng-model="cardInfo.exp_year"/><br />
-    <input type="text" class='mtm mrm card-zip'    placeholder="zip"         ng-model="cardInfo.address_zip"/>
-    <a href="javascript://" ng-click="saveCard()" class='mtm btn btn-primary'>Save</a>
-  </div>
-  <div ng-show='cards.length'>
-    $<input type='text' ng-model="chargeAmt" placeholder="Amount" class='add-funds-input mls'/>
-    <a href="javascript://" class='btn btn-primary' ng-click="addFunds()">Add Money</a><br />
-    <span class='muted tilt'>*At least $5.</span>
-  </div>
+        </li>
+        <li class='add-card bold inline-block phm' ng-show="showAddCardButton()" ng-click="showCardForm = true">
+          <a href="javascript://" class='btn btn-info btn-mini'>Add a New Card<a>
+        </li>
+      </ul>
+    </div>
+    <div ng-show="showCardForm" class='credit-card mal'>
+      <h6>Add a New Card</h6>
+      <input type="text" class='card-name'   placeholder="name"        ng-model="cardInfo.name"/><br />
+      <input type="text" class='mvm card-number' placeholder="4444-4444-4444-4444" ng-model="cardInfo.number"/><br />
+      <input type="text" class='mtm card-cvc'    placeholder="cvc"         ng-model="cardInfo.cvc"/>
+      <input type="text" class='mtm mls mrs card-month'  placeholder="exp mo"   ng-model="cardInfo.exp_month"/>
+      <input type="text" class='mtm card-year'   placeholder="exp yr"   ng-model="cardInfo.exp_year"/><br />
+      <input type="text" class='mtm mrm card-zip'    placeholder="zip"         ng-model="cardInfo.address_zip"/>
+      <a href="javascript://" ng-click="showCardForm = false" class='mtm btn btn-info'>cancel</a>
+      <a href="javascript://" ng-click="saveCard()" class='mtm btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
+      <img src='/assets/ajax-loader.gif' ng-show='saveCardSpinner'/>
+    </div>
+    <div ng-show="showingAddFunds()" class='mal'>
+      $<input type='text' ng-model="chargeAmt" placeholder="Amount" class='add-funds-input mls'/>
+      <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Add Money</a>
+      <img src='/assets/ajax-loader.gif' ng-show='addMoneySpinner'/>
+      <br />
+      <span class='muted tilt'>*At least $5.</span>
+    </div>
 </div>
 <div class='modal-footer'>
   <a href="javascript://" class="btn" ng-click="closeDialog()">close</a>
