@@ -5,7 +5,13 @@
   </p>
 </div>
 <div class='modal-body' ng-show='loaded'>
-    <div class='alert alert-error' ng-bind="errorMessage" ng-show='errorMessage'>
+    <div class='alert alert-error' ng-show='errorMessage'>
+      <div class='pull-right muted clickable' ng-click='errorMessage = null'> x </div>
+      {{ errorMessage }}
+    </div>
+    <div class='alert alert-success' ng-show='successMessage' ng-click>
+      <div class='pull-right muted clickable' ng-click='successMessage = null'> x </div>
+      {{ successMessage }}
     </div>
     <div class='clearfix'>
       <ul class='unstlyed card-list no-no'>
@@ -19,7 +25,8 @@
                 <div class='tooltip-inner'>
                   <div class='pam'>
                     Are you sure?<br />
-                    <a class='btn btn-mini btn-danger mtm' ng-click='deleteCard(card.id)'>Yes, delete</a>
+                    <a class='btn btn-mini btn-danger mtm' ng-hide='deleteCardSpinner' ng-click='deleteCard(card.id)'>Yes, delete</a>
+                    <img src='/assets/ajax-loader.gif' ng-show='deleteCardSpinner'/>
                     <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
                   </div>
                 </div>

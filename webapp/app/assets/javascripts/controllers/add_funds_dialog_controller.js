@@ -33,7 +33,8 @@ angular.module("app.controllers")
         } else {
           $scope.cards = resp.cards || [];
           $scope.cardInfo = {};
-          $scope.showCardForm = true;
+          $scope.showCardForm = false;
+          $scope.successMessage = "Success, your card was saved.";
         }
       });
     } else {
@@ -80,7 +81,9 @@ angular.module("app.controllers")
   };
 
   $scope.deleteCard = function(cardId){
+    $scope.deleteCardSpinner = true;
     fs.cards.destroy(cardId).then(function(resp){
+      $scope.deleteCardSpinner = false;
       $scope.cards = resp.cards || [];
     });
   };
