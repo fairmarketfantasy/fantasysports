@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('AddFundsDialogController', ['$scope', 'flash', 'fs', 'currentUser', function($scope, flash, fs, currentUser) {
+.controller('AddFundsDialogController', ['$scope', 'fs', 'currentUser', function($scope, fs, currentUser) {
 
   $scope.currentUser = currentUser;
   $scope.cardInfo    = $scope.cardInfo     || {};
@@ -7,34 +7,57 @@ angular.module("app.controllers")
 
   fs.cards.list().then(function(resp){
     $scope.cards = resp.cards || [];
+    if(!$scope.cards.length){
+      $scope.errorMessage = "You don't have any cards, add one.";
+    }
+    $scope.showCardForm = !$scope.cards.length;
+    $scope.loaded = true;
   });
 
-  $scope.addNewCard = function(){
-    return !$scope.cards.length;
+  $scope.showAddCardButton = function(){
+    return !$scope.showCardForm && ($scope.cards.length < 3);
+  };
+
+  $scope.showingAddFunds = function(){
+    return !$scope.showCardForm && $scope.cards.length;
+  };
+
+
+  var saveCardCallback = function(st, stripeResp){
+    $scope.saveCardSpinner = false;
+    if(st === 200){
+      var token = stripeResp['id'];
+      fs.cards.create(token).then(function(resp){
+        if(resp.error){
+          $scope.errorMessage = resp.error;
+        } else {
+          $scope.cards = resp.cards || [];
+          $scope.cardInfo = {};
+          $scope.showCardForm = true;
+        }
+      });
+    } else {
+      $scope.errorMessage = stripeResp.error.message;
+    }
   };
 
   $scope.saveCard = function(){
-    Stripe.card.createToken($scope.cardInfo, function(st, resp){
-      if(st === 200){
-        var token = resp['id'];
-        fs.cards.create(token).then(function(resp){
-          if(resp.error){
-            flash.error = resp.error;
-          } else {
-            $scope.cards = resp.cards || [];
-          }
-        });
-      } else {
-        flash.error = resp.error.message;
-      }
+    $scope.errorMessage = null;
+    $scope.saveCardSpinner = true;
+    Stripe.card.createToken($scope.cardInfo, function(st, stripeResp){
+      $scope.$apply(function(){
+        saveCardCallback(st, stripeResp);
+      });
     });
   };
 
   $scope.addFunds = function(){
     var amt = ($scope.chargeAmt * 100); //dollars to cents
+    $scope.addMoneySpinner = true;
     fs.user.addMoney(amt).then(function(resp){
       window.App.currentUser.balance = resp.balance;
       $scope.chargeAmt = null;
+      $scope.addMoneySpinner = false;
     });
   };
 

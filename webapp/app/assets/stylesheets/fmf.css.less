@@ -296,8 +296,17 @@ header {
 /*
   Add Funds Modal
 */
+.card-list .card {
+  &.default {
+    border: 2px solid @red;
+    .border-radius(4px);
+  }
+}
 .add-funds-input {
   width: 60px;
+}
+.add-card {
+  font-size: 4em;
 }
 .credit-card {
   width: 50%;
@@ -322,10 +331,8 @@ header {
   background: mix(@inverse, @base, 90%);
   color: mix(@base, @inverse, 65%);
   border: 2px solid mix(@firm, @alert-border, 5%);
-  .border-radius(4px);
-  &.default {
-    border: 2px solid @firm;
-  }
+  border: 2px solid @firm;
+  .border-radius(2px);
 }
 .delete-card {
   margin-top: -10px;
