@@ -297,8 +297,10 @@ func defenseParser(state *ParseState) *models.StatEvent {
 	int_touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("int_td"))
 	fum_touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("fum_td"))
 	safeties, _ := strconv.Atoi(state.CurrentElementAttr("sfty"))
-	sack, _ := strconv.Atoi(state.CurrentElementAttr("sack"))
+	sackf, _ := strconv.ParseFloat(state.CurrentElementAttr("sack"), 64)
+	sack := int(sackf)
 	pointValue := float64(3*(int_touchdowns+fum_touchdowns) + 2*interceptions + 2*fumble_recoveries + 2*safeties + 1*sack)
+	log.Println(pointValue)
 	state.DefenseStat.PointValue += pointValue
 	if state.DefenseStatReturned == false {
 		state.DefenseStatReturned = true
@@ -351,7 +353,7 @@ func passingParser(state *ParseState) *models.StatEvent {
 	interceptions, _ := strconv.Atoi(state.CurrentElementAttr("int"))
 	event := buildStatEvent(state)
 	event.Type = "passing"
-	event.PointValue = float64(6*touchdowns + 1*yards/10 - 2*interceptions)
+	event.PointValue = float64(4*touchdowns + 1*yards/25 - 2*interceptions)
 	return event
 }
 
