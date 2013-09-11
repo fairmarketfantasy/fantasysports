@@ -10,6 +10,7 @@
 		1527AE2F17DFDCEA00D181D7 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1527AE2E17DFDCEA00D181D7 /* Security.framework */; };
 		1527AE3117DFDCEF00D181D7 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1527AE3017DFDCEF00D181D7 /* MobileCoreServices.framework */; };
 		1527AE3317DFDCFB00D181D7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1527AE3217DFDCFB00D181D7 /* SystemConfiguration.framework */; };
+		1535142C17DFF2B600F776AC /* FFUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1535142B17DFF2B600F776AC /* FFUser.m */; };
 		153BBC3417DFC2E40071E63B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC3317DFC2E40071E63B /* UIKit.framework */; };
 		153BBC3617DFC2E40071E63B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC3517DFC2E40071E63B /* Foundation.framework */; };
 		153BBC3817DFC2E40071E63B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC3717DFC2E40071E63B /* CoreGraphics.framework */; };
@@ -44,6 +45,8 @@
 		1527AE2E17DFDCEA00D181D7 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		1527AE3017DFDCEF00D181D7 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		1527AE3217DFDCFB00D181D7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		1535142A17DFF2B600F776AC /* FFUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFUser.h; sourceTree = "<group>"; };
+		1535142B17DFF2B600F776AC /* FFUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFUser.m; sourceTree = "<group>"; };
 		153BBC3017DFC2E40071E63B /* FMF Football.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FMF Football.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		153BBC3317DFC2E40071E63B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		153BBC3517DFC2E40071E63B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -99,6 +102,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1535142917DFEF3E00F776AC /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				1535142A17DFF2B600F776AC /* FFUser.h */,
+				1535142B17DFF2B600F776AC /* FFUser.m */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
 		153BBC2717DFC2E40071E63B = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +149,7 @@
 		153BBC3917DFC2E40071E63B /* FMF Football */ = {
 			isa = PBXGroup;
 			children = (
+				1535142917DFEF3E00F776AC /* Data */,
 				153BBC4217DFC2E40071E63B /* FFAppDelegate.h */,
 				153BBC4317DFC2E40071E63B /* FFAppDelegate.m */,
 				153BBC4B17DFC2E40071E63B /* MainStoryboard_iPhone.storyboard */,
@@ -326,6 +339,7 @@
 				153BBC4017DFC2E40071E63B /* main.m in Sources */,
 				153BBC4417DFC2E40071E63B /* FFAppDelegate.m in Sources */,
 				153BBC5317DFC2E40071E63B /* FFViewController.m in Sources */,
+				1535142C17DFF2B600F776AC /* FFUser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
