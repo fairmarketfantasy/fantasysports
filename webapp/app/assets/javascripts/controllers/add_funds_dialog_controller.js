@@ -42,14 +42,37 @@ angular.module("app.controllers")
     }
   };
 
+  var localChecks = function(cardInfo){
+    if(!Stripe.card.validateCardNumber(cardInfo.number)){
+      $scope.cardNumError = true;
+      $scope.errorMessage = "This card number looks invalid";
+      return false;
+    }else if(!Stripe.card.validateCVC(cardInfo.cvc)){
+      $scope.cvcError = true;
+      $scope.errorMessage = "CVC code doesn't look right";
+      return false;
+    }else if(!Stripe.card.validateExpiry(cardInfo.exp_month, cardInfo.exp_year)){
+      $scope.expError = true;
+      $scope.errorMessage = "Expiration doesn't look right";
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   $scope.saveCard = function(){
     $scope.errorMessage = null;
     $scope.saveCardSpinner = true;
-    Stripe.card.createToken($scope.cardInfo, function(st, stripeResp){
-      $scope.$apply(function(){
-        saveCardCallback(st, stripeResp);
+    if(!localChecks($scope.cardInfo)){
+      $scope.saveCardSpinner = false;
+      return;
+    } else {
+      Stripe.card.createToken($scope.cardInfo, function(st, stripeResp){
+        $scope.$apply(function(){
+          saveCardCallback(st, stripeResp);
+        });
       });
-    });
+    }
   };
 
   $scope.addFunds = function(){
