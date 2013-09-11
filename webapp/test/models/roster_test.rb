@@ -7,6 +7,51 @@ class RosterTest < ActiveSupport::TestCase
     @roster = create(:roster, :market => @market)
   end 
 
+  test "submit" do
+    #find head to head
+    h2h_type = @market.contest_types.where("max_entries = 2").first
+    roster = create(:roster, :market => @market, :contest_type => h2h_type)
+    roster.submit!
+    
+    #submission of roster should have created a contest with one roster
+    contest = @market.contests.first
+    refute_nil contest, "contest should exist"
+    assert_equal roster, contest.rosters.first, "contest should have the roster"
+    assert_equal "submitted", roster.state
+    assert_equal 1, contest.num_rosters
+
+    #submit another roster to the same contest. should succeed as well.
+    create(:roster, :market => @market, :contest_type => h2h_type).submit!
+    assert_equal 2, contest.rosters.length
+
+    #submitting a third should it to create a new one
+    create(:roster, :market => @market, :contest_type => h2h_type).submit!
+    assert_equal 2, contest.rosters.length
+    assert_equal 2, @market.contests.length
+
+    #private contests
+    contest = create(:contest, :user_cap => 2, :market => @market, :contest_type => h2h_type, :invitation_code => "asdfasdfasdf")
+    roster = create(:roster, :contest => contest, :market => @market, :contest_type => h2h_type)
+    roster.submit!
+    assert_equal contest, roster.contest
+    assert_equal "submitted", roster.state
+
+    #another joins the private contest
+    create(:roster, :contest => contest, :market => @market, :contest_type => h2h_type).submit!
+    assert_equal 2, contest.rosters.length
+
+    #a third tries to join. should get booted
+    begin
+      create(:roster, :contest => contest, :market => @market, :contest_type => h2h_type).submit!
+      flunk("should have failed. #{contest.rosters.length} rosters. #{roster.contest}")
+    rescue
+      #good
+    end
+
+    
+
+  end
+
   test "fill randomly" do
     setup_multi_day_market
     @market.publish
