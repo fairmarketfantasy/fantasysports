@@ -1,0 +1,40 @@
+PODS:
+  - AFNetworking (1.3.2)
+  - AFOAuth2Client (0.1.1):
+    - AFNetworking (~> 1.0)
+  - FMDB (2.1):
+    - FMDB/standard
+  - FMDB/common (2.1)
+  - FMDB/standard (2.1):
+    - FMDB/common
+  - ISO8601DateFormatter (0.6)
+  - JSONKit (1.5pre)
+  - Reachability (3.0.0)
+  - SBData (0.0.1):
+    - AFNetworking (~> 1.3.2)
+    - AFOAuth2Client (~> 0.1.1)
+    - FMDB (~> 2.1)
+    - ISO8601DateFormatter (~> 0.6)
+    - JSONKit (~> 1.5pre)
+    - SecureUDID (~> 1.1)
+  - SecureUDID (1.1)
+
+DEPENDENCIES:
+  - Reachability (~> 3.0.0)
+  - SBData (from `/Users/samuelsutch/dev/shadowart/projects/SBData/SBData/SBData.podspec`)
+
+EXTERNAL SOURCES:
+  SBData:
+    :path: /Users/samuelsutch/dev/shadowart/projects/SBData/SBData/SBData.podspec
+
+SPEC CHECKSUMS:
+  AFNetworking: 7f9bcd7c287a75476cd5c61e82fd3380e93e4c54
+  AFOAuth2Client: 039596f19e8a4bdd852cb3fc44ddbe45e12c290a
+  FMDB: 2769004a271eae0bbd8bd4f45a3f2acfd0d3df0e
+  ISO8601DateFormatter: 077ce9d8cfba171bc1ced6cba0d2ae4aefab7619
+  JSONKit: 409734ab3407fce90ef7eaa95d7168f38d9a6601
+  Reachability: 500bd76bf6cd8ff2c6fb715fc5f44ef6e4c024f2
+  SBData: c0f157eb10804124621ed29c6745a869eeef148f
+  SecureUDID: f29e17c7fc56968b6c42ce328b901a9fec87bb44
+
+COCOAPODS: 0.19.1

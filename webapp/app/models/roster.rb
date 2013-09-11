@@ -53,10 +53,36 @@ class Roster < ActiveRecord::Base
     end
   end
 
+  #set the state to 'submitted'. If it's in a private contest, increment the number of 
+  #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!
-    self.state = 'submitted'
-    self.submitted_at = Time.now
-    self.save!
+    self.with_lock do
+      raise "roster has already been submitted" if self.state == 'submitted'
+      if self.contest.nil?
+        #enter roster into public contest
+        contest_type.with_lock do #prevents creation of contests of the same type at the same time
+          contest = Contest.where("contest_type_id = ? AND (num_rosters < user_cap OR user_cap = 0) 
+            AND invitation_code is null", contest_type.id).first
+          if contest.nil?
+            contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
+              market_id: self.market_id, contest_type_id: contest_type.id, num_rosters: 1)
+          else
+            contest.num_rosters += 1
+            contest.save!
+          end
+          self.contest = contest
+        end
+      else
+        contest.with_lock do
+          raise "contest #{contest.id} is full" if contest.num_rosters >= contest.user_cap
+          contest.num_rosters += 1
+          contest.save!
+        end
+      end
+      self.state = 'submitted'
+      self.submitted_at = Time.now
+      self.save!
+    end
   end
 
   def add_player(player)
