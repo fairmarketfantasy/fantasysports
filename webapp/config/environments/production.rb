@@ -1,6 +1,7 @@
 Fantasysports::Application.configure do
   SITE = "fanfairfantasy.com"
-  SPORTS_DATA_API_KEY = "un32n24mu43xpmk594dzvm2p"
+  SPORTS_DATA_API_KEY = "dmefnmpwjn7nk6uhbhgsnxd6"
+  SPORTS_DATA_IMAGES_API_KEY = "yq9uk9qu774eygre2vg2jafe"
   FACEBOOK_APP_ID = "517379538328159"
   FACEBOOK_APP_SECRET = "b5f7da9efda8f522a5af6d37c9f68454"
   AWS_ACCESS_KEY="AKIAJXV4UPD3IV4JK6DA"

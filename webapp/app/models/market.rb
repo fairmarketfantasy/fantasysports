@@ -48,8 +48,8 @@ class Market < ActiveRecord::Base
       reload
       return unless state == 'closed'
       #cancel all un-submitted rosters
-      rosters.where("submitted = false").update_all("cancelled = true, cancelled_at = #{Time.now},0
-       cancelled_cause='un-submitted before market closed'")
+      rosters.where("state != 'submitted'").update_all(["cancelled = true, cancelled_at = ?,
+       cancelled_cause='un-submitted before market closed'", Time.now])
 
       #re-allocate rosters in under-subscribed private contests to public contests
       contests.where("invitation_code is not null and num_rosters < user_cap").find_each do |contest|
