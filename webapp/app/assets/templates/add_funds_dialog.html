@@ -48,10 +48,10 @@
     <div ng-show="showCardForm" class='credit-card mal'>
       <h6>Add a New Card</h6>
       <input type="text" class='card-name'   placeholder="name"        ng-model="cardInfo.name"/><br />
-      <input type="text" class='mvm card-number' placeholder="4444-4444-4444-4444" ng-model="cardInfo.number"/><br />
-      <input type="text" class='mtm card-cvc'    placeholder="cvc"         ng-model="cardInfo.cvc"/>
-      <input type="text" class='mtm mls mrs card-month'  placeholder="exp mo"   ng-model="cardInfo.exp_month"/>
-      <input type="text" class='mtm card-year'   placeholder="exp yr"   ng-model="cardInfo.exp_year"/><br />
+      <input type="text" class='mvm card-number' ng-class="{error: cardNumError}" placeholder="4444-4444-4444-4444" ng-model="cardInfo.number"/><br />
+      <input type="text" class='mtm card-cvc' ng-class="{error: cvcError}" placeholder="cvc" ng-model="cardInfo.cvc"/>
+      <input type="text" class='mtm mls mrs card-month'  placeholder="exp mo" ng-class="{error: expError}" ng-model="cardInfo.exp_month"/>
+      <input type="text" class='mtm card-year'   placeholder="exp yr" ng-class="{error: expError}" ng-model="cardInfo.exp_year"/><br />
       <input type="text" class='mtm mrm card-zip'    placeholder="zip"         ng-model="cardInfo.address_zip"/>
       <a href="javascript://" ng-click="showCardForm = false" class='mtm btn btn-info'>cancel</a>
       <a href="javascript://" ng-click="saveCard()" class='mtm btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
