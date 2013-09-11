@@ -39,7 +39,10 @@ func (f Fetcher) GetPlayByPlay(awayTeam string, homeTeam string) []*models.GameE
 func (f Fetcher) GetTeamRoster(team string) []*models.Player {
 	//GET Team Roster nfl-t1/teams/:team/roster.xml
 	url := fmt.Sprintf(baseUrl+"teams/%s/roster.xml", team)
-	return parsers.ParseXml(f.FetchMethod(url), ParseRoster).([]*models.Player)
+	players := parsers.ParseXml(f.FetchMethod(url), ParseRoster).([]*models.Player)
+	defPlayer := models.Player{StatsId: "DEF-" + team, Team: team, Name: team + " Defense", NameAbbr: team, Position: "DEF", Status: "ACT"}
+	players = append(players, &defPlayer)
+	return players
 }
 
 func (f Fetcher) GetGameStatistics(awayTeam string, homeTeam string) []*models.StatEvent {
