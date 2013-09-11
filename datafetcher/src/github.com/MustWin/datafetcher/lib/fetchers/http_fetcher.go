@@ -54,7 +54,7 @@ func makeRequest(u string) io.ReadCloser {
 		log.Printf("Failed to parse url %s: %s\n", u, err)
 	}
 	query := urlObj.Query()
-	query.Add("api_key", "un32n24mu43xpmk594dzvm2p")
+	query.Add("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
 	urlObj.RawQuery = query.Encode()
 
 	return makeRequestWithRetries(urlObj.String(), 1)

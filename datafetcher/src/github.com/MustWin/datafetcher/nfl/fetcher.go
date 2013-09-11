@@ -16,7 +16,7 @@ type Fetcher struct {
 	FetchMethod   fetchers.FetchMethod
 }
 
-var baseUrl = "http://api.sportsdatallc.org/nfl-t1/"
+var baseUrl = "http://api.sportsdatallc.org/nfl-rt1/"
 
 func (f Fetcher) GetStandings() []*models.Team {
 	// GET Standings nfl-t1/teams/:year/:nfl_season/standings.xml
