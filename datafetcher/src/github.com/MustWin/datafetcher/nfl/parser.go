@@ -36,7 +36,8 @@ type ParseState struct {
 	CurrentPositionParser func(*ParseState) *models.StatEvent
 	TeamCount             int
 	TeamScore             int
-	DefensePlayerScores   []*models.StatEvent
+	DefenseStat           *models.StatEvent
+	DefenseStatReturned   bool
 }
 
 func (state *ParseState) CurrentElement() *xml.StartElement {
@@ -85,7 +86,7 @@ func contains(list []string, elem string) bool {
 	return false
 }
 
-var defensivePositions = []string{"NT", "DT", "DE", "LB", "NB", "CB", "S"}
+var defensivePositions = []string{"NT", "DT", "DE", "LB", "NB", "CB", "S", "MLB", "OLB", "H", "LS", "P", "PR", "KR"} // Also special teams
 
 func buildPlayer(element *xml.StartElement) *models.Player {
 	var player = models.Player{}
@@ -264,6 +265,9 @@ func ParseRoster(state *ParseState) *models.Player {
 		player := buildPlayer(state.CurrentElement())
 		player.Team = state.CurrentTeam.Abbrev
 		state.CurrentPlayer = player
+		if player.Position == "DEF" {
+			return nil
+		}
 		return player
 	case "injury":
 		err := parsers.InitFromAttrs(*state.CurrentElement(), &state.CurrentPlayer.PlayerStatus)
@@ -288,20 +292,19 @@ func defenseParser(state *ParseState) *models.StatEvent {
 	// fum_recovery +2
 	// sfty +2
 	// sack +1
-	event := buildStatEvent(state)
 	fumble_recoveries, _ := strconv.Atoi(state.CurrentElementAttr("fum_rec"))
 	interceptions, _ := strconv.Atoi(state.CurrentElementAttr("int"))
 	int_touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("int_td"))
 	fum_touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("fum_td"))
 	safeties, _ := strconv.Atoi(state.CurrentElementAttr("sfty"))
 	sack, _ := strconv.Atoi(state.CurrentElementAttr("sack"))
-	event.PointValue = float64(3*(int_touchdowns+fum_touchdowns) + 2*interceptions + 2*fumble_recoveries + 2*safeties + 1*sack)
-	state.DefensePlayerScores = append(state.DefensePlayerScores, event)
-	event.Type = "defense"
-	if state.TeamCount > 1 {
-		event.AddOpposingTeamScore(state.TeamScore)
+	pointValue := float64(3*(int_touchdowns+fum_touchdowns) + 2*interceptions + 2*fumble_recoveries + 2*safeties + 1*sack)
+	state.DefenseStat.PointValue += pointValue
+	if state.DefenseStatReturned == false {
+		state.DefenseStatReturned = true
+		return state.DefenseStat
 	}
-	return event
+	return nil
 }
 
 func rushingReceivingParser(state *ParseState) *models.StatEvent {
@@ -411,15 +414,19 @@ func ParseGameStatistics(state *ParseState) *models.StatEvent {
 		state.CurrentGame = game
 	case "team":
 		state.TeamCount++
+		state.CurrentTeam = buildTeam(state.CurrentElement())
 		oldTeamScore := state.TeamScore
 		state.TeamScore, _ = strconv.Atoi(state.CurrentElementAttr("points"))
+		state.DefenseStatReturned = false
+		defStat := buildStatEvent(state)
+		defStat.PlayerStatsId = "DEF-" + state.CurrentTeam.Abbrev
+		defStat.Type = "defense"
 		if state.TeamCount > 1 {
 			// They don't include summary data in these responses, so we handle defensive "points scored against" here
-			for _, event := range state.DefensePlayerScores {
-				event.AddOpposingTeamScore(state.TeamScore)
-			}
-			state.TeamScore = oldTeamScore // this will be added inline when TeamCount > 1 in defenseParser
+			state.DefenseStat.AddOpposingTeamScore(state.TeamScore)
+			defStat.AddOpposingTeamScore(oldTeamScore)
 		}
+		state.DefenseStat = defStat
 	case "player":
 		if state.CurrentPositionParser != nil {
 			return state.CurrentPositionParser(state)
