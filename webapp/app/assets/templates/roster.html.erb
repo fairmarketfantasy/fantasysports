@@ -1,5 +1,6 @@
-<div ng-show="rosters.inProgressRoster">
+<div ng-show="rosters.currentRoster">
   <h4>{{markets.currentMarket.name}} {{markets.currentMarket.closed_at | shortFormTime }} Games</h4>
+  <p>Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest_type.max_entries}}</p>
   <p>{{rosters.currentRoster.contest_type.description}}</p>
   <ul class="games">
     <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
@@ -7,7 +8,7 @@
     </li>
   </ul>
 
-  <a href="#/" ng-click="rosters.cancel()">Cancel entry</a>
+  <a href="#/" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
   <ul>
     <li><a href="javascript://" ng-click="filter = 'my-players'">My players</a></li>
     <li><a href="javascript://" ng-click="filter = 'positions'">Positions</a></li>
@@ -66,7 +67,7 @@
         <th>PPG</th>
         <th>Purchase Price</th>
         <th>Price Differential</th>
-        <th>Remove</th>
+        <th>Trade</th>
       </tr>
     </thead>
     <tbody>
@@ -77,11 +78,14 @@
         <td>{{player.ppg}}</td>
         <td>{{player.purchase_price | emptyIfZero }}</td>
         <td>{{player.sell_price - player.purchase_price }}</td>
-        <td><a ng-show="player.id" href="javascript://" ng-click="rosters.removePlayer(player)">Remove</a></td>
+        <td>
+          <a ng-show="player.id && market.state == 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)"><span ng-show="">Remove</a>
+          <a ng-show="player.id" href="javascript://" ng-click="rosters.removePlayer(player)"><span ng-show="">Remove</a>
+        </td>
       </tr>
     </tbody>
   </table>
   <a ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
-  <a ng-click="rosters.reset()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
+  <a ng-click="rosters.reset('/market/' + rosters.currentRoster.market_id)" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
 </div>
 

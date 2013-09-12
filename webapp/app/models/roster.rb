@@ -20,10 +20,6 @@ class Roster < ActiveRecord::Base
     Player.purchasable_for_roster(self)
   end
 
-  def sellable_players
-    Player.sellable_for_roster(self)
-  end
-
   #create a roster
   def self.generate(user, contest_type)
 
@@ -101,7 +97,7 @@ class Roster < ActiveRecord::Base
   end
 
   def live?
-    MarketPlayer.players_live?(rosters_players)
+    MarketPlayer.players_live?(market_id, rosters_players)
   end
 
   def next_game_time

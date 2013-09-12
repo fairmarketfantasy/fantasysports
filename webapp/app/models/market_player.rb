@@ -7,8 +7,8 @@ class MarketPlayer < ActiveRecord::Base
     game_time && game_time.locked_at
   end
 
-  def self.players_live?(roster_players)
-    self.where(:player_id => roster_players.map(&:player_id)).order('locked_at asc').any?{|p| p.locked_at > Time.now - 3.hours && p.locked_at < Time.now }
+  def self.players_live?(market_id, roster_players)
+    self.where(:player_id => roster_players.map(&:player_id), :market_id => market_id).order('locked_at asc').any?{|p| p.locked_at > Time.now - 3.5.hours && p.locked_at < Time.now }
   end
 end
 
