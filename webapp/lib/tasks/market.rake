@@ -68,9 +68,6 @@ def close_markets
 	markets = Market.where("closed_at <= ? AND state = 'opened'", Time.now)
 	markets.each do |market|
 		puts "#{Time.now} -- closing market #{market.id}"
-    market = market.close
-    if market.state = 'closed'
-      market.allocate_rosters
-    end
+    market.close
 	end
 end

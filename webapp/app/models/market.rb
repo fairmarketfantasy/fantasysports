@@ -23,14 +23,14 @@ class Market < ActiveRecord::Base
   #publish the market. returns the published market.
   def publish
     published = Market.find_by_sql("select * from publish_market(#{self.id})")[0]
+    reload
+    return self
   end
 
   def open
     Market.find_by_sql("select * from open_market(#{self.id})")[0]
-  end
-
-  def close
-    Market.find_by_sql("select * from close_market(#{self.id})")[0]
+    reload
+    return self
   end
 
   #look for players in games that have started and remove them from the market
@@ -39,37 +39,41 @@ class Market < ActiveRecord::Base
     Market.find_by_sql("SELECT * from lock_players(#{self.id})")[0]
   end
 
-  # cancel rosters that have not yet been submitted
-  # delete private contests that are not full
-  # allocate rosters from private contests to public ones
-  # cancel contests/rosters that are not full
-  def allocate_rosters
+  # close a market. allocates remaining rosters in this manner:
+  # - cancel rosters that have not yet been submitted
+  # - delete private contests that are not full
+  # - allocate rosters from private contests to public ones
+  # - cancel contests/rosters that are not full
+  def close
     self.with_lock do
       reload
-      return unless state == 'closed'
+      raise "cannot close if state is not open" if state != 'opened' 
+
       #cancel all un-submitted rosters
-      rosters.where("state != 'submitted'").update_all(["cancelled = true, cancelled_at = ?,
+      self.rosters.where("state != 'submitted'").update_all(["cancelled = true, cancelled_at = ?,
        cancelled_cause='un-submitted before market closed'", Time.now])
 
       #re-allocate rosters in under-subscribed private contests to public contests
-      contests.where("invitation_code is not null and num_rosters < user_cap").find_each do |contest|
+      self.contests.where("invitation_code is not null and num_rosters < user_cap").find_each do |contest|
         contest.rosters.find_each do |roster|
-          roster.contest_id, roster.cancelled_cause, roster.state = nil, 'private contest under-subscribed', nil
+          roster.contest_id, roster.cancelled_cause, roster.state = nil, 'private contest under-subscribed', 'in_progress'
+          roster.save!
           roster.submit!
         end
         contest.destroy!
       end
 
       #cancel rosters in contests that are not full
-      contests.where("num_rosters < user_cap").find_each do |contest|
+      self.contests.where("num_rosters < user_cap").find_each do |contest|
         contest.rosters.update_all("contest_id = null, cancelled = true, 
           cancelled_cause = 'contest under-subscribed', cancelled_at = #{Time.now}")
         contest.destroy!
       end      
 
-      state = 'closed_allocated'
+      self.state, self.closed_at = 'closed', Time.now
       save!
     end
+    return self
   end
 
   def notify_market_open_event

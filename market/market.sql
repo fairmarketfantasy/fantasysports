@@ -10,9 +10,16 @@
 /* The pricing function. Right now, it's a straight linear shot and assumes a 100k salary cap with a 1k minimum price */
 DROP FUNCTION price(numeric, numeric, numeric, numeric);
 
-CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric) RETURNS numeric AS $$
-	SELECT GREATEST(1000, ($1 + $3) * 100000 * $4 / ($2 + $3)) as result;
-$$ LANGUAGE SQL IMMUTABLE;
+CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric, 
+		OUT price numeric) RETURNS numeric AS $$
+BEGIN
+	IF total_bets = 0 THEN
+		price = 1000;
+	ELSE
+		SELECT LEAST(100000, GREATEST(1000, ($1 + $3) * 100000 * $4 / ($2 + $3))) into price;
+	END IF;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
 
 ------------------------------------------ Player Prices -----------------------------------------
 
@@ -323,28 +330,6 @@ BEGIN
 	--return the market -- in whatever state
 	SELECT * FROM markets WHERE id = _market_id INTO _market;
 
-END;
-$$ LANGUAGE plpgsql;
-
-
----------------------------------- close market --------------------------------------
-
---if given an opened market that is due to close, closes the market.
---besides setting the state of the market to closed, it also
-DROP FUNCTION close_market(integer);
-CREATE OR REPLACE FUNCTION close_market(_market_id integer, out _market markets) RETURNS markets AS $$
-DECLARE
-	_real_bets numeric;
-	_new_shadow_bets numeric := 0;
-BEGIN
-	--ensure that the market exists and may be closed
-	SELECT * FROM markets WHERE id = _market_id AND state = 'opened' AND closed_at <= CURRENT_TIMESTAMP FOR UPDATE into _market;
-	IF NOT FOUND THEN
-		RAISE EXCEPTION 'market % is not closable', _market_id;
-	END IF;
-
-	--update the market
-	UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP WHERE id = _market_id returning * into _market;
 END;
 $$ LANGUAGE plpgsql;
 

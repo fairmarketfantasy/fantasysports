@@ -83,6 +83,7 @@ class Roster < ActiveRecord::Base
       self.submitted_at = Time.now
       self.save!
     end
+    return self
   end
 
   def add_player(player)
