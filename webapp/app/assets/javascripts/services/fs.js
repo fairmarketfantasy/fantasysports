@@ -17,7 +17,7 @@ angular.module('app.services')
       }
     };
   }])
-  .factory('fsAPIInterceptor', ['$q', 'flash', 'currentUserService', '$injector', function($q, flash, currentUserService, $injector) {
+  .factory('fsAPIInterceptor', ['$q', 'flash', '$injector', function($q, flash, $injector) {
 // TODO: this is where jsonH stuff will go
     var $dialog;
     return function(promise) {
@@ -31,6 +31,7 @@ angular.module('app.services')
         return resp;
       }, failure = function(resp) {
         if(resp.status == 402) {
+          var currentUserService = $injector.get('currentUserService');
           currentUserService.addFundsModal();
         }
         // TODO: we'll need to implement this again
