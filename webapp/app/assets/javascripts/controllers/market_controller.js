@@ -36,14 +36,10 @@ angular.module("app.controllers")
     return day.format("ddd, MMM Do , h:mm a");
   };
 
-  $scope.gameStarted = function(game) {
-    return new Date(game.game_time) < new Date();
-  }
-
   $scope.joinContest = function(contestType) {
     $scope.fs.contests.join(contestType.id, rosters.justSubmittedRoster && rosters.justSubmittedRoster.id).then(function(data){
       rosters.selectRoster(data);
-      $location.path('/' + marketService.currentMarket.id + '/' + data.id);
+      $location.path('/market/' + marketService.currentMarket.id + '/roster/' + data.id);
     });
   };
 
