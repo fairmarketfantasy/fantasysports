@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('SignUpDialogController', ['$scope', 'fs', '$dialog', function($scope, fs, $dialog) {
+.controller('SignUpDialogController', ['$scope', 'dialog', 'fs', function($scope, dialog, fs) {
   $scope.user = $scope.user || {};
   $scope.signInForm = false;
   $scope.signUp = function() {
@@ -19,6 +19,10 @@ angular.module("app.controllers")
     var matchingPass   = ($scope.user.password === $scope.user.password_confirmation);
 
     return required && passLength && matchingPass;
+  };
+
+  $scope.close = function(){
+    dialog.close();
   };
 
 }]);
