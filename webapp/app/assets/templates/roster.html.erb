@@ -1,5 +1,5 @@
 <div ng-show="rosters.currentRoster">
-  <h4>{{markets.currentMarket.name}} {{markets.currentMarket.closed_at | shortFormTime }} Games</h4>
+  <h4>{{markets.currentMarket.name}} {{markets.currentMarket.started_at | shortFormTime }} Games</h4>
   <p>Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest_type.max_entries}}</p>
   <p>{{rosters.currentRoster.contest_type.description}}</p>
   <ul class="games">
@@ -68,6 +68,7 @@
         <th>Purchase Price</th>
         <th>Price Differential</th>
         <th>Trade</th>
+        <th ng-show="market.state == 'opened'">Score</th>
       </tr>
     </thead>
     <tbody>
@@ -79,8 +80,9 @@
         <td>{{player.purchase_price | emptyIfZero }}</td>
         <td>{{player.sell_price - player.purchase_price }}</td>
         <td>
-          <a ng-show="player.id && market.state == 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)"><span ng-show="">Remove</a>
-          <a ng-show="player.id" href="javascript://" ng-click="rosters.removePlayer(player)"><span ng-show="">Remove</a>
+          <span ng-show="player.id && market.state == 'opened' && player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Locked</span>
+          <a ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>
+          <a ng-show="player.id && market.state != 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)">Remove</a>
         </td>
       </tr>
     </tbody>

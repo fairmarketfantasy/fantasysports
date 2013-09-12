@@ -66,6 +66,12 @@ Fantasysports::Application.routes.draw do
     end
   end
 
+  resources :events, only: [] do
+    collection do
+      get 'for_players', :action => 'for_players'
+    end
+  end
+
   #Stripe webhooks
   post '/webhooks', to: "webhooks#new"
 
