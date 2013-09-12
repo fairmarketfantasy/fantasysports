@@ -13,10 +13,10 @@ DROP FUNCTION price(numeric, numeric, numeric, numeric);
 CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric, 
 		OUT price numeric) RETURNS numeric AS $$
 BEGIN
-	IF total_bets = 0 THEN
+	IF total_bets + buy_in = 0 THEN
 		price = 1000;
 	ELSE
-		SELECT LEAST(100000, GREATEST(1000, ($1 + $3) * 100000 * $4 / ($2 + $3))) into price;
+		SELECT ROUND(LEAST(100000, GREATEST(1000, ($1 + $3) * 100000 * $4 / ($2 + $3))), 2) into price;
 	END IF;
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
@@ -179,7 +179,6 @@ DECLARE
 	_total_ppg numeric;
 	_game games;
 	_bets numeric;
-	_price_multiplier numeric;
 BEGIN
 	--ensure that the market exists and may be published
 	SELECT * FROM markets WHERE id = _market_id AND published_at < CURRENT_TIMESTAMP AND
@@ -244,10 +243,8 @@ BEGIN
 	UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets WHERE market_id = _market_id;
 
 	--set market to published
-	--price multiplier so that prices are more consistent across contests with different numbers of players
-	SELECT GREATEST(1, count(id)/18.0) from market_players WHERE market_id = _market_id INTO _price_multiplier;
 	
-	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = _price_multiplier 
+	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = 1 
 		WHERE id = _market_id returning * into _market;
 
 	RAISE NOTICE 'published market %', _market_id;

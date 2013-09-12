@@ -112,4 +112,11 @@ class Market < ActiveRecord::Base
     end
   end
 
+  def reset_for_testing
+    self.games.update_all(:game_day => Time.now, :game_time => Time.now + 3600, :status => 'scheduled')
+    self.published_at, self.opened_at, self.closed_at, self.state = Time.now, Time.now + 1200, Time.now + 3600, nil
+    self.save!
+
+  end
+
 end
