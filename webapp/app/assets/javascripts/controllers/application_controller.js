@@ -1,34 +1,17 @@
 angular.module("app.controllers")
-.controller('ApplicationController', ['$scope', 'fs', 'rosters', '$location', 'flash', '$dialog', function($scope, fs, rosters, $location, flash, $dialog) {
+.controller('ApplicationController', ['$scope', 'fs', 'rosters', '$location', 'flash', '$dialog', 'currentUserService', function($scope, fs, rosters, $location, flash, $dialog, currentUserService) {
 
   $scope.fs = fs;
 
-  $scope.currentUser = function() {
-    return window.App.currentUser;
-  };
+  $scope.currentUser = currentUserService.currentUser;
 
-  $scope.addFunds = function(){
-    var dialogOpts = {
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          dialogClass: 'modal',
-          templateUrl: '/assets/add_funds_dialog.html',
-          controller: 'AddFundsDialogController',
-          resolve: {
-            currentUser: function(){
-              return $scope.currentUser;
-            }
-          }
-        };
-
-    var d = $dialog.dialog(dialogOpts);
-    d.open();
+  $scope.addFundsModal = function(){
+    currentUserService.addFundsModal();
   };
 
   $scope.gameStarted = function(game) {
     return new Date(game.game_time) < new Date();
-  }
+  };
 
   // $scope.logout = function(){
   //   fs.user.logout().then(function(resp){

@@ -80,9 +80,9 @@
     <div class="row header-bottom">
       <div class="span3 user-container text-center">
         <div class="clearfix user-box" ng-cloak>
-          <img ng-src="{{currentUser().image_url}}" class='user-avatar'/>
+          <img ng-src="{{currentUser.image_url}}" class='user-avatar'/>
           <div class="user-info">
-            <span class="user-name">{{ currentUser().name }}</span>
+            <span class="user-name">{{ currentUser.name }}</span>
             <% if false %>
               <!-- I don't think we have user alais -->
               <!-- <span class="user-alias"><a class="txt-white txt-green-hover" href="#">cousinwil</a></span> -->
@@ -91,10 +91,10 @@
           </div>
         </div>
         <div class="user-dash clearfix">
-          <div class="user-balance no-border">{{ currentUser().balance }}<small>balance</small></div>
+          <div class="user-balance no-border">{{ currentUser.balance }}<small>balance</small></div>
         </div>        
         <div class="user-dash no-border clearfix">
-          <div class="user-balance"><a class="btn btn-small btn-success" href="javascript://" ng-click="addFunds()">Add Funds</a></div>
+          <div class="user-balance"><a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Add Funds</a></div>
           <% if false %>
             <!-- I don't think we are doing refer friends at the moment -->
             <!-- <div class="user-alias"><a class="btn btn-small btn-warning" href="javascript://">Refer Friends</a></div> -->
@@ -123,7 +123,7 @@
       </div>
       <div class="span9 page-content">
         <div class="padded-content">
-          <div id="login-buttons" ng-controller="LoginController" ng-hide="currentUser()">
+          <div id="login-buttons" ng-controller="LoginController" ng-hide="currentUser">
             <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
             <input type='text' ng-model="user.email" placeholder="Email" />
             <input type='password' ng-model="user.password" placeholder="Password"/>
