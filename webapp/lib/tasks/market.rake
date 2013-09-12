@@ -12,7 +12,8 @@ namespace :market do
 	  	publish_markets
 	  	open_markets
       lock_players
-	  	close_markets
+      close_markets
+      tabulate_scores
 	  	sleep wait_time
   	end
   end
@@ -32,6 +33,11 @@ namespace :market do
   task :close => :environment do
   	close_markets
   end
+
+  task :stats => :environment do
+    tabulate_scores
+  end
+
 end
 
 def publish_markets
@@ -42,6 +48,13 @@ def publish_markets
     if market.state == 'published'
       market.add_default_contests
     end
+  end
+end
+
+def tabulate_scores
+  Market.where("state in ('published', 'open', 'closed')").find_each do |market|
+    puts "#{Time.now} -- tabulating scores for market #{market.id}"
+    market.tabulate_scores
   end
 end
 
