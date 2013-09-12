@@ -10,6 +10,12 @@ class EventsController < ApplicationController
     render_api_response eventsFromIndexes([game], params[:indexes])
   end
 
+  # Takes an array of player_stat_ids and a market
+  def for_players
+    games = MarketGames.where(:market_id => params[:market_id]).map(&:game_stats_id)
+    events = StatEvent.where(:player_stats_id => params[:player_ids], :game_stats_id => games)
+    render_api_response events
+  end
 
   def for_roster
     roster = Roster.find(params[:id])

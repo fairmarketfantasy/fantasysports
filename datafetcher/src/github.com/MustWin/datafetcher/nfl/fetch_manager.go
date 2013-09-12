@@ -82,7 +82,8 @@ func (mgr *FetchManager) createMarket(name string, games []*models.Game) {
 	market.ShadowBetRate = 0.75
 	market.PublishedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
 	market.OpenedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
-	market.ClosedAt = games[0].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
+	market.StartedAt = games[0].GameTime.Add(-5 * time.Minute)           // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
+	market.ClosedAt = games[len(games)-1].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
 	log.Printf("Creating market %s closing on %s with %d games", market.Name, market.ClosedAt, len(games))
 	mgr.Orm.Save(&market)
 	for _, game := range games {

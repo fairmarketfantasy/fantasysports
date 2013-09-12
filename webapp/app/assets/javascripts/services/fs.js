@@ -106,6 +106,11 @@ angular.module('app.services')
           return $http({method: 'GET', url: '/players/', params: angular.extend(opts, {roster_id: roster_id})});
         }
       },
+      events: {
+        for_player: function(market_id, players) {
+          return $http({method: 'GET', url: '/events/for_player', params: {player_ids: _.map(players, function(elt) { return elt.stats_id})} });
+        },
+      },
       rosters: {
         add_player: function(roster_id, player_id) {
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/add_player/' + player_id});
