@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('ApplicationController', ['$scope', 'fs', 'rosters', '$location', 'flash', '$dialog', 'currentUserService', function($scope, fs, rosters, $location, flash, $dialog, currentUserService) {
+.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'rosters', '$location', 'flash', '$dialog', function($scope, fs, currentUserService, rosters, $location, flash, $dialog) {
 
   $scope.fs = fs;
 
