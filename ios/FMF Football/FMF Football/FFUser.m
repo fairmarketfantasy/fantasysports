@@ -10,7 +10,7 @@
 
 @implementation FFUser
 
-+ (NSString *)tableName { return @"ff-user"; }
++ (NSString *)tableName { return @"ffuser"; }
 
 + (void)load { [self registerModel:self]; }
 
