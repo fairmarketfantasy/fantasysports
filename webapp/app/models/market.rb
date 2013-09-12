@@ -65,7 +65,7 @@ class Market < ActiveRecord::Base
         contest.rosters.update_all("contest_id = null, cancelled = true, 
           cancelled_cause = 'contest under-subscribed', cancelled_at = #{Time.now}")
         contest.destroy!
-      end      
+      end
 
       state = 'closed_allocated'
       save!
@@ -83,8 +83,8 @@ class Market < ActiveRecord::Base
     ['970', '10 teams, $2 entry fee, winner takes home $19.40', 10, 2, 0.03, '[19.40]'],
     ['970', '10 teams, $10 entrye fee, winner takes home $97.00', 10, 10, 0.03, '[97]'],
     ['194', 'Free contest, top 5 winners get 2 FanFrees!', 10, 0, 0, '[F2]'],
-    ['194', '10 teams, $2 entry fee, top 5 winners take home $3.88', 10, 2, 0.03, '{0-24: 3.88}'],
-    ['194', '10 teams, $10 entrye fee, top 5 winners take home $19.40', 10, 10, 0.03, '{0-24: 19.40}'],
+    ['194', '50 teams, $2 entry fee, top 25 winners take home $3.88', 10, 2, 0.03, '{0-24: 3.88}'],
+    ['194', '50 teams, $10 entrye fee, top 25 winners take home $19.40', 10, 10, 0.03, '{0-24: 19.40}'],
     ['h2h', 'Free h2h contest, winner gets 1 FanFree!', 2, 0, 0, '[F1]'],
     ['h2h', 'h2h contest, $2 entry fee, winner takes home $3.88', 2, 2, 0.03, '[3.88]'],
     ['h2h', 'h2h contest, $10 entry fee, winner takes home $19.40', 2, 10, 0.03, '[19.40]']
