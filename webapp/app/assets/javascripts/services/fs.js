@@ -1,4 +1,22 @@
 angular.module('app.services')
+  .factory('currentUserService', ['$dialog', function($dialog) {
+    return {
+      currentUser: window.App.currentUser,
+      addFundsModal: function(){
+        var dialogOpts = {
+              backdrop: true,
+              keyboard: true,
+              backdropClick: true,
+              dialogClass: 'modal',
+              templateUrl: '/assets/add_funds_dialog.html',
+              controller: 'AddFundsDialogController'
+            };
+
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+      }
+    };
+  }])
   .factory('fsAPIInterceptor', ['$q', 'flash', '$injector', function($q, flash, $injector) {
 // TODO: this is where jsonH stuff will go
     var $dialog;
@@ -13,7 +31,8 @@ angular.module('app.services')
         return resp;
       }, failure = function(resp) {
         if(resp.status == 402) {
-          // TODO: implement payment modal
+          var currentUserService = $injector.get('currentUserService');
+          currentUserService.addFundsModal();
         }
         // TODO: we'll need to implement this again
         if (resp.status == 403) {
@@ -135,5 +154,5 @@ angular.module('app.services')
   }])
   .config(['$httpProvider', function($httpProvider) {
     $httpProvider.responseInterceptors.push('fsAPIInterceptor');
-  }])
+  }]);
 
