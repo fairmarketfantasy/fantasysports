@@ -2,74 +2,38 @@ require 'test_helper'
 
 class MarketTest < ActiveSupport::TestCase
 
-  # test "allocate rosters" do
-  #   setup_multi_day_market
-  #   @market.publish.add_default_contests
-  #   # puts "price multiplier: #{@market.price_multiplier}"
+  #
+  test "close" do
+    setup_simple_market
+    #put 3 rosters public h2h and 3 in a private h2h
+    contest_type = @market.contest_types.where("buy_in = 10 and max_entries = 2").first
+    refute_nil contest_type
+    3.times {
+      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
+    }
+    private_contest = create(:contest, :market => @market, :contest_type => contest_type, :user_cap => 2, :buy_in => 10)
+    2.times {
+      create(:roster, :market => @market, :contest_type => contest_type, :contest => private_contest).fill_randomly.submit!
+    }
+    private_contest_2 = create(:contest, :market => @market, :contest_type => contest_type, :user_cap => 2, :buy_in => 10)
+    create(:roster, :market => @market, :contest_type => contest_type, :contest => private_contest_2).fill_randomly.submit!
 
-  #   # puts "creating 11 roster for #{@market.contest_types.length} contest types"
-  #   #put 11 rosters in each contest type -- so that we can test that one is cancelled from each
-  #   @market.contest_types.each do |contest_type|
-  #     11.times do
-  #       roster = create(:roster, :market => @market, :contest_type => contest_type)
-  #       roster.fill_randomly
-  #       # puts "roster: $#{roster.remaining_salary}, #{roster.players.length} players"
-  #       roster.submitted_at = Time.now
-  #       roster.save!
-  #     end
-  #   end
-  #   #should have 11 rosters
-  #   rosters = @market.rosters
-  #   assert_equal rosters.length, 11, "expected 11 rosters, but found #{rosters.length}"
-    
-  #   @market.open.close.allocate_rosters
-  #   cancelled_rosters = @market.rosters.where("cancelled = true")
-  #   assert_equal 1, cancelled_rosters.length, "should have been 1 cancelled, but there were #{cancelled_rosters.length}"
-  # end
+    #verify the state of affairs
+    assert_equal 6, @market.rosters.where("state = 'submitted'").length
+    assert_equal 2, private_contest.rosters.length
+    assert_equal 1, private_contest_2.rosters.length
+    assert_equal 2, @market.contests.where("invitation_code is not null").length
 
-  # test "allocate rosters private contests" do
-  #   setup_multi_day_market
-  #   @market = @market.publish
+    #close market, should move the one roster in the private contest to the public contest
+    @market.open.close.reload
 
-  #   #one public contest
-  #   contest_type = ContestType.create(
-  #     market_id: @market.id,
-  #     name: '194',
-  #     description: '194',
-  #     max_entries: 10,
-  #     buy_in: 10,
-  #     rake: 0,
-  #     payout_structure: ''
-  #   )
-
-  #   owner = User.create!(name: "asdf", email: "asdf@asdf.com", password:"asdfasdf")
-  #   private_contests = [
-  #     Contest.create!(owner: owner, market: @market, user_cap: 4, buy_in: 10, contest_type_id: contest_type.id),
-  #     Contest.create!(owner: owner, market: @market, user_cap: 2, buy_in: 10, contest_type_id: contest_type.id),
-  #     Contest.create!(owner: owner, market: @market, user_cap: 3, buy_in: 10, contest_type_id: contest_type.id),
-  #   ]
-
-  #   assert_equal 3, @market.contests.length, "created 3 private contests"
-
-  #   #put 3 in each
-  #   private_contests.each do |contest| 
-  #     3.times {
-  #       create(:roster, :market => @market, :contest_type => contest_type, :contest => contest).fill_randomly
-  #     }
-  #   end
-
-  #   rosters = @market.rosters
-  #   assert_equal rosters.length, 9, "expected 9 rosters, but found #{rosters.length}"
-    
-  #   @market.open.close.allocate_rosters
-  #   # @market.reload.rosters.order(:id).each do |roster| 
-  #   #   puts "roster #{roster.id} $#{roster.remaining_salary} #{roster.cancelled} #{roster.cancelled_cause}"
-  #   # end
-
-  #   cancelled_rosters = @market.rosters.where("cancelled = true")
-  #   assert_equal 4, cancelled_rosters.length, "should have been 1 cancelled, but there were #{cancelled_rosters.length}"
-  #   #the first 3 and the 6th should get booted
-  # end
+    #should be 3 contests: two public, one private
+    assert_equal 'closed', @market.state
+    assert_equal 3, @market.contests.length, "#{@market.contests.each {|c| c.inspect + '\n'}}"
+    assert_equal 2, @market.contests.where("invitation_code is null").length
+    assert_equal 0, @market.rosters.where("cancelled = true").length
+    assert_equal 2, private_contest.reload.rosters.length
+  end
 
 
   # create a market that has three games at three different times.
@@ -154,8 +118,9 @@ class MarketTest < ActiveSupport::TestCase
     assert roster.purchasable_players.length == 36
 
     #close market
-    @market = @market.close
-    assert @market.state == 'closed', "should be closed"
+    @market.close
+    @market.reload
+    assert_equal 'closed', @market.state, "should be closed, but is #{@market.state}"
   end
 
   test "publish detail" do
