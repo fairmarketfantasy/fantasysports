@@ -1,4 +1,12 @@
 <div ng-controller="RosterController" ng-show="rosters.inProgressRoster">
+  <h4>{{markets.currentMarket.name}} {{markets.currentMarket.closed_at | shortFormTime }} Games</h4>
+  <p>{{rosters.currentRoster.contest_type.description}}</p>
+  <ul class="games">
+    <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
+      {{game.away_team}} @ {{game.home_team}} {{game.networkl}} on {{game.game_time | shortFormTime}}
+    </li>
+  </ul>
+
   <a href="#/" ng-click="rosters.cancel()">Cancel entry</a>
   <ul>
     <li><a href="javascript://" ng-click="filter = 'my-players'">My players</a></li>
@@ -38,7 +46,7 @@
       <tr ng-repeat="player in players | filter:notInRoster">
         <td>{{player.status}}</td>
         <td>{{player.name}}</td>
-        <td>{{player.position}}</td>
+        <td>{{player.position | dashIfDEF}}</td>
         <td>{{gameFromTeam(player.team)}}</td>
         <td>{{player.ppg}}</td>
         <td>{{player.buy_price}}</td>
