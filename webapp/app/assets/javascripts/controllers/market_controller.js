@@ -2,9 +2,8 @@ angular.module("app.controllers")
 .controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', function($scope, rosters, $routeParams, $location, marketService) {
   $scope.marketService = marketService;
 
-  marketService.fetchUpcoming($routeParams.market_id);
+  marketService.fetchUpcoming($routeParams.market_id)
   $scope.rosters = rosters;
-
 
   var reloadMarket = function() {
     if (!marketService.currentMarket) {
@@ -25,25 +24,17 @@ angular.module("app.controllers")
     });
   }
   $scope.$watch('marketService.currentMarket', reloadMarket);
-  $scope.$watch('$routeParams.market_id', function() {
-    if ($routeParams.market_id) {
-      marketService.selectMarket($routeParams.market_id);
-    }
-  });
 
   $scope.day = function(timeStr) {
     var day = moment(timeStr);
     return day.format("ddd, MMM Do , h:mm a");
   };
 
-  $scope.gameStarted = function(game) {
-    return new Date(game.game_time) < new Date();
-  }
-
   $scope.joinContest = function(contestType) {
     $scope.fs.contests.join(contestType.id, rosters.justSubmittedRoster && rosters.justSubmittedRoster.id).then(function(data){
       rosters.selectRoster(data);
-      $location.path('/' + marketService.currentMarket.id + '/' + data.id);
+      $scope.currentUser().balance -= data.buy_in;
+      $location.path('/market/' + marketService.currentMarket.id + '/roster/' + data.id);
     });
   };
 

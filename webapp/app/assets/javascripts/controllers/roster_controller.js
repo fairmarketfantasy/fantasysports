@@ -7,6 +7,7 @@ angular.module("app.controllers")
   var teamsToGames = {};
   markets.fetch($routeParams.market_id).then(function(market) {
     $scope.market = market;
+    markets.selectMarket(market);
     markets.gamesFor(market.id).then(function(games) {
       $scope.games = games;
       _.each(games, function(game) {
@@ -24,11 +25,11 @@ angular.module("app.controllers")
     });
   };
 
-  fetchPlayers();
+  $scope.$watch('rosters.currentRoster.id', fetchPlayers);
 
   if (!rosters.currentRoster && $routeParams.roster_id) {
     rosters.fetch($routeParams.roster_id).then(function(roster) {
-      rotsers.selectRoster(roster);
+      rosters.selectRoster(roster);
     })
   }
 
@@ -41,12 +42,10 @@ angular.module("app.controllers")
     });
   };
 
-  if ($scope.pollInterval === undefined) {
-    $scope.pollInterval = setInterval(function() {
+  rosters.setPoller(function() {
       fetchPlayers();
       fetchRoster();
-    }, 5000);
-  }
+    }, 15000);
 
   $scope.filterPlayers = function(opts) {
     filterOpts = opts;
