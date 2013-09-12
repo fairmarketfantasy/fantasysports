@@ -1,5 +1,5 @@
 angular.module('app.services')
-  .factory('fsAPIInterceptor', ['flash', '$injector', function(flash, $injector) {
+  .factory('fsAPIInterceptor', ['$q', 'flash', '$injector', function($q, flash, $injector) {
 // TODO: this is where jsonH stuff will go
     var $dialog;
     return function(promise) {
@@ -38,6 +38,7 @@ angular.module('app.services')
         }
         console && console.log('API Error: ');
         console.log(resp);
+        return $q.reject(resp);
         return null; // TODO: this doesn't signal failure...figure out how to do that
       }
       return promise.then(success, failure);

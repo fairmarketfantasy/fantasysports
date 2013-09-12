@@ -152,7 +152,7 @@ func (mgr *FetchManager) refreshGameStatistics(game *models.Game) {
 }
 
 func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
-	POLLING_PERIOD := 10 * time.Second
+	POLLING_PERIOD := 30 * time.Second
 	currentSequenceNumber := -1
 	gameover := false
 	if game.GameTime.After(time.Now()) {

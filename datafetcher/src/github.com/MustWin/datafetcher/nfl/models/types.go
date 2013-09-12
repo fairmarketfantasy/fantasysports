@@ -24,7 +24,7 @@ type NflModel struct {
 type Market struct {
 	NflModel
 	Id            int
-	Name 		  string
+	Name          string
 	SportId       int `model:"key"`
 	TotalBets     int
 	ShadowBets    int
@@ -320,6 +320,7 @@ func (se *StatEvent) AddOpposingTeamScore(score int) {
 	case score > 45:
 		pts = -10
 	}
+	log.Printf("ADDING %d", pts)
 	se.PointValue += float64(pts)
 }
 

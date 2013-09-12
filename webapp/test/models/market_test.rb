@@ -2,85 +2,74 @@ require 'test_helper'
 
 class MarketTest < ActiveSupport::TestCase
 
-  test "allocate rosters" do
-    setup_multi_day_market
-    @market = @market.publish
-    #one contest type
-    ContestType.create(
-      market_id: @market.id,
-      name: '194',
-      description: '194',
-      max_entries: 10,
-      buy_in: 10,
-      rake: 0,
-      payout_structure: ''
-    )
+  # test "allocate rosters" do
+  #   setup_multi_day_market
+  #   @market.publish.add_default_contests
+  #   # puts "price multiplier: #{@market.price_multiplier}"
 
-    # puts "price multiplier: #{@market.price_multiplier}"
-
-    # puts "creating 11 roster for #{@market.contest_types.length} contest types"
-    #put 11 rosters in each contest type -- so that we can test that one is cancelled from each
-    @market.contest_types.each do |contest_type|
-      11.times do
-        roster = create(:roster, :market => @market, :contest_type => contest_type)
-        roster.fill_randomly
-        # puts "roster: $#{roster.remaining_salary}, #{roster.players.length} players"
-        roster.submitted_at = Time.now
-        roster.save!
-      end
-    end
-    #should have 11 rosters
-    rosters = @market.rosters
-    assert_equal rosters.length, 11, "expected 11 rosters, but found #{rosters.length}"
+  #   # puts "creating 11 roster for #{@market.contest_types.length} contest types"
+  #   #put 11 rosters in each contest type -- so that we can test that one is cancelled from each
+  #   @market.contest_types.each do |contest_type|
+  #     11.times do
+  #       roster = create(:roster, :market => @market, :contest_type => contest_type)
+  #       roster.fill_randomly
+  #       # puts "roster: $#{roster.remaining_salary}, #{roster.players.length} players"
+  #       roster.submitted_at = Time.now
+  #       roster.save!
+  #     end
+  #   end
+  #   #should have 11 rosters
+  #   rosters = @market.rosters
+  #   assert_equal rosters.length, 11, "expected 11 rosters, but found #{rosters.length}"
     
-    @market.open.close.allocate_rosters
-    cancelled_rosters = @market.rosters.where("cancelled = true")
-    assert_equal 1, cancelled_rosters.length, "should have been 1 cancelled, but there were #{cancelled_rosters.length}"
-  end
+  #   @market.open.close.allocate_rosters
+  #   cancelled_rosters = @market.rosters.where("cancelled = true")
+  #   assert_equal 1, cancelled_rosters.length, "should have been 1 cancelled, but there were #{cancelled_rosters.length}"
+  # end
 
-  test "allocate rosters private contests" do
-    setup_multi_day_market
-    @market = @market.publish
+  # test "allocate rosters private contests" do
+  #   setup_multi_day_market
+  #   @market = @market.publish
 
-    #one public contest
-    contest_type = ContestType.create(
-      market_id: @market.id,
-      name: '194',
-      description: '194',
-      max_entries: 10,
-      buy_in: 10,
-      rake: 0,
-      payout_structure: ''
-    )
+  #   #one public contest
+  #   contest_type = ContestType.create(
+  #     market_id: @market.id,
+  #     name: '194',
+  #     description: '194',
+  #     max_entries: 10,
+  #     buy_in: 10,
+  #     rake: 0,
+  #     payout_structure: ''
+  #   )
 
-    owner = User.create!(name: "asdf", email: "asdf@asdf.com", password:"asdfasdf")
-    private_contests = [
-      Contest.create!(owner: owner, market: @market, user_cap: 4, buy_in: 10, contest_type_id: contest_type.id),
-      Contest.create!(owner: owner, market: @market, user_cap: 2, buy_in: 10, contest_type_id: contest_type.id),
-      Contest.create!(owner: owner, market: @market, user_cap: 3, buy_in: 10, contest_type_id: contest_type.id),
-    ]
+  #   owner = User.create!(name: "asdf", email: "asdf@asdf.com", password:"asdfasdf")
+  #   private_contests = [
+  #     Contest.create!(owner: owner, market: @market, user_cap: 4, buy_in: 10, contest_type_id: contest_type.id),
+  #     Contest.create!(owner: owner, market: @market, user_cap: 2, buy_in: 10, contest_type_id: contest_type.id),
+  #     Contest.create!(owner: owner, market: @market, user_cap: 3, buy_in: 10, contest_type_id: contest_type.id),
+  #   ]
 
-    assert_equal 3, @market.contests.length, "created 3 private contests"
+  #   assert_equal 3, @market.contests.length, "created 3 private contests"
 
-    #put 3 in each
-    private_contests.each do |contest| 
-      3.times {
-        create(:roster, :market => @market, :contest_type => contest_type, :contest => contest).fill_randomly
-      }
-    end
+  #   #put 3 in each
+  #   private_contests.each do |contest| 
+  #     3.times {
+  #       create(:roster, :market => @market, :contest_type => contest_type, :contest => contest).fill_randomly
+  #     }
+  #   end
 
-    rosters = @market.rosters
-    assert_equal rosters.length, 9, "expected 9 rosters, but found #{rosters.length}"
+  #   rosters = @market.rosters
+  #   assert_equal rosters.length, 9, "expected 9 rosters, but found #{rosters.length}"
     
-    @market.open.close.allocate_rosters
-    # @market.reload.rosters.order(:id).each do |roster| 
-    #   puts "roster #{roster.id} $#{roster.remaining_salary} #{roster.cancelled} #{roster.cancelled_cause}"
-    # end
+  #   @market.open.close.allocate_rosters
+  #   # @market.reload.rosters.order(:id).each do |roster| 
+  #   #   puts "roster #{roster.id} $#{roster.remaining_salary} #{roster.cancelled} #{roster.cancelled_cause}"
+  #   # end
 
-    cancelled_rosters = @market.rosters.where("cancelled = true")
-    assert_equal 4, cancelled_rosters.length, "should have been 1 cancelled, but there were #{cancelled_rosters.length}"
-    #the first 3 and the 6th should get booted
-  end
+  #   cancelled_rosters = @market.rosters.where("cancelled = true")
+  #   assert_equal 4, cancelled_rosters.length, "should have been 1 cancelled, but there were #{cancelled_rosters.length}"
+  #   #the first 3 and the 6th should get booted
+  # end
 
 
   # create a market that has three games at three different times.

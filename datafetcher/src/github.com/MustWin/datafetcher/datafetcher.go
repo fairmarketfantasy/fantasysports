@@ -37,7 +37,6 @@ func writePid() {
 // Major options
 var sport = flag.String("sport", "NFL" /* Temporary default */, "REQUIRED: What sport to fetch: nfl")
 var fetch = flag.String("fetch", "", `What data to fetch:
-      seed
       roster -team DAL
       teams -year 2012 -season PRE|REG|PST
       schedule -year 2012 -season PRE|REG|PST
@@ -69,7 +68,7 @@ var playId = flag.String("playId", "28140456-0132-4829-ae38-d68e10a5acc9", "Play
 func main() {
 	flag.Parse()
 	fmt.Println("fetching data for year", *year)
-	// fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
+	//fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
 	fetcher := nfl.Fetcher{*year, *season, *week, fetchers.HttpFetcher}
 	var orm model.Orm
 	var ormType model.Orm
@@ -96,6 +95,7 @@ func main() {
 	case "pbp":
 		log.Println("Fetching play by play data")
 		plays := fetcher.GetPlayByPlay(*awayTeam, *homeTeam)
+		lib.PrintPtrs(plays)
 		orm.SaveAll(plays)
 		lib.PrintPtrs(plays)
 

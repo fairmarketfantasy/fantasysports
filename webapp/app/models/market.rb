@@ -39,8 +39,37 @@ class Market < ActiveRecord::Base
     Market.find_by_sql("SELECT * from lock_players(#{self.id})")[0]
   end
 
+  # cancel rosters that have not yet been submitted
+  # delete private contests that are not full
+  # allocate rosters from private contests to public ones
+  # cancel contests/rosters that are not full
   def allocate_rosters
-    Market.find_by_sql("SELECT * FROM allocate_rosters(#{self.id})")[0]
+    self.with_lock do
+      reload
+      return unless state == 'closed'
+      #cancel all un-submitted rosters
+      rosters.where("state != 'submitted'").update_all(["cancelled = true, cancelled_at = ?,
+       cancelled_cause='un-submitted before market closed'", Time.now])
+
+      #re-allocate rosters in under-subscribed private contests to public contests
+      contests.where("invitation_code is not null and num_rosters < user_cap").find_each do |contest|
+        contest.rosters.find_each do |roster|
+          roster.contest_id, roster.cancelled_cause, roster.state = nil, 'private contest under-subscribed', nil
+          roster.submit!
+        end
+        contest.destroy!
+      end
+
+      #cancel rosters in contests that are not full
+      contests.where("num_rosters < user_cap").find_each do |contest|
+        contest.rosters.update_all("contest_id = null, cancelled = true, 
+          cancelled_cause = 'contest under-subscribed', cancelled_at = #{Time.now}")
+        contest.destroy!
+      end
+
+      state = 'closed_allocated'
+      save!
+    end
   end
 
   def notify_market_open_event
@@ -54,8 +83,8 @@ class Market < ActiveRecord::Base
     ['970', '10 teams, $2 entry fee, winner takes home $19.40', 10, 2, 0.03, '[19.40]'],
     ['970', '10 teams, $10 entrye fee, winner takes home $97.00', 10, 10, 0.03, '[97]'],
     ['194', 'Free contest, top 5 winners get 2 FanFrees!', 10, 0, 0, '[F2]'],
-    ['194', '10 teams, $2 entry fee, top 5 winners take home $3.88', 10, 2, 0.03, '{0-24: 3.88}'],
-    ['194', '10 teams, $10 entrye fee, top 5 winners take home $19.40', 10, 10, 0.03, '{0-24: 19.40}'],
+    ['194', '50 teams, $2 entry fee, top 25 winners take home $3.88', 10, 2, 0.03, '{0-24: 3.88}'],
+    ['194', '50 teams, $10 entrye fee, top 25 winners take home $19.40', 10, 10, 0.03, '{0-24: 19.40}'],
     ['h2h', 'Free h2h contest, winner gets 1 FanFree!', 2, 0, 0, '[F1]'],
     ['h2h', 'h2h contest, $2 entry fee, winner takes home $3.88', 2, 2, 0.03, '[3.88]'],
     ['h2h', 'h2h contest, $10 entry fee, winner takes home $19.40', 2, 10, 0.03, '[19.40]']

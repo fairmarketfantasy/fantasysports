@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130908154407) do
+ActiveRecord::Schema.define(version: 20130911190421) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -174,8 +174,8 @@ ActiveRecord::Schema.define(version: 20130908154407) do
     t.integer  "contest_id"
     t.integer  "buy_in",                           null: false
     t.decimal  "remaining_salary",                 null: false
-    t.integer  "final_points"
-    t.integer  "finish_place"
+    t.integer  "score"
+    t.integer  "contest_rank"
     t.decimal  "amount_paid"
     t.datetime "paid_at"
     t.string   "cancelled_cause"

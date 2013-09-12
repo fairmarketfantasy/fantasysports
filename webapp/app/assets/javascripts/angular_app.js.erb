@@ -22,10 +22,12 @@ angular.module('app', [
     $rootScope.$on( "$routeChangeSuccess", function(event, next, current) {
       var roster = rosters.inProgressRoster;
       if (roster) {
-        flash.success = "Looks like you already have a roster going.  Let's finish entering!";
         var path = '/market/' + roster.market_id + '/roster/' + roster.id;
-        $location.path(path).replace();
-        rosters.selectRoster(roster);
+        if (path != $location.path()) {
+          flash.success = "Looks like you already have a roster going.  Let's finish entering!";
+          $location.path(path).replace();
+          rosters.selectRoster(roster);
+        }
       }
       return true;
     });
