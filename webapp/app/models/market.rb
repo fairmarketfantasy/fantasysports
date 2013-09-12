@@ -37,6 +37,12 @@ class Market < ActiveRecord::Base
   #and update the price multiplier
   def lock_players
     Market.find_by_sql("SELECT * from lock_players(#{self.id})")[0]
+    return self
+  end
+
+  def tabulate_scores
+    Market.find_by_sql("SELECT * FROM tabulate_scores(#{self.id})")
+    return self
   end
 
   # close a market. allocates remaining rosters in this manner:
@@ -66,7 +72,7 @@ class Market < ActiveRecord::Base
       #cancel rosters in contests that are not full
       self.contests.where("num_rosters < user_cap").find_each do |contest|
         contest.rosters.update_all("contest_id = null, cancelled = true, 
-          cancelled_cause = 'contest under-subscribed', cancelled_at = #{Time.now}")
+          cancelled_cause = 'contest under-subscribed', cancelled_at = '#{Time.now}'")
         contest.destroy!
       end
 
@@ -116,7 +122,15 @@ class Market < ActiveRecord::Base
     self.games.update_all(:game_day => Time.now, :game_time => Time.now + 3600, :status => 'scheduled')
     self.published_at, self.opened_at, self.closed_at, self.state = Time.now, Time.now + 1200, Time.now + 3600, nil
     self.save!
+  end
 
+  #if this market has a 100k contest, buys a random roster in the 100k using the system user's account
+  def enter_100k(num_rosters=1)
+    contest_type = self.contest_types.where("name = '100k'").first
+    raise "no 100k contest" if contest_type.nil?
+    system_user = User.where(:name => 'SYSTEM USER').first
+    raise "could not find system uers" if system_user.nil?
+    num_rosters.times { Roster.generate(system_user, contest_type).fill_randomly.submit! }
   end
 
 end

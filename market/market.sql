@@ -62,7 +62,7 @@ DROP FUNCTION buy(integer, integer);
 CREATE OR REPLACE FUNCTION buy(_roster_id integer, _player_id integer) RETURNS market_orders AS $$
 DECLARE
 	_roster rosters;
-	_bets numeric;
+	_market_player market_players;
 	_market markets;
 	_price numeric;
   retval market_orders;
@@ -87,13 +87,13 @@ BEGIN
 		RAISE EXCEPTION 'market % is unavailable', _roster.market_id;
 	END IF;
 
-	SELECT bets FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
-			(locked_at is null or locked_at > CURRENT_TIMESTAMP) INTO _bets;
+	SELECT * FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
+			(locked_at is null or locked_at > CURRENT_TIMESTAMP) INTO _market_player;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'player % is locked or nonexistent', _player_id;
 	END IF;
 
-	SELECT price(_bets, _market.total_bets, _roster.buy_in, _market.price_multiplier) INTO _price;
+	SELECT price(_market_player.bets, _market.total_bets, _roster.buy_in, _market.price_multiplier) INTO _price;
 
 	--test price against roster -- allow 50% overspending
 	IF _price > _roster.remaining_salary + 50000 THEN
@@ -102,7 +102,8 @@ BEGIN
 	END IF;
 
 	--perform the updates.
-	INSERT INTO rosters_players(player_id, roster_id, purchase_price) values (_player_id, _roster_id, _price);
+	INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id) 
+		values  (_player_id, _roster_id, _price, _market_player.player_stats_id);
 	UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
 	UPDATE market_players SET bets = bets + _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
 	UPDATE rosters SET remaining_salary = remaining_salary - _price WHERE id = _roster_id;
@@ -224,11 +225,11 @@ BEGIN
 		) INTO _total_ppg;
 
 	-- insert players into market. use the first game time for which the player is participating and calculate shadow bets.
-	INSERT INTO market_players (market_id, player_id, shadow_bets, locked_at)
+	INSERT INTO market_players (market_id, player_id, shadow_bets, locked_at, player_stats_id)
 		SELECT
 			_market_id, p.id,
 			(((p.total_points + .01) / (p.total_games + .1)) / _total_ppg) * _market.shadow_bets,
-			min(g.game_time)
+			min(g.game_time), p.stats_id
 		FROM 
 			players p, games g, games_markets gm 
 		WHERE 
@@ -368,7 +369,29 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+--------------------------------------- Assign Scores --------------------------------------
 
+--removes locked players from the market and updates the price multiplier
+DROP FUNCTION tabulate_scores(integer);
+
+CREATE OR REPLACE FUNCTION tabulate_scores(_market_id integer) RETURNS VOID AS $$
+
+	UPDATE market_players set score = 
+		(select Greatest(0, sum(point_value)) FROM stat_events 
+			WHERE player_stats_id = market_players.player_stats_id and game_stats_id in 
+				(select game_stats_id from games_markets where market_id = $1)
+		) where market_id = $1;
+
+	UPDATE rosters set score = 
+		(select sum(score) from market_players where player_stats_id in 
+			(select player_stats_id from rosters_players where roster_id = rosters.id)
+		) where market_id = $1;
+
+	WITH ranks as 
+		(SELECT id, rank() OVER (PARTITION BY contest_id ORDER BY score DESC) FROM rosters WHERE market_id = $1) 
+		UPDATE rosters set contest_rank = rank FROM ranks where rosters.id = ranks.id;
+	
+$$ LANGUAGE SQL;
 
 
 

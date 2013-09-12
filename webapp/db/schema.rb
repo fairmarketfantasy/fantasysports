@@ -11,10 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130912091546) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 20130912142739) do
 
   create_table "contest_types", force: true do |t|
     t.integer "market_id",        null: false
@@ -120,6 +117,7 @@ ActiveRecord::Schema.define(version: 20130912091546) do
     t.decimal  "initial_shadow_bets"
     t.boolean  "locked",              default: false
     t.integer  "score",               default: 0,     null: false
+    t.string   "player_stats_id"
   end
 
   add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
@@ -195,9 +193,10 @@ ActiveRecord::Schema.define(version: 20130912091546) do
   add_index "rosters", ["submitted_at"], name: "index_rosters_on_submitted_at", using: :btree
 
   create_table "rosters_players", force: true do |t|
-    t.integer "player_id",                       null: false
-    t.integer "roster_id",                       null: false
-    t.decimal "purchase_price", default: 1000.0, null: false
+    t.integer "player_id",                        null: false
+    t.integer "roster_id",                        null: false
+    t.decimal "purchase_price",  default: 1000.0, null: false
+    t.string  "player_stats_id"
   end
 
   add_index "rosters_players", ["player_id", "roster_id"], name: "contest_rosters_players_index", unique: true, using: :btree
