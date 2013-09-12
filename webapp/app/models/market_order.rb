@@ -34,7 +34,13 @@ class MarketOrder < ActiveRecord::Base
       yield
     rescue ActiveRecord::StatementInvalid => e
        # TODO: clean up error handling
-      raise HttpException.new(409, e.message)
+      case 
+        when e.message =~ /sufficient funds/
+          msg = "You don't have enough money to buy that player"
+        else
+          msg = e.message
+       end
+      raise HttpException.new(409, msg)
     end
   end
 end

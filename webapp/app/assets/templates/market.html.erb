@@ -5,9 +5,8 @@
     </li>
   </ul>
 
-  <h4>{{day(market.closed_at)}}</h4>
+  <h4>{{marketService.currentMarket.name}} {{marketService.currentMarket.closed_at | shortFormTime }} Games</h4>
 
-  <h5>Games</h5>
   <ul class="games">
     <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
       {{game.away_team}} @ {{game.home_team}} {{game.networkl}} on {{game.game_time | shortFormTime}}

@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('AddFundsDialogController', ['$scope', 'fs', 'currentUser', function($scope, fs, currentUser) {
+.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'currentUser', function($scope, dialog, fs, currentUser) {
 
   $scope.currentUser = currentUser;
   $scope.cardInfo    = $scope.cardInfo     || {};
@@ -20,6 +20,10 @@ angular.module("app.controllers")
 
   $scope.showingAddFunds = function(){
     return !$scope.showCardForm && $scope.cards.length;
+  };
+
+  $scope.close = function(){
+    dialog.close();
   };
 
 

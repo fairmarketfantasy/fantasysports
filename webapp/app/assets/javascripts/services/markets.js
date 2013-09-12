@@ -22,11 +22,9 @@ angular.module('app.data')
         });
       };
 
-      this.selectMarket = function(id) {
-        this.fetch(id).then(function(market) {
-          this.currentMarket = market;
-        })
-      }
+      this.selectMarket = function(market) {
+        this.currentMarket = market;
+      };
 
       this.fetch = function(id) {
         if (marketData[id]) {
