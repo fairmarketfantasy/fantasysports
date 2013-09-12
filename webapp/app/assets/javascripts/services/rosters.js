@@ -114,12 +114,13 @@ angular.module('app.data')
           flash.error("You can only cancel rosters that are in progress");
           return;
         }
-        var currentId = this.currentRoster.id;
+        var currentRoster = this.currentRoster;
         this.currentRoster = null;
-        fs.rosters.cancel(currentId).then(function(data) {
-          delete rosterData[currentId];
+        fs.rosters.cancel(currentRoster.id).then(function(data) {
+          delete rosterData[currentRoster.id];
+          window.App.currentUser.balance += currentRoster.buy_in;
           self.reset();
-          $location.path('/');
+          $location.path('/market/' + currentRoster.market_id);
         });
       };
 
