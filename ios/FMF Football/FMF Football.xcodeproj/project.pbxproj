@@ -22,12 +22,18 @@
 		153BBC4A17DFC2E40071E63B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 153BBC4917DFC2E40071E63B /* Default-568h@2x.png */; };
 		153BBC4D17DFC2E40071E63B /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 153BBC4B17DFC2E40071E63B /* MainStoryboard_iPhone.storyboard */; };
 		153BBC5017DFC2E40071E63B /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 153BBC4E17DFC2E40071E63B /* MainStoryboard_iPad.storyboard */; };
-		153BBC5317DFC2E40071E63B /* FFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 153BBC5217DFC2E40071E63B /* FFViewController.m */; };
 		153BBC5B17DFC2E40071E63B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC5A17DFC2E40071E63B /* SenTestingKit.framework */; };
 		153BBC5C17DFC2E40071E63B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC3317DFC2E40071E63B /* UIKit.framework */; };
 		153BBC5D17DFC2E40071E63B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC3517DFC2E40071E63B /* Foundation.framework */; };
 		153BBC6517DFC2E40071E63B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 153BBC6317DFC2E40071E63B /* InfoPlist.strings */; };
 		153BBC6817DFC2E40071E63B /* FMF_FootballTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 153BBC6717DFC2E40071E63B /* FMF_FootballTests.m */; };
+		15A2378517E268AA00225942 /* FFSplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A2378317E268AA00225942 /* FFSplashViewController.m */; };
+		15A2378917E269BB00225942 /* fmf-splash-bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */; };
+		15A2378B17E26E9900225942 /* fmf-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378A17E26E9900225942 /* fmf-logo@2x.png */; };
+		15A2378D17E2708100225942 /* fmf-splash-copy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */; };
+		15A2379117E2747000225942 /* FFStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A2379017E2747000225942 /* FFStyle.m */; };
+		15A2379517E277F700225942 /* ProhibitionRound.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 15A2379417E277F700225942 /* ProhibitionRound.ttf */; };
+		15A2379917E27C5600225942 /* FFTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A2379817E27C5600225942 /* FFTextField.m */; };
 		52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE50D82857A45A1B1A9DFA0 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -62,14 +68,22 @@
 		153BBC4917DFC2E40071E63B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		153BBC4C17DFC2E40071E63B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		153BBC4F17DFC2E40071E63B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
-		153BBC5117DFC2E40071E63B /* FFViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFViewController.h; sourceTree = "<group>"; };
-		153BBC5217DFC2E40071E63B /* FFViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FFViewController.m; sourceTree = "<group>"; };
 		153BBC5917DFC2E40071E63B /* FMF FootballTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FMF FootballTests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		153BBC5A17DFC2E40071E63B /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		153BBC6217DFC2E40071E63B /* FMF FootballTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FMF FootballTests-Info.plist"; sourceTree = "<group>"; };
 		153BBC6417DFC2E40071E63B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		153BBC6617DFC2E40071E63B /* FMF_FootballTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMF_FootballTests.h; sourceTree = "<group>"; };
 		153BBC6717DFC2E40071E63B /* FMF_FootballTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FMF_FootballTests.m; sourceTree = "<group>"; };
+		15A2378217E268AA00225942 /* FFSplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFSplashViewController.h; sourceTree = "<group>"; };
+		15A2378317E268AA00225942 /* FFSplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFSplashViewController.m; sourceTree = "<group>"; };
+		15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-splash-bg@2x.png"; sourceTree = "<group>"; };
+		15A2378A17E26E9900225942 /* fmf-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-logo@2x.png"; sourceTree = "<group>"; };
+		15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-splash-copy@2x.png"; sourceTree = "<group>"; };
+		15A2378F17E2747000225942 /* FFStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFStyle.h; sourceTree = "<group>"; };
+		15A2379017E2747000225942 /* FFStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFStyle.m; sourceTree = "<group>"; };
+		15A2379417E277F700225942 /* ProhibitionRound.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ProhibitionRound.ttf; sourceTree = "<group>"; };
+		15A2379717E27C5600225942 /* FFTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTextField.h; sourceTree = "<group>"; };
+		15A2379817E27C5600225942 /* FFTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTextField.m; sourceTree = "<group>"; };
 		CCE50D82857A45A1B1A9DFA0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -149,13 +163,14 @@
 		153BBC3917DFC2E40071E63B /* FMF Football */ = {
 			isa = PBXGroup;
 			children = (
+				15A2379617E27C4500225942 /* Views */,
+				15A2378E17E2745B00225942 /* Utils */,
+				15A2377F17E2670C00225942 /* Controllers */,
 				1535142917DFEF3E00F776AC /* Data */,
 				153BBC4217DFC2E40071E63B /* FFAppDelegate.h */,
 				153BBC4317DFC2E40071E63B /* FFAppDelegate.m */,
 				153BBC4B17DFC2E40071E63B /* MainStoryboard_iPhone.storyboard */,
 				153BBC4E17DFC2E40071E63B /* MainStoryboard_iPad.storyboard */,
-				153BBC5117DFC2E40071E63B /* FFViewController.h */,
-				153BBC5217DFC2E40071E63B /* FFViewController.m */,
 				153BBC3A17DFC2E40071E63B /* Supporting Files */,
 			);
 			path = "FMF Football";
@@ -164,6 +179,8 @@
 		153BBC3A17DFC2E40071E63B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				15A2379417E277F700225942 /* ProhibitionRound.ttf */,
+				15A2378717E269A600225942 /* Images */,
 				153BBC3B17DFC2E40071E63B /* FMF Football-Info.plist */,
 				153BBC3C17DFC2E40071E63B /* InfoPlist.strings */,
 				153BBC3F17DFC2E40071E63B /* main.m */,
@@ -192,6 +209,43 @@
 				153BBC6317DFC2E40071E63B /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		15A2377F17E2670C00225942 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				15A2378217E268AA00225942 /* FFSplashViewController.h */,
+				15A2378317E268AA00225942 /* FFSplashViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		15A2378717E269A600225942 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */,
+				15A2378A17E26E9900225942 /* fmf-logo@2x.png */,
+				15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		15A2378E17E2745B00225942 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				15A2378F17E2747000225942 /* FFStyle.h */,
+				15A2379017E2747000225942 /* FFStyle.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		15A2379617E27C4500225942 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				15A2379717E27C5600225942 /* FFTextField.h */,
+				15A2379817E27C5600225942 /* FFTextField.m */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,6 +328,10 @@
 				153BBC4A17DFC2E40071E63B /* Default-568h@2x.png in Resources */,
 				153BBC4D17DFC2E40071E63B /* MainStoryboard_iPhone.storyboard in Resources */,
 				153BBC5017DFC2E40071E63B /* MainStoryboard_iPad.storyboard in Resources */,
+				15A2378917E269BB00225942 /* fmf-splash-bg@2x.png in Resources */,
+				15A2378B17E26E9900225942 /* fmf-logo@2x.png in Resources */,
+				15A2378D17E2708100225942 /* fmf-splash-copy@2x.png in Resources */,
+				15A2379517E277F700225942 /* ProhibitionRound.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,8 +396,10 @@
 			files = (
 				153BBC4017DFC2E40071E63B /* main.m in Sources */,
 				153BBC4417DFC2E40071E63B /* FFAppDelegate.m in Sources */,
-				153BBC5317DFC2E40071E63B /* FFViewController.m in Sources */,
 				1535142C17DFF2B600F776AC /* FFUser.m in Sources */,
+				15A2378517E268AA00225942 /* FFSplashViewController.m in Sources */,
+				15A2379117E2747000225942 /* FFStyle.m in Sources */,
+				15A2379917E27C5600225942 /* FFTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
