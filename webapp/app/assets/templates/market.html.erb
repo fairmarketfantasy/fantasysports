@@ -27,7 +27,7 @@
         <h2>{{contestClass}}</h2>
         <ul class="contests">
           <li ng-repeat="contestType in contestTypes">
-            <a href="javascript://" ng-click="joinContest(contestType)">{{ contestType.buy_in | freeIfZero }}</a>
+          <a href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">{{ contestType.buy_in | freeIfZero }}</a>
           </li>
         </ul>
       </li>

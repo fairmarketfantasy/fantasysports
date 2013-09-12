@@ -29,18 +29,11 @@ angular.module('app.data')
         }
       };
 
-      var fetchMineMemo = false;
       this.fetchMine = function() {
-        if (fetchMineMemo) {
-          var fakeDeferred = $q.defer();
-          fakeDeferred.resolve(this.mine());
-          return fakeDeferred.promise;
-        }
         return fs.rosters.mine().then(function(rosters) {
           _.each(rosters, function(roster) {
             rosterData[roster.id] = roster;
           });
-          fetchMineMemo = true;
           return rosters;
         });
       };
@@ -92,17 +85,21 @@ angular.module('app.data')
         });
       };
 
-      this.reset = function() {
+      this.reset = function(path) {
         clearInterval(this.poller);
         this.currentRoster = null;
         this.inProgressRoster = null;
         this.justSubmittedRoster = null;
         this.poller = null;
+        if (path) {
+          $location.path(path);
+        }
       }
 
       this.submit = function() {
         var self = this;
         fs.rosters.submit(this.currentRoster.id).then(function(roster) {
+          $location.path('/market/' + self.currentRoster.market_id);
           self.reset();
           self.justSubmittedRoster = roster;
         });
@@ -111,7 +108,7 @@ angular.module('app.data')
       this.cancel = function() {
         var self = this;
         if (this.currentRoster.state != 'in_progress') {
-          flash.error("You can only cancel rosters that are in progress");
+          flash.error = "You can only cancel rosters that are in progress";
           return;
         }
         var currentRoster = this.currentRoster;

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130911190421) do
+ActiveRecord::Schema.define(version: 20130912062358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,6 +119,7 @@ ActiveRecord::Schema.define(version: 20130911190421) do
     t.datetime "locked_at"
     t.decimal  "initial_shadow_bets"
     t.boolean  "locked",              default: false
+    t.integer  "score",               default: 0,     null: false
   end
 
   add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree

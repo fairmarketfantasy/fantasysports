@@ -15,7 +15,9 @@ class PlayerSerializer < ActiveModel::Serializer
       :ppg, 
       :purchase_price,
       :buy_price,
-      :sell_price
+      :sell_price,
+      :score,
+      :locked
 
   def team
     object[:team]

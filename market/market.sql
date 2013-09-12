@@ -43,16 +43,15 @@ $$ LANGUAGE SQL;
 DROP FUNCTION sell_prices(integer);
 
 CREATE OR REPLACE FUNCTION sell_prices(_roster_id integer)
-RETURNS TABLE(player_id integer, sell_price numeric, purchase_price numeric) AS $$
-	SELECT mp.player_id, price(mp.bets, m.total_bets, 0, m.price_multiplier), rp.purchase_price
+RETURNS TABLE(player_id integer, sell_price numeric, purchase_price numeric, locked boolean) AS $$
+	SELECT mp.player_id, price(mp.bets, m.total_bets, 0, m.price_multiplier), rp.purchase_price, mp.locked
 	FROM market_players mp, markets m, rosters_players rp, rosters r
 	WHERE
 		r.id = $1 AND
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
 		r.id = rp.roster_id AND
-		mp.player_id = rp.player_id AND
-		mp.locked = false
+		mp.player_id = rp.player_id
 $$ LANGUAGE SQL;
 
 

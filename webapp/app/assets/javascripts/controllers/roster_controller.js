@@ -30,7 +30,7 @@ angular.module("app.controllers")
   if (!rosters.currentRoster && $routeParams.roster_id) {
     rosters.fetch($routeParams.roster_id).then(function(roster) {
       rosters.selectRoster(roster);
-    })
+    });
   }
 
   var fetchRoster = function() {
@@ -45,7 +45,7 @@ angular.module("app.controllers")
   rosters.setPoller(function() {
       fetchPlayers();
       fetchRoster();
-    }, 15000);
+    }, 10000);
 
   $scope.filterPlayers = function(opts) {
     filterOpts = opts;

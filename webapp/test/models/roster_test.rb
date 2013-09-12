@@ -12,11 +12,8 @@ class RosterTest < ActiveSupport::TestCase
     h2h_type = @market.contest_types.where("max_entries = 2").first
     roster = create(:roster, :market => @market, :contest_type => h2h_type)
     roster.submit!
+    contest = roster.contest
     
-    #submission of roster should have created a contest with one roster
-    contest = @market.contests.first
-    refute_nil contest, "contest should exist"
-    assert_equal roster, contest.rosters.first, "contest should have the roster"
     assert_equal "submitted", roster.state
     assert_equal 1, contest.num_rosters
 
@@ -75,7 +72,7 @@ class RosterTest < ActiveSupport::TestCase
     assert_difference('@roster.reload.remaining_salary.to_f', -player.buy_price) do
       @roster.add_player player
     end
-    player = @roster.sellable_players.first
+    player = @roster.players.with_sell_prices(@roster).sellable.first
     assert_difference('@roster.reload.remaining_salary.to_f', player.sell_price) do
       @roster.remove_player player
     end

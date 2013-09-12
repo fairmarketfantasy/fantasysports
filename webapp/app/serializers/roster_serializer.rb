@@ -23,7 +23,7 @@ class RosterSerializer < ActiveModel::Serializer
   has_many :players
 
   def players
-    object.sellable_players
+    object.players.with_sell_prices(object)
   end
 
   def live
