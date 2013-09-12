@@ -35,8 +35,22 @@ angular.module('app.filters')
       return input;
     };
   })
+  .filter('dashIfDEF', function() {
+    return function(input, scope) {
+      if (!input) {
+        return '';
+      }
+      if (input == 'DEF') {
+        return '-';
+      }
+      return input;
+    };
+  })
   .filter('shortFormTime', function() {
     return function(input, scope) {
-      return moment(input).format("ddd DD @ h:mm");
+      if (!input) {
+        return '';
+      }
+      return moment(input).format("ddd DD @ h:mma");
     };
   });

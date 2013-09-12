@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
+	//"time"
 )
 
 /* This receives a url like so: http://api.sportsdatallc.org/nfl-t1/2012/REG/standings.xml
@@ -24,8 +24,7 @@ func findRoot() string {
 	for {
 		directories, _ := ioutil.ReadDir(pwd)
 		for _, dir := range directories {
-			time.Sleep(1000000)
-			if dir.Name() == "data-fetcher" {
+			if dir.Name() == "datafetcher" {
 				return pwd
 			}
 		}

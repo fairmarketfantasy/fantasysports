@@ -26,6 +26,10 @@ angular.module("app.controllers")
     d.open();
   };
 
+  $scope.gameStarted = function(game) {
+    return new Date(game.game_time) < new Date();
+  }
+
   // $scope.logout = function(){
   //   fs.user.logout().then(function(resp){
   //     window.App.currentUser = null;

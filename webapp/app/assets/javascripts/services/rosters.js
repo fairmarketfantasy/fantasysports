@@ -93,9 +93,11 @@ angular.module('app.data')
       };
 
       this.reset = function() {
+        clearInterval(this.poller);
         this.currentRoster = null;
         this.inProgressRoster = null;
         this.justSubmittedRoster = null;
+        this.poller = null;
       }
 
       this.submit = function() {
@@ -112,10 +114,19 @@ angular.module('app.data')
           flash.error("You can only cancel rosters that are in progress");
           return;
         }
-        fs.rosters.cancel(this.currentRoster.id).then(function(data) {
+        var currentRoster = this.currentRoster;
+        this.currentRoster = null;
+        fs.rosters.cancel(currentRoster.id).then(function(data) {
+          delete rosterData[currentRoster.id];
+          window.App.currentUser.balance += currentRoster.buy_in;
           self.reset();
-          $location.path('/');
+          $location.path('/market/' + currentRoster.market_id);
         });
+      };
+
+      this.setPoller = function(fn, interval) {
+        clearInterval(this.poller);
+        this.poller = setInterval(fn, interval);
       };
     }();
   }])

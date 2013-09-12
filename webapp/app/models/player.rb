@@ -17,6 +17,7 @@ class Player < ActiveRecord::Base
   scope :in_market,    ->(market)     { where(team: market.games.map{|g| g.teams.map(&:abbrev)}.flatten) }
   scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
   scope :in_position,  ->(position)   { where(position: position) }
+  scope :normal_positions,      -> { where(:position => %w(QB RB WR TE K DEF)) }
   scope :with_purchase_price,      -> { select('players.*, purchase_price') } # Must also join rosters_players
 
   scope :purchasable_for_roster, -> (roster) { 
