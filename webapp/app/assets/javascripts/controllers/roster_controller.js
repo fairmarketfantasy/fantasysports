@@ -25,7 +25,7 @@ angular.module("app.controllers")
     });
   };
 
-  fetchPlayers();
+  $scope.$watch('rosters.currentRoster.id', fetchPlayers);
 
   if (!rosters.currentRoster && $routeParams.roster_id) {
     rosters.fetch($routeParams.roster_id).then(function(roster) {
@@ -42,12 +42,10 @@ angular.module("app.controllers")
     });
   };
 
-  if ($scope.pollInterval === undefined) {
-    $scope.pollInterval = setInterval(function() {
+  rosters.setPoller(function() {
       fetchPlayers();
       fetchRoster();
-    }, 5000);
-  }
+    }, 15000);
 
   $scope.filterPlayers = function(opts) {
     filterOpts = opts;
