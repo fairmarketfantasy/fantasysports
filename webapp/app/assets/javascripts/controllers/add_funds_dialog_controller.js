@@ -1,7 +1,7 @@
 angular.module("app.controllers")
-.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'currentUser', function($scope, dialog, fs, currentUser) {
+.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'currentUserService', function($scope, dialog, fs, currentUserService) {
 
-  $scope.currentUser = currentUser;
+  $scope.currentUser = currentUserService.currentUser;
   $scope.cardInfo    = $scope.cardInfo     || {};
   $scope.cards       = $scope.cards        || [];
 
