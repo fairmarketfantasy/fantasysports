@@ -314,7 +314,7 @@ BEGIN
 
 	    --update the remaining salary for all rosters in the market
 	    FOR _roster_id IN SELECT id FROM rosters WHERE market_id = _market_id LOOP
-	    	UPDATE rosters SET remaining_salary = 100000 - (SELECT sum(price) FROM market_orders WHERE roster_id = _roster_id) WHERE id = _roster_id;
+	    	UPDATE rosters SET remaining_salary = 100000 - (SELECT greatest(0, sum(price)) FROM market_orders WHERE roster_id = _roster_id) WHERE id = _roster_id;
 	    END LOOP;
 
 	ELSE
