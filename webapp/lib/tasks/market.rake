@@ -91,8 +91,13 @@ def close_markets
 end
 
 def complete_markets
-  Market.where("state = 'closed'").joins(:games).where("status='closed'").each do |market|
+  markets = Market.where("state = 'closed'")
+  puts "found #{markets.length} markets to potentially complete"
+  markets.each do |market|
     puts "#{Time.now} -- completing market #{market.id}"
-    market.complete
+    begin
+      market.complete
+    rescue
+    end
   end
 end
