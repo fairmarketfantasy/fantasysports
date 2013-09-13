@@ -1,11 +1,11 @@
 class Market < ActiveRecord::Base
   has_many :games_markets, :inverse_of => :market
   has_many :games, :through => :games_markets
-  has_many :market_players
+  has_many :market_players, dependent: :destroy
   has_many :players, :through => :market_players
-  has_many :contests
-  has_many :contest_types
-  has_many :rosters
+  has_many :contests, dependent: :destroy
+  has_many :contest_types, dependent: :destroy
+  has_many :rosters, dependent: :destroy
   belongs_to :sport
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
@@ -52,7 +52,6 @@ class Market < ActiveRecord::Base
   # - cancel contests/rosters that are not full
   def close
     self.with_lock do
-      reload
       raise "cannot close if state is not open" if state != 'opened' 
 
       #cancel all un-submitted rosters

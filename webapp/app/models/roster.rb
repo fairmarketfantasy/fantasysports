@@ -1,12 +1,12 @@
 class Roster < ActiveRecord::Base
   has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players', foreign_key: "roster_id"
 
-  has_many :rosters_players
+  has_many :rosters_players, dependent: :destroy
   belongs_to :market
   belongs_to :contest
   belongs_to :contest_type
   belongs_to :owner, class_name: "User", foreign_key: :owner_id
-  has_many :market_orders
+  has_many :market_orders, dependent: :destroy
 
   validates :state, :inclusion => {in: %w( in_progress canceled submitted finished) }
 
@@ -63,8 +63,14 @@ class Roster < ActiveRecord::Base
             contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
               market_id: self.market_id, contest_type_id: contest_type.id, num_rosters: 1)
           else
-            contest.num_rosters += 1
-            contest.save!
+            #handle special case: cannot play h2h with yourself (anti-masturbation rule)
+            if contest.user_cap == 2 && contest.rosters.first.owner.id == self.owner.id
+              contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
+                market_id: self.market_id, contest_type_id: contest_type.id, num_rosters: 1)
+            else
+              contest.num_rosters += 1
+              contest.save!
+            end
           end
           self.contest = contest
         end
