@@ -43,6 +43,7 @@
         
         self.autoHide = NO;
         self.autoHideKeyboard = YES;
+        self.autoRemoveFromSuperview = YES;
         
         // this is the view that contains the content and controls
         UIView *innerView = self.contentView = [[UIView alloc] init];
@@ -342,7 +343,7 @@ got_msg:
     [UIView animateWithDuration:0.25 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished) {
-        if (finished) {
+        if (finished && self.autoRemoveFromSuperview) {
             [self removeFromSuperview];
         }
     }];

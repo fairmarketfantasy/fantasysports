@@ -24,6 +24,7 @@ typedef enum {
 @property (nonatomic) BOOL autoHide;
 @property (nonatomic) BOOL autoHideKeyboard;
 @property (nonatomic, weak) id previousFirstResponder;
+@property (nonatomic) BOOL autoRemoveFromSuperview;
 
 // create an alert view that must be manually dismissed in code
 - (id)initWithTitle:(NSString *)title

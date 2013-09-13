@@ -40,6 +40,7 @@
 		15A237A117E2925300225942 /* fmf-splash-bg2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A237A017E2925300225942 /* fmf-splash-bg2@2x.png */; };
 		15A237A417E29ACC00225942 /* FFAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A237A317E29ACC00225942 /* FFAlertView.m */; };
 		15A237A717E29BF800225942 /* UIView+FindFirstResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A237A617E29BF800225942 /* UIView+FindFirstResponder.m */; };
+		15A237AB17E2DBD400225942 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15A237AA17E2DBD400225942 /* FacebookSDK.framework */; };
 		52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE50D82857A45A1B1A9DFA0 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -98,6 +99,7 @@
 		15A237A317E29ACC00225942 /* FFAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFAlertView.m; sourceTree = "<group>"; };
 		15A237A517E29BF800225942 /* UIView+FindFirstResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+FindFirstResponder.h"; sourceTree = "<group>"; };
 		15A237A617E29BF800225942 /* UIView+FindFirstResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+FindFirstResponder.m"; sourceTree = "<group>"; };
+		15A237AA17E2DBD400225942 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		CCE50D82857A45A1B1A9DFA0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -115,6 +117,7 @@
 				153BBC3617DFC2E40071E63B /* Foundation.framework in Frameworks */,
 				153BBC3817DFC2E40071E63B /* CoreGraphics.framework in Frameworks */,
 				52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */,
+				15A237AB17E2DBD400225942 /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +166,7 @@
 		153BBC3217DFC2E40071E63B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				15A237AA17E2DBD400225942 /* FacebookSDK.framework */,
 				15A2379E17E2865A00225942 /* QuartzCore.framework */,
 				1527AE3217DFDCFB00D181D7 /* SystemConfiguration.framework */,
 				1527AE3017DFDCEF00D181D7 /* MobileCoreServices.framework */,
@@ -550,6 +554,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/SBData-espmonekakqqpmdrtmmgxghainfj/Build/Products/Debug-iphoneos\"",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/../../../../../../../Documents/FacebookSDK\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
@@ -566,6 +572,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/SBData-espmonekakqqpmdrtmmgxghainfj/Build/Products/Debug-iphoneos\"",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/../../../../../../../Documents/FacebookSDK\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";

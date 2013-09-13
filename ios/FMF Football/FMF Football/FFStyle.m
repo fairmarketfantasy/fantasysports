@@ -95,6 +95,7 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     b.layer.borderColor = color.CGColor;
     b.layer.borderWidth = 1;
     b.layer.cornerRadius = 3;
+    b.layer.masksToBounds = YES;
     [b setBackgroundImage:[UIImage imageNamed:@"0-percent.png"] forState:UIControlStateNormal];
     [b setBackgroundImage:[UIImage imageNamed:@"40-percent.png"] forState:UIControlStateHighlighted];
     b.titleLabel.font = [FFStyle blockFont:14];
