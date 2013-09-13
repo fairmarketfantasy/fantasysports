@@ -9,6 +9,7 @@
 #import "FFSplashViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "FFTextField.h"
+#import "FFAlertView.h"
 
 @interface FFSplashViewController ()
 
@@ -210,12 +211,28 @@
 
 - (void)signIn:(id)sender
 {
-    
+    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:@"HELLO" message:@"GO AWAY" cancelButtonTitle:@"EVERYBODY POOP" okayButtonTitle:@"OK I POOP" autoHide:YES];
+    [alert showInView:self.navigationController.view];
 }
 
 - (void)forgotPassword:(id)sender
 {
+    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:nil
+                                                   messsage:NSLocalizedString(@"Looking for your account...", nil)
+                                               loadingStyle:FFAlertViewLoadingStylePlain];
+    [alert showInView:self.navigationController.view];
     
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+        [alert hide];
+        FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Check your email", nil)
+                                                        message:NSLocalizedString(@"We sent you an email with a link to reset your passord.", nil)
+                                              cancelButtonTitle:nil
+                                                okayButtonTitle:NSLocalizedString(@"Okay", nil)
+                                                       autoHide:YES];
+        [alert showInView:self.navigationController.view];
+    });
 }
 
 - (void)signUp:(id)sender
