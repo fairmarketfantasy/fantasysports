@@ -1,11 +1,11 @@
 class Market < ActiveRecord::Base
   has_many :games_markets, :inverse_of => :market
   has_many :games, :through => :games_markets
-  has_many :market_players, dependent: :destroy
+  has_many :market_players
   has_many :players, :through => :market_players
-  has_many :contests, dependent: :destroy
-  has_many :contest_types, dependent: :destroy
-  has_many :rosters, dependent: :destroy
+  has_many :contests
+  has_many :contest_types
+  has_many :rosters
   belongs_to :sport
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
@@ -86,15 +86,33 @@ class Market < ActiveRecord::Base
     # TODO: tell everyone
   end
 
+  #if a market is closed and all its games are over, then 'complete' the market
+  #by dishing out funds and such
+  def complete
+    #make sure all games are closed
+    self.with_lock do
+      if self.state != 'closed' || self.games.where("status != closed").size > 0
+        raise "market #{self.id} cannot be closed. state: #{self.state}, non-closed markets: #{self.games.where("status != closed").size}"
+      end
+      self.tabulate_scores
+      #for each contest, allocate funds by rank
+      self.contests.find_each do |contest|
+        contest.payday
+      end
+      self.state = 'complete'
+      self.save!
+    end
+  end
+
   @@default_contest_types = [
     ['100k', '100k lalapalooza!', 0, 10, 0.03, '[50000, 25000, 12000, 6000, 3000, 2000, 1000, 500, 500]'],
-    ['970', 'Free contest, winner gets 10 FanFrees!', 10, 0, 0, '[F10]'],
+    ['970', 'Free contest, winner gets 10 FanFrees!', 10, 0, 0, '[]'],
     ['970', '10 teams, $2 entry fee, winner takes home $19.40', 10, 2, 0.03, '[19.40]'],
     ['970', '10 teams, $10 entry fee, winner takes home $97.00', 10, 10, 0.03, '[97]'],
-    ['194', 'Free contest, top 5 winners get 2 FanFrees!', 10, 0, 0, '[F2]'],
-    ['194', '50 teams, $2 entry fee, top 25 winners take home $3.88', 10, 2, 0.03, '{0-24: 3.88}'],
-    ['194', '50 teams, $10 entry fee, top 25 winners take home $19.40', 10, 10, 0.03, '{0-24: 19.40}'],
-    ['h2h', 'Free h2h contest, winner gets 1 FanFree!', 2, 0, 0, '[F1]'],
+    ['194', 'Free contest, top 5 winners get 2 FanFrees!', 10, 0, 0, '[]'],
+    ['194', '10 teams, $2 entry fee, top 5 winners take home $3.88', 10, 2, 0.03, '[3.88, 3.88, 3.88, 3.88, 3.88]'],
+    ['194', '10 teams, $10 entry fee, top 5 winners take home $19.40', 10, 10, 0.03, '[19.40, 19.40, 19.40, 19.40, 19.40]'],
+    ['h2h', 'Free h2h contest, winner gets 1 FanFree!', 2, 0, 0, '[]'],
     ['h2h', 'h2h contest, $2 entry fee, winner takes home $3.88', 2, 2, 0.03, '[3.88]'],
     ['h2h', 'h2h contest, $10 entry fee, winner takes home $19.40', 2, 10, 0.03, '[19.40]']
   ];

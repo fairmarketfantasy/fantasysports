@@ -238,13 +238,15 @@ BEGIN
 			(p.team = g.home_team OR p.team = g.away_team)
 		GROUP BY p.id;
 
-
 	--set bets and initial_shadow_bets shadow bets for all those players we just added - avoids calculating it thrice per player
 	UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets WHERE market_id = _market_id;
 
-	--set market to published
-	
-	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = 1 
+	--set market to published. reset closed_at time, in case the game time has moved since the market was created
+	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = 1,
+	 	closed_at = 
+	 		(select max(g.game_time) - INTERVAL '5m' from games g 
+ 			JOIN games_markets gm on g.stats_id = gm.game_stats_id 
+ 			where gm.market_id = _market_id)
 		WHERE id = _market_id returning * into _market;
 
 	RAISE NOTICE 'published market %', _market_id;
@@ -390,7 +392,7 @@ CREATE OR REPLACE FUNCTION tabulate_scores(_market_id integer) RETURNS VOID AS $
 	WITH ranks as 
 		(SELECT id, rank() OVER (PARTITION BY contest_id ORDER BY score DESC) FROM rosters WHERE market_id = $1) 
 		UPDATE rosters set contest_rank = rank FROM ranks where rosters.id = ranks.id;
-	
+
 $$ LANGUAGE SQL;
 
 

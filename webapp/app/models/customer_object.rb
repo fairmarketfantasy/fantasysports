@@ -66,10 +66,10 @@ class CustomerObject < ActiveRecord::Base
     sprintf( '%.2f', (balance/100) )
   end
 
-  def increase_balance(amount, event)
+  def increase_balance(amount, event, roster_id = nil)
     ActiveRecord::Base.transaction do
       self.balance += amount
-      TransactionRecord.create!(:user => self.user, :event => event, :amount => amount)
+      TransactionRecord.create!(:user => self.user, :event => event, :amount => amount, :roster_id => roster_id)
       self.save
     end
   end

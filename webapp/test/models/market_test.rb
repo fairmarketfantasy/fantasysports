@@ -2,6 +2,9 @@ require 'test_helper'
 
 class MarketTest < ActiveSupport::TestCase
 
+
+
+
   #
   test "close" do
     setup_simple_market
@@ -98,14 +101,15 @@ class MarketTest < ActiveSupport::TestCase
 
   test "publish open and close" do
     setup_multi_day_market
-    assert @market.players.length == 0
-    @market = @market.publish
-    @market.add_default_contests
+    assert_equal 0, @market.players.length
+
+    @market.publish.add_default_contests
     @market.reload
-    assert @market.players.length == 36, "should be players"
-    assert @market.contest_types.length > 0, "should be contest_types"
+    assert_equal 36, @market.players.length
+    assert @market.contest_types.size > 0, "should be some contest_types"
     assert @market.total_bets > 0
-    assert @market.shadow_bets == @market.total_bets
+    assert_equal @market.shadow_bets, @market.total_bets
+    assert @market.closed_at - @games[1].game_time - 5*60 < 60
 
     #open the market. should remove the shadow bets
     @market = @market.open
