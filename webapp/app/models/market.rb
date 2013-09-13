@@ -91,9 +91,9 @@ class Market < ActiveRecord::Base
   def complete
     #make sure all games are closed
     self.with_lock do
-      if self.state != 'closed' || self.games.where("status != 'closed'").size > 0
-        raise "market #{self.id} cannot be closed. state: #{self.state}, non-closed markets: #{self.games.where("status != closed").size}"
-      end
+      raise "market must be closed before it can be completed" if self.state != 'closed'
+      raise "all games must be closed before market can be completed" if self.games.where("status != 'closed'").size > 0
+
       self.tabulate_scores
       #for each contest, allocate funds by rank
       self.contests.find_each do |contest|
