@@ -7,6 +7,27 @@ class RosterTest < ActiveSupport::TestCase
     @roster = create(:roster, :market => @market)
   end 
 
+  #make sure that you can't play a h2h against yourself
+  test "no self h2h" do
+    h2h = @market.contest_types.where("max_entries = 2").first
+    user1 = create(:user)
+    user2 = create(:user)
+    roster1 = Roster.generate(user1, h2h).submit!
+    roster2 = Roster.generate(user1, h2h).submit!
+    #they should be in different contests
+    refute_equal roster1.contest, roster2.contest
+
+    roster3 = Roster.generate(user2, h2h).submit!
+    roster4 = Roster.generate(user2, h2h).submit!
+    roster5 = Roster.generate(user2, h2h).submit!
+
+    #rosters 3 and 4 should have been allocated to the contests created by 1 and 2
+    assert_equal 2, roster1.contest.rosters.size
+    assert_equal 2, roster2.contest.rosters.size
+    assert_equal 1, roster5.contest.rosters.size
+  end
+
+
   test "submit" do
     #find head to head
     h2h_type = @market.contest_types.where("max_entries = 2").first
