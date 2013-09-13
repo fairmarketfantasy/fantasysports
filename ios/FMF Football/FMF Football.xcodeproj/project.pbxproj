@@ -38,6 +38,8 @@
 		15A2379D17E2813700225942 /* 40-percent.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2379B17E2813700225942 /* 40-percent.png */; };
 		15A2379F17E2865A00225942 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15A2379E17E2865A00225942 /* QuartzCore.framework */; };
 		15A237A117E2925300225942 /* fmf-splash-bg2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A237A017E2925300225942 /* fmf-splash-bg2@2x.png */; };
+		15A237A417E29ACC00225942 /* FFAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A237A317E29ACC00225942 /* FFAlertView.m */; };
+		15A237A717E29BF800225942 /* UIView+FindFirstResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A237A617E29BF800225942 /* UIView+FindFirstResponder.m */; };
 		52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE50D82857A45A1B1A9DFA0 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -92,6 +94,10 @@
 		15A2379B17E2813700225942 /* 40-percent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "40-percent.png"; sourceTree = "<group>"; };
 		15A2379E17E2865A00225942 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		15A237A017E2925300225942 /* fmf-splash-bg2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-splash-bg2@2x.png"; sourceTree = "<group>"; };
+		15A237A217E29ACC00225942 /* FFAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFAlertView.h; sourceTree = "<group>"; };
+		15A237A317E29ACC00225942 /* FFAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFAlertView.m; sourceTree = "<group>"; };
+		15A237A517E29BF800225942 /* UIView+FindFirstResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+FindFirstResponder.h"; sourceTree = "<group>"; };
+		15A237A617E29BF800225942 /* UIView+FindFirstResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+FindFirstResponder.m"; sourceTree = "<group>"; };
 		CCE50D82857A45A1B1A9DFA0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -248,6 +254,8 @@
 			children = (
 				15A2378F17E2747000225942 /* FFStyle.h */,
 				15A2379017E2747000225942 /* FFStyle.m */,
+				15A237A517E29BF800225942 /* UIView+FindFirstResponder.h */,
+				15A237A617E29BF800225942 /* UIView+FindFirstResponder.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -257,6 +265,8 @@
 			children = (
 				15A2379717E27C5600225942 /* FFTextField.h */,
 				15A2379817E27C5600225942 /* FFTextField.m */,
+				15A237A217E29ACC00225942 /* FFAlertView.h */,
+				15A237A317E29ACC00225942 /* FFAlertView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -416,6 +426,8 @@
 				15A2378517E268AA00225942 /* FFSplashViewController.m in Sources */,
 				15A2379117E2747000225942 /* FFStyle.m in Sources */,
 				15A2379917E27C5600225942 /* FFTextField.m in Sources */,
+				15A237A417E29ACC00225942 /* FFAlertView.m in Sources */,
+				15A237A717E29BF800225942 /* UIView+FindFirstResponder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,20 +19,6 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return rect;
 }
 
-// CUSTOM UI CLASSES ---------------------------------------------------------------------------------------------------
-@interface FFCustomButton : UIButton
-{
-@private
-    NSMutableDictionary *backgroundStates;
-@public
-    
-}
-
-- (void) setBackgroundColor:(UIColor *) _backgroundColor forState:(UIControlState) _state;
-- (UIColor*) backgroundColorForState:(UIControlState) _state;
-
-@end
-
 // STYLE ---------------------------------------------------------------------------------------------------------------
 
 @implementation FFStyle
@@ -62,6 +48,21 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
 + (UIColor *)brightBlue
 {
     return [UIColor colorWithRed:59.0/255.0 green:104.0/255.0 blue:199.0/255.0 alpha:1];
+}
+
++ (UIColor *)lightGrey
+{
+    return [UIColor colorWithWhite:.8 alpha:1];
+}
+
++ (UIColor *)black
+{
+    return [UIColor blackColor];
+}
+
++ (UIColor *)brightRed
+{
+    return [UIColor colorWithRed:190.0/255.0 green:30.0/255.0 blue:45.0/255.0 alpha:1];
 }
 
 // FONTS ---------------------------------------------------------------------------------------------------------------
@@ -143,24 +144,29 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
 
 @implementation FFCustomButton
 
-- (void) setBackgroundColor:(UIColor *) _backgroundColor forState:(UIControlState) _state {
-    if (backgroundStates == nil)
+- (void)setBackgroundColor:(UIColor *)_backgroundColor forState:(UIControlState)_state
+{
+    if (backgroundStates == nil) {
         backgroundStates = [[NSMutableDictionary alloc] init];
+    }
     
     [backgroundStates setObject:_backgroundColor forKey:[NSNumber numberWithInt:_state]];
     
-    if (self.backgroundColor == nil)
+    if (self.backgroundColor == nil) {
         [self setBackgroundColor:_backgroundColor];
+    }
 }
 
-- (UIColor*) backgroundColorForState:(UIControlState) _state {
+- (UIColor *)backgroundColorForState:(UIControlState)_state
+{
     return [backgroundStates objectForKey:[NSNumber numberWithInt:_state]];
 }
 
 #pragma mark -
 #pragma mark Touches
 
-- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
     [super touchesBegan:touches withEvent:event];
     
     UIColor *selectedColor = [backgroundStates objectForKey:[NSNumber numberWithInt:UIControlStateHighlighted]];
@@ -173,7 +179,8 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     }
 }
 
-- (void) touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
     [super touchesCancelled:touches withEvent:event];
     
     UIColor *normalColor = [backgroundStates objectForKey:[NSNumber numberWithInt:UIControlStateNormal]];
@@ -186,7 +193,8 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     }
 }
 
-- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
     [super touchesEnded:touches withEvent:event];
     
     UIColor *normalColor = [backgroundStates objectForKey:[NSNumber numberWithInt:UIControlStateNormal]];
