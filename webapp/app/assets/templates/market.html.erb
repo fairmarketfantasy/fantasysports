@@ -27,14 +27,16 @@
   </div>
 
   <div ng-hide="rosters.inProgressRoster">
-    <ul>
+    <ul class="clearfix no-no">
       <!-- all these ng-clicks to joinContest, need to pass in  contest_type_id
           instead of the string '100k' or '970' or '194', etc-->
-      <li ng-repeat="(contestClass, contestTypes) in contestClasses">
+      <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses">
+        <img src="/assets/icon-{{contestClass}}.png" class="contest-image" />
         <h2>{{contestClass}}</h2>
-        <ul class="contests">
-          <li ng-repeat="contestType in contestTypes">
-          <a href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">{{ contestType.buy_in | freeIfZero }}</a>
+        <p class="small-p">Every game should have a description that tells you about it. This is a placeholder for now!!</p>
+        <ul class="contests no-no">
+          <li class="enter-contest" ng-repeat="contestType in contestTypes">
+          <a class="btn btn-small btn-success btn-contest" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">Enter for {{ contestType.buy_in | freeIfZero }}</a>
           </li>
         </ul>
       </li>
