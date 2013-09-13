@@ -18,8 +18,8 @@
     </div>
     <div class='clearfix'>
       <ul class='unstlyed card-list no-no'>
-        <li class='inline-block pas mhs card' ng-repeat="card in cards" ng-class="{default: card.default}">
-          <div class='card-token pam mam'>
+        <li class='inline-block pas card' ng-repeat="card in cards" ng-class="{default: card.default}">
+          <div class='card-token'>
             <div class='relative pull-right delete-card'>
               <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
               <div ng-show="showConfirm(card.id)" class='absolute card-confirm-delete tooltip right fade in'>
@@ -44,7 +44,7 @@
           </div>
         </li>
         <li class='add-card bold inline-block phm' ng-show="showAddCardButton()" ng-click="showCardForm = true">
-          <a href="javascript://" class='btn btn-info btn-mini'>Add a New Card<a>
+          <a href="javascript://" class='btn btn-info btn-mini'>Add a Card<a>
         </li>
       </ul>
     </div>
@@ -60,11 +60,11 @@
       <a href="javascript://" ng-click="saveCard()" class='mtm btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
       <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
     </div>
-    <div ng-show="showingAddFunds()" class='mal'>
-      $<input type='text' ng-model="chargeAmt" placeholder="Amount" class='add-funds-input mls'/>
+    <div ng-show="showingAddFunds()" class=''>
+      <p>$<input type='text' ng-model="chargeAmt" placeholder="Amount" class='add-funds-input mls'/>
       <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Add Money</a>
       <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
-      <br />
+      </p>
       <span class='muted tilt'>*At least $5.</span>
     </div>
 </div>
