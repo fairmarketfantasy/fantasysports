@@ -19,6 +19,7 @@
 + (UIFont *)blockFont:(int)size;
 + (UIFont *)regularFont:(int)size;
 + (UIFont *)italicFont:(int)size;
++ (UIFont *)lightFont:(int)size;
 + (UIColor *)lighterColorForColor:(UIColor *)c;
 + (UIColor *)darkerColorForColor:(UIColor *)c;
 

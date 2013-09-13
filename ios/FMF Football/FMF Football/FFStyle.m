@@ -81,6 +81,11 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return [UIFont fontWithName:@"HelveticaNeue-LightItalic" size:size];
 }
 
++ (UIFont *)lightFont:(int)size
+{
+    return [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:size];
+}
+
 // UI CONSTRUCTORS -----------------------------------------------------------------------------------------------------
 
 + (UIButton *)clearButtonWithText:(NSString *)text borderColor:(UIColor *)color
