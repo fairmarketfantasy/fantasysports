@@ -14,6 +14,7 @@ namespace :market do
       lock_players
       close_markets
       tabulate_scores
+      complete_markets
 	  	sleep wait_time
   	end
   end
@@ -36,6 +37,10 @@ namespace :market do
 
   task :stats => :environment do
     tabulate_scores
+  end
+
+  task :complete => :environment do
+    complete_markets
   end
 
 end
@@ -83,4 +88,11 @@ def close_markets
 		puts "#{Time.now} -- closing market #{market.id}"
     market.close
 	end
+end
+
+def complete_markets
+  Market.where("state = 'closed'").joins(:games).where("status='closed'").each do |market|
+    puts "#{Time.now} -- completing market #{market.id}"
+    market.complete
+  end
 end

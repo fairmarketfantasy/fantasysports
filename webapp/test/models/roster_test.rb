@@ -133,7 +133,7 @@ class RosterTest < ActiveSupport::TestCase
     market = @roster.market
     market.reload
     bets = market.total_bets
-    assert bets == 1000
+    assert_equal 1000, bets
     assert_difference ['RostersPlayer.count', 'MarketOrder.count'], 1 do
       @roster.add_player player
     end

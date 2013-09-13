@@ -45,7 +45,9 @@ class ActiveSupport::TestCase
               create(:team1, :abbrev => "CC"),
               create(:team1, :abbrev => "DD")]
     @games = [create(:game, :home_team => @teams[0], :away_team => @teams[1]),
-              create(:game, :home_team => @teams[2], :away_team => @teams[3])]
+              create(:game, :home_team => @teams[2], :away_team => @teams[3], 
+                :game_day => Time.now.tomorrow.tomorrow.beginning_of_day,
+                :game_time => Time.now.tomorrow.tomorrow)]
     @teams.each do |team|
       @players = Positions.default_NFL.split(',').map do |position|
         player = create :player, :team => team, :position => position

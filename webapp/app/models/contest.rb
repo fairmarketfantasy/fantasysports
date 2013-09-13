@@ -35,6 +35,54 @@ class Contest < ActiveRecord::Base
     create_owners_roster!
   end
 
+  #pays owners of rosters according to their place in the contest
+  def payday
+    self.with_lock do
+      payments = JSON.load(contest_type.payout_structure)
+
+      rosters = self.rosters.order("contest_rank ASC")
+      ranks = rosters.collect(&:contest_rank)
+      
+      #figure out how much each rank gets -- tricky only because of ties
+      rank_payment = Contest._rank_payment(payments, ranks)
+
+      #organize rosters by rank
+      rosters_by_rank = Contest._rosters_by_rank(rosters)
+
+      #for each rank, make payments
+      rosters_by_rank.each_pair do |rank, rosters|
+        payment = rank_payment[rank]
+        next if payment.nil?
+        payment_per_roster = Float(payment) / rosters.length
+        rosters.each do |roster|
+          # puts "roster #{roster.id} won #{payment_per_roster}!"
+          roster.owner.customer_object.increase_balance(payment_per_roster, 'payout', roster.id)
+        end
+      end
+    end
+  end
+
+  def self._rank_payment(payments, ranks)
+    rank_payment = Hash.new(0)
+    payments.each_with_index do |payment, i|
+      rank_payment[ranks[i]] += payment
+    end
+    return rank_payment
+  end
+
+  def self._rosters_by_rank(rosters)
+    by_rank = {}
+    rosters.each do |roster|
+      rs = by_rank[roster.contest_rank]
+      if rs.nil?
+        rs = []
+        by_rank[roster.contest_rank] = rs
+      end
+      rs << roster
+    end
+    return by_rank
+  end
+
   private
 
     def set_invitation_code

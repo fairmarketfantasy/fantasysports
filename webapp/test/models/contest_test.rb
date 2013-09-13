@@ -1,6 +1,51 @@
 require 'test_helper'
 
 class ContestTest < ActiveSupport::TestCase
+
+  test "payday" do
+    setup_simple_market
+    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 2").first
+    refute_nil contest_type
+
+    user1 = create(:user)
+    user1.customer_object = create(:customer_object, user: user1)
+    user2 = create(:user)
+    user2.customer_object = create(:customer_object, user: user2)
+    
+    roster1 = Roster.generate(user1, contest_type).submit!
+    roster2 = Roster.generate(user2, contest_type).submit!
+    #make sure rosters are in same contest
+    assert_equal roster1.contest, roster2.contest
+
+    roster1.contest_rank = 1
+    roster2.contest_rank = 2
+    roster1.save!
+    roster2.save!
+
+    roster1.contest.payday
+    user1.reload
+    user2.reload
+    assert user1.customer_object.balance > user2.customer_object.balance
+
+  end
+
+  #test auxillary functions
+  test "payday auxillary functions" do
+    payments = [5,4,3,2,1]
+    ranks = [1,1,3,3,5,5,5,8,9,10]
+    rank_payment = Contest._rank_payment(payments, ranks)
+    expected = {1 => 9, 3 => 5, 5 => 1}
+    assert_equal expected, rank_payment
+
+    rosters = [create(:roster, :contest_rank => 1),
+               create(:roster, :contest_rank => 2),
+               create(:roster, :contest_rank => 2),
+               create(:roster, :contest_rank => 4)]
+    by_rank = Contest._rosters_by_rank(rosters)
+    assert_equal by_rank.length, 3
+    assert_equal by_rank[2].length, 2
+  end
+
   describe Contest do
 
     before(:all) do
