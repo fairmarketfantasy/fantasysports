@@ -60,7 +60,7 @@
       <a href="javascript://" ng-click="saveCard()" class='mtm btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
       <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
     </div>
-    <div ng-show="showingAddFunds()" class=''>
+    <div ng-show="showingAddFunds()" class="add-funds-container">
       <p>$<input type='text' ng-model="chargeAmt" placeholder="Amount" class='add-funds-input mls'/>
       <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Add Money</a>
       <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
