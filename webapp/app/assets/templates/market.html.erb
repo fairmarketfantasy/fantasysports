@@ -1,13 +1,21 @@
 <div ng-controller="MarketController">
-  <ul >
-    <li ng-repeat="market in marketService.upcoming">
-      <a href="#/market/{{market.id}}">{{market.name}} {{market.started_at | shortFormTime}} </a>
+  <ul class="clearfix market-list no-no">
+    <li class="market" ng-repeat="market in marketService.upcoming">
+      <a href="#/market/{{market.id}}" class="market-link" ng-hide="!market.name">
+        <strong>{{market.name}}</strong><br /> 
+        {{market.started_at | shortFormTime}} 
+      </a>
+      <a href="#/market/{{market.id}}" class="market-link" ng-show="!market.name">
+        <strong>One Day</strong><br /> 
+        {{market.started_at | shortFormTime}} 
+      </a>
     </li>
   </ul>
+  
+  <div class="contest-list">
+  <h3 class="selected-market">{{marketService.currentMarket.name}} {{marketService.currentMarket.started_at | shortFormTime }} Contests</h4>
 
-  <h4>{{marketService.currentMarket.name}} {{marketService.currentMarket.started_at | shortFormTime }} Games</h4>
-
-  <ul class="games">
+  <ul class="games hide">
     <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
       {{game.away_team}} @ {{game.home_team}} {{game.networkl}} on {{game.game_time | shortFormTime}}
     </li>
@@ -19,7 +27,6 @@
   </div>
 
   <div ng-hide="rosters.inProgressRoster">
-    <h3>Contests</h3>
     <ul>
       <!-- all these ng-clicks to joinContest, need to pass in  contest_type_id
           instead of the string '100k' or '970' or '194', etc-->
@@ -33,5 +40,6 @@
       </li>
     </ul>
   </div>
+</div>
 
 </div>

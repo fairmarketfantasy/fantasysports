@@ -186,7 +186,7 @@ header {
 
 .user-avatar {
   .border-radius(2px);
-  border: 1px solid @offWhite;
+  border: 1px solid @gray;
   float: left;
   width: 60px;
   margin: 0 12px 0 2px;
@@ -221,7 +221,7 @@ header {
 .user-dash {
   width: 90%;
   margin: 0 auto 12px;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
   border-bottom: 1px solid @offWhite;
 }
 
@@ -234,6 +234,7 @@ header {
   padding: 0 1%;
   float: left;
   border-right: 1px solid @grayLight;
+  text-align: center;
 }
 .user-bonus {
   color: @orange;
@@ -296,15 +297,24 @@ header {
 /*
   Add Funds Modal
 */
-.card-list .card {
-  &.default {
-    border: 2px solid @red;
-    .border-radius(4px);
-  }
+.card {
+  border: 2px solid @gray;
+  .border-radius(4px);  
+  background: mix(@inverse, @base, 90%);
+  color: mix(@base, @inverse, 65%);
+}
+.default {
+  border: 2px solid @turquoise;
+  .border-radius(4px);
+}
+.card-list {
+  margin-bottom: 20px;
 }
 .add-funds-input {
-  width: 60px;
+  width: 80px;
+  margin: 0 10px;
 }
+.muted {margin-left: 24px;}
 .add-card {
   font-size: 4em;
 }
@@ -328,11 +338,7 @@ header {
   width: 55px;
 }
 .card-token {
-  background: mix(@inverse, @base, 90%);
-  color: mix(@base, @inverse, 65%);
-  border: 2px solid mix(@firm, @alert-border, 5%);
-  border: 2px solid @firm;
-  .border-radius(2px);
+
 }
 .delete-card {
   margin-top: -10px;
@@ -348,3 +354,42 @@ header {
     text-decoration: line-through;
   }
 }
+
+.market-container {
+  border: 2px solid @grayLight;
+  .border-radius(0 0 4px 4px);
+}
+.market-title {
+  width: 96%;
+  padding: 5px 2%;
+  background-color: @grayLight;
+}
+
+.market-list {
+  list-style-type: none;
+  background-color: @grayLight;
+  width: 100%;
+  padding: 0;
+  margin: 0 0 10px;
+}
+.market {
+  float: left;
+  width: 20%;
+  margin: 0 1.5% 10px;
+  height: 40px;
+  padding: 20px 5%;
+  border: 1px solid @grayLight;
+  .border-radius(4px);
+  text-align: center;
+  background-color: @white;
+}
+.contest-list {
+  padding: 10px 20px;
+}
+.selected-market {
+  color: @grayLight;
+  margin-bottom: 10px;
+}
+
+
+

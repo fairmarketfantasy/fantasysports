@@ -54,18 +54,13 @@
 </head>
 
 <body ng-controller="ApplicationController">
-
-  <div flash-alert active-class="alert in" class="flash fade" >
-    <strong class="alert-heading"></strong>
-    <span class="alert-message">{{flash.message}}</span>
-  </div>
   
   <!-- This is where you work your magic, do your best! -->
   <header class="full">
     <div class="container">
     <div class="row top-nav">
       <div class="span9">
-        <h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1> <span class="sub-title">Advanced market-driven pricing and the lowest rake in the industry!</span>
+        <h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1> <span class="sub-title">Advanced market-driven pricing and the highest payouts in the industry!</span>
       </div>
       <div class="span3">
         <div class="links text-right">
@@ -91,15 +86,17 @@
           </div>
         </div>
         <div class="user-dash clearfix">
-          <div class="user-balance no-border">{{ currentUser.balance }}<small>balance</small></div>
-        </div>        
-        <div class="user-dash no-border clearfix">
-          <div class="user-balance"><a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Add Funds</a></div>
-          <% if false %>
-            <!-- I don't think we are doing refer friends at the moment -->
-            <!-- <div class="user-alias"><a class="btn btn-small btn-warning" href="javascript://">Refer Friends</a></div> -->
-          <% end %>
-        </div>
+          <div class="user-balance no-border">${{ currentUser.balance }}<br /><small>balance</small></div>
+          <div class="user-dash no-border clearfix">
+            <div class="user-balance"><a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Add Funds</a>
+            </div>
+            <% if false %>
+              <!-- I don't think we are doing refer friends at the moment -->
+              <!-- <div class="user-alias"><a class="btn btn-small btn-warning" href="javascript://">Refer Friends</a></div> -->
+            <% end %>
+          </div>       
+       </div>        
+
 
 
       </div>
@@ -109,38 +106,31 @@
   
   <article>
     <div class="container">
-
-    <div class="row">
-      <div class="span3 user-navigation">
-        <ul class="nav">
-          <li class="nav-item">Home</li>
-          <li class="nav-item">Fantasy Games</li>
-          <li class="nav-item">Rules and Scoring</li>
-          <li class="nav-item">Promos</li>
-          <li class="nav-item">Leaderboard</li>
-          <li class="nav-item end">Support</li>
-        </ul>
-      </div>
-      <div class="span9 page-content">
-        <div class="padded-content">
-          <div id="login-buttons" ng-controller="LoginController" ng-hide="currentUser">
-            <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
-            <input type='text' ng-model="user.email" placeholder="Email" />
-            <input type='password' ng-model="user.password" placeholder="Password"/>
-            <a href="javascript://" class="btn btn-success" ng-click="login('email')">Log In</a>
-          </div>
-          <div>
-            <a href="#/">Home</a>
-          </div>
-          <div class="content">
-            <div id="content" ng-view>
+      <div class="row">
+        <div class="span3 user-navigation">
+          <ul class="nav">
+            <li class="nav-item">Home</li>
+            <li class="nav-item">Fantasy Games</li>
+            <li class="nav-item">Rules and Scoring</li>
+            <li class="nav-item">Promos</li>
+            <li class="nav-item">Leaderboard</li>
+            <li class="nav-item end">Support</li>
+          </ul>
+        </div>
+        <div class="span9 page-content">
+          <div class="padded-content">
+            <div class="content">
+              <div flash-alert active-class="alert in" class="flash fade" >
+                <strong class="alert-heading"></strong>
+                <span class="alert-message">{{flash.message}}</span>
+              </div>
+              <div id="content" ng-view>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
-  
   </article>
 
   <footer class="full-row">
