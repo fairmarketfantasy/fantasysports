@@ -10,14 +10,36 @@
 #import <QuartzCore/QuartzCore.h>
 #import "FFTextField.h"
 #import "FFAlertView.h"
+#import "UIView+FindFirstResponder.h"
 
-@interface FFSplashViewController ()
+@interface FFSplashViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate>
+{
+}
 
-@property (nonatomic) UIView *signInView;
-@property (nonatomic) UIView *signUpView;
+@property (nonatomic) UIView                *signInView;
+@property (nonatomic) UIView                *signUpView;
+@property (nonatomic) UITextField           *usernameSignupField;
+@property (nonatomic) UITextField           *passwordSignupField;
+@property (nonatomic) UIButton              *signUpButton;
+@property (nonatomic) UIButton              *signUpFacebookButton;
+@property (nonatomic) UIButton              *signInButton;
+@property (nonatomic) UIButton              *signInHeaderButton;
+@property (nonatomic) UIButton              *signUpHeaderButton;
+@property (nonatomic) UITextField           *usernameSigninField;
+@property (nonatomic) UITextField           *passwordSigninField;
+@property (nonatomic) UIGestureRecognizer   *dismissKeyboardRecognizer;
+@property (nonatomic) CGFloat               keyboardHeight;
+@property (nonatomic) BOOL                  keyboardIsShowing;
 
 - (void)setupSignInView;
 - (void)setupSignUpView;
+- (void)signInHeaderSwitch:(id)sender;
+- (void)signUpHeaderSwitch:(id)sender;
+- (void)signIn:(id)sender;
+- (void)signUp:(id)sender;
+- (void)signUpFacebook:(id)sender;
+- (void)forgotPassword:(id)sender;
+- (void)dismissKeyboard:(id)sender;
 
 @end
 
@@ -38,6 +60,23 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -50,6 +89,12 @@
     
     [self.view addSubview:self.signInView];
     [self.view addSubview:self.signUpView];
+    
+     _dismissKeyboardRecognizer = [[UITapGestureRecognizer alloc]
+                                   initWithTarget:self
+                                   action:@selector(dismissKeyboard:)];
+    _dismissKeyboardRecognizer.delegate = self;
+    [self.view addGestureRecognizer:_dismissKeyboardRecognizer];
 }
 
 - (void)setupSignUpView
@@ -89,6 +134,7 @@
     un.backgroundColor = [FFStyle white];
     un.delegate = self;
     un.placeholder = NSLocalizedString(@"username", nil);
+    un.returnKeyType = UIReturnKeyNext;
     [self.signUpView addSubview:un];
     self.usernameSignupField = un;
     
@@ -100,6 +146,7 @@
     pw.frame = CGRectMake(15, 280, 290, 44);
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
+    pw.returnKeyType = UIReturnKeyGo;
     [self.signUpView addSubview:pw];
     self.passwordSignupField = pw;
     
@@ -158,6 +205,7 @@
     un.backgroundColor = [FFStyle white];
     un.delegate = self;
     un.placeholder = NSLocalizedString(@"username", nil);
+    un.returnKeyType = UIReturnKeyNext;
     [self.signInView addSubview:un];
     self.usernameSigninField = un;
     
@@ -169,6 +217,7 @@
     pw.frame = CGRectMake(15, 250, 290, 44);
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
+    pw.returnKeyType = UIReturnKeyGo;
     [self.signInView addSubview:pw];
     self.passwordSigninField = pw;
     
@@ -191,6 +240,8 @@
     [self.signInView addSubview:forgot];
 }
 
+// IBACTIONS -----------------------------------------------------------------------------------------------------------
+
 - (void)signInHeaderSwitch:(id)sender
 {
     [UIView transitionFromView:self.signUpView
@@ -211,8 +262,28 @@
 
 - (void)signIn:(id)sender
 {
-    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:@"HELLO" message:@"GO AWAY" cancelButtonTitle:@"EVERYBODY POOP" okayButtonTitle:@"OK I POOP" autoHide:YES];
-    [alert showInView:self.navigationController.view];
+    NSString *error = nil;
+    
+    if (!self.usernameSigninField.text.length) {
+        error = NSLocalizedString(@"Pleaes provide your username", nil);
+        goto validate_error;
+    }
+    if (!(self.passwordSigninField.text.length > 6)) {
+        error = NSLocalizedString(@"Please provide a password at least 6 characters long", nil);
+        goto validate_error;
+    }
+    
+    return;
+    
+validate_error:
+    {
+        FFAlertView *alert = [[FFAlertView alloc] initWithTitle:nil
+                                                        message:error
+                                              cancelButtonTitle:nil
+                                                okayButtonTitle:NSLocalizedString(@"Okay", nil)
+                                                       autoHide:YES];
+        [alert showInView:self.view];
+    }
 }
 
 - (void)forgotPassword:(id)sender
@@ -237,12 +308,127 @@
 
 - (void)signUp:(id)sender
 {
+    NSString *error = nil;
     
+    if (!self.usernameSignupField.text.length) {
+        error = NSLocalizedString(@"Pleaes provide your username", nil);
+        goto validate_error;
+    }
+    if (!(self.passwordSignupField.text.length > 6)) {
+        error = NSLocalizedString(@"Please provide a password at least 6 characters long", nil);
+        goto validate_error;
+    }
+    
+    return;
+    
+validate_error:
+    {
+        FFAlertView *alert = [[FFAlertView alloc] initWithTitle:nil
+                                                        message:error
+                                              cancelButtonTitle:nil
+                                                okayButtonTitle:NSLocalizedString(@"Okay", nil)
+                                                       autoHide:YES];
+        [alert showInView:self.view];
+    }
 }
 
 - (void)signUpFacebook:(id)sender
 {
     
+}
+
+// GESTURE RECOGNIZER --------------------------------------------------------------------------------------------------
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    NSLog(@"shouldReceiveTouch %@", touch);
+    return YES;
+}
+
+- (void)dismissKeyboard:(id)sender
+{
+    [[self.view findFirstResponder] resignFirstResponder];
+}
+
+// TEXT FIELDS ---------------------------------------------------------------------------------------------------------
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if (textField == self.usernameSigninField) {
+        [self.passwordSigninField becomeFirstResponder];
+        return NO;
+    }
+    if (textField == self.passwordSigninField) {
+        [self signIn:nil];
+    }
+    if (textField == self.usernameSignupField) {
+        [self.passwordSignupField becomeFirstResponder];
+        return NO;
+    }
+    if (textField == self.passwordSignupField) {
+        [self signUp:nil];
+    }
+    [textField endEditing:YES];
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+}
+
+- (void)keyboardWillShow:(NSNotification *)note
+{
+    CGRect keyboardBounds;
+    NSValue *aValue = [note.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey];
+    
+    [aValue getValue:&keyboardBounds];
+    _keyboardHeight = keyboardBounds.size.height;
+    if (!_keyboardIsShowing)
+    {
+        _keyboardIsShowing = YES;
+        CGRect frame = CGRectOffset(self.view.frame, 0, -100);
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationBeginsFromCurrentState:YES];
+        [UIView setAnimationDuration:0.3f];
+        self.view.frame = frame;
+        [UIView commitAnimations];
+    }
+}
+
+- (void)keyboardWillHide:(NSNotification *)note
+{
+    CGRect keyboardBounds;
+    NSValue *aValue = [note.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
+    [aValue getValue: &keyboardBounds];
+    
+    _keyboardHeight = keyboardBounds.size.height;
+    if (_keyboardIsShowing)
+    {
+        _keyboardIsShowing = NO;
+        CGRect frame = CGRectOffset(self.view.frame, 0, 100);
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationBeginsFromCurrentState:YES];
+        [UIView setAnimationDuration:0.3f];
+        self.view.frame = frame;
+        [UIView commitAnimations];
+        
+    }
 }
 
 @end

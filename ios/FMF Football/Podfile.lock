@@ -18,10 +18,12 @@ PODS:
     - JSONKit (~> 1.5pre)
     - SecureUDID (~> 1.1)
   - SecureUDID (1.1)
+  - SparkInspector (1.0.12)
 
 DEPENDENCIES:
   - Reachability (~> 3.0.0)
   - SBData (from `/Users/samuelsutch/dev/shadowart/projects/SBData/SBData/SBData.podspec`)
+  - SparkInspector
 
 EXTERNAL SOURCES:
   SBData:
@@ -36,5 +38,6 @@ SPEC CHECKSUMS:
   Reachability: 500bd76bf6cd8ff2c6fb715fc5f44ef6e4c024f2
   SBData: 7b49d4af398b1d354c0fecab988b8557bb241e95
   SecureUDID: f29e17c7fc56968b6c42ce328b901a9fec87bb44
+  SparkInspector: 217a5276cd35ba6db71578147f95734797b71710
 
 COCOAPODS: 0.19.1
