@@ -23,6 +23,10 @@ class Market < ActiveRecord::Base
   #publish the market. returns the published market.
   def publish
     published = Market.find_by_sql("select * from publish_market(#{self.id})")[0]
+    if published.state == 'published'
+      published.price_multiplier = published.players.size / 27
+      published.save!
+    end
     reload
     return self
   end
