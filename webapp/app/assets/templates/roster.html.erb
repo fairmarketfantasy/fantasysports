@@ -21,27 +21,21 @@
       </li>
     </ul>
   </div>
+
   <ul>
-    <li ng-show="filter == 'positions'">
-      <ul>
-        <li ng-repeat="position in rosters.uniqPositionList">
-          <a ng-click="filterPlayers({position: position})" href="javascript://">{{position}}</a>
-        </li>
-      </ul>
-    </li>
-    <li ng-show="filter == 'games'">
-      <!-- TODO: make this a dropdown -->
-      <select ng-options="game as (game.away_team + ' @ ' + game.home_team) for game in games" ng-model="game" ng-change="filterPlayers({game: game.id})">
-      </select>
-    </li>
+    <li><a href="javascript://" ng-click="filter = 'positions'">Positions</a></li>
+    <li><a href="javascript://" ng-click="filter = 'games'">Games</a></li>
+    <li><a href="javascript://" ng-click="filter = 'search'">Search</a></li>
   </ul>
 
   <div class="team-selection clearfix">
     <div class="players">
-      <select class="hide" ng-options="game as (game.away_team + ' @ ' + game.home_team) for game in games" ng-model="game" ng-change="filterPlayers({game: game.id})">
-      </select>
+      <input ng-show="filter == 'search'" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name})"/>
       
-      <ul class="positions-list clearfix">
+      <select ng-show="filter == 'games'" ng-options="game as (game.away_team + ' @ ' + game.home_team) for game in games" ng-model="game" ng-change="filterPlayers({game: game.id})">
+      </select>
+
+      <ul ng-show="filter == 'positions'" class="positions-list clearfix">
         <li class="position-item" ng-repeat="position in rosters.uniqPositionList">
           <a class="position-link" ng-click="filterPlayers({position: position})" href="javascript://">{{position}}</a>
         </li>
