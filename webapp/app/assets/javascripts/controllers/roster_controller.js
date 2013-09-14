@@ -1,6 +1,6 @@
 angular.module("app.controllers")
 .controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', 'flash', function($scope, rosters, markets, $routeParams, $location, flash) {
-  $scope.filter = null;
+  $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
 
@@ -17,7 +17,7 @@ angular.module("app.controllers")
     });
   });
 
-  var filterOpts = {};
+  var filterOpts = {position: 'QB'};
   var fetchPlayers = function() {
     if (!rosters.currentRoster) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
@@ -70,6 +70,10 @@ angular.module("app.controllers")
   $scope.gameFromTeam = function(team) {
     var game = teamsToGames[team];
     return game && (game.away_team + ' @ ' + game.home_team);
+  };
+
+  $scope.teams  = function() {
+    return _.map(teamsToGames, function(game, team) { return team; });
   };
 
 }]);

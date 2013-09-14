@@ -7,7 +7,7 @@ class PlayersController < ApplicationController
     @players = @players.autocomplete(params[:autocomplete]) if params[:autocomplete]
 
     game = params[:game] ? Game.find(params[:game]) : nil
-    scopes = { in_game: game, in_contest: params[:contest].presence, in_position: params[:position].presence }
+    scopes = { in_game: game, in_contest: params[:contest].presence, in_position: params[:position].presence, on_team: params[:team].presence}
 
 
     scopes.each do |s, val|
@@ -15,7 +15,7 @@ class PlayersController < ApplicationController
         @players = @players.public_send(s, val)
       end
     end
-    render_api_response @players.order('id asc').limit(50).page(params[:page] || 1)
+    render_api_response @players.order('id asc')#.limit(50).page(params[:page] || 1)
   end
 
   def for_roster
