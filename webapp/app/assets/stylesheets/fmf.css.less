@@ -352,15 +352,15 @@ header {
 }
 
 /* Games */
-.games {
-  .started {
-    text-decoration: line-through;
-  }
-}
-
-.market-container {
+.market-container, .contest-info {
   border: 2px solid @grayLight;
   .border-radius(4px);
+}
+.contest-info {
+  background-color: @offWhite;
+  padding: 5px;
+  margin-bottom: 10px;
+  position: relative;
 }
 .market-title {
   width: 96%;
@@ -425,3 +425,122 @@ header {
 .btn-contest {
   width: 60%;
 }
+
+.contest-info-image {
+  width: 170px;
+  margin-right: 8px;
+  float: left;
+}
+.contest-info-description {
+  float: left;
+  max-width: 62%;
+}
+.btn.btn-cancel-entry {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 100;
+}
+.games {
+  padding: 0;
+  margin: 10px 0 0 5px;
+}
+.game {
+  float: left;
+  margin: 0 5px 5px 0;
+  border: 2px solid @grayLight;
+  background-color: @white;
+  width: 75px;
+  padding: 2px;
+  text-align: center;
+  font-size: 10px;
+  .border-radius(4px);
+  list-style-type: none;
+  color: @gray;
+}
+.started {
+  text-decoration: line-through;
+  background-color: @gray;
+  color: @grayLight;
+}
+.positions-list {
+  margin: 10px 0 0;
+  padding: 0;
+}
+.position-item {
+  float: left;
+  margin-right: 2px;
+  list-style-type: none;
+}
+.position-link {
+  border: @gray;
+  background-color: @success;
+  display: block;
+  .border-radius(4px 4px 0 0);
+  color: @white;  
+  padding: 6px;
+}
+.players, .roster {
+  width: 50%;
+  float: left;
+}
+.players-area, .roster-area {
+  background-color: @gray;
+  padding: 10px 4%;
+  width: 92%;
+}
+.player-overflow, .roster-overflow {
+  height: 400px;
+  overflow: scroll;  
+  overflow-x: none;
+  background-color: @white;
+  padding: 5px;
+  .border-radius(5px);
+}
+.players-table, .roster-table {
+  font-size: 12px;
+  td {
+    padding: 4px;
+    text-align: center;
+  }
+}
+.player-heading {
+  color: @white;
+  margin: 4px 0 10px;
+}
+.roster-heading {
+  width: 95%;
+  padding: 6px 2.5%;
+  position: relative;
+  height: 30px;
+}
+.salary-cap {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 6px;
+  .border-radius(4px 4px 0 0);
+  background-color: @base;
+  color: @white;
+  height: 20px;
+  font-size: 16px;
+  line-height: 18px; 
+}
+.broke {
+  background-color: @danger;
+}
+.cta-container  {
+  margin: 20px 0;
+  width: 100%;
+  position: relative;
+  height: 40px;
+}
+.btn-contest-cta {
+  position: absolute;
+  right: 0;
+}
+
+
+
+
+
