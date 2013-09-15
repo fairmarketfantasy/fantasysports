@@ -35,6 +35,17 @@ Start the rails server:
 rails s
 ```
 
+## Seed Data
+
+```
+rake db:drop
+rake db:create
+rake db:migrate
+rake db:setup_functions
+rake seed:nfl_data # This will continue running, but you can safely kill it when it stops outputting things
+rake market:tend  # This will continue running
+```
+
 ## The data fetcher
 
 Seed some data:

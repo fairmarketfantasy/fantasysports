@@ -1,7 +1,7 @@
 <div class='modal-header'>
   <h3 class='inline-block'>Your Credit Cards</h3>
   <p class='inline-block pull-right' ng-show='cards.length'>
-    Balance: <span class='balance'>${{ currentUser.balance }}</span>
+    Balance: <span class='balance'>{{ currentUser.balance | centsToDollars }}</span>
   </p>
 </div>
 <div class='mal centered' ng-hide='loaded'>
