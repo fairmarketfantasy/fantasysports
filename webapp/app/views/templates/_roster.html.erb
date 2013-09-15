@@ -103,7 +103,7 @@
                 <td>{{player.purchase_price | emptyIfZero }}</td>
                 <td>{{player.sell_price - player.purchase_price }}</td>
                 <td>
-                  <span ng-show="player.id && market.state == 'opened' && player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Locked</span>
+                  <span ng-show="player.id && market.state == 'opened' && player.locked" href="javascript://">Locked</span>
                   <a ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>
                   <a ng-show="player.id && market.state != 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)">Remove</a>
                 </td>

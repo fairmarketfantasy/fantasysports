@@ -30,7 +30,7 @@ class RosterSerializer < ActiveModel::Serializer
     salary = object.remaining_salary
     if object.state == 'in_progress'
       players.each do |p|
-        salary -= p.purchase_price # TODO: Have Sean check this
+        salary -= p.sell_price # TODO: Have Sean check this
       end
     end
     salary

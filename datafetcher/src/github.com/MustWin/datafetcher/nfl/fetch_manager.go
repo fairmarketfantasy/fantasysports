@@ -62,7 +62,7 @@ func (mgr *FetchManager) savePlayersForMarket(market models.Market, teamAbbrev s
 		log.Println(err)
 	}
 	for _, player := range players {
-		mktPlayer := models.MarketPlayer{MarketId: market.Id, PlayerId: player.Id, InitialPrice: 1000.0}
+		mktPlayer := models.MarketPlayer{MarketId: market.Id, PlayerId: player.Id}
 		mgr.Orm.GetDb().Save(&mktPlayer)
 	}
 }
@@ -119,7 +119,6 @@ func (mgr *FetchManager) refreshFetcher(games []*models.Game) {
 			mgr.Fetcher.NflSeason = games[i].SeasonType
 			mgr.Fetcher.NflSeasonWeek = games[i].SeasonWeek
 			mgr.Fetcher.Year = games[0].SeasonYear
-			break
 		}
 	}
 }
@@ -156,7 +155,7 @@ func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
 	POLLING_PERIOD := 30 * time.Second
 	currentSequenceNumber := -1
 	gameover := false
-	if game.GameTime.After(time.Now()) {
+	if game.GameTime.After(time.Now().Add(-250*time.Minute)) && game.Status != "closed" {
 		var poll = func() {}
 		poll = func() {
 			dirty := false
