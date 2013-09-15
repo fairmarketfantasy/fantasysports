@@ -54,6 +54,11 @@ angular.module('app.filters')
       return moment(input).format("ddd DD @ h:mma");
     };
   })
+  .filter('centsToDollars', function() {
+    return function(input) {
+      return '$' + (input / 100);
+    };
+  })
   .filter('ordinal', function() {
     return function(input) {
       var s=["th","st","nd","rd"],
