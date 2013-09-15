@@ -10,10 +10,10 @@ angular.module('app', [
       'ui.bootstrap'])
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
-      when('/', {templateUrl: '<%= path_to_asset("home.html") %>', controller: 'HomeController'}).
-      when('/market/:market_id/roster/:roster_id', {templateUrl: '<%= path_to_asset("roster.html") %>', controller: 'RosterController'}).
-      when('/market/:market_id', {templateUrl: '<%= path_to_asset("home.html") %> ', controller: 'HomeController'}).
-      when('/account', {templateUrl: '<%= path_to_asset("account.html") %>', controller: 'AccountController'}).
+      when('/', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
+      when('/market/:market_id', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/account', {templateUrl: "/account.html", controller: 'AccountController'}).
     //...
       otherwise({redirectTo: '/'});
   }])
