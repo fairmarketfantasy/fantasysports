@@ -10,7 +10,15 @@ angular.module('app.data')
         // TODO: memoize?
         var self = this;
         return fs.markets.list().then(function(markets) {
-          self.upcoming = markets;
+          self.upcoming = [];
+          //find the first day market... add it to the upcoming array
+          self.upcoming.push(_.find(markets, function(market){
+            return market.market_duration === 'day';
+          }));
+          //do the same for the first week market
+          self.upcoming.push(_.find(markets, function(market){
+            return market.market_duration === 'week';
+          }));
           _.each(markets, function(market) {
             marketData[market.id] = market;
           });

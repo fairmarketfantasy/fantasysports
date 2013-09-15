@@ -1,7 +1,7 @@
 <div class='modal-header'>
   <h3 class='inline-block'>Your Credit Cards</h3>
   <p class='inline-block pull-right' ng-show='cards.length'>
-    Balance: <span class='balance'>${{ currentUser.balance }}</span>
+    Balance: <span class='balance'>{{ currentUser.balance | centsToDollars }}</span>
   </p>
 </div>
 <div class='mal centered' ng-hide='loaded'>
@@ -18,20 +18,18 @@
     </div>
     <div class='clearfix'>
       <ul class='unstlyed card-list no-no'>
-        <li class='inline-block card' ng-repeat="card in cards" ng-class="{default: card.default}">
+        <li class='inline-block clickable card' ng-repeat="card in cards" ng-class="{default: isSelectedCard(card) }" ng-click="setSelectedCard(card)">
           <div class='card-token'>
             <div class='relative pull-right delete-card'>
               <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
-              <div ng-show="showConfirm(card.id)" class='absolute card-confirm-delete tooltip right fade in'>
-                <div class='tooltip-arrow'>
+              <div ng-show="showConfirm(card.id)" class='card-confirm-delete popover right'>
+                <div class='arrow'>
                 </div>
-                <div class='tooltip-inner'>
-                  <div class='pam'>
-                    Are you sure?<br />
-                    <a class='btn btn-mini btn-danger mtm' ng-hide='deleteCardSpinner' ng-click='deleteCard(card.id)'>Yes, delete</a>
-                    <img src='/assets/ajax-loader-micro.gif' ng-show='deleteCardSpinner'/>
-                    <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
-                  </div>
+                <h3 class='popover-title'>Are you sure?</h3>
+                <div class='popover-content'>
+                  <a class='btn btn-mini btn-danger mtm' ng-hide='deleteCardSpinner' ng-click='deleteCard(card.id)'>Yes, delete</a>
+                  <img src='/assets/ajax-loader-micro.gif' ng-show='deleteCardSpinner'/>
+                  <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
                 </div>
               </div>
             </div>

@@ -3,6 +3,6 @@ class UserSerializer < ActiveModel::Serializer
   has_one :in_progress_roster
 
   def balance
-    object.customer_object.try(:balance_in_dollars) || 0
+    object.customer_object.try(:balance) || 0
   end
 end

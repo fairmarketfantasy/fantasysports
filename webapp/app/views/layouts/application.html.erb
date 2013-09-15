@@ -78,16 +78,17 @@
           <img ng-src="{{currentUser.image_url}}" class='user-avatar'/>
           <div class="user-info">
             <span class="user-name">{{ currentUser.name }}</span>
-            <%= link_to '(sign out)', destroy_user_session_path, class: 'user-logout txt-red-hover' %>
+            <a href="javascript://" class='txt-white txt-red-hover'>settings</a><br />
+            <%= link_to 'sign out', destroy_user_session_path, class: 'user-logout txt-red-hover' %>
           </div>
         </div>
         <div class="user-dash clearfix">
-          <div class="user-balance no-border">${{ currentUser.balance }}<br /><small>balance</small></div>
+          <div class="user-balance no-border">{{ currentUser.balance | centsToDollars }}<br /><small>balance</small></div>
           <div class="user-dash no-border clearfix">
             <div class="user-balance"><a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Add Funds</a>
             </div>
-          </div>       
-       </div>        
+          </div>
+       </div>
 
 
 
@@ -101,12 +102,13 @@
       <div class="row">
         <div class="span3 user-navigation">
           <ul class="nav">
-            <li class="nav-item">Home</li>
-            <li class="nav-item">Fantasy Games</li>
-            <li class="nav-item">Rules and Scoring</li>
-            <li class="nav-item">Promos</li>
-            <li class="nav-item">Leaderboard</li>
-            <li class="nav-item end">Support</li>
+            <li class="nav-item"><a href="/#/">Home</a></li>
+            <li class="nav-item">Live Contests</li>
+            <li class="nav-item">History</li>
+            <li class="nav-item"><a href="/#/rules" >Rules and Scoring</a></li>
+            <li class="nav-item"><a href="/#/promos" >Promos</a></li>
+            <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
+            <li class="nav-item end"><a href="/#/support">Support</a></li>
           </ul>
         </div>
         <div class="span9 page-content">
@@ -140,6 +142,8 @@
   };
 </script>
 
+
+<%= render :partial => 'templates/ng_includes' %>
 <%= javascript_include_tag "application" %>
 
 <script>

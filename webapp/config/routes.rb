@@ -1,6 +1,7 @@
 Fantasysports::Application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks",
-                                       :sessions => 'users/sessions' }
+                                       :sessions => 'users/sessions',
+                                       :registrations => "users/registrations" }
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
