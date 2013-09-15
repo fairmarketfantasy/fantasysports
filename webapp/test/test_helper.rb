@@ -120,7 +120,7 @@ FactoryGirl.define do
   end
 
   factory :customer_object do
-    balance 100
+    balance 10000
     token { generate(:random_string) }
   end
 
@@ -185,7 +185,7 @@ FactoryGirl.define do
   factory :roster do
     association :owner, factory: :paid_user
     association :market, factory: :open_market
-    buy_in 10
+    buy_in 1000
     remaining_salary 100000
     state 'in_progress'
     positions Positions.default_NFL
@@ -197,7 +197,7 @@ FactoryGirl.define do
     association :owner, factory: :user
     association :market, factory: :open_market
     invitation_code { generate(:random_string) }
-    buy_in 10
+    buy_in 1000
 
   end
 
@@ -205,7 +205,7 @@ FactoryGirl.define do
     association :market, factory: :open_market
     name "some contest type"
     max_entries 100
-    buy_in 10
+    buy_in 1000
     rake 1
     payout_structure 'some payout structure'
   end
