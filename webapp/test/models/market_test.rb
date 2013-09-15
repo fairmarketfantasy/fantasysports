@@ -5,16 +5,16 @@ class MarketTest < ActiveSupport::TestCase
   test "close" do
     setup_simple_market
     #put 3 rosters public h2h and 3 in a private h2h
-    contest_type = @market.contest_types.where("buy_in = 10 and max_entries = 2").first
+    contest_type = @market.contest_types.where("buy_in = 1000 and max_entries = 2").first
     refute_nil contest_type
     3.times {
       create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
     }
-    private_contest = create(:contest, :market => @market, :contest_type => contest_type, :user_cap => 2, :buy_in => 10)
+    private_contest = create(:contest, :market => @market, :contest_type => contest_type, :user_cap => 2, :buy_in => 1000)
     2.times {
       create(:roster, :market => @market, :contest_type => contest_type, :contest => private_contest).fill_randomly.submit!
     }
-    private_contest_2 = create(:contest, :market => @market, :contest_type => contest_type, :user_cap => 2, :buy_in => 10)
+    private_contest_2 = create(:contest, :market => @market, :contest_type => contest_type, :user_cap => 2, :buy_in => 1000)
     create(:roster, :market => @market, :contest_type => contest_type, :contest => private_contest_2).fill_randomly.submit!
 
     #verify the state of affairs
@@ -56,7 +56,7 @@ class MarketTest < ActiveSupport::TestCase
     assert_equal 1, @market.shadow_bet_rate
 
     #find a $10 contest_type in the market's contest types
-    contest_type = @market.contest_types.where(:buy_in => 10).first
+    contest_type = @market.contest_types.where(:buy_in => 1000).first
     assert !contest_type.nil?, "contest type can't be nil"
 
     #buy some players randomly. plenty of bets
