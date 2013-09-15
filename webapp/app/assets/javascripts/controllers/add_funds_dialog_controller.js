@@ -12,10 +12,16 @@ angular.module("app.controllers")
     }
     $scope.showCardForm = !$scope.cards.length;
     $scope.loaded = true;
-    $scope.selectedCardId = _.find($scope.cards, function(card){
-        return card.default;
-    }).id;
+    setSelectedCardId();
   });
+
+  var setSelectedCardId = function(){
+    if($scope.cards.length){
+      $scope.selectedCardId = _.find($scope.cards, function(card){
+          return card.default;
+      }).id;
+    }
+  };
 
   $scope.isSelectedCard = function(card){
     return (card.id === $scope.selectedCardId);
@@ -47,6 +53,7 @@ angular.module("app.controllers")
           $scope.errorMessage = resp.error;
         } else {
           $scope.cards = resp.cards || [];
+          setSelectedCardId();
           $scope.cardInfo = {};
           $scope.showCardForm = false;
           $scope.successMessage = "Success, your card was saved.";
@@ -126,6 +133,7 @@ angular.module("app.controllers")
     fs.cards.destroy(cardId).then(function(resp){
       $scope.deleteCardSpinner = false;
       $scope.cards = resp.cards || [];
+      setSelectedCardId();
     });
   };
 
