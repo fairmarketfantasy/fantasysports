@@ -13,35 +13,35 @@
   </ul>
   
   <div class="contest-list">
-  <h3 class="selected-market">{{marketService.currentMarket.name}} {{marketService.currentMarket.started_at | shortFormTime }} Contests</h4>
+    <h3 class="selected-market" ng-cloak>{{marketService.currentMarket.name}} {{marketService.currentMarket.started_at | shortFormTime }} Contests</h3>
 
-  <ul class="games hide">
-    <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
-      {{game.away_team}} @ {{game.home_team}} {{game.networkl}} on {{game.game_time | shortFormTime}}
-    </li>
-  </ul>
-
-  <div ng-show="rosters.justSubmittedRoster">
-    Your roster is looking great! Now that it's perfect, should we <a href="javascript://">Challenge some friends</a> or enter another contest?
-    <a href="#/" ng-click="rosters.reset()">No thanks, I'm done</a>
-  </div>
-
-  <div ng-hide="rosters.inProgressRoster">
-    <ul class="clearfix no-no">
-      <!-- all these ng-clicks to joinContest, need to pass in  contest_type_id
-          instead of the string '100k' or '970' or '194', etc-->
-      <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses">
-        <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
-        <h2>{{contestClass}}</h2>
-        <p class="small-p">{{contestClassDesc[contestClass]}}</p>
-        <ul class="contests no-no">
-          <li class="enter-contest" ng-repeat="contestType in contestTypes">
-            <a class="btn btn-small btn-success btn-contest" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">Enter for {{ contestType.buy_in | centsToDollars }}</a>
-          </li>
-        </ul>
+    <ul class="games hide" ng-cloak>
+      <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
+        {{game.away_team}} @ {{game.home_team}} {{game.networkl}} on {{game.game_time | shortFormTime}}
       </li>
     </ul>
+
+    <div ng-show="rosters.justSubmittedRoster">
+      Your roster is looking great! Now that it's perfect, should we <a href="javascript://">Challenge some friends</a> or enter another contest?
+      <a href="#/" ng-click="rosters.reset()">No thanks, I'm done</a>
+    </div>
+
+    <div ng-hide="rosters.inProgressRoster">
+      <ul class="clearfix no-no" ng-cloak>
+        <!-- all these ng-clicks to joinContest, need to pass in  contest_type_id
+            instead of the string '100k' or '970' or '194', etc-->
+        <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses">
+          <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
+          <h2>{{contestClass}}</h2>
+          <p class="small-p">{{contestClassDesc[contestClass]}}</p>
+          <ul class="contests no-no">
+            <li class="enter-contest" ng-repeat="contestType in contestTypes">
+              <a class="btn btn-small btn-success btn-contest" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">Enter for {{ contestType.buy_in | centsToDollars }}</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
 
 </div>
