@@ -9,14 +9,12 @@ angular.module("app.controllers")
     currentUserService.addFundsModal();
   };
 
+  $scope.withdrawFundsModal = function(){
+    currentUserService.withdrawFundsModal();
+  };
+
   $scope.gameStarted = function(game) {
     return new Date(game.game_time) < new Date();
   };
-
-  // $scope.logout = function(){
-  //   fs.user.logout().then(function(resp){
-  //     window.App.currentUser = null;
-  //   });
-  // };
 
 }]);

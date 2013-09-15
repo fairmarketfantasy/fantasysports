@@ -1,5 +1,5 @@
 Fantasysports::Application.configure do
-  SITE = "staging.fanfairfantasy.com"
+  SITE = "staging.fairmarketfantasy.com"
   SPORTS_DATA_API_KEY = "dmefnmpwjn7nk6uhbhgsnxd6"
   SPORTS_DATA_IMAGES_API_KEY = "yq9uk9qu774eygre2vg2jafe"
   FACEBOOK_APP_ID = "436114143174192"

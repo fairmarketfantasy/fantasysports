@@ -14,6 +14,20 @@ angular.module('app.services')
 
         var d = $dialog.dialog(dialogOpts);
         d.open();
+      },
+
+      withdrawFundsModal: function(){
+        var dialogOpts = {
+              backdrop: true,
+              keyboard: true,
+              backdropClick: true,
+              dialogClass: 'modal',
+              templateUrl: '<%= path_to_asset 'withdraw_funds_dialog.html' %>',
+              controller: 'WithdrawFundsDialogController'
+            };
+
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
       }
     };
   }])
