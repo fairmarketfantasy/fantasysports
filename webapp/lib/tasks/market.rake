@@ -46,7 +46,7 @@ namespace :market do
 end
 
 def publish_markets
-	markets = Market.where("published_at <= ? AND (state is null or state='')", Time.now)
+	markets = Market.where("published_at <= ? AND (state is null or state='' or state='unpublished')", Time.now)
 	markets.each do |market|
 		puts "#{Time.now} -- publishing market #{market.id}"
     market = market.publish
@@ -57,7 +57,7 @@ def publish_markets
 end
 
 def tabulate_scores
-  Market.where("state in ('published', 'open', 'closed')").find_each do |market|
+  Market.where("state in ('published', 'opened', 'closed')").find_each do |market|
     puts "#{Time.now} -- tabulating scores for market #{market.id}"
     market.tabulate_scores
   end

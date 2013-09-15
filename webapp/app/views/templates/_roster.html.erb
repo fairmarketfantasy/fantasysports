@@ -11,7 +11,7 @@
           <li>Entries: {{rosters.currentRoster.contest_type.max_entries}}</li>
           <li>Buy-in: ${{rosters.currentRoster.contest_type.buy_in}}</li>
           <li>Format: Winner take all
-          <li ng-show="rosters.currentRoster.contest_rank">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest_type.max_entries}}</li>
+          <li ng-show="rosters.currentRoster.contest_rank">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
       </div>
     </div>
 
