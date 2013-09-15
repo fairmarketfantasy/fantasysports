@@ -4,7 +4,7 @@ class ContestTest < ActiveSupport::TestCase
 
   test "payday" do
     setup_simple_market
-    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 2").first
+    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 200").first
     refute_nil contest_type
 
     user1 = create(:user)
