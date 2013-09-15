@@ -119,7 +119,7 @@ class RosterTest < ActiveSupport::TestCase
     @roster.submit!
     assert_equal 'submitted', @roster.state
     assert_equal 1, @roster.players.length
-    assert_equal 10, @roster.buy_in
+    assert_equal 1000, @roster.buy_in
     @market.reload
     market_player = @market.market_players.where("player_id = #{player.id}").first
 
@@ -145,12 +145,12 @@ class RosterTest < ActiveSupport::TestCase
     user.customer_object = create(:customer_object, user: user)
     initial_balance = user.customer_object.balance
     roster = nil
-    contest_type = @market.contest_types.where(:buy_in => 10).first
+    contest_type = @market.contest_types.where(:buy_in => 1000).first
     assert_difference("TransactionRecord.count", 1) do
       roster = Roster.generate(user, contest_type)
       roster.submit!
     end
-    assert_equal  initial_balance - 10, user.customer_object.reload.balance
+    assert_equal  initial_balance - 1000, user.customer_object.reload.balance
     assert_difference("TransactionRecord.count", 1) do
       roster.destroy
     end
