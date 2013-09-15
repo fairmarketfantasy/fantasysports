@@ -9,6 +9,7 @@ class Market < ActiveRecord::Base
   belongs_to :sport
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
+  validates :state, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
 
   scope :published_after,   ->(time) { where('published_at > ?', time)}
   scope :opened_after,      ->(time) { where("opened_at > ?", time) }
@@ -22,17 +23,13 @@ class Market < ActiveRecord::Base
 
   #publish the market. returns the published market.
   def publish
-    published = Market.find_by_sql("select * from publish_market(#{self.id})")[0]
-    if published.state == 'published'
-      published.price_multiplier = published.players.size / 27
-      published.save!
-    end
+    Market.find_by_sql("select * from publish_market(#{self.id})")
     reload
     return self
   end
 
   def open
-    Market.find_by_sql("select * from open_market(#{self.id})")[0]
+    Market.find_by_sql("select * from open_market(#{self.id})")
     reload
     return self
   end
@@ -40,7 +37,7 @@ class Market < ActiveRecord::Base
   #look for players in games that have started and remove them from the market
   #and update the price multiplier
   def lock_players
-    Market.find_by_sql("SELECT * from lock_players(#{self.id})")[0]
+    Market.find_by_sql("SELECT * from lock_players(#{self.id})")
     return self
   end
 
@@ -85,11 +82,6 @@ class Market < ActiveRecord::Base
     return self
   end
 
-  def notify_market_open_event
-    puts "THE MARKET IS OPEN! TELL EVERYONE"
-    # TODO: tell everyone
-  end
-
   #if a market is closed and all its games are over, then 'complete' the market
   #by dishing out funds and such
   def complete
@@ -109,16 +101,16 @@ class Market < ActiveRecord::Base
   end
 
   @@default_contest_types = [
-    ['100k', '100k lalapalooza!', 0, 10, 0.03, '[50000, 25000, 12000, 6000, 3000, 2000, 1000, 500, 500]'],
-    ['970', 'Free contest, winner gets 10 FanFrees!', 10, 0, 0, '[]'],
-    ['970', '10 teams, $2 entry fee, winner takes home $19.40', 10, 2, 0.03, '[19.40]'],
-    ['970', '10 teams, $10 entry fee, winner takes home $97.00', 10, 10, 0.03, '[97]'],
-    ['194', 'Free contest, top 5 winners get 2 FanFrees!', 10, 0, 0, '[]'],
-    ['194', '10 teams, $2 entry fee, top 5 winners take home $3.88', 10, 2, 0.03, '[3.88, 3.88, 3.88, 3.88, 3.88]'],
-    ['194', '10 teams, $10 entry fee, top 5 winners take home $19.40', 10, 10, 0.03, '[19.40, 19.40, 19.40, 19.40, 19.40]'],
-    ['h2h', 'Free h2h contest, winner gets 1 FanFree!', 2, 0, 0, '[]'],
-    ['h2h', 'h2h contest, $2 entry fee, winner takes home $3.88', 2, 2, 0.03, '[3.88]'],
-    ['h2h', 'h2h contest, $10 entry fee, winner takes home $19.40', 2, 10, 0.03, '[19.40]']
+    ['100k', '100k lalapalooza!',                                      0, 1000, 0.03, '[5000000, 2500000, 1200000, 600000, 300000, 200000, 100000, 50000, 50000]'],
+    ['970', 'Free contest, winner gets 10 FanFrees!',                  10, 0, 0, '[]'],
+    ['970', '10 teams, $2 entry fee, winner takes home $19.40',        10, 200, 0.03, '[1940]'],
+    ['970', '10 teams, $10 entry fee, winner takes home $97.00',       10, 1000, 0.03, '[9700]'],
+    ['194', 'Free contest, top 5 winners get 2 FanFrees!',             10, 0, 0, '[]'],
+    ['194', '10 teams, $2 entry fee, top 5 winners take home $3.88',   10, 200, 0.03, '[388, 388, 388, 388, 388]'],
+    ['194', '10 teams, $10 entry fee, top 5 winners take home $19.40', 10, 1000, 0.03, '[1940, 1940, 1940, 1940, 1940]'],
+    ['h2h', 'Free h2h contest, winner gets 1 FanFree!',                2, 0, 0, '[]'],
+    ['h2h', 'h2h contest, $2 entry fee, winner takes home $3.88',      2, 200, 0.03, '[388]'],
+    ['h2h', 'h2h contest, $10 entry fee, winner takes home $19.40',    2, 1000, 0.03, '[1940]']
   ];
 
   #TODO: is this safe if run concurrently?
@@ -137,6 +129,7 @@ class Market < ActiveRecord::Base
         )
       end
     end
+    return self
   end
 
   def reset_for_testing

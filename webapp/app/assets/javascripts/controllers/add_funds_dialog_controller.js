@@ -12,7 +12,24 @@ angular.module("app.controllers")
     }
     $scope.showCardForm = !$scope.cards.length;
     $scope.loaded = true;
+    setSelectedCardId();
   });
+
+  var setSelectedCardId = function(){
+    if($scope.cards.length){
+      $scope.selectedCardId = _.find($scope.cards, function(card){
+          return card.default;
+      }).id;
+    }
+  };
+
+  $scope.isSelectedCard = function(card){
+    return (card.id === $scope.selectedCardId);
+  };
+
+  $scope.setSelectedCard = function(card){
+    $scope.selectedCardId = card.id;
+  };
 
   $scope.showAddCardButton = function(){
     return !$scope.showCardForm && ($scope.cards.length < 3);
@@ -36,6 +53,7 @@ angular.module("app.controllers")
           $scope.errorMessage = resp.error;
         } else {
           $scope.cards = resp.cards || [];
+          setSelectedCardId();
           $scope.cardInfo = {};
           $scope.showCardForm = false;
           $scope.successMessage = "Success, your card was saved.";
@@ -85,7 +103,7 @@ angular.module("app.controllers")
   $scope.addFunds = function(){
     var amt = ($scope.chargeAmt * 100); //dollars to cents
     $scope.addMoneySpinner = true;
-    fs.user.addMoney(amt).then(function(resp){
+    fs.user.addMoney(amt, $scope.selectedCardId).then(function(resp){
       window.App.currentUser.balance = resp.balance;
       $scope.chargeAmt = null;
       $scope.addMoneySpinner = false;
@@ -115,6 +133,7 @@ angular.module("app.controllers")
     fs.cards.destroy(cardId).then(function(resp){
       $scope.deleteCardSpinner = false;
       $scope.cards = resp.cards || [];
+      setSelectedCardId();
     });
   };
 
