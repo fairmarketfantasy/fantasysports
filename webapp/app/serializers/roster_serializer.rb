@@ -23,7 +23,17 @@ class RosterSerializer < ActiveModel::Serializer
   has_many :players
 
   def players
-    object.players.with_sell_prices(object)
+    @players ||= object.players.with_sell_prices(object)
+  end
+
+  def remaining_salary
+    salary = object.remaining_salary
+    if object.state == 'in_progress'
+      players.each do |p|
+        salary -= p.sell_price # TODO: Have Sean check this
+      end
+    end
+    salary
   end
 
   def live

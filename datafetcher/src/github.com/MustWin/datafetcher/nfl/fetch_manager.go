@@ -5,6 +5,7 @@ import (
 	"github.com/MustWin/datafetcher/lib/model"
 	"github.com/MustWin/datafetcher/nfl/models"
 	"log"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -62,7 +63,7 @@ func (mgr *FetchManager) savePlayersForMarket(market models.Market, teamAbbrev s
 		log.Println(err)
 	}
 	for _, player := range players {
-		mktPlayer := models.MarketPlayer{MarketId: market.Id, PlayerId: player.Id, InitialPrice: 1000.0}
+		mktPlayer := models.MarketPlayer{MarketId: market.Id, PlayerId: player.Id}
 		mgr.Orm.GetDb().Save(&mktPlayer)
 	}
 }
@@ -75,7 +76,8 @@ func appendForKey(key string, markets map[string][]*models.Game, value *models.G
 	markets[key] = append(markets[key], value)
 }
 
-func (mgr *FetchManager) createMarket(name string, games []*models.Game) {
+func (mgr *FetchManager) createMarket(name string, games Games) {
+	sort.Sort(games)
 	market := models.Market{}
 	market.Name = name
 	market.ShadowBets = 1000
@@ -84,7 +86,7 @@ func (mgr *FetchManager) createMarket(name string, games []*models.Game) {
 	market.OpenedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
 	market.StartedAt = games[0].GameTime.Add(-5 * time.Minute)           // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
 	market.ClosedAt = games[len(games)-1].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
-	log.Printf("Creating market %s closing on %s with %d games", market.Name, market.ClosedAt, len(games))
+	log.Printf("Creating market %s starting at %s and closing on %s with %d games", market.Name, market.StartedAt, market.ClosedAt, len(games))
 	mgr.Orm.Save(&market)
 	for _, game := range games {
 		mktGame := models.GamesMarket{GameStatsId: game.StatsId, MarketId: market.Id}
@@ -119,7 +121,6 @@ func (mgr *FetchManager) refreshFetcher(games []*models.Game) {
 			mgr.Fetcher.NflSeason = games[i].SeasonType
 			mgr.Fetcher.NflSeasonWeek = games[i].SeasonWeek
 			mgr.Fetcher.Year = games[0].SeasonYear
-			break
 		}
 	}
 }
@@ -156,7 +157,7 @@ func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
 	POLLING_PERIOD := 30 * time.Second
 	currentSequenceNumber := -1
 	gameover := false
-	if game.GameTime.After(time.Now()) {
+	if game.GameTime.After(time.Now().Add(-250*time.Minute)) && game.Status != "closed" {
 		var poll = func() {}
 		poll = func() {
 			dirty := false
@@ -201,3 +202,9 @@ func (f *FetchManager) GetPlaySummary(awayTeam string, homeTeam string, playId s
   return parsers.ParseXml(f.FetchMethod(url), ParsePlaySummary).([]*models.StatEvent)
 }
 */
+
+type Games []*models.Game
+
+func (s Games) Len() int           { return len(s) }
+func (s Games) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s Games) Less(i, j int) bool { return s[j].GameTime.After(s[i].GameTime) }

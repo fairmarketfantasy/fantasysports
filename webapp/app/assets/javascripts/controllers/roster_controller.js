@@ -25,13 +25,12 @@ angular.module("app.controllers")
     });
   };
 
-  $scope.$watch('rosters.currentRoster.id', fetchPlayers);
-
-  if (!rosters.currentRoster && $routeParams.roster_id) {
+  $scope.$watch('$routeParams.roster_id', function() {
     rosters.fetch($routeParams.roster_id).then(function(roster) {
       rosters.selectRoster(roster);
+      fetchPlayers();
     });
-  }
+  });
 
   var fetchRoster = function() {
     if (!rosters.currentRoster) {
