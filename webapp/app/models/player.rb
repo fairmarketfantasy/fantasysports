@@ -33,6 +33,6 @@ class Player < ActiveRecord::Base
       "players.*, sell_prices.locked, sell_prices.purchase_price as purchase_price, sell_prices.sell_price as sell_price"
     ).joins( "JOIN sell_prices(#{roster.id}) as sell_prices on sell_prices.player_id = players.id" )
   }
-  scope :sellable, -> { where('sell_prices.locked != true' ) } # Must join market_players
+  scope :sellable, -> { where('sell_prices.locked != true' ) }
 
 end
