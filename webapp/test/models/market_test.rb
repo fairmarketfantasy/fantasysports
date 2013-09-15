@@ -2,10 +2,6 @@ require 'test_helper'
 
 class MarketTest < ActiveSupport::TestCase
 
-
-
-
-  #
   test "close" do
     setup_simple_market
     #put 3 rosters public h2h and 3 in a private h2h
@@ -28,7 +24,11 @@ class MarketTest < ActiveSupport::TestCase
     assert_equal 2, @market.contests.where("invitation_code is not null").length
 
     #close market, should move the one roster in the private contest to the public contest
-    @market.open.close.reload
+    @market.shadow_bets, @market.initial_shadow_bets = 0, 0
+    @market.save!
+    @market.open
+    assert_equal 'opened', @market.state
+    @market.close
 
     #should be 3 contests: two public, one private
     assert_equal 'closed', @market.state
@@ -48,16 +48,23 @@ class MarketTest < ActiveSupport::TestCase
   # test "players pulled out of markets when game happens" do
   test "lock players" do
     setup_multi_day_market
+    @market.shadow_bets, @market.shadow_bet_rate = 100, 1
+    @market.save!
     @market.publish.add_default_contests
+
+    assert_equal 100, @market.initial_shadow_bets
+    assert_equal 1, @market.shadow_bet_rate
 
     #find a $10 contest_type in the market's contest types
     contest_type = @market.contest_types.where(:buy_in => 10).first
     assert !contest_type.nil?, "contest type can't be nil"
 
-    #buy some players randomly
+    #buy some players randomly. plenty of bets
     20.times {
-      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly
+      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
     }
+
+    @market.reload
 
     #open the market. ensure that shadow bets are removed
     @market = @market.open
@@ -103,23 +110,38 @@ class MarketTest < ActiveSupport::TestCase
     setup_multi_day_market
     assert_equal 0, @market.players.length
 
-    @market.publish.add_default_contests
-    @market.reload
+    @market.shadow_bets = 100
+    @market.shadow_bet_rate = 1
+    @market.save!
+    
+    @market.publish.add_default_contests.reload
+
     assert_equal 36, @market.players.length
     assert @market.contest_types.size > 0, "should be some contest_types"
     assert @market.total_bets > 0
     assert_equal @market.shadow_bets, @market.total_bets
     assert @market.closed_at - @games[1].game_time - 5*60 < 60
 
-    #open the market. should remove the shadow bets
+    #open the market. should not remove the shadow bets and should not be open because not enough bets
     @market = @market.open
+    assert_equal "published", @market.state
+    assert @market.shadow_bets > 0
+
+    #buy some crap and then the market can be opened.
+    contest_type = @market.contest_types.first
+    refute_nil contest_type
+    contest_type.buy_in = 100
+    contest_type.save!
+    5.times {
+      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
+    }
+
+    @market.open
+
     # puts "market after open: #{@market.inspect}"
-    assert @market.shadow_bets == 0, "shadow bets 0"
-    assert @market.total_bets == 0, "bets 0"
+    assert @market.shadow_bets == 0, "shadow bets #{@market.shadow_bets}, #{@market.total_bets}, #{@market.shadow_bet_rate}"
+    assert @market.total_bets > 0, "bets 0"
     assert @market.state == "opened", "state is opened"
-    #even if there are 0 bets, it shouldn't throw an error if we get player prices
-    roster = create(:roster, :market => @market)
-    assert roster.purchasable_players.length == 36
 
     #close market
     @market.close

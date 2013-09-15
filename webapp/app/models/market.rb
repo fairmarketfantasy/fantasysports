@@ -22,17 +22,13 @@ class Market < ActiveRecord::Base
 
   #publish the market. returns the published market.
   def publish
-    published = Market.find_by_sql("select * from publish_market(#{self.id})")[0]
-    if published.state == 'published'
-      published.price_multiplier = published.players.size / 27
-      published.save!
-    end
+    Market.find_by_sql("select * from publish_market(#{self.id})")
     reload
     return self
   end
 
   def open
-    Market.find_by_sql("select * from open_market(#{self.id})")[0]
+    Market.find_by_sql("select * from open_market(#{self.id})")
     reload
     return self
   end
@@ -40,7 +36,7 @@ class Market < ActiveRecord::Base
   #look for players in games that have started and remove them from the market
   #and update the price multiplier
   def lock_players
-    Market.find_by_sql("SELECT * from lock_players(#{self.id})")[0]
+    Market.find_by_sql("SELECT * from lock_players(#{self.id})")
     return self
   end
 
@@ -137,6 +133,7 @@ class Market < ActiveRecord::Base
         )
       end
     end
+    return self
   end
 
   def reset_for_testing

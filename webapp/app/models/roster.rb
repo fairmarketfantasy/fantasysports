@@ -20,27 +20,26 @@ class Roster < ActiveRecord::Base
     Player.purchasable_for_roster(self)
   end
 
-  #create a roster
+  def sellable_players
+    Player.with_sell_prices(self).sellable
+  end
+
+  #create a roster. does not deduct funds until roster is submitted.
   def self.generate(user, contest_type)
 
     raise HttpException.new(409, "You may only have one roster in progress at a time.") if user.in_progress_roster
     raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
     raise HttpException.new(402, "Insufficient funds") unless user.can_charge?(contest_type.buy_in)
 
-    roster = nil
-    self.transaction do
-      roster = Roster.create!(
-        :owner_id => user.id,
-        :market_id => contest_type.market_id,
-        :contest_type_id => contest_type.id,
-        :buy_in => contest_type.buy_in,
-        :remaining_salary => 100000,
-        :state => 'in_progress',
-        :positions => Positions.for_sport_id(contest_type.market.sport_id),
-      )
-      user.customer_object.decrease_balance(contest_type.buy_in, 'buy_in', roster.id) if contest_type.buy_in > 0
-    end
-    roster
+     Roster.create!(
+      :owner_id => user.id,
+      :market_id => contest_type.market_id,
+      :contest_type_id => contest_type.id,
+      :buy_in => contest_type.buy_in,
+      :remaining_salary => 100000,
+      :state => 'in_progress',
+      :positions => Positions.for_sport_id(contest_type.market.sport_id),
+    )
   end
 
   def build_from_existing(roster)
@@ -52,8 +51,14 @@ class Roster < ActiveRecord::Base
   #set the state to 'submitted'. If it's in a private contest, increment the number of 
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!
-    self.with_lock do
-      raise "roster has already been submitted" if self.state == 'submitted'
+    #buy all the players on the roster. This sql function handles all of that.
+    self.transaction do
+
+      #purchase all the players and update roster state to submitted
+      Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
+      reload
+
+      #enter contest
       if self.contest.nil?
         #enter roster into public contest
         contest_type.with_lock do #prevents creation of contests of the same type at the same time
@@ -73,17 +78,21 @@ class Roster < ActiveRecord::Base
             end
           end
           self.contest = contest
+          self.save!
         end
-      else
+      else #contest not nil. enter private contest
         contest.with_lock do
           raise "contest #{contest.id} is full" if contest.num_rosters >= contest.user_cap
           contest.num_rosters += 1
           contest.save!
         end
       end
-      self.state = 'submitted'
-      self.submitted_at = Time.now
-      self.save!
+
+      #charge account
+      if contest_type.buy_in > 0
+        self.owner.customer_object.decrease_balance(self.contest_type.buy_in, 'buy_in', self.id) 
+      end
+
     end
     return self
   end

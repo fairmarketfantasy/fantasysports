@@ -13,8 +13,15 @@ class RosterTest < ActiveSupport::TestCase
     user1 = create(:user)
     user2 = create(:user)
     roster1 = Roster.generate(user1, h2h).submit!
+    roster1.reload
+    #should be in h2h contest
+    contest1 = roster1.contest
+    assert_equal roster1.contest_id, contest1.id
+    refute_nil contest1.rosters.first, "#{contest1.rosters.explain}"
+
+    #same user, same contest type
     roster2 = Roster.generate(user1, h2h).submit!
-    #they should be in different contests
+    #rosters should be in different contests
     refute_equal roster1.contest, roster2.contest
 
     roster3 = Roster.generate(user2, h2h).submit!
@@ -28,7 +35,7 @@ class RosterTest < ActiveSupport::TestCase
   end
 
 
-  test "submit" do
+  test "submit puts roster in contest" do
     #find head to head
     h2h_type = @market.contest_types.where("max_entries = 2").first
     roster = create(:roster, :market => @market, :contest_type => h2h_type)
@@ -65,9 +72,6 @@ class RosterTest < ActiveSupport::TestCase
     rescue
       #good
     end
-
-    
-
   end
 
   test "fill randomly" do
@@ -80,7 +84,7 @@ class RosterTest < ActiveSupport::TestCase
     #create a roster and have it buy things
     roster = create(:roster, :market => @market, :contest_type => contest_type)
     assert roster.purchasable_players.length == 36, "36 players for sale (9x4)"
-    roster.fill_randomly
+    roster.fill_randomly.submit!
     # roster.reload
     assert roster.players.length == 9, "roster should be filled, but only had #{roster.players.length}"
     assert roster.remaining_salary < 100000
@@ -88,6 +92,7 @@ class RosterTest < ActiveSupport::TestCase
    end
 
   test "adding or removing players from roster affects salary" do
+    @roster.submit!
     player = @roster.purchasable_players.first
     initial_cap = @roster.remaining_salary
     assert_difference('@roster.reload.remaining_salary.to_f', -player.buy_price) do
@@ -101,16 +106,38 @@ class RosterTest < ActiveSupport::TestCase
   end 
 
   #purchasing a player causes the price to go up
-  test "market affects player prices" do
+  test "purchasing a player affects prices" do
     player = @roster.purchasable_players.first
     @other_roster = create(:roster, :market => @market)
-    initial_salary = player.buy_price
+    initial_price = player.buy_price
     @roster.add_player player
+
+    #because the first roster has not been submitted, the price should not have changed
     player = @other_roster.purchasable_players.where(:id => player.id).first
-    assert player.buy_price > initial_salary
+    assert_equal initial_price, player.buy_price
+
+    @roster.submit!
+    assert_equal 'submitted', @roster.state
+    assert_equal 1, @roster.players.length
+    assert_equal 10, @roster.buy_in
+    @market.reload
+    market_player = @market.market_players.where("player_id = #{player.id}").first
+
+    #now the price of the player should be higher
+    player = @other_roster.purchasable_players.where(:id => player.id).first
+    assert player.buy_price > initial_price, "buy price: #{player.buy_price}, initial price: #{initial_price}"
+
     @roster.remove_player player
+    
+    #should be back to the original price
     player = @other_roster.purchasable_players.where(:id => player.id).first
-    assert_equal player.buy_price, initial_salary
+    assert_equal player.buy_price, initial_price
+
+    #purchasing with a submitted roster should shift prices
+    @roster.add_player player
+    #now the price of the player should be higher
+    player = @other_roster.purchasable_players.where(:id => player.id).first
+    assert player.buy_price > initial_price, "buy price: #{player.buy_price}, initial price: #{initial_price}"
   end
 
   test "creating and canceling roster affects account balance" do
@@ -118,8 +145,10 @@ class RosterTest < ActiveSupport::TestCase
     user.customer_object = create(:customer_object, user: user)
     initial_balance = user.customer_object.balance
     roster = nil
+    contest_type = @market.contest_types.where(:buy_in => 10).first
     assert_difference("TransactionRecord.count", 1) do
-      roster = Roster.generate(user, @market.contest_types.where(:buy_in => 10).first)
+      roster = Roster.generate(user, contest_type)
+      roster.submit!
     end
     assert_equal  initial_balance - 10, user.customer_object.reload.balance
     assert_difference("TransactionRecord.count", 1) do
@@ -129,6 +158,7 @@ class RosterTest < ActiveSupport::TestCase
   end
 
   test "cancelling roster cleans up after itself" do
+    @roster.submit!
     player = @roster.purchasable_players.first
     market = @roster.market
     market.reload
