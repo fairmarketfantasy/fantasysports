@@ -33,7 +33,7 @@
       <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses">
         <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
         <h2>{{contestClass}}</h2>
-        <p class="small-p">Every game should have a description that tells you about it. This is a placeholder for now!!</p>
+        <p class="small-p">{{contestClassDesc[contestClass]}}</p>
         <ul class="contests no-no">
           <li class="enter-contest" ng-repeat="contestType in contestTypes">
             <a class="btn btn-small btn-success btn-contest" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">Enter for {{ contestType.buy_in | centsToDollars }}</a>
