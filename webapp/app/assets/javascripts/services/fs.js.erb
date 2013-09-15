@@ -89,8 +89,8 @@ angular.module('app.services')
         login: function(user_attrs){
           return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});
         },
-        addMoney: function(amount){
-          return $http({method: 'POST', url: '/users/add_money', data: {amount: amount} });
+        addMoney: function(amount, card){
+          return $http({method: 'POST', url: '/users/add_money', data: {amount: amount, card: card} });
         }
       },
       recipients: {
