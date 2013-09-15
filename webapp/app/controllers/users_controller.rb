@@ -21,7 +21,7 @@ class UsersController < ApplicationController
     unless params[:amount]
       render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
     end
-    if current_user.recipients.first.transfer(params[:amount])
+    if current_user.recipient.transfer(params[:amount])
       render_api_response current_user
     end
   end

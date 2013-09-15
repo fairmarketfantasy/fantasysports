@@ -1,8 +1,8 @@
 class RecipientsController < ApplicationController
 
   def index
-    recipients = current_user.recipients
-    render_api_response recipients
+    recipient = current_user.recipient
+    render_api_response recipient || []
   end
 
   def create

@@ -115,7 +115,7 @@ FactoryGirl.define do
     factory :paid_user do
       after(:create) do |user|
         user.customer_object = create(:customer_object, user: user)
-        user.recipients  << create(:recipient, user: user)
+        user.recipient       = create(:recipient, user: user)
       end
     end
   end
