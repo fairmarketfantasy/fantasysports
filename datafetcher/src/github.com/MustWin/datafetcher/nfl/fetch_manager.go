@@ -5,6 +5,7 @@ import (
 	"github.com/MustWin/datafetcher/lib/model"
 	"github.com/MustWin/datafetcher/nfl/models"
 	"log"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -75,7 +76,8 @@ func appendForKey(key string, markets map[string][]*models.Game, value *models.G
 	markets[key] = append(markets[key], value)
 }
 
-func (mgr *FetchManager) createMarket(name string, games []*models.Game) {
+func (mgr *FetchManager) createMarket(name string, games Games) {
+	sort.Sort(games)
 	market := models.Market{}
 	market.Name = name
 	market.ShadowBets = 1000
@@ -84,7 +86,7 @@ func (mgr *FetchManager) createMarket(name string, games []*models.Game) {
 	market.OpenedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
 	market.StartedAt = games[0].GameTime.Add(-5 * time.Minute)           // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
 	market.ClosedAt = games[len(games)-1].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
-	log.Printf("Creating market %s closing on %s with %d games", market.Name, market.ClosedAt, len(games))
+	log.Printf("Creating market %s starting at %s and closing on %s with %d games", market.Name, market.StartedAt, market.ClosedAt, len(games))
 	mgr.Orm.Save(&market)
 	for _, game := range games {
 		mktGame := models.GamesMarket{GameStatsId: game.StatsId, MarketId: market.Id}
@@ -200,3 +202,9 @@ func (f *FetchManager) GetPlaySummary(awayTeam string, homeTeam string, playId s
   return parsers.ParseXml(f.FetchMethod(url), ParsePlaySummary).([]*models.StatEvent)
 }
 */
+
+type Games []*models.Game
+
+func (s Games) Len() int           { return len(s) }
+func (s Games) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s Games) Less(i, j int) bool { return s[j].GameTime.After(s[i].GameTime) }
