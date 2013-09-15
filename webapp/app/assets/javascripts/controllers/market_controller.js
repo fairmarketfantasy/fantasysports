@@ -33,7 +33,7 @@ angular.module("app.controllers")
     'h2h': "Challenge your friends to head to head games and channel some truly intimate aggression.",
     '194': "Top half doubles their money - all you have to do is be better than average.  You are that, right?",
     '970': "High stakes, winner takes all. This is for the true champions.",
-    '100k': "This is our Lollapalooza.  It's like a lottery, because you win lots of money.  Except that LOTS of people win lots of money.",
+    '100k': "THE LOLLAPALOOZA.  It's like a lottery, because you win lots of money.",
   };
 
   $scope.day = function(timeStr) {
