@@ -1,6 +1,6 @@
 <div ng-controller="MarketController">
   <ul class="clearfix market-list no-no">
-    <li class="market" ng-repeat="market in marketService.upcoming.slice(0, 2)" ng-class="{ highlight: isCurrent(market) }">
+    <li class="market" ng-repeat="market in marketService.upcoming" ng-class="{ highlight: isCurrent(market) }">
       <a href="#/market/{{market.id}}" class="market-link" ng-hide="!market.name">
         <strong>{{market.name}}</strong><br /> 
         {{market.started_at | shortFormTime}} 
