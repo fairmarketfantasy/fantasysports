@@ -23,17 +23,23 @@
   </div>
 
   <ul>
-    <li><a href="javascript://" ng-click="filter = 'positions'">Positions</a></li>
-    <li><a href="javascript://" ng-click="filter = 'games'">Games</a></li>
-    <li><a href="javascript://" ng-click="filter = 'search'">Search</a></li>
+    <li ng-class="{'selected-filter': filter =='positions'}"><a href="javascript://" ng-click="filter = 'positions'">Positions</a></li>
+    <li ng-class="{'selected-filter': filter =='games'}"><a href="javascript://" ng-click="filter = 'games'">Games</a></li>
+    <li ng-class="{'selected-filter': filter =='search'}"><a href="javascript://" ng-click="filter = 'search'">Search</a></li>
   </ul>
 
   <div class="team-selection clearfix">
     <div class="players">
       <input ng-show="filter == 'search'" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name})"/>
-      
-      <select ng-show="filter == 'games'" ng-options="game as (game.away_team + ' @ ' + game.home_team) for game in games" ng-model="game" ng-change="filterPlayers({game: game.id})">
-      </select>
+
+      <div class="dropdown" ng-show="filter == 'games'">
+        <button class="btn btn-primary btn-huge" dropdown-toggle="game-dropdown">Games<span class="caret"></span></button>
+        <ul class="dropdown-menu dropdown-inverse">
+          <li ng-repeat="game in notStartedGames()" ng-model="game">
+            <a href="javascript://" ng-click="filterPlayers({game: game.id})">{{game.away_team}} @ {{game.home_team}}</a>
+          </li>
+        </ul>
+      </div>
 
       <ul ng-show="filter == 'positions'" class="positions-list clearfix">
         <li class="position-item" ng-repeat="position in rosters.uniqPositionList">

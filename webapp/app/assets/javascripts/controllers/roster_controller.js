@@ -76,6 +76,12 @@ angular.module("app.controllers")
     return _.map(teamsToGames, function(game, team) { return team; });
   };
 
+  $scope.notStartedGames = function() {
+    return _.filter($scope.games, function(game) {
+      return !$scope.gameStarted(game);
+    });
+  };
+
 }]);
 
 
