@@ -78,7 +78,8 @@
           <img ng-src="{{currentUser.image_url}}" class='user-avatar'/>
           <div class="user-info">
             <span class="user-name">{{ currentUser.name }}</span>
-            <%= link_to '(sign out)', destroy_user_session_path, class: 'user-logout txt-red-hover' %>
+            <a href="javascript://" class='txt-white txt-red-hover'>settings</a><br />
+            <%= link_to 'sign out', destroy_user_session_path, class: 'user-logout txt-red-hover' %>
           </div>
         </div>
         <div class="user-dash clearfix">
@@ -102,10 +103,11 @@
         <div class="span3 user-navigation">
           <ul class="nav">
             <li class="nav-item">Home</li>
-            <li class="nav-item">Fantasy Games</li>
+            <li class="nav-item">Live Contests</li>
+            <li class="nav-item">History</li>
             <li class="nav-item">Rules and Scoring</li>
             <li class="nav-item">Promos</li>
-            <li class="nav-item">Leaderboard</li>
+            <li class="nav-item">Legal Info</li>
             <li class="nav-item end">Support</li>
           </ul>
         </div>
