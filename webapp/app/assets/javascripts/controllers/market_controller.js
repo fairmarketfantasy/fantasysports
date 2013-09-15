@@ -33,7 +33,6 @@ angular.module("app.controllers")
   $scope.joinContest = function(contestType) {
     $scope.fs.contests.join(contestType.id, rosters.justSubmittedRoster && rosters.justSubmittedRoster.id).then(function(data){
       rosters.selectRoster(data);
-      $scope.currentUser.balance -= data.buy_in;
       $location.path('/market/' + marketService.currentMarket.id + '/roster/' + data.id);
     });
   };

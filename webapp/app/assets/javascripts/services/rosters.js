@@ -1,5 +1,5 @@
 angular.module('app.data')
-  .factory('rosters', ['fs', '$q', '$location', 'flash', function(fs, $q, $location, flash) {
+  .factory('rosters', ['fs', '$q', '$location', 'flash', 'currentUserService', function(fs, $q, $location, flash, currentUserService) {
     var rosterData = {};
     return new function() {
       var fetchRoster = function(id) {
@@ -94,12 +94,13 @@ angular.module('app.data')
         if (path) {
           $location.path(path);
         }
-      }
+      };
 
       this.submit = function() {
         var self = this;
         fs.rosters.submit(this.currentRoster.id).then(function(roster) {
           $location.path('/market/' + self.currentRoster.market_id);
+          currentUserService.currentUser.balance -= roster.buy_in;
           self.reset();
           self.justSubmittedRoster = roster;
         });
@@ -115,7 +116,6 @@ angular.module('app.data')
         this.currentRoster = null;
         fs.rosters.cancel(currentRoster.id).then(function(data) {
           delete rosterData[currentRoster.id];
-          window.App.currentUser.balance += currentRoster.buy_in;
           self.reset();
           $location.path('/market/' + currentRoster.market_id);
         });
