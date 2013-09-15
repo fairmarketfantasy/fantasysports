@@ -1,6 +1,6 @@
 <div ng-controller="MarketController">
   <ul class="clearfix market-list no-no">
-    <li class="market" ng-repeat="market in marketService.upcoming">
+    <li class="market" ng-repeat="market in marketService.upcoming.slice(0, 2)" ng-class="{ highlight: isCurrent(market) }">
       <a href="#/market/{{market.id}}" class="market-link" ng-hide="!market.name">
         <strong>{{market.name}}</strong><br /> 
         {{market.started_at | shortFormTime}} 
@@ -31,7 +31,7 @@
       <!-- all these ng-clicks to joinContest, need to pass in  contest_type_id
           instead of the string '100k' or '970' or '194', etc-->
       <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses">
-        <img src="/assets/icon-{{contestClass}}.png" class="contest-image" />
+        <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
         <h2>{{contestClass}}</h2>
         <p class="small-p">Every game should have a description that tells you about it. This is a placeholder for now!!</p>
         <ul class="contests no-no">

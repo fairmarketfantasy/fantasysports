@@ -2,8 +2,12 @@ angular.module("app.controllers")
 .controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', function($scope, rosters, $routeParams, $location, marketService) {
   $scope.marketService = marketService;
 
-  marketService.fetchUpcoming($routeParams.market_id)
+  marketService.fetchUpcoming($routeParams.market_id);
   $scope.rosters = rosters;
+
+  $scope.isCurrent = function(market){
+    return (market.id === marketService.currentMarket.id);
+  };
 
   var reloadMarket = function() {
     if (!marketService.currentMarket) {
