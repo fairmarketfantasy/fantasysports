@@ -2,10 +2,10 @@
 <ul>
   <li ng-repeat="roster in rosters.mine()">
     <a href="#/market/{{roster.market_id}}/roster/{{roster.id}}" title="{{roster.contest_type.description}}">
-      ${{roster.buy_in}} {{roster.contest_type.name}} - 
+      {{roster.buy_in | centsToDollars }} {{roster.contest_type.name}} - 
       <span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span>
       <span ng-show="roster.live">Score: {{roster.score || 0 }}</span>
-      <span ng-show="roster.live">Place: {{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries}}</span>
+      <span ng-show="roster.live">Place: {{roster.contest_rank | ordinal}} of {{roster.contest.num_rosters}}</span>
     </a>
   </li>
 </ul>
