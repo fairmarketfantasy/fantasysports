@@ -39,8 +39,8 @@ $$ LANGUAGE SQL;
 DROP FUNCTION sell_prices(integer);
 
 CREATE OR REPLACE FUNCTION sell_prices(_roster_id integer)
-RETURNS TABLE(roster_player_id integer, player_id integer, sell_price numeric, purchase_price numeric, locked boolean) AS $$
-	SELECT rp.id, mp.player_id, price(mp.bets, m.total_bets, 0, m.price_multiplier), rp.purchase_price, mp.locked
+RETURNS TABLE(roster_player_id integer, player_id integer, sell_price numeric, purchase_price numeric, locked boolean, score integer) AS $$
+	SELECT rp.id, mp.player_id, price(mp.bets, m.total_bets, 0, m.price_multiplier), rp.purchase_price, mp.locked, mp.score
 	FROM market_players mp, markets m, rosters_players rp, rosters r
 	WHERE
 		r.id = $1 AND
@@ -429,7 +429,7 @@ BEGIN
 		--update the price multiplier
 		update markets set 
 			total_bets = total_bets - _locked_bets, 
-			price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
+			price_multiplier = price_multiplier * (total_bets - _locked_bets) / MAX(total_bets, 1)
 			WHERE id = _market_id returning * into _market;
 	END IF;
 	
