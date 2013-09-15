@@ -62,6 +62,11 @@ class CustomerObject < ActiveRecord::Base
     end
   end
 
+  def set_default_card(card_id)
+    stripe_object.default_card = card_id
+    stripe_object.save
+  end
+
   def balance_in_dollars
     sprintf( '%.2f', (balance/100) )
   end
