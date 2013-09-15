@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
     user.update_attributes(
       name:      auth.extra.raw_info.name,
       email:     auth.info.email,
-      image_url: auth.info.image,
+      image_url: auth.info.image.gsub('http', 'https'),
       password:  Devise.friendly_token[0,20]
     )
     user
@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
       self[:image_url]
     else
       gravatar_id = Digest::MD5.hexdigest(email.downcase)
-      "http://www.gravatar.com/avatar/#{gravatar_id}"
+      "https://www.gravatar.com/avatar/#{gravatar_id}"
     end
   end
 

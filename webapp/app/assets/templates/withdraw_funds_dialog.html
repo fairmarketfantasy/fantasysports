@@ -1,0 +1,15 @@
+<div class='modal-header'>
+  <h3 class='inline-block'>Your Bank Account</h3>
+  <p class='inline-block pull-right'>
+    Balance: <span class='balance'>${{ currentUser.balance }}</span>
+  </p>
+</div>
+<div class='mal centered' ng-hide='loaded'>
+  <img src='/assets/ajax-loader-big.gif'>
+</div>
+<div class='modal-body' ng-show='loaded'>
+
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn" ng-click="close()">close</a>
+</div>
