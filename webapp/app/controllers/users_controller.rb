@@ -14,4 +14,14 @@ class UsersController < ApplicationController
       render_api_response current_user
     end
   end
+
+  def withdraw_money
+    authenticate_user!
+    unless params[:amount]
+      render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
+    end
+    if current_user.recipients.first.transfer(params[:amount])
+      render_api_response current_user
+    end
+  end
 end
