@@ -55,9 +55,8 @@ angular.module("app.controllers")
       $scope.cvcError = true;
       $scope.errorMessage = "CVC code doesn't look right";
       return false;
-    }else if(!Stripe.card.validateExpiry(cardInfo.exp_month, cardInfo.exp_year)){
-      $scope.expError = true;
-      $scope.errorMessage = "Expiration doesn't look right";
+    } else if(cardInfo.address_zip.length !== 5){
+      $scope.errorMessage = "Zip code doesn't look right";
       return false;
     } else {
       return true;
@@ -78,6 +77,10 @@ angular.module("app.controllers")
       });
     }
   };
+
+  $scope.$watch('cardInfo.number', function(){
+    $scope.cardInfo.number = $scope.cardInfo.number && $scope.cardInfo.number.match(/\d{4}(?=\d{2,3})|\d+/g).join("-");
+  });
 
   $scope.addFunds = function(){
     var amt = ($scope.chargeAmt * 100); //dollars to cents
