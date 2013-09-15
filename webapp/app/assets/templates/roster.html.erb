@@ -1,5 +1,4 @@
 <div ng-show="rosters.currentRoster">
-  <p class="hide">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest_type.max_entries}}</p>
   <div class="contest-info">
     <div class="relative clearfix">
       <a href="#/" class="btn btn-inverse btn-cancel-entry" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
@@ -12,6 +11,7 @@
           <li>Entries: {{rosters.currentRoster.contest_type.max_entries}}</li>
           <li>Buy-in: ${{rosters.currentRoster.contest_type.buy_in}}</li>
           <li>Format: Winner take all
+          <li ng-show="rosters.currentRoster.contest_rank">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest_type.max_entries}}</li>
       </div>
     </div>
 
