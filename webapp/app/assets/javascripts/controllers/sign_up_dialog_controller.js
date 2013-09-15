@@ -2,10 +2,14 @@ angular.module("app.controllers")
 .controller('SignUpDialogController', ['$scope', 'dialog', 'fs', function($scope, dialog, fs) {
   $scope.user = $scope.user || {};
   $scope.signInForm = false;
+
   $scope.signUp = function() {
     fs.user.create($scope.user).then(function(resp){
-      // console.log(resp);
-      window.location.reload(true);
+      if(resp.error){
+        $scope.errorMessage = resp.error[0];
+      } else {
+        window.location.reload(true);
+      }
     });
   };
 

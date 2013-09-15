@@ -19,7 +19,7 @@ class OtherRoutesTest < ActionDispatch::IntegrationTest
   end
 
   test "post to /users route" do
-    assert_routing({path: "/users", method: :post}, {controller: "devise/registrations", action: "create"})
+    assert_routing({path: "/users", method: :post}, {controller: "users/registrations", action: "create"})
   end
 
   test "post to /users/add_money" do
