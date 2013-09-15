@@ -11,7 +11,7 @@ angular.module('app', [
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
       when('/', {templateUrl: '<%= path_to_asset("home.html") %>', controller: 'HomeController'}).
-      when('/market/:market_id/roster/:roster_id', {templateUrl: '<%= path_to_asset("roster.html") %> ', controller: 'RosterController'}).
+      when('/market/:market_id/roster/:roster_id', {templateUrl: '<%= path_to_asset("roster.html") %>', controller: 'RosterController'}).
       when('/market/:market_id', {templateUrl: '<%= path_to_asset("home.html") %> ', controller: 'HomeController'}).
       when('/account', {templateUrl: '<%= path_to_asset("account.html") %>', controller: 'AccountController'}).
     //...
