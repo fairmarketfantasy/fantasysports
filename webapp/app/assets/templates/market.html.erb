@@ -36,7 +36,7 @@
         <p class="small-p">Every game should have a description that tells you about it. This is a placeholder for now!!</p>
         <ul class="contests no-no">
           <li class="enter-contest" ng-repeat="contestType in contestTypes">
-          <a class="btn btn-small btn-success btn-contest" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">Enter for {{ contestType.buy_in | freeIfZero }}</a>
+            <a class="btn btn-small btn-success btn-contest" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">Enter for {{ contestType.buy_in | centsToDollars }}</a>
           </li>
         </ul>
       </li>
