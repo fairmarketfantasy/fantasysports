@@ -67,10 +67,7 @@ def open_markets
 	markets = Market.where("state = 'published'")
 	markets.each do |market|
 		puts "#{Time.now} -- opening market #{market.id}"
-    market = market.open
-    if market.state = 'opened'
-      market.notify_market_open_event
-    end
+    market.open
 	end
 end
 

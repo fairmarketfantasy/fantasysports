@@ -81,11 +81,6 @@ class Market < ActiveRecord::Base
     return self
   end
 
-  def notify_market_open_event
-    puts "THE MARKET IS OPEN! TELL EVERYONE"
-    # TODO: tell everyone
-  end
-
   #if a market is closed and all its games are over, then 'complete' the market
   #by dishing out funds and such
   def complete
