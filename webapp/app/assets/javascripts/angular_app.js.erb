@@ -13,7 +13,6 @@ angular.module('app', [
       when('/', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
       when('/market/:market_id', {templateUrl: '/home.html', controller: 'HomeController'}).
-      when('/account', {templateUrl: "/account.html", controller: 'AccountController'}).
     //...
       otherwise({redirectTo: '/'});
   }])
