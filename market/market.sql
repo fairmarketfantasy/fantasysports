@@ -51,6 +51,7 @@ $$ LANGUAGE SQL;
 ------------------------------------------ SUBMIT ROSTER ---------------------------------------
 
 -- buy all the players in rosters_players
+DROP FUNCTION submit_roster(integer);
 CREATE OR REPLACE FUNCTION submit_roster(_roster_id integer) RETURNS VOID AS $$
 DECLARE
 	_roster rosters;
@@ -111,24 +112,23 @@ $$ LANGUAGE plpgsql;
 
 /* buy a player for a roster */
 DROP FUNCTION buy(integer, integer);
-CREATE OR REPLACE FUNCTION buy(_roster_id integer, _player_id integer) RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION buy(_roster_id integer, _player_id integer, OUT _price numeric) RETURNS numeric AS $$
 DECLARE
 	_roster rosters;
 	_market_player market_players;
 	_market markets;
-	_price numeric;
 BEGIN
 	SELECT * FROM rosters WHERE id = _roster_id INTO _roster FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'roster % does not exist', _roster_id;
 	END IF;
 
-	--if the roster is in progress, we can just add the player to the roster without locking on the market
-	IF _roster.state = 'in_progress' THEN
-		INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id) 
-			values (_player_id, _roster_id, 0, _market_player.player_stats_id, _roster.market_id);
-		RETURN;
+	SELECT * FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
+			(locked_at is null or locked_at > CURRENT_TIMESTAMP) INTO _market_player;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'player % is locked or nonexistent', _player_id;
 	END IF;
+
 
 	-- Check if roster already has player.
 	--A PERFORM statement sets FOUND true if it produces (and discards) one or more rows, false if no row is produced.
@@ -145,22 +145,20 @@ BEGIN
 		RAISE EXCEPTION 'market % is unavailable', _roster.market_id;
 	END IF;
 
-	SELECT * FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
-			(locked_at is null or locked_at > CURRENT_TIMESTAMP) INTO _market_player;
-	IF NOT FOUND THEN
-		RAISE EXCEPTION 'player % is locked or nonexistent', _player_id;
-	END IF;
-
 	SELECT price(_market_player.bets, _market.total_bets, _roster.buy_in, _market.price_multiplier) INTO _price;
 
-	--perform the updates.
+	--if the roster is in progress, we can just add the player to the roster without locking on the market
 	INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id) 
-		values  (_player_id, _roster_id, _price, _market_player.player_stats_id, _market.id);
-	UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
-	UPDATE market_players SET bets = bets + _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
-	UPDATE rosters SET remaining_salary = remaining_salary - _price WHERE id = _roster_id;
-	INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
-		   VALUES (_roster.market_id, _roster_id, 'buy', _player_id, _price);
+		VALUES (_player_id, _roster_id, _price, _market_player.player_stats_id, _market.id);
+
+	IF _roster.state = 'submitted' THEN
+		--perform the updates.
+		UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
+		UPDATE market_players SET bets = bets + _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
+		UPDATE rosters SET remaining_salary = remaining_salary - _price WHERE id = _roster_id;
+		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
+			   VALUES (_roster.market_id, _roster_id, 'buy', _player_id, _price);
+	END IF;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -168,22 +166,15 @@ $$ LANGUAGE plpgsql;
 
 /* sell a player on a roster */
 DROP FUNCTION sell(integer, integer);
-CREATE OR REPLACE FUNCTION sell(_roster_id integer, _player_id integer) RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION sell(_roster_id integer, _player_id integer, OUT _price numeric) RETURNS numeric AS $$
 DECLARE
 	_roster rosters;
 	_bets numeric;
 	_market markets;
-	_price numeric;
 BEGIN
 	SELECT * from rosters WHERE id = _roster_id INTO _roster FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'roster % does not exist', _roster_id;
-	END IF;
-
-	--if in progress, simply remove from roster and exit stage left
-	IF _roster.state = 'in_progress' THEN
-		DELETE FROM rosters_players where roster_id = _roster_id AND player_id = _player_id;
-		RETURN;
 	END IF;
 
 	-- Check if roster has the player.
@@ -214,13 +205,18 @@ BEGIN
 		RAISE EXCEPTION 'unknown market state, panic!';
 	END IF;
 
-	--perform the updates.
-	DELETE FROM rosters_players WHERE player_id = _player_id AND roster_id = _roster_id;
-	UPDATE markets SET total_bets = total_bets - _roster.buy_in WHERE id = _roster.market_id;
-	UPDATE market_players SET bets = bets - _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
-	UPDATE rosters set remaining_salary = remaining_salary + _price where id = _roster_id;
-	INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
-	  	VALUES (_roster.market_id, _roster_id, 'sell', _player_id, _price);
+	--if in progress, simply remove from roster and exit stage left
+	DELETE FROM rosters_players where roster_id = _roster_id AND player_id = _player_id;
+
+	IF _roster.state = 'submitted' THEN
+		--perform the updates.
+		UPDATE markets SET total_bets = total_bets - _roster.buy_in WHERE id = _roster.market_id;
+		UPDATE market_players SET bets = bets - _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
+		UPDATE rosters set remaining_salary = remaining_salary + _price where id = _roster_id;
+		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
+		  	VALUES (_roster.market_id, _roster_id, 'sell', _player_id, _price);
+	END IF;
+
 END;
 $$ LANGUAGE plpgsql;
 
@@ -242,6 +238,16 @@ BEGIN
 		RAISE EXCEPTION 'market % is not publishable', _market_id;
 	END IF;
 
+	--update player points and stuff in preparation for shadow bets
+	WITH 
+		total_points as (select player_stats_id, sum(point_value) as points from stat_events group by player_stats_id),
+		total_games as (select player_stats_id, count(distinct(game_stats_id)) as games from stat_events group by player_stats_id)
+		UPDATE players SET total_games = total_games.games, total_points = total_points.points
+		FROM total_points, total_games
+		WHERE 
+			players.stats_id = total_points.player_stats_id AND 
+			players.stats_id = total_games.player_stats_id;
+
 	--check that shadow_bets is something reasonable
 	IF _market.shadow_bets = 0 THEN
 		RAISE NOTICE 'shadow bets is 0, setting to 1000';
@@ -254,13 +260,16 @@ BEGIN
 	END IF;
 
 	--just to be safe, re-set the total bets to shadow bets
-	UPDATE markets set total_bets = shadow_bets, initial_shadow_bets = shadow_bets, price_multiplier = 1 WHERE id = _market_id;
+	UPDATE markets SET 
+		total_bets = shadow_bets, initial_shadow_bets = shadow_bets, price_multiplier = 1 
+		WHERE id = _market_id;
 
-	--ensure that the market has games and the games have players
-	PERFORM game_stats_id from games_markets WHERE market_id = _market_id;
+	--ensure that the market has at least 1 game that has not yet started
+	PERFORM 1 FROM games_markets gm JOIN games g on g.stats_id = gm.game_stats_id
+		WHERE market_id = _market_id AND g.game_time > CURRENT_TIMESTAMP;
 	IF NOT FOUND THEN
 		UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP WHERE id = _market_id;
-		RAISE NOTICE 'market % has no associated games -- will be closed', _market_id;
+		RAISE NOTICE 'market % has no upcoming games -- will be closed', _market_id;
 		return;
 	END IF;
 
@@ -268,7 +277,7 @@ BEGIN
 	--TODO: this is nice for dev and testing but may be a little dangerous in production
 	DELETE FROM market_players WHERE market_id = _market_id;
 	DELETE FROM market_orders WHERE market_id = _market_id;
-	DELETE FROM rosters_players WHERE roster_id IN (SELECT roster_id FROM rosters WHERE market_id = _market_id);
+	DELETE FROM rosters_players WHERE market_id = _market_id;
 	DELETE FROM rosters WHERE market_id = _market_id;
 
 	--get the total ppg. use ghetto lagrangian filtering
@@ -329,6 +338,7 @@ BEGIN
 		RAISE EXCEPTION 'market % is not openable', _market_id;
 	END IF;
 
+
 	--adjust shadow bets:
 	--if it's time to open the market, simply remove remaining shadow bets
 	--else, ensure that the total number of shadow bets removed from the initial
@@ -336,6 +346,13 @@ BEGIN
 	--is the shadow_bet_rate
 	_real_bets = _market.total_bets - _market.shadow_bets;
 	_new_shadow_bets = GREATEST(0, _market.initial_shadow_bets - _real_bets * _market.shadow_bet_rate);
+
+	--if the market is published but all games have started, open it so that we can close it properly
+	PERFORM 1 FROM games_markets gm JOIN games g on g.stats_id = gm.game_stats_id
+		WHERE market_id = _market_id AND g.game_time > CURRENT_TIMESTAMP;
+	IF NOT FOUND THEN
+		_new_shadow_bets = 0;
+	END IF;
 
 	--don't bother with the update if the change is miniscule
 	IF _new_shadow_bets != 0 AND _market.shadow_bets - _new_shadow_bets < 10 THEN

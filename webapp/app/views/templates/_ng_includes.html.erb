@@ -1,0 +1,10 @@
+<% Dir.glob(File.join(File.dirname(__FILE__), '/*')).each do |file| %>
+  <% file = File.basename(file)
+     no_erb_file = file.gsub(/\.erb$/, '').gsub(/^_/, '')
+     partial = 'templates/' + no_erb_file.gsub(/\.html$/, '')
+     next if file[0..2] == '_ng'
+  %>
+  <script type="text/ng-template" id="/<%= no_erb_file %>">
+    <%= render :partial => partial %>
+  </script>
+<% end %>
