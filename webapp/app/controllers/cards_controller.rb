@@ -9,17 +9,17 @@ class CardsController < ApplicationController
   end
 
   def create
-    # begin
+    begin
       if customer_object = current_user.customer_object
         customer_object.add_a_card(params[:token])
       else
         customer_object = CustomerObject.create(user: current_user, token: params[:token])
       end
       render_api_response customer_object.reload
-    # rescue => e
-    #   msg = e.try(:message)
-    #   render json: {error: msg || e}
-    # end
+    rescue => e
+      msg = e.try(:message)
+      render json: {error: msg || e}, status: :ok
+    end
   end
 
   def destroy

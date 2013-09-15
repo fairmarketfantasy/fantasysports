@@ -4,7 +4,7 @@
     Balance: <span class='balance'>${{ currentUser.balance }}</span>
   </p>
 </div>
-<div class='mal mal centered' ng-hide='loaded'>
+<div class='mal centered' ng-hide='loaded'>
   <img src='/assets/ajax-loader-big.gif'>
 </div>
 <div class='modal-body' ng-show='loaded'>
@@ -18,7 +18,7 @@
     </div>
     <div class='clearfix'>
       <ul class='unstlyed card-list no-no'>
-        <li class='inline-block pas card' ng-repeat="card in cards" ng-class="{default: card.default}">
+        <li class='inline-block card' ng-repeat="card in cards" ng-class="{default: card.default}">
           <div class='card-token'>
             <div class='relative pull-right delete-card'>
               <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
