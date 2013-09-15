@@ -2,6 +2,42 @@ require 'test_helper'
 
 class MarketTest < ActiveSupport::TestCase
 
+  test "open if all games started" do
+    setup_multi_day_market
+
+    @market.publish
+    assert_equal 'published', @market.state
+
+    #open does nothing because no one has bet
+    @market.open
+    assert_equal 'published', @market.state
+
+    #days pass, no one cares
+    @games.each do |game|
+      game.game_day = game.game_time = Time.now.yesterday
+      game.save!
+    end
+
+    @market.open
+    #because both games are over, it should open despite lack of bets
+    assert_equal 'opened', @market.state
+
+    @market.close
+    assert_equal 'closed', @market.state
+  end
+
+  test "close on publish if all games started" do
+    setup_multi_day_market
+    @games.each do |game|
+      game.game_day = game.game_time = Time.now.yesterday
+      game.save!
+    end
+
+    @market.publish
+    #because both games are over, should be closed
+    assert_equal 'closed', @market.state
+  end
+
   test "close" do
     setup_simple_market
     #put 3 rosters public h2h and 3 in a private h2h

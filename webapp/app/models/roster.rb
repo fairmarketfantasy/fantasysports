@@ -98,11 +98,15 @@ class Roster < ActiveRecord::Base
   end
 
   def add_player(player)
-    MarketOrder.buy_player(self, player)
+    exec_price("SELECT * from buy(#{self.id}, #{player.id})")
   end
 
   def remove_player(player)
-    MarketOrder.sell_player(self, player)
+    exec_price("SELECT * from sell(#{self.id}, #{player.id})")
+  end
+
+  def exec_price(sql)
+    Integer(ActiveRecord::Base.connection.execute(sql).first['_price'])
   end
 
   def cleanup
