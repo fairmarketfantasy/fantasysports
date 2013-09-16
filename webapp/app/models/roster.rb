@@ -16,6 +16,10 @@ class Roster < ActiveRecord::Base
 
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
 
+  def players_with_prices
+    Player.find_by_sql("select * from roster_prices(#{self.id})")
+  end
+
   def purchasable_players
     Player.purchasable_for_roster(self)
   end
@@ -110,9 +114,12 @@ class Roster < ActiveRecord::Base
   end
 
   def cleanup
-    players.each{|p| remove_player(p) }
-    market_orders.destroy_all
-    owner.customer_object.increase_balance(self.buy_in, 'canceled_roster')
+    self.with_lock do
+      if self.state == 'submitted'
+        self.owner.customer_object.increase_balance(self.buy_in, 'canceled_roster')
+      end
+      Roster.find_by_sql("select * from cancel_roster(#{self.id})")
+    end
   end
 
   def live?
