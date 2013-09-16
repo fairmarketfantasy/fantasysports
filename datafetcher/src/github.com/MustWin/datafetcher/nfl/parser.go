@@ -300,7 +300,6 @@ func defenseParser(state *ParseState) *models.StatEvent {
 	sackf, _ := strconv.ParseFloat(state.CurrentElementAttr("sack"), 64)
 	sack := int(sackf)
 	pointValue := float64(3*(int_touchdowns+fum_touchdowns) + 2*interceptions + 2*fumble_recoveries + 2*safeties + 1*sack)
-	log.Println(pointValue)
 	state.DefenseStat.PointValue += pointValue
 	if state.DefenseStatReturned == false {
 		state.DefenseStatReturned = true

@@ -1,6 +1,6 @@
-<div class="entries-container">
+<div ng-hide="!rosters.mine().length" class="entries-container">
   <div class="roster-title">  
-    <h3 ng-show="!rosters.mine.length">Your Entries</h3>
+    <h3 >Your Entries</h3>
   </div>
   
   <ul class="roster-list clearfix">
@@ -15,7 +15,7 @@
   </ul>
 </div>
 
-<div class="market-container">
+<div class="market-container" ng-class="{ roundTop: !rosters.mine().length }">
   <div class="market-title">  
     <h3>Upcoming Contests</h3>
   </div>

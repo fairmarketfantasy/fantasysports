@@ -115,12 +115,17 @@ FactoryGirl.define do
     factory :paid_user do
       after(:create) do |user|
         user.customer_object = create(:customer_object, user: user)
+        user.recipient       = create(:recipient, user: user)
       end
     end
   end
 
   factory :customer_object do
     balance 10000
+    token { generate(:random_string) }
+  end
+
+  factory :recipient do
     token { generate(:random_string) }
   end
 
@@ -173,7 +178,7 @@ FactoryGirl.define do
   end
 
   factory :new_market, class: Market do
-    shadow_bets 1000
+    shadow_bets 100000
     shadow_bet_rate 0.5
     published_at Time.now - 4000
     opened_at Time.now - 1000

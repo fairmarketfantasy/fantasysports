@@ -353,18 +353,43 @@ header {
   margin: 10px 0;
 }
 
+/* Withdraw Funds Dialog */
+.account-number {
+  margin: 10px 0;
+}
+.account-routing {
+  margin: 10px 0;
+}
+.account-name {
+  margin: 10px 0;
+}
+.account-create {
+  margin: 10px 0;
+}
+.recipient {
+  background: mix(@firm, @alert-bg, 5%);
+  padding: 10px;
+  .border-radius(4px);
+  display: inline-block;
+  border: 2px solid mix(@firm, @alert-border, 5%);
+}
+.withdraw-amount {
+  width: 50px;
+}
 /* Games */
 .market-container, .contest-info {
   border: 2px solid @grayLight;
   border-top: 0;
   .border-radius(0 0 4px 4px);
-
 }
 .contest-info {
   background-color: @offWhite;
   padding: 5px;
   margin-bottom: 10px;
   position: relative;
+}
+.roundTop {
+  .border-radius(4px);
 }
 .market-title, .roster-title {
   width: 96%;

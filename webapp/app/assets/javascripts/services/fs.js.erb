@@ -91,6 +91,9 @@ angular.module('app.services')
         },
         addMoney: function(amount, card){
           return $http({method: 'POST', url: '/users/add_money', data: {amount: amount, card_id: card} });
+        },
+        withdrawMoney: function(amount){
+          return $http({method: 'POST', url: '/users/withdraw_money', data: {amount: amount} })
         }
       },
       recipients: {

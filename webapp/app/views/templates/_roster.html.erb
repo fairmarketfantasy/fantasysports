@@ -9,9 +9,9 @@
           <li>Starts: {{markets.currentMarket.started_at | shortFormTime }}</li>
           <li>Timeframe: {{markets.currentMarket.name}}</li>
           <li>Entries: {{rosters.currentRoster.contest_type.max_entries}}</li>
-          <li>Buy-in: ${{rosters.currentRoster.contest_type.buy_in}}</li>
+          <li>Buy-in: {{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</li>
           <li>Format: Winner take all
-          <li ng-show="rosters.currentRoster.contest_rank">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest_type.max_entries}}</li>
+          <li ng-show="rosters.currentRoster.contest_rank">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
       </div>
     </div>
 
@@ -93,7 +93,7 @@
                 <th>Purchase Price</th>
                 <th>Price Differential</th>
                 <th>Trade</th>
-                <th ng-show="market.state == 'opened'">Score</th>
+                <th ng-show="inThePast(market.started_at)">Score</th>
               </tr>
             </thead>
             <tbody>
@@ -103,10 +103,11 @@
                 <td>{{player.purchase_price | emptyIfZero }}</td>
                 <td>{{player.sell_price - player.purchase_price }}</td>
                 <td>
-                  <span ng-show="player.id && market.state == 'opened' && player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Locked</span>
+                  <span ng-show="player.id && market.state == 'opened' && player.locked" href="javascript://">Locked</span>
                   <a ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>
                   <a ng-show="player.id && market.state != 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)">Remove</a>
                 </td>
+                <td ng-show="inThePast(market.started_at)">{{player.score}}</td>
               </tr>
             </tbody>
           </table>
