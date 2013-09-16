@@ -15,6 +15,11 @@ namespace :seed do
   task :reload do
     `rake db:drop`
     `rake db:create`
+    # IF YOU WANT TO RECREATE THIS FILE, DO IT LIKE THIS:
+    # 1) create a fresh db
+    # 2) run migrations
+    # 3) run the datafetcher for whatever things you need: markets, game play by plays, multiple sports, whatever
+    # 4) DUMP THE SQL BEFORE TENDING MARKETS. KTHX.
     ActiveRecord::Base.load_sql_file File.join(Rails.root, 'db', 'reload.sql')
     `rake db:migrate`
     `rake db:setup_functions`

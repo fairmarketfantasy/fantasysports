@@ -22,18 +22,30 @@ class RosterSerializer < ActiveModel::Serializer
   has_one :contest_type
   has_many :players
 
+
+=begin
+  There are essentially 4 active states for rosters and markets to be in:
+  - in_progress, published
+  - submitted, published
+  - in_progress, opened
+  - submitted, opened
+  Only in the last state are price differentials important.  
+  That also means that in cases 1-3 remaining salary is determined by the buy_price of the roster's players
+=end
   def players
-    @players ||= object.players.with_sell_prices(object)
+    @players ||= object.players_with_prices
   end
 
   def remaining_salary
-    salary = object.remaining_salary
-    if object.state == 'in_progress'
+    if (object.state == 'in_progress' || object.market.state == 'published')
+      salary = object.contest_type.salary_cap
       players.each do |p|
-        salary -= p.sell_price # TODO: Have Sean check this
+        salary -= p.buy_price
       end
+      salary
+    else
+      object.remaining_salary
     end
-    salary
   end
 
   def live
