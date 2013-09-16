@@ -79,7 +79,7 @@ class CustomerObject < ActiveRecord::Base
     end
   end
 
-  def decrease_balance(amount, event, roster_id)
+  def decrease_balance(amount, event, roster_id = nil)
     ActiveRecord::Base.transaction do
       self.reload
       raise HttpException.new(402, "Insufficient funds") if self.balance - amount < 0
