@@ -3,7 +3,7 @@
         --|| '(' || pg_catalog.pg_get_function_identity_arguments(p.oid) || ');'
 --FROM   pg_catalog.pg_proc p
 --LEFT   JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
---WHERE  p.proname IN('price', 'sell', 'get_price', 'close_market', 'buy_prices', 'sell_prices', 'publicsh_market', 'open_market', 'buy')
+--WHERE  p.proname IN('price', 'sell', 'get_price', 'close_market', 'buy_prices', 'sell_prices', 'publish_market', 'open_market', 'buy')
 
 ------------------------------------- PRICE --------------------------------------------
 
@@ -499,7 +499,7 @@ DECLARE
 	_now timestamp;
 BEGIN
 	--ensure that the market exists and may be closed
-	PERFORM id FROM markets WHERE id = _market_id AND state = 'opened' AND total_bets > 0 FOR UPDATE;
+	PERFORM id FROM markets WHERE id = _market_id AND state = 'opened' FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % not found', _market_id;
 	END IF;

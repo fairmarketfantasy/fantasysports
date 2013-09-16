@@ -29,7 +29,10 @@ module Fantasysports
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-     config.autoload_paths += %W(#{Rails.root}/lib)
+    Dir["#{Rails.root}/lib/ext/*"].each do |file|
+      require file
+    end
+    config.autoload_paths += %W(#{Rails.root}/lib)
     config.autoload_paths += Dir["#{Rails.root}/lib/**/"]
 
     config.assets.enabled = true

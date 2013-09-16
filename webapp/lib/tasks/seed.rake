@@ -12,7 +12,21 @@ def run_fetcher(args)
 end
 
 namespace :seed do
+  task :reload do
+    `rake db:drop`
+    `rake db:create`
+    ActiveRecord::Base.load_sql_file File.join(Rails.root, 'db', 'reload.sql')
+    `rake db:migrate`
+    `rake db:setup_functions`
+    `rake seed:tend_markets_once`
+  end
+
+  task :tend_markets_once => :environment do
+    Market.tend_all
+  end
+
   namespace :nfl do
+
     task :data do
       #ensure that another datafetcher task is not running
       run_fetcher "-year 2013 -fetch serve"

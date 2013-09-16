@@ -36,7 +36,7 @@ class Contest < ActiveRecord::Base
   end
 
   #pays owners of rosters according to their place in the contest
-  def payday
+  def payday!
     self.with_lock do
       payments = JSON.load(contest_type.payout_structure)
 
