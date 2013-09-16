@@ -9,92 +9,34 @@ namespace :market do
   	puts "Updating markets every #{wait_time} seconds"
   	while true
   		puts "#{Time.now} -- inspecting markets"
-	  	publish_markets
-	  	open_markets
-      lock_players
-      close_markets
-      tabulate_scores
-      complete_markets
+      Market.tend_all
 	  	sleep wait_time
   	end
   end
 
   task :publish => :environment do
-  	publish_markets
+		Market.publish_all
   end
 
   task :open => :environment do
-    open_markets
+    Market.open_all
   end  
 
   task :lock_players => :environment do
-    lock_players
+    Market.lock_players_all
   end
 
   task :close => :environment do
-  	close_markets
+  	Market.close_all
   end
 
   task :stats => :environment do
-    tabulate_scores
+    Market.tabulate_all
   end
 
   task :complete => :environment do
-    complete_markets
+    Market.complete_all
   end
 
 end
 
-def publish_markets
-	markets = Market.where("published_at <= ? AND (state is null or state='' or state='unpublished')", Time.now)
-	markets.each do |market|
-		puts "#{Time.now} -- publishing market #{market.id}"
-    market = market.publish
-    if market.state == 'published'
-      market.add_default_contests
-    end
-  end
-end
-
-def tabulate_scores
-  Market.where("state in ('published', 'opened', 'closed')").find_each do |market|
-    puts "#{Time.now} -- tabulating scores for market #{market.id}"
-    market.tabulate_scores
-  end
-end
-
-def open_markets
-	markets = Market.where("state = 'published'")
-	markets.each do |market|
-		puts "#{Time.now} -- opening market #{market.id}"
-    market.open
-	end
-end
-
-def lock_players
-  markets = Market.where("state = 'opened'")
-  markets.each do |market|
-    puts "#{Time.now} -- locking players in market #{market.id}"
-    market.lock_players
-  end
-end
-
-def close_markets
-	markets = Market.where("closed_at <= ? AND state = 'opened'", Time.now)
-	markets.each do |market|
-		puts "#{Time.now} -- closing market #{market.id}"
-    market.close
-	end
-end
-
-def complete_markets
-  markets = Market.where("state = 'closed'")
-  puts "found #{markets.length} markets to potentially complete"
-  markets.each do |market|
-    puts "#{Time.now} -- completing market #{market.id}"
-    begin
-      market.complete
-    rescue
-    end
-  end
-end

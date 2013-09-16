@@ -22,7 +22,7 @@ class ContestTest < ActiveSupport::TestCase
     roster1.save!
     roster2.save!
 
-    roster1.contest.payday
+    roster1.contest.payday!
     user1.reload
     user2.reload
     assert user1.customer_object.balance > user2.customer_object.balance

@@ -150,7 +150,7 @@ class MarketTest < ActiveSupport::TestCase
     @market.shadow_bet_rate = 1
     @market.save!
     
-    @market.publish.add_default_contests.reload
+    @market.publish.reload
 
     assert_equal 36, @market.players.length
     assert @market.contest_types.size > 0, "should be some contest_types"
@@ -215,6 +215,34 @@ class MarketTest < ActiveSupport::TestCase
 
   end
 
+  test "tend works on new market" do
+    setup_simple_market
+    Market.tend_all
+  end
+
+  test "publish_all" do
+    
+  end
+
+  test "open_all" do
+    
+  end
+
+  test "tabulate_all" do
+    
+  end
+
+  test "lock_players_all" do
+    
+  end
+
+  test "close_all" do
+    
+  end
+
+  test "complete_all" do
+    
+  end
 
 
   describe Market do

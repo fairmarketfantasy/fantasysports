@@ -38,19 +38,19 @@ rails s
 ## Seed Data
 
 ```
-rake db:drop
-rake db:create
-rake db:migrate
-rake db:setup_functions
-rake seed:nfl_data # This will continue running, but you can safely kill it when it stops outputting things
-rake market:tend  # This will continue running
+rake seed:reload
 ```
 
 ## The data fetcher
 
 Seed some data:
 ```
-rake seed:nfl_data --trace
+rake seed:nfl:data --trace
+```
+
+Fetch points for a market
+```
+rake seed:nfl:market[<id>]
 ```
 
 *new*
