@@ -155,6 +155,12 @@ class RosterTest < ActiveSupport::TestCase
       roster.destroy
     end
     assert_equal  initial_balance, user.customer_object.reload.balance
+
+    #creating and canceling a roster before submitting it should not affect balance
+    roster = Roster.generate(user, contest_type)
+    assert_equal  initial_balance, user.customer_object.reload.balance
+    roster.destroy
+    assert_equal  initial_balance, user.customer_object.reload.balance
   end
 
   test "cancelling roster cleans up after itself" do
@@ -162,15 +168,15 @@ class RosterTest < ActiveSupport::TestCase
     player = @roster.purchasable_players.first
     market = @roster.market
     market.reload
-    bets = market.total_bets
-    assert_equal 1000, bets
+    total_bets = market.total_bets
     assert_difference ['RostersPlayer.count', 'MarketOrder.count'], 1 do
       @roster.add_player player
     end
+    assert market.reload.total_bets > total_bets, "adding player increases total bets"
     assert_difference ['RostersPlayer.count', 'MarketOrder.count'], -1 do
       @roster.destroy
     end
-    assert_equal market.reload.total_bets, bets, "destroying roster decreases total bets"
+    assert_equal market.reload.total_bets, total_bets, "destroying roster decreases total bets"
   end
 
 end

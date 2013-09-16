@@ -173,7 +173,7 @@ FactoryGirl.define do
   end
 
   factory :new_market, class: Market do
-    shadow_bets 1000
+    shadow_bets 100000
     shadow_bet_rate 0.5
     published_at Time.now - 4000
     opened_at Time.now - 1000
