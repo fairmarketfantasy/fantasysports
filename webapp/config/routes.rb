@@ -18,7 +18,8 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:show] do
     collection do
-      post 'add_money', action: :add_money
+      post 'add_money',      action: :add_money
+      post 'withdraw_money', action: :withdraw_money
     end
   end
 

@@ -48,18 +48,18 @@ class CustomerObject < ActiveRecord::Base
   def charge(amount_in_cents)
     #strip api require charging at least 50 cents
     amount = amount_in_cents.to_i
-    begin
-      resp = Stripe::Charge.create({
-        amount:   amount,
-        currency: "usd",
-        customer: stripe_id,
-      })
-      increase_balance(resp.amount, 'deposit')
-      resp
-    rescue Stripe::CardError => e
-      #card has been declined, handle this exception and log it somewhere
-      raise e
-    end
+    # begin
+    resp = Stripe::Charge.create({
+      amount:   amount,
+      currency: "usd",
+      customer: stripe_id,
+    })
+    increase_balance(resp.amount, 'deposit')
+    resp
+    # rescue Stripe::CardError => e
+    #   #card has been declined, handle this exception and log it somewhere
+    #   raise e
+    # end
   end
 
   def set_default_card(card_id)
@@ -79,7 +79,7 @@ class CustomerObject < ActiveRecord::Base
     end
   end
 
-  def decrease_balance(amount, event, roster_id)
+  def decrease_balance(amount, event, roster_id = nil)
     ActiveRecord::Base.transaction do
       self.reload
       raise HttpException.new(402, "Insufficient funds") if self.balance - amount < 0

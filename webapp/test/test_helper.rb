@@ -115,12 +115,17 @@ FactoryGirl.define do
     factory :paid_user do
       after(:create) do |user|
         user.customer_object = create(:customer_object, user: user)
+        user.recipient       = create(:recipient, user: user)
       end
     end
   end
 
   factory :customer_object do
     balance 10000
+    token { generate(:random_string) }
+  end
+
+  factory :recipient do
     token { generate(:random_string) }
   end
 
