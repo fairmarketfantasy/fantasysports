@@ -157,6 +157,8 @@ class MarketTest < ActiveSupport::TestCase
     assert @market.total_bets > 0
     assert_equal @market.shadow_bets, @market.total_bets
     assert @market.closed_at - @games[1].game_time - 5*60 < 60
+    #make sure all players have a locked_at time
+    assert 0, @market.players.where("locked_at is null").size
 
     #open the market. should not remove the shadow bets and should not be open because not enough bets
     @market = @market.open

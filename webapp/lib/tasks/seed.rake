@@ -5,10 +5,26 @@
 #   end
 # end
 
+
+def run_fetcher(args)
+  root = File.join(Rails.root, '..', 'datafetcher')
+  `PATH=$PATH:/usr/local/go/bin GOPATH=#{root} go run #{root}/src/github.com/MustWin/datafetcher/datafetcher.go #{args}`
+end
+
 namespace :seed do
-  task :nfl_data do
-    #ensure that another datafetcher task is not running
-    root = File.join(Rails.root, '..', 'datafetcher')
-    `PATH=$PATH:/usr/local/go/bin GOPATH=#{root} go run #{root}/src/github.com/MustWin/datafetcher/datafetcher.go -year 2013 -fetch serve`
+  namespace :nfl do
+    task :data do
+      #ensure that another datafetcher task is not running
+      run_fetcher "-year 2013 -fetch serve"
+    end
+
+    task :market, [:market_id] =>  :environment do |t, args|
+      raise "Must pass market_id" if args.market_id.nil?
+      market = Market.find(Integer(args.market_id))
+      market.games.each do |game|
+        run_fetcher "-fetch stats -year 2013 -season #{game.season_type} -week #{game.season_week} -home #{game.home_team} -away #{game.away_team}"
+      end
+      market.tabulate_scores
+    end
   end
 end

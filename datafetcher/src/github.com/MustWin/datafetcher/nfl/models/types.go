@@ -40,10 +40,9 @@ type Market struct {
 
 type MarketPlayer struct {
 	NflModel
-	Id           int
-	MarketId     int `model:"key"`
-	PlayerId     int `model:"key"`
-	InitialPrice float64
+	Id       int
+	MarketId int `model:"key"`
+	PlayerId int `model:"key"`
 }
 
 type GamesMarket struct {

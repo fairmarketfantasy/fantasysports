@@ -9,6 +9,7 @@ class Market < ActiveRecord::Base
   belongs_to :sport
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
+  validates :state, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
 
   scope :published_after,   ->(time) { where('published_at > ?', time)}
   scope :opened_after,      ->(time) { where("opened_at > ?", time) }
