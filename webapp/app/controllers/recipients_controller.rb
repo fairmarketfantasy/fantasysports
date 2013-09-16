@@ -2,16 +2,16 @@ class RecipientsController < ApplicationController
 
   def index
     recipient = current_user.recipient
-    render_api_response recipient || []
+    render_api_response recipient ? [recipient] : []
   end
 
   def create
     # begin
-      recipient = Recipient.create(recipient_params.merge!(user: current_user))
-      if recipient.new_record?
-        render json: {errors: [recipient.errors[:base].first] || recipient.errors.full_messages}
+      recipient = Recipient.new(recipient_params.merge!(user: current_user))
+      if recipient.save
+        render_api_response recipient
       else
-        render_api_response [recipient]
+        render json: {errors: recipient.errors.full_messages}
       end
     # rescue => e
     #   msg = e.try(:message)
