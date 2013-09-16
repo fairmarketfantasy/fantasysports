@@ -1,14 +1,19 @@
-<h3 ng-hide="!rosters.mine.length">My Rosters</h3>
-<ul>
-  <li ng-repeat="roster in rosters.mine()">
-    <a href="#/market/{{roster.market_id}}/roster/{{roster.id}}" title="{{roster.contest_type.description}}">
-      ${{roster.buy_in}} {{roster.contest_type.name}} - 
-      <span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span>
-      <span ng-show="roster.live">Score: {{roster.score || 0 }}</span>
-      <span ng-show="roster.live">Place: {{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries}}</span>
-    </a>
-  </li>
-</ul>
+<div class="entries-container">
+  <div class="roster-title">  
+    <h3 ng-show="!rosters.mine.length">Your Entries</h3>
+  </div>
+  
+  <ul class="roster-list clearfix">
+    <li class="market" ng-repeat="roster in rosters.mine()">
+      <a href="#/market/{{roster.market_id}}/roster/{{roster.id}}" title="{{roster.contest_type.description}}">
+        ${{roster.buy_in}} {{roster.contest_type.name}} - 
+        <span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span>
+        <span ng-show="roster.live">Score: {{roster.score || 0 }}</span>
+        <span ng-show="roster.live">Place: {{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries}}</span>
+      </a>
+    </li>
+  </ul>
+</div>
 
 <div class="market-container">
   <div class="market-title">  
