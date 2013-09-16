@@ -4,7 +4,7 @@ class Recipient < ActiveRecord::Base
   belongs_to :user
   has_one    :customer_object, through: :user
 
-  validate  :user_must_be_confirmed
+  # validate  :user_must_be_confirmed
   validates :stripe_id, :user_id, presence: true
 
   before_validation :set_stripe_id, on: :create
@@ -38,8 +38,8 @@ class Recipient < ActiveRecord::Base
               recipient: stripe_id,
               description: "Transfer for #{self.user.email}" #this shows up on the users bank statement after the SITE's url
             })
-    amount = resp.summary.charge_gross
-    customer_object.decrease_balance(amount, "transfer")
+    amount = resp.amount
+    customer_object.decrease_balance(amount, "withdrawal")
   end
 
   #attributes from STRIPE API
