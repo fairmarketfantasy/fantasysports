@@ -55,7 +55,7 @@ BEGIN
 	SELECT * FROM rosters WHERE rosters.id = _roster_id INTO _roster;
 	RETURN QUERY SELECT rp.purchase_price, mp.*, p.* from market_prices(_roster.market_id, _roster.buy_in) mp
 	join players p on p.id = mp.player_id
-	left join rosters_players rp on rp.player_id = mp.player_id and rp.roster_id = _roster_id;
+	join rosters_players rp on rp.player_id = mp.player_id and rp.roster_id = _roster_id;
 END;
 $$ LANGUAGE plpgsql;
 

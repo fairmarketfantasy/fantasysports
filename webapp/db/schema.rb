@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130914231329) do
+ActiveRecord::Schema.define(version: 20130916232308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20130914231329) do
     t.text    "payout_structure", null: false
     t.integer "user_id"
     t.boolean "private"
+    t.integer "salary_cap"
   end
 
   add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
