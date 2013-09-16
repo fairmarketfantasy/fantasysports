@@ -233,7 +233,19 @@ class MarketTest < ActiveSupport::TestCase
   end
 
   test "lock_players_all" do
-    
+    setup_multi_day_market
+    over_game = @market.games.first
+    over_game.game_day = Time.now.yesterday.beginning_of_day
+    over_game.game_time = Time.now.yesterday
+    over_game.save!
+    Market.tend_all
+    puts '=' * 50
+    puts @market.reload.state
+    Rails.logger.info @market.reload.state
+    Rails.logger.info '=' * 50
+    over_game.teams.each do |team|
+      assert MarketPlayer.where(:player_stats_id => team.players.map(&:stats_id)).all?{|mp| mp.locked? }
+    end
   end
 
   test "close_all" do

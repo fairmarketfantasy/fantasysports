@@ -58,7 +58,7 @@ class Market < ActiveRecord::Base
   #look for players in games that have started and remove them from the market
   #and update the price multiplier
   def self.lock_players_all
-    markets = Market.where("state = 'opened'")
+    markets = Market.where("state = 'opened' OR state = 'published'")
     markets.each do |market|
       puts "#{Time.now} -- locking players in market #{market.id}"
       market.lock_players

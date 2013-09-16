@@ -499,7 +499,7 @@ DECLARE
 	_now timestamp;
 BEGIN
 	--ensure that the market exists and may be closed
-	PERFORM id FROM markets WHERE id = _market_id AND state = 'opened' FOR UPDATE;
+	PERFORM id FROM markets WHERE id = _market_id AND (state = 'opened' OR state = 'published') FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % not found', _market_id;
 	END IF;
