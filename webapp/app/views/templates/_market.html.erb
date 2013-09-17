@@ -28,8 +28,6 @@
 
     <div ng-hide="rosters.inProgressRoster">
       <ul class="clearfix no-no" ng-cloak>
-        <!-- all these ng-clicks to joinContest, need to pass in  contest_type_id
-            instead of the string '100k' or '970' or '194', etc-->
         <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses">
           <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
           <h2>{{contestClass}}</h2>
