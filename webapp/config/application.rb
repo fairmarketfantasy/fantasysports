@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'devise_oauth2_providable'
 
 # Setup api formats.
 ActiveSupport.on_load(:active_model_serializers) do
