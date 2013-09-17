@@ -40,7 +40,7 @@ class Roster < ActiveRecord::Base
       :market_id => contest_type.market_id,
       :contest_type_id => contest_type.id,
       :buy_in => contest_type.buy_in,
-      :remaining_salary => 100000,
+      :remaining_salary => contest_type.salary_cap,
       :state => 'in_progress',
       :positions => Positions.for_sport_id(contest_type.market.sport_id),
     )
@@ -49,6 +49,18 @@ class Roster < ActiveRecord::Base
   def build_from_existing(roster)
     roster.players.each do |player|
       self.add_player(player)
+    end
+  end
+
+  def remaining_salary
+    if self.id && (self.state == 'in_progress' || self.market.state == 'published')
+      salary = self.contest_type.salary_cap
+      self.players_with_prices.each do |p|
+        salary -= p.buy_price
+      end
+      salary
+    else
+      self[:remaining_salary]
     end
   end
 

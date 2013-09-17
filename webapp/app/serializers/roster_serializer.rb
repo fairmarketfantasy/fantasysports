@@ -36,17 +36,6 @@ class RosterSerializer < ActiveModel::Serializer
     @players ||= object.players_with_prices
   end
 
-  def remaining_salary
-    if (object.state == 'in_progress' || object.market.state == 'published')
-      salary = object.contest_type.salary_cap
-      players.each do |p|
-        salary -= p.buy_price
-      end
-      salary
-    else
-      object.remaining_salary
-    end
-  end
 
   def live
     object.live?
