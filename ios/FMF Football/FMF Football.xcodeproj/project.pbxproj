@@ -27,7 +27,7 @@
 		153BBC5D17DFC2E40071E63B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC3517DFC2E40071E63B /* Foundation.framework */; };
 		153BBC6517DFC2E40071E63B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 153BBC6317DFC2E40071E63B /* InfoPlist.strings */; };
 		153BBC6817DFC2E40071E63B /* FMF_FootballTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 153BBC6717DFC2E40071E63B /* FMF_FootballTests.m */; };
-		15A2378517E268AA00225942 /* FFSplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A2378317E268AA00225942 /* FFSplashViewController.m */; };
+		15A2378517E268AA00225942 /* FFSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A2378317E268AA00225942 /* FFSessionViewController.m */; };
 		15A2378917E269BB00225942 /* fmf-splash-bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */; };
 		15A2378B17E26E9900225942 /* fmf-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378A17E26E9900225942 /* fmf-logo@2x.png */; };
 		15A2378D17E2708100225942 /* fmf-splash-copy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */; };
@@ -81,8 +81,8 @@
 		153BBC6417DFC2E40071E63B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		153BBC6617DFC2E40071E63B /* FMF_FootballTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMF_FootballTests.h; sourceTree = "<group>"; };
 		153BBC6717DFC2E40071E63B /* FMF_FootballTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FMF_FootballTests.m; sourceTree = "<group>"; };
-		15A2378217E268AA00225942 /* FFSplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFSplashViewController.h; sourceTree = "<group>"; };
-		15A2378317E268AA00225942 /* FFSplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFSplashViewController.m; sourceTree = "<group>"; };
+		15A2378217E268AA00225942 /* FFSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFSessionViewController.h; sourceTree = "<group>"; };
+		15A2378317E268AA00225942 /* FFSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFSessionViewController.m; sourceTree = "<group>"; };
 		15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-splash-bg@2x.png"; sourceTree = "<group>"; };
 		15A2378A17E26E9900225942 /* fmf-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-logo@2x.png"; sourceTree = "<group>"; };
 		15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-splash-copy@2x.png"; sourceTree = "<group>"; };
@@ -234,8 +234,8 @@
 		15A2377F17E2670C00225942 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				15A2378217E268AA00225942 /* FFSplashViewController.h */,
-				15A2378317E268AA00225942 /* FFSplashViewController.m */,
+				15A2378217E268AA00225942 /* FFSessionViewController.h */,
+				15A2378317E268AA00225942 /* FFSessionViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -427,7 +427,7 @@
 				153BBC4017DFC2E40071E63B /* main.m in Sources */,
 				153BBC4417DFC2E40071E63B /* FFAppDelegate.m in Sources */,
 				1535142C17DFF2B600F776AC /* FFUser.m in Sources */,
-				15A2378517E268AA00225942 /* FFSplashViewController.m in Sources */,
+				15A2378517E268AA00225942 /* FFSessionViewController.m in Sources */,
 				15A2379117E2747000225942 /* FFStyle.m in Sources */,
 				15A2379917E27C5600225942 /* FFTextField.m in Sources */,
 				15A237A417E29ACC00225942 /* FFAlertView.m in Sources */,
