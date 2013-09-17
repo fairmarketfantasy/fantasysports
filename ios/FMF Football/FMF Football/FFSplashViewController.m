@@ -11,6 +11,8 @@
 #import "FFTextField.h"
 #import "FFAlertView.h"
 #import "UIView+FindFirstResponder.h"
+#import <SBData/SBData.h>
+#import "FFUser.h"
 
 @interface FFSplashViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate>
 {
@@ -133,8 +135,12 @@
     un.layer.borderColor = [FFStyle greyBorder].CGColor;
     un.backgroundColor = [FFStyle white];
     un.delegate = self;
-    un.placeholder = NSLocalizedString(@"username", nil);
+    un.placeholder = NSLocalizedString(@"email", nil);
     un.returnKeyType = UIReturnKeyNext;
+    un.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    un.autocorrectionType = UITextAutocorrectionTypeNo;
+    un.keyboardType = UIKeyboardTypeEmailAddress;
+    un.text = @"sam@mustw.in"; // TOOD: remove
     [self.signUpView addSubview:un];
     self.usernameSignupField = un;
     
@@ -146,6 +152,7 @@
     pw.frame = CGRectMake(15, 280, 290, 44);
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
+    pw.text = @"omgnowai"; // TODO: remove
     pw.returnKeyType = UIReturnKeyGo;
     [self.signUpView addSubview:pw];
     self.passwordSignupField = pw;
@@ -204,8 +211,11 @@
     un.layer.borderColor = [FFStyle greyBorder].CGColor;
     un.backgroundColor = [FFStyle white];
     un.delegate = self;
-    un.placeholder = NSLocalizedString(@"username", nil);
+    un.placeholder = NSLocalizedString(@"email", nil);
     un.returnKeyType = UIReturnKeyNext;
+    un.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    un.autocorrectionType = UITextAutocorrectionTypeNo;
+    un.keyboardType = UIKeyboardTypeEmailAddress;
     [self.signInView addSubview:un];
     self.usernameSigninField = un;
     
@@ -308,28 +318,79 @@ validate_error:
 
 - (void)signUp:(id)sender
 {
+    // get/compile the regex we'll be using
+    __strong static NSRegularExpression *regex = nil;
+    if (regex == nil) {
+        NSError *error = nil;
+        NSString *emailRe = FF_EMAIL_REGEX;
+        regex = [NSRegularExpression regularExpressionWithPattern:emailRe
+                                                          options:NSRegularExpressionCaseInsensitive
+                                                            error:&error];
+        if (error) {
+            @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                           reason:@"Could not compile regex"
+                                         userInfo:NSDictionaryOfVariableBindings(emailRe)];
+        }
+    }
+    
     NSString *error = nil;
     
     if (!self.usernameSignupField.text.length) {
         error = NSLocalizedString(@"Pleaes provide your username", nil);
         goto validate_error;
     }
+    {
+        NSString *email = self.usernameSignupField.text;
+        NSTextCheckingResult *result = [regex firstMatchInString:email options:0 range:NSMakeRange(0, email.length)];
+        if (!result.range.length) {
+            error = NSLocalizedString(@"Please provide a valid email address", nil);
+            goto validate_error;
+        }
+    }
     if (!(self.passwordSignupField.text.length > 6)) {
         error = NSLocalizedString(@"Please provide a password at least 6 characters long", nil);
         goto validate_error;
     }
     
-    return;
-    
 validate_error:
-    {
+    if (error != nil) {
         FFAlertView *alert = [[FFAlertView alloc] initWithTitle:nil
                                                         message:error
                                               cancelButtonTitle:nil
                                                 okayButtonTitle:NSLocalizedString(@"Okay", nil)
                                                        autoHide:YES];
         [alert showInView:self.view];
+        return;
     }
+    
+    FFAlertView *progressAlert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Creating Account", @"creating account")
+                                                           messsage:NSLocalizedString(@"In a few short moments you'll be on your way!",
+                                                                                      @"on singup, tells the user they will be signed up soon")
+                                                       loadingStyle:FFAlertViewLoadingStylePlain];
+    [progressAlert showInView:self.navigationController.view];
+    
+    SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSignupField.text];
+    
+    FFUser *user = [[FFUser alloc] initWithSession:sesh];
+    user.email = self.usernameSignupField.text;
+    NSString *password = self.passwordSignupField.text;
+    
+    SBErrorBlock onErr = ^(NSError *err) {
+        [progressAlert hide];
+        [[[FFAlertView alloc] initWithError:err title:nil cancelButtonTitle:nil
+                            okayButtonTitle:NSLocalizedString(@"Dismiss", @"dismiss error dialog")
+                                   autoHide:YES]
+         showInView:self.navigationController.view];
+    };
+    
+    SBSuccessBlock onSuccess = ^(id user) {
+        [progressAlert hide];
+        [[self.view findFirstResponder] resignFirstResponder];
+        [SBSession setLastUsedSession:sesh];
+        [self performSegueWithIdentifier:@"GotoSession" sender:nil];
+    };
+    
+    [sesh registerAndLoginUser:user password:password success:onSuccess failure:onErr];
 }
 
 - (void)signUpFacebook:(id)sender
@@ -341,7 +402,7 @@ validate_error:
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-    NSLog(@"shouldReceiveTouch %@", touch);
+//    NSLog(@"shouldReceiveTouch %@", touch);
     return YES;
 }
 
