@@ -31,7 +31,7 @@ type Market struct {
 	ShadowBetRate float64
 	PublishedAt   time.Time
 	State         string
-	StartedAt     time.Time
+	StartedAt     time.Time `model:"key"`
 	OpenedAt      time.Time
 	ClosedAt      time.Time `model:"key"`
 	CreatedAt     time.Time

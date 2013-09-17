@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', 'flash', function($scope, rosters, markets, $routeParams, $location, flash) {
+.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', 'flash', '$templateCache', function($scope, rosters, markets, $routeParams, $location, flash, $templateCache) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
@@ -79,6 +79,19 @@ angular.module("app.controllers")
     return _.filter($scope.games, function(game) {
       return !$scope.gameStarted(game);
     });
+  };
+
+  $scope.fetchPlayerStats = function(player) {
+    return $scope.fs.events.for_players($scope.market.id, [player]).then(function(events) {
+      $scope.playerStats = events;
+      return events;
+    });
+  };
+
+  $scope.statsContent = function() {
+    // This is particularly disgusting, but I couldn't figure out a better way to do it.
+    // It's impossible to compile templates and use the content without rendering to the dom.
+    return angular.element('#player-stats-content')[0].innerHTML;
   };
 
 }]);

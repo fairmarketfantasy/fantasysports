@@ -3,7 +3,7 @@
         --|| '(' || pg_catalog.pg_get_function_identity_arguments(p.oid) || ');'
 --FROM   pg_catalog.pg_proc p
 --LEFT   JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
---WHERE  p.proname IN('price', 'sell', 'get_price', 'close_market', 'buy_prices', 'sell_prices', 'publicsh_market', 'open_market', 'buy')
+--WHERE  p.proname IN('price', 'sell', 'get_price', 'close_market', 'buy_prices', 'sell_prices', 'publish_market', 'open_market', 'buy')
 
 ------------------------------------- PRICE --------------------------------------------
 
@@ -12,14 +12,60 @@ DROP FUNCTION price(numeric, numeric, numeric, numeric);
 
 CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric) 
 	RETURNS numeric AS $$
-	SELECT CASE ($2 + $3) WHEN 0 THEN 0 ELSE 
+	SELECT CASE ($2 + $3) WHEN 0 THEN 1000 ELSE 
 		ROUND(LEAST(100000, GREATEST(1000, ($1 + $3) * 100000 * $4 / ($2 + $3))))
 	END;
 $$ LANGUAGE SQL IMMUTABLE;
 
 ------------------------------------------ Player Prices -----------------------------------------
 
---BUY prices for all players in the market. returns the player_id and the price
+DROP FUNCTION market_prices(integer, integer);
+
+CREATE OR REPLACE FUNCTION market_prices(_market_id integer, _buy_in integer)
+RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, score integer) AS $$
+	SELECT 
+		mp.player_id, 
+		price(mp.bets, m.total_bets, $2, m.price_multiplier), 
+		price(mp.bets, m.total_bets,  0, m.price_multiplier), 
+		mp.locked, 
+		mp.score
+	FROM markets m
+	JOIN market_players mp on m.id = mp.market_id
+	WHERE m.id = $1;
+$$ LANGUAGE SQL;
+
+--purchase price, current buy and sell prices, locked, current score, and all player data
+DROP FUNCTION roster_prices(integer);
+
+CREATE OR REPLACE FUNCTION roster_prices(_roster_id integer)
+RETURNS TABLE (
+	purchase_price numeric,
+	player_id integer, buy_price numeric, sell_price numeric, locked boolean, score integer, 
+	id integer, stats_id character varying(255), sport_id integer, name character varying(255), 
+	name_abbr character varying(255), birthdate character varying(255), height integer, 
+	weight integer, college character varying(255), "position" character varying(255), 
+	jersey_number integer, status character varying(255), total_games integer, total_points integer, 
+	created_at timestamp without time zone, updated_at timestamp without time zone, 
+	team character varying(255)
+)
+AS $$
+DECLARE
+	_roster rosters;
+BEGIN
+	SELECT * FROM rosters WHERE rosters.id = _roster_id INTO _roster;
+	RETURN QUERY SELECT rp.purchase_price, mp.*, p.* from market_prices(_roster.market_id, _roster.buy_in) mp
+	join players p on p.id = mp.player_id
+	join rosters_players rp on rp.player_id = mp.player_id and rp.roster_id = _roster_id;
+END;
+$$ LANGUAGE plpgsql;
+
+------------------------------------- OLD PRICE SCRIPTS --------------------------------------
+
+-- select mp.*, p.*, rp.purchase_price from market_prices(20, 1000) mp 
+-- join players p on p.id = mp.player_id
+-- left join rosters_players rp on rp.player_id = mp.player_id and rp.roster_id = 8;
+
+-- BUY prices for all players in the market. returns the player_id and the price
 DROP FUNCTION buy_prices(integer);
 
 CREATE OR REPLACE FUNCTION buy_prices(_roster_id integer)
@@ -31,7 +77,8 @@ RETURNS TABLE(player_id integer, buy_price numeric) AS $$
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
 		mp.locked = false AND
-		mp.player_id NOT IN (SELECT rosters_players.player_id FROM rosters_players WHERE roster_id = $1);
+		mp.player_id NOT IN (SELECT rosters_players.player_id 
+			FROM rosters_players WHERE roster_id = $1);
 $$ LANGUAGE SQL;
 
 -- SELL prices for all players in the roster, as well as the price paid
@@ -39,8 +86,10 @@ $$ LANGUAGE SQL;
 DROP FUNCTION sell_prices(integer);
 
 CREATE OR REPLACE FUNCTION sell_prices(_roster_id integer)
-RETURNS TABLE(roster_player_id integer, player_id integer, sell_price numeric, purchase_price numeric, locked boolean, score integer) AS $$
-	SELECT rp.id, mp.player_id, price(mp.bets, m.total_bets, 0, m.price_multiplier), rp.purchase_price, mp.locked, mp.score
+RETURNS TABLE(roster_player_id integer, player_id integer, sell_price numeric, 
+		purchase_price numeric, locked boolean, score integer) AS $$
+	SELECT rp.id, mp.player_id, price(mp.bets, m.total_bets, 0, m.price_multiplier), 
+		rp.purchase_price, mp.locked, mp.score
 	FROM market_players mp, markets m, rosters_players rp, rosters r
 	WHERE
 		r.id = $1 AND
@@ -50,7 +99,9 @@ RETURNS TABLE(roster_player_id integer, player_id integer, sell_price numeric, p
 		mp.player_id = rp.player_id
 $$ LANGUAGE SQL;
 
+
 ------------------------------------------ SUBMIT ROSTER ---------------------------------------
+
 
 -- buy all the players in rosters_players
 DROP FUNCTION submit_roster(integer);
@@ -110,7 +161,45 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---------------------------------------  BUY A PLAYER ----------------------------------------
+-------------------------------------- CANCEL ROSTER ------------------------------------
+
+DROP FUNCTION cancel_roster(integer);
+
+CREATE OR REPLACE FUNCTION cancel_roster(_roster_id integer) RETURNS VOID AS $$
+DECLARE
+	_roster rosters;
+BEGIN
+	--make sure the roster is in progress
+	SELECT * from rosters where id = _roster_id INTO _roster FOR UPDATE;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'roster % does not exist', _roster_id;
+	END IF;
+
+	--make sure that the market is available
+	PERFORM id from markets WHERE id = _roster.market_id and state in ('published', 'opened') FOR UPDATE;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'market % is unavailable, roster may not be canceled', _roster.market_id;
+	END IF;
+
+	-- decrement bets for all market players in roster by buy_in amount
+	UPDATE market_players SET bets = bets - _roster.buy_in 
+		WHERE market_id = _roster.market_id AND player_id IN
+		(SELECT player_id from rosters_players where roster_id = _roster_id); 
+
+	-- decrement total_bets by buy_in times number of players bought
+	update markets set total_bets = total_bets -
+		_roster.buy_in * (select count(*) from rosters_players where roster_id  = _roster.id)
+		where id = _roster.market_id;
+
+	-- delete rosters_players, market_orders, and finally the roster
+	DELETE FROM rosters_players WHERE roster_id = _roster_id;
+	DELETE FROM market_orders where roster_id = _roster_id;
+	DELETE FROM rosters where id = _roster_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+--------------------------------------  BUY ----------------------------------------
 
 /* buy a player for a roster */
 DROP FUNCTION buy(integer, integer);
@@ -225,8 +314,8 @@ $$ LANGUAGE plpgsql;
 
 --------------------------------------- PUBLISH MARKET --------------------------------------
 
---TODO: check close date is start time of latest game?
 DROP FUNCTION publish_market(integer);
+
 CREATE OR REPLACE FUNCTION publish_market(_market_id integer, OUT _market markets) RETURNS markets AS $$
 DECLARE
 	_total_ppg numeric;
@@ -253,7 +342,7 @@ BEGIN
 	--check that shadow_bets is something reasonable
 	IF _market.shadow_bets = 0 THEN
 		RAISE NOTICE 'shadow bets is 0, setting to 1000';
-		UPDATE markets set shadow_bets = 1000 where id = _market_id;
+		UPDATE markets set shadow_bets = 100000 where id = _market_id;
 	END IF;
 
 	--make sure the shadow bet rate is reasonable
@@ -404,13 +493,13 @@ $$ LANGUAGE plpgsql;
 DROP FUNCTION lock_players(integer);
 
 --removes locked players from the market and updates the price multiplier
-CREATE OR REPLACE FUNCTION lock_players(_market_id integer, OUT _market markets) RETURNS markets AS $$
+CREATE OR REPLACE FUNCTION lock_players(_market_id integer) RETURNS VOID AS $$
 DECLARE
 	_locked_bets numeric := 0;
 	_now timestamp;
 BEGIN
 	--ensure that the market exists and may be closed
-	PERFORM id FROM markets WHERE id = _market_id FOR UPDATE;
+	PERFORM id FROM markets WHERE id = _market_id AND (state = 'opened' OR state = 'published') FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % not found', _market_id;
 	END IF;
@@ -429,8 +518,8 @@ BEGIN
 		--update the price multiplier
 		update markets set 
 			total_bets = total_bets - _locked_bets, 
-			price_multiplier = price_multiplier * (total_bets - _locked_bets) / MAX(total_bets, 1)
-			WHERE id = _market_id returning * into _market;
+			price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
+			WHERE id = _market_id;
 	END IF;
 	
 END;
@@ -452,7 +541,7 @@ CREATE OR REPLACE FUNCTION tabulate_scores(_market_id integer) RETURNS VOID AS $
 
 	UPDATE rosters set score = 
 		(select sum(score) from market_players where player_stats_id in 
-			(select player_stats_id from rosters_players where roster_id = rosters.id)
+			(select player_stats_id from rosters_players where roster_id = rosters.id) AND market_id = $1
 		) where market_id = $1;
 
 	WITH ranks as 
@@ -482,21 +571,25 @@ select 'go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats
 from games where season_year = 2013 and season_type = 'REG' and status = 'closed' and season_week = 1;
 
 GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home DEN -away BAL
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home NO -away ATL
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home PIT -away TEN
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home NYJ -away TB
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home BUF -away NE
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home IND -away OAK
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home DET -away MIN
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home CAR -away SEA
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home JAC -away KC
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home CHI -away CIN
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home CLE -away MIA
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home STL -away ARI
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home SF -away GB
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home DAL -away NYG
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home WAS -away PHI
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home SD -away HOU
+
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home NO -away AT
+
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home DEN -away BAL
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home NO -away ATL
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home PIT -away TEN
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home NYJ -away TB
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home BUF -away NE
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home IND -away OAK
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home DET -away MIN
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home CAR -away SEA
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home JAC -away KC
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home CHI -away CIN
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home CLE -away MIA
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home STL -away ARI
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home SF -away GB
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home DAL -away NYG
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home WAS -away PHI
+GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home SD -away HOU
 
 
 

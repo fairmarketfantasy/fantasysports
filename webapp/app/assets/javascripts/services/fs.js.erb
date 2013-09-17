@@ -142,8 +142,8 @@ angular.module('app.services')
         }
       },
       events: {
-        for_player: function(market_id, players) {
-          return $http({method: 'GET', url: '/events/for_player', params: {player_ids: _.map(players, function(elt) { return elt.stats_id})} });
+        for_players: function(market_id, players) {
+          return $http({method: 'GET', url: '/events/for_players', params: {player_ids: _.map(players, function(elt) { return elt.stats_id}).join(','), market_id: market_id} });
         },
       },
       rosters: {

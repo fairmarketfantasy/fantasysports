@@ -150,13 +150,15 @@ class MarketTest < ActiveSupport::TestCase
     @market.shadow_bet_rate = 1
     @market.save!
     
-    @market.publish.add_default_contests.reload
+    @market.publish.reload
 
     assert_equal 36, @market.players.length
     assert @market.contest_types.size > 0, "should be some contest_types"
     assert @market.total_bets > 0
     assert_equal @market.shadow_bets, @market.total_bets
     assert @market.closed_at - @games[1].game_time - 5*60 < 60
+    #make sure all players have a locked_at time
+    assert 0, @market.players.where("locked_at is null").size
 
     #open the market. should not remove the shadow bets and should not be open because not enough bets
     @market = @market.open
@@ -213,6 +215,55 @@ class MarketTest < ActiveSupport::TestCase
 
   end
 
+  test "tend works on new market" do
+    setup_simple_market
+    Market.tend_all
+  end
+
+  test "publish_all" do
+    
+  end
+
+  test "open" do
+    setup_simple_market
+    contest_type = @market.contest_types.where("buy_in = 1000 and max_entries = 2").first
+    @roster = create(:roster, :market => @market, :contest_type => contest_type, :remaining_salary => 100000)
+    @roster.fill_randomly
+    assert_equal @roster.contest_type.salary_cap - @roster.players_with_prices.sum{|p| p.buy_price }, @roster.remaining_salary, "in_progress remaining salary equals cap - buy prices in published market"
+    @roster.submit!
+    assert_equal @roster.contest_type.salary_cap - @roster.players_with_prices.sum{|p| p.buy_price }, @roster.remaining_salary, "submitted remaining salary equals cap - buy prices in published market"
+    @market.open
+    assert_equal @roster.contest_type.salary_cap - @roster.players_with_prices.sum{|p| p.purchase_price }.to_f, @roster.remaining_salary.to_f, "submitted remaining salary equals cap - purchase prices in opened market"
+  end
+
+  test "tabulate_all" do
+    
+  end
+
+  test "lock_players_all" do
+    setup_multi_day_market
+    over_game = @market.games.first
+    future_game = @market.games.last
+    over_game.game_day = Time.now.yesterday.beginning_of_day
+    over_game.game_time = Time.now.yesterday
+    over_game.save!
+    Market.tend_all
+    over_game.teams.each do |team|
+      assert MarketPlayer.where(:player_stats_id => team.players.map(&:stats_id)).all?{|mp| mp.locked? }
+    end
+    future_game.teams.each do |team|
+      assert MarketPlayer.where(:player_stats_id => team.players.map(&:stats_id)).all?{|mp| !mp.locked? }
+    end
+
+  end
+
+  test "close_all" do
+    
+  end
+
+  test "complete_all" do
+    
+  end
 
 
   describe Market do
