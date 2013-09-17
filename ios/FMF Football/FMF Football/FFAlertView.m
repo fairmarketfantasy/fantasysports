@@ -172,9 +172,9 @@
             msg = errorKey;
             goto got_msg;
         }
-    } else {
-        msg = NSLocalizedString(@"An uknown error occurred.", @"unknown error msg");
     }
+    
+    msg = NSLocalizedString(@"An uknown error occurred.", @"unknown error msg");
     
 got_msg:
     
