@@ -27,6 +27,7 @@
 		153BBC5D17DFC2E40071E63B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC3517DFC2E40071E63B /* Foundation.framework */; };
 		153BBC6517DFC2E40071E63B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 153BBC6317DFC2E40071E63B /* InfoPlist.strings */; };
 		153BBC6817DFC2E40071E63B /* FMF_FootballTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 153BBC6717DFC2E40071E63B /* FMF_FootballTests.m */; };
+		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		15A2378517E268AA00225942 /* FFSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A2378317E268AA00225942 /* FFSessionViewController.m */; };
 		15A2378917E269BB00225942 /* fmf-splash-bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */; };
 		15A2378B17E26E9900225942 /* fmf-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378A17E26E9900225942 /* fmf-logo@2x.png */; };
@@ -81,6 +82,8 @@
 		153BBC6417DFC2E40071E63B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		153BBC6617DFC2E40071E63B /* FMF_FootballTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMF_FootballTests.h; sourceTree = "<group>"; };
 		153BBC6717DFC2E40071E63B /* FMF_FootballTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FMF_FootballTests.m; sourceTree = "<group>"; };
+		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
+		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		15A2378217E268AA00225942 /* FFSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFSessionViewController.h; sourceTree = "<group>"; };
 		15A2378317E268AA00225942 /* FFSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFSessionViewController.m; sourceTree = "<group>"; };
 		15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-splash-bg@2x.png"; sourceTree = "<group>"; };
@@ -236,6 +239,8 @@
 			children = (
 				15A2378217E268AA00225942 /* FFSessionViewController.h */,
 				15A2378317E268AA00225942 /* FFSessionViewController.m */,
+				1589CEA617E90C1700A7233E /* FFHomeViewController.h */,
+				1589CEA717E90C1700A7233E /* FFHomeViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -432,6 +437,7 @@
 				15A2379917E27C5600225942 /* FFTextField.m in Sources */,
 				15A237A417E29ACC00225942 /* FFAlertView.m in Sources */,
 				15A237A717E29BF800225942 /* UIView+FindFirstResponder.m in Sources */,
+				1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

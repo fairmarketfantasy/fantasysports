@@ -30,12 +30,53 @@
                     </view>
                     <navigationItem key="navigationItem" id="AMG-or-jNi"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
+                    <connections>
+                        <segue destination="tRX-Wo-l5Q" kind="modal" identifier="GotoHome" id="ly7-JP-D3Y"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nLY-V7-gZV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="364" y="265"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="B5d-DO-DPj">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="tRX-Wo-l5Q" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="krV-Dz-KRZ">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="jlJ-fd-tQu" kind="relationship" relationship="rootViewController" id="55P-Se-aCi"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4mY-Sb-Dup" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-87" y="985"/>
+        </scene>
+        <!--Home View Controller-->
+        <scene sceneID="Vzx-Xm-1VD">
+            <objects>
+                <viewController id="jlJ-fd-tQu" customClass="FFHomeViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="HH2-Ui-QX7">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="T3d-ve-48l"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="364" y="985"/>
+        </scene>
     </scenes>
+    <classes>
+        <class className="FFHomeViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFHomeViewController.h"/>
+        </class>
+        <class className="FFSessionViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFSessionViewController.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

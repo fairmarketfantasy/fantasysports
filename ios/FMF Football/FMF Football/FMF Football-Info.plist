@@ -54,9 +54,9 @@
 	<key>SBAPIVersion</key>
 	<string></string>
 	<key>SBApiClientId</key>
-	<string></string>
+	<string>fairmarketfantasy</string>
 	<key>SBApiSecret</key>
-	<string></string>
+	<string>f4n7Astic</string>
 	<key>SBAPIAllowInvalidSSLCertificate</key>
 	<true/>
 	<key>FFEmailRegex</key>
