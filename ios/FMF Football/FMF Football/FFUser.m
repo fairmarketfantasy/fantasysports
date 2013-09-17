@@ -14,4 +14,16 @@
 
 + (void)load { [self registerModel:self]; }
 
+- (NSString *)listPath { return @"/users.json"; }
+
+- (NSString *)detailPathSpec { return @"/users.json"; }
+
+// customize the to the nonstandard way the /users endpoint works
+- (AFHTTPClientParameterEncoding)paramterEncoding { return AFFormURLParameterEncoding; }
+
+- (NSDictionary *)toNetworkRepresentation
+{
+    return @{ @"user": [super toNetworkRepresentation] };
+}
+
 @end

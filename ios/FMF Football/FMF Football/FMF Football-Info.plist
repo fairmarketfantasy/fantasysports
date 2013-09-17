@@ -49,5 +49,17 @@
 	<array>
 		<string>ProhibitionRound.ttf</string>
 	</array>
+	<key>SBAPIBaseURLSpec</key>
+	<string>https://staging.fairmarketfantasy.com</string>
+	<key>SBAPIVersion</key>
+	<string></string>
+	<key>SBApiClientId</key>
+	<string></string>
+	<key>SBApiSecret</key>
+	<string></string>
+	<key>SBAPIAllowInvalidSSLCertificate</key>
+	<true/>
+	<key>FFEmailRegex</key>
+	<string>(^[-!#$%&amp;&apos;*+/=?^_`{}|~0-9A-Z]+(\\.[-!#$%&amp;&apos;*+/=?^_`{}|~0-9A-Z]+)*|^\&quot;([\001-\010\013\014\016-\037!#-\\[\\]-\177]|\\[\001-011\013\014\016-\177])*\&quot;)@(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\\.)+[A-Z]{2,6}\\.?$</string>
 </dict>
 </plist>
