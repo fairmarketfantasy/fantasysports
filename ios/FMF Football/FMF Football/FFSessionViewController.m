@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 FairMarketFantasy. All rights reserved.
 //
 
-#import "FFSplashViewController.h"
+#import "FFSessionViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "FFTextField.h"
 #import "FFAlertView.h"
@@ -14,7 +14,7 @@
 #import <SBData/SBData.h>
 #import "FFUser.h"
 
-@interface FFSplashViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate>
+@interface FFSessionViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate>
 {
 }
 
@@ -45,7 +45,7 @@
 
 @end
 
-@implementation FFSplashViewController
+@implementation FFSessionViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -72,11 +72,38 @@
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    SBSession *lastSession = [SBSession lastUsedSession];
+    if (lastSession != nil) {
+        [lastSession syncUser];
+        [self performSegueWithIdentifier:@"GotoHome" sender:nil];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)awakeFromNib
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(gotLogout:)
+                                                 name:SBLogoutNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(gotLogout:)
+                                                 name:SBLoginDidBecomeInvalidNotification
+                                               object:nil];
+}
+
+- (void)gotLogout:(NSNotification *)note
+{
+    NSLog(@"Got login/logout notification: %@", note);
+    [self.navigationController popToRootViewControllerAnimated:YES];
+
+    [self dismissViewControllerAnimated:YES completion:^{
+        NSLog(@"done dismissing view controllers");
+    }];
 }
 
 - (void)viewDidLoad
@@ -216,6 +243,7 @@
     un.autocapitalizationType = UITextAutocapitalizationTypeNone;
     un.autocorrectionType = UITextAutocorrectionTypeNo;
     un.keyboardType = UIKeyboardTypeEmailAddress;
+    un.text = @"sam@mustw.in"; // TODO: remove
     [self.signInView addSubview:un];
     self.usernameSigninField = un;
     
@@ -228,6 +256,7 @@
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
     pw.returnKeyType = UIReturnKeyGo;
+    pw.text = @"omgnowai"; // TODO: remove
     [self.signInView addSubview:pw];
     self.passwordSigninField = pw;
     
@@ -272,28 +301,71 @@
 
 - (void)signIn:(id)sender
 {
+    // get/compile the regex we'll be using
+    __strong static NSRegularExpression *regex = nil;
+    if (regex == nil) {
+        NSError *error = nil;
+        NSString *emailRe = FF_EMAIL_REGEX;
+        regex = [NSRegularExpression regularExpressionWithPattern:emailRe
+                                                          options:NSRegularExpressionCaseInsensitive
+                                                            error:&error];
+        if (error) {
+            @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                           reason:@"Could not compile regex"
+                                         userInfo:NSDictionaryOfVariableBindings(emailRe)];
+        }
+    }
+    
     NSString *error = nil;
     
-    if (!self.usernameSigninField.text.length) {
+    if (!self.usernameSignupField.text.length) {
         error = NSLocalizedString(@"Pleaes provide your username", nil);
         goto validate_error;
     }
-    if (!(self.passwordSigninField.text.length > 6)) {
+    {
+        NSString *email = self.usernameSignupField.text;
+        NSTextCheckingResult *result = [regex firstMatchInString:email options:0 range:NSMakeRange(0, email.length)];
+        if (!result.range.length) {
+            error = NSLocalizedString(@"Please provide a valid email address", nil);
+            goto validate_error;
+        }
+    }
+    if (!(self.passwordSignupField.text.length > 6)) {
         error = NSLocalizedString(@"Please provide a password at least 6 characters long", nil);
         goto validate_error;
     }
     
-    return;
-    
 validate_error:
-    {
+    if (error != nil) {
         FFAlertView *alert = [[FFAlertView alloc] initWithTitle:nil
                                                         message:error
                                               cancelButtonTitle:nil
                                                 okayButtonTitle:NSLocalizedString(@"Okay", nil)
                                                        autoHide:YES];
         [alert showInView:self.view];
+        return;
     }
+    
+    FFAlertView *progressAlert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Finding Account", @"creating account")
+                                                           messsage:NSLocalizedString(@"In a few short moments you'll be on your way!",
+                                                                                      @"on sign in, tells the user they will be signed in soon")
+                                                       loadingStyle:FFAlertViewLoadingStylePlain];
+    [progressAlert showInView:self.navigationController.view];
+    SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSigninField.text];
+    [sesh loginWithEmail:self.usernameSigninField.text password:self.passwordSigninField.text success:^(id user) {
+        [progressAlert hide];
+        [[self.view findFirstResponder] resignFirstResponder];
+        self.session = sesh;
+        [SBSession setLastUsedSession:sesh];
+        [self performSegueWithIdentifier:@"GotoHome" sender:nil];
+        NSLog(@"successful login %@", user);
+    } failure:^(NSError *err) {
+        [progressAlert hide];
+        [[[FFAlertView alloc] initWithError:err title:nil cancelButtonTitle:nil
+                            okayButtonTitle:NSLocalizedString(@"Dismiss", @"dismiss error dialog")
+                                   autoHide:YES]
+         showInView:self.navigationController.view];
+    }];
 }
 
 - (void)forgotPassword:(id)sender
@@ -306,6 +378,7 @@ validate_error:
     double delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+        // TODO: actually do this...
         [alert hide];
         FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Check your email", nil)
                                                         message:NSLocalizedString(@"We sent you an email with a link to reset your passord.", nil)
@@ -387,7 +460,8 @@ validate_error:
         [progressAlert hide];
         [[self.view findFirstResponder] resignFirstResponder];
         [SBSession setLastUsedSession:sesh];
-        [self performSegueWithIdentifier:@"GotoSession" sender:nil];
+        self.session = sesh;
+        [self performSegueWithIdentifier:@"GotoHome" sender:nil];
     };
     
     [sesh registerAndLoginUser:user password:password success:onSuccess failure:onErr];
@@ -490,6 +564,42 @@ validate_error:
         [UIView commitAnimations];
         
     }
+}
+
+@end
+
+
+@implementation UIViewController (FFSessionController)
+
+- (FFSessionViewController *)sessionController {
+    UIViewController *iter = self.parentViewController;
+    while (iter) {
+        if ([iter isKindOfClass:[FFSessionViewController class]]) {
+            return (FFSessionViewController *)iter;
+        } else if (iter.parentViewController && iter.parentViewController != iter) {
+            iter = iter.parentViewController;
+        } else {
+            iter = nil;
+        }
+    }
+    if (!iter) {
+        iter = self.presentingViewController;
+        while (iter) {
+            if ([iter isKindOfClass:[FFSessionViewController class]]) {
+                return (FFSessionViewController *)iter;
+            } else if (iter.presentingViewController && iter.presentingViewController != iter) {
+                iter = iter.presentingViewController;
+            } else {
+                iter = nil;
+            }
+        }
+    }
+    return nil;
+}
+
+- (SBSession *)session
+{
+    return self.sessionController.session;
 }
 
 @end
