@@ -52,7 +52,17 @@ class Roster < ActiveRecord::Base
     end
   end
 
+=begin
+  There are essentially 4 active states for rosters and markets to be in:
+  - in_progress, published
+  - submitted, published
+  - in_progress, opened
+  - submitted, opened
+  Only in the last state are price differentials important.  
+  That also means that in cases 1-3 remaining salary is determined by the buy_price of the roster's players
+=end
   def remaining_salary
+    # Factory girl gets all pissy if you don't check for id here
     if self.id && (self.state == 'in_progress' || self.market.state == 'published')
       salary = self.contest_type.salary_cap
       self.players_with_prices.each do |p|
