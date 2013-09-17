@@ -4,6 +4,10 @@ Fantasysports::Application.routes.draw do
                                        :registrations => "users/registrations" }
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
+  Rails.application.routes.draw do
+    # oauth routes can be mounted to any path (ex: /oauth2 or /oauth)
+    mount Devise::Oauth2Providable::Engine => '/oauth2'
+  end
 
   # You can have the root of your site routed with "root"
   root 'pages#index'
