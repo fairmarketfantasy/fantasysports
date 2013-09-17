@@ -16,6 +16,10 @@ class Roster < ActiveRecord::Base
 
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
 
+  def players_with_prices
+    Player.find_by_sql("select * from roster_prices(#{self.id})")
+  end
+
   def purchasable_players
     Player.purchasable_for_roster(self)
   end
@@ -36,7 +40,7 @@ class Roster < ActiveRecord::Base
       :market_id => contest_type.market_id,
       :contest_type_id => contest_type.id,
       :buy_in => contest_type.buy_in,
-      :remaining_salary => 100000,
+      :remaining_salary => contest_type.salary_cap,
       :state => 'in_progress',
       :positions => Positions.for_sport_id(contest_type.market.sport_id),
     )
@@ -45,6 +49,28 @@ class Roster < ActiveRecord::Base
   def build_from_existing(roster)
     roster.players.each do |player|
       self.add_player(player)
+    end
+  end
+
+=begin
+  There are essentially 4 active states for rosters and markets to be in:
+  - in_progress, published
+  - submitted, published
+  - in_progress, opened
+  - submitted, opened
+  Only in the last state are price differentials important.  
+  That also means that in cases 1-3 remaining salary is determined by the buy_price of the roster's players
+=end
+  def remaining_salary
+    # Factory girl gets all pissy if you don't check for id here
+    if self.id && (self.state == 'in_progress' || self.market.state == 'published')
+      salary = self.contest_type.salary_cap
+      self.players_with_prices.each do |p|
+        salary -= p.buy_price
+      end
+      salary
+    else
+      self[:remaining_salary]
     end
   end
 
@@ -110,9 +136,12 @@ class Roster < ActiveRecord::Base
   end
 
   def cleanup
-    players.each{|p| remove_player(p) }
-    market_orders.destroy_all
-    owner.customer_object.increase_balance(self.buy_in, 'canceled_roster')
+    self.with_lock do
+      if self.state == 'submitted'
+        self.owner.customer_object.increase_balance(self.buy_in, 'canceled_roster')
+      end
+      Roster.find_by_sql("select * from cancel_roster(#{self.id})")
+    end
   end
 
   def live?
