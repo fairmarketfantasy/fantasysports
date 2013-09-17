@@ -224,8 +224,16 @@ class MarketTest < ActiveSupport::TestCase
     
   end
 
-  test "open_all" do
-    
+  test "open" do
+    setup_simple_market
+    contest_type = @market.contest_types.where("buy_in = 1000 and max_entries = 2").first
+    @roster = create(:roster, :market => @market, :contest_type => contest_type, :remaining_salary => 100000)
+    @roster.fill_randomly
+    assert_equal @roster.contest_type.salary_cap - @roster.players_with_prices.sum{|p| p.buy_price }, @roster.remaining_salary, "in_progress remaining salary equals cap - buy prices in published market"
+    @roster.submit!
+    assert_equal @roster.contest_type.salary_cap - @roster.players_with_prices.sum{|p| p.buy_price }, @roster.remaining_salary, "submitted remaining salary equals cap - buy prices in published market"
+    @market.open
+    assert_equal @roster.contest_type.salary_cap - @roster.players_with_prices.sum{|p| p.purchase_price }.to_f, @roster.remaining_salary.to_f, "submitted remaining salary equals cap - purchase prices in opened market"
   end
 
   test "tabulate_all" do
@@ -240,8 +248,6 @@ class MarketTest < ActiveSupport::TestCase
     over_game.game_time = Time.now.yesterday
     over_game.save!
     Market.tend_all
-    Rails.logger.info @market.reload.state
-    Rails.logger.info '=' * 50
     over_game.teams.each do |team|
       assert MarketPlayer.where(:player_stats_id => team.players.map(&:stats_id)).all?{|mp| mp.locked? }
     end
