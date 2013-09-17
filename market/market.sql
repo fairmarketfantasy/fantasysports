@@ -541,7 +541,7 @@ CREATE OR REPLACE FUNCTION tabulate_scores(_market_id integer) RETURNS VOID AS $
 
 	UPDATE rosters set score = 
 		(select sum(score) from market_players where player_stats_id in 
-			(select player_stats_id from rosters_players where roster_id = rosters.id)
+			(select player_stats_id from rosters_players where roster_id = rosters.id) AND market_id = $1
 		) where market_id = $1;
 
 	WITH ranks as 
