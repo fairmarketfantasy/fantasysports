@@ -88,6 +88,7 @@
       <div class="roster-area">
         <h4 class="player-heading">Your Roster</h4>
         <div class="roster-overflow">
+          <div style="display: none;" ng-include="'/stats.html'"></div>
           <table class="roster-table">
             <thead>
               <tr>
@@ -113,7 +114,7 @@
                   <a ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>
                   <a ng-show="player.id && market.state != 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)">Remove</a>
                 </td>
-                <td ng-show="inThePast(market.started_at)">{{player.score}}</td>
+                <td ><a href="javascript://" tooltip-trigger="mouseenter" ng-mouseover="fetchPlayerStats(player)" tooltip-html-unsafe="{{statsContent()}}">{{player.score}}</a></td>
               </tr>
             </tbody>
           </table>

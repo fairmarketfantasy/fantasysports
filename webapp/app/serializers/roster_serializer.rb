@@ -22,20 +22,9 @@ class RosterSerializer < ActiveModel::Serializer
   has_one :contest_type
   has_many :players
 
-
-=begin
-  There are essentially 4 active states for rosters and markets to be in:
-  - in_progress, published
-  - submitted, published
-  - in_progress, opened
-  - submitted, opened
-  Only in the last state are price differentials important.  
-  That also means that in cases 1-3 remaining salary is determined by the buy_price of the roster's players
-=end
   def players
     @players ||= object.players_with_prices
   end
-
 
   def live
     object.live?

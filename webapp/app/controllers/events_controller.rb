@@ -12,7 +12,7 @@ class EventsController < ApplicationController
 
   # Takes an array of player_stat_ids and a market
   def for_players
-    games = MarketGames.where(:market_id => params[:market_id]).map(&:game_stats_id)
+    games = GamesMarket.where(:market_id => params[:market_id]).map(&:game_stats_id)
     events = StatEvent.where(:player_stats_id => params[:player_ids], :game_stats_id => games)
     render_api_response events
   end
