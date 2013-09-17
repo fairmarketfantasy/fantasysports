@@ -3,4 +3,14 @@ namespace :deploy do
   task :do => ['assets:precompile', 'db:setup_functions'] do
     true
   end
+
+  task :create_oauth_client => :environment do
+    identifier = "fairmarketfantasy"
+    unless Devise::Oauth2Providable::Client.where(:identifier => identifier).first
+      c = Devise::Oauth2Providable::Client.create!(:name => "FairMarketFantasy", :redirect_uri => SITE, :website => SITE)
+      c.identifier = identifier
+      c.secret = "f4n7Astic"
+      c.save!
+    end
+  end
 end
