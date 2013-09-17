@@ -19,6 +19,16 @@ class RecipientsController < ApplicationController
     # end
   end
 
+  def destroy
+    stripe_object = current_user.recipient.stripe_object
+    if stripe_object.delete
+      current_user.recipient.delete
+      render_api_response current_user.reload
+    else
+      render json: {errors: ["There was a problem deleting that bank account, refresh and try again."]}
+    end
+  end
+
   private
 
     def recipient_params

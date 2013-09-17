@@ -40,10 +40,25 @@ angular.module("app.controllers")
     });
   };
 
+  $scope.deleteRecipient = function(){
+    fs.recipients.delete().then(function(resp){
+      if(resp.errors){
+        $scope.errorMessage = resp.errors[0];
+      } else {
+        $scope.successMessage = "Success, your bank account has been deleted. Add a new one:";
+        $scope.recipient = null;
+      }
+    })
+  };
+
   $scope.initiateTransfer = function(){
+    $scope.deleteRecipientSpinner = true;
+    $scope.startTransferSpinner = true;
     var amount = $scope.withdrawAmount * 100;
     fs.user.withdrawMoney(amount).then(function(resp){
+      $scope.deleteRecipientSpinner = false;
       $scope.successMessage = "Success, transfer has been initiated.";
+      $scope.startTransferSpinner = false;
       window.App.currentUser.balance = resp.balance;
       $scope.withdrawAmount = null;
     });
