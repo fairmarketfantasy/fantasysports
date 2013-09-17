@@ -61,17 +61,17 @@ class UsersController < ApplicationController
         flash_key = update_needs_confirmation?(resource, prev_unconfirmed_email) ?
           :update_needs_confirmation : :updated
         set_flash_message :notice, flash_key
-      end•
+      end
       sign_in resource_name, resource, :bypass => true
       #respond_with resource, :location => after_update_path_for(resource)
     else
       clean_up_passwords resource
       #respond_with resource
-    end•
+    end
 
     current_user.reload
 
-    if image_s3_path•
+    if image_s3_path
       if img = current_user.photo
         # TODO: Delete the current photo
       end
@@ -87,6 +87,4 @@ class UsersController < ApplicationController
       }
     end
   end
-
-
 end
