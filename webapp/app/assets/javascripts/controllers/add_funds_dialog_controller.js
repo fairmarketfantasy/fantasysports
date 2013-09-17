@@ -45,13 +45,14 @@ angular.module("app.controllers")
 
 
   var saveCardCallback = function(st, stripeResp){
-    $scope.saveCardSpinner = false;
     if(st === 200){
       var token = stripeResp['id'];
       fs.cards.create(token).then(function(resp){
         if(resp.error){
+          $scope.saveCardSpinner = false;
           $scope.errorMessage = resp.error;
         } else {
+          $scope.saveCardSpinner = false;
           $scope.cards = resp.cards || [];
           setSelectedCardId();
           $scope.cardInfo = {};

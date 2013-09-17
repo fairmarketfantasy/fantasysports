@@ -23,7 +23,11 @@ Fantasysports::Application.routes.draw do
     end
   end
 
-  resources :recipients, only: [:index, :create]
+  resources :recipients, only: [:index, :create] do
+    collection do
+      delete '', action: :destroy
+    end
+  end
 
   resources :cards, only: [:index, :create, :destroy]
 
