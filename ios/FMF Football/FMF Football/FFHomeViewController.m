@@ -7,6 +7,7 @@
 //
 
 #import "FFHomeViewController.h"
+#import "FFSessionViewController.h"
 
 @interface FFHomeViewController ()
 
@@ -26,13 +27,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
-}
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    UIView *leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    UIButton *gmenu = [UIButton buttonWithType:UIButtonTypeCustom];
+    [gmenu setImage:[UIImage imageNamed:@"globalmenu.png"] forState:UIControlStateNormal];
+    gmenu.frame = CGRectMake(-2, 0, 35, 44);
+    [leftView addSubview:gmenu];
+    UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
+    logo.frame = CGRectMake(32, 15, 150, 19);
+    [leftView addSubview:logo];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftView];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.sessionController.balanceView];
 }
 
 @end

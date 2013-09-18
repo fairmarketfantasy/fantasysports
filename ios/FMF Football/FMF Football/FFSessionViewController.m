@@ -32,6 +32,7 @@
 @property (nonatomic) UIGestureRecognizer   *dismissKeyboardRecognizer;
 @property (nonatomic) CGFloat               keyboardHeight;
 @property (nonatomic) BOOL                  keyboardIsShowing;
+@property (nonatomic) UIView                *_balanceView;
 
 - (void)setupSignInView;
 - (void)setupSignUpView;
@@ -72,7 +73,7 @@
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-    SBSession *lastSession = [SBSession lastUsedSession];
+    SBSession *lastSession = [SBSession lastUsedSessionWithUserClass:[FFUser class]];
     if (lastSession != nil) {
         [lastSession syncUser];
         [self performSegueWithIdentifier:@"GotoHome" sender:nil];
@@ -351,7 +352,7 @@ validate_error:
                                                                                       @"on sign in, tells the user they will be signed in soon")
                                                        loadingStyle:FFAlertViewLoadingStylePlain];
     [progressAlert showInView:self.navigationController.view];
-    SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSigninField.text];
+    SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSigninField.text userClass:[FFUser class]];
     [sesh loginWithEmail:self.usernameSigninField.text password:self.passwordSigninField.text success:^(id user) {
         [progressAlert hide];
         [[self.view findFirstResponder] resignFirstResponder];
@@ -442,7 +443,7 @@ validate_error:
                                                        loadingStyle:FFAlertViewLoadingStylePlain];
     [progressAlert showInView:self.navigationController.view];
     
-    SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSignupField.text];
+    SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSignupField.text userClass:[FFUser class]];
     
     FFUser *user = [[FFUser alloc] initWithSession:sesh];
     user.email = self.usernameSignupField.text;
@@ -564,6 +565,40 @@ validate_error:
         [UIView commitAnimations];
         
     }
+}
+
+// session controller stuff --------------------------------------------------------------------------------------------
+
+- (UIView *)balanceView
+{
+    if (!__balanceView) {
+        __balanceView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 41)];
+        __balanceView.backgroundColor = [UIColor clearColor];
+        __balanceView.opaque = YES;
+        
+        UILabel *balance = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 44)];
+        balance.backgroundColor = [UIColor clearColor];
+        balance.font = [FFStyle regularFont:12];
+        balance.textColor = [UIColor whiteColor];
+        balance.text = NSLocalizedString(@"Balance", nil);
+        [__balanceView addSubview:balance];
+        
+        UIView *background = [[UIView alloc] initWithFrame:CGRectMake(56, 10, 49, 24)];
+        background.backgroundColor = [FFStyle brightGreen];
+        background.layer.borderWidth = 1;
+        background.layer.borderColor = [FFStyle white].CGColor;
+        background.layer.cornerRadius = 4;
+        [__balanceView addSubview:background];
+        
+        UILabel *value = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 49, 24)];
+        value.backgroundColor = [UIColor clearColor];
+        value.font = [FFStyle boldFont:14];
+        value.textColor = [FFStyle white];
+        value.textAlignment = NSTextAlignmentCenter;
+        value.text = @"1000";
+        [background addSubview:value];
+    }
+    return __balanceView;
 }
 
 @end
