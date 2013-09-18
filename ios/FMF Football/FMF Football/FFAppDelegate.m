@@ -8,13 +8,14 @@
 
 #import "FFAppDelegate.h"
 #import <SBData/SBData.h>
+#import "FFStyle.h"
 
 @implementation FFAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [SBModelMeta initDb];
-    [self customizeAppearance];
+    [FFStyle customizeAppearance];
     return YES;
 }
 							
@@ -43,11 +44,6 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-}
-
-- (void)customizeAppearance
-{
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
 }
 
 @end

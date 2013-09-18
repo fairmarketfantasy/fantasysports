@@ -87,6 +87,11 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:size];
 }
 
++ (UIFont *)boldFont:(int)size
+{
+    return [UIFont fontWithName:@"HelveticaNeue-Bold" size:size];
+}
+
 // UI CONSTRUCTORS -----------------------------------------------------------------------------------------------------
 
 + (UIButton *)clearButtonWithText:(NSString *)text borderColor:(UIColor *)color
@@ -116,6 +121,11 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return b;
 }
 
++ (UIBarButtonItem *)backBarItemForController:(UIViewController *)controller
+{
+    
+}
+
 + (UIColor *)lighterColorForColor:(UIColor *)c
 {
     float r, g, b, a;
@@ -138,6 +148,13 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
                                alpha:a];
     }
     return nil;
+}
+
+// customize uiappearance ----------------------------------------------------------------------------------------------
++ (void)customizeAppearance
+{
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"] forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"] forBarMetrics:UIBarMetricsDefault];
 }
 
 @end

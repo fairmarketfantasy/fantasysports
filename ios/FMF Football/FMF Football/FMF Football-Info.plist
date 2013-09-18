@@ -22,8 +22,24 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
+	<key>FFEmailRegex</key>
+	<string>(^[-!#$%&amp;'*+/=?^_`{}|~0-9A-Z]+(\\.[-!#$%&amp;'*+/=?^_`{}|~0-9A-Z]+)*|^\"([\001-\010\013\014\016-\037!#-\\[\\]-\177]|\\[\001-011\013\014\016-\177])*\")@(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\\.)+[A-Z]{2,6}\\.?$</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>SBAPIAllowInvalidSSLCertificate</key>
+	<true/>
+	<key>SBAPIBaseURLSpec</key>
+	<string>https://staging.fairmarketfantasy.com</string>
+	<key>SBAPIVersion</key>
+	<string></string>
+	<key>SBApiClientId</key>
+	<string>fairmarketfantasy</string>
+	<key>SBApiSecret</key>
+	<string>f4n7Astic</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>ProhibitionRound.ttf</string>
+	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>MainStoryboard_iPhone</string>
 	<key>UIMainStoryboardFile~ipad</key>
@@ -45,21 +61,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>ProhibitionRound.ttf</string>
-	</array>
-	<key>SBAPIBaseURLSpec</key>
-	<string>https://staging.fairmarketfantasy.com</string>
-	<key>SBAPIVersion</key>
-	<string></string>
-	<key>SBApiClientId</key>
-	<string>fairmarketfantasy</string>
-	<key>SBApiSecret</key>
-	<string>f4n7Astic</string>
-	<key>SBAPIAllowInvalidSSLCertificate</key>
-	<true/>
-	<key>FFEmailRegex</key>
-	<string>(^[-!#$%&amp;&apos;*+/=?^_`{}|~0-9A-Z]+(\\.[-!#$%&amp;&apos;*+/=?^_`{}|~0-9A-Z]+)*|^\&quot;([\001-\010\013\014\016-\037!#-\\[\\]-\177]|\\[\001-011\013\014\016-\177])*\&quot;)@(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\\.)+[A-Z]{2,6}\\.?$</string>
 </dict>
 </plist>

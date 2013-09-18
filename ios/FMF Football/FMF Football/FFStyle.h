@@ -25,11 +25,15 @@
 + (UIFont *)regularFont:(int)size;
 + (UIFont *)italicFont:(int)size;
 + (UIFont *)lightFont:(int)size;
++ (UIFont *)boldFont:(int)size;
 + (UIColor *)lighterColorForColor:(UIColor *)c;
 + (UIColor *)darkerColorForColor:(UIColor *)c;
 
 + (UIButton *)clearButtonWithText:(NSString *)text borderColor:(UIColor *)color;
 + (FFCustomButton *)coloredButtonWithText:(NSString *)text color:(UIColor *)color borderColor:(UIColor *)color;
++ (UIBarButtonItem *)backBarItemForController:(UIViewController *)controller;
+
++ (void)customizeAppearance;
 
 @end
 

@@ -14,6 +14,8 @@
 
 @property (nonatomic) SBSession *session;
 
+@property (nonatomic, readonly) UIView *balanceView;
+
 @end
 
 
