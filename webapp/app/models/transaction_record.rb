@@ -7,6 +7,7 @@ class TransactionRecordValidator < ActiveModel::Validator
 end
 
 class TransactionRecord < ActiveRecord::Base
+  attr_accessible :user, :event, :amount, :roster_id
   CONTEST_TYPES = %w( entry_fee rake )
   validates_presence_of :user
   validates :event, inclusion: { in: CONTEST_TYPES + %w( deposit withdrawal buy_in canceled_roster payout) }

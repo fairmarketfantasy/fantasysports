@@ -11,9 +11,9 @@ Fantasysports::Application.routes.draw do
     # oauth routes can be mounted to any path (ex: /oauth2 or /oauth)
     mount Devise::Oauth2Providable::Engine => '/oauth2'
   end
-  #  devise_scope :user do
-  #    get "users", :to => "users#index", :as => "users_index"
-  #  end
+  devise_scope :user do
+    get "users", :to => "users#index", :as => "users_index"
+  end
 
   # You can have the root of your site routed with "root"
   get '/terms' => 'pages#terms'
