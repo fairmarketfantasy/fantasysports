@@ -15,11 +15,12 @@
                     </view>
                     <connections>
                         <segue destination="tRX-Wo-l5Q" kind="modal" identifier="GotoHome" id="O9s-83-Qzo"/>
+                        <segue destination="tRX-Wo-l5Q" kind="modal" identifier="GoImmediatelyToHome" animates="NO" id="Zjb-xv-NwD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xva-34-xG7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-87" y="299"/>
+            <point key="canvasLocation" x="-87" y="117"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="B5d-DO-DPj">
@@ -52,17 +53,12 @@
             <point key="canvasLocation" x="364" y="985"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="FFHomeViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFHomeViewController.h"/>
-        </class>
-        <class className="FFSessionViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFSessionViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="Zjb-xv-NwD"/>
+    </inferredMetricsTieBreakers>
 </document>
