@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
   end
 
   def http_exception_handler(e)
-    render :status => e.code, :json => {error: e.message, trace: e.trace.to_json}
+    render :status => e.code, :json => {error: e.message}
   end
 
   after_filter  :set_csrf_cookie_for_ng
