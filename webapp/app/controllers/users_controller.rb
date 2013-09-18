@@ -1,5 +1,6 @@
-class UsersController < ApplicationController
-  skip_before_filter :authenticate_user!
+class UsersController < Devise::RegistrationsController
+  before_filter :authenticate_user!, :except => :create
+  skip_before_filter :verify_authenticity_token, :only => [:create, :update]
 
   def show
     user = User.find(params[:id])
@@ -27,20 +28,20 @@ class UsersController < ApplicationController
   end
 
   def create
-    respond_to do |format|••
-      format.html {•
-        super•
+    respond_to do |format|
+      format.html {
+        super
       }
       format.json {
-        r = build_resource
+        r = build_resource(params[:user])
+        debugger
         user = User.where(:email => r.email).first
         # Allow posting the same info again
         if user && user.valid_password?(r.password)
           r = user
         end
         if r.save
-           Canonicalizer.update_contacts_to_user(r)
-           render :status => 200, :partial => 'common/user_or_contact', :locals => {:user_or_contact => r.reload}
+          render_api_response r.reload
         else
           render :json => {:error => resource.errors.values.join(', ')}, :status => :unprocessable_entity
         end
