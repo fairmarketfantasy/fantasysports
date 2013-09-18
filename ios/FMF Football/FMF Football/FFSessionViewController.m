@@ -76,7 +76,7 @@
     SBSession *lastSession = [SBSession lastUsedSessionWithUserClass:[FFUser class]];
     if (lastSession != nil) {
         [lastSession syncUser];
-        [self performSegueWithIdentifier:@"GotoHome" sender:nil];
+        [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
     }
 }
 

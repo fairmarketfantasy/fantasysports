@@ -11,5 +11,6 @@
 @interface FFBaseViewController : UIViewController
 
 - (void)showBanner:(NSString *)text target:(id)target selector:(SEL)sel;
+- (void)closeBanner;
 
 @end
