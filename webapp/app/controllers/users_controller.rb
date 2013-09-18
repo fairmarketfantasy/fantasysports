@@ -2,6 +2,10 @@ class UsersController < Devise::RegistrationsController
   before_filter :authenticate_user!, :except => :create
   skip_before_filter :verify_authenticity_token, :only => [:create, :update]
 
+  def index
+    render_api_response current_user
+  end
+
   def show
     user = User.find(params[:id])
     render_api_response user
@@ -34,7 +38,6 @@ class UsersController < Devise::RegistrationsController
       }
       format.json {
         r = build_resource(params[:user])
-        debugger
         user = User.where(:email => r.email).first
         # Allow posting the same info again
         if user && user.valid_password?(r.password)
