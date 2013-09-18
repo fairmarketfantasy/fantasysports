@@ -1,5 +1,6 @@
 class CustomerObject < ActiveRecord::Base
   attr_accessor :token
+  attr_protected
 
   belongs_to :user
 

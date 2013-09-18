@@ -1,6 +1,7 @@
 class Roster < ActiveRecord::Base
-  has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players', foreign_key: "roster_id"
+  attr_protected
 
+  has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players', foreign_key: "roster_id"
   has_many :rosters_players
   belongs_to :market
   belongs_to :contest
@@ -35,7 +36,7 @@ class Roster < ActiveRecord::Base
     raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
     raise HttpException.new(402, "Insufficient funds") unless user.can_charge?(contest_type.buy_in)
 
-     Roster.create!(
+    Roster.create!(
       :owner_id => user.id,
       :market_id => contest_type.market_id,
       :contest_type_id => contest_type.id,

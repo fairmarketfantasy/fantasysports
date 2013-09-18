@@ -1,4 +1,5 @@
 class Player < ActiveRecord::Base
+  attr_protected
   belongs_to :sport
   belongs_to :team, :foreign_key => 'team'
   has_many :stat_events

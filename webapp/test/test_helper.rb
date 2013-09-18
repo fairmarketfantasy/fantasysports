@@ -210,6 +210,7 @@ FactoryGirl.define do
     association :market, factory: :open_market
     name "some contest type"
     max_entries 100
+    salary_cap 100000
     buy_in 1000
     rake 1
     payout_structure 'some payout structure'

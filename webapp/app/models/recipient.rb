@@ -1,5 +1,6 @@
 class Recipient < ActiveRecord::Base
   attr_accessor :token, :name
+  attr_protected
 
   belongs_to :user
   has_one    :customer_object, through: :user

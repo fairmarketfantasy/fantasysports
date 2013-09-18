@@ -7,6 +7,7 @@ class CardsControllerTest < ActionController::TestCase
     sign_in(user)
     assert_difference("CustomerObject.count", 1) do
       xhr :post, :create, {token: valid_card_token}
+      pp response.body
     end
   end
 

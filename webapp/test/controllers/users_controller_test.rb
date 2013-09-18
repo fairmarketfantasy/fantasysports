@@ -9,6 +9,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "show" do
+    sign_in @user
     xhr :get, :show, {id: @user.id}
     assert_response :success
   end

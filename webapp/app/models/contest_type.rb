@@ -1,4 +1,5 @@
 class ContestType < ActiveRecord::Base
+  attr_protected
   belongs_to :market
   belongs_to :user
   has_many :contests
