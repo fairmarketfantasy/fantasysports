@@ -182,7 +182,7 @@ class Market < ActiveRecord::Base
 
   #TODO: is this safe if run concurrently?
   def add_default_contests
-    self.contest_types.reload.transaction do
+    self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
       ContestType.create(
@@ -197,6 +197,7 @@ class Market < ActiveRecord::Base
         )
       end
     end
+    self.contest_types.reload
     return self
   end
 

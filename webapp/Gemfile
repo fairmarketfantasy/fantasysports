@@ -28,7 +28,7 @@ gem 'twitter-bootstrap-rails'
 gem 'devise'
 gem 'omniauth'
 gem 'omniauth-facebook'
-gem 'mustwin_devise_oauth2_providable', '1.1.4'
+gem 'mustwin_devise_oauth2_providable', '1.1.4', :path => '/Users/mike/code/devise_oauth2_providable'
 gem 'protected_attributes'
 
 #pagination

@@ -1,4 +1,5 @@
 class Contest < ActiveRecord::Base
+  attr_protected
   belongs_to :sport
   belongs_to :market
   has_many :games

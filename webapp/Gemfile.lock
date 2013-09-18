@@ -1,3 +1,12 @@
+PATH
+  remote: /Users/mike/code/devise_oauth2_providable
+  specs:
+    mustwin_devise_oauth2_providable (1.1.4)
+      devise (>= 3.0.0)
+      protected_attributes
+      rack-oauth2 (~> 0.11.0)
+      rails (>= 3.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -127,11 +136,6 @@ GEM
       dante (>= 0.1.5)
       jimson-temp
       stripe (>= 1.8.4)
-    mustwin_devise_oauth2_providable (1.1.4)
-      devise (>= 3.0.0)
-      protected_attributes
-      rack-oauth2 (~> 0.11.0)
-      rails (>= 3.2.0)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
@@ -256,7 +260,7 @@ DEPENDENCIES
   less-rails
   mocha
   mustwin-stripe-ruby-mock (>= 1.8.5.00)
-  mustwin_devise_oauth2_providable (= 1.1.4)
+  mustwin_devise_oauth2_providable (= 1.1.4)!
   omniauth
   omniauth-facebook
   pg

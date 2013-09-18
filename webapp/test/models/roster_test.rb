@@ -4,7 +4,7 @@ class RosterTest < ActiveSupport::TestCase
 
   setup do
     setup_simple_market
-    @roster = create(:roster, :market => @market)
+    @roster = create(:roster, :market => @market, :contest_type => @market.contest_types.first)
   end 
 
   #make sure that you can't play a h2h against yourself
