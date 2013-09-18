@@ -10,10 +10,18 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   devise :omniauthable, :omniauth_providers => [:facebook]
 
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :first_name, :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync
+
   has_many :rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner_id
   has_one  :customer_object
   has_one  :recipient
+
+  before_create :set_blank_name
+
+  def set_blank_name
+    self.name ||= ''
+  end
 
 
   def self.find_for_facebook_oauth(auth)
