@@ -1,5 +1,5 @@
 //
-//  FFHomeViewController.h
+//  FFBaseViewController.h
 //  FMF Football
 //
 //  Created by Samuel Sutch on 9/17/13.
@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FFBaseViewController.h"
 
-@interface FFHomeViewController : FFBaseViewController
+@interface FFBaseViewController : UIViewController
+
+- (void)showBanner:(NSString *)text target:(id)target selector:(SEL)sel;
 
 @end
