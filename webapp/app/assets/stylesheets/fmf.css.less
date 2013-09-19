@@ -577,6 +577,11 @@ header {
   padding: 0 5px 5px;
   .border-radius(5px);
 }
+.player-overflow {
+  max-height: 400px;
+  overflow: scroll;
+  overflow-x: none;
+}
 .players-table, .roster-table {
   font-size: 12px;
   width: 366px;
@@ -585,8 +590,10 @@ header {
     padding: 4px;
     line-height: 26px;
     width: 20%;
+    text-align: center;
     &.larger {
       width: 45%;
+      text-align: left;
     }
     &.tiny {
       width: 14%;
@@ -611,12 +618,13 @@ header {
   background-color: @green;
   color: @white;
   height: 20px;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 18px;
-  width: 50%;
+  width: 45%;
   display: inline-block;
   vertical-align: middle; 
-  margin: 0 0 8px 6%; 
+  margin: 0 0 8px 10%; 
+  text-align: center;
 }
 .broke {
   background-color: @danger;
@@ -724,5 +732,22 @@ header {
   color: @black;
 }
 
-
-
+.btn.btn-small .caret {
+  border-left-width: 4px;
+  border-right-width: 4px;
+  border-top-width: 5px;
+}
+input[type="text"].players-search {
+  padding: 4px;
+  font-size: 14px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.dropdown {
+  display: inline-block;
+  margin-left: 19%;
+  margin-bottom: 10px;
+  .btn-small.btn-info {
+    color: white;
+  }
+}
