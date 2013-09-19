@@ -70,6 +70,8 @@ Fantasysports::Application.routes.draw do
 
   resources :players, only: [:index] do
     collection do
+      get 'mine', :action => 'mine'
+      get 'public', :action => 'public'
       get 'for_roster/:id', :action => 'for_roster'
     end
   end
