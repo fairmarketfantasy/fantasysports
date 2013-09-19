@@ -9,12 +9,14 @@
 #import <UIKit/UIKit.h>
 #import <SBData/SBData.h>
 #import "FFUser.h"
+#import "FFTickerMaximizedDrawerViewController.h"
 
 @interface FFSessionViewController : UIViewController
 
 @property (nonatomic) SBSession *session;
 
 @property (nonatomic, readonly) UIView *balanceView;
+@property (nonatomic, readonly) FFTickerMaximizedDrawerViewController *maximizedTicker;
 
 @end
 

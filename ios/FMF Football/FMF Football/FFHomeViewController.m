@@ -43,11 +43,9 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    UIViewController *cont = [[UIViewController alloc] init];
-    cont.view.backgroundColor = [UIColor redColor];
     UIViewController *cont2 = [[UIViewController alloc] init];
-    cont2.view.backgroundColor = [UIColor blueColor];
-    [self showControllerInDrawer:cont minimizedViewController:cont2 animated:NO];
+    cont2.view.backgroundColor = [UIColor redColor];
+    [self showControllerInDrawer:self.sessionController.maximizedTicker minimizedViewController:cont2 animated:NO];
     
     double delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
