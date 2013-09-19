@@ -41,7 +41,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         if request.headers['content-type'] == 'application/json'
           sign_up_from_json
         else
-          sign_up_from_form
+          sign_up_from_html
         end
       }
     end
