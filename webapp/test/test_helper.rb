@@ -38,6 +38,14 @@ class ActiveSupport::TestCase
 
   include FactoryGirl::Syntax::Methods
 
+  def resp_json
+    resp = JSON.parse(response.body)
+    if resp["data"]
+        resp["data"] = JSONH.unpack(resp["data"])
+    end
+    resp
+  end
+
   #creates one market with 2 games, 4 teams, and 36 players. market is not published.
   def setup_multi_day_market
     @teams = [create(:team1, :abbrev => "AA"),

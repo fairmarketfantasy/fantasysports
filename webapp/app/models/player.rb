@@ -21,7 +21,11 @@ class Player < ActiveRecord::Base
   scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
   scope :in_position,  ->(position)   { where(position: position) }
   scope :normal_positions,      -> { where(:position => %w(QB RB WR TE K DEF)) }
+  scope :order_by_ppg,         ->(dir = 'desc') { order("(total_points / (total_games + .001)) #{dir}") }
   scope :with_purchase_price,   -> { select('players.*, rosters_players.purchase_price') } # Must also join rosters_players
+  scope :with_prices,           -> (market, buy_in) {
+      select('players.*, market_prices.*').joins("JOIN market_prices(#{market.id}, #{buy_in}) ON players.id = market_prices.player_id")
+  }
 
   scope :purchasable_for_roster, -> (roster) { 
     select(
