@@ -1,14 +1,17 @@
 <div class="roster-title">  
-  <h3 >Your Contest Entries</h3>
+  <h3 >Your <span ng-show="showMore">Past </span>Contest Entries</h3>
 </div>
 <ul class="roster-list clearfix">
-  <li class="market" ng-repeat="roster in rosterService.top()">
+  <li class="market" ng-repeat="roster in rosterList">
     <a href="#/market/{{roster.market_id}}/roster/{{roster.id}}" title="{{roster.contest_type.description}}">
       {{roster.buy_in | centsToDollars }} {{roster.contest_type.name}} - 
       <span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span>
       <span ng-show="roster.live">Score: {{roster.score || 0 }}</span>
       <span ng-show="roster.live">Place: {{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries}}</span>
+      <span ng-show="inThePast(roster.paid_at)">
+        Paid {{roster.amount_paid | centsToDollars }} on {{roster.paid_at | shortFormTime}}
+      </span>
     </a>
   </li>
 </ul>
-
+<btn class="btn" ng-show="showMore" ng-click="fetchMore()">Show More</btn>

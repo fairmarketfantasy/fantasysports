@@ -14,7 +14,7 @@ angular.module('app', [
       when('/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
       when('/market/:market_id', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/rosters', {templateUrl: '/roster_list.html', controller: 'RosterListController'}).
-      when('/history', {templateUrl: '/roster_list.html', controller: 'RosterListController'}).
+      when('/history', {templateUrl: '/roster_list.html', controller: 'RosterHistoryController'}).
       when('/rules', {templateUrl: '/rules.html', controller: 'RulesController'}).
       when('/promos', {templateUrl: '/promos.html', controller: 'PromosController'}).
       when('/legal', {templateUrl: '/legal.html', controller: 'LegalController'}).
