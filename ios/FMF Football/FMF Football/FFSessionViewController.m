@@ -33,6 +33,7 @@
 @property (nonatomic) CGFloat               keyboardHeight;
 @property (nonatomic) BOOL                  keyboardIsShowing;
 @property (nonatomic) UIView                *_balanceView;
+@property (nonatomic) FFTickerMaximizedDrawerViewController *_maximizedTicker;
 
 - (void)setupSignInView;
 - (void)setupSignUpView;
@@ -52,7 +53,17 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        self.session = [SBSession lastUsedSessionWithUserClass:[FFUser class]];
+
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.session = [SBSession lastUsedSessionWithUserClass:[FFUser class]];
     }
     return self;
 }
@@ -73,9 +84,8 @@
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-    SBSession *lastSession = [SBSession lastUsedSessionWithUserClass:[FFUser class]];
-    if (lastSession != nil) {
-        [lastSession syncUser];
+    if (self.session != nil) {
+        [self.session syncUser];
         [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
     }
 }
@@ -599,6 +609,16 @@ validate_error:
         [background addSubview:value];
     }
     return __balanceView;
+}
+
+- (FFTickerMaximizedDrawerViewController *)maximizedTicker
+{
+    if (!__maximizedTicker) {
+        __maximizedTicker = [[FFTickerMaximizedDrawerViewController alloc] init];
+        __maximizedTicker.view.backgroundColor = [FFStyle darkGreen];
+        __maximizedTicker.session = self.session;
+    }
+    return __maximizedTicker;
 }
 
 @end
