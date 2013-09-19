@@ -11,7 +11,7 @@ class CardsController < ApplicationController
   def create
     begin
       if customer_object = current_user.customer_object
-        customer_object.add_a_card(params[:token])
+        customer_object.add_a_card(params[:token], params[:card_number])
       else
         customer_object = CustomerObject.create!(user: current_user, token: params[:token])
       end

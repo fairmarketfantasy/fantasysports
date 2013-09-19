@@ -133,6 +133,10 @@ FactoryGirl.define do
     token { generate(:random_string) }
   end
 
+  factory :credit_card do
+
+  end
+
   factory :recipient do
     token { generate(:random_string) }
   end

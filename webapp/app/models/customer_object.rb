@@ -31,8 +31,13 @@ class CustomerObject < ActiveRecord::Base
     stripe_object.default_card
   end
 
-  def add_a_card(token)
-    stripe_object.cards.create({card: token})
+  def add_a_card(token, card_number)
+    credit_card = CreditCard.new(customer_object_id: self.id, card_number: card_number)
+    if credit_card.save
+      stripe_object.cards.create({card: token})
+    else
+      raise "Tried to save a credit card that is already in use."
+    end
   end
 
   def delete_card(card_id)
