@@ -16,6 +16,7 @@ class Roster < ActiveRecord::Base
   before_destroy :cleanup
 
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
+  scope :submitted, -> { where(state: ['submitted'])}
 
   def players_with_prices
     Player.find_by_sql("select * from roster_prices(#{self.id})")
