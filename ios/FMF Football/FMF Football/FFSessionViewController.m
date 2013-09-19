@@ -572,7 +572,7 @@ validate_error:
 - (UIView *)balanceView
 {
     if (!__balanceView) {
-        __balanceView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 41)];
+        __balanceView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 44)];
         __balanceView.backgroundColor = [UIColor clearColor];
         __balanceView.opaque = YES;
         
