@@ -109,7 +109,7 @@
                   <span ng-show="market.state == 'published' || rosters.currentRoster.state == 'in_progress'">{{player.buy_price | emptyIfZero }}</span>
                   <span ng-hide="market.state == 'published' || rosters.currentRoster.state == 'in_progress'">{{player.purchase_price | emptyIfZero }}</span>
                 </td>
-                <td ng-show="market.state != 'published'" ng-class="{positive: player.sell_price - player.purchase_price >= 0, negative: player.sell_price - player.purchase_price < 0}">{{player.sell_price - player.purchase_price }}</td>
+                <td ng-show="market.state != 'published'" ng-class="{positive: player.sell_price - player.purchase_price > 0, negative: player.sell_price - player.purchase_price < 0}">{{player.sell_price - player.purchase_price | emptyIfZero }}</td>
                 <td>
                   <span ng-show="player.id && market.state == 'opened' && player.locked" href="javascript://">Locked</span>
                   <a ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>

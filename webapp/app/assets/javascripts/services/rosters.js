@@ -16,6 +16,14 @@ angular.module('app.data')
         });
       };
 
+      this.top = function(limit) {
+        var top = _.sortBy(this.mine(), function(r) { return -r.score; });
+        if (limit) {
+          top = top.slice(0, limit);
+        }
+        return top;
+      };
+
       this.fetch = function(id) {
         if (rosterData[id]) {
           var fakeDeferred = $q.defer();
