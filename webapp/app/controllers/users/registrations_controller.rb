@@ -38,7 +38,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
         super
       }
       format.json {
-        debugger
         if request.headers['content-type'] == 'application/json'
           sign_up_from_json
         else
