@@ -429,7 +429,7 @@ header {
   background-color: @offWhite;
   margin-bottom: 0;
 }
-.market {
+.market-link {
   float: left;
   width: 36%;
   margin: 0 1.5% 10px;
@@ -439,19 +439,23 @@ header {
   .border-radius(4px);
   text-align: center;
   background-color: @white;
+  color: @gray;
+  display: block;
 }
+
 .market-link {
   color: @gray;
 }
 .market-link:hover {
   color: @red;
+  background-color: @nearWhite;
+  border: 1px solid @red; 
 }
-.highlightMkt {
+.highlightMkt, .highlightMkt:hover {
   background-color: @gray;
   border: 1px solid @white;
-  .market-link {
-    color: @white;
-  }
+  color: @white;
+  cursor: default;
 }
 .contest-list {
   padding: 10px 20px;
@@ -557,48 +561,62 @@ header {
 .players, .roster {
   width: 50%;
   float: left;
+  background-color: @gray;  
 }
 .players-area, .roster-area {
-  background-color: @gray;
   padding: 10px 4%;
   width: 92%;
+  height: 760px;
+}
+.players-area {
 }
 .player-overflow, .roster-overflow {
-  height: 400px;
-  overflow: scroll;  
-  overflow-x: none;
+  max-height: 690px;
+  overflow: hidden;  
   background-color: @white;
-  padding: 5px;
+  padding: 0 5px 5px;
   .border-radius(5px);
 }
 .players-table, .roster-table {
   font-size: 12px;
-  td {
+  width: 366px;
+  max-width: 366px;
+  td, th {
     padding: 4px;
-    text-align: center;
+    line-height: 26px;
+    width: 20%;
+    &.larger {
+      width: 45%;
+    }
+    &.tiny {
+      width: 14%;
+      text-align: center;
+    }
   }
 }
 .player-heading {
   color: @white;
-  margin: 4px 0 10px;
+  margin: 0 0 8px; 
 }
-.roster-heading {
-  width: 95%;
-  padding: 6px 2.5%;
-  position: relative;
-  height: 30px;
+.team-heading {
+  color: @white;
+  width: 40%;
+  display: inline-block;
+  margin: 0 0 8px; 
+  vertical-align: middle; 
 }
 .salary-cap {
-  position: absolute;
-  right: 0;
-  bottom: 0;
   padding: 6px;
-  .border-radius(4px 4px 0 0);
-  background-color: @base;
+  .border-radius(4px);
+  background-color: @green;
   color: @white;
   height: 20px;
   font-size: 16px;
-  line-height: 18px; 
+  line-height: 18px;
+  width: 50%;
+  display: inline-block;
+  vertical-align: middle; 
+  margin: 0 0 8px 6%; 
 }
 .broke {
   background-color: @danger;
@@ -638,3 +656,73 @@ header {
 .btn-orange:hover {
   background-color: @orangeDark;
 }
+
+.my-roster-list {
+  padding: 0;
+  margin: 0;
+}
+
+.mr-item {
+  padding: 8px;
+  border-bottom: 1px solid @grayLight;
+  list-style-type: none;
+}
+.mr-player-info {
+  float: left;
+}
+.mr-player-image {
+  height: 50px;
+  width: 50px;
+  background-position: center center;
+  background-image: asset-url('helmet.png');
+  .border-radius(35px);
+  border: 5px solid @grayLight;
+  float: left;
+  margin-right: 8px;
+  background-color: @offWhite;
+  background-repeat: no-repeat; 
+}
+.filled {
+  border-color: @green;
+}
+.mr-player-name {
+  font-size: 20px;
+  font-weight: 200;
+  font-family: @base-font-family;
+  margin-bottom: 0;
+}
+.not-selected {
+  color: @grayLight;
+}
+.mr-team, .mr-stats {
+  display: block;
+  color: @black;
+  font-weight: 600;
+  font-size: 12px;
+}
+.mr-stats {
+  color: @gray;
+  font-weight: 200;
+}
+.diff {
+  color: @green;
+}
+.negprice {
+  color: @red;
+}
+.mr-player-cta {
+  float: right;
+}
+.players-table .fui-check-inverted, .players-table .fui-cross-inverted {
+  margin-left: 6px;
+  font-size: 14px !important;
+}
+.btn.btn-tiny {
+  padding: 4px 6px 3px;
+  font-size: 12px;
+  line-height: 14px;
+  color: @black;
+}
+
+
+
