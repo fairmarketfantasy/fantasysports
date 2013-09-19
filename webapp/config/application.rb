@@ -50,7 +50,7 @@ module Fantasysports
       g.helper          false
     end
 
-    config.devise_oauth2_providable.access_token_expires_in         = 20.seconds # 15.minute default
+    config.devise_oauth2_providable.access_token_expires_in         = 1.day # 15.minute default
     config.devise_oauth2_providable.refresh_token_expires_in        = 6.months # 1.month default
     config.devise_oauth2_providable.authorization_token_expires_in  = 5.minute # 1.minute default
 

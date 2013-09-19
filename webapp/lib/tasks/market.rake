@@ -52,7 +52,7 @@ namespace :market do
     end
   end
 
-  task :import_players_for_market, [:market_id] => :environment do |t, args|
+  task :import_players, [:market_id] => :environment do |t, args|
     file = File.join(Rails.root, "market_players_#{args.market_id}.csv")
     puts "Opening file: #{file}"
     count = 0
