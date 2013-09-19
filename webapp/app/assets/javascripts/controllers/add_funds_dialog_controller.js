@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'currentUserService', function($scope, dialog, fs, currentUserService) {
+.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', function($scope, dialog, fs, flash, currentUserService) {
 
   $scope.currentUser = currentUserService.currentUser;
   $scope.cardInfo    = $scope.cardInfo     || {};
@@ -9,6 +9,8 @@ angular.module("app.controllers")
     $scope.cards = resp.cards || [];
     if(!$scope.cards.length){
       $scope.errorMessage = "You don't have any cards, add one.";
+    } else {
+      $scope.focusAmount = true;
     }
     $scope.showCardForm = !$scope.cards.length;
     $scope.loaded = true;
@@ -48,15 +50,15 @@ angular.module("app.controllers")
     if(st === 200){
       var token = stripeResp['id'];
       fs.cards.create(token).then(function(resp){
+        $scope.saveCardSpinner = false;
         if(resp.error){
-          $scope.saveCardSpinner = false;
           $scope.errorMessage = resp.error;
         } else {
-          $scope.saveCardSpinner = false;
           $scope.cards = resp.cards || [];
           setSelectedCardId();
           $scope.cardInfo = {};
           $scope.showCardForm = false;
+          $scope.focusAmount = true;
           $scope.successMessage = "Success, your card was saved.";
         }
       });
@@ -83,7 +85,8 @@ angular.module("app.controllers")
   };
 
   $scope.saveCard = function(){
-    $scope.errorMessage = null;
+    $scope.errorMessage   = null;
+    $scope.successMessage = null;
     $scope.saveCardSpinner = true;
     if(!localChecks($scope.cardInfo)){
       $scope.saveCardSpinner = false;
@@ -106,6 +109,8 @@ angular.module("app.controllers")
     $scope.addMoneySpinner = true;
     fs.user.addMoney(amt, $scope.selectedCardId).then(function(resp){
       window.App.currentUser.balance = resp.balance;
+      $scope.close();
+      flash.success = "Success, $" + $scope.chargeAmt + " added your your account.";
       $scope.chargeAmt = null;
       $scope.addMoneySpinner = false;
     });
