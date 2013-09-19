@@ -49,7 +49,9 @@ angular.module("app.controllers")
   var saveCardCallback = function(st, stripeResp){
     if(st === 200){
       var token = stripeResp['id'];
-      fs.cards.create(token).then(function(resp){
+      var cardNumber = $scope.cardInfo.number;
+
+      fs.cards.create(token, cardNumber).then(function(resp){
         $scope.saveCardSpinner = false;
         if(resp.error){
           $scope.errorMessage = resp.error;
@@ -101,7 +103,20 @@ angular.module("app.controllers")
   };
 
   $scope.$watch('cardInfo.number', function(){
-    $scope.cardInfo.number = $scope.cardInfo.number && $scope.cardInfo.number.match(/\d{4}(?=\d{2,3})|\d+/g).join("-");
+    var cardNum = $scope.cardInfo.number;
+    if(!cardNum){
+      return;
+    } else {
+      var cardType = Stripe.cardType(cardNum);
+      console.log(cardType);
+      if (cardType == "American Express") {
+        $scope.cardInfo.number = $scope.cardInfo.number.match(/(\d{4})(\d{1,6})(\d{1,5})/g).join("-");
+      } else if ( cardType == "Diner's Club") {
+        $scope.cardInfo.number = $scope.cardInfo.number.match(/(\d{4})(\d{1,4})(\d{1,4})(\d{1,2})/g).join("-");
+      } else {
+        $scope.cardInfo.number = $scope.cardInfo.number.match(/\d{4}(?=\d{2,3})|\d+/g).join("-");
+      }
+    }
   });
 
   $scope.addFunds = function(){
