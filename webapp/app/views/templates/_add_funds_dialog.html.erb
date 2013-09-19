@@ -59,7 +59,7 @@
       <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
     </div>
     <div ng-show="showingAddFunds()" class="add-funds-container">
-      <p>$<input type='text' ng-model="chargeAmt" placeholder="Amount" class='add-funds-input mls'/>
+      <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
       <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Add Money</a>
       <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
       </p>
