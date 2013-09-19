@@ -103,18 +103,28 @@ angular.module("app.controllers")
   };
 
   $scope.$watch('cardInfo.number', function(){
-    var cardNum = $scope.cardInfo.number;
-    if(!cardNum){
+    if(!$scope.cardInfo.number){
       return;
     } else {
+      var cardNum = $scope.cardInfo.number.replace(/\D/g, '');
       var cardType = Stripe.cardType(cardNum);
-      console.log(cardType);
+      var match;
+
       if (cardType == "American Express") {
-        $scope.cardInfo.number = $scope.cardInfo.number.match(/(\d{4})(\d{1,6})(\d{1,5})/g).join("-");
+        match = cardNum.match(/^(\d{1,4})(\d{0,6})(\d{0,5})$/);
+        if(match){
+          match = _.without(match, "");
+          $scope.cardInfo.number = match.slice(1).join("-");
+        }
       } else if ( cardType == "Diner's Club") {
-        $scope.cardInfo.number = $scope.cardInfo.number.match(/(\d{4})(\d{1,4})(\d{1,4})(\d{1,2})/g).join("-");
+        match = cardNum.match(/^(\d{1,4})(\d{0,4})(\d{0,4})(\d{0,2})$/);
+        if(match){
+          match = _.without(match, "");
+          $scope.cardInfo.number = match.slice(1).join("-");
+        }
       } else {
-        $scope.cardInfo.number = $scope.cardInfo.number.match(/\d{4}(?=\d{2,3})|\d+/g).join("-");
+        match = cardNum.match(/\d{4}(?=\d{2,3})|\d+/g);
+        $scope.cardInfo.number = match.join("-");
       }
     }
   });
