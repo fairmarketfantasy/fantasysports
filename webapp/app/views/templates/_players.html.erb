@@ -1,13 +1,17 @@
 <div class="players">
-      <input ng-show="filter == 'search'" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)"/>
+      <div class="players-area">
+      <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
 
-      <div class="dropdown" ng-show="filter == 'games'">
-        <button class="btn btn-primary btn-huge" dropdown-toggle="game-dropdown">Games<span class="caret"></span></button>
-        <ul class="dropdown-menu dropdown-inverse">
-          <li ng-repeat="game in notStartedGames()" ng-model="game">
-            <a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>
-          </li>
-        </ul>
+      <div class="dropdown" >
+        <div class="btn-group">
+          <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown">Games</button> 
+          <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown"><span class="caret"></span></button> 
+          <ul class="dropdown-menu dropdown-inverse">
+            <li ng-repeat="game in notStartedGames()" ng-model="game">
+              <a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <ul ng-show="filter == 'positions'" class="positions-list clearfix hide">
@@ -15,9 +19,6 @@
           <a class="position-link" ng-click="filterPlayers({position: position}, true)" href="javascript://">{{position}}</a>
         </li>
       </ul> 
-
-      <div class="players-area">
-        <h4 class="player-heading">Available Players</h4>
         <div class="player-overflow">
           <table class="players-table table table-striped">
             <thead>
@@ -38,8 +39,8 @@
                 </td>
                 <td class="tiny">{{player.position | dashIfDEF}}</td>
                 <td class="tiny">{{player.team}}</td>
-                <td class="tiny">{{player.ppg}}</td>
-                <td>{{player.buy_price}}</td>
+                <td class="tiny">{{player.ppg | zeroIfEmpty}}</td>
+                <td>${{player.buy_price | number:0}}</td>
                 <td class="tiny"><a class="btn btn-tiny btn-success" href="javascript://" ng-click="rosters.addPlayer(player)">Add</a></td>
               </tr>
             </tbody>

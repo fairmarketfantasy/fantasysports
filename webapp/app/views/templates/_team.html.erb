@@ -2,7 +2,7 @@
       <div class="roster-area">
           <h4 class="team-heading">Your Team</h4>
           <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}">
-            Salary Remaining: {{rosters.currentRoster.remaining_salary}}
+            Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
           </div>
 
       <div class="roster-overflow">
@@ -10,21 +10,21 @@
           
         <ul class="my-roster-list">
           <li class="mr-item clearfix" ng-repeat="player in rosters.currentRoster.players">
-            <div class="mr-player-image" ng-class="{filled: player.id}"></div>
+            <div ng-show="player.id" class="mr-player-image" ng-class="{filled: player.id}" style="background-image: url({{player.headshot_url}});"></div>
+            <div ng-hide="player.id" class="mr-player-image"></div>
             
             <div class="mr-player-info">
-              <h3 class="mr-player-name" ng-show="player.id">{{player.name}} ({{player.position}})</h3>
+              <h3 class="mr-player-name" ng-show="player.id">{{player.name}} <small>({{player.team}} {{player.position}})</small></h3>
               <h3 class="mr-player-name not-selected" ng-hide="player.id">{{player.position}} Not Selected</h3>
-              <span class="mr-team" ng-show="player.id">{{player.team}}</span>
-              <span class="mr-stats" ng-show="player.id">{{player.ppg}}</span>
-              <span class="mr-stats" ng-show="player.id">${{player.sell_price}} (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">{{((player.sell_price - player.purchase_price) / player.purchase_price) * 100 | number:2}}%</span>)</span>
+              <span class="mr-stats" ng-show="player.id">PPG: {{player.ppg | zeroIfEmpty}}</span>
+              <span class="mr-stats" ng-show="player.id">${{player.sell_price | number:0}} (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">{{((player.sell_price - player.purchase_price) / player.purchase_price) * 100 | number:2}}%</span>)</span>
             </div>
             
             <div class="mr-player-cta">
               <span ng-show="inThePast(market.started_at)">{{player.score}}</span>
               <a class="btn btn-small btn-danger" ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>
               <a class="btn btn-small btn-orange" ng-show="player.id && market.state != 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)">Trade</a>
-              <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Browse {{player.position}}s</a>
+              <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
             </div>
           </li>
         </ul>
