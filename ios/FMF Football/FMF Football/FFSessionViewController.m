@@ -351,7 +351,7 @@ validate_error:
                                                            messsage:NSLocalizedString(@"In a few short moments you'll be on your way!",
                                                                                       @"on sign in, tells the user they will be signed in soon")
                                                        loadingStyle:FFAlertViewLoadingStylePlain];
-    [progressAlert showInView:self.navigationController.view];
+    [progressAlert showInView:self.view];
     SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSigninField.text userClass:[FFUser class]];
     [sesh loginWithEmail:self.usernameSigninField.text password:self.passwordSigninField.text success:^(id user) {
         [progressAlert hide];
@@ -365,7 +365,7 @@ validate_error:
         [[[FFAlertView alloc] initWithError:err title:nil cancelButtonTitle:nil
                             okayButtonTitle:NSLocalizedString(@"Dismiss", @"dismiss error dialog")
                                    autoHide:YES]
-         showInView:self.navigationController.view];
+         showInView:self.view];
     }];
 }
 
@@ -374,7 +374,7 @@ validate_error:
     FFAlertView *alert = [[FFAlertView alloc] initWithTitle:nil
                                                    messsage:NSLocalizedString(@"Looking for your account...", nil)
                                                loadingStyle:FFAlertViewLoadingStylePlain];
-    [alert showInView:self.navigationController.view];
+    [alert showInView:self.view];
     
     double delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -386,7 +386,7 @@ validate_error:
                                               cancelButtonTitle:nil
                                                 okayButtonTitle:NSLocalizedString(@"Okay", nil)
                                                        autoHide:YES];
-        [alert showInView:self.navigationController.view];
+        [alert showInView:self.view];
     });
 }
 
@@ -441,7 +441,7 @@ validate_error:
                                                            messsage:NSLocalizedString(@"In a few short moments you'll be on your way!",
                                                                                       @"on singup, tells the user they will be signed up soon")
                                                        loadingStyle:FFAlertViewLoadingStylePlain];
-    [progressAlert showInView:self.navigationController.view];
+    [progressAlert showInView:self.view];
     
     SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSignupField.text userClass:[FFUser class]];
     
@@ -454,7 +454,7 @@ validate_error:
         [[[FFAlertView alloc] initWithError:err title:nil cancelButtonTitle:nil
                             okayButtonTitle:NSLocalizedString(@"Dismiss", @"dismiss error dialog")
                                    autoHide:YES]
-         showInView:self.navigationController.view];
+         showInView:self.view];
     };
     
     SBSuccessBlock onSuccess = ^(id user) {
