@@ -22,7 +22,7 @@ class CreditCard < ActiveRecord::Base
   end
 
   def hash_card_number
-    self.card_number.gsub!(/\W+/, '')
+    self.card_number.gsub!(/\D+/, '')
     self.card_number_hash = Digest::MD5.hexdigest(card_number)
   end
 

@@ -34,7 +34,9 @@ class CustomerObject < ActiveRecord::Base
   def add_a_card(token, card_number)
     credit_card = CreditCard.new(customer_object_id: self.id, card_number: card_number)
     if credit_card.save
-      stripe_object.cards.create({card: token})
+      stripe_card = stripe_object.cards.create({card: token})
+      credit_card.card_id = stripe_card.id
+      credit_card.save!
     else
       raise "Tried to save a credit card that is already in use."
     end
@@ -42,6 +44,9 @@ class CustomerObject < ActiveRecord::Base
 
   def delete_card(card_id)
     stripe_object.cards.retrieve(card_id).delete()
+    credit_card = CreditCard.find_by(card_id: card_id)
+    credit_card.deleted = true
+    credit_card.save!
   end
 
   ##Talk to Stripe API
