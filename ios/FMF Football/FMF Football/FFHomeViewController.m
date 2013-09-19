@@ -46,7 +46,12 @@
     double delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self showBanner:@"Hello there" target:nil selector:NULL];
+//        [self showBanner:@"Hello there" target:nil selector:NULL];
+        UIViewController *cont = [[UIViewController alloc] init];
+        cont.view.backgroundColor = [UIColor redColor];
+        UIViewController *cont2 = [[UIViewController alloc] init];
+        cont2.view.backgroundColor = [UIColor blueColor];
+        [self showControllerInDrawer:cont minimizedViewController:cont2];
     });
 }
 
