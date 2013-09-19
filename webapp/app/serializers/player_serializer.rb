@@ -17,7 +17,8 @@ class PlayerSerializer < ActiveModel::Serializer
       :buy_price,
       :sell_price,
       :score,
-      :locked
+      :locked,
+      :headshot_url
 
   def team
     object[:team]
@@ -25,6 +26,10 @@ class PlayerSerializer < ActiveModel::Serializer
 
   def ppg
     1.0 * object[:total_points] / object[:total_games]
+  end
+
+  def headshot_url
+    object.headshot_url
   end
 end
 

@@ -40,4 +40,8 @@ class Player < ActiveRecord::Base
   }
   scope :sellable, -> { where('sell_prices.locked != true' ) }
 
+  def headshot_url(size = 65) # or 195
+    return "http://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/#{stats_id}/#{size}.jpg"
+  end
+
 end
