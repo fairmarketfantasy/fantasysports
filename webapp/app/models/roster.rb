@@ -126,7 +126,14 @@ class Roster < ActiveRecord::Base
   end
 
   def add_player(player)
-    exec_price("SELECT * from buy(#{self.id}, #{player.id})")
+    begin
+      exec_price("SELECT * from buy(#{self.id}, #{player.id})")
+    rescue StandardError => e
+      if e.message =~ /already in roster/
+        raise HttpException.new(409, "That player is already in your roster")
+      end
+      raise e
+    end
   end
 
   def remove_player(player)
