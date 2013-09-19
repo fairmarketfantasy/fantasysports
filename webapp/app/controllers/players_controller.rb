@@ -1,5 +1,5 @@
 class PlayersController < ApplicationController
-  before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => :public
 
   def index
     roster = Roster.find(params[:roster_id])
@@ -21,6 +21,18 @@ class PlayersController < ApplicationController
   def for_roster
     roster = Roster.find(params[:id])
     players = roster.players.with_purchase_price.with_scores
+    render_api_response players
+  end
+
+  def mine
+    rosters = current_user.rosters.submitted.select{|r| r.market.state == 'opened'}
+    render_api_response Player.joins('JOIN rosters_players rp ON players.stats_id = rp.player_stats_id').where('rp.roster_id' => rosters).order_by_ppg.limit(25)
+  end
+
+  # TODO: cache this
+  def public
+    market = Market.where(['closed_at > ? AND (closed_at - started_at)::interval > \'1 day\'::interval', Time.now]).order('closed_at asc').first
+    players = market.players.with_prices(market, 1000).order_by_ppg('desc').limit(25)
     render_api_response players
   end
 

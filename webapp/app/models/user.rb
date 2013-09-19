@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
-  attr_protected :admin, :email, :password
+  attr_accessible :name, :email, :provider, :uid, :unconfirmed_email, :image_url
+  #attr_protected :admin, :email, :password
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
