@@ -12,4 +12,9 @@
 
 @interface FFUser : SBUser
 
+@property (nonatomic) NSNumber *balance;
+@property (nonatomic) NSNumber *userId;
+@property (nonatomic) NSString *name;
+@property (nonatomic) NSString *imageUrl;
+
 @end

@@ -7,8 +7,14 @@
 //
 
 #import "FFUser.h"
+#import <SBData/NSDictionary+Convenience.h>
 
 @implementation FFUser
+
+@dynamic userId;
+@dynamic name;
+@dynamic imageUrl;
+@dynamic balance;
 
 + (NSString *)tableName { return @"ffuser"; }
 
@@ -20,6 +26,16 @@
 
 // customize the to the nonstandard way the /users endpoint works
 - (AFHTTPClientParameterEncoding)paramterEncoding { return AFFormURLParameterEncoding; }
+
++ (NSDictionary *)propertyToNetworkKeyMapping
+{
+    return [[super propertyToNetworkKeyMapping] dictionaryByMergingWithDictionary:@{
+                @"userId":      @"id",
+                @"name":        @"name",
+                @"imageUrl":    @"image_url",
+                @"balance":     @"balance"
+            }];
+}
 
 - (NSDictionary *)toNetworkRepresentation
 {
