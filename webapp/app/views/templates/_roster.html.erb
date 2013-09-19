@@ -1,4 +1,5 @@
 <div ng-show="rosters.currentRoster"> 
+      <a href="#/market/{{markets.currentMarket.id}}" class="btn " ng-hide="rosters.inProgressRoster">Back to Contests</a>
   <div class="contest-info">
     <div class="relative clearfix">
       <a href="javascript://" class="btn btn-inverse btn-cancel-entry" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
@@ -18,7 +19,7 @@
 
     <ul class="games clearfix">
       <li class="game" ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
-        {{game.away_team}} @ {{game.home_team}} <br/> {{game.networkl}} on {{game.game_time | shortFormTime}}
+        {{game.away_team}} @ {{game.home_team}} <br/>  on {{game.game_time | shortFormTime}} <br/> {{game.network}}
       </li>
     </ul>
   </div>
@@ -108,13 +109,13 @@
                   <span ng-show="market.state == 'published' || rosters.currentRoster.state == 'in_progress'">{{player.buy_price | emptyIfZero }}</span>
                   <span ng-hide="market.state == 'published' || rosters.currentRoster.state == 'in_progress'">{{player.purchase_price | emptyIfZero }}</span>
                 </td>
-                <td ng-show="market.state != 'published'">{{player.sell_price - player.purchase_price }}</td>
+                <td ng-show="market.state != 'published'" ng-class="{positive: player.sell_price - player.purchase_price >= 0, negative: player.sell_price - player.purchase_price < 0}">{{player.sell_price - player.purchase_price }}</td>
                 <td>
                   <span ng-show="player.id && market.state == 'opened' && player.locked" href="javascript://">Locked</span>
                   <a ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>
                   <a ng-show="player.id && market.state != 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)">Remove</a>
                 </td>
-                <td ><a href="javascript://" tooltip-trigger="mouseenter" ng-mouseover="fetchPlayerStats(player)" tooltip-html-unsafe="{{statsContent()}}">{{player.score}}</a></td>
+                <td ng-show="inThePast(market.started_at)"><a href="javascript://" tooltip-trigger="mouseenter" ng-mouseover="fetchPlayerStats(player)" tooltip-html-unsafe="{{statsContent()}}">{{player.score}}</a></td>
               </tr>
             </tbody>
           </table>

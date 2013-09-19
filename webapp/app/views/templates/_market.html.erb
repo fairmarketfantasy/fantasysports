@@ -17,7 +17,7 @@
 
     <ul class="games hide" ng-cloak>
       <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
-        {{game.away_team}} @ {{game.home_team}} {{game.networkl}} on {{game.game_time | shortFormTime}}
+        {{game.away_team}} @ {{game.home_team}} <br/>  on {{game.game_time | shortFormTime}} <br/> {{game.network}}
       </li>
     </ul>
 
