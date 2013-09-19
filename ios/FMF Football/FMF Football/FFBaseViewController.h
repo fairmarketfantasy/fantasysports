@@ -15,12 +15,12 @@
 @property (nonatomic, readonly) UIViewController *minimizedDrawerController;
 @property (nonatomic, readonly) BOOL drawerIsMinimized;
 
-- (void)showBanner:(NSString *)text target:(id)target selector:(SEL)sel;
-- (void)closeBanner;
+- (void)showBanner:(NSString *)text target:(id)target selector:(SEL)sel animated:(BOOL)animated;
+- (void)closeBannerAnimated:(BOOL)animated;
 
-- (void)showControllerInDrawer:(UIViewController *)view minimizedViewController:(UIViewController *)view;
-- (void)maximizeDrawer;
-- (void)minimizeDrawer;
-- (void)closeDrawer;
+- (void)showControllerInDrawer:(UIViewController *)view minimizedViewController:(UIViewController *)view animated:(BOOL)animated;
+- (void)maximizeDrawerAnimated:(BOOL)animated;
+- (void)minimizeDrawerAnimated:(BOOL)animated;
+- (void)closeDrawerAnimated:(BOOL)animated;
 
 @end
