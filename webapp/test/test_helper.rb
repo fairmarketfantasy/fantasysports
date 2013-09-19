@@ -134,7 +134,7 @@ FactoryGirl.define do
   end
 
   factory :credit_card do
-
+    card_id { generate(:random_string) }
   end
 
   factory :recipient do

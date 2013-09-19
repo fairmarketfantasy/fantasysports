@@ -21,7 +21,7 @@
             </div>
             
             <div class="mr-player-cta">
-              <span ng-show="inThePast(market.started_at)">>{{player.score}}</span>
+              <span ng-show="inThePast(market.started_at)">{{player.score}}</span>
               <a class="btn btn-small btn-danger" ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>
               <a class="btn btn-small btn-orange" ng-show="player.id && market.state != 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)">Trade</a>
               <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Browse {{player.position}}s</a>

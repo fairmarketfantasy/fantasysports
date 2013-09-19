@@ -1,10 +1,10 @@
 <div ng-hide="!rosters.mine().length" class="entries-container">
   <div class="roster-title">  
-    <h3 >Your Entries</h3>
+    <h3 >Your Top Entries</h3>
   </div>
   
   <ul class="roster-list clearfix">
-    <li class="market" ng-repeat="roster in rosters.mine()">
+    <li class="market" ng-repeat="roster in rosters.top(3)">
       <a href="#/market/{{roster.market_id}}/roster/{{roster.id}}" title="{{roster.contest_type.description}}">
         {{roster.buy_in | centsToDollars }} {{roster.contest_type.name}} - 
         <span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span>
@@ -15,7 +15,7 @@
   </ul>
 </div>
 
-<div class="market-container" ng-class="{ roundTop: !rosters.mine().length }">
+<div class="market-container" ng-class="{ roundTop: !rosters.top(3).length }">
   <div class="market-title">  
     <h3>Upcoming Contests</h3>
   </div>
