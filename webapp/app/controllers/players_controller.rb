@@ -8,14 +8,15 @@ class PlayersController < ApplicationController
 
     game = params[:game] ? Game.find(params[:game]) : nil
     scopes = { in_game: game, in_contest: params[:contest].presence, in_position: params[:position].presence, on_team: params[:team].presence}
-
+    sort = params[:sort] || 'id'
+    order = params[:dir] || 'asc'
 
     scopes.each do |s, val|
       if val
         @players = @players.public_send(s, val)
       end
     end
-    render_api_response @players.order('id asc')#.limit(50).page(params[:page] || 1)
+    render_api_response @players.order("#{sort} #{order}")#.limit(50).page(params[:page] || 1)
   end
 
   def for_roster

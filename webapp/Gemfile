@@ -31,6 +31,10 @@ gem 'omniauth-facebook'
 gem 'mustwin_devise_oauth2_providable', '1.1.5'#, :path => '/Users/mike/code/devise_oauth2_providable'
 gem 'protected_attributes'
 
+# data processing
+gem 'nokogiri'
+gem 'aws-sdk'
+
 #pagination
 gem 'kaminari'
 
