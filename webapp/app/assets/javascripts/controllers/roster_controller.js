@@ -46,8 +46,15 @@ angular.module("app.controllers")
       fetchRoster();
     }, 10000);
 
-  $scope.filterPlayers = function(opts) {
-    filterOpts = opts;
+  $scope.filterPlayers = function(opts, override) {
+    if (override) {
+      filterOpts = opts;
+    } else {
+      if (filterOpts.sort == opts.sort) {
+        filterOpts.dir = filterOpts.dir == "desc" ? 'asc' : 'desc';
+      }
+      filterOpts = angular.extend(filterOpts, opts);
+    }
     fetchPlayers();
   };
 
