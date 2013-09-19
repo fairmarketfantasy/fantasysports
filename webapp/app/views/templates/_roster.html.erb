@@ -34,20 +34,20 @@
 
   <div class="team-selection clearfix">
     <div class="players">
-      <input ng-show="filter == 'search'" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name})"/>
+      <input ng-show="filter == 'search'" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)"/>
 
       <div class="dropdown" ng-show="filter == 'games'">
         <button class="btn btn-primary btn-huge" dropdown-toggle="game-dropdown">Games<span class="caret"></span></button>
         <ul class="dropdown-menu dropdown-inverse">
           <li ng-repeat="game in notStartedGames()" ng-model="game">
-            <a href="javascript://" ng-click="filterPlayers({game: game.id})">{{game.away_team}} @ {{game.home_team}}</a>
+            <a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>
           </li>
         </ul>
       </div>
 
       <ul ng-show="filter == 'positions'" class="positions-list clearfix">
         <li class="position-item" ng-repeat="position in rosters.uniqPositionList">
-          <a class="position-link" ng-click="filterPlayers({position: position})" href="javascript://">{{position}}</a>
+          <a class="position-link" ng-click="filterPlayers({position: position}, true)" href="javascript://">{{position}}</a>
         </li>
       </ul> 
 
@@ -57,12 +57,12 @@
           <table class="players-table">
             <thead>
               <tr>
-                <th ng-click="sort('status')">Status</th>
-                <th ng-click="sort('name')">Name</th>
-                <th ng-click="sort('position')">Position</th>
-                <th ng-click="sort('team')">Team</th>
-                <th ng-click="sort('ppg')">PPG</th>
-                <th ng-click="sort('salary')">Salary</th>
+                <th><a href="javascript://" ng-click="filterPlayers({sort: 'status'})">Status</a></th>
+                <th><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
+                <th><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Position</a></th>
+                <th><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
+                <th><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
+                <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
                 <th>Add</th>
               </tr>
             </thead>
@@ -109,7 +109,7 @@
                   <span ng-show="market.state == 'published' || rosters.currentRoster.state == 'in_progress'">{{player.buy_price | emptyIfZero }}</span>
                   <span ng-hide="market.state == 'published' || rosters.currentRoster.state == 'in_progress'">{{player.purchase_price | emptyIfZero }}</span>
                 </td>
-                <td ng-show="market.state != 'published'" ng-class="{positive: player.sell_price - player.purchase_price >= 0, negative: player.sell_price - player.purchase_price < 0}">{{player.sell_price - player.purchase_price }}</td>
+                <td ng-show="market.state != 'published'" ng-class="{positive: player.sell_price - player.purchase_price > 0, negative: player.sell_price - player.purchase_price < 0}">{{player.sell_price - player.purchase_price | emptyIfZero }}</td>
                 <td>
                   <span ng-show="player.id && market.state == 'opened' && player.locked" href="javascript://">Locked</span>
                   <a ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>
