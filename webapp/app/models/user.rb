@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  attr_protected :admin, :email, :password
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
@@ -26,12 +27,11 @@ class User < ActiveRecord::Base
 
   def self.find_for_facebook_oauth(auth)
     user = User.where(uid: auth.uid, provider: auth.provider).first_or_create
-    user.update_attributes(
-      name:      auth.extra.raw_info.name,
-      email:     auth.info.email,
-      image_url: auth.info.image.gsub('http', 'https'),
-      password:  Devise.friendly_token[0,20]
-    )
+    user.name = auth.extra.raw_info.name
+    user.email = auth.info.email
+    user.image_url = auth.info.image.gsub('http', 'https')
+    user.password = Devise.friendly_token[0,20]
+    user.save!
     user
   end
 
