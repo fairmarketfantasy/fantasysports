@@ -13,7 +13,7 @@
   </ul>
   
   <div class="contest-list">
-    <h3 class="selected-market" ng-cloak>{{marketService.currentMarket.name}} {{marketService.currentMarket.started_at | shortFormTime }} Contests</h3>
+    <h3 class="selected-market" ng-cloak>Contests Beginning {{marketService.currentMarket.name}} {{marketService.currentMarket.started_at | shortFormTime }}</h3>
 
     <ul class="games hide" ng-cloak>
       <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
@@ -34,7 +34,7 @@
           <p class="small-p">{{contestClassDesc[contestClass]}}</p>
           <ul class="contests no-no">
             <li class="enter-contest" ng-repeat="contestType in contestTypes">
-              <a class="btn btn-small btn-success btn-contest" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">Enter for {{ contestType.buy_in | centsToDollars }}</a>
+              <a class="btn btn-small btn-orange btn-contest" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">Enter for {{ contestType.buy_in | centsToDollars }}</a>
             </li>
           </ul>
         </li>
