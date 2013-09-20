@@ -160,6 +160,7 @@ func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
 	if game.GameTime.After(time.Now().Add(-250*time.Minute)) && game.Status != "closed" {
 		var poll = func() {}
 		poll = func() {
+			mgr.refreshFetcher([]*models.Game{game})
 			dirty := false
 			gameEvents := mgr.Fetcher.GetPlayByPlay(game.AwayTeam, game.HomeTeam)
 			for i, event := range gameEvents {
