@@ -193,7 +193,8 @@ class Market < ActiveRecord::Base
         buy_in: data[3],
         rake: data[4],
         payout_structure: data[5],
-        salary_cap: 100000
+        salary_cap: 100000,
+        payout_description: data[6]
         )
       end
     end
