@@ -16,7 +16,7 @@ class Recipient < ActiveRecord::Base
   end
 
   def user_must_be_confirmed
-    errors.add(:user, "must be confirmed") unless user.confirmed?
+    errors.add(:user, "must be confirmed.") unless user.confirmed?
   end
 
   def set_stripe_id
