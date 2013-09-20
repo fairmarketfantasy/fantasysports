@@ -27,6 +27,14 @@ angular.module('app.filters')
       return input;
     };
   })
+  .filter('zeroIfEmpty', function() {
+    return function(input, scope) {
+      if (!input) {
+        return "0";
+      }
+      return input;
+    };
+  })
   .filter('emptyIfZero', function() {
     return function(input, scope) {
       if (input === 0) {

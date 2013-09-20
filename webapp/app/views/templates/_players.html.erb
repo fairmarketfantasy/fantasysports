@@ -1,0 +1,50 @@
+<div class="players">
+      <div class="players-area">
+      <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
+
+      <div class="dropdown" >
+        <div class="btn-group">
+          <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown">Games</button> 
+          <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown"><span class="caret"></span></button> 
+          <ul class="dropdown-menu dropdown-inverse">
+            <li ng-repeat="game in notStartedGames()" ng-model="game">
+              <a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <ul ng-show="filter == 'positions'" class="positions-list clearfix hide">
+        <li class="position-item" ng-repeat="position in rosters.uniqPositionList">
+          <a class="position-link" ng-click="filterPlayers({position: position}, true)" href="javascript://">{{position}}</a>
+        </li>
+      </ul> 
+        <div class="player-overflow">
+          <table class="players-table table table-striped">
+            <thead>
+              <tr>
+                <th class="larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
+                <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
+                <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
+                <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
+                <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
+                <th class="tiny"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="player in players | filter:notInRoster">
+                <td class="larger">{{player.name}} 
+                  <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
+                  <i ng-show="!player.status == 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
+                </td>
+                <td class="tiny">{{player.position | dashIfDEF}}</td>
+                <td class="tiny">{{player.team}}</td>
+                <td class="tiny">{{player.ppg | zeroIfEmpty}}</td>
+                <td>${{player.buy_price | number:0}}</td>
+                <td class="tiny"><a class="btn btn-tiny btn-success" href="javascript://" ng-click="rosters.addPlayer(player)">Add</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>

@@ -37,8 +37,8 @@ angular.module('app.data')
         }
       };
 
-      this.fetchMine = function() {
-        return fs.rosters.mine().then(function(rosters) {
+      this.fetchMine = function(opts) {
+        return fs.rosters.mine(opts).then(function(rosters) {
           _.each(rosters, function(roster) {
             rosterData[roster.id] = roster;
           });
