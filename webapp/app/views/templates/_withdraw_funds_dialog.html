@@ -16,7 +16,10 @@
     <div class='pull-right muted clickable' ng-click='successMessage = null'> x </div>
     {{ successMessage }}
   </div>
-  <div ng-show='!recipient'>
+  <div ng-show'!currentUser.confirmed'>
+    <a href="javascript://" ng-click='currentUserService.resendConfirmation()'>Click here</a> to re-send the confirmation email.
+  </div>
+  <div ng-show='{{ !recipient && currentUser.confirmed }}'>
     <h6>Add a New Account for Deposits<h6>
     <input type="text" class='account-name' placeholder="legal name" ng-model="newRecipient.name"/><br />
     <input type="text" class='account-number' placeholder="account number" ng-model="newAccount.accountNumber"/><br />
@@ -43,7 +46,7 @@
     </ul>
     <div class='inline-block mll'>
       Withdraw some money:<br />
-      $ <input type='text' ng-model="withdrawAmount" class='withdraw-amount'>
+      $ <input type='text' ng-model="withdrawAmount" focus-me='focusAmount' class='withdraw-amount'>
       <img src='/assets/ajax-loader-micro.gif' ng-show='startTransferSpinner'/>
       <a hreft="javascript://" ng-click='initiateTransfer()' class='btn btn-primary' ng-hide='startTransferSpinner'>Start Transfer</a>
     </div>
