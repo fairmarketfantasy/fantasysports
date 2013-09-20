@@ -1,6 +1,7 @@
 class RosterSerializer < ActiveModel::Serializer
   attributes :id, 
       :owner_id, 
+      :owner_name, # include whole object?
       :market_id, 
       :state, 
       :contest_id, 
@@ -8,6 +9,7 @@ class RosterSerializer < ActiveModel::Serializer
       :remaining_salary, 
       :score, 
       :contest_rank, 
+      :contest_rank_payout, 
       :amount_paid, 
       :paid_at, 
       :cancelled_cause, 
@@ -26,6 +28,18 @@ class RosterSerializer < ActiveModel::Serializer
 
   def live
     object.live?
+  end
+
+  def owner_name
+    object.owner.name
+  end
+
+  def contest_rank_payout
+    if object.contest_rank
+      object.contest_type.payout_for_rank(object.contest_rank)
+    else
+      nil
+    end
   end
 
 end

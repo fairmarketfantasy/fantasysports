@@ -38,9 +38,9 @@ class ContestTest < ActiveSupport::TestCase
 
   #test auxillary functions
   test "payday auxillary functions" do
-    payments = [5,4,3,2,1]
+    contest_type = create(:contest_type, :payout_structure => [5,4,3,2,1].to_json)
     ranks = [1,1,3,3,5,5,5,8,9,10]
-    rank_payment = Contest._rank_payment(payments, ranks)
+    rank_payment = contest_type.rank_payment(ranks)
     expected = {1 => 9, 3 => 5, 5 => 1}
     assert_equal expected, rank_payment
 

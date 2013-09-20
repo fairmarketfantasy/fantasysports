@@ -165,6 +165,9 @@ angular.module('app.services')
         show: function(id) {
           return $http({method: 'GET', url: '/rosters/' + id});
         },
+        in_contest: function(contest_id) {
+          return $http({method: 'GET', url: '/rosters/in_contest/' + contest_id});
+        },
         mine: function(opts) {
           opts = opts || {};
           return $http({method: 'GET', url: '/rosters/mine?' + $.param(opts)});

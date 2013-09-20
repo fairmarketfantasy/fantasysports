@@ -1,11 +1,11 @@
     <div class="roster"> 
       <div class="roster-area">
           <h4 class="team-heading">Your Team</h4>
-          <div class="salary-cap" ng-hide="inThePast(market.started_at)" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}">
+          <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}">
             Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
           </div>
 
-          <div class="salary-cap score" ng-show="inThePast(market.started_at)">Team Score: {{rosters.currentRoster.score | zeroIfEmpty}}
+          <div class="salary-cap score" ng-show="rosters.currentRoster.state != 'in_progress' && inThePast(market.started_at)">Team Score: {{rosters.currentRoster.score | zeroIfEmpty}}
           </div>
 
       <div class="roster-overflow">

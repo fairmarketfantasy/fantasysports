@@ -46,6 +46,15 @@ angular.module('app.data')
         });
       };
 
+      this.fetchContest = function(contest_id) {
+        return fs.rosters.in_contest(contest_id).then(function(rosters) {
+          _.each(rosters, function(roster) {
+            rosterData[roster.id] = roster;
+          });
+          return rosters;
+        });
+      };
+
       this.selectRoster = function(roster) {
         var self = this;
         this.currentRoster = roster;

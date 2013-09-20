@@ -44,6 +44,7 @@ Fantasysports::Application.routes.draw do
   resources :rosters, only: [:create, :show, :destroy] do
     collection do
       get 'mine', :action => 'mine'
+      get 'in_contest/:contest_id', :action => 'in_contest'
     end
     member do
       post 'submit', :action => 'submit'

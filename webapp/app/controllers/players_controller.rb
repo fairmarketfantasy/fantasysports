@@ -16,7 +16,12 @@ class PlayersController < ApplicationController
         @players = @players.public_send(s, val)
       end
     end
-    render_api_response @players.order("#{sort} #{order}")#.limit(50).page(params[:page] || 1)
+    if sort == 'ppg'
+      @players = @players.order_by_ppg(order)
+    else
+      @players = @players.order("#{sort} #{order}")
+    end
+    render_api_response @players #.limit(50).page(params[:page] || 1)
   end
 
   def for_roster
