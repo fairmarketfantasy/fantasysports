@@ -43,7 +43,7 @@
     </ul>
     <div class='inline-block mll'>
       Withdraw some money:<br />
-      $ <input type='text' ng-model="withdrawAmount" class='withdraw-amount'>
+      $ <input type='text' ng-model="withdrawAmount" focus-me='focusAmount' class='withdraw-amount'>
       <img src='/assets/ajax-loader-micro.gif' ng-show='startTransferSpinner'/>
       <a hreft="javascript://" ng-click='initiateTransfer()' class='btn btn-primary' ng-hide='startTransferSpinner'>Start Transfer</a>
     </div>

@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('WithdrawFundsDialogController', ['$scope', 'dialog', 'fs', 'currentUserService', function($scope, dialog, fs, currentUserService) {
+.controller('WithdrawFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', function($scope, dialog, fs, flash, currentUserService) {
 
   $scope.currentUser = currentUserService.currentUser;
 
@@ -10,6 +10,7 @@ angular.module("app.controllers")
   fs.recipients.list().then(function(resp){
     $scope.recipient = resp[0];
     $scope.loaded    = true;
+    $scope.focusAmount = true;
   });
 
   $scope.newRecipient = $scope.newRecipient || {};
@@ -57,7 +58,8 @@ angular.module("app.controllers")
     var amount = $scope.withdrawAmount * 100;
     fs.user.withdrawMoney(amount).then(function(resp){
       $scope.deleteRecipientSpinner = false;
-      $scope.successMessage = "Success, transfer has been initiated.";
+      $scope.close();
+      flash.success = "Success, transfer of $" +  $scope.withdrawAmount + " has been initiated.";
       $scope.startTransferSpinner = false;
       window.App.currentUser.balance = resp.balance;
       $scope.withdrawAmount = null;
