@@ -13,7 +13,6 @@
           <li>Buy-in: {{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</li>
           <li>Format: Winner take all
           <li ng-show="rosters.currentRoster.contest_rank">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
-          <li ng-show="inThePast(market.started_at)">Score: {{rosters.currentRoster.score}}</li>
       </div>
     </div>
 
