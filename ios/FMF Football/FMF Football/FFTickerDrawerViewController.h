@@ -8,11 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import "FFUser.h"
+#import "FFDrawerViewController.h"
 
-@interface FFTickerDrawerViewController : UIViewController
+@interface FFTickerDrawerViewController : FFDrawerViewController
+    <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) SBSession *session;
 
+@property (nonatomic) UICollectionView *collectionView;
+
+@property (nonatomic) NSArray *tickerData;
+
 - (void)getTicker:(SBSuccessBlock)onSuccess failure:(SBErrorBlock)fail;
+- (BOOL)shouldUpdateTickerData;
+- (void)refresh;
 
 @end

@@ -35,6 +35,7 @@
 @property (nonatomic) BOOL                  keyboardIsShowing;
 @property (nonatomic) UIView                *_balanceView;
 @property (nonatomic) FFTickerMaximizedDrawerViewController *_maximizedTicker;
+@property (nonatomic) FFTickerMinimizedDrawerViewController *_minimizedTicker;
 
 - (void)setupSignInView;
 - (void)setupSignUpView;
@@ -620,6 +621,16 @@ validate_error:
         __maximizedTicker.session = self.session;
     }
     return __maximizedTicker;
+}
+
+- (FFTickerMinimizedDrawerViewController *)minimizedTicker
+{
+    if (!__minimizedTicker) {
+        __minimizedTicker = [[FFTickerMinimizedDrawerViewController alloc] init];
+        __minimizedTicker.view.backgroundColor = [FFStyle darkGreen];
+        __minimizedTicker.session = self.session;
+    }
+    return __minimizedTicker;
 }
 
 @end
