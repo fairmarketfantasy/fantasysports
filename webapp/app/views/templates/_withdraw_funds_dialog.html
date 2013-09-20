@@ -17,7 +17,7 @@
     {{ successMessage }}
   </div>
   <div ng-show'!currentUser.confirmed'>
-    <a href="javascript://" ng-click='currentUserService.resendConfirmation()'>Click here</a> to re-send the confirmation email.
+    <a href="javascript://" ng-click='resendConfirmation()'>Click here</a> to re-send the confirmation email.
   </div>
   <div ng-show='{{ !recipient && currentUser.confirmed }}'>
     <h6>Add a New Account for Deposits<h6>

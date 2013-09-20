@@ -1,5 +1,5 @@
 angular.module('app.services')
-  .factory('currentUserService', ['$dialog', 'fs', function($dialog, fs) {
+  .factory('currentUserService', ['$dialog', function($dialog) {
     return {
       currentUser: window.App.currentUser,
       addFundsModal: function(){
@@ -14,12 +14,6 @@ angular.module('app.services')
 
         var d = $dialog.dialog(dialogOpts);
         d.open();
-      },
-
-      resendConfirmation: function(){
-        fs.user.resendConfirmation().then(function(resp){
-          console.log(resp);
-        });
       },
 
       withdrawFundsModal: function(){
