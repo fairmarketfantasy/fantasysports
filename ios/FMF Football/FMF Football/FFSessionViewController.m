@@ -13,6 +13,7 @@
 #import "UIView+FindFirstResponder.h"
 #import <SBData/SBData.h>
 #import "FFUser.h"
+#import "FFSession.h"
 
 @interface FFSessionViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate>
 {
@@ -53,7 +54,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.session = [SBSession lastUsedSessionWithUserClass:[FFUser class]];
+        self.session = [FFSession lastUsedSessionWithUserClass:[FFUser class]];
 
     }
     return self;
@@ -63,7 +64,7 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        self.session = [SBSession lastUsedSessionWithUserClass:[FFUser class]];
+        self.session = [FFSession lastUsedSessionWithUserClass:[FFUser class]];
     }
     return self;
 }
@@ -362,12 +363,12 @@ validate_error:
                                                                                       @"on sign in, tells the user they will be signed in soon")
                                                        loadingStyle:FFAlertViewLoadingStylePlain];
     [progressAlert showInView:self.view];
-    SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSigninField.text userClass:[FFUser class]];
+    FFSession *sesh = [FFSession sessionWithEmailAddress:self.usernameSigninField.text userClass:[FFUser class]];
     [sesh loginWithEmail:self.usernameSigninField.text password:self.passwordSigninField.text success:^(id user) {
         [progressAlert hide];
         [[self.view findFirstResponder] resignFirstResponder];
         self.session = sesh;
-        [SBSession setLastUsedSession:sesh];
+        [FFSession setLastUsedSession:sesh];
         [self performSegueWithIdentifier:@"GotoHome" sender:nil];
         NSLog(@"successful login %@", user);
     } failure:^(NSError *err) {
@@ -453,7 +454,7 @@ validate_error:
                                                        loadingStyle:FFAlertViewLoadingStylePlain];
     [progressAlert showInView:self.view];
     
-    SBSession *sesh = [SBSession sessionWithEmailAddress:self.usernameSignupField.text userClass:[FFUser class]];
+    FFSession *sesh = [FFSession sessionWithEmailAddress:self.usernameSignupField.text userClass:[FFUser class]];
     
     FFUser *user = [[FFUser alloc] initWithSession:sesh];
     user.email = self.usernameSignupField.text;
@@ -470,7 +471,7 @@ validate_error:
     SBSuccessBlock onSuccess = ^(id user) {
         [progressAlert hide];
         [[self.view findFirstResponder] resignFirstResponder];
-        [SBSession setLastUsedSession:sesh];
+        [FFSession setLastUsedSession:sesh];
         self.session = sesh;
         [self performSegueWithIdentifier:@"GotoHome" sender:nil];
     };
