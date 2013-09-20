@@ -29,6 +29,7 @@ angular.module("app.controllers")
     rosters.fetch($routeParams.roster_id).then(function(roster) {
       rosters.selectRoster(roster);
       fetchPlayers();
+      fetchContest();
     });
   });
 
@@ -41,9 +42,17 @@ angular.module("app.controllers")
     });
   };
 
+  var fetchContest = function() {
+    if (!rosters.currentRoster.contest_id) { return; }
+    rosters.fetchContest(rosters.currentRoster.contest_id).then(function(rosters) {
+      $scope.leaderboard = rosters;
+    });
+  };
+
   rosters.setPoller(function() {
       fetchPlayers();
       fetchRoster();
+      fetchContest();
     }, 10000);
 
   $scope.filterPlayers = function(opts, override) {

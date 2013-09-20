@@ -39,13 +39,11 @@ class Contest < ActiveRecord::Base
   #pays owners of rosters according to their place in the contest
   def payday!
     self.with_lock do
-      payments = JSON.load(contest_type.payout_structure)
-
       rosters = self.rosters.order("contest_rank ASC")
       ranks = rosters.collect(&:contest_rank)
       
       #figure out how much each rank gets -- tricky only because of ties
-      rank_payment = Contest._rank_payment(payments, ranks)
+      rank_payment = contest_type.rank_payment(ranks)
 
       #organize rosters by rank
       rosters_by_rank = Contest._rosters_by_rank(rosters)
@@ -71,14 +69,6 @@ class Contest < ActiveRecord::Base
         end
       end
     end
-  end
-
-  def self._rank_payment(payments, ranks)
-    rank_payment = Hash.new(0)
-    payments.each_with_index do |payment, i|
-      rank_payment[ranks[i]] += payment
-    end
-    return rank_payment
   end
 
   def self._rosters_by_rank(rosters)

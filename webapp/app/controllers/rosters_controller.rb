@@ -9,6 +9,11 @@ class RostersController < ApplicationController
     end
   end
 
+  def in_contest
+    contest = Contest.find(params[:contest_id])
+    render_api_response contest.rosters.order('contest_rank asc').limit(10)
+  end
+
   # Create a roster for a contest type
   def create
     contest_type = ContestType.find(params[:contest_type_id])
