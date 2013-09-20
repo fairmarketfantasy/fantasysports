@@ -3,7 +3,7 @@ class MarketSerializer < ActiveModel::Serializer
 
   def market_duration
     if object.closed_at && object.started_at
-      if (object.closed_at - object.started_at) > 25
+      if (object.closed_at > object.started_at + 1.day)
         'week'
       else
         'day'
