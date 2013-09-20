@@ -28,7 +28,7 @@ angular.module('app', [
       var roster = rosters.inProgressRoster;
       if (roster) {
         var path = '/market/' + roster.market_id + '/roster/' + roster.id;
-        if (path != $location.path()) {
+        if (path != $location.path() && $location.path().split('/').length > 2) {
           flash.success = "Looks like you already have a roster going.  Let's finish entering!";
           $location.path(path).replace();
           rosters.selectRoster(roster);
