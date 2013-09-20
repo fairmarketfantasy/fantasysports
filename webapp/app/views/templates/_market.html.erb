@@ -1,11 +1,11 @@
 <div ng-controller="MarketController">
   <ul class="clearfix market-list">
-    <li class="market" ng-repeat="market in marketService.upcoming" ng-class="{ highlightMkt: isCurrent(market) }">
-      <a href="#/market/{{market.id}}" class="market-link" ng-hide="!market.name">
+    <li class="market-li" ng-repeat="market in marketService.upcoming">
+      <a href="#/market/{{market.id}}" class="market-link" ng-hide="!market.name" ng-class="{ highlightMkt: isCurrent(market) }">
         <strong>{{market.name}}</strong><br /> 
         {{market.started_at | shortFormTime}} 
       </a>
-      <a href="#/market/{{market.id}}" class="market-link" ng-show="!market.name">
+      <a href="#/market/{{market.id}}" class="market-link" ng-show="!market.name" ng-class="{ highlightMkt: isCurrent(market) }">
         <strong>One Day</strong><br /> 
         {{market.started_at | shortFormTime}} 
       </a>

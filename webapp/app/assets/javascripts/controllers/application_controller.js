@@ -14,6 +14,9 @@ angular.module("app.controllers")
   };
 
   $scope.inThePast = function(time) {
+    if (!time) {
+      return false;
+    }
     return new Date(time) < new Date();
   }
 

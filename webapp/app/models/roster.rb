@@ -15,6 +15,7 @@ class Roster < ActiveRecord::Base
 
   before_destroy :cleanup
 
+  scope :finished, -> { where(state: ['in_progress', 'submitted'])}
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
   scope :submitted, -> { where(state: ['submitted'])}
 

@@ -1,3 +1,4 @@
+require 'csv'
 namespace :market do
 
   task :tend, [:wait_time] => :environment do |t, args|
@@ -36,6 +37,35 @@ namespace :market do
 
   task :complete => :environment do
     Market.complete_all
+  end
+
+  task :dump_players, [:market_id] => :environment do |t, args|
+    market = Market.find args.market_id
+    file = File.join(Rails.root, "market_players_#{market.id}.csv")
+    puts "Writing to file: #{file}"
+    CSV.open(file, "wb") do |csv|
+      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us"]
+      csv << ["Canonical Id", "Name", "Team", "Position", "Desired Shadow Bets"]
+      market.players.each do |player|
+        csv << [player.stats_id, player.name, player.team.abbrev, player.position]
+      end
+    end
+  end
+
+  task :import_players, [:market_id] => :environment do |t, args|
+    file = File.join(Rails.root, "market_players_#{args.market_id}.csv")
+    puts "Opening file: #{file}"
+    count = 0
+    market = Market.find args.market_id
+    CSV.foreach(file) do |row|
+      count += 1
+      next if(count <= 2)
+      player_stats_id, shadow_bets = row[0], row[4]
+      player = Player.where(:stats_id => player_stats_id).first # TODO: make this just print the player id
+      market_player = MarketPlayer.where(:player_id => player.id, :market_id => market.id).first
+      market_player.shadow_bets = Integer(shadow_bets.blank? ? 0 : shadow_bets)
+      market_player.save
+    end
   end
 
 end
