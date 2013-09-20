@@ -54,7 +54,7 @@
     NSDictionary *player = [self.tickerData objectAtIndex:indexPath.row];
     
     NSString *nameValue = [NSString stringWithFormat:@"%@ (%@)", player[@"name"], player[@"position"]];
-    CGFloat namw = [nameValue sizeWithFont:[FFStyle regularFont:15]
+    CGFloat namw = [nameValue sizeWithFont:[FFStyle regularFont:14]
                          constrainedToSize:CGSizeMake(150, 100)].width;
     return CGSizeMake(56+namw, 48);
 }
