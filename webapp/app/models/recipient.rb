@@ -5,7 +5,7 @@ class Recipient < ActiveRecord::Base
   belongs_to :user
   has_one    :customer_object, through: :user
 
-  # validate  :user_must_be_confirmed
+  validate  :user_must_be_confirmed
   validates :stripe_id, :user_id, presence: true
 
   before_validation :set_stripe_id, on: :create
