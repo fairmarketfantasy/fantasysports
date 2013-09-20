@@ -8,8 +8,15 @@ angular.module("app.controllers")
     dialog.close();
   };
 
+  $scope.resendConfirmation = function(){
+    fs.user.resendConfirmation().then(function(resp){
+      $scope.close();
+      flash.success = resp.message;
+    });
+  };
+
   if(!$scope.currentUser.confirmed){
-    $scope.errorMessage = "In order with withdraw funds, you must first confirm your email address."
+    $scope.errorMessage = "In order with withdraw funds, you must first confirm your email address.";
   }
 
   fs.recipients.list().then(function(resp){
