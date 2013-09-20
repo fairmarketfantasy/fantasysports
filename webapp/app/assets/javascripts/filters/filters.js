@@ -73,4 +73,12 @@ angular.module('app.filters')
       v=input%100;
       return input+(s[(v-20)%10]||s[v]||s[0]);
     };
+  })
+  .filter('unlimitedIfZero', function() {
+    return function(input) {
+      if (input === 0) {
+        return 'Unlimited';
+      }
+      return input;
+    };
   });
