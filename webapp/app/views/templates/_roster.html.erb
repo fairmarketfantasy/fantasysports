@@ -9,7 +9,7 @@
         <ul>
           <li>Starts: {{markets.currentMarket.started_at | shortFormTime }}</li>
           <li>Timeframe: {{markets.currentMarket.name}}</li>
-          <li>Entries: {{rosters.currentRoster.contest_type.max_entries}}</li>
+          <li>Entries: {{rosters.currentRoster.contest_type.max_entries | unlimitedIfZero}}</li>
           <li>Buy-in: {{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</li>
           <li>Format: Winner take all
           <li ng-show="rosters.currentRoster.contest_rank">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
