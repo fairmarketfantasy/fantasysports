@@ -65,7 +65,9 @@ namespace :seed do
     File.open(path) do |f|
       doc = Nokogiri::XML(f)
       doc.css('asset').each do |asset|
-        player_stats_id = asset.attributes['player_id'].value
+        attr = asset.attributes['player_id']
+        next unless attr
+        player_stats_id = attr.value
         asset.css('link').each do |link|
           href = link.attributes['href'].value # "/headshot/23c9e491-bf62-48e2-abc3-057b50dc1142/195.jpg" 
           href = href.gsub("/headshot/", "")
