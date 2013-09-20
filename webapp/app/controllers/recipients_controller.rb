@@ -6,17 +6,17 @@ class RecipientsController < ApplicationController
   end
 
   def create
-    # begin
+    begin
       recipient = Recipient.new(recipient_params.merge!(user: current_user))
       if recipient.save
         render_api_response recipient
       else
         render json: {errors: recipient.errors.full_messages}
       end
-    # rescue => e
-    #   msg = e.try(:message)
-    #   render json: {error: msg || e}
-    # end
+    rescue => e
+      msg = e.try(:message)
+      render json: {errors: Array(msg || e)}
+    end
   end
 
   def destroy
