@@ -5,14 +5,15 @@
             Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
           </div>
 
-          <div class="salary-cap score" ng-show="rosters.currentRoster.state != 'in_progress' && inThePast(market.started_at)">Team Score: {{rosters.currentRoster.score | zeroIfEmpty}}
+          <div class="salary-cap score" ng-show="rosters.currentRoster.state != 'in_progress' && inThePast(market.started_at)" highlight-changes="rosters.currentRoster.score">
+            Team Score: {{rosters.currentRoster.score | zeroIfEmpty}}
           </div>
 
       <div class="roster-overflow">
         <div id="player-stats-content" style="display: none;" ng-include="'/stats.html'"></div>
           
         <ul class="my-roster-list">
-          <li class="mr-item clearfix" ng-repeat="player in rosters.currentRoster.players">
+          <li class="mr-item clearfix" ng-repeat="player in rosters.currentRoster.players" highlight-changes="player.score">
             <div ng-show="player.id" class="mr-player-image" ng-class="{filled: player.id}" style="background-image: url({{player.headshot_url}});"></div>
             <div ng-hide="player.id" class="mr-player-image"></div>
             

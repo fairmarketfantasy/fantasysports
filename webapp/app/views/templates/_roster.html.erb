@@ -17,7 +17,7 @@
     </div>
 
     <ul class="games clearfix">
-      <li class="game" ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
+      <li class="game" ng-repeat="game in games" ng-class="{started: gameStarted(game)}" >
         {{game.away_team}} @ {{game.home_team}} <br/>  on {{game.game_time | shortFormTime}} <br/> {{game.network}}
       </li>
     </ul>
