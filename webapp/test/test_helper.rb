@@ -226,6 +226,7 @@ FactoryGirl.define do
     buy_in 1000
     rake 1
     payout_structure 'some payout structure'
+    payout_description 'some payout description'
   end
 end
 
