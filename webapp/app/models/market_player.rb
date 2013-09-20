@@ -2,8 +2,8 @@ class MarketPlayer < ActiveRecord::Base
   belongs_to :market
   belongs_to :player
 
-  def self.next_game_time_for_players(roster_players)
-    game_time = self.where(:player_id => roster_players.map(&:player_id)).order('locked_at asc').detect{|p| p.locked_at && p.locked_at > Time.now }
+  def self.next_game_time_for_players(roster)
+    game_time = self.where(:market_id => roster.market_id, :player_id => roster.players.map(&:player_id)).order('locked_at asc').detect{|p| p.locked_at && p.locked_at > Time.now }
     game_time && game_time.locked_at
   end
 
