@@ -211,6 +211,8 @@
     [fbSignUp addTarget:self action:@selector(signUpFacebook:) forControlEvents:UIControlEventTouchUpInside];
     [self.signUpView addSubview:fbSignUp];
     self.signUpFacebookButton = fbSignUp;
+    
+    [self showControllerInDrawer:self.maximizedTicker minimizedViewController:nil inView:self.signUpView animated:NO];
 }
 
 - (void)setupSignInView
@@ -296,20 +298,32 @@
 
 - (void)signInHeaderSwitch:(id)sender
 {
+    [self closeDrawerAnimated:NO];
     [UIView transitionFromView:self.signUpView
                         toView:self.signInView
                       duration:.35
                        options:UIViewAnimationOptionTransitionFlipFromRight
-                    completion:nil];
+                    completion:^(BOOL finished) {
+                        if (finished) {
+                            [self showControllerInDrawer:self.maximizedTicker minimizedViewController:nil
+                                                  inView:self.signInView animated:NO];
+                        }
+                    }];
 }
 
 - (void)signUpHeaderSwitch:(id)sender
 {
+    [self closeDrawerAnimated:NO];
     [UIView transitionFromView:self.signInView
                         toView:self.signUpView
                       duration:.35
                        options:UIViewAnimationOptionTransitionFlipFromRight
-                    completion:nil];
+                    completion:^(BOOL finished) {
+                        if (finished) {
+                            [self showControllerInDrawer:self.maximizedTicker minimizedViewController:nil
+                                                  inView:self.signUpView animated:NO];
+                        }
+                    }];
 }
 
 - (void)signIn:(id)sender
@@ -580,6 +594,13 @@ validate_error:
 }
 
 // session controller stuff --------------------------------------------------------------------------------------------
+
+- (void)setSession:(SBSession *)session
+{
+    _session = session;
+    __maximizedTicker.session = session;
+    __minimizedTicker.session = session;
+}
 
 - (UIView *)balanceView
 {

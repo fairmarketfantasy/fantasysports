@@ -11,8 +11,9 @@
 #import "FFUser.h"
 #import "FFTickerMaximizedDrawerViewController.h"
 #import "FFTickerMinimizedDrawerViewController.h"
+#import "FFBaseViewController.h"
 
-@interface FFSessionViewController : UIViewController
+@interface FFSessionViewController : FFBaseViewController
 
 @property (nonatomic) SBSession *session;
 
