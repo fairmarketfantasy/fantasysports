@@ -53,11 +53,21 @@ class Contest < ActiveRecord::Base
       #for each rank, make payments
       rosters_by_rank.each_pair do |rank, rosters|
         payment = rank_payment[rank]
-        next if payment.nil?
+        if payment.nil?
+          roster.paid_at = Time.new
+          roster.amount_paid = 0
+          roster.state = 'finished'
+          roster.save!
+          next
+        end
         payment_per_roster = Float(payment) / rosters.length
         rosters.each do |roster|
           # puts "roster #{roster.id} won #{payment_per_roster}!"
           roster.owner.customer_object.increase_balance(payment_per_roster, 'payout', roster.id)
+          roster.paid_at = Time.new
+          roster.amount_paid = payment_per_roster
+          roster.state = 'finished'
+          roster.save!
         end
       end
     end

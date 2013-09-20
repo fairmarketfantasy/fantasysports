@@ -27,6 +27,13 @@ class ContestTest < ActiveSupport::TestCase
     user2.reload
     assert user1.customer_object.balance > user2.customer_object.balance
 
+    roster1.reload
+    roster2.reload
+    assert roster1.amount_paid > 0
+    assert_equal 0,  roster2.amount_paid
+    assert roster1.paid_at && roster2.paid_at
+    assert roster1.state == 'finished'
+    assert roster2.state == 'finished'
   end
 
   #test auxillary functions

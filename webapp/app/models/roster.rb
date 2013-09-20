@@ -159,7 +159,7 @@ class Roster < ActiveRecord::Base
   end
 
   def next_game_time
-    MarketPlayer.next_game_time_for_players(rosters_players)
+    MarketPlayer.next_game_time_for_players(self)
   end
 
   #buys random players to fill up the roster (all empty positions)
