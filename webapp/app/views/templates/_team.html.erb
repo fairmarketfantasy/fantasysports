@@ -1,8 +1,11 @@
     <div class="roster"> 
       <div class="roster-area">
           <h4 class="team-heading">Your Team</h4>
-          <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}">
+          <div class="salary-cap" ng-hide="inThePast(market.started_at)" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}">
             Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
+          </div>
+
+          <div class="salary-cap score" ng-show="inThePast(market.started_at)">Team Score: {{rosters.currentRoster.score | zeroIfEmpty}}
           </div>
 
       <div class="roster-overflow">
@@ -23,7 +26,7 @@
             <div class="mr-player-cta">
               <span ng-show="inThePast(market.started_at)">{{player.score}}</span>
               <a class="btn btn-small btn-danger" ng-show="player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Sell</a>
-              <a class="btn btn-small btn-orange" ng-show="player.id && market.state != 'opened'" href="javascript://" ng-click="rosters.removePlayer(player)">Trade</a>
+              <a class="btn btn-small btn-orange" ng-show="player.id && market.state == 'published'" href="javascript://" ng-click="rosters.removePlayer(player)">Trade</a>
               <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
             </div>
           </li>
