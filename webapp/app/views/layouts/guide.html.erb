@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <!--[if IE]><![endif]-->
-<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
-<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
-<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
-<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
-<!--[if !IE]><!--> <html lang="en" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <!--<![endif]-->
+<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="guide" id="guide"> <![endif]-->
+<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="guide" id="guide"> <![endif]-->
+<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="guide" id="guide"> <![endif]-->
+<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="guide" id="guide"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" xmlns:ng="http://angularjs.org" ng-app="guide" id="guide"> <!--<![endif]-->
 <head>
   <!-- http://docs.angularjs.org/guide/ie -->
   <meta charset="utf-8">
@@ -418,31 +418,11 @@
   };
 </script>
 
-<%= javascript_include_tag "application" %>
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-43238810-1', 'fanfairfantasy.com');
-  ga('send', 'pageview');
-
-</script>
+<%#= javascript_include_tag "application" %>
 
 <%= yield :javascript %>
 
 <%= javascript_include_tag "guide" %>
-<script>
-
-angular.module('guide', ['guide.controllers'])
-angular.module('guide.controllers', [])
-.controller('ApplicationController', ['$scope', function($scope) {
-
-}])
-
-</script>
 
 </body>
 </html>
