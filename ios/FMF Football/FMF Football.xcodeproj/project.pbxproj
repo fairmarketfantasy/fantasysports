@@ -12,6 +12,8 @@
 		1527AE3317DFDCFB00D181D7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1527AE3217DFDCFB00D181D7 /* SystemConfiguration.framework */; };
 		152B545117EBA80600C4B7F7 /* FFTickerDrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152B545017EBA80600C4B7F7 /* FFTickerDrawerViewController.m */; };
 		152B545417EBA97300C4B7F7 /* FFTickerMaximizedDrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152B545317EBA97300C4B7F7 /* FFTickerMaximizedDrawerViewController.m */; };
+		152B545717EBC93100C4B7F7 /* FFTickerMinimizedDrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152B545617EBC93100C4B7F7 /* FFTickerMinimizedDrawerViewController.m */; };
+		152B545A17EBCEC600C4B7F7 /* FFDrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152B545917EBCEC600C4B7F7 /* FFDrawerViewController.m */; };
 		152B545D17EBDB3900C4B7F7 /* FFSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 152B545C17EBDB3900C4B7F7 /* FFSession.m */; };
 		1535142C17DFF2B600F776AC /* FFUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1535142B17DFF2B600F776AC /* FFUser.m */; };
 		153BBC3417DFC2E40071E63B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC3317DFC2E40071E63B /* UIKit.framework */; };
@@ -70,6 +72,10 @@
 		152B545017EBA80600C4B7F7 /* FFTickerDrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTickerDrawerViewController.m; sourceTree = "<group>"; };
 		152B545217EBA97300C4B7F7 /* FFTickerMaximizedDrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTickerMaximizedDrawerViewController.h; sourceTree = "<group>"; };
 		152B545317EBA97300C4B7F7 /* FFTickerMaximizedDrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTickerMaximizedDrawerViewController.m; sourceTree = "<group>"; };
+		152B545517EBC93000C4B7F7 /* FFTickerMinimizedDrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTickerMinimizedDrawerViewController.h; sourceTree = "<group>"; };
+		152B545617EBC93100C4B7F7 /* FFTickerMinimizedDrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTickerMinimizedDrawerViewController.m; sourceTree = "<group>"; };
+		152B545817EBCEC600C4B7F7 /* FFDrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFDrawerViewController.h; sourceTree = "<group>"; };
+		152B545917EBCEC600C4B7F7 /* FFDrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFDrawerViewController.m; sourceTree = "<group>"; };
 		152B545B17EBDB3900C4B7F7 /* FFSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFSession.h; sourceTree = "<group>"; };
 		152B545C17EBDB3900C4B7F7 /* FFSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFSession.m; sourceTree = "<group>"; };
 		1535142A17DFF2B600F776AC /* FFUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFUser.h; sourceTree = "<group>"; };
@@ -263,10 +269,14 @@
 				1589CEAE17E9746A00A7233E /* FFBaseViewController.m */,
 				1589CEA617E90C1700A7233E /* FFHomeViewController.h */,
 				1589CEA717E90C1700A7233E /* FFHomeViewController.m */,
+				152B545817EBCEC600C4B7F7 /* FFDrawerViewController.h */,
+				152B545917EBCEC600C4B7F7 /* FFDrawerViewController.m */,
 				152B544F17EBA80600C4B7F7 /* FFTickerDrawerViewController.h */,
 				152B545017EBA80600C4B7F7 /* FFTickerDrawerViewController.m */,
 				152B545217EBA97300C4B7F7 /* FFTickerMaximizedDrawerViewController.h */,
 				152B545317EBA97300C4B7F7 /* FFTickerMaximizedDrawerViewController.m */,
+				152B545517EBC93000C4B7F7 /* FFTickerMinimizedDrawerViewController.h */,
+				152B545617EBC93100C4B7F7 /* FFTickerMinimizedDrawerViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -473,6 +483,8 @@
 				1589CEAF17E9746A00A7233E /* FFBaseViewController.m in Sources */,
 				152B545117EBA80600C4B7F7 /* FFTickerDrawerViewController.m in Sources */,
 				152B545417EBA97300C4B7F7 /* FFTickerMaximizedDrawerViewController.m in Sources */,
+				152B545717EBC93100C4B7F7 /* FFTickerMinimizedDrawerViewController.m in Sources */,
+				152B545A17EBCEC600C4B7F7 /* FFDrawerViewController.m in Sources */,
 				152B545D17EBDB3900C4B7F7 /* FFSession.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
