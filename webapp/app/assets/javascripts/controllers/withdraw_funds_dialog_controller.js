@@ -1,11 +1,16 @@
 angular.module("app.controllers")
 .controller('WithdrawFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', function($scope, dialog, fs, flash, currentUserService) {
 
+  $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;
 
   $scope.close = function(){
     dialog.close();
   };
+
+  if(!$scope.currentUser.confirmed){
+    $scope.errorMessage = "In order with withdraw funds, you must first confirm your email address."
+  }
 
   fs.recipients.list().then(function(resp){
     $scope.recipient = resp[0];

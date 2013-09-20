@@ -2,12 +2,16 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
 
   # POST /resource/confirmation
   def create
-    self.resource = resource_class.send_confirmation_instructions(resource_params)
-    binding.pry
+    if self.resource = current_user #user is logged in
+      current_user.send_confirmation_instructions
+    else #user is not logged in
+      self.resource = resource_class.send_confirmation_instructions(resource_params)
+    end
+
     if successfully_sent?(resource)
-      respond_with({}, :location => after_resending_confirmation_instructions_path_for(resource_name))
+      render json: {message: "Success check your email: #{resource.email} for a confirmation link."}
     else
-      respond_with(resource)
+      render json: {errors: ["Oops, something went wrong."]}
     end
   end
 end
