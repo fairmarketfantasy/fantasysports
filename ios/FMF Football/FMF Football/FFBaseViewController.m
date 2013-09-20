@@ -64,10 +64,10 @@
     close.contentMode = UIViewContentModeCenter;
     [v addSubview:close];
     
-    CGRect viewFrame = CGRectMake(0, self.view.frame.origin.y+44, self.view.frame.size.width, self.view.frame.size.height-44);
+    //CGRect viewFrame = CGRectMake(0, self.view.frame.origin.y+44, self.view.frame.size.width, self.view.frame.size.height-44);
     
     void (^ani)(void) = ^{
-        self.view.frame = viewFrame;
+        //self.view.frame = viewFrame;
         v.alpha = 1;
         v.frame = CGRectOffset(v.frame, 0, 44);
     };
@@ -89,9 +89,9 @@
 
 - (void)closeBanner:(UIView *)banner
 {
-    CGRect viewFrame = CGRectMake(0, self.view.frame.origin.y-44, self.view.frame.size.width, self.view.frame.size.height+44);
+    //CGRect viewFrame = CGRectMake(0, self.view.frame.origin.y-44, self.view.frame.size.width, self.view.frame.size.height+44);
     [UIView animateWithDuration:.25 animations:^{
-        self.view.frame = viewFrame;
+        //self.view.frame = viewFrame;
         banner.alpha = 0;
         banner.frame = CGRectOffset(banner.frame, 0, -44);
     } completion:^(BOOL finished) {
@@ -105,7 +105,12 @@
 #define DRAWER_HEIGHT 95
 #define DRAWER_MINIMIZED_HEIGHT 48
 
-- (void)showControllerInDrawer:(UIViewController *)vc minimizedViewController:(UIViewController *)mvc animated:(BOOL)animated
+- (void)showControllerInDrawer:(FFDrawerViewController *)vc minimizedViewController:(FFDrawerViewController *)mvc animated:(BOOL)animated
+{
+    [self showControllerInDrawer:vc minimizedViewController:mvc inView:self.view animated:NO];
+}
+
+- (void)showControllerInDrawer:(FFDrawerViewController *)vc minimizedViewController:(FFDrawerViewController *)mvc inView:(UIView *)view animated:(BOOL)animated
 {
     if (_minimizedDrawerController || _drawerController) {
         NSLog(@"trying to show a drawer when there already is one %@ %@", vc, mvc);
@@ -116,9 +121,9 @@
     _drawerIsMinimized = NO;
     
     _drawerController = vc;
-    vc.view.frame = CGRectMake(0, 0, self.view.frame.size.width, DRAWER_HEIGHT);
+    vc.view.frame = CGRectMake(0, 0, view.frame.size.width, DRAWER_HEIGHT);
     
-    CGRect viewFrame = self.view.frame;
+    CGRect viewFrame = view.frame;
     viewFrame.size.height -= DRAWER_HEIGHT;
     
     UISwipeGestureRecognizer *minSwipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
@@ -134,7 +139,7 @@
         mview.frameLocked = YES;
         mview.alpha = 0;
         [mview addSubview:mvc.view];
-        [self.view.superview addSubview:mview];
+        [view addSubview:mview];
         
         mvc.view.frame = CGRectMake(0, 0, viewFrame.size.width, DRAWER_MINIMIZED_HEIGHT);
         
@@ -147,15 +152,15 @@
     
     [vc viewWillAppear:YES];
     
-    FFDrawerBackingView *view = [[FFDrawerBackingView alloc] initWithFrame:
+    FFDrawerBackingView *mview = [[FFDrawerBackingView alloc] initWithFrame:
                                  CGRectMake(0, viewFrame.size.height, viewFrame.size.width, DRAWER_HEIGHT)];
-    [view addSubview:vc.view];
-    [self.view.superview addSubview:view];
+    [mview addSubview:vc.view];
+    [view addSubview:mview];
     
     void (^ani)(void) = ^{
         view.frame = CGRectMake(0, viewFrame.size.height, viewFrame.size.width, DRAWER_HEIGHT);
-        view.frameLocked = YES; // ss: hackity hack
-        self.view.frame = viewFrame;
+        mview.frameLocked = YES; // ss: hackity hack
+        view.frame = viewFrame;
     };
     
     void (^finish)(BOOL) = ^(BOOL finished) {
@@ -197,17 +202,17 @@
     
     CGFloat diff = DRAWER_MINIMIZED_HEIGHT - DRAWER_HEIGHT;
     
-    CGRect viewFrame = self.view.frame;
+    CGRect viewFrame = _drawerController.view.superview.superview.frame;
     viewFrame.size.height = viewFrame.size.height + diff;
     
-    [_minimizedDrawerController viewWillDisappear:YES];
-    [_drawerController viewWillAppear:YES];
+    [_minimizedDrawerController viewWillDisappear:animated];
+    [_drawerController viewWillAppear:animated];
     
     [(FFDrawerBackingView *)_drawerController.view.superview setFrameLocked:NO];
     [(FFDrawerBackingView *)_minimizedDrawerController.view.superview setFrameLocked:NO];
     
     void (^ani)(void) = ^{
-        self.view.frame = viewFrame;
+        _drawerController.view.superview.superview.frame = viewFrame;
         _drawerController.view.superview.frame = CGRectOffset(_drawerController.view.superview.frame, 0, diff);
         _drawerController.view.superview.alpha = 1;
         _minimizedDrawerController.view.superview.frame = CGRectOffset(_minimizedDrawerController.view.superview.frame, 0, diff);
@@ -215,8 +220,8 @@
     };
     void (^finish)(BOOL) = ^(BOOL finished) {
         if (finished) {
-            [_minimizedDrawerController viewDidDisappear:YES];
-            [_drawerController viewDidAppear:YES];
+            [_minimizedDrawerController viewDidDisappear:animated];
+            [_drawerController viewDidAppear:animated];
             [(FFDrawerBackingView *)_drawerController.view.superview setFrameLocked:YES];
             [(FFDrawerBackingView *)_minimizedDrawerController.view.superview setFrameLocked:YES];
         }
@@ -245,17 +250,17 @@
     
     CGFloat diff = DRAWER_HEIGHT - DRAWER_MINIMIZED_HEIGHT;
     
-    CGRect viewFrame = self.view.frame;
+    CGRect viewFrame = _drawerController.view.superview.superview.frame;
     viewFrame.size.height = viewFrame.size.height + diff;
     
-    [_drawerController viewWillDisappear:YES];
-    [_minimizedDrawerController viewWillAppear:YES];
+    [_drawerController viewWillDisappear:animated];
+    [_minimizedDrawerController viewWillAppear:animated];
     
     [(FFDrawerBackingView *)_drawerController.view.superview setFrameLocked:NO];
     [(FFDrawerBackingView *)_minimizedDrawerController.view.superview setFrameLocked:NO];
 
     void (^ani)(void) = ^{
-        self.view.frame = viewFrame;
+        _drawerController.view.superview.superview.frame = viewFrame;
         _drawerController.view.superview.frame = CGRectOffset(_drawerController.view.superview.frame, 0, diff);
         _drawerController.view.superview.alpha = 0;
         _minimizedDrawerController.view.superview.frame = CGRectOffset(_minimizedDrawerController.view.superview.frame, 0, diff);
@@ -264,8 +269,8 @@
     
     void (^finish)(BOOL) = ^(BOOL finished) {
         if (finished) {
-            [_drawerController viewDidDisappear:YES];
-            [_minimizedDrawerController viewDidAppear:YES];
+            [_drawerController viewDidDisappear:animated];
+            [_minimizedDrawerController viewDidAppear:animated];
             [(FFDrawerBackingView *)_drawerController.view.superview setFrameLocked:YES];
             [(FFDrawerBackingView *)_minimizedDrawerController.view.superview setFrameLocked:YES];
         }
@@ -281,7 +286,50 @@
 
 - (void)closeDrawerAnimated:(BOOL)animated
 {
-    
+    if (!_drawerController) {
+        NSLog(@"cant close a drawer that isn't showing...");
+        return;
+    }
+
+    [(FFDrawerBackingView *)_drawerController.view.superview setFrameLocked:NO];
+    if (self.minimizedDrawerController) {
+        [(FFDrawerBackingView *)_minimizedDrawerController.view.superview setFrameLocked:NO];
+    }
+
+    FFDrawerViewController *drawer = (_drawerIsMinimized ? self.minimizedDrawerController : self.drawerController);
+    [drawer viewWillDisappear:animated];
+
+    CGFloat diff = (_drawerIsMinimized ? DRAWER_MINIMIZED_HEIGHT : DRAWER_HEIGHT);
+
+    CGRect viewRect = drawer.view.superview.superview.frame;
+    viewRect.size.height += diff;
+
+    void (^ani)(void) = ^{
+        drawer.view.superview.superview.frame = viewRect;
+        drawer.view.superview.frame = CGRectOffset(drawer.view.superview.frame, 0, diff);
+        drawer.view.superview.alpha = 0;
+    };
+    void (^finish)(BOOL) = ^(BOOL finished) {
+        if (finished) {
+            [drawer viewDidDisappear:animated];
+            [(FFDrawerBackingView *)_drawerController.view.superview setFrameLocked:YES];
+            [_drawerController.view.superview removeFromSuperview];
+            if (self.minimizedDrawerController) {
+                [(FFDrawerBackingView *)_minimizedDrawerController.view.superview setFrameLocked:YES];
+                [_minimizedDrawerController.view.superview removeFromSuperview];
+            }
+            _drawerController = nil;
+            _minimizedDrawerController = nil;
+            _drawerIsMinimized = NO;
+        }
+    };
+
+    if (animated) {
+        [UIView animateWithDuration:.25 animations:ani completion:finish];
+    } else {
+        ani();
+        finish(YES);
+    }
 }
 
 - (void)viewDidLoad

@@ -7,6 +7,7 @@
 //
 
 #import "FFTickerDrawerViewController.h"
+#import "FFSession.h"
 
 @interface FFTickerDrawerViewController ()
 
@@ -32,6 +33,7 @@
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
         _collectionView.alwaysBounceHorizontal = YES;
+        _collectionView.showsHorizontalScrollIndicator = NO;
     }
     return self;
 }
@@ -48,6 +50,20 @@
 
 - (void)getTicker:(SBSuccessBlock)onSuccess failure:(SBErrorBlock)fail
 {
+    // not logged in yet, so use an anonymous session
+    if (!self.session) {
+        FFSession *tempSession = [FFSession anonymousSession];
+        [tempSession anonymousJSONRequestWithMethod:@"GET" path:@"/players/public" parameters:@{} success:
+         ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
+             self.tickerData = JSON;
+             self.lastFetch = [NSDate date];
+             [self.collectionView reloadData];
+             onSuccess(JSON);
+         } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
+             NSLog(@"failed to get public player timeline %@ %@", error, JSON);
+         }];
+        return;
+    }
     [self.session authorizedJSONRequestWithMethod:@"GET" path:@"/players/mine" paramters:@{} success:
      ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
           if (![JSON[@"data"] count]) {
