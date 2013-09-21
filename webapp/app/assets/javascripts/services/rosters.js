@@ -55,6 +55,18 @@ angular.module('app.data')
         });
       };
 
+      // Used on init to order players properly
+      this._addPlayersToRoster = function(roster){
+        var players = roster.players;
+        roster.players = [];
+        _.each(this.positionList, function(str) {
+          roster.players.push({position: str});
+        });
+        _.each(players, function(p) {
+          roster.players[indexForPlayerInRoster(roster, p)] = p;
+        });
+      };
+
       this.selectRoster = function(roster) {
         var self = this;
         this.currentRoster = roster;
@@ -63,37 +75,37 @@ angular.module('app.data')
         }
         this.positionList = roster.positions.split(',');
         this.uniqPositionList = _.uniq(this.positionList);
-        var players = roster.players;
-        this.currentRoster.players = [];
-        _.each(this.positionList, function(str) {
-          self.currentRoster.players.push({position: str});
-        });
-        _.each(players, function(p) {
-          self.addPlayer(p, true);
-        });
+        this._addPlayersToRoster(this.currentRoster);
       };
 
+      this.selectOpponentRoster = function(roster) {
+        this.opponentRoster = roster;
+        if (roster) {
+          this._addPlayersToRoster(roster);
+        }
+      }
+
+      var indexForPlayerInRoster = function(roster, player) {
+        return _.findIndex(roster.players, function(p) { return p.position == player.position && !p.id; });
+      };
 
       this.addPlayer = function(player, init) {
         var self = this;
-        var index = _.findIndex(this.currentRoster.players, function(p) { return p.position == player.position && !p.id; });
+        var index = indexForPlayerInRoster(this.currentRoster, player)
         if (index >= 0) {
-          if (init) { // Used for adding initial players from an existing roster
-            this.currentRoster.players[index] = player;
-          } else {
-            fs.rosters.add_player(this.currentRoster.id, player.id).then(function(market_order) {
-              self.currentRoster.remaining_salary -= market_order.price;
-              player.purchase_price = market_order.price;
-              player.sell_price = market_order.price;
-              self.currentRoster.players[index] = player;
-            });
-          }
+          fs.rosters.add_player(this.currentRoster.id, player.id).then(function(market_order) {
+            self.currentRoster.remaining_salary -= market_order.price;
+            player.purchase_price = market_order.price;
+            player.sell_price = market_order.price;
+            self.currentRoster.players[index] = player;
+          });
         } else {
           flash.error = "No room for another " + player.position + " in your roster.";
         }
       };
 
       this.removePlayer = function(player) {
+        this.selectOpponentRoster(null);
         var self = this;
         fs.rosters.remove_player(this.currentRoster.id, player.id).then(function(market_order) {
           self.currentRoster.remaining_salary = parseFloat(self.currentRoster.remaining_salary) + parseFloat(market_order.price);

@@ -9,10 +9,11 @@ angular.module('app.data')
       this.fetchUpcoming = function(id) {
         // TODO: memoize?
         var self = this;
+        var defaultMarket;
         return fs.markets.list().then(function(markets) {
           self.upcoming = [];
           // find the first week market
-          self.upcoming.push(_.find(markets, function(market){
+          self.upcoming.push(defaultMarket = _.find(markets, function(market){
             return market.market_duration === 'week';
           }));
           // find the first day market
@@ -25,7 +26,7 @@ angular.module('app.data')
           if (id) {
             self.currentMarket = marketData[id];
           } else {
-            self.currentMarket = markets[0];
+            self.currentMarket = defaultMarket;
           }
         });
       };

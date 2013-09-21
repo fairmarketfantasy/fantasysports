@@ -41,6 +41,11 @@
           <td>{{roster.owner_name}}</td>
           <td>{{roster.contest_rank_payout}}</td>
           <td>{{roster.score}}</td>
+          <td>
+            <span ng-show="roster.id == rosters.currentRoster.id">This roster</span>
+            <a ng-show="roster.owner_id == currentUser.id && roster.id != rosters.currentRoster.id" href="#/market/{{market.id}}/roster/{{rosters.currentRoster.id}}">View roster</a>
+            <a ng-show="roster.owner_id != currentUser.id" href="#/market/{{market.id}}/roster/{{rosters.currentRoster.id}}/vs/{{roster.id}}">See their roster</a>
+          </td>
         </tr>
       </tbody>
     </table>

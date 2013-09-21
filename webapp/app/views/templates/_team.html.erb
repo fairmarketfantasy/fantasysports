@@ -1,7 +1,7 @@
     <div class="roster"> 
       <div class="roster-area">
-          <h4 class="team-heading">Your Team</h4>
-          <div class="salary-cap" ng-class="{broke: roster.remaining_salary <= 0}">
+        <h4 class="team-heading"><span ng-show="roster.owner_id == currentUser.id">Your Team</span><span ng-show="roster.owner_id != currentUser.id">{{roster.owner_name}}'s Team</span></h4>
+          <div ng-show="roster.owner_id == currentUser.id" class="salary-cap" ng-class="{broke: roster.remaining_salary <= 0}">
             Salary Remaining: ${{roster.remaining_salary | number:0}}
           </div>
 
