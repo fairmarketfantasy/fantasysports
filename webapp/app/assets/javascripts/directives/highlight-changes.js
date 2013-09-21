@@ -49,7 +49,7 @@ angular.module('app.directives')
    link: function(scope, elm, attrs, ctrl) {
      var keyToWatch = attrs.keyToWatch;
      scope.$watch(attrs.highlightChangesInList, function(newVal, oldVal, scope) {
-      if (!oldVal || oldVal == newVal) { return; } // Don't highlight the first time.
+      if (!newVal || !oldVal || oldVal == newVal) { return; } // Don't highlight the first time.
          $timeout(function() { $(elm).children().addClass('highlight-on-change'); }, 0);
          for (var i = 0; i < newVal.length; i++) {
             delete newVal[i]['$$hashKey'];  // Random key inserted by angular

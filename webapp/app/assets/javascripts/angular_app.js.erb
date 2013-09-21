@@ -12,6 +12,7 @@ angular.module('app', [
     $routeProvider.
       when('/', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
+      when('/market/:market_id/roster/:roster_id/vs/:opponent_roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
       when('/market/:market_id', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/rosters', {templateUrl: '/roster_list.html', controller: 'RosterListController'}).
       when('/history', {templateUrl: '/roster_list.html', controller: 'RosterHistoryController'}).
