@@ -16,15 +16,16 @@
     <div class='pull-right muted clickable' ng-click='successMessage = null'> x </div>
     {{ successMessage }}
   </div>
-  <div ng-show'!currentUser.confirmed'>
+  <div ng-show='!currentUser.confirmed'>
     <a href="javascript://" ng-click='resendConfirmation()'>Click here</a> to re-send the confirmation email.
   </div>
-  <div ng-show='{{ !recipient && currentUser.confirmed }}'>
+  <div ng-show='showAddNewAccount()'>
     <h6>Add a New Account for Deposits<h6>
     <input type="text" class='account-name' placeholder="legal name" ng-model="newRecipient.name"/><br />
     <input type="text" class='account-number' placeholder="account number" ng-model="newAccount.accountNumber"/><br />
     <input type="text" class='account-routing' placeholder="routing" ng-model="newAccount.routingNumber"/><br />
-    <a href="javascript://" ng-click="createRecipient()" class='btn btn-primary account-create'>Save</a>
+    <a href="javascript://" ng-click="createRecipient()" ng-hide='saveAcctSpinner' class='btn btn-primary account-create'>Save</a>
+    <img src='/assets/ajax-loader-micro.gif' ng-show='saveAcctSpinner'/>
   </div>
   <div ng-show='recipient'>
     <ul class='unstyled recipient'>
