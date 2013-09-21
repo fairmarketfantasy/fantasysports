@@ -91,8 +91,11 @@ class Roster < ActiveRecord::Base
       if self.contest.nil?
         #enter roster into public contest
         contest_type.with_lock do #prevents creation of contests of the same type at the same time
-          contest = Contest.where("contest_type_id = ? AND (num_rosters < user_cap OR user_cap = 0) 
-            AND invitation_code is null", contest_type.id).first
+          contest = Contest.where("contest_type_id = ?
+            AND (user_cap = 0
+                OR (num_rosters < user_cap 
+                    AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
+            AND invitation_code is null", contest_type.id).order('id asc').first
           if contest.nil?
             contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
               market_id: self.market_id, contest_type_id: contest_type.id, num_rosters: 1)
