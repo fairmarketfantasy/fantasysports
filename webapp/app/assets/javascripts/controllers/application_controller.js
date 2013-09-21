@@ -25,4 +25,8 @@ angular.module("app.controllers")
     return new Date(game.game_time) < new Date();
   };
 
+  $scope.log = function(obj) {
+    console && console.log(obj);
+  };
+
 }]);
