@@ -31,9 +31,9 @@ angular.module("app.controllers")
 
   $scope.contestClassDesc = {
     'h2h': "Challenge your friends to head to head games and channel some truly intimate aggression.",
-    '194': "Top half doubles their money - all you have to do is be better than average.  You are that, right?",
-    '970': "High stakes, winner takes all. This is for the true champions.",
-    '100k': "THE LOLLAPALOOZA.  It's like a lottery, because you win lots of money.",
+    '194': "Top half nearly doubles their money. You're better than average, right? Go get 'em!",
+    '970': "Show everyone what a true champion you are in this winner takes all league. ",
+    '100k': "THE LOLLAPALOOZA. First prize is $50k, that's a lot of cheddar for a $10 entry!",
   };
 
   $scope.day = function(timeStr) {
