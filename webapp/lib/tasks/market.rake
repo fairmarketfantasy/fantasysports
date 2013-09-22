@@ -55,17 +55,38 @@ namespace :market do
   task :import_players, [:market_id] => :environment do |t, args|
     file = File.join(Rails.root, "market_players_#{args.market_id}.csv")
     puts "Opening file: #{file}"
-    count = 0
     market = Market.find args.market_id
+    #reset market
+    market.state = nil
+    market.save!
+    market.publish
+
+    count = 0
+    total_bets = 0
     CSV.foreach(file) do |row|
       count += 1
-      next if(count <= 2)
+      next if count <= 2
       player_stats_id, shadow_bets = row[0], row[4]
-      player = Player.where(:stats_id => player_stats_id).first # TODO: make this just print the player id
-      market_player = MarketPlayer.where(:player_id => player.id, :market_id => market.id).first
-      market_player.shadow_bets = Integer(shadow_bets.blank? ? 0 : shadow_bets)
-      market_player.save
+      if !shadow_bets.blank?
+        p = Player.where(:stats_id => player_stats_id).first
+        puts "betting $#{shadow_bets} on #{p.name}"
+        shadow_bets = Integer(shadow_bets) * 100
+      else
+        shadow_bets = 0
+      end
+      mp = market.market_players.where("player_stats_id = '#{player_stats_id}'").first
+      mp.shadow_bets = mp.initial_shadow_bets = mp.bets = shadow_bets
+      mp.save!
+      total_bets += shadow_bets
     end
+
+    #set the shadow bets to whatever they should be
+    puts "\nTotal bets: $#{total_bets/100}"
+    market.shadow_bets = market.total_bets = market.initial_shadow_bets = total_bets
+    #TEMPORARY: artificially raise the price multiplier
+    market.price_multiplier = market.market_players.size / 50
+    puts "using price multiplier: #{market.price_multiplier}"
+    market.save!
   end
 
 end
