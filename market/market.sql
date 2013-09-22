@@ -340,8 +340,8 @@ BEGIN
 			players.stats_id = total_games.player_stats_id;
 
 	--check that shadow_bets is something reasonable
-	IF _market.shadow_bets = 0 THEN
-		RAISE NOTICE 'shadow bets is 0, setting to 100000';
+	IF _market.shadow_bets <= 1000 THEN
+		RAISE NOTICE 'shadow bets is too small, setting to 100000';
 		UPDATE markets set shadow_bets = 100000 where id = _market_id;
 	END IF;
 
