@@ -14,15 +14,15 @@
       <span class="ei-info">Open Entries</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">71</p>
+      <p class="ei-number">{{rosters.myLiveStats().top}}</p>
       <span class="ei-info">Top Score</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">47.5</p>
+      <p class="ei-number">{{rosters.myLiveStats().avg}}</p>
       <span class="ei-info">Average Score</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">$217</p>
+      <p class="ei-number">{{rosters.myLiveStats().total_payout | centsToDollars}}</p>
       <span class="ei-info">Current Payout</span>
     </li>
   </ul>

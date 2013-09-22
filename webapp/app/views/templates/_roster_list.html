@@ -18,7 +18,7 @@
       <td><span ng-show="roster.contest_rank">Place: {{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries}}</span></td>
       <td>{{roster.score || 0}}</td>
       <td>{{roster.contest_rank_payout}}</td>
-      <td><a href="#/market/{{market.id}}/roster/{{roster.id}}">View roster</a></td>
+      <td><a href="#/market/{{roster.market_id}}/roster/{{roster.id}}">View roster</a></td>
       <td ng-show="history">Paid {{roster.amount_paid | centsToDollars }} on {{roster.paid_at | shortFormTime}}</td>
     </tr>
   </tbody>
