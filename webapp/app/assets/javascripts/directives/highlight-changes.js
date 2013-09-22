@@ -53,8 +53,10 @@ angular.module('app.directives')
          $timeout(function() { $(elm).children().addClass('highlight-on-change'); }, 0);
          for (var i = 0; i < newVal.length; i++) {
             delete newVal[i]['$$hashKey'];  // Random key inserted by angular
-            if (keyToWatch && newVal[i][keyToWatch] != oldVal[i][keyToWatch]) {
-              clearElement(elm, i);
+            if (keyToWatch) {
+              if (newVal[i][keyToWatch] != oldVal[i][keyToWatch] && oldVal[i][keyToWatch] != undefined) {
+                clearElement(elm, i);
+              }
             } else if (!_.isEqual(newVal[i], oldVal[i])) {
               clearElement(elm, i);
             }
