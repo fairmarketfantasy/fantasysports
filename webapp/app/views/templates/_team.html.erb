@@ -5,7 +5,6 @@
         </div>
 
         <div class="roster-overflow">
-          <div id="player-stats-content" style="display: none;" ng-include="'/stats.html'"></div>
             
           <ul class="my-roster-list">
             <li class="mr-item clearfix" ng-repeat="player in roster.players">
@@ -20,7 +19,7 @@
               </div>
               
               <div class="mr-player-cta">
-                <p class="mr-player-score" ng-show="inThePast(market.started_at)">{{player.score}}</p>
+                <p class="mr-player-score" ng-show="inThePast(market.started_at)"><a href="javascript://" tooltip-trigger="mouseenter" ng-mouseover="fetchPlayerStats(player)" tooltip-html-unsafe="{{statsContent()}}">{{player.score}}</a></p>
                 <a class="btn btn-small btn-orange" ng-show="player.id && market.state == 'published' || player.id && market.state == 'opened' && !player.locked" href="javascript://" ng-click="rosters.removePlayer(player)">Trade</a>
                 <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
               </div>

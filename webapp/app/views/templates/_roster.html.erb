@@ -67,6 +67,7 @@
   </div>
 
   <div class="team-selection clearfix">
+    <div id="player-stats-content" style="display: none;" ng-include="'/stats.html'"></div>
     <div ng-controller="IncludeController" ng-init="track({roster: 'rosters.currentRoster'})"><div ng-include="'/team.html'"></div></div>
     <div ng-show="rosters.opponentRoster" ng-controller="IncludeController" ng-init="track({roster: 'rosters.opponentRoster'})"><div ng-include="'/team.html'"></div></div>
     <div ng-hide="rosters.opponentRoster" ng-include="'/players.html'"></div>
