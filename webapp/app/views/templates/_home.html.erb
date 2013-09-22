@@ -1,9 +1,35 @@
+<p class="alert alert-info" ng-show="rosters.justSubmittedRoster">
+  Your roster is looking great! Now that it's perfect, should we <a href="javascript://">Challenge some friends</a> or enter another contest?
+  <a href="#/" ng-click="rosters.reset()">No thanks, I'm done</a>
+</p>
+
 <div ng-hide="!rosters.mine().length" class="entries-container">
   <div class="roster-title">  
-    <h3>My Live Entries</h3>
+    <h3>Live Entries</h3>
   </div>
   
-  <ul class="roster-list clearfix">
+  <ul class="entries-info-list clearfix">
+    <li class="ei-item">
+      <p class="ei-number">{{rosters.mine().length}}</p>
+      <span class="ei-info">Open Entries</span>
+    </li>
+    <li class="ei-item">
+      <p class="ei-number">71</p>
+      <span class="ei-info">Top Score</span>
+    </li>
+    <li class="ei-item">
+      <p class="ei-number">47.5</p>
+      <span class="ei-info">Average Score</span>
+    </li>
+    <li class="ei-item">
+      <p class="ei-number">$217</p>
+      <span class="ei-info">Current Payout</span>
+    </li>
+  </ul>
+
+  <a class="see-all" href="/#/rosters">See All Live Contests</a>
+
+  <ul class="roster-list clearfix hide">
     <li class="market" ng-repeat="roster in rosters.top(3)">
       <a href="#/market/{{roster.market_id}}/roster/{{roster.id}}" title="{{roster.contest_type.description}}">
         {{roster.buy_in | centsToDollars }} {{roster.contest_type.name}} - 

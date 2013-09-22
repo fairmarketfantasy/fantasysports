@@ -118,6 +118,9 @@ header {
   width: 100%;
   padding: 0;
 }
+article {
+  position: relative;
+}
 
 .header-bottom {
   position: relative;
@@ -142,6 +145,18 @@ header {
   left: -30px;
   .border-radius(8px 8px 0 0); 
   .box-shadow(0 0 3px rgba(0,0,0,.6));
+  min-height: 700px;
+}
+
+footer {
+  height: 176px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background-color: @gray;
+  border-top: 3px solid @grayLight;
+  .box-shadow(0 0 3px rgba(0,0,0,.6));
+
 }
 
 .overflow {
@@ -389,7 +404,7 @@ header {
 }
 /* Games */
 .market-container, .contest-info {
-  border: 2px solid @grayDark;
+  border: 2px solid @gray;
   border-top: 0;
   .border-radius(0 0 4px 4px);
 }
@@ -398,12 +413,12 @@ header {
   padding: 5px;
   margin-bottom: 10px;
   position: relative;
-  border: 2px solid @grayDark;
+  border: 2px solid @gray;
   .border-radius(4px);
 }
 .roundTop {
   .border-radius(4px);
-  border-top: 2px solid @grayDark;
+  border-top: 2px solid @gray;
 }
 .market-title, .roster-title {
   width: 96%;
@@ -500,7 +515,7 @@ header {
 
 .contest-info-image {
   width: 170px;
-  margin-right: 8px;
+  margin: 8px 8px 0 0;
   float: left;
 }
 .contest-info-description {
@@ -532,7 +547,7 @@ header {
 }
 .entries-container {
   .border-radius(4px 4px 0 0);
-  border: 2px solid @grayLight;
+  border: 2px solid @gray;
   border-bottom: 0;
   background-color: @offWhite;
 }
@@ -652,6 +667,10 @@ header {
   position: absolute;
   right: 0;
 }
+.btn-reenter-cta {
+  position: absolute;
+  right: 90px;
+}
 .modal-form-container {
   float: left;
   margin: 0 20px 20px;
@@ -672,17 +691,22 @@ header {
   content: "-";
 }
 .btn-orange {
-  background-color: @orangeHighlight;
+  background-color: @orangeDark;
 }
 .btn-orange:hover {
-  background-color: @orangeDark;
+  background-color: @orangeHighlight;
 }
 
 .my-roster-list {
   padding: 0;
   margin: 0;
 }
-
+.mr-player-score {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  text-align: right;
+}
 .mr-item {
   padding: 8px;
   border-bottom: 1px solid @grayLight;
@@ -764,7 +788,34 @@ input[type="text"].players-search {
     color: white;
   }
 }
-
+.ei-item {
+  width: 20%;
+  float: left;
+  margin: 6px 2.5% 16px;
+  text-align: center;
+  color: @gray;
+  list-style-type: none;
+}
+.see-all {
+  color: @green-sea;
+  display: block;
+  padding: 8px 3.96% 8px;
+  width: 92%;
+  text-align:center;
+  background-color: #e9e9e9;
+}
+.entries-info-list {
+  padding: 0;
+  margin: 0;
+}
+.ei-number {
+  font-size: 40px;
+  font-weight: 100;
+  margin-bottom: 0px;
+}
+.ei-info {
+  font-size: 12px;
+}
 .highlight-on-change.changed{
   background-color: yellow;
 }

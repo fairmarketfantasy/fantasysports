@@ -5,18 +5,23 @@
       <a href="#/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster">Back to Contests</a>
       <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name}}.png" class="contest-info-image" />
       <div class="contest-info-description">
-        <h2>{{rosters.currentRoster.contest_type.description}}</h2>
+        <h2>{{markets.currentMarket.name}}<span ng-show="markets.currentMarket.name == ''">Daily</span> {{rosters.currentRoster.contest_type.name}}<span ng-show="rosters.currentRoster.contest_type.name == '194' || rosters.currentRoster.contest_type.name == '970'">% League</span> <span ng-show="rosters.currentRoster.contest_type.name == '100k' || rosters.currentRoster.contest_type.name == 'h2h'">Contest</span></h2>
+        <p class="contest-description-text">
+          <span ng-show="rosters.currentRoster.contest_type.name == '100k'">THE LOLLAPALOOZA. First prize is $50k, that's a lot of cheddar for a $10 entry!</span>
+          <span ng-show="rosters.currentRoster.contest_type.name == '194'">Top half nearly doubles their money. You're better than average, right? Go get 'em!</span>
+          <span ng-show="rosters.currentRoster.contest_type.name == '970'">Show everyone what a true champion you are in this winner takes all league.</span>
+          <span ng-show="rosters.currentRoster.contest_type.name == 'h2h'">Challenge your friends to head to head games and channel some truly intimate aggression.</span>
+        </p>
         <ul>
           <li>Starts: {{markets.currentMarket.started_at | shortFormTime }}</li>
-          <li>Timeframe: {{markets.currentMarket.name}}</li>
-          <li>Entries: {{rosters.currentRoster.contest_type.max_entries | unlimitedIfZero}}</li>
           <li>Buy-in: {{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</li>
-          <li>Format: Winner take all
+          <li>Entries: {{rosters.currentRoster.contest_type.max_entries | unlimitedIfZero}}</li>
+          <li>Payout: {{rosters.currentRoster.contest_type.payout_description}}</li>
           <li ng-show="rosters.currentRoster.contest_rank">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
       </div>
     </div>
 
-    <ul class="games clearfix">
+    <ul class="games clearfix hide">
       <li class="game" ng-repeat="game in games" ng-class="{started: gameStarted(game)}" >
         {{game.away_team}} @ {{game.home_team}} <br/>  on {{game.game_time | shortFormTime}} <br/> {{game.network}}
       </li>
@@ -55,7 +60,7 @@
     <div class="roster-title my-roster-title">  
       <h3 class="inline-heading"><span ng-show="rosters.currentRoster.owner_id == currentUser.id">Your Team</span><span ng-show="rosters.currentRoster.owner_id != currentUser.id">{{rosters.currentRoster.owner_name}}'s Team</span></h3>
 
-      <div class="salary-cap" ng-show="inThePast(market.started_at)" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}">
+      <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}">
         Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
       </div>
     </div>
