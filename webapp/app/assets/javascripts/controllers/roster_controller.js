@@ -32,11 +32,13 @@ angular.module("app.controllers")
       fetchContest();
     });
   });
-  $scope.$watch('$routeParams.opponenet_roster_id', function() {
+  $scope.$watch('$routeParams.opponent_roster_id', function() {
     if ($routeParams.opponent_roster_id) {
       rosters.fetch($routeParams.opponent_roster_id).then(function(roster) {
         rosters.selectOpponentRoster(roster);
       });
+    } else {
+      rosters.selectOpponentRoster(null);
     }
   });
 
