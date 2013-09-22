@@ -4,6 +4,6 @@ angular.module("app.controllers")
   rosterService.fetchMine().then(function() {
     $scope.rosterList = rosterService.top();
   });
-  rosterService.setPoller(function() { rosters.fetchMine(); }, 10000);
+  rosterService.setPoller(function() { rosterService.fetchMine(); }, 10000);
 }]);
 

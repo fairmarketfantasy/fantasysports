@@ -1,4 +1,4 @@
-angular.module('app.directives', [])
+angular.module('app.directives')
 .directive('focusMe', function($timeout, $parse) {
   return {
     //scope: true,   // optionally create a child scope
