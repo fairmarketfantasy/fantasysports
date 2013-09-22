@@ -10,33 +10,33 @@ namespace :market do
   	puts "Updating markets every #{wait_time} seconds"
   	while true
   		puts "#{Time.now} -- inspecting markets"
-      Market.tend_all
+      Market.tend
 	  	sleep wait_time
   	end
   end
 
   task :publish => :environment do
-		Market.publish_all
+		Market.publish
   end
 
   task :open => :environment do
-    Market.open_all
+    Market.open
   end  
 
   task :lock_players => :environment do
-    Market.lock_players_all
+    Market.lock_players
   end
 
   task :close => :environment do
-  	Market.close_all
+  	Market.close
   end
 
   task :stats => :environment do
-    Market.tabulate_all
+    Market.tabulate
   end
 
   task :complete => :environment do
-    Market.complete_all
+    Market.complete
   end
 
   task :dump_players, [:market_id] => :environment do |t, args|

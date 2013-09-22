@@ -17,16 +17,66 @@ class Market < ActiveRecord::Base
 
   paginates_per 25
 
-  def accepting_rosters?
-    ['published', 'opened'].include?(self.state)
+  class << self
+
+    # THIS IS A UTILITY FUNCTION, DO NOT CALL IT FROM THE APPLICATION
+    def load_sql_functions
+      self.load_sql_file File.join(Rails.root, '..', 'market', 'market.sql')
+    end
+
+    def tend
+      publish
+      open
+      remove_shadow_bets
+      lock_players
+      close
+      tabulate_scores
+      complete
+    end
+
+    def apply method, sql, *params
+      Market.where(sql, *params).each do |market|
+        puts "#{Time.now} -- #{method} market #{market.id}"
+        begin
+          market.send(method)
+        rescue Exception => e
+          puts "Exception raised for method #{method} on market #{market.id}: #{e}"
+        end
+      end
+    end
+
+    def publish
+      apply :publish, "published_at <= ? AND (state is null or state='' or state='unpublished')", Time.now
+    end
+
+    def open
+      apply :open, "state = 'published' AND (shadow_bets = 0 or opened_at < ?)", Time.now
+    end
+
+    def remove_shadow_bets
+      apply :remove_shadow_bets, "state in ('published', 'opened') and shadow_bets > 0"
+    end
+  
+    def lock_players
+      apply :lock_players, "state = 'opened'"
+    end
+    
+    def tabulate_scores
+      apply :tabulate_scores, "state in ('published', 'opened', 'closed')"
+    end
+
+    def close
+      apply :close, "state = 'opened' AND closed_at < ?", Time.now
+    end
+
+    def complete
+      apply :complete, "state = 'closed' and not exists (select 1 from games g join games_markets gm on gm.game_stats_id = g.stats_id where gm.market_id = markets.id and g.status != 'closed')"
+    end
+
   end
 
-  def self.publish_all
-	  markets = Market.where("published_at <= ? AND (state is null or state='' or state='unpublished')", Time.now)
-	  markets.each do |market|
-	  	puts "#{Time.now} -- publishing market #{market.id}"
-      market = market.publish
-    end
+  def accepting_rosters?
+    ['published', 'opened'].include?(self.state)
   end
 
   #publish the market. returns the published market.
@@ -36,59 +86,27 @@ class Market < ActiveRecord::Base
     if self.state == 'published'
       self.add_default_contests
     end
-    return self
+    self
   end
   
-  # Opening the market updates shadow bets until they're all removed.  
-  # The market will remain in a published state until that happens
-  def self.open_all
-	  markets = Market.where("state = 'published'")
-	  markets.each do |market|
-	  	puts "#{Time.now} -- opening market #{market.id}"
-      market.open
-	  end
-  end
-
   def open
     Market.find_by_sql("select * from open_market(#{self.id})")
     reload
-    return self
   end
 
-  #look for players in games that have started and remove them from the market
-  #and update the price multiplier
-  def self.lock_players_all
-    markets = Market.where("state = 'opened' OR state = 'published'")
-    markets.each do |market|
-      puts "#{Time.now} -- locking players in market #{market.id}"
-      market.lock_players
-    end
+  def remove_shadow_bets
+    Market.find_by_sql("select * from remove_shadow_bets(#{self.id})")
+    reload
   end
 
   def lock_players
     Market.find_by_sql("SELECT * from lock_players(#{self.id})")
-    return self
-  end
-
-  def self.tabulate_all
-    Market.where("state in ('published', 'opened', 'closed')").find_each do |market|
-      puts "#{Time.now} -- tabulating scores for market #{market.id}"
-      market.tabulate_scores
-    end
+    reload
   end
 
   def tabulate_scores
     Market.find_by_sql("SELECT * FROM tabulate_scores(#{self.id})")
-    return self
-  end
-
-
-  def self.close_all
-	  markets = Market.where("closed_at <= ? AND state = 'opened'", Time.now)
-	  markets.each do |market|
-	  	puts "#{Time.now} -- closing market #{market.id}"
-      market.close
-	  end
+    reload
   end
 
   # close a market. allocates remaining rosters in this manner:
@@ -128,25 +146,13 @@ class Market < ActiveRecord::Base
   end
 
 
-  def self.complete_all
-    markets = Market.where("state = 'closed'")
-    puts "found #{markets.length} markets to potentially complete"
-    markets.each do |market|
-      puts "#{Time.now} -- completing market #{market.id}"
-      begin
-        market.complete
-      rescue
-      end
-    end
-  end
-
   #if a market is closed and all its games are over, then 'complete' the market
   #by dishing out funds and such
   def complete
     #make sure all games are closed
     self.with_lock do
       raise "market must be closed before it can be completed" if self.state != 'closed'
-      raise "all games must be closed before market can be completed" if self.games.where("status != 'closed'").size > 0
+      raise "all games must be closed before market can be completed" if self.games.where("status != 'closed'").any?
 
       self.tabulate_scores
       #for each contest, allocate funds by rank
@@ -156,15 +162,6 @@ class Market < ActiveRecord::Base
       self.state = 'complete'
       self.save!
     end
-  end
-
-  def self.tend_all
-	  Market.publish_all
-	  Market.open_all
-    Market.lock_players_all
-    Market.close_all
-    Market.tabulate_all
-    Market.complete_all
   end
 
   @@default_contest_types = [
@@ -213,7 +210,7 @@ class Market < ActiveRecord::Base
     contest_type = self.contest_types.where("name = '100k'").first
     raise "no 100k contest" if contest_type.nil?
     system_user = User.where(:name => 'SYSTEM USER').first
-    raise "could not find system uers" if system_user.nil?
+    raise "could not find system user" if system_user.nil?
     num_rosters.times { Roster.generate(system_user, contest_type).fill_randomly.submit! }
   end
 

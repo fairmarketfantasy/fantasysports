@@ -45,6 +45,15 @@ class RosterTest < ActiveSupport::TestCase
     end
   end
 
+  test "submit adds bets to market" do
+    assert @roster.buy_in > 0, "buy in > 0"
+    @roster.fill_randomly
+    assert @roster.players.size > 0, "has players"
+    bets_before = @market.total_bets
+    @roster.submit!
+    assert_equal @roster.state, 'submitted', "roster is submitted"
+    assert @market.total_bets = bets_before + @roster.players.size * @roster.buy_in, "increased total bets"
+  end
 
   test "submit puts roster in contest" do
     #find head to head
