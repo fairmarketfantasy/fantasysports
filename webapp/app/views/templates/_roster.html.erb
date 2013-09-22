@@ -43,7 +43,7 @@
           <td>{{roster.score}}</td>
           <td>
             <span ng-show="roster.id == rosters.currentRoster.id">This roster</span>
-            <a ng-show="roster.owner_id == currentUser.id && roster.id != rosters.currentRoster.id" href="#/market/{{market.id}}/roster/{{rosters.currentRoster.id}}">View roster</a>
+            <a ng-show="roster.owner_id == currentUser.id && roster.id != rosters.currentRoster.id" href="#/market/{{market.id}}/roster/{{roster.id}}">View roster</a>
             <a ng-show="roster.owner_id != currentUser.id" href="#/market/{{market.id}}/roster/{{rosters.currentRoster.id}}/vs/{{roster.id}}">See their roster</a>
           </td>
         </tr>
@@ -51,14 +51,19 @@
     </table>
   </div>
 
+  <div class="entries-container">
+    <div class="roster-title my-roster-title">  
+      <h3 class="inline-heading"><span ng-show="rosters.currentRoster.owner_id == currentUser.id">Your Team</span><span ng-show="rosters.currentRoster.owner_id != currentUser.id">{{rosters.currentRoster.owner_name}}'s Team</span></h3>
+
+      <div class="salary-cap" ng-show="inThePast(market.started_at)" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}">
+        Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
+      </div>
+    </div>
+  </div>
+
   <div class="team-selection clearfix">
     <div ng-controller="IncludeController" ng-init="track({roster: 'rosters.currentRoster'})"><div ng-include="'/team.html'"></div></div>
     <div ng-show="rosters.opponentRoster" ng-controller="IncludeController" ng-init="track({roster: 'rosters.opponentRoster'})"><div ng-include="'/team.html'"></div></div>
     <div ng-hide="rosters.opponentRoster" ng-include="'/players.html'"></div>
-  </div>
-  
-  <div class="cta-container clearfix">
-    <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
-    <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.reset('/market/' + rosters.currentRoster.market_id)" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
   </div>
 </div>

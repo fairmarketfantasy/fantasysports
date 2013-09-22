@@ -413,11 +413,14 @@ header {
 .market-title {
   color: @white;
 }
+
 .roster-title {
   background-color: #e9e9e9;
   margin-bottom: 10px;
 }
-
+.my-roster-title {
+  margin-bottom: 0;
+}
 .market-list, .roster-list {
   list-style-type: none;
   width: 100%;
@@ -561,14 +564,11 @@ header {
 .players, .roster {
   width: 50%;
   float: left;
-  background-color: @gray;  
 }
 .players-area, .roster-area {
   padding: 10px 4%;
   width: 92%;
   height: 760px;
-}
-.players-area {
 }
 .player-overflow, .roster-overflow {
   background-color: @white;
@@ -603,28 +603,37 @@ header {
   color: @white;
   margin: 0 0 8px; 
 }
-.team-heading {
-  color: @white;
+.inline-heading {
   width: 40%;
   display: inline-block;
-  margin: 0 0 8px; 
   vertical-align: middle; 
+}
+.team-selection {
+  background-color: @gray;  
+  .border-radius(0 0 4px 4px);
+}
+.team-heading {
+  color: @white;
+  margin: 0 0 8px; 
 }
 .salary-cap {
   padding: 6px;
   .border-radius(4px);
   background-color: @green;
   color: @white;
+  width: 46%;
+  display: inline-block;
+  vertical-align: middle; 
+  margin: 6px 0 8px 12%; 
+  text-align: center;
+  height: 30px;
+  font-size: 20px;
+  line-height: 24px;
+}
+.score {
   height: 20px;
   font-size: 14px;
   line-height: 18px;
-  width: 55%;
-  display: inline-block;
-  vertical-align: middle; 
-  margin: 0 0 8px 0; 
-  text-align: center;
-}
-.score {
   width: 45%;
   margin: 0 0 8px 10%; 
   background-color: @white;
