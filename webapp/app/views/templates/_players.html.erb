@@ -35,7 +35,7 @@
                 <tr ng-repeat="player in players | filter:notInRoster">
                   <td class="larger">{{player.name}} 
                     <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
-                    <i ng-show="!player.status == 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
+                    <i ng-show="player.status != 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
                   </td>
                   <td class="tiny">{{player.position | dashIfDEF}}</td>
                   <td class="tiny">{{player.team}}</td>
@@ -50,6 +50,7 @@
             <div class="cta-container clearfix">
     <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
     <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.reset('/market/' + rosters.currentRoster.market_id)" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
+    <a class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Enter Again</a>
   </div>
         </div>
       </div>
