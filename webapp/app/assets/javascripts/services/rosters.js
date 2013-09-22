@@ -1,6 +1,7 @@
 angular.module('app.data')
   .factory('rosters', ['fs', '$q', '$location', 'flash', 'currentUserService', function(fs, $q, $location, flash, currentUserService) {
     var rosterData = {};
+    var myRosterStats = {};
     return new function() {
       var fetchRoster = function(id) {
       };
@@ -10,11 +11,26 @@ angular.module('app.data')
       this.justSubmittedRoster = null;
 
       // TODO: maybe make this the only public function for fetching mine?
+      // TODO: memoize this and myLiveStats
       this.mine = function() {
         return _.filter(rosterData, function(roster) {
           return roster.owner_id === window.App.currentUser.id;
         });
       };
+
+      this.myLiveStats = function() {
+        var stats = {top: 0, avg: 0, total_payout: 0, total_score: 0, count: 0};
+        _.each(this.mine(), function(roster) {
+          stats.count++;
+          stats.total_score += roster.score;
+          stats.total_payout += roster.contest_payout || 0;
+          if (roster.top < roster.score) {
+            stats.top = roster.score;
+          }
+        });
+        stats.avg = stats.total_score / stats.count;
+        return stats
+      }
 
       this.top = function(limit) {
         var top = _.sortBy(this.mine(), function(r) { return -r.score; });
@@ -152,7 +168,7 @@ angular.module('app.data')
 
       this.setPoller = function(fn, interval) {
         clearInterval(this.poller);
-        //this.poller = setInterval(fn, interval);
+        this.poller = setInterval(fn, interval);
       };
     }();
   }])
