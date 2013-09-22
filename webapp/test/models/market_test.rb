@@ -2,28 +2,67 @@ require 'test_helper'
 
 class MarketTest < ActiveSupport::TestCase
 
-  test "open if all games started" do
+  #Market.tend affects all markets at all stages.
+  test "tend calls all things on all markets" do
     setup_multi_day_market
+    Market.tend
+    assert_equal 'published', @market.reload.state
+    
+    #zero shadow bets should cause it to open
+    @market.shadow_bets = 0
+    @market.save!
+    Market.tend
+    assert_equal 'opened', @market.reload.state
 
-    @market.publish
-    assert_equal 'published', @market.state
-
-    #open does nothing because no one has bet
-    @market.open
-    assert_equal 'published', @market.state
-
-    #days pass, no one cares
+    #setting closed to before now should cause it to close
+    @market.closed_at = Time.now - 60
+    @market.save!
+    Market.tend
+    assert_equal 'closed', @market.reload.state
     @games.each do |game|
-      game.game_day = game.game_time = Time.now.yesterday
+      game.status = 'closed'
       game.save!
     end
+    Market.tend
+    assert_equal 'complete', @market.reload.state
+  end
 
-    @market.open
-    #because both games are over, it should open despite lack of bets
-    assert_equal 'opened', @market.state
+  test "accepting rosters" do
+    setup_simple_market
+    assert @market.accepting_rosters?
+    @market.state = 'opened'
+    assert @market.accepting_rosters?
+    @market.state = 'closed'
+    refute @market.accepting_rosters?
+  end
 
-    @market.close
-    assert_equal 'closed', @market.state
+  #publish: 
+  test "can only be published if state is empty or null" do
+    setup_multi_day_market
+    @market.publish
+    begin
+      @market.publish
+      flunk "already published"
+    rescue
+    end
+  end
+
+  test "publish also updates player's stats" do
+
+  end
+  #updates player stats
+  #sets shadow bets to 100k, should equal total bets, initial_shadow_bets
+  #only starts if there is at least one game
+  #removes all market players, market orders, and rosters
+  #creates market players. weights shadow bets by ppg
+  #sets state to published, price multiplier = 1, opened_at to earliest game,
+  #closed_at to latest game start times
+
+  test "publish sets opened and closed times" do
+    setup_multi_day_market
+    @market.publish
+    assert @market.opened_at - @games[0].game_time < 10
+    assert @market.closed_at - @games[1].game_time < 10
   end
 
   test "close on publish if all games started" do
@@ -37,6 +76,34 @@ class MarketTest < ActiveSupport::TestCase
     #because both games are over, should be closed
     assert_equal 'closed', @market.state
   end
+
+  test "players are locked when their game starts" do
+    setup_multi_day_market
+
+    #set half the games tomorrow and half for the day after
+    tomorrow, day_after = Time.now + 24*60*60, Time.now + 24*60*60*2
+    @games[0].game_day, @games[0].game_time = tomorrow, tomorrow
+    @games[1].game_day, @games[1].game_time = day_after, day_after
+    @games.each {|g| g.save!; g.reload}
+
+    #publish the market
+    @market.publish
+    assert @market.players.length == 36, "9*4=36"
+    #make sure that half are locked tomorrow and half the day after
+    locked_tomorrow = locked_day_after = 0
+    @market.market_players.each do |p|
+      if p.locked_at - tomorrow < 10
+        locked_tomorrow += 1
+      elsif p.locked_at - day_after < 10
+        locked_day_after += 1
+      else
+        flunk("p.locked_at: #{p.locked_at}")
+      end
+    end
+    assert locked_tomorrow == 18, "expected 18 locked tomorrow, but found #{locked_tomorrow}"
+    assert locked_day_after == 18, "18 locked the day after, #{locked_day_after}"
+  end
+
 
   test "close" do
     setup_simple_market
@@ -75,37 +142,22 @@ class MarketTest < ActiveSupport::TestCase
   end
 
 
-  # create a market that has three games at three different times.
-  # roster 1 buys some players. get the price of one of the players.
-  # game 1 starts, update market
-  # assert that the players available are only from the 2 remaining games
-  # assert that the prices
-  # roster 2 buys some players. repeat process
-  # test "players pulled out of markets when game happens" do
+  # lock_players removes players from the pool without affecting prices
+  # it does so by updating the price multiplier
   test "lock players" do
+
+    #setup a market and open it
     setup_multi_day_market
-    @market.shadow_bets, @market.shadow_bet_rate = 100, 1
+    @market.publish
+    @market.opened_at = Time.now - 60
     @market.save!
-    @market.publish.add_default_contests
-
-    assert_equal 100, @market.initial_shadow_bets
-    assert_equal 1, @market.shadow_bet_rate
-
-    #find a $10 contest_type in the market's contest types
-    contest_type = @market.contest_types.where(:buy_in => 1000).first
-    assert !contest_type.nil?, "contest type can't be nil"
+    @market.open
 
     #buy some players randomly. plenty of bets
-    20.times {
+    contest_type = @market.contest_types.first
+    10.times do
       create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
-    }
-
-    @market.reload
-
-    #open the market. ensure that shadow bets are removed
-    @market = @market.open
-    assert @market.shadow_bets == 0, "no shadow bets after open"
-    assert @market.state == "opened"
+    end
 
     #print out the current prices
     roster = create(:roster, :market => @market, :contest_type => contest_type)
@@ -131,113 +183,15 @@ class MarketTest < ActiveSupport::TestCase
 
     #buy more players randomly
     20.times {
-      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly
+      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
     }
 
     prices3 = roster.purchasable_players
     #see how much the mean price has changed
     avg2 = prices2.collect(&:buy_price).reduce(:+)/18
     avg3 = prices3.collect(&:buy_price).reduce(:+)/18
-    # puts "average price moved from #{avg2.round(2)} to #{avg3.round(2)}"
-    # assert (avg2-avg3).abs < 1000
-  end
-
-  test "publish open and close" do
-    setup_multi_day_market
-    assert_equal 0, @market.players.length
-
-    @market.shadow_bets = 100
-    @market.shadow_bet_rate = 1
-    @market.save!
-    
-    @market.publish.reload
-
-    assert_equal 36, @market.players.length
-    assert @market.contest_types.size > 0, "should be some contest_types"
-    assert @market.total_bets > 0
-    assert_equal @market.shadow_bets, @market.total_bets
-    assert @market.closed_at - @games[1].game_time - 5*60 < 60
-    #make sure all players have a locked_at time
-    assert 0, @market.players.where("locked_at is null").size
-
-    #open the market. should not remove the shadow bets and should not be open because not enough bets
-    @market = @market.open
-    assert_equal "published", @market.state
-    assert @market.shadow_bets > 0
-
-    #buy some crap and then the market can be opened.
-    contest_type = @market.contest_types.first
-    refute_nil contest_type
-    contest_type.buy_in = 100
-    contest_type.save!
-    5.times {
-      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
-    }
-
-    @market.open
-
-    # puts "market after open: #{@market.inspect}"
-    assert @market.shadow_bets == 0, "shadow bets #{@market.shadow_bets}, #{@market.total_bets}, #{@market.shadow_bet_rate}"
-    assert @market.total_bets > 0, "bets 0"
-    assert @market.state == "opened", "state is opened"
-
-    #close market
-    @market.close
-    @market.reload
-    assert_equal 'closed', @market.state, "should be closed, but is #{@market.state}"
-  end
-
-  test "publish detail" do
-    setup_multi_day_market
-
-    #set half the games tomorrow and half for the day after
-    tomorrow, day_after = Time.now + 24*60*60, Time.now + 24*60*60*2
-    @games[0].game_day, @games[0].game_time = tomorrow, tomorrow
-    @games[1].game_day, @games[1].game_time = day_after, day_after
-    @games.each {|g| g.save!; g.reload}
-
-    #publish the market
-    @market.publish
-    assert @market.players.length == 36, "9*4=36"
-    #make sure that half are locked tomorrow and half the day after
-    locked_tomorrow = locked_day_after = 0
-    @market.market_players.each do |p|
-      if p.locked_at - tomorrow < 10
-        locked_tomorrow += 1
-      elsif p.locked_at - day_after < 10
-        locked_day_after += 1
-      else
-        flunk("p.locked_at: #{p.locked_at}")
-      end
-    end
-    assert locked_tomorrow == 18, "expected 18 locked tomorrow, but found #{locked_tomorrow}"
-    assert locked_day_after == 18, "18 locked the day after, #{locked_day_after}"
-
-  end
-
-  test "tend works on new market" do
-    setup_simple_market
-    Market.tend_all
-  end
-
-  test "publish_all" do
-    
-  end
-
-  test "open" do
-    setup_simple_market
-    contest_type = @market.contest_types.where("buy_in = 1000 and max_entries = 2").first
-    @roster = create(:roster, :market => @market, :contest_type => contest_type, :remaining_salary => 100000)
-    @roster.fill_randomly
-    assert_equal @roster.contest_type.salary_cap - @roster.players_with_prices.sum{|p| p.buy_price }, @roster.remaining_salary, "in_progress remaining salary equals cap - buy prices in published market"
-    @roster.submit!
-    assert_equal @roster.contest_type.salary_cap - @roster.players_with_prices.sum{|p| p.buy_price }, @roster.remaining_salary, "submitted remaining salary equals cap - buy prices in published market"
-    @market.open
-    assert_equal @roster.contest_type.salary_cap - @roster.players_with_prices.sum{|p| p.purchase_price }.to_f, @roster.remaining_salary.to_f, "submitted remaining salary equals cap - purchase prices in opened market"
-  end
-
-  test "tabulate_all" do
-    
+    puts "average price moved from #{avg2.round(2)} to #{avg3.round(2)}"
+    assert (avg2-avg3).abs < 1000
   end
 
   test "lock_players_all" do
@@ -247,24 +201,14 @@ class MarketTest < ActiveSupport::TestCase
     over_game.game_day = Time.now.yesterday.beginning_of_day
     over_game.game_time = Time.now.yesterday
     over_game.save!
-    Market.tend_all
+    Market.tend
     over_game.teams.each do |team|
       assert MarketPlayer.where(:player_stats_id => team.players.map(&:stats_id)).all?{|mp| mp.locked? }
     end
     future_game.teams.each do |team|
       assert MarketPlayer.where(:player_stats_id => team.players.map(&:stats_id)).all?{|mp| !mp.locked? }
     end
-
   end
-
-  test "close_all" do
-    
-  end
-
-  test "complete_all" do
-    
-  end
-
 
   describe Market do
 
