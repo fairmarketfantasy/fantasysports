@@ -124,6 +124,10 @@ angular.module("app.controllers")
     return angular.element('#player-stats-content')[0].innerHTML;
   };
 
+  $scope.isInPlay = function(roster) {
+    return $scope.market.state != 'published' && roster.state != 'in_progress';
+  };
+
 }]);
 
 

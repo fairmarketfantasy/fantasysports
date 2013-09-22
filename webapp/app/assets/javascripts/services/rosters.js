@@ -1,7 +1,6 @@
 angular.module('app.data')
   .factory('rosters', ['fs', '$q', '$location', 'flash', 'currentUserService', function(fs, $q, $location, flash, currentUserService) {
     var rosterData = {};
-    var myRosterStats = {};
     return new function() {
       var fetchRoster = function(id) {
       };
@@ -23,8 +22,8 @@ angular.module('app.data')
         _.each(this.mine(), function(roster) {
           stats.count++;
           stats.total_score += roster.score;
-          stats.total_payout += roster.contest_payout || 0;
-          if (roster.top < roster.score) {
+          stats.total_payout += roster.contest_rank_payout || 0;
+          if (stats.top < roster.score) {
             stats.top = roster.score;
           }
         });
