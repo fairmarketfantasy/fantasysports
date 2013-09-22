@@ -36,7 +36,6 @@ class Roster < ActiveRecord::Base
 
     raise HttpException.new(409, "You may only have one roster in progress at a time.") if user.in_progress_roster
     raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
-    raise HttpException.new(402, "Insufficient funds") unless user.can_charge?(contest_type.buy_in)
 
     Roster.create!(
       :owner_id => user.id,
@@ -81,6 +80,7 @@ class Roster < ActiveRecord::Base
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!
     #buy all the players on the roster. This sql function handles all of that.
+    raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(contest_type.buy_in)
     self.transaction do
 
       #purchase all the players and update roster state to submitted
