@@ -152,7 +152,7 @@ angular.module('app.data')
 
       this.setPoller = function(fn, interval) {
         clearInterval(this.poller);
-        this.poller = setInterval(fn, interval);
+        //this.poller = setInterval(fn, interval);
       };
     }();
   }])
