@@ -15,7 +15,19 @@
                 <h3 class="mr-player-name" ng-show="player.id">{{player.name}} <small>({{player.team}} {{player.position}})</small></h3>
                 <h3 class="mr-player-name not-selected" ng-hide="player.id">{{player.position}} Not Selected</h3>
                 <span class="mr-stats" ng-show="player.id">PPG: {{player.ppg | zeroIfEmpty}}</span>
-                <span class="mr-stats" ng-show="player.id">${{player.sell_price | number:0}} (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">{{((player.sell_price - player.purchase_price) / player.purchase_price) * 100 | number:2}}%</span>)</span>
+                <span class="mr-stats" ng-show="player.id">
+                  <span ng-show="isInPlay(roster)">
+                    ${{player.sell_price | number:0}} 
+                  </span>
+                  <span ng-show="!isInPlay(roster)">
+                    ${{player.buy_price | number:0}} 
+                  </span>
+                  <span ng-show="market.state != 'published' && roster.state != 'in_progress'">
+                    (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">
+                    {{((player.sell_price - player.purchase_price) / player.purchase_price) * 100 | number:2}}%
+                    </span>)
+                  </span>
+                </span>
               </div>
               
               <div class="mr-player-cta">
