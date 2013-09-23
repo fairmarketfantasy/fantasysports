@@ -131,10 +131,14 @@ FactoryGirl.define do
   factory :customer_object do
     balance 10000
     token { generate(:random_string) }
+    after(:create) do |customer_object|
+      create(:credit_card, token: StripeMock.generate_card_token(last4: "4242", exp_year: 2017), customer_object: customer_object)
+    end
   end
 
   factory :credit_card do
     card_id { generate(:random_string) }
+    card_number '4242424242424242'
   end
 
   factory :recipient do

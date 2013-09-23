@@ -3,6 +3,7 @@ class CustomerObject < ActiveRecord::Base
   attr_protected
 
   belongs_to :user
+  has_many :credit_cards
 
   before_validation :set_stripe_id, on: :create
 
@@ -13,12 +14,8 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def set_stripe_id
-    unless token
-      raise ArgumentError, "Must supply a card token from stripe.js"
-    end
     resp = Stripe::Customer.create({
-                                      description: "Customer for #{user.email}",
-                                      card: token
+                                      description: "Customer for #{user.email}"
                                     })
     self.stripe_id = resp.id
   end
@@ -29,17 +26,6 @@ class CustomerObject < ActiveRecord::Base
 
   def default_card_id
     stripe_object.default_card
-  end
-
-  def add_a_card(token, card_number)
-    credit_card = CreditCard.new(customer_object_id: self.id, card_number: card_number)
-    if credit_card.save
-      stripe_card = stripe_object.cards.create({card: token})
-      credit_card.card_id = stripe_card.id
-      credit_card.save!
-    else
-      raise "Tried to save a credit card that is already in use."
-    end
   end
 
   def delete_card(card_id)

@@ -40,7 +40,7 @@ class CustomerObjectTest < ActiveSupport::TestCase
       describe "#increase_balance" do
 
         it "should increase by the amount" do
-          assert_difference("CustomerObject.find(#{customer_object.id}).balance", amt) do
+          assert_difference("customer_object.balance", amt) do
             assert_difference("TransactionRecord.count", 1) do
               customer_object.increase_balance(amt, 'deposit')
             end

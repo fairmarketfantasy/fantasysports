@@ -4,8 +4,9 @@
     <h3 ng-show="signInForm">Sign In</h3>
   </div>
   <div class='modal-body clearfix'>
-    <div class='alert alert-error' ng-show='errorMessage'>
-      {{ errorMessage }}
+    <div flash-alert active-class="alert in" class="flash fade" >
+      <strong class="alert-heading"></strong>
+      <span class="alert-message">{{flash.message}}</span>
     </div>
     <div class='modal-form-container'>
       <input type='text' placeholder='Name' ng-hide='signInForm' ng-model="user.name" class='mvm' /><br />
