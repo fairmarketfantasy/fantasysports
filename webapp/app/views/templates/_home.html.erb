@@ -29,16 +29,6 @@
 
   <a class="see-all" href="/#/rosters">See All Live Contests</a>
 
-  <ul class="roster-list clearfix hide">
-    <li class="market" ng-repeat="roster in rosters.top(3)">
-      <a href="#/market/{{roster.market_id}}/roster/{{roster.id}}" title="{{roster.contest_type.description}}">
-        {{roster.buy_in | centsToDollars }} {{roster.contest_type.name}} - 
-        <span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span>
-        <span ng-show="roster.live">Score: {{roster.score || 0 }}</span>
-        <span ng-show="roster.live">Place: {{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries}}</span>
-      </a>
-    </li>
-  </ul>
 </div>
 
 <div class="market-container" ng-class="{ roundTop: !rosters.top(3).length }">
