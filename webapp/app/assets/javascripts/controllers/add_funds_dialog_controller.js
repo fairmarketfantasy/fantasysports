@@ -65,6 +65,7 @@ angular.module("app.controllers")
         }
       });
     } else {
+      $scope.saveCardSpinner = false;
       flash.error = stripeResp.error.message;
     }
   };
@@ -78,7 +79,7 @@ angular.module("app.controllers")
       $scope.cvcError = true;
       flash.error = "CVC code doesn't look right";
       return false;
-    } else if(cardInfo.address_zip.length !== 5){
+    } else if(cardInfo.address_zip && cardInfo.address_zip.length !== 5){
       flash.error = "Zip code doesn't look right";
       return false;
     } else {

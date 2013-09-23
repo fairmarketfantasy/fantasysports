@@ -10,15 +10,15 @@ class CardsController < ApplicationController
 
   def create
     begin
-      if customer_object = current_user.customer_object
-        customer_object.add_a_card(params[:token], params[:card_number])
-      else
-        customer_object = CustomerObject.create!(user: current_user, token: params[:token])
+      unless customer_object = current_user.customer_object
+        customer_object = CustomerObject.create!(user: current_user)
       end
+      customer_object.credit_cards.create(token: params[:token], card_number: params[:card_number])
       render_api_response customer_object.reload
     rescue => e
-      msg = e.try(:message)
-      render json: {error: msg || e}, status: :unprocessable_entity
+      raise e
+      # msg = e.try(:message)
+      # render json: {error: msg || e}, status: :unprocessable_entity
     end
   end
 

@@ -1,15 +1,12 @@
 angular.module("app.controllers")
-.controller('SignUpDialogController', ['$scope', 'dialog', 'fs', function($scope, dialog, fs) {
+.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', function($scope, dialog, flash, fs) {
   $scope.user = $scope.user || {};
   $scope.signInForm = false;
 
   $scope.signUp = function() {
     fs.user.create($scope.user).then(function(resp){
-      if(resp.error){
-        $scope.errorMessage = resp.error[0];
-      } else {
-        window.location.reload(true);
-      }
+      //only fires on success, errors are intercepted by fsAPIInterceptor
+      window.location.reload(true);
     });
   };
 

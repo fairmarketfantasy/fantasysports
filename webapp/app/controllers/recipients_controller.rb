@@ -11,11 +11,11 @@ class RecipientsController < ApplicationController
       if recipient.save
         render_api_response recipient
       else
-        render json: {errors: recipient.errors.full_messages}
+        render json: {error: recipient.errors.full_messages}
       end
     rescue => e
       msg = e.try(:message)
-      render json: {errors: Array(msg || e)}
+      render json: {error: Array(msg || e)}
     end
   end
 
@@ -25,7 +25,7 @@ class RecipientsController < ApplicationController
       current_user.recipient.delete
       render_api_response current_user.reload
     else
-      render json: {errors: ["There was a problem deleting that bank account, refresh and try again."]}
+      render json: {error: ["There was a problem deleting that bank account, refresh and try again."]}
     end
   end
 
