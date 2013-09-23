@@ -8,15 +8,14 @@
   <img src='/assets/ajax-loader-big.gif'>
 </div>
 <div class='modal-body' ng-show='loaded'>
-  <div class='alert alert-error' ng-show='errorMessage'>
-  <div class='pull-right muted clickable' ng-click='errorMessage = null'> x </div>
-    {{ errorMessage }}
-  </div>
-  <div class='alert alert-success' ng-show='successMessage'>
-    <div class='pull-right muted clickable' ng-click='successMessage = null'> x </div>
-    {{ successMessage }}
+  <div flash-alert active-class="alert in" class="flash fade" >
+    <strong class="alert-heading"></strong>
+    <span class="alert-message">{{flash.message}}</span>
   </div>
   <div ng-show='!currentUser.confirmed'>
+    <div class='alert alert-error'>
+      In order with withdraw funds, you must first confirm your email address.
+    </div>
     <a href="javascript://" ng-click='resendConfirmation()'>Click here</a> to re-send the confirmation email.
   </div>
   <div ng-show='showAddNewAccount()'>

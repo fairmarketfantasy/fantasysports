@@ -10,11 +10,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
         render :json => resource, status: :created
       else
         expire_session_data_after_sign_in!
-        render :json => {error: resource.errors.full_messages}, status: :ok
+        render :json => {error: resource.errors.full_messages.first}, status: :unprocessable_entity
       end
     else
       clean_up_passwords resource
-      render :json => {error: resource.errors.full_messages}, status: :ok
+      render :json => {error: resource.errors.full_messages.first}, status: :unprocessable_entity
     end
   end
 

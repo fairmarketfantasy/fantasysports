@@ -1,3 +1,13 @@
+GIT
+  remote: git://github.com/MustWin/stripe-ruby-mock
+  revision: 648d725473c9c157491de1ac6e50643bd3140447
+  ref: 648d725473c9c157491de1ac6e50643bd3140447
+  specs:
+    mustwin-stripe-ruby-mock (1.8.5.00)
+      dante (>= 0.1.5)
+      jimson-temp
+      stripe (>= 1.8.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -128,10 +138,6 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.7.9)
     multipart-post (1.2.0)
-    mustwin-stripe-ruby-mock (1.8.5.00)
-      dante (>= 0.1.5)
-      jimson-temp
-      stripe (>= 1.8.4)
     mustwin_devise_oauth2_providable (1.1.5)
       devise (>= 3.0.0)
       protected_attributes
@@ -182,6 +188,8 @@ GEM
       slop (~> 3.4)
     puma (2.5.1)
       rack (>= 1.1, < 2.0)
+    quiet_assets (1.0.2)
+      railties (>= 3.1, < 5.0)
     rack (1.5.2)
     rack-oauth2 (1.0.5)
       activesupport (>= 2.3)
@@ -263,7 +271,7 @@ DEPENDENCIES
   kaminari
   less-rails
   mocha
-  mustwin-stripe-ruby-mock (>= 1.8.5.00)
+  mustwin-stripe-ruby-mock!
   mustwin_devise_oauth2_providable (= 1.1.5)
   nokogiri
   omniauth
@@ -272,6 +280,7 @@ DEPENDENCIES
   protected_attributes
   pry
   puma
+  quiet_assets
   rails (= 4.0.0)
   stripe
   therubyracer

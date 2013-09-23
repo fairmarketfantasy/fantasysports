@@ -19,10 +19,6 @@ angular.module("app.controllers")
     return !$scope.recipient && $scope.currentUser.confirmed;
   };
 
-  if(!$scope.currentUser.confirmed){
-    $scope.errorMessage = "In order with withdraw funds, you must first confirm your email address.";
-  }
-
   fs.recipients.list().then(function(resp){
     $scope.recipient = resp[0];
     $scope.loaded    = true;
@@ -41,12 +37,13 @@ angular.module("app.controllers")
           $scope.errorMessage = resp.errors[0];
         } else {
           $scope.focusAmount = true;
-          $scope.successMessage = "Success, your bank account has been added.";
+          flash.success = "Success, your bank account has been added.";
           $scope.recipient = resp;
         }
       });
     } else {
-      $scope.errorMessage = resp.error.message;
+      $scope.saveAcctSpinner = false;
+      flash.error = stripeResp.error.message;
     }
   };
 
@@ -68,7 +65,7 @@ angular.module("app.controllers")
       if(resp.errors){
         $scope.errorMessage = resp.errors[0];
       } else {
-        $scope.successMessage = "Success, your bank account has been deleted. Add a new one:";
+        flash.success = "Success, your bank account has been deleted. Add a new one:";
         $scope.recipient = null;
       }
     })
