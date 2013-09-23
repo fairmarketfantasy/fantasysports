@@ -1,6 +1,6 @@
 namespace :deploy do
   # Put tasks that need to be done at deploy time here
-  task :do => ['deploy:create_oauth_client', 'assets:precompile', 'db:setup_functions'] do
+  task :do => ['db:seed', 'deploy:create_oauth_client', 'assets:precompile', 'db:setup_functions'] do
     true
   end
 

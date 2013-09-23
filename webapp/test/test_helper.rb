@@ -1,5 +1,6 @@
 ENV["RAILS_ENV"] ||= "test"
 require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../../db/seeds', __FILE__)
 require 'rails/test_help'
 require 'minitest/spec'
 require 'minitest/autorun'
@@ -72,9 +73,12 @@ class ActiveSupport::TestCase
     @team1 = create :team1
     @team2 = create :team2
     @game = create :game
-    @players = Positions.default_NFL.split(',').each do |position|
+    @players = []
+    Positions.default_NFL.split(',').each do |position|
       player = create :player, :team => @team1, :position => position
+      @players << player
       player = create :player, :team => @team2, :position => position
+      @players << player
     end
     @market = create :new_market
     GamesMarket.create(market_id: @market.id, game_stats_id: @game.stats_id)
@@ -228,8 +232,8 @@ FactoryGirl.define do
     max_entries 100
     salary_cap 100000
     buy_in 1000
-    rake 1
-    payout_structure 'some payout structure'
+    rake 0.05
+    payout_structure '[95000]'
     payout_description 'some payout description'
   end
 end

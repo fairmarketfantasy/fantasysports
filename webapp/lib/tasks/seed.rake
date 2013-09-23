@@ -23,6 +23,7 @@ namespace :seed do
     ActiveRecord::Base.load_sql_file File.join(Rails.root, 'db', 'reload.sql')
     `rake db:migrate`
     `rake db:setup_functions`
+    `rake db:seed`
     `rake deploy:create_oauth_client`
     `rake seed:tend_markets_once`
   end

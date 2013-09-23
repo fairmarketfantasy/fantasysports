@@ -282,7 +282,7 @@ type StatEvent struct {
 	Id            int
 	GameStatsId   string `model:"key"`
 	PlayerStatsId string `model:"key"`
-	Type          string `model:"key"`
+	Activity      string `model:"key"`
 	Data          string
 	//  PointType string
 	PointValue float64

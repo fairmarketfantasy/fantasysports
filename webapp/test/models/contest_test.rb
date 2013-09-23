@@ -4,7 +4,7 @@ class ContestTest < ActiveSupport::TestCase
 
   test "payday" do
     setup_simple_market
-    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 200").first
+    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 100").first
     refute_nil contest_type
 
     user1 = create(:user)
@@ -22,7 +22,14 @@ class ContestTest < ActiveSupport::TestCase
     roster1.save!
     roster2.save!
 
-    roster1.contest.payday!
+    total_payout = contest_type.get_payout_structure.sum
+    rake = total_payout * contest_type.rake
+    assert_difference 'user1.customer_object.reload.balance', contest_type.buy_in * 2 - 2 * contest_type.buy_in * contest_type.rake do
+      assert_difference 'user2.customer_object.reload.balance', 0 do
+        roster1.contest.payday!
+      end
+    end
+    assert_equal roster1.contest.rake_amount.to_f, TransactionRecord.where(:event => 'rake', :contest_id => roster1.contest_id).first.amount.to_f
     user1.reload
     user2.reload
     assert user1.customer_object.balance > user2.customer_object.balance
@@ -38,7 +45,8 @@ class ContestTest < ActiveSupport::TestCase
 
   #test auxillary functions
   test "payday auxillary functions" do
-    contest_type = create(:contest_type, :payout_structure => [5,4,3,2,1].to_json)
+    contest_type = create(:contest_type, :payout_structure => [5,4,3,2,1].to_json, :rake => 0.25, :buy_in => 2, :max_entries => 10 # Make the validator happy
+                         )
     ranks = [1,1,3,3,5,5,5,8,9,10]
     rank_payment = contest_type.rank_payment(ranks)
     expected = {1 => 9, 3 => 5, 5 => 1}
