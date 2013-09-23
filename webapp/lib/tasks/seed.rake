@@ -28,7 +28,7 @@ namespace :seed do
   end
 
   task :tend_markets_once => :environment do
-    Market.tend_all
+    Market.tend
   end
 
   namespace :nfl do

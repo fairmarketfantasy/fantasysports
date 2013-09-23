@@ -2,6 +2,7 @@ angular.module("app.controllers")
 .controller('RosterHistoryController', ['$scope', 'rosters', 'markets', 'flash', function($scope, rosterService, markets, flash) {
   rosterService.setPoller(null);
   $scope.rosterService = rosterService;
+  $scope.history = true;
   $scope.showMore = true;
   var page = 1;
   $scope.rosterList = [];

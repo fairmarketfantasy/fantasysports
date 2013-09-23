@@ -46,8 +46,7 @@ Fantasysports::Application.routes.draw do
       get 'mine', :action => 'mine'
       get 'in_contest/:contest_id', :action => 'in_contest'
     end
-    member do
-      post 'submit', :action => 'submit'
+    member do post 'submit', :action => 'submit'
       post 'add_player/:player_id', :action => 'add_player'
       post 'remove_player/:player_id', :action => 'remove_player'
     end

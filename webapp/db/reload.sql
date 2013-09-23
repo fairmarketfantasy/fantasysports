@@ -48629,12 +48629,12 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: mike
+-- Name: public; Type: ACL; Schema: -; Owner: fantasysports
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM mike;
-GRANT ALL ON SCHEMA public TO mike;
+REVOKE ALL ON SCHEMA public FROM fantasysports;
+GRANT ALL ON SCHEMA public TO fantasysports;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 

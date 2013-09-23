@@ -340,8 +340,8 @@ BEGIN
 			players.stats_id = total_games.player_stats_id;
 
 	--check that shadow_bets is something reasonable
-	IF _market.shadow_bets = 0 THEN
-		RAISE NOTICE 'shadow bets is 0, setting to 1000';
+	IF _market.shadow_bets <= 1000 THEN
+		RAISE NOTICE 'shadow bets is too small, setting to 100000';
 		UPDATE markets set shadow_bets = 100000 where id = _market_id;
 	END IF;
 
@@ -397,12 +397,17 @@ BEGIN
 	UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets WHERE market_id = _market_id;
 
 	--set market to published. reset closed_at time, in case the game time has moved since the market was created
-	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = 1,
-	 	closed_at = 
-	 		(select max(g.game_time) - INTERVAL '5m' from games g 
- 			JOIN games_markets gm on g.stats_id = gm.game_stats_id 
- 			where gm.market_id = _market_id)
-		WHERE id = _market_id returning * into _market;
+	WITH game_times as ( 
+		SELECT 
+			min(g.game_time) - INTERVAL '5m' as min_time,
+			max(g.game_time) - INTERVAL '5m' as max_time
+		FROM games g 
+		JOIN games_markets gm on g.stats_id = gm.game_stats_id 
+		WHERE gm.market_id = _market_id
+	) UPDATE markets SET opened_at = min_time, closed_at = max_time,
+		state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = 1
+		FROM game_times
+		WHERE id = _market_id;
 
 	RAISE NOTICE 'published market %', _market_id;
 END;
@@ -410,25 +415,58 @@ $$ LANGUAGE plpgsql;
 
 ---------------------------------- open market --------------------------------------
 
---if given a published market, updates shadow bets as appropriate.
--- if the shadow-bets drop to zero, or the open time is due, it formally opens the market
+-- a market should be opened when the shadow bets hit zero or the first game starts
 DROP FUNCTION open_market(integer);
 
 CREATE OR REPLACE FUNCTION open_market(_market_id integer) RETURNS VOID AS $$
 DECLARE
-	_real_bets numeric;
 	_market markets;
-	_new_shadow_bets numeric := 0;
 	_price numeric;
 	_market_player market_players;
-	_roster_id integer;
 BEGIN
 	--ensure that the market exists and may be opened
-	SELECT * FROM markets WHERE id = _market_id AND state = 'published' FOR UPDATE into _market;
+	SELECT * FROM markets WHERE id = _market_id AND state = 'published' 
+		AND (shadow_bets = 0 OR opened_at < CURRENT_TIMESTAMP) FOR UPDATE into _market;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % is not openable', _market_id;
 	END IF;
 
+	RAISE NOTICE 'opening market %', _market_id;
+
+	--update purchase price for all orders yet placed - in both market_order and rosters_players
+    FOR _market_player IN SELECT * FROM market_players WHERE market_id = _market_id LOOP
+    	SELECT price(_market_player.bets, _market.total_bets, 0, _market.price_multiplier) INTO _price;
+    	UPDATE rosters_players SET purchase_price = _price WHERE player_id = _market_player.player_id;
+    	UPDATE market_orders SET price = _price WHERE player_id = _market_player.player_id;
+    END LOOP;
+
+    --update the remaining salary for all rosters in the market
+    UPDATE rosters set remaining_salary = 100000 - 
+    	(SELECT sum(purchase_price) FROM rosters_players WHERE roster_id = rosters.id) 
+    	WHERE market_id = _market_id;
+
+	UPDATE markets SET state='opened', opened_at = CURRENT_TIMESTAMP WHERE id = _market_id;
+
+END;
+$$ LANGUAGE plpgsql;
+
+---------------------------------- REMOVE SHADOW BETS  --------------------------------------
+
+--removes shadow bets from a market proportional to how many real bets have been placed.
+DROP FUNCTION remove_shadow_bets(integer);
+
+CREATE OR REPLACE FUNCTION remove_shadow_bets(_market_id integer) RETURNS VOID AS $$
+DECLARE
+	_real_bets numeric;
+	_market markets;
+	_new_shadow_bets numeric;
+BEGIN
+	--ensure that the market exists and may be opened
+	SELECT * FROM markets WHERE id = _market_id AND state in ('published', 'opened') AND shadow_bets > 0
+		FOR UPDATE into _market;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'cannot remove shadow bets from market %', _market_id;
+	END IF;
 
 	--adjust shadow bets:
 	--if it's time to open the market, simply remove remaining shadow bets
@@ -438,52 +476,17 @@ BEGIN
 	_real_bets = _market.total_bets - _market.shadow_bets;
 	_new_shadow_bets = GREATEST(0, _market.initial_shadow_bets - _real_bets * _market.shadow_bet_rate);
 
-	--if the market is published but all games have started, open it so that we can close it properly
-	PERFORM 1 FROM games_markets gm JOIN games g on g.stats_id = gm.game_stats_id
-		WHERE market_id = _market_id AND g.game_time > CURRENT_TIMESTAMP;
-	IF NOT FOUND THEN
-		_new_shadow_bets = 0;
-	END IF;
-
-	--don't bother with the update if the change is miniscule
-	IF _new_shadow_bets != 0 AND _market.shadow_bets - _new_shadow_bets < 10 THEN
+	--if no change, then return
+	IF _market.shadow_bets - _new_shadow_bets = 0 THEN
 		RETURN;
 	END IF;
 
-	IF _new_shadow_bets = 0 THEN
-		RAISE NOTICE 'opening market %', _market_id;
-
-		--remove all shadow bets from the market
-		UPDATE markets SET shadow_bets = 0, total_bets = _real_bets,
-			state='opened', opened_at = CURRENT_TIMESTAMP WHERE id = _market_id;
-
-		--remove shadow bets from all players in the market
-		UPDATE market_players SET bets = bets-shadow_bets, shadow_bets = 0 WHERE market_id = _market_id;
-
-		--update purchase price for all orders yet placed - in both market_order and rosters_players
-	    FOR _market_player IN SELECT * FROM market_players WHERE market_id = _market_id LOOP
-	    	SELECT price(_market_player.bets, _market.total_bets, 0, _market.price_multiplier) INTO _price;
-	    	UPDATE rosters_players SET purchase_price = _price WHERE player_id = _market_player.player_id;
-	    	UPDATE market_orders SET price = _price WHERE player_id = _market_player.player_id;
-	    END LOOP;
-
-	    --update the remaining salary for all rosters in the market
-	    UPDATE rosters set remaining_salary = 100000 - 
-	    	(SELECT sum(purchase_price) FROM rosters_players WHERE roster_id = rosters.id) 
-	    	WHERE market_id = _market_id;
-
-	ELSE
-		RAISE NOTICE 'updating published market to % shadow bets', _new_shadow_bets;
-		UPDATE markets SET shadow_bets = _new_shadow_bets, total_bets = _real_bets + _new_shadow_bets WHERE id = _market_id;
-		UPDATE market_players SET
-			bets = (bets - shadow_bets) + (initial_shadow_bets / _market.initial_shadow_bets) * _new_shadow_bets,
-			shadow_bets = (initial_shadow_bets / _market.initial_shadow_bets) * _new_shadow_bets
-		where market_id = _market_id;
-	END IF;
-
-	--return the market -- in whatever state
-	SELECT * FROM markets WHERE id = _market_id INTO _market;
-
+	UPDATE markets SET shadow_bets = _new_shadow_bets, total_bets = _real_bets + _new_shadow_bets 
+		WHERE id = _market_id;
+	UPDATE market_players SET
+		bets = bets - shadow_bets + (initial_shadow_bets / _market.initial_shadow_bets) * _new_shadow_bets,
+		shadow_bets = (initial_shadow_bets / _market.initial_shadow_bets) * _new_shadow_bets
+		WHERE market_id = _market_id;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -499,7 +502,7 @@ DECLARE
 	_now timestamp;
 BEGIN
 	--ensure that the market exists and may be closed
-	PERFORM id FROM markets WHERE id = _market_id AND (state = 'opened' OR state = 'published') FOR UPDATE;
+	PERFORM id FROM markets WHERE id = _market_id AND state = 'opened' FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % not found', _market_id;
 	END IF;
