@@ -18,7 +18,7 @@ class CardsController < ApplicationController
       render_api_response customer_object.reload
     rescue => e
       msg = e.try(:message)
-      render json: {error: msg || e}, status: :ok
+      render json: {error: msg || e}, status: :unprocessable_entity
     end
   end
 

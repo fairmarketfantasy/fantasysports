@@ -8,7 +8,7 @@ angular.module("app.controllers")
   fs.cards.list().then(function(resp){
     $scope.cards = resp.cards || [];
     if(!$scope.cards.length){
-      $scope.errorMessage = "You don't have any cards, add one.";
+      flash.error = "You don't have any cards, add one.";
     } else {
       $scope.focusAmount = true;
     }
@@ -54,32 +54,32 @@ angular.module("app.controllers")
       fs.cards.create(token, cardNumber).then(function(resp){
         $scope.saveCardSpinner = false;
         if(resp.error){
-          $scope.errorMessage = resp.error;
+          flash.error = resp.error;
         } else {
           $scope.cards = resp.cards || [];
           setSelectedCardId();
           $scope.cardInfo = {};
           $scope.showCardForm = false;
           $scope.focusAmount = true;
-          $scope.successMessage = "Success, your card was saved.";
+          flash.success = "Success, your card was saved.";
         }
       });
     } else {
-      $scope.errorMessage = stripeResp.error.message;
+      flash.error = stripeResp.error.message;
     }
   };
 
   var localChecks = function(cardInfo){
     if(!Stripe.card.validateCardNumber(cardInfo.number)){
       $scope.cardNumError = true;
-      $scope.errorMessage = "This card number looks invalid";
+      flash.error = "This card number looks invalid";
       return false;
     }else if(!Stripe.card.validateCVC(cardInfo.cvc)){
       $scope.cvcError = true;
-      $scope.errorMessage = "CVC code doesn't look right";
+      flash.error = "CVC code doesn't look right";
       return false;
     } else if(cardInfo.address_zip.length !== 5){
-      $scope.errorMessage = "Zip code doesn't look right";
+      flash.error = "Zip code doesn't look right";
       return false;
     } else {
       return true;
@@ -87,8 +87,6 @@ angular.module("app.controllers")
   };
 
   $scope.saveCard = function(){
-    $scope.errorMessage   = null;
-    $scope.successMessage = null;
     $scope.saveCardSpinner = true;
     if(!localChecks($scope.cardInfo)){
       $scope.saveCardSpinner = false;
