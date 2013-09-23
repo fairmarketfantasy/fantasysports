@@ -22,7 +22,7 @@
       <span class="ei-info">Average Score</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">{{rosters.myLiveStats().total_payout | centsToDollars}}</p>
+      <p class="ei-number">{{rosters.myLiveStats().total_payout | centsToDollars | number: 2 | zeroIfEmpty}}</p>
       <span class="ei-info">Current Payout</span>
     </li>
   </ul>
