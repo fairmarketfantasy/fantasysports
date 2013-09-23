@@ -55,11 +55,14 @@ group :test do
   gem 'pry'
   gem 'factory_girl'
   gem "factory_girl_rails", "~> 4.0"
-  gem 'mustwin-stripe-ruby-mock', '>= 1.8.5.00'
+  # gem 'mustwin-stripe-ruby-mock', '>= 1.8.5.00'
+  # gem 'mustwin-stripe-ruby-mock', path: '/Users/dylan/code/stripe-ruby-mock'
+  gem 'mustwin-stripe-ruby-mock', git: 'git://github.com/MustWin/stripe-ruby-mock', ref: '648d725473c9c157491de1ac6e50643bd3140447'
 end
 
 group :development do
   gem 'pry'
+  gem 'quiet_assets'
 end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
