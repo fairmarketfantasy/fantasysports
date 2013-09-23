@@ -20,8 +20,12 @@ PODS:
     - ISO8601DateFormatter (~> 0.6)
     - JSONKit (~> 1.5pre)
     - SecureUDID (~> 1.1)
+    - sqlite3 (~> 3.8.0.2)
   - SecureUDID (1.1)
   - SparkInspector (1.0.12)
+  - sqlite3 (3.8.0.2):
+    - sqlite3/common
+  - sqlite3/common (3.8.0.2)
 
 DEPENDENCIES:
   - Reachability (~> 3.0.0)
@@ -40,8 +44,9 @@ SPEC CHECKSUMS:
   ISO8601DateFormatter: 077ce9d8cfba171bc1ced6cba0d2ae4aefab7619
   JSONKit: 409734ab3407fce90ef7eaa95d7168f38d9a6601
   Reachability: 500bd76bf6cd8ff2c6fb715fc5f44ef6e4c024f2
-  SBData: b5b3d8d09a2a8d8638fad83f68390cf527af6140
+  SBData: 84cdf6a4cc52adcfa4f1b2e91a5d1d6a28470ff7
   SecureUDID: f29e17c7fc56968b6c42ce328b901a9fec87bb44
   SparkInspector: 217a5276cd35ba6db71578147f95734797b71710
+  sqlite3: da2547a00213287224486db2893bb9c181c6f8d2
 
 COCOAPODS: 0.19.1
