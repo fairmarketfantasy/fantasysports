@@ -13,7 +13,7 @@ class Roster < ActiveRecord::Base
 
   validates :owner_id, :market_id, :buy_in, :remaining_salary, :contest_type_id, :state, presence: true
 
-  before_destroy :cleanup
+  before_destroy :pre_destroy
 
   scope :finished, -> { where(state: ['finished'])}
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
@@ -151,12 +151,6 @@ class Roster < ActiveRecord::Base
   end
 
   def cleanup
-    self.with_lock do
-      if self.state == 'submitted'
-        self.owner.customer_object.increase_balance(self.buy_in, 'cancelled_roster', self.id, self.contest_id)
-      end
-      Roster.find_by_sql("select * from cancel_roster(#{self.id})")
-    end
   end
 
   def live?
@@ -195,6 +189,24 @@ class Roster < ActiveRecord::Base
       self.add_player(player)
     end
     self.reload 
+  end
+  
+  def pre_destroy
+    Roster.find_by_sql("select * from cancel_roster(#{self.id})")
+  end
+
+  def cancel!(reason)
+    self.with_lock do
+      if self.state == 'submitted'
+        self.owner.customer_object.increase_balance(self.buy_in, 'cancelled_roster', self.id, self.contest_id)
+        self.contest_id = nil
+        self.state = 'cancelled'
+        self.cancelled = true
+        self.cancelled_at = Time.new
+        self.cancelled_cause = reason
+        self.save!
+      end
+    end
   end
 
 end
