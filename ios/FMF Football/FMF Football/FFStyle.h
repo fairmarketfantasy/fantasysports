@@ -20,6 +20,7 @@
 + (UIColor *)lightGrey;
 + (UIColor *)black;
 + (UIColor *)brightRed;
++ (UIColor *)yellowErrorColor;
 
 + (UIFont *)blockFont:(int)size;
 + (UIFont *)regularFont:(int)size;

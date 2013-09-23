@@ -65,6 +65,11 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return [UIColor colorWithRed:190.0/255.0 green:30.0/255.0 blue:45.0/255.0 alpha:1];
 }
 
++ (UIColor *)yellowErrorColor
+{
+    return [UIColor yellowColor]; // TODO: this
+}
+
 // FONTS ---------------------------------------------------------------------------------------------------------------
 
 + (UIFont *)blockFont:(int)size
