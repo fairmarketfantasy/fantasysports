@@ -9,13 +9,13 @@ class RecipientsController < ApplicationController
     begin
       recipient = Recipient.new(recipient_params.merge!(user: current_user))
       if recipient.save
-        render_api_response recipient
+        render_api_response recipient, status: :ok
       else
-        render json: {error: recipient.errors.full_messages}
+        render json: {error: recipient.errors.full_messages.first}, status: :unprocessable_entity
       end
     rescue => e
       msg = e.try(:message)
-      render json: {error: Array(msg || e)}
+      render json: {error: Array(msg || e)}, status: :unprocessable_entity
     end
   end
 

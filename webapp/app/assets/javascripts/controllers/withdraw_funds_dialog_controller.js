@@ -33,13 +33,9 @@ angular.module("app.controllers")
       $scope.newRecipient.token = stripeResp['id'];
       fs.recipients.create($scope.newRecipient).then(function(resp){
         $scope.saveAcctSpinner = false;
-        if(resp.errors){
-          $scope.errorMessage = resp.errors[0];
-        } else {
-          $scope.focusAmount = true;
-          flash.success = "Success, your bank account has been added.";
-          $scope.recipient = resp;
-        }
+        $scope.focusAmount = true;
+        flash.success = "Success, your bank account has been added.";
+        $scope.recipient = resp;
       });
     } else {
       $scope.saveAcctSpinner = false;
@@ -62,12 +58,8 @@ angular.module("app.controllers")
 
   $scope.deleteRecipient = function(){
     fs.recipients.delete().then(function(resp){
-      if(resp.errors){
-        $scope.errorMessage = resp.errors[0];
-      } else {
-        flash.success = "Success, your bank account has been deleted. Add a new one:";
-        $scope.recipient = null;
-      }
+      flash.success = "Success, your bank account has been deleted. Add a new one:";
+      $scope.recipient = null;
     })
   };
 
