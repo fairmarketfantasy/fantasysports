@@ -20,16 +20,21 @@
 {
     self = [super init];
     if (self) {
-        self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 95)];
+        self.view.frame = CGRectMake(0, 0, 320, 95);
+        
         UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 320, 15)];
         lab.text = NSLocalizedString(@"Real-Time Market Rates", nil);
         lab.font = [FFStyle lightFont:17];
         lab.textColor = [FFStyle white];
         lab.backgroundColor = [UIColor clearColor];
+        
+        self.errorLabel.frame = CGRectMake(10, 0, 300, 95);
+        self.loadingLabel.frame = CGRectMake(42, 0, 300, 95);
+        self.activityIndicator.frame = CGRectMake(18, 43, 10, 10);
+        
         [self.view addSubview:lab];
         
         self.collectionView.frame = CGRectMake(0, 30, 320, 65);
-        [self.view addSubview:self.collectionView];
         [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"MaxCell"];
     }
     return self;
