@@ -172,7 +172,7 @@ class RosterTest < ActiveSupport::TestCase
     end
     assert_equal  initial_balance - 1000, user.customer_object.reload.balance
     assert_difference("TransactionRecord.count", 1) do
-      roster.destroy
+      roster.cancel!('test')
     end
     assert_equal  initial_balance, user.customer_object.reload.balance
 

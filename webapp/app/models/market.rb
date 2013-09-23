@@ -119,8 +119,7 @@ class Market < ActiveRecord::Base
       raise "cannot close if state is not open" if state != 'opened' 
 
       #cancel all un-submitted rosters
-      self.rosters.where("state != 'submitted'").update_all(["cancelled = true, cancelled_at = ?,
-       cancelled_cause='un-submitted before market closed'", Time.now])
+      self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
 
       #re-allocate rosters in under-subscribed private contests to public contests
       self.contests.where("invitation_code is not null and num_rosters < user_cap").find_each do |contest|
@@ -134,8 +133,7 @@ class Market < ActiveRecord::Base
 
       #cancel rosters in contests that are not full
       self.contests.where("num_rosters < user_cap").find_each do |contest|
-        contest.rosters.update_all("contest_id = null, cancelled = true, 
-          cancelled_cause = 'contest under-subscribed', cancelled_at = '#{Time.now}', state = 'cancelled'")
+        contest.rosters.each{|r| r.cancel!('contest under-subscribed') }
         contest.destroy!
       end
 

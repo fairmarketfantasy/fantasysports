@@ -50,6 +50,7 @@ class RostersController < ApplicationController
 
   def destroy
     roster = Roster.where(["owner_id = ? AND id = ? and state = 'in_progress'", current_user.id, params[:id]]).first
+    roster.cancel!("cancelled by user")
     roster.destroy!
     render :nothing => true, :status => :ok
   end
