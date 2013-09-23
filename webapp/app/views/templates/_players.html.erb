@@ -33,7 +33,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="player in players | filter:notInRoster">
-                  <td class="larger">{{player.name}} 
+                  <td class="larger">{{player.name_abbr}} 
                     <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
                     <i ng-show="player.status != 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
                   </td>
