@@ -31,7 +31,7 @@ angular.module('app.directives')
 }]);
 
 /*
-<ul class="my-roster-list" highlight-changes-in-list="rosters.currentRoster.players" key-to-watch="score">
+<ul class="no-no" highlight-changes-in-list="rosters.currentRoster.players" key-to-watch="score">
   <li class="mr-item clearfix" ng-repeat="player in rosters.currentRoster.players">
     blah
   </li>

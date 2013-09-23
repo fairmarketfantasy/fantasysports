@@ -2,112 +2,29 @@
 @import "mixins";
 @import "variables";
 
+/* Overrides and base styles
+  --------------------------------------------------------------------------- */
 select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
   margin-bottom: 0;
 }
-
 h1, h2, h3, h4, h5 {
   font-family: @special;
   margin: 0;
 }
-
 body {
   background-color: @grayDark;
   color: @black;
 }
-
 a {
   color: @blue;
 }
-
 body.guide {
   background-color: @white;
 }
-
-.txt-white {
-  color: @white;
-}
-
-.txt-green, .txt-green-hover:hover {
-  color: @green;
-}
-
-.txt-red, .txt-red-hover:hover {
-  color: @red;
-}
-
-.btn, .special {
-  font-family: @special;
-}
-
-.tilt {
-  font-family: @specialItalic;  
-}
-
 p {
   font-size: 15px;
   line-height: 1.3;
 }
-
-.btn {
-  background-color: @blueDark;
-}
-.btn.btn-primary, .label-primary {
-  background-color: @greenDark;
-}
-.btn.btn-success, .label-success {
-  background-color: @green;
-}
-.btn.btn-warning, .label-warning {
-  background-color: @orange;
-  color: @black;
-}
-.btn.btn-danger, .label-danger {
-  background-color: @red;
-}
-
-.landing-container {
-  background-image: asset-url('bg-landing.jpg');
-  -webkit-background-size: contain;
-  -moz-background-size: contain;
-  background-size: contain;
-  min-height: 900px;
-  width: 100%;
-  background-position: top right;
-  background-repeat: no-repeat;
-}
-
-.right-content {
-  float: right;
-  padding-top: 11%;
-  text-align: center;
-}
-
-.login-buttons {
-  width: 86%;
-  padding: 3%;
-  margin: 0 auto;
-  background-color: rgba(250,250,250,0.7);
-  color: black;
-  .border-radius(6px);
-  border: solid 2px rgba(0,0,0,0.3);
-}
-
-.sign-up-heading {
-  font-size: 24px;
-  margin-bottom: 14px;
-  margin-top: 0;
-  color: @redDark;
-}
-
-.sign-up-text {
-  margin-bottom: 14px;
-}
-
-.fui-facebook {
-  margin-right: 2px;
-}
-
 header {
   height: 246px;
   background-image: asset-url('bg-blur-big.png');
@@ -121,33 +38,6 @@ header {
 article {
   position: relative;
 }
-
-.header-bottom {
-  position: relative;
-  top: 16px;
-}
-
-.user-container {
-  height: 148px;
-  .border-radius(8px 0 0 0);
-  background-color: rgba(29,29,29,0.5);
-  border-left: 1px solid @white;
-  border-top: 1px solid @white;
-}
-
-.user-navigation {
-}
-
-.page-content {
-  background-color: @white;
-  position: relative;
-  top: -178px;
-  left: -30px;
-  .border-radius(8px 8px 0 0); 
-  .box-shadow(0 0 3px rgba(0,0,0,.6));
-  min-height: 700px;
-}
-
 footer {
   height: 176px;
   width: 100%;
@@ -156,17 +46,83 @@ footer {
   background-color: @gray;
   border-top: 3px solid @grayLight;
   .box-shadow(0 0 3px rgba(0,0,0,.6));
-
 }
 
+/* Small reusables
+  --------------------------------------------------------------------------- */
+.txt-white {
+  color: @white;
+}
+.txt-green, .txt-green-hover:hover {
+  color: @green;
+}
+.txt-red, .txt-red-hover:hover {
+  color: @red;
+}
+.tilt {
+  font-family: @specialItalic;  
+}
 .overflow {
   overflow: visible;
 }
+.no-no {
+  padding: 0;
+  margin: 0;
+}
 
+/* Landing Page Styles
+  --------------------------------------------------------------------------- */
+.landing-container {
+  background-image: asset-url('bg-landing.jpg');
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  background-size: contain;
+  min-height: 900px;
+  width: 100%;
+  background-position: top right;
+  background-repeat: no-repeat;
+}
+.right-content {
+  float: right;
+  padding-top: 11%;
+  text-align: center;
+}
+.login-buttons {
+  width: 86%;
+  padding: 3%;
+  margin: 0 auto;
+  background-color: rgba(250,250,250,0.7);
+  color: black;
+  .border-radius(6px);
+  border: solid 2px rgba(0,0,0,0.3);
+}
+.sign-up-heading {
+  font-size: 24px;
+  margin-bottom: 14px;
+  margin-top: 0;
+  color: @redDark;
+}
+.sign-up-text {
+  margin-bottom: 14px;
+}
+.fui-facebook {
+  margin-right: 2px;
+}
+.header-bottom {
+  position: relative;
+  top: 16px;
+}
+.sign-up {
+  margin: 20px 0;
+}
+
+/* Content View/Logged In Layout
+  --------------------------------------------------------------------------- */
+
+/* Header, Logo Font, Top Nav */
 .top-nav {
   height: 54px;
 }
-
 .logo-font {
   font-family: @special;
   color: @redDark;
@@ -176,7 +132,10 @@ footer {
             -1px 1px 0 @offWhite, 3px 3px 5px @grayDark;
   display: inline-block;
 }
-
+.logo-slash {
+  font-family: @specialItalic;
+  color: @red;  
+}
 .sub-title {
   font-style: italic;
   font-weight: 100;
@@ -185,14 +144,17 @@ footer {
   margin-left: 8px;
   font-size: 13px;
 }
-
 .links {
   padding-right: 50px;
 }
 
-.logo-slash {
-  font-family: @specialItalic;
-  color: @red;  
+/* User Info Header Pane */
+.user-container {
+  height: 148px;
+  .border-radius(8px 0 0 0);
+  background-color: rgba(29,29,29,0.5);
+  border-left: 1px solid @white;
+  border-top: 1px solid @white;
 }
 .user-box {
   width: 90%;
@@ -201,7 +163,6 @@ footer {
   border-bottom: 1px solid @offWhite;
   overflow: hidden;
 }
-
 .user-avatar {
   .border-radius(2px);
   border: 1px solid @gray;
@@ -214,14 +175,12 @@ footer {
   max-width: 60%;
   text-align: left;
 }
-
 .user-name {
   font-size: 20px;
   color: @offWhite;
   display: block;
   font-weight: 400;
 }
-
 .user-alias {
   display: block;
   font-size: 16px;
@@ -229,19 +188,16 @@ footer {
   font-weight: 200;
   margin-bottom: 1px;
 }
-
 .user-logout {
   color: @grayLight;
   font-weight: 200;  
   font-size: 14px;
 }
-
 .user-dash {
   width: 90%;
   margin: 0 auto 12px;
   padding-bottom: 4px;
 }
-
 .user-balance {
   color: @offWhite;
   font-size: 16px;
@@ -272,6 +228,7 @@ footer {
   }
 }
 
+/* Content Area */
 .nav {
   width: 94%;
   padding: 0 3%;
@@ -298,28 +255,21 @@ footer {
 .end {
   border-bottom: none;
 }
-.btn {
-  padding: 9px 12px 8px;
+.page-content {
+  background-color: @white;
+  position: relative;
+  top: -178px;
+  left: -30px;
+  .border-radius(8px 8px 0 0); 
+  .box-shadow(0 0 3px rgba(0,0,0,.6));
+  min-height: 700px;
 }
-.btn.btn-small {
-  padding: 6px 13px 4px;
-  color: @black;
-}
-.guide .btn.btn-small {
-  color: @white;
-}
-
 .padded-content {
   width: 94%;
   padding: 3%;
 }
 
-.sign-up {
-  margin: 20px 0;
-}
-/*
-  Add Funds Modal
-*/
+/* Add Funds Modal */
 .card {
   border: 2px solid @gray;
   .border-radius(4px);  
@@ -403,6 +353,7 @@ footer {
   left: 165px;
   top: -3px;
 }
+
 /* Games */
 .market-container, .contest-info {
   border: 2px solid @gray;
@@ -418,7 +369,7 @@ footer {
   .border-radius(4px);
 }
 .contest-title {
-  font-size: 40px;
+  font-size: 38px;
   margin: 4px 0;
   color: @grayDark;
 }
@@ -434,7 +385,6 @@ footer {
 .market-title {
   color: @white;
 }
-
 .roster-title {
   background-color: #e9e9e9;
   margin-bottom: 10px;
@@ -466,7 +416,6 @@ footer {
   color: @gray;
   display: block;
 }
-
 .market-link {
   color: @gray;
 }
@@ -486,7 +435,8 @@ footer {
 }
 .selected-market {
   color: @gray;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
+  font-size: 38px;
 }
 .contest-classes {
   list-style-type: none;
@@ -497,10 +447,6 @@ footer {
   float: left;  
   text-align: center;
   background-color: #efefef;
-}
-.no-no {
-  padding: 0;
-  margin: 0;
 }
 .small-p {
   display: block;
@@ -515,9 +461,7 @@ footer {
   list-style-type: none;
   margin-bottom: 6px;
 }
-.btn-contest {
-  width: 60%;
-}
+
 
 .contest-info-image {
   width: 170px;
@@ -528,12 +472,7 @@ footer {
   float: left;
   max-width: 62%;
 }
-.btn.btn-cancel-entry {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  z-index: 100;
-}
+
 .games {
   padding: 0;
   margin: 10px 0 0 5px;
@@ -589,7 +528,6 @@ footer {
 .players-area, .roster-area {
   padding: 10px 4%;
   width: 92%;
-  height: 760px;
 }
 .player-overflow, .roster-overflow {
   background-color: @white;
@@ -608,14 +546,14 @@ footer {
   td, th {
     padding: 4px;
     line-height: 26px;
-    width: 20%;
+    width: 16%;
     text-align: center;
     &.larger {
-      width: 45%;
+      width: 48%;
       text-align: left;
     }
     &.tiny {
-      width: 14%;
+      width: 10%;
       text-align: center;
     }
   }
@@ -638,7 +576,7 @@ footer {
   margin: 0 0 8px; 
 }
 .salary-cap {
-  padding: 6px;
+  padding: 8px 3px 5px;
   .border-radius(4px);
   background-color: @green;
   color: @white;
@@ -648,7 +586,7 @@ footer {
   margin: 6px 0 8px 13%; 
   text-align: center;
   height: 30px;
-  font-size: 20px;
+  font-size: 17px;
   line-height: 24px;
 }
 .score {
@@ -669,14 +607,7 @@ footer {
   position: relative;
   height: 40px;
 }
-.btn-contest-cta {
-  position: absolute;
-  right: 0;
-}
-.btn-reenter-cta {
-  position: absolute;
-  right: 90px;
-}
+
 .modal-form-container {
   float: left;
   margin: 0 20px 20px;
@@ -695,17 +626,6 @@ footer {
 }
 .negative::before {
   content: "-";
-}
-.btn-orange {
-  background-color: @orangeDark;
-}
-.btn-orange:hover {
-  background-color: @orangeHighlight;
-}
-
-.my-roster-list {
-  padding: 0;
-  margin: 0;
 }
 .mr-player-score {
   font-size: 18px;
@@ -765,20 +685,8 @@ footer {
   float: right;
 }
 .players-table .fui-check-inverted, .players-table .fui-cross-inverted {
-  margin-left: 6px;
+  margin-left: 3px;
   font-size: 14px !important;
-}
-.btn.btn-tiny {
-  padding: 4px 6px 3px;
-  font-size: 12px;
-  line-height: 14px;
-  color: @black;
-}
-
-.btn.btn-small .caret {
-  border-left-width: 4px;
-  border-right-width: 4px;
-  border-top-width: 5px;
 }
 input[type="text"].players-search {
   padding: 4px;
@@ -816,7 +724,7 @@ input[type="text"].players-search {
   margin: 0;
 }
 .ei-number {
-  font-size: 40px;
+  font-size: 28px;
   font-weight: 100;
   margin-bottom: 0px;
 }
@@ -832,4 +740,60 @@ input[type="text"].players-search {
   -o-transition: background-color 1000ms linear;
   -ms-transition: background-color 1000ms linear;
   transition: background-color 1000ms linear;
+}
+
+/* Button Overrides -- there are many 
+   TODO - remove the .btn.btn- specificity in flat-ui -- GROSS
+  --------------------------------------------------------------------------- */
+.btn, .special {
+  font-family: @special;
+}
+.btn {
+  background-color: @blueDark;
+}
+.btn.btn-primary, .label-primary {
+  background-color: @greenDark;
+}
+.btn.btn-success, .label-success {
+  background-color: @green;
+}
+.btn.btn-warning, .label-warning {
+  background-color: @orange;
+  color: @black;
+}
+.btn.btn-danger, .label-danger {
+  background-color: @red;
+}
+.btn {
+  padding: 9px 12px 8px;
+}
+.btn.btn-small {
+  padding: 6px 13px 4px;
+  color: @black;
+}
+.guide .btn.btn-small {
+  color: @white;
+}
+.btn-contest {
+  width: 60%;
+}
+.btn.btn-cancel-entry {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 100;
+}
+.btn-contest-cta {
+  position: absolute;
+  right: 0;
+}
+.btn-reenter-cta {
+  position: absolute;
+  right: 90px;
+}
+.btn-orange {
+  background-color: @orangeDark;
+}
+.btn-orange:hover {
+  background-color: @orangeHighlight;
 }
