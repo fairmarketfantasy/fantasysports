@@ -7,7 +7,7 @@ require 'minitest/pride'
 require 'stripe_mock'
 require 'debugger'
 
-MarketOrder.load_sql_functions
+Market.load_sql_functions
 
 
 

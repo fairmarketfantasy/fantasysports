@@ -8,7 +8,7 @@ class RosterTest < ActiveSupport::TestCase
   end 
 
   #make sure that you can't play a h2h against yourself
-  test "no self h2h" do
+  test "no self h2h or other contests" do
     h2h = @market.contest_types.where("max_entries = 2").first
     user1 = create(:user)
     user2 = create(:user)
@@ -32,8 +32,28 @@ class RosterTest < ActiveSupport::TestCase
     assert_equal 2, roster1.contest.rosters.size
     assert_equal 2, roster2.contest.rosters.size
     assert_equal 1, roster5.contest.rosters.size
+
+    @market.contest_types.each do |contest_type|
+      user = create(:paid_user)
+      roster1 = Roster.generate(user, contest_type).submit!
+      roster2 = Roster.generate(user, contest_type).submit!
+      if contest_type.max_entries == 0
+        assert_equal roster1.contest, roster2.contest
+      else
+        assert_not_equal roster1.contest, roster2.contest
+      end
+    end
   end
 
+  test "submit adds bets to market" do
+    assert @roster.buy_in > 0, "buy in > 0"
+    @roster.fill_randomly
+    assert @roster.players.size > 0, "has players"
+    bets_before = @market.total_bets
+    @roster.submit!
+    assert_equal @roster.state, 'submitted', "roster is submitted"
+    assert @market.total_bets = bets_before + @roster.players.size * @roster.buy_in, "increased total bets"
+  end
 
   test "submit puts roster in contest" do
     #find head to head

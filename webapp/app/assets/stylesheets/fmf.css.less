@@ -118,6 +118,9 @@ header {
   width: 100%;
   padding: 0;
 }
+article {
+  position: relative;
+}
 
 .header-bottom {
   position: relative;
@@ -142,6 +145,18 @@ header {
   left: -30px;
   .border-radius(8px 8px 0 0); 
   .box-shadow(0 0 3px rgba(0,0,0,.6));
+  min-height: 700px;
+}
+
+footer {
+  height: 176px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background-color: @gray;
+  border-top: 3px solid @grayLight;
+  .box-shadow(0 0 3px rgba(0,0,0,.6));
+
 }
 
 .overflow {
@@ -168,6 +183,7 @@ header {
   color: @white;
   line-height: 80px;
   margin-left: 8px;
+  font-size: 13px;
 }
 
 .links {
@@ -389,7 +405,7 @@ header {
 }
 /* Games */
 .market-container, .contest-info {
-  border: 2px solid @grayDark;
+  border: 2px solid @gray;
   border-top: 0;
   .border-radius(0 0 4px 4px);
 }
@@ -398,12 +414,17 @@ header {
   padding: 5px;
   margin-bottom: 10px;
   position: relative;
-  border: 2px solid @grayDark;
+  border: 2px solid @gray;
   .border-radius(4px);
+}
+.contest-title {
+  font-size: 40px;
+  margin: 4px 0;
+  color: @grayDark;
 }
 .roundTop {
   .border-radius(4px);
-  border-top: 2px solid @grayDark;
+  border-top: 2px solid @gray;
 }
 .market-title, .roster-title {
   width: 96%;
@@ -413,11 +434,14 @@ header {
 .market-title {
   color: @white;
 }
+
 .roster-title {
   background-color: #e9e9e9;
   margin-bottom: 10px;
 }
-
+.my-roster-title {
+  margin-bottom: 0;
+}
 .market-list, .roster-list {
   list-style-type: none;
   width: 100%;
@@ -497,7 +521,7 @@ header {
 
 .contest-info-image {
   width: 170px;
-  margin-right: 8px;
+  margin: 8px 8px 0 0;
   float: left;
 }
 .contest-info-description {
@@ -529,7 +553,7 @@ header {
 }
 .entries-container {
   .border-radius(4px 4px 0 0);
-  border: 2px solid @grayLight;
+  border: 2px solid @gray;
   border-bottom: 0;
   background-color: @offWhite;
 }
@@ -561,14 +585,11 @@ header {
 .players, .roster {
   width: 50%;
   float: left;
-  background-color: @gray;  
 }
 .players-area, .roster-area {
   padding: 10px 4%;
   width: 92%;
   height: 760px;
-}
-.players-area {
 }
 .player-overflow, .roster-overflow {
   background-color: @white;
@@ -582,7 +603,7 @@ header {
 }
 .players-table, .roster-table {
   font-size: 12px;
-  width: 366px;
+  width: 100%;
   max-width: 366px;
   td, th {
     padding: 4px;
@@ -603,28 +624,37 @@ header {
   color: @white;
   margin: 0 0 8px; 
 }
-.team-heading {
-  color: @white;
+.inline-heading {
   width: 40%;
   display: inline-block;
-  margin: 0 0 8px; 
   vertical-align: middle; 
+}
+.team-selection {
+  background-color: @gray;  
+  .border-radius(0 0 4px 4px);
+}
+.team-heading {
+  color: @white;
+  margin: 0 0 8px; 
 }
 .salary-cap {
   padding: 6px;
   .border-radius(4px);
   background-color: @green;
   color: @white;
+  width: 44%;
+  display: inline-block;
+  vertical-align: middle; 
+  margin: 6px 0 8px 13%; 
+  text-align: center;
+  height: 30px;
+  font-size: 20px;
+  line-height: 24px;
+}
+.score {
   height: 20px;
   font-size: 14px;
   line-height: 18px;
-  width: 55%;
-  display: inline-block;
-  vertical-align: middle; 
-  margin: 0 0 8px 0; 
-  text-align: center;
-}
-.score {
   width: 45%;
   margin: 0 0 8px 10%; 
   background-color: @white;
@@ -642,6 +672,10 @@ header {
 .btn-contest-cta {
   position: absolute;
   right: 0;
+}
+.btn-reenter-cta {
+  position: absolute;
+  right: 90px;
 }
 .modal-form-container {
   float: left;
@@ -663,17 +697,22 @@ header {
   content: "-";
 }
 .btn-orange {
-  background-color: @orangeHighlight;
+  background-color: @orangeDark;
 }
 .btn-orange:hover {
-  background-color: @orangeDark;
+  background-color: @orangeHighlight;
 }
 
 .my-roster-list {
   padding: 0;
   margin: 0;
 }
-
+.mr-player-score {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  text-align: right;
+}
 .mr-item {
   padding: 8px;
   border-bottom: 1px solid @grayLight;
@@ -698,7 +737,7 @@ header {
   border-color: @green;
 }
 .mr-player-name {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 200;
   font-family: @base-font-family;
   margin-bottom: 0;
@@ -744,6 +783,7 @@ header {
 input[type="text"].players-search {
   padding: 4px;
   font-size: 14px;
+  width: 44%;
   display: inline-block;
   vertical-align: middle;
 }
@@ -755,7 +795,34 @@ input[type="text"].players-search {
     color: white;
   }
 }
-
+.ei-item {
+  width: 20%;
+  float: left;
+  margin: 6px 2.5% 16px;
+  text-align: center;
+  color: @gray;
+  list-style-type: none;
+}
+.see-all {
+  color: @green-sea;
+  display: block;
+  padding: 8px 3.96% 8px;
+  width: 92%;
+  text-align:center;
+  background-color: #e9e9e9;
+}
+.entries-info-list {
+  padding: 0;
+  margin: 0;
+}
+.ei-number {
+  font-size: 40px;
+  font-weight: 100;
+  margin-bottom: 0px;
+}
+.ei-info {
+  font-size: 12px;
+}
 .highlight-on-change.changed{
   background-color: yellow;
 }

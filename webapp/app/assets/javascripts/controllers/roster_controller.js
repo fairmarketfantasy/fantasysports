@@ -32,14 +32,27 @@ angular.module("app.controllers")
       fetchContest();
     });
   });
-
-  var fetchRoster = function() {
-    if (!rosters.currentRoster) {
-      return;
+  $scope.$watch('$routeParams.opponent_roster_id', function() {
+    if ($routeParams.opponent_roster_id) {
+      rosters.fetch($routeParams.opponent_roster_id).then(function(roster) {
+        rosters.selectOpponentRoster(roster);
+      });
+    } else {
+      rosters.selectOpponentRoster(null);
     }
-    $scope.fs.rosters.show(rosters.currentRoster.id).then(function(roster){
-      rosters.selectRoster(roster);
-    });
+  });
+
+  var fetchRosters = function() {
+    if (rosters.currentRoster) {
+      $scope.fs.rosters.show(rosters.currentRoster.id).then(function(roster){
+        rosters.selectRoster(roster);
+      });
+    }
+    if (rosters.opponentRoster) {
+      $scope.fs.rosters.show(rosters.opponentRoster.id).then(function(roster){
+        rosters.selectOpponentRoster(roster);
+      });
+    }
   };
 
   var fetchContest = function() {
@@ -51,11 +64,12 @@ angular.module("app.controllers")
 
   rosters.setPoller(function() {
       fetchPlayers();
-      fetchRoster();
+      fetchRosters();
       fetchContest();
     }, 10000);
 
   $scope.filterPlayers = function(opts, override) {
+    rosters.selectOpponentRoster(null);
     if (override) {
       filterOpts = opts;
     } else {
@@ -108,6 +122,10 @@ angular.module("app.controllers")
     // This is particularly disgusting, but I couldn't figure out a better way to do it.
     // It's impossible to compile templates and use the content without rendering to the dom.
     return angular.element('#player-stats-content')[0].innerHTML;
+  };
+
+  $scope.isInPlay = function(roster) {
+    return $scope.market.state != 'published' && roster.state != 'in_progress';
   };
 
 }]);

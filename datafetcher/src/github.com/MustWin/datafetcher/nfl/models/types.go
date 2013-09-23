@@ -156,6 +156,8 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
 	if err != nil {
 		if err.Error() == "No record found" {
 			return nil, true
+		} else {
+			log.Println(err.Error())
 		}
 	}
 	existingVal := reflect.Indirect(reflect.ValueOf(existing))
@@ -320,7 +322,6 @@ func (se *StatEvent) AddOpposingTeamScore(score int) {
 	case score > 45:
 		pts = -10
 	}
-	log.Printf("ADDING %d", pts)
 	se.PointValue += float64(pts)
 }
 

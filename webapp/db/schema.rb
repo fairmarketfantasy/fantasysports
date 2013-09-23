@@ -11,23 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130920014928) do
+ActiveRecord::Schema.define(version: 20130922210034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "contest_types", force: true do |t|
-    t.integer "market_id",                       null: false
-    t.string  "name",                            null: false
+    t.integer "market_id",          null: false
+    t.string  "name",               null: false
     t.text    "description"
-    t.integer "max_entries",                     null: false
-    t.integer "buy_in",                          null: false
-    t.decimal "rake",                            null: false
-    t.text    "payout_structure",                null: false
+    t.integer "max_entries",        null: false
+    t.integer "buy_in",             null: false
+    t.decimal "rake",               null: false
+    t.text    "payout_structure",   null: false
     t.integer "user_id"
     t.boolean "private"
     t.integer "salary_cap"
-    t.string  "payout_description", default: "", null: false
+    t.string  "payout_description", null: false
   end
 
   add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
@@ -289,6 +289,7 @@ ActiveRecord::Schema.define(version: 20130920014928) do
   end
 
   add_index "stat_events", ["game_stats_id"], name: "index_stat_events_on_game_stats_id", using: :btree
+  add_index "stat_events", ["player_stats_id", "game_stats_id", "type"], name: "index_stat_events_on_player_stats_id_and_game_stats_id_and_type", unique: true, using: :btree
 
   create_table "teams", force: true do |t|
     t.integer  "sport_id",   null: false
