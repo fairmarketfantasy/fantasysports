@@ -17,17 +17,17 @@ ActiveRecord::Schema.define(version: 20130922210034) do
   enable_extension "plpgsql"
 
   create_table "contest_types", force: true do |t|
-    t.integer "market_id",                       null: false
-    t.string  "name",                            null: false
+    t.integer "market_id",          null: false
+    t.string  "name",               null: false
     t.text    "description"
-    t.integer "max_entries",                     null: false
-    t.integer "buy_in",                          null: false
-    t.decimal "rake",                            null: false
-    t.text    "payout_structure",                null: false
+    t.integer "max_entries",        null: false
+    t.integer "buy_in",             null: false
+    t.decimal "rake",               null: false
+    t.text    "payout_structure",   null: false
     t.integer "user_id"
     t.boolean "private"
     t.integer "salary_cap"
-    t.string  "payout_description", default: "", null: false
+    t.string  "payout_description", null: false
   end
 
   add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
