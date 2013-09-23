@@ -135,7 +135,7 @@ class Market < ActiveRecord::Base
       #cancel rosters in contests that are not full
       self.contests.where("num_rosters < user_cap").find_each do |contest|
         contest.rosters.update_all("contest_id = null, cancelled = true, 
-          cancelled_cause = 'contest under-subscribed', cancelled_at = '#{Time.now}'")
+          cancelled_cause = 'contest under-subscribed', cancelled_at = '#{Time.now}', state = 'cancelled'")
         contest.destroy!
       end
 
@@ -165,15 +165,15 @@ class Market < ActiveRecord::Base
   end
 
   @@default_contest_types = [
-    ['100k', '100k Lollapalooza! 5000 to 1 payout for 1st prize!',       0, 1000, 0.03, '[5000000, 2500000, 1200000, 600000, 300000, 200000, 100000, 50000, 50000]', "Winner takes half, top 9 slots win big."],
+    ['100k', '100k Lollapalooza! 5000 to 1 payout for 1st prize!',       0, 1000, 0.03, '[5000000, 2500000, 1200000, 600000, 300000, 200000, 100000, 48500, 48500]', "Winner takes half, top 9 slots win big."],
     ['970', 'Free contest, winner gets 10 FanFrees!',                   10, 0, 0, '[]', "Winner takes all"],
-    ['970', '10 teams, $2 entry fee, winner takes home $19.40',         10, 200, 0.03, '[1940]', "Winner takes all"],
+    ['970', '10 teams, $1 entry fee, winner takes home $9.70',         10, 100, 0.03, '[970]', "Winner takes all"],
     ['970', '10 teams, $10 entry fee, winner takes home $97.00',        10, 1000, 0.03, '[9700]', "Winner takes all"],
     ['194', 'Free contest, top 5 winners get 2 FanFrees!',              10, 0, 0, '[]', "Top half wins"],
-    ['194', '10 teams, $2 entry fee, top 5 winners take home $3.88',    10, 200, 0.03, '[388, 388, 388, 388, 388]', "Top half wins"],
+    ['194', '10 teams, $1 entry fee, top 5 winners take home $1.94',    10, 100, 0.03, '[194, 194, 194, 194, 194]', "Top half wins"],
     ['194', '10 teams, $10 entry fee, top 5 winners take home $19.40',  10, 1000, 0.03, '[1940, 1940, 1940, 1940, 1940]', "Top half wins"],
     ['h2h', 'Free h2h contest, winner gets 1 FanFree!',                  2, 0, 0, '[]', "Winner takes all"],
-    ['h2h', 'h2h contest, $2 entry fee, winner takes home $3.88',        2, 200, 0.03, '[388]', "Winner takes all"],
+    ['h2h', 'h2h contest, $1 entry fee, winner takes home $3.88',        2, 100, 0.03, '[194]', "Winner takes all"],
     ['h2h', 'h2h contest, $10 entry fee, winner takes home $19.40',      2, 1000, 0.03, '[1940]', "Winner takes all"]
   ];
 
@@ -182,7 +182,7 @@ class Market < ActiveRecord::Base
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
-      ContestType.create(
+      ContestType.create!(
         market_id: self.id,
         name: data[0],
         description: data[1],

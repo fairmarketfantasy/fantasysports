@@ -8,8 +8,6 @@ class Contest < ActiveRecord::Base
   belongs_to :owner, class_name: "User"
   belongs_to :contest_type
 
-  self.inheritance_column = :_type_disabled
-
   # after_create :create_owners_roster!
   # before_save :set_invitation_code, on: :create
 
@@ -36,9 +34,14 @@ class Contest < ActiveRecord::Base
     create_owners_roster!
   end
 
+  def rake_amount
+    self.num_rosters * self.contest_type.buy_in * contest_type.rake
+  end
+
   #pays owners of rosters according to their place in the contest
   def payday!
     self.with_lock do
+      raise if self.paid_at
       rosters = self.rosters.order("contest_rank ASC")
       ranks = rosters.collect(&:contest_rank)
       
@@ -61,13 +64,16 @@ class Contest < ActiveRecord::Base
         payment_per_roster = Float(payment) / rosters.length
         rosters.each do |roster|
           # puts "roster #{roster.id} won #{payment_per_roster}!"
-          roster.owner.customer_object.increase_balance(payment_per_roster, 'payout', roster.id)
+          roster.owner.customer_object.increase_balance(payment_per_roster, 'payout', roster.id, self.id)
           roster.paid_at = Time.new
           roster.amount_paid = payment_per_roster
           roster.state = 'finished'
           roster.save!
         end
       end
+      TransactionRecord.create!(:user => SYSTEM_USER, :amount => self.rake_amount, :event => 'rake', :contest_id => self.id)
+      self.paid_at = Time.new
+      self.save!
     end
   end
 

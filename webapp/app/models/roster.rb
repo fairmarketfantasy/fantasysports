@@ -9,13 +9,13 @@ class Roster < ActiveRecord::Base
   belongs_to :owner, class_name: "User", foreign_key: :owner_id
   has_many :market_orders
 
-  validates :state, :inclusion => {in: %w( in_progress canceled submitted finished) }
+  validates :state, :inclusion => {in: %w( in_progress cancelled submitted finished) }
 
   validates :owner_id, :market_id, :buy_in, :remaining_salary, :contest_type_id, :state, presence: true
 
   before_destroy :cleanup
 
-  scope :finished, -> { where(state: ['in_progress', 'submitted'])}
+  scope :finished, -> { where(state: ['finished'])}
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
   scope :submitted, -> { where(state: ['submitted'])}
 
@@ -115,14 +115,16 @@ class Roster < ActiveRecord::Base
       else #contest not nil. enter private contest
         contest.with_lock do
           raise "contest #{contest.id} is full" if contest.num_rosters >= contest.user_cap
+          self.contest = contest
           contest.num_rosters += 1
           contest.save!
+          self.save!
         end
       end
 
       #charge account
       if contest_type.buy_in > 0
-        self.owner.customer_object.decrease_balance(self.contest_type.buy_in, 'buy_in', self.id) 
+        self.owner.customer_object.decrease_balance(self.contest_type.buy_in, 'buy_in', self.id, self.contest_id)
       end
 
     end
@@ -151,7 +153,7 @@ class Roster < ActiveRecord::Base
   def cleanup
     self.with_lock do
       if self.state == 'submitted'
-        self.owner.customer_object.increase_balance(self.buy_in, 'canceled_roster')
+        self.owner.customer_object.increase_balance(self.buy_in, 'cancelled_roster', self.id, self.contest_id)
       end
       Roster.find_by_sql("select * from cancel_roster(#{self.id})")
     end

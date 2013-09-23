@@ -1,4 +1,5 @@
 class MarketPlayer < ActiveRecord::Base
+  attr_protected
   belongs_to :market
   belongs_to :player
 

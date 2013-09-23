@@ -7,14 +7,15 @@ class TransactionRecordValidator < ActiveModel::Validator
 end
 
 class TransactionRecord < ActiveRecord::Base
-  attr_accessible :user, :event, :amount, :roster_id
-  CONTEST_TYPES = %w( entry_fee rake )
+  attr_accessible :user, :event, :amount, :roster_id, :contest_id
+  CONTEST_TYPES = %w( buy_in cancelled_roster payout rake )
   validates_presence_of :user
-  validates :event, inclusion: { in: CONTEST_TYPES + %w( deposit withdrawal buy_in canceled_roster payout) }
+  validates :event, inclusion: { in: CONTEST_TYPES + %w( deposit withdrawal buy_in cancelled_roster payout rake) }
   validates_with TransactionRecordValidator
 
   belongs_to :user
   belongs_to :roster
+  belongs_to :contest
 
   def self.validate_contest(contest)
     if contest.transactions.sum(amount) != 0

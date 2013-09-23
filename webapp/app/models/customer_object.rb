@@ -68,20 +68,20 @@ class CustomerObject < ActiveRecord::Base
     sprintf( '%.2f', (balance/100) )
   end
 
-  def increase_balance(amount, event, roster_id = nil)
+  def increase_balance(amount, event, roster_id = nil, contest_id = nil)
     ActiveRecord::Base.transaction do
       self.balance += amount
-      TransactionRecord.create!(:user => self.user, :event => event, :amount => amount, :roster_id => roster_id)
+      TransactionRecord.create!(:user => self.user, :event => event, :amount => amount, :roster_id => roster_id, :contest_id => contest_id)
       self.save
     end
   end
 
-  def decrease_balance(amount, event, roster_id = nil)
+  def decrease_balance(amount, event, roster_id = nil, contest_id = nil)
     ActiveRecord::Base.transaction do
       self.reload
       raise HttpException.new(402, "Insufficient funds") if self.balance - amount < 0
       self.balance -= amount
-      TransactionRecord.create!(:user => self.user, :event => event, :amount => -amount, :roster_id => roster_id)
+      TransactionRecord.create!(:user => self.user, :event => event, :amount => -amount, :roster_id => roster_id, :contest_id => contest_id)
       self.save
     end
   end

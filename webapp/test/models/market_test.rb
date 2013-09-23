@@ -210,6 +210,102 @@ class MarketTest < ActiveSupport::TestCase
     end
   end
 
+  test "game play" do
+    # Make a published market
+    setup_simple_market
+    ct1 = @market.contest_types.where("buy_in = 1000 and max_entries = 2").first
+    ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 10").first
+    ct3 = @market.contest_types.where("buy_in = 1000 and max_entries = 0").first
+    # Fill 3 contest types with 11 users each.  H2H will create 6 contests. ct2 will have 2 contests, ct3 -> 100k
+    users = (1..11).map{ create(:paid_user) }
+    @rosters = {
+      ct1 => [],
+      ct2 => [],
+      ct3 => []
+    }
+    users.each_with_index do |user, i|
+      [ct1, ct2, ct3].each do |ct|
+        roster = Roster.generate(user, ct)
+        @players[0..i].each{|player| roster.add_player(player) }
+        roster.submit!
+        @rosters[roster.contest_type] << roster
+      end
+    end
+    assert_equal 9, Contest.count
+    # Open the market
+    @market.opened_at = Time.now - 2.minutes
+    @market.save!
+    Market.tend
+    assert_equal 'opened', @market.reload.state
+    player = create(:player, :team => @team1)
+    new_market_player = MarketPlayer.create!(:market_id => @market.id, :player_id => player.id, :locked_at => Time.new - 2.minutes)
+    market_player = MarketPlayer.where(:player_id => @players[0].id, :market_id => @market.id).first
+    market_player.update_attribute(:locked_at, Time.new - 2.minutes)
+    Market.tend
+    assert new_market_player.reload.locked
+    assert market_player.reload.locked
+
+
+    @rosters.each do |ct, rosters|
+      # Available players shouldn't include locked players
+      rosters.each do |roster|
+        assert !Player.purchasable_for_roster(roster).include?(player)
+      end
+    end
+
+    # Close the market
+    @market.update_attribute(:closed_at, Time.new - 1.minute)
+    @market.market_players.each{|mp| mp.update_attribute(:locked_at, Time.new - 1.minute) }
+    Market.tend
+    assert_equal 7, Contest.count
+    assert_equal 'closed', @market.reload.state
+    assert_equal 2, Roster.where(:state => 'cancelled').count
+    assert_equal 2, Roster.where(:cancelled => true).count
+    assert Player.purchasable_for_roster(@rosters[ct1][0]).empty? # spot check
+
+    # Add some scores
+    @players.each do |p| 
+      StatEvent.create!(
+        :game_stats_id => @game.stats_id,
+        :player_stats_id => p.stats_id,
+        :point_value => 1,
+        :activity => 'rushing',
+        :data => ''
+      )
+    end
+    Market.tend
+    # Rosters are scored and ranked
+    @rosters.each do |ct, rosters|
+      score = 0
+      rank = 12 # just a number higher than the lowest rank
+      rosters.each do |roster|
+        roster.reload
+        next if roster.cancelled?
+        assert roster.score > score
+        assert roster.contest_rank < rank if roster.contest_type != ct1
+        score = roster.score
+        rank = roster.contest_rank
+      end
+    end
+    @game.update_attribute :status, 'closed'
+    Market.tend
+
+    # contests are paid out
+    assert_equal "complete", @market.reload.state
+    @rosters.each do |ct, rosters|
+      rosters.each do |roster|
+        roster.reload
+        if roster.cancelled?
+          assert_equal nil, roster.amount_paid
+        else
+          assert_equal ct.payout_for_rank(roster.contest_rank) || 0, roster.amount_paid.to_f
+        end
+      end
+    end
+
+    assert_equal 31, Roster.finished.count
+  end
+
   describe Market do
 
     describe "scopes" do
