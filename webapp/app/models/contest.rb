@@ -74,6 +74,7 @@ class Contest < ActiveRecord::Base
       TransactionRecord.create!(:user => SYSTEM_USER, :amount => self.rake_amount, :event => 'rake', :contest_id => self.id)
       self.paid_at = Time.new
       self.save!
+      TransactionRecord.validate_contest(self)
     end
   end
 

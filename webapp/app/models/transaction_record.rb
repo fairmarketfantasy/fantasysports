@@ -18,8 +18,10 @@ class TransactionRecord < ActiveRecord::Base
   belongs_to :contest
 
   def self.validate_contest(contest)
-    if contest.transactions.sum(amount) != 0
-      raise "Contest sums invalid.  Fuck."
+    return if contest.contest_type.max_entries == 0
+    sum = contest.transaction_records.reduce(0){|total, tr| total += tr.amount}
+    if sum != 0
+      raise "Contest sums to #{sum}. Should Zero. Fucking check yo-self."
     end
   end
 end
