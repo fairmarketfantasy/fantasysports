@@ -9,7 +9,7 @@
   </ul>
   
   <div class="contest-list">
-    <h3 class="selected-market" ng-cloak>Contests Beginning {{marketService.currentMarket.name}} {{marketService.currentMarket.started_at | shortFormTime }}</h3>
+    <h3 class="selected-market" ng-cloak>{{marketService.currentMarket.market_duration}} Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</h3>
 
     <ul class="games hide" ng-cloak>
       <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">

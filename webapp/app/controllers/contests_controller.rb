@@ -2,8 +2,12 @@ class ContestsController < ApplicationController
 
   def for_market
     market = Market.find(params[:id])
-    types = market.contest_types.public.order("name asc, buy_in asc")
-    render_api_response types
+    if ['opened', 'published'].include?(market.state)
+      types = market.contest_types.public.order("name asc, buy_in asc")
+      render_api_response types
+    else
+      render_api_response []
+    end
   end
 
   def join
