@@ -1,5 +1,8 @@
     <div class="players">
-      <div class="players-area">
+      <div ng-hide="market.state == 'published' || market.state == 'opened'" class="players-area">
+        This market is closed - no player sales are available.
+      </div>
+      <div ng-show="market.state == 'published' || market.state == 'opened'" class="players-area">
         <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
 
         <div class="dropdown" >
@@ -50,7 +53,7 @@
             <div class="cta-container clearfix">
     <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
     <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.reset('/market/' + rosters.currentRoster.market_id)" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
-    <a class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Enter Again</a>
+    <a class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'" ng-click="enterAgain()">Enter Again</a>
   </div>
         </div>
       </div>

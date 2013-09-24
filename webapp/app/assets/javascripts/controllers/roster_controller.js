@@ -125,7 +125,16 @@ angular.module("app.controllers")
   };
 
   $scope.isInPlay = function(roster) {
+    if (!$scope.market) { return; }
     return $scope.market.state != 'published' && roster.state != 'in_progress';
+  };
+
+  $scope.enterAgain = function() {
+    $scope.fs.contests.join(rosters.currentRoster.contest_type.id, rosters.currentRoster.id).then(function(data) {
+      rosters.selectRoster(data);
+      flash.success = "Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!";
+      $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
+    });
   };
 
 }]);
