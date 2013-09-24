@@ -18,6 +18,8 @@
 + (UIColor *)brightBlue;
 + (UIColor *)greyBorder;
 + (UIColor *)lightGrey;
++ (UIColor *)greyTextColor;
++ (UIColor *)darkGreyTextColor;
 + (UIColor *)black;
 + (UIColor *)brightRed;
 + (UIColor *)yellowErrorColor;

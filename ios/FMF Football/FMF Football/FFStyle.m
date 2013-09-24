@@ -70,6 +70,16 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return [UIColor yellowColor]; // TODO: this
 }
 
++ (UIColor *)greyTextColor
+{
+    return [UIColor colorWithWhite:.4 alpha:1];
+}
+
++ (UIColor *)darkGreyTextColor
+{
+    return [UIColor colorWithWhite:.25 alpha:1];
+}
+
 // FONTS ---------------------------------------------------------------------------------------------------------------
 
 + (UIFont *)blockFont:(int)size

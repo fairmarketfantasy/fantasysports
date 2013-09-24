@@ -11,10 +11,13 @@
 
 @implementation FFUser
 
-@dynamic userId;
 @dynamic name;
 @dynamic imageUrl;
 @dynamic balance;
+@dynamic numberOfWins;
+@dynamic points;
+@dynamic joinDate;
+@dynamic winPercentile;
 
 + (NSString *)tableName { return @"ffuser"; }
 
