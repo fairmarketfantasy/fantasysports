@@ -43,7 +43,6 @@
         [left setImage:[UIImage imageNamed:@"leftshuttle.png"] forState:UIControlStateNormal];
         left.frame = CGRectMake(0, 0, 35, frame.size.height);
         left.autoresizingMask = UIViewAutoresizingNone;
-//        left.backgroundColor = [UIColor greenColor];
         [left addTarget:self action:@selector(left:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:left];
         
@@ -51,7 +50,6 @@
         [right setImage:[UIImage imageNamed:@"rightshuttle.png"] forState:UIControlStateNormal];
         right.frame = CGRectMake(frame.size.width-35, 0, 35, frame.size.height);
         right.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-//        right.backgroundColor = [UIColor yellowColor];
         [right addTarget:self action:@selector(right:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:right];
     }
@@ -143,6 +141,17 @@
 //    cell.backgroundColor = [UIColor blueColor];
     
     return cell;
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    NSArray *visible = [self.collectionView indexPathsForVisibleItems];
+    if (visible && visible.count) {
+        NSIndexPath *path = visible[0];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+            [self.delegate didUpdateToNewMarket:self.markets[path.item]];
+        }
+    }
 }
 
 @end

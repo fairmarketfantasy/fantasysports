@@ -11,7 +11,7 @@
 #import "FFMarket.h"
 #import "FFMarketSelector.h"
 
-@interface FFHomeViewController () <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface FFHomeViewController () <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate, FFMarketSelectorDelegate>
 
 @property (nonatomic) SBDataObjectResultSet *markets;
 @property (nonatomic) UITableView *tableView;
@@ -77,8 +77,13 @@
     _markets.delegate = self;
     [_markets refresh];
     
+    _marketSelector.markets = [_markets allObjects];
+    
     [_tableView reloadData];
 }
+
+#pragma mark -
+#pragma mark ffmarketselector delegate
 
 #pragma mark -
 #pragma mark uitableview delegate/datasource
@@ -109,81 +114,11 @@
 
 // REFRESH
 
-- (void)resultSetWillReload:(SBDataObjectResultSet *)resultSet
-{
-    
-}
-
 - (void)resultSetDidReload:(SBDataObjectResultSet *)resultSet
 {
-//    [self.refreshControl endRefreshing];
-//    _fetchedDate = [NSDate date];
-//    NSString *lastUpdated = [_fetchedDate description];
-//    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:
-//                                           [NSString stringWithFormat:NSLocalizedString(@"Last Updated %@", nil), lastUpdated]];
-//    [self.session setPreferenceValue:lastUpdated forKey:@"LAST_INBOX_UPDATE"];
     if (resultSet == _markets) {
         _marketSelector.markets = [resultSet allObjects];
     }
-}
-
-- (void)resultSet:(SBDataObjectResultSet *)resultSet didFailToReload:(NSError *)error
-{
-//    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Failed To Refresh", nil)];
-//    CTAlertView *alert = [[CTAlertView alloc] initWithError:error title:nil cancelButtonTitle:@"Dismiss" okayButtonTitle:nil autoHide:YES];
-//    alert.onCancel = ^ (id _) {
-//        [self.refreshControl endRefreshing];
-//    };
-//    [alert showInView:self.parentViewController.view];
-}
-
-// LOAD MORE
-
-- (void)resultSetWillLoadMore:(SBDataObjectResultSet *)resultSet
-{
-//    _loadingMore = YES;
-}
-
-- (void)resultSetDidLoadMore:(SBDataObjectResultSet *)resultSet
-{
-//    _loadingMore = NO;
-}
-
-- (void)resultSet:(SBDataObjectResultSet *)resultSet didFailToLoadMore:(NSError *)error
-{
-//    _loadingMore = NO;
-    //CTAlertView *alert = [[CTAlertView alloc] initWithError:error title:nil cancelButtonTitle:@"Dismiss" okayButtonTitle:nil autoHide:YES];
-    //[alert showInView:self.parentViewController.view];
-}
-
-// UPDATES
-
-- (void)resultSetWillBeginUpdating:(SBDataObjectResultSet *)resultSet
-{
-//    [self.tableView beginUpdates];
-}
-
-- (void)resultSet:(SBDataObjectResultSet *)resultSet didInsertObjectAtIndexes:(NSIndexSet *)indexes
-{
-//    NSMutableArray *paths = [NSMutableArray arrayWithCapacity:indexes.count];
-//    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-//        [paths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
-//    }];
-//    [self.tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
-}
-
-- (void)resultSet:(SBDataObjectResultSet *)resultSet didRemoveObjectAtIndexes:(NSIndexSet *)indexes
-{
-//    NSMutableArray *paths = [NSMutableArray arrayWithCapacity:indexes.count];
-//    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-//        [paths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
-//    }];
-//    [self.tableView deleteRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
-}
-
-- (void)resultSetWillEndUpdating:(SBDataObjectResultSet *)resultSet
-{
-//    [self.tableView endUpdates];
 }
 
 @end
