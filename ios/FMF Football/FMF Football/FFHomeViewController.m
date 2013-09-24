@@ -10,12 +10,14 @@
 #import "FFSessionViewController.h"
 #import "FFMarket.h"
 #import "FFMarketSelector.h"
+#import "FFUserBitView.h"
 
 @interface FFHomeViewController () <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate, FFMarketSelectorDelegate>
 
 @property (nonatomic) SBDataObjectResultSet *markets;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) FFMarketSelector *marketSelector;
+@property (nonatomic) FFUserBitView *userBit;
 
 @end
 
@@ -54,7 +56,10 @@
     [self.view addSubview:_tableView];
     
     _marketSelector = [[FFMarketSelector alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    _marketSelector.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _marketSelector.delegate = self;
+    
+    _userBit = [[FFUserBitView alloc] initWithFrame:CGRectMake(0, 0, 320, 122)];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -79,6 +84,8 @@
     
     _marketSelector.markets = [_markets allObjects];
     
+    _userBit.user = (FFUser *)self.session.user;
+    
     [_tableView reloadData];
 }
 
@@ -95,7 +102,15 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return 2;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 0) {
+        return 122;
+    }
+    return 44;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -103,10 +118,21 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MarketSelectorCell" forIndexPath:indexPath];
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
-    _marketSelector.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [cell.contentView addSubview:_marketSelector];
+    if (indexPath.row == 0) {
+        [cell.contentView addSubview:_userBit];
+    } else if (indexPath.row == 1) {
+        [cell.contentView addSubview:_marketSelector];
+    }
 
     return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row > 3) {
+        return NO;
+    }
+    return YES;
 }
 
 #pragma mark -
