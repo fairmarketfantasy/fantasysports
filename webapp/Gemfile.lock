@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/MustWin/stripe-ruby-mock
-  revision: e6e1a905c2a6158403da502ad1cad3157f1292df
-  ref: e6e1a905c2a6158403da502ad1cad3157f1292df
+  revision: 6d5815f953e4168df5af4a78cb48b2f13f008365
+  ref: 6d5815f953e4168df5af4a78cb48b2f13f008365
   specs:
     mustwin-stripe-ruby-mock (1.8.5.00)
       dante (>= 0.1.5)
