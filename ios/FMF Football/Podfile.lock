@@ -28,6 +28,7 @@ PODS:
   - sqlite3/common (3.8.0.2)
 
 DEPENDENCIES:
+  - ISO8601DateFormatter (~> 0.6)
   - Reachability (~> 3.0.0)
   - SBData (from `/Users/samuelsutch/dev/shadowart/projects/SBData/SBData/SBData.podspec`)
   - SparkInspector
