@@ -1,11 +1,16 @@
 angular.module("app.controllers")
-.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', function($scope, rosters, $routeParams, $location, marketService) {
+.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', function($scope, rosters, $routeParams, $location, marketService, flash) {
   $scope.marketService = marketService;
 
   marketService.fetchUpcoming($routeParams.market_id);
   $scope.rosters = rosters;
 
   $scope.isCurrent = function(market){
+    if (!marketService.currentMarket) {
+      flash.error = "Oops, we couldn't find that market, pick a different one.";
+      $location.path('/');
+      return;
+    }
     return (market.id === marketService.currentMarket.id);
   };
 
