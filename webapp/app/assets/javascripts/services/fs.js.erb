@@ -31,7 +31,7 @@ angular.module('app.services')
       }
     };
   }])
-  .factory('fsAPIInterceptor', ['$q', 'flash', '$injector', function($q, flash, $injector) {
+  .factory('fsAPIInterceptor', ['$q', 'flash', '$injector', '$location', function($q, flash, $injector, $location) {
 // TODO: this is where jsonH stuff will go
     return function(promise) {
       var success = function(resp) {
@@ -43,7 +43,7 @@ angular.module('app.services')
         }
         return resp;
       }, failure = function(resp) {
-        if(resp.status == 402) {
+        if (resp.status == 402) {
           var currentUserService = $injector.get('currentUserService');
           currentUserService.addFundsModal();
         }
