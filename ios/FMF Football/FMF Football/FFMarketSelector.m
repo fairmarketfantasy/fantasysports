@@ -27,32 +27,59 @@
         _flowLayout.minimumInteritemSpacing = 0;
         _flowLayout.minimumLineSpacing = 0;
         
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(15, 0, frame.size.width-30, frame.size.height)
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(35, 0, frame.size.width-70, frame.size.height)
                                              collectionViewLayout:_flowLayout];
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
         _collectionView.pagingEnabled = YES;
-        _collectionView.backgroundColor = [UIColor redColor];
+        _collectionView.backgroundColor = [FFStyle white];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _collectionView.alwaysBounceHorizontal = YES;
+        _collectionView.showsHorizontalScrollIndicator = NO;
         [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"MarketCell"];
         [self addSubview:_collectionView];
         
         UIButton *left = [UIButton buttonWithType:UIButtonTypeCustom];
-        [left setTitle:@"<" forState:UIControlStateNormal];
-        left.frame = CGRectMake(0, 0, 15, frame.size.height);
+        [left setImage:[UIImage imageNamed:@"leftshuttle.png"] forState:UIControlStateNormal];
+        left.frame = CGRectMake(0, 0, 35, frame.size.height);
         left.autoresizingMask = UIViewAutoresizingNone;
-        left.backgroundColor = [UIColor greenColor];
+//        left.backgroundColor = [UIColor greenColor];
+        [left addTarget:self action:@selector(left:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:left];
         
         UIButton *right = [UIButton buttonWithType:UIButtonTypeCustom];
-        [right setTitle:@">" forState:UIControlStateNormal];
-        right.frame = CGRectMake(frame.size.width-15, 0, 15, frame.size.height);
+        [right setImage:[UIImage imageNamed:@"rightshuttle.png"] forState:UIControlStateNormal];
+        right.frame = CGRectMake(frame.size.width-35, 0, 35, frame.size.height);
         right.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-        right.backgroundColor = [UIColor yellowColor];
+//        right.backgroundColor = [UIColor yellowColor];
+        [right addTarget:self action:@selector(right:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:right];
     }
     return self;
+}
+
+- (void)left:(UIButton *)sender
+{
+    NSArray *selected = [self.collectionView indexPathsForVisibleItems];
+    if (selected && selected.count) {
+        NSIndexPath *path = [selected objectAtIndex:0];
+        if (path.item == 0) return; // already at the first item
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:path.item-1 inSection:0]
+                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                            animated:YES];
+    }
+}
+
+- (void)right:(UIButton *)sender
+{
+    NSArray *selected = [self.collectionView indexPathsForVisibleItems];
+    if (selected && selected.count) {
+        NSIndexPath *path = [selected lastObject];
+        if (path.item == (self.markets.count - 1)) return; // already at last item
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:path.item+1 inSection:0]
+                                    atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                            animated:YES];
+    }
 }
 
 - (void)setMarkets:(NSArray *)markets
@@ -67,7 +94,7 @@
     
     NSInteger loc = [_markets indexOfObject:selectedMarket];
     if (loc != NSNotFound) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:loc inSection:1]
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:loc inSection:0]
                                     atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                             animated:YES];
     }
@@ -104,25 +131,18 @@
     marketLabel.font = [FFStyle regularFont:16];
     marketLabel.textColor = [FFStyle black];
     marketLabel.backgroundColor = [UIColor clearColor];
+    marketLabel.textAlignment = NSTextAlignmentCenter;
+    
     if (market.name && market.name.length) {
         marketLabel.text = market.name;
     } else {
-        marketLabel.text = @"Unknown Market Name";
+        marketLabel.text = NSLocalizedString(@"Market", nil);
     }
     
     [cell.contentView addSubview:marketLabel];
-    cell.backgroundColor = [UIColor blueColor];
+//    cell.backgroundColor = [UIColor blueColor];
     
     return cell;
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 @end
