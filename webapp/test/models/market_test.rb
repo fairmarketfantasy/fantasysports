@@ -304,6 +304,8 @@ class MarketTest < ActiveSupport::TestCase
     end
 
     assert_equal 31, Roster.finished.count
+
+    Contest.all.each{|c| TransactionRecord.validate_contest(c) }
   end
 
   describe Market do
