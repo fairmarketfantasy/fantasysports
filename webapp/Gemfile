@@ -57,7 +57,7 @@ group :test do
   gem "factory_girl_rails", "~> 4.0"
   # gem 'mustwin-stripe-ruby-mock', '>= 1.8.5.00'
   # gem 'mustwin-stripe-ruby-mock', path: '/Users/dylan/code/stripe-ruby-mock'
-  gem 'mustwin-stripe-ruby-mock', git: 'git://github.com/MustWin/stripe-ruby-mock', ref: '648d725473c9c157491de1ac6e50643bd3140447'
+  gem 'mustwin-stripe-ruby-mock', git: 'git://github.com/MustWin/stripe-ruby-mock', ref: 'e6e1a905c2a6158403da502ad1cad3157f1292df'
 end
 
 group :development do
