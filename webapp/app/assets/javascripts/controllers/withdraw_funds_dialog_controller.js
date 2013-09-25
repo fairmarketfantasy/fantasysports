@@ -74,6 +74,8 @@ angular.module("app.controllers")
       $scope.startTransferSpinner = false;
       window.App.currentUser.balance = resp.balance;
       $scope.withdrawAmount = null;
+    }, function(resp){
+      $scope.startTransferSpinner = false;
     });
   };
 

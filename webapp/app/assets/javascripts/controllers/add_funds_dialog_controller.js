@@ -63,6 +63,9 @@ angular.module("app.controllers")
           $scope.focusAmount = true;
           flash.success = "Success, your card was saved.";
         }
+      }, function(resp){
+        //failure
+        $scope.saveCardSpinner = false;
       });
     } else {
       $scope.saveCardSpinner = false;
@@ -136,6 +139,9 @@ angular.module("app.controllers")
       $scope.close();
       flash.success = "Success, $" + $scope.chargeAmt + " added your your account.";
       $scope.chargeAmt = null;
+      $scope.addMoneySpinner = false;
+    }, function(resp){
+      //failure
       $scope.addMoneySpinner = false;
     });
   };
