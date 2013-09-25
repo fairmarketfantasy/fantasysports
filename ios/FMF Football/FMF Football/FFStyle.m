@@ -80,6 +80,11 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return [UIColor colorWithWhite:.25 alpha:1];
 }
 
++ (UIColor *)tableViewSeparatorColor
+{
+    return [UIColor colorWithWhite:.85 alpha:1];
+}
+
 // FONTS ---------------------------------------------------------------------------------------------------------------
 
 + (UIFont *)blockFont:(int)size
@@ -105,6 +110,11 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
 + (UIFont *)boldFont:(int)size
 {
     return [UIFont fontWithName:@"HelveticaNeue-Bold" size:size];
+}
+
++ (UIFont *)mediumFont:(int)size
+{
+    return [UIFont fontWithName:@"HelveticaNeue-Medium" size:size];
 }
 
 // UI CONSTRUCTORS -----------------------------------------------------------------------------------------------------

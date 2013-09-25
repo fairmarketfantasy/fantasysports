@@ -69,6 +69,7 @@
 		15AFA2E417EBFBEF00374613 /* helmet-placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AFA2E317EBFBEF00374613 /* helmet-placeholder@2x.png */; };
 		15AFA2E617EBFDF000374613 /* player-cutout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AFA2E517EBFDF000374613 /* player-cutout@2x.png */; };
 		15D756AE17F29AA90080AE4F /* FFContest.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756AD17F29AA90080AE4F /* FFContest.m */; };
+		15D756B017F2A7F80080AE4F /* contestcircle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15D756AF17F2A7F80080AE4F /* contestcircle@2x.png */; };
 		52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE50D82857A45A1B1A9DFA0 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -173,6 +174,7 @@
 		15AFA2E517EBFDF000374613 /* player-cutout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-cutout@2x.png"; sourceTree = "<group>"; };
 		15D756AC17F29AA90080AE4F /* FFContest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFContest.h; sourceTree = "<group>"; };
 		15D756AD17F29AA90080AE4F /* FFContest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContest.m; sourceTree = "<group>"; };
+		15D756AF17F2A7F80080AE4F /* contestcircle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contestcircle@2x.png"; sourceTree = "<group>"; };
 		CCE50D82857A45A1B1A9DFA0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -347,6 +349,7 @@
 				15AAC74E17F1F83B007313EF /* rightshuttle@2x.png */,
 				15AAC74F17F1F83B007313EF /* leftshuttle@2x.png */,
 				1589CEAB17E96FE600A7233E /* darkgreen.png */,
+				15D756AF17F2A7F80080AE4F /* contestcircle@2x.png */,
 				15AAC75517F20866007313EF /* avatarmask@2x.png */,
 				15AAC75717F20EFE007313EF /* defaultuser@2x.png */,
 				1589CEB017E9804000A7233E /* bannerclose@2x.png */,
@@ -499,6 +502,7 @@
 				15AAC75617F20866007313EF /* avatarmask@2x.png in Resources */,
 				15AAC75817F20EFE007313EF /* defaultuser@2x.png in Resources */,
 				15AAC76317F26603007313EF /* backbtn@2x.png in Resources */,
+				15D756B017F2A7F80080AE4F /* contestcircle@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
