@@ -46,6 +46,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
     UIView *leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
     UIButton *gmenu = [UIButton buttonWithType:UIButtonTypeCustom];
     [gmenu setImage:[UIImage imageNamed:@"globalmenu.png"] forState:UIControlStateNormal];
+    [gmenu addTarget:self action:@selector(globalMenuButton:) forControlEvents:UIControlEventTouchUpInside];
     gmenu.frame = CGRectMake(-2, -2, 35, 44);
     [leftView addSubview:gmenu];
     UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
@@ -101,6 +102,17 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
     _userBit.user = (FFUser *)self.session.user;
     
     [_tableView reloadData];
+}
+
+- (void)globalMenuButton:(UIButton *)button
+{
+    if (self.menuController) {
+        [button setImage:[UIImage imageNamed:@"globalmenu.png"] forState:UIControlStateNormal];
+        [self hideMenuController];
+    } else {
+        [button setImage:[UIImage imageNamed:@"globalmenu-highlighted.png"] forState:UIControlStateNormal];
+        [self showMenuController];
+    }
 }
 
 #pragma mark -
