@@ -37,13 +37,14 @@
         _circle.center = CGPointMake(80, 45);
         [self addSubview:_circle];
         
-        _label = [[UILabel alloc] initWithFrame:CGRectMake(15, 80, 130, 50)];
-        _label.numberOfLines = 2;
-        _label.font = [FFStyle mediumFont:14];
+        _label = [[UILabel alloc] initWithFrame:CGRectMake(15, 85, 130, 50)];
+        _label.numberOfLines = 3;
+        _label.font = [FFStyle regularFont:14];
+
         _label.backgroundColor = [UIColor clearColor];
         _label.textAlignment = NSTextAlignmentCenter;
         _label.textColor = [FFStyle greyTextColor];
-        _label.adjustsFontSizeToFitWidth = YES;
+//        _label.adjustsFontSizeToFitWidth = YES;
 //        _label.adjustsLetterSpacingToFitWidth = YES;
         [self addSubview:_label];
     }
@@ -60,8 +61,8 @@
                          contest.iconUrl];
     [_img setImageWithURL:[NSURL URLWithString:iconUrl]];
     _label.text = contest.contestDescription;
-    [_label sizeToFit];
-    _label.center = CGPointMake(80, CGRectGetMaxY(_img.frame)+45);
+//    [_label sizeToFit];
+//    _label.center = CGPointMake(80, CGRectGetMaxY(_img.frame)+45);
 }
 
 @end
@@ -89,7 +90,7 @@
 {
     FFContestBitView *view;
     if (!_views[@(idx)]) {
-        view = [[FFContestBitView alloc] initWithFrame:CGRectMake(idx*160, 0, 160, 135)];
+        view = [[FFContestBitView alloc] initWithFrame:CGRectMake(idx*160, 0, 160, 145)];
         view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         _views[@(idx)] = view;
     } else {
@@ -109,8 +110,13 @@
         bit.contest = contests[i];
         [self.contentView addSubview:bit];
         
-        UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(bit.frame), 11, 1, 113)];
+        UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(bit.frame), 11, 1, 123)];
         sep.backgroundColor = [FFStyle tableViewSeparatorColor];
+        [self.contentView addSubview:sep];
+        
+        sep = [[UIView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(self.contentView.frame)-1, 300, 1)];
+        sep.backgroundColor = [FFStyle tableViewSeparatorColor];
+        sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [self.contentView addSubview:sep];
     }
 }
