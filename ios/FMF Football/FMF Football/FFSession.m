@@ -12,9 +12,12 @@
 
 - (id)deserializeJSON:(id)JSON
 {
-    if (JSON[@"data"] && [JSON[@"data"] isKindOfClass:[NSArray class]] && [JSON[@"data"] count]) {
+    if (JSON[@"data"] && [JSON[@"data"] isKindOfClass:[NSArray class]]) {
         // it's JSONH
         NSArray *lst = JSON[@"data"];
+        if (!lst.count) {
+            return [NSArray array];
+        }
         NSMutableArray *ret = [NSMutableArray array];
         int klength = [lst[0] integerValue];
         int i = 1 + klength;

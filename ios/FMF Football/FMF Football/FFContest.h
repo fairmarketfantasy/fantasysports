@@ -11,15 +11,16 @@
 
 @interface FFContest : SBDataObject
 
-@property (nonatomic) NSString  *awayTeam;
-@property (nonatomic) NSString  *gameDay;
-@property (nonatomic) SBDate    *gameTime;
-@property (nonatomic) NSString  *homeTeam;
-@property (nonatomic) NSString  *network;
-@property (nonatomic) NSString  *seasonType;
-@property (nonatomic) SBInteger *seasonWeek;
-@property (nonatomic) SBInteger *seasonYear;
-@property (nonatomic) NSString  *statsId;
-@property (nonatomic) NSString  *scheduled;
+@property (nonatomic) SBFloat   *buyIn;
+@property (nonatomic) NSString  *description;
+@property (nonatomic) NSString  *iconUrl;
+@property (nonatomic) NSString  *marketId;
+@property (nonatomic) SBInteger *maxEntries;
+@property (nonatomic) NSString  *name;
+@property (nonatomic) NSString  *payoutDescription;
+@property (nonatomic) NSString  *payoutStructure;
+@property (nonatomic) NSInteger *isPrivate;
+@property (nonatomic) SBFloat   *rake;
+@property (nonatomic) NSString  *userId;
 
 @end

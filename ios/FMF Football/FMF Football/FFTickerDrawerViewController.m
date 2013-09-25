@@ -111,7 +111,7 @@
     }
     [self.session authorizedJSONRequestWithMethod:@"GET" path:@"/players/mine" paramters:@{} success:
      ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
-          if (![JSON[@"data"] count]) {
+          if (![JSON count]) {
               // there were no results from mine, so get the public one
               [self.session authorizedJSONRequestWithMethod:@"GET" path:@"/players/public" paramters:@{} success:
                ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
