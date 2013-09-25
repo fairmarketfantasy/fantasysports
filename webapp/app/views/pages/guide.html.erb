@@ -143,7 +143,7 @@
     </div>
   </div> <!-- /row -->
 
-  <div class="demo-row">
+  <div class="demo-row" ng-controller="DropdownController">
     <div class="demo-title">
       <h3 class="demo-panel-title">Dropdowns</h3>
     </div>
@@ -368,6 +368,33 @@
 
   <div class="demo-row">
     <div class="demo-title">
+      <h3 class="demo-panel-title">Date Picker</h3>
+    </div>
+    <div class="demo-col">
+      <div ng-controller="DatepickerDemoCtrl">
+          <pre>Selected date is: <em>{{dt | date:'fullDate' }}</em></pre>
+
+          <div class="well well-small pull-left">
+            <datepicker ng-model='dt' min="minDate" show-weeks="showWeeks"></datepicker>
+          </div>
+
+          <div class="form-horizontal">
+            <input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="dt" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" />
+            <button class="btn" ng-click="open()"><i class="icon-calendar"></i></button>
+          </div>
+
+          <hr />
+          <button class="btn btn-small btn-inverse" ng-click="today()">Today</button>
+          <button class="btn btn-small btn-inverse" ng-click="setDate('2009-08-24')">2009-08-24</button>
+          <button class="btn btn-small btn-success" ng-click="toggleWeeks()" tooltip="For inline datepicker">Toggle Weeks</button>
+          <button class="btn btn-small btn-danger" ng-click="clear()">Clear</button>
+          <button class="btn btn-small" ng-click="toggleMin()" tooltip="After today restriction">Min date</button>
+      </div>
+    </div>
+  </div><!-- /row-->
+
+  <div class="demo-row">
+    <div class="demo-title">
       <h3 class="demo-panel-title">Input Variants</h3>
     </div>
     <div class="demo-col">
@@ -493,11 +520,12 @@
   
   <div class="demo-row">
     <div class="demo-title">
-      <h3 class="demo-panel-title">Autocomplete</h3>
+      <h3 class="demo-panel-title">Typeahead</h3>
     </div>
     <div class="demo-col">
-      <div class="control-group">
-        <input class="span3" type="text" data-provide="typeahead" data-items="4" data-source='["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]' />
+      <div ng-controller='TypeaheadController'>
+        <pre>Model: {{selected| json}}</pre>
+        <input type="text" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8">
       </div>
     </div>
   </div><!-- /row -->
@@ -1162,24 +1190,32 @@
       <h3 class="demo-panel-title">Progress bars &amp; Sliders</h3>
     </div>
     <div class="demo-content">
-      <div class="progress">
-        <div class="bar" style="width: 45%;"></div>
-      </div>
-      <br/>
-      <div class="progress">
-        <div class="bar" style="width: 40%;"></div>
-        <div class="bar bar-warning" style="width: 10%;"></div>
-        <div class="bar bar-danger" style="width: 10%;"></div>
-        <div class="bar bar-success" style="width: 10%;"></div>
-        <div class="bar bar-info" style="width: 10%;"></div>
-      </div>
-      <br/>
-      <div id="slider" class="ui-slider"></div>
-      <br/>
-      <div id="slider2" class="ui-slider"></div>
-      <div id="slider3" class="ui-slider">
-        <span class="ui-slider-value first">$500</span>
-        <span class="ui-slider-value last">$1000</span>
+      <div ng-controller="ProgressController" class="well">
+        <h2>Static</h2>
+        <div class="row-fluid">
+            <div class="span4"><progress percent="55"></progress></div>
+            <div class="span4"><progress percent="22" class="progress-warning progress-striped"></progress></div>
+            <div class="span4"><progress percent="88" class="progress-danger progress-striped active"></div>
+        </div>
+
+        <h2>Dynamic <button class="btn btn-primary" type="button" ng-click="random()">Randomize</button></h2>
+        <pre>Value: {{dynamic}}</pre>
+        <progress percent="dynamic"></progress>
+
+        <small><em>No animation</em></small>
+        <progress percent="dynamic" class="progress-success" animate="false"></progress>
+
+        <small><em>Object (changes type based on value)</em></small>
+        <progress percent="dynamicObject" class="progress-striped active"></progress>
+
+        <h2>Stacked <button class="btn btn-primary" type="button" ng-click="randomStacked()">Randomize</button></h2>
+        <small><em>Array values with automatic types</em></small>
+        <pre>Value: {{stackedArray}}</pre>
+        <progress percent="stackedArray" auto-type="true"></progress>
+
+        <small><em>Objects</em></small>
+        <pre>Value: {{stacked}}</pre>
+        <progress percent="stacked"></progress>
       </div>
     </div>
   </div> <!-- /sliders -->
@@ -1195,27 +1231,36 @@
         <a href="javascript://" class='btn btn-primary' tooltip="Hello. I’m the Tooltip." tooltip-placement='right'>Right tip </a>
         <a href="javascript://" class='btn btn-primary' tooltip="Hello. I’m the Tooltip." tooltip-placement='bottom'>Bottom tip </a>
       </div>
-      <div class="demo-popovers">
-        <div class="popover right">
-          <div class="arrow"></div>
-          <h3 class="popover-title">Smooth Title</h3>
-          <div class="popover-content">
-            <p>And here's some amazing content. It's very engaging. <br/>Right?</p>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="demo-col">
-      <div class="demo-tooltips">
-        <p data-toggle="tooltip" title="Here is a sample of a long dark tooltip. Hell yeah."></p>
-      </div>
-      <div class="demo-popovers">
-        <div class="popover left">
-          <div class="arrow"></div>
-          <h3 class="popover-title">Smooth Title</h3>
-          <div class="popover-content">
-            <p>And here's some amazing content. It's very engaging. <br/>Right?</p>
+      <div ng-controller="PopoverController">
+        <div class="well">
+          <div>
+            <h4>Dynamic</h4>
+            <div>Dynamic Popover : <input type="text" ng-model="dynamicPopoverText"></div>
+            <div>Dynamic Popover Popup Text: <input type="text" ng-model="dynamicPopover"></div>
+            <div>Dynamic Popover Popup Title: <input type="text" ng-model="dynamicPopoverTitle"></div>
+            <div><button popover="{{dynamicPopover}}" popover-title="{{dynamicPopoverTitle}}" class="btn">{{dynamicPopoverText}}</button></div>
+          </div>
+          <div>
+            <h4>Positional</h4>
+            <button popover-placement="top" popover="On the Top!" class="btn">Top</button>
+            <button popover-placement="left" popover="On the Left!" class="btn">Left</button>
+            <button popover-placement="right" popover="On the Right!" class="btn">Right</button>
+            <button popover-placement="bottom" popover="On the Bottom!" class="btn">Bottom</button>
+          </div>
+          <div>
+            <h4>Triggers</h4>
+            <button popover="I appeared on mouse enter!" popover-trigger="mouseenter" class="btn">Mouseenter</button>
+            <input type="text" value="Click me!"
+              popover="I appeared on focus! Click away and I'll vanish..."
+              popover-trigger="focus" />
+          </div>
+          <div>
+            <h4>Other</h4>
+            <button Popover-animation="true" popover="I fade in and out!" class="btn">fading</button>
+            <button popover="I have a title!" popover-title="The title." class="btn">title</button>
           </div>
         </div>
       </div>
@@ -2169,46 +2214,39 @@
     </div><!-- /.demo-content -->
   </div><!-- /.demo-row -->
   
+
   <div class="demo-row">
     <div class="demo-title">
       <h3 class="demo-panel-title">Carousel</h3>
     </div>
-    <div class="demo-content-wide">
-      <div id="myCarousel" class="carousel slide">
-        <ol class="carousel-indicators">
-          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-          <li data-target="#myCarousel" data-slide-to="1"></li>
-          <li data-target="#myCarousel" data-slide-to="2"></li>
-        </ol>
-        <!-- Carousel items -->
-        <div class="carousel-inner">
-          <div class="active item">
-            <img src="assets/carousel/image-01.jpg" alt="" />
+    <div class="demo-content">
+      <div ng-controller="CarouselDemoCtrl">
+        <carousel interval="myInterval">
+          <slide ng-repeat="slide in slides" active="slide.active">
+            <img ng-src="{{slide.image}}" style="margin:auto;">
             <div class="carousel-caption">
-              <h4>Thumbnail label</h4>
-              <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec.</p>
+              <h4>Slide {{$index}}</h4>
+              <p>{{slide.text}}</p>
             </div>
+          </slide>
+        </carousel>
+        <div class="row-fluid">
+          <div class="span6">
+            <ul>
+              <li ng-repeat="slide in slides">
+                <button class="btn btn-mini" ng-class="{'btn-info': !slide.active, 'btn-success': slide.active}" ng-disabled="slide.active" ng-click="slide.active = true">select</button>
+                {{$index}}: {{slide.text}}
+              </li>
+            </ul>
+            <a class="btn" ng-click="addSlide()">Add Slide</a>
           </div>
-          <div class="item">
-            <img src="assets/carousel/image-02.jpg" alt="" />
-            <div class="carousel-caption">
-              <h4>Thumbnail label</h4>
-              <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec.</p>
-            </div>
-          </div>
-          <div class="item">
-            <img src="assets/carousel/image-03.jpg" alt="" />
-            <div class="carousel-caption">
-              <h4>Thumbnail label</h4>
-              <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec.</p>
-            </div>
+          <div class="span6">
+            Interval, in milliseconds: <input type="number" ng-model="myInterval">
+            <br />Enter a negative number to stop the interval.
           </div>
         </div>
-        <!-- Carousel nav -->
-        <a class="carousel-control fui-arrow-left left" href="#myCarousel" data-slide="prev"></a>
-        <a class="carousel-control fui-arrow-right right" href="#myCarousel" data-slide="next"></a>
       </div>
-    </div><!-- /.demo-content -->
+    </div>
   </div><!-- /.demo-row -->
 
   <div class="demo-row demo-illustrations">
