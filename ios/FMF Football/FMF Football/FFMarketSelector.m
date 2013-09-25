@@ -65,6 +65,10 @@
         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:path.item-1 inSection:0]
                                     atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                             animated:YES];
+        _selectedMarket = self.markets[path.item-1];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+            [self.delegate didUpdateToNewMarket:_selectedMarket];
+        }
     }
 }
 
@@ -77,6 +81,10 @@
         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:path.item+1 inSection:0]
                                     atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                             animated:YES];
+        _selectedMarket = self.markets[path.item+1];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+            [self.delegate didUpdateToNewMarket:_selectedMarket];
+        }
     }
 }
 
@@ -84,6 +92,35 @@
 {
     _markets = markets;
     [self.collectionView reloadData];
+    
+    // try to carry over the selected network...
+    if (_selectedMarket) {
+        // if it exists...
+        if ([_markets containsObject:_selectedMarket]) {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:
+                                                          [_markets indexOfObject:_selectedMarket] inSection:0]
+                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+                                                animated:YES];
+        } else if (_markets.count) {
+            // otherwise select the first one
+            _selectedMarket = _markets[0];
+            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+                [self.delegate didUpdateToNewMarket:_selectedMarket];
+            }
+        } else {
+            // or if there are no markets at all set it to nil
+            _selectedMarket = nil;
+            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+                [self.delegate didUpdateToNewMarket:_selectedMarket];
+            }
+        }
+    } else if (_markets.count) {
+        // if nothing was selected just select the first
+        self.selectedMarket = _markets[0];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+            [self.delegate didUpdateToNewMarket:_selectedMarket];
+        }
+    }
 }
 
 - (void)setSelectedMarket:(FFMarket *)selectedMarket
@@ -138,7 +175,6 @@
     }
     
     [cell.contentView addSubview:marketLabel];
-//    cell.backgroundColor = [UIColor blueColor];
     
     return cell;
 }
