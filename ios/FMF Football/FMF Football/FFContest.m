@@ -11,36 +11,38 @@
 
 @implementation FFContest
 
-@dynamic awayTeam;
-@dynamic gameDay;
-@dynamic gameTime;
-@dynamic homeTeam;
-@dynamic network;
-@dynamic seasonType;
-@dynamic seasonWeek;
-@dynamic seasonYear;
-@dynamic statsId;
-@dynamic scheduled;
+@dynamic buyIn;
+@dynamic description;
+@dynamic iconUrl;
+@dynamic marketId;
+@dynamic maxEntries;
+@dynamic name;
+@dynamic payoutDescription;
+@dynamic payoutStructure;
+@dynamic isPrivate;
+@dynamic rake;
+@dynamic userId;
 
 + (NSString *)tableName { return @"ffcontest"; }
 
 + (void)load { [self registerModel:self]; }
 
-+ (NSString *)bulkPath { return @"/games"; }
++ (NSString *)bulkPath { return @"/contests"; }
 
 + (NSDictionary *)propertyToNetworkKeyMapping
 {
     return [[super propertyToNetworkKeyMapping] dictionaryByMergingWithDictionary:@{
-                @"awayTeam":    @"away_team",
-                @"gameDay":     @"game_day",
-                @"gameTime":    @"game_time",
-                @"homeTeam":    @"home_team",
-                @"network":     @"network",
-                @"seasonType":  @"season_type",
-                @"seasonWeek":  @"season_week",
-                @"seasonYear":  @"season_year",
-                @"statsId":     @"stats_id",
-                @"status":      @"status"
+                @"buyIn":               @"buy_in",
+                @"description":         @"description",
+                @"iconUrl":             @"icon_url",
+                @"marketId":            @"market_id",
+                @"maxEntries":          @"max_entries",
+                @"name":                @"name",
+                @"payoutDescription":   @"payout_description",
+                @"payoutStructure":     @"payout_structure",
+                @"isPrivate":           @"private",
+                @"rake":                @"rake",
+                @"userId":              @"userId"
             }];
 }
 

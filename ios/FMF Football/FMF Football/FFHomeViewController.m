@@ -121,7 +121,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
         _contests.delegate = nil;
         _contests = nil;
     }
-    NSString *path = [NSString stringWithFormat:@"/games/for_market/%@", market.objId];
+    NSString *path = [NSString stringWithFormat:@"/contests/for_market/%@", market.objId];
     _contests = [FFContest getBulkPath:path withSession:self.session authorized:YES];
     _contests.delegate = self;
     [_contests refresh];
@@ -176,6 +176,8 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ContestCell" forIndexPath:indexPath];
         FFContest2UpTabelViewCell *c_cell = (FFContest2UpTabelViewCell *)cell;
+        FFContest *contest = [_contests objectAtIndex:indexPath.row];
+        
         c_cell.contentView.backgroundColor = [UIColor redColor];
     }
 

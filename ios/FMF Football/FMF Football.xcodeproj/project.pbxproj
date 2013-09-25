@@ -63,11 +63,12 @@
 		15AAC75E17F261F4007313EF /* FFCreateGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15AAC75D17F261F4007313EF /* FFCreateGameViewController.m */; };
 		15AAC76117F26202007313EF /* FFFindGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15AAC76017F26202007313EF /* FFFindGameViewController.m */; };
 		15AAC76317F26603007313EF /* backbtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AAC76217F26603007313EF /* backbtn@2x.png */; };
-		15AAC76617F28294007313EF /* FFContest.m in Sources */ = {isa = PBXBuildFile; fileRef = 15AAC76517F28294007313EF /* FFContest.m */; };
+		15AAC76617F28294007313EF /* FFGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 15AAC76517F28294007313EF /* FFGame.m */; };
 		15AAC76A17F287EB007313EF /* FFContest2UpTabelViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 15AAC76917F287EB007313EF /* FFContest2UpTabelViewCell.m */; };
 		15AFA2E217EBFB9C00374613 /* helmet-placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AFA2E117EBFB9C00374613 /* helmet-placeholder.png */; };
 		15AFA2E417EBFBEF00374613 /* helmet-placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AFA2E317EBFBEF00374613 /* helmet-placeholder@2x.png */; };
 		15AFA2E617EBFDF000374613 /* player-cutout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AFA2E517EBFDF000374613 /* player-cutout@2x.png */; };
+		15D756AE17F29AA90080AE4F /* FFContest.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756AD17F29AA90080AE4F /* FFContest.m */; };
 		52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE50D82857A45A1B1A9DFA0 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -163,13 +164,15 @@
 		15AAC75F17F26202007313EF /* FFFindGameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFFindGameViewController.h; sourceTree = "<group>"; };
 		15AAC76017F26202007313EF /* FFFindGameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFFindGameViewController.m; sourceTree = "<group>"; };
 		15AAC76217F26603007313EF /* backbtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backbtn@2x.png"; sourceTree = "<group>"; };
-		15AAC76417F28294007313EF /* FFContest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFContest.h; sourceTree = "<group>"; };
-		15AAC76517F28294007313EF /* FFContest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContest.m; sourceTree = "<group>"; };
+		15AAC76417F28294007313EF /* FFGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFGame.h; sourceTree = "<group>"; };
+		15AAC76517F28294007313EF /* FFGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFGame.m; sourceTree = "<group>"; };
 		15AAC76817F287EB007313EF /* FFContest2UpTabelViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFContest2UpTabelViewCell.h; sourceTree = "<group>"; };
 		15AAC76917F287EB007313EF /* FFContest2UpTabelViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContest2UpTabelViewCell.m; sourceTree = "<group>"; };
 		15AFA2E117EBFB9C00374613 /* helmet-placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "helmet-placeholder.png"; sourceTree = "<group>"; };
 		15AFA2E317EBFBEF00374613 /* helmet-placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "helmet-placeholder@2x.png"; sourceTree = "<group>"; };
 		15AFA2E517EBFDF000374613 /* player-cutout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-cutout@2x.png"; sourceTree = "<group>"; };
+		15D756AC17F29AA90080AE4F /* FFContest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFContest.h; sourceTree = "<group>"; };
+		15D756AD17F29AA90080AE4F /* FFContest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContest.m; sourceTree = "<group>"; };
 		CCE50D82857A45A1B1A9DFA0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -213,8 +216,10 @@
 				152B545C17EBDB3900C4B7F7 /* FFSession.m */,
 				1538D30E17F0E95800B41E4F /* FFMarket.h */,
 				1538D30F17F0E95800B41E4F /* FFMarket.m */,
-				15AAC76417F28294007313EF /* FFContest.h */,
-				15AAC76517F28294007313EF /* FFContest.m */,
+				15AAC76417F28294007313EF /* FFGame.h */,
+				15AAC76517F28294007313EF /* FFGame.m */,
+				15D756AC17F29AA90080AE4F /* FFContest.h */,
+				15D756AD17F29AA90080AE4F /* FFContest.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -578,8 +583,9 @@
 				15AAC75B17F22792007313EF /* FFGameButtonView.m in Sources */,
 				15AAC75E17F261F4007313EF /* FFCreateGameViewController.m in Sources */,
 				15AAC76117F26202007313EF /* FFFindGameViewController.m in Sources */,
-				15AAC76617F28294007313EF /* FFContest.m in Sources */,
+				15AAC76617F28294007313EF /* FFGame.m in Sources */,
 				15AAC76A17F287EB007313EF /* FFContest2UpTabelViewCell.m in Sources */,
+				15D756AE17F29AA90080AE4F /* FFContest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
