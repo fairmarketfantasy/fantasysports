@@ -12,6 +12,8 @@
 #import "FFMarketSelector.h"
 #import "FFUserBitView.h"
 #import "FFGameButtonView.h"
+#import "FFContest.h"
+#import "FFContest2UpTabelViewCell.h"
 
 @interface FFHomeViewController ()
 <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
@@ -22,6 +24,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
 @property (nonatomic) FFMarketSelector *marketSelector;
 @property (nonatomic) FFUserBitView *userBit;
 @property (nonatomic) FFGameButtonView *gameButtonView;
+@property (nonatomic) SBDataObjectResultSet *contests;
 
 @end
 
@@ -57,6 +60,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
     _tableView.dataSource = self;
     _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"MarketSelectorCell"];
+    [_tableView registerClass:[FFContest2UpTabelViewCell class] forCellReuseIdentifier:@"ContestCell"];
     [self.view addSubview:_tableView];
     
     _marketSelector = [[FFMarketSelector alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
@@ -111,40 +115,68 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
 #pragma mark -
 #pragma mark ffmarketselector delegate
 
+- (void)didUpdateToNewMarket:(FFMarket *)market
+{
+    if (_contests) {
+        _contests.delegate = nil;
+        _contests = nil;
+    }
+    NSString *path = [NSString stringWithFormat:@"/games/for_market/%@", market.objId];
+    _contests = [FFContest getBulkPath:path withSession:self.session authorized:YES];
+    _contests.delegate = self;
+    [_contests refresh];
+}
+
 #pragma mark -
 #pragma mark uitableview delegate/datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 3;
+    if (section == 0) {
+        return 3;
+    }
+    if (_contests && [_contests count]) {
+        return [_contests count] / 2 + [_contests count] % 2;
+    }
+    return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
-        return 122;
-    } else if (indexPath.row == 2) {
-        return 58;
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            return 122;
+        } else if (indexPath.row == 2) {
+            return 58;
+        }
+        return 44;
     }
-    return 44;
+    return 128;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MarketSelectorCell" forIndexPath:indexPath];
-    [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    if (indexPath.row == 0) {
-        [cell.contentView addSubview:_userBit];
-    } else if (indexPath.row == 1) {
-        [cell.contentView addSubview:_marketSelector];
-    } else if (indexPath.row == 2) {
-        [cell.contentView addSubview:_gameButtonView];
+    UITableViewCell *cell;
+    if (indexPath.section == 0) {        
+        cell = [tableView dequeueReusableCellWithIdentifier:@"MarketSelectorCell" forIndexPath:indexPath];
+        [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        
+        if (indexPath.row == 0) {
+            [cell.contentView addSubview:_userBit];
+        } else if (indexPath.row == 1) {
+            [cell.contentView addSubview:_marketSelector];
+        } else if (indexPath.row == 2) {
+            [cell.contentView addSubview:_gameButtonView];
+        }
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"ContestCell" forIndexPath:indexPath];
+        FFContest2UpTabelViewCell *c_cell = (FFContest2UpTabelViewCell *)cell;
+        c_cell.contentView.backgroundColor = [UIColor redColor];
     }
 
     return cell;
@@ -167,6 +199,9 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
 {
     if (resultSet == _markets) {
         _marketSelector.markets = [resultSet allObjects];
+    } else if (resultSet == _contests) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
 
