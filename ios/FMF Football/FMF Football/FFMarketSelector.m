@@ -160,11 +160,11 @@
     
     FFMarket *market = self.markets[indexPath.item];
     
-    UILabel *marketLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width,
+    UILabel *marketLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width/3.0f,
                                                                      cell.contentView.frame.size.height)];
     marketLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     marketLabel.font = [FFStyle regularFont:16];
-    marketLabel.textColor = [FFStyle black];
+    marketLabel.textColor = [FFStyle darkGreyTextColor];
     marketLabel.backgroundColor = [UIColor clearColor];
     marketLabel.textAlignment = NSTextAlignmentCenter;
     
@@ -174,6 +174,18 @@
         marketLabel.text = NSLocalizedString(@"Market", nil);
     }
     
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"E d @ h:m a"];
+    
+    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width/3.0f, 0, cell.contentView.frame.size.width/3.0f*2.0f, cell.contentView.frame.size.height)];
+    timeLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
+    timeLabel.font = [FFStyle mediumFont:16];
+    timeLabel.textColor = [FFStyle black];
+    timeLabel.textAlignment = NSTextAlignmentCenter;
+    timeLabel.backgroundColor = [UIColor clearColor];
+    timeLabel.text = [dateFormatter stringFromDate:market.startedAt];
+    
+    [cell.contentView addSubview:timeLabel];
     [cell.contentView addSubview:marketLabel];
     
     return cell;
