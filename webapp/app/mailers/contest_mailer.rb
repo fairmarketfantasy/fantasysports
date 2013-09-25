@@ -3,6 +3,8 @@ class ContestMailer < ActionMailer::Base
 
   def invite(contest, email)
     @code = contest.invitation_code
+    @contest = contest
+    @owner   = contest.owner
     envelope = {
       to: email,
       subject: "Invitation from #{contest.owner.name} to join this contest."
