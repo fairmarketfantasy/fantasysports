@@ -11,13 +11,17 @@
 #import "FFMarket.h"
 #import "FFMarketSelector.h"
 #import "FFUserBitView.h"
+#import "FFGameButtonView.h"
 
-@interface FFHomeViewController () <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate, FFMarketSelectorDelegate>
+@interface FFHomeViewController ()
+<SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
+FFMarketSelectorDelegate, FFGameButtonViewDelegate>
 
 @property (nonatomic) SBDataObjectResultSet *markets;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) FFMarketSelector *marketSelector;
 @property (nonatomic) FFUserBitView *userBit;
+@property (nonatomic) FFGameButtonView *gameButtonView;
 
 @end
 
@@ -39,10 +43,10 @@
     UIView *leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
     UIButton *gmenu = [UIButton buttonWithType:UIButtonTypeCustom];
     [gmenu setImage:[UIImage imageNamed:@"globalmenu.png"] forState:UIControlStateNormal];
-    gmenu.frame = CGRectMake(-2, 0, 35, 44);
+    gmenu.frame = CGRectMake(-2, -2, 35, 44);
     [leftView addSubview:gmenu];
     UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
-    logo.frame = CGRectMake(32, 15, 150, 19);
+    logo.frame = CGRectMake(32, 13, 150, 19);
     [leftView addSubview:logo];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftView];
@@ -60,6 +64,9 @@
     _marketSelector.delegate = self;
     
     _userBit = [[FFUserBitView alloc] initWithFrame:CGRectMake(0, 0, 320, 122)];
+    
+    _gameButtonView = [[FFGameButtonView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+    _gameButtonView.delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -90,6 +97,18 @@
 }
 
 #pragma mark -
+#pragma mark gamebuttonview delegate
+- (void)gameButtonViewCreateGame
+{
+    [self performSegueWithIdentifier:@"GotoCreateGame" sender:self];
+}
+
+- (void)gameButtonViewJoinGame
+{
+    [self performSegueWithIdentifier:@"GotoFindGame" sender:self];
+}
+
+#pragma mark -
 #pragma mark ffmarketselector delegate
 
 #pragma mark -
@@ -102,13 +121,15 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 2;
+    return 3;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row == 0) {
         return 122;
+    } else if (indexPath.row == 2) {
+        return 58;
     }
     return 44;
 }
@@ -122,6 +143,8 @@
         [cell.contentView addSubview:_userBit];
     } else if (indexPath.row == 1) {
         [cell.contentView addSubview:_marketSelector];
+    } else if (indexPath.row == 2) {
+        [cell.contentView addSubview:_gameButtonView];
     }
 
     return cell;
@@ -129,7 +152,7 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row > 3) {
+    if (indexPath.row < 3) {
         return NO;
     }
     return YES;

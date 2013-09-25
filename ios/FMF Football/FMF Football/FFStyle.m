@@ -47,7 +47,7 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
 
 + (UIColor *)brightBlue
 {
-    return [UIColor colorWithRed:59.0/255.0 green:104.0/255.0 blue:199.0/255.0 alpha:1];
+    return [UIColor colorWithRed:59.0/255.0 green:104.0/255.0 blue:1 alpha:1];
 }
 
 + (UIColor *)lightGrey
@@ -138,7 +138,19 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
 
 + (UIBarButtonItem *)backBarItemForController:(UIViewController *)controller
 {
+    UIView *leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    UIButton *gmenu = [UIButton buttonWithType:UIButtonTypeCustom];
+    [gmenu setImage:[UIImage imageNamed:@"backbtn.png"] forState:UIControlStateNormal];
+    [gmenu addTarget:controller.navigationController
+              action:@selector(popViewControllerAnimated:)
+    forControlEvents:UIControlEventTouchUpInside];
+    gmenu.frame = CGRectMake(-2, 0, 35, 44);
+    [leftView addSubview:gmenu];
+    UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
+    logo.frame = CGRectMake(32, 13, 150, 19);
+    [leftView addSubview:logo];
     
+    return [[UIBarButtonItem alloc] initWithCustomView:leftView];
 }
 
 + (UIColor *)lighterColorForColor:(UIColor *)c
