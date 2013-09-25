@@ -359,7 +359,7 @@ BEGIN
 	PERFORM 1 FROM games_markets gm JOIN games g on g.stats_id = gm.game_stats_id
 		WHERE market_id = _market_id AND g.game_time > CURRENT_TIMESTAMP;
 	IF NOT FOUND THEN
-		UPDATE markets SET state = 'closed', closed_at = CURRENT_TIMESTAMP WHERE id = _market_id;
+		UPDATE markets SET state = 'closed' WHERE id = _market_id;
 		RAISE NOTICE 'market % has no upcoming games -- will be closed', _market_id;
 		return;
 	END IF;
