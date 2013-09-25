@@ -37,6 +37,21 @@
             </objects>
             <point key="canvasLocation" x="-87" y="985"/>
         </scene>
+        <!--Create Game View Controller-->
+        <scene sceneID="6Fi-Hw-asP">
+            <objects>
+                <viewController id="o10-6a-SgK" customClass="FFCreateGameViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Rl0-wR-98p">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="vXR-OR-Yz8"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="D9I-uc-4o5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="883" y="620"/>
+        </scene>
         <!--Home View Controller-->
         <scene sceneID="Vzx-Xm-1VD">
             <objects>
@@ -47,12 +62,48 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="T3d-ve-48l"/>
+                    <connections>
+                        <segue destination="o10-6a-SgK" kind="push" identifier="GotoCreateGame" id="zmq-Yt-SVd"/>
+                        <segue destination="grh-Mm-aP7" kind="push" identifier="GotoFindGame" id="jEr-zx-nET"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="364" y="985"/>
         </scene>
+        <!--Find Game View Controller-->
+        <scene sceneID="U8n-i5-qSF">
+            <objects>
+                <viewController id="grh-Mm-aP7" customClass="FFFindGameViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="r4U-M0-ZUK">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="fHj-Jx-rMF"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="RpM-QX-u65" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="883" y="1334"/>
+        </scene>
     </scenes>
+    <classes>
+        <class className="FFBaseViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFBaseViewController.h"/>
+        </class>
+        <class className="FFCreateGameViewController" superclassName="FFBaseViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFCreateGameViewController.h"/>
+        </class>
+        <class className="FFFindGameViewController" superclassName="FFBaseViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFFindGameViewController.h"/>
+        </class>
+        <class className="FFHomeViewController" superclassName="FFBaseViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFHomeViewController.h"/>
+        </class>
+        <class className="FFSessionViewController" superclassName="FFBaseViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFSessionViewController.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
