@@ -14,6 +14,7 @@
 #import "FFGameButtonView.h"
 #import "FFContest.h"
 #import "FFContest2UpTabelViewCell.h"
+#import "FFContestViewController.h"
 
 @interface FFHomeViewController ()
 <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
@@ -115,12 +116,20 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
     }
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"GotoContest"]) {
+        ((FFContestViewController *)segue.destinationViewController).contest = segue.context[0];
+        ((FFContestViewController *)segue.destinationViewController).market = segue.context[1];
+    }
+}
+
 #pragma mark -
 #pragma mark ffcontest cell delegate
 
 - (void)didChooseContest:(FFContest *)contest
 {
-    [self performSegueWithIdentifier:@"GotoContest" sender:self];
+    [self performSegueWithIdentifier:@"GotoContest" sender:self context:@[contest, _marketSelector.selectedMarket]];
 }
 
 #pragma mark -
