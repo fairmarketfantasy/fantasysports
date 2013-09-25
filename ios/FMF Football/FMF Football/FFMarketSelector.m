@@ -27,7 +27,7 @@
         _flowLayout.minimumInteritemSpacing = 0;
         _flowLayout.minimumLineSpacing = 0;
         
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(35, 0, frame.size.width-70, frame.size.height)
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(45, 0, frame.size.width-90, frame.size.height)
                                              collectionViewLayout:_flowLayout];
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
@@ -41,14 +41,14 @@
         
         UIButton *left = [UIButton buttonWithType:UIButtonTypeCustom];
         [left setImage:[UIImage imageNamed:@"leftshuttle.png"] forState:UIControlStateNormal];
-        left.frame = CGRectMake(0, 0, 35, frame.size.height);
+        left.frame = CGRectMake(10, 0, 35, frame.size.height);
         left.autoresizingMask = UIViewAutoresizingNone;
         [left addTarget:self action:@selector(left:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:left];
         
         UIButton *right = [UIButton buttonWithType:UIButtonTypeCustom];
         [right setImage:[UIImage imageNamed:@"rightshuttle.png"] forState:UIControlStateNormal];
-        right.frame = CGRectMake(frame.size.width-35, 0, 35, frame.size.height);
+        right.frame = CGRectMake(frame.size.width-35-10, 0, 35, frame.size.height);
         right.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         [right addTarget:self action:@selector(right:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:right];
