@@ -50,7 +50,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="D9I-uc-4o5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="883" y="620"/>
+            <point key="canvasLocation" x="917" y="312"/>
         </scene>
         <!--Home View Controller-->
         <scene sceneID="Vzx-Xm-1VD">
@@ -65,11 +65,27 @@
                     <connections>
                         <segue destination="o10-6a-SgK" kind="push" identifier="GotoCreateGame" id="zmq-Yt-SVd"/>
                         <segue destination="grh-Mm-aP7" kind="push" identifier="GotoFindGame" id="jEr-zx-nET"/>
+                        <segue destination="p8F-hD-oki" kind="push" identifier="GotoContest" id="TY5-BO-lyU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="364" y="985"/>
+        </scene>
+        <!--Contest View Controller-->
+        <scene sceneID="71A-Hu-P0F">
+            <objects>
+                <viewController id="p8F-hD-oki" customClass="FFContestViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="qsG-FL-iam">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="wCm-06-7DN"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rVk-lt-2Nf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1326" y="660"/>
         </scene>
         <!--Find Game View Controller-->
         <scene sceneID="U8n-i5-qSF">
@@ -84,12 +100,15 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RpM-QX-u65" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="883" y="1334"/>
+            <point key="canvasLocation" x="917" y="1508"/>
         </scene>
     </scenes>
     <classes>
         <class className="FFBaseViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FFBaseViewController.h"/>
+        </class>
+        <class className="FFContestViewController" superclassName="FFBaseViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFContestViewController.h"/>
         </class>
         <class className="FFCreateGameViewController" superclassName="FFBaseViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FFCreateGameViewController.h"/>
