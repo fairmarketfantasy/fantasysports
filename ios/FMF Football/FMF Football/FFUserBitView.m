@@ -41,7 +41,7 @@
         
         _name = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, 205, 35)];
         _name.backgroundColor = [UIColor clearColor];
-        _name.font = [FFStyle regularFont:18];
+        _name.font = [FFStyle regularFont:21];
         _name.textColor = [FFStyle darkGreyTextColor];
         _name.text = @"username";
         [self addSubview:_name];

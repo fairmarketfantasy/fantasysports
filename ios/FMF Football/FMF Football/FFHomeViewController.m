@@ -59,6 +59,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"MarketSelectorCell"];
     [_tableView registerClass:[FFContest2UpTabelViewCell class] forCellReuseIdentifier:@"ContestCell"];
     [self.view addSubview:_tableView];
@@ -79,7 +80,9 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
     cont2.view.backgroundColor = [UIColor redColor];
     [self showControllerInDrawer:self.sessionController.maximizedTicker
          minimizedViewController:self.sessionController.minimizedTicker
-                        animated:NO];
+                          inView:self.view
+                 resizeTableView:self.tableView
+                        animated:YES];
     
     // uncomment to test the banner
 //    double delayInSeconds = 2.0;
@@ -156,7 +159,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
         }
         return 44;
     }
-    return 128;
+    return 135;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -176,11 +179,18 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ContestCell" forIndexPath:indexPath];
         FFContest2UpTabelViewCell *c_cell = (FFContest2UpTabelViewCell *)cell;
-        FFContest *contest = [_contests objectAtIndex:indexPath.row];
-        
-        c_cell.contentView.backgroundColor = [UIColor redColor];
+        NSMutableArray *contests = [NSMutableArray arrayWithObject:[_contests objectAtIndex:indexPath.row*2]];
+        if ((indexPath.row * 2 + 1) != _contests.count) {
+            [contests addObject:[_contests objectAtIndex:indexPath.row * 2 + 1]];
+        }
+        c_cell.contests = contests;
     }
 
+    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(cell.contentView.frame), 300, 1)];
+    sep.backgroundColor = [FFStyle tableViewSeparatorColor];
+    sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+    [cell.contentView addSubview:sep];
+    
     return cell;
 }
 

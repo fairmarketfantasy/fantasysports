@@ -16,7 +16,7 @@
 
 
 @interface FFBaseViewController () <UIGestureRecognizerDelegate>
-
+@property (nonatomic) UITableView *_resizingTableView;
 @end
 
 
@@ -110,7 +110,20 @@
     [self showControllerInDrawer:vc minimizedViewController:mvc inView:self.view animated:NO];
 }
 
-- (void)showControllerInDrawer:(FFDrawerViewController *)vc minimizedViewController:(FFDrawerViewController *)mvc inView:(UIView *)view animated:(BOOL)animated
+- (void)showControllerInDrawer:(FFDrawerViewController *)vc
+       minimizedViewController:(FFDrawerViewController *)mvc
+                        inView:(UIView *)view
+               resizeTableView:(UITableView *)tableView
+                      animated:(BOOL)animated
+{
+    __resizingTableView = tableView;
+    [self showControllerInDrawer:vc minimizedViewController:mvc animated:YES];
+}
+
+- (void)showControllerInDrawer:(FFDrawerViewController *)vc
+       minimizedViewController:(FFDrawerViewController *)mvc
+                        inView:(UIView *)view
+                      animated:(BOOL)animated
 {
     if (_minimizedDrawerController || _drawerController) {
         NSLog(@"trying to show a drawer when there already is one %@ %@", vc, mvc);
@@ -161,6 +174,9 @@
         view.frame = CGRectMake(0, viewFrame.size.height, viewFrame.size.width, DRAWER_HEIGHT);
         mview.frameLocked = YES; // ss: hackity hack
         view.frame = viewFrame;
+        if (__resizingTableView) {
+            __resizingTableView.contentInset = UIEdgeInsetsMake(0, 0, DRAWER_HEIGHT, 0);
+        }
     };
     
     void (^finish)(BOOL) = ^(BOOL finished) {
@@ -217,6 +233,9 @@
         _drawerController.view.superview.alpha = 1;
         _minimizedDrawerController.view.superview.frame = CGRectOffset(_minimizedDrawerController.view.superview.frame, 0, diff);
         _minimizedDrawerController.view.superview.alpha = 0;
+        if (__resizingTableView) {
+            __resizingTableView.contentInset = UIEdgeInsetsMake(0, 0, DRAWER_HEIGHT, 0);
+        }
     };
     void (^finish)(BOOL) = ^(BOOL finished) {
         if (finished) {
@@ -265,6 +284,9 @@
         _drawerController.view.superview.alpha = 0;
         _minimizedDrawerController.view.superview.frame = CGRectOffset(_minimizedDrawerController.view.superview.frame, 0, diff);
         _minimizedDrawerController.view.superview.alpha = 1;
+        if (__resizingTableView) {
+            __resizingTableView.contentInset = UIEdgeInsetsMake(0, 0, DRAWER_MINIMIZED_HEIGHT, 0);
+        }
     };
     
     void (^finish)(BOOL) = ^(BOOL finished) {
@@ -308,6 +330,9 @@
         drawer.view.superview.superview.frame = viewRect;
         drawer.view.superview.frame = CGRectOffset(drawer.view.superview.frame, 0, diff);
         drawer.view.superview.alpha = 0;
+        if (__resizingTableView) {
+            __resizingTableView.contentInset = UIEdgeInsetsZero;
+        }
     };
     void (^finish)(BOOL) = ^(BOOL finished) {
         if (finished) {

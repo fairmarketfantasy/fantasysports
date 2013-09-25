@@ -12,7 +12,7 @@
 @interface FFContest : SBDataObject
 
 @property (nonatomic) SBFloat   *buyIn;
-@property (nonatomic) NSString  *description;
+@property (nonatomic) NSString  *contestDescription;
 @property (nonatomic) NSString  *iconUrl;
 @property (nonatomic) NSString  *marketId;
 @property (nonatomic) SBInteger *maxEntries;

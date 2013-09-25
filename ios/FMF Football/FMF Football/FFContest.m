@@ -12,7 +12,7 @@
 @implementation FFContest
 
 @dynamic buyIn;
-@dynamic description;
+@dynamic contestDescription;
 @dynamic iconUrl;
 @dynamic marketId;
 @dynamic maxEntries;
@@ -33,7 +33,7 @@
 {
     return [[super propertyToNetworkKeyMapping] dictionaryByMergingWithDictionary:@{
                 @"buyIn":               @"buy_in",
-                @"description":         @"description",
+                @"contestDescription":  @"description",
                 @"iconUrl":             @"icon_url",
                 @"marketId":            @"market_id",
                 @"maxEntries":          @"max_entries",

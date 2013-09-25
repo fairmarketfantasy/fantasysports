@@ -11,4 +11,6 @@
 
 @interface FFContest2UpTabelViewCell : UITableViewCell
 
+@property (nonatomic) NSArray *contests;
+
 @end
