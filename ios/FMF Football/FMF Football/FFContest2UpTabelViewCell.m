@@ -10,7 +10,7 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
 
-@interface FFContestBitView : UIView
+@interface FFContestBitView : UIButton
 
 @property (nonatomic) FFContest *contest;
 
@@ -30,23 +30,25 @@
         _img.contentMode = UIViewContentModeScaleAspectFit;
         _img.center = CGPointMake(80, 45);
         _img.alpha = .5;
+        _img.userInteractionEnabled = NO;
         [self addSubview:_img];
         
         UIImageView *_circle = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"contestcircle.png"]];
         _circle.frame = CGRectMake(0, 0, 69, 69);
         _circle.center = CGPointMake(80, 45);
+        _circle.userInteractionEnabled = NO;
         [self addSubview:_circle];
         
         _label = [[UILabel alloc] initWithFrame:CGRectMake(15, 85, 130, 50)];
         _label.numberOfLines = 3;
         _label.font = [FFStyle regularFont:14];
-
+        _label.userInteractionEnabled = NO;
         _label.backgroundColor = [UIColor clearColor];
         _label.textAlignment = NSTextAlignmentCenter;
         _label.textColor = [FFStyle greyTextColor];
-//        _label.adjustsFontSizeToFitWidth = YES;
-//        _label.adjustsLetterSpacingToFitWidth = YES;
         [self addSubview:_label];
+        
+        [self setBackgroundImage:[UIImage imageNamed:@"40-percent.png"] forState:UIControlStateHighlighted];
     }
     return self;
 }
@@ -55,14 +57,11 @@
 {
     _contest = contest;
     
-    
     NSString *iconUrl = [NSString stringWithFormat:@"%@%@",
                          [[NSBundle mainBundle] objectForInfoDictionaryKey:SBApiBaseURLKey],
                          contest.iconUrl];
     [_img setImageWithURL:[NSURL URLWithString:iconUrl]];
     _label.text = contest.contestDescription;
-//    [_label sizeToFit];
-//    _label.center = CGPointMake(80, CGRectGetMaxY(_img.frame)+45);
 }
 
 @end
@@ -92,6 +91,8 @@
     if (!_views[@(idx)]) {
         view = [[FFContestBitView alloc] initWithFrame:CGRectMake(idx*160, 0, 160, 145)];
         view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+        view.tag = idx; // view tag is the index of the contest shown
+        [view addTarget:self action:@selector(buttonPress:) forControlEvents:UIControlEventTouchUpInside];
         _views[@(idx)] = view;
     } else {
         view = _views[@(idx)];
@@ -118,6 +119,13 @@
         sep.backgroundColor = [FFStyle tableViewSeparatorColor];
         sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [self.contentView addSubview:sep];
+    }
+}
+
+- (void)buttonPress:(UIButton *)butt
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didChooseContest:)]) {
+        [self.delegate didChooseContest:self.contests[butt.tag]];
     }
 }
 

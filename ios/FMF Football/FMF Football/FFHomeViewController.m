@@ -17,7 +17,7 @@
 
 @interface FFHomeViewController ()
 <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
-FFMarketSelectorDelegate, FFGameButtonViewDelegate>
+FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDelegate>
 
 @property (nonatomic) SBDataObjectResultSet *markets;
 @property (nonatomic) UITableView *tableView;
@@ -116,6 +116,14 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
 }
 
 #pragma mark -
+#pragma mark ffcontest cell delegate
+
+- (void)didChooseContest:(FFContest *)contest
+{
+    [self performSegueWithIdentifier:@"GotoContest" sender:self];
+}
+
+#pragma mark -
 #pragma mark gamebuttonview delegate
 - (void)gameButtonViewCreateGame
 {
@@ -202,6 +210,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ContestCell" forIndexPath:indexPath];
         FFContest2UpTabelViewCell *c_cell = (FFContest2UpTabelViewCell *)cell;
+        c_cell.delegate = self;
         NSMutableArray *contests = [NSMutableArray arrayWithObject:[_contests objectAtIndex:indexPath.row*2]];
         if ((indexPath.row * 2 + 1) != _contests.count) {
             [contests addObject:[_contests objectAtIndex:indexPath.row * 2 + 1]];

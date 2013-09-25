@@ -73,6 +73,7 @@
 		15D756B317F37E7A0080AE4F /* FFMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756B217F37E7A0080AE4F /* FFMenuViewController.m */; };
 		15D756B517F3881C0080AE4F /* disclosuredark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15D756B417F3881C0080AE4F /* disclosuredark@2x.png */; };
 		15D756B717F389570080AE4F /* globalmenu-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15D756B617F389570080AE4F /* globalmenu-highlighted@2x.png */; };
+		15D756BA17F38F000080AE4F /* FFContestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756B917F38F000080AE4F /* FFContestViewController.m */; };
 		52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE50D82857A45A1B1A9DFA0 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -182,6 +183,8 @@
 		15D756B217F37E7A0080AE4F /* FFMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFMenuViewController.m; sourceTree = "<group>"; };
 		15D756B417F3881C0080AE4F /* disclosuredark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "disclosuredark@2x.png"; sourceTree = "<group>"; };
 		15D756B617F389570080AE4F /* globalmenu-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu-highlighted@2x.png"; sourceTree = "<group>"; };
+		15D756B817F38F000080AE4F /* FFContestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFContestViewController.h; sourceTree = "<group>"; };
+		15D756B917F38F000080AE4F /* FFContestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContestViewController.m; sourceTree = "<group>"; };
 		CCE50D82857A45A1B1A9DFA0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -345,6 +348,8 @@
 				15AAC76017F26202007313EF /* FFFindGameViewController.m */,
 				15D756B117F37E7A0080AE4F /* FFMenuViewController.h */,
 				15D756B217F37E7A0080AE4F /* FFMenuViewController.m */,
+				15D756B817F38F000080AE4F /* FFContestViewController.h */,
+				15D756B917F38F000080AE4F /* FFContestViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -604,6 +609,7 @@
 				15AAC76A17F287EB007313EF /* FFContest2UpTabelViewCell.m in Sources */,
 				15D756AE17F29AA90080AE4F /* FFContest.m in Sources */,
 				15D756B317F37E7A0080AE4F /* FFMenuViewController.m in Sources */,
+				15D756BA17F38F000080AE4F /* FFContestViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
