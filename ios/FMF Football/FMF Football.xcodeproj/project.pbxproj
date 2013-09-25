@@ -70,6 +70,9 @@
 		15AFA2E617EBFDF000374613 /* player-cutout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AFA2E517EBFDF000374613 /* player-cutout@2x.png */; };
 		15D756AE17F29AA90080AE4F /* FFContest.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756AD17F29AA90080AE4F /* FFContest.m */; };
 		15D756B017F2A7F80080AE4F /* contestcircle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15D756AF17F2A7F80080AE4F /* contestcircle@2x.png */; };
+		15D756B317F37E7A0080AE4F /* FFMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756B217F37E7A0080AE4F /* FFMenuViewController.m */; };
+		15D756B517F3881C0080AE4F /* disclosuredark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15D756B417F3881C0080AE4F /* disclosuredark@2x.png */; };
+		15D756B717F389570080AE4F /* globalmenu-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15D756B617F389570080AE4F /* globalmenu-highlighted@2x.png */; };
 		52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE50D82857A45A1B1A9DFA0 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -175,6 +178,10 @@
 		15D756AC17F29AA90080AE4F /* FFContest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFContest.h; sourceTree = "<group>"; };
 		15D756AD17F29AA90080AE4F /* FFContest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContest.m; sourceTree = "<group>"; };
 		15D756AF17F2A7F80080AE4F /* contestcircle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contestcircle@2x.png"; sourceTree = "<group>"; };
+		15D756B117F37E7A0080AE4F /* FFMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFMenuViewController.h; sourceTree = "<group>"; };
+		15D756B217F37E7A0080AE4F /* FFMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFMenuViewController.m; sourceTree = "<group>"; };
+		15D756B417F3881C0080AE4F /* disclosuredark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "disclosuredark@2x.png"; sourceTree = "<group>"; };
+		15D756B617F389570080AE4F /* globalmenu-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu-highlighted@2x.png"; sourceTree = "<group>"; };
 		CCE50D82857A45A1B1A9DFA0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -336,6 +343,8 @@
 				15AAC75D17F261F4007313EF /* FFCreateGameViewController.m */,
 				15AAC75F17F26202007313EF /* FFFindGameViewController.h */,
 				15AAC76017F26202007313EF /* FFFindGameViewController.m */,
+				15D756B117F37E7A0080AE4F /* FFMenuViewController.h */,
+				15D756B217F37E7A0080AE4F /* FFMenuViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -346,6 +355,7 @@
 				15A2379A17E2813700225942 /* 0-percent.png */,
 				15A2379B17E2813700225942 /* 40-percent.png */,
 				15AAC76217F26603007313EF /* backbtn@2x.png */,
+				15D756B417F3881C0080AE4F /* disclosuredark@2x.png */,
 				15AAC74E17F1F83B007313EF /* rightshuttle@2x.png */,
 				15AAC74F17F1F83B007313EF /* leftshuttle@2x.png */,
 				1589CEAB17E96FE600A7233E /* darkgreen.png */,
@@ -354,6 +364,7 @@
 				15AAC75717F20EFE007313EF /* defaultuser@2x.png */,
 				1589CEB017E9804000A7233E /* bannerclose@2x.png */,
 				1589CEA917E96E1400A7233E /* globalmenu@2x.png */,
+				15D756B617F389570080AE4F /* globalmenu-highlighted@2x.png */,
 				15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */,
 				15A2378A17E26E9900225942 /* fmf-logo@2x.png */,
 				15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */,
@@ -503,6 +514,8 @@
 				15AAC75817F20EFE007313EF /* defaultuser@2x.png in Resources */,
 				15AAC76317F26603007313EF /* backbtn@2x.png in Resources */,
 				15D756B017F2A7F80080AE4F /* contestcircle@2x.png in Resources */,
+				15D756B517F3881C0080AE4F /* disclosuredark@2x.png in Resources */,
+				15D756B717F389570080AE4F /* globalmenu-highlighted@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,6 +603,7 @@
 				15AAC76617F28294007313EF /* FFGame.m in Sources */,
 				15AAC76A17F287EB007313EF /* FFContest2UpTabelViewCell.m in Sources */,
 				15D756AE17F29AA90080AE4F /* FFContest.m in Sources */,
+				15D756B317F37E7A0080AE4F /* FFMenuViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

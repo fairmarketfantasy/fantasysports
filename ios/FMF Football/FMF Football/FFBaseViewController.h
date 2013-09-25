@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FFDrawerViewController.h"
+#import "FFMenuViewController.h"
 
 @interface FFBaseViewController : UIViewController
 
@@ -15,6 +16,7 @@
 @property (nonatomic, readonly) FFDrawerViewController *drawerController;
 @property (nonatomic, readonly) FFDrawerViewController *minimizedDrawerController;
 @property (nonatomic, readonly) BOOL drawerIsMinimized;
+@property (nonatomic, readonly) FFMenuViewController *menuController;
 
 - (void)showBanner:(NSString *)text target:(id)target selector:(SEL)sel animated:(BOOL)animated;
 - (void)closeBannerAnimated:(BOOL)animated;
@@ -37,5 +39,8 @@
 - (void)maximizeDrawerAnimated:(BOOL)animated;
 - (void)minimizeDrawerAnimated:(BOOL)animated;
 - (void)closeDrawerAnimated:(BOOL)animated;
+
+- (void)showMenuController;
+- (void)hideMenuController;
 
 @end

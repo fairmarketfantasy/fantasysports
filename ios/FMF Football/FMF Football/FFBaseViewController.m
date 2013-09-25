@@ -11,12 +11,16 @@
 
 
 @interface FFDrawerBackingView : UIView
+
 @property (nonatomic) BOOL frameLocked;
+
 @end
 
 
 @interface FFBaseViewController () <UIGestureRecognizerDelegate>
+
 @property (nonatomic) UITableView *_resizingTableView;
+
 @end
 
 
@@ -355,6 +359,46 @@
         ani();
         finish(YES);
     }
+}
+
+- (void)showMenuController
+{
+    if (_menuController) {
+        NSLog(@"already showing a menu controller");
+        return;
+    }
+    _menuController = [[FFMenuViewController alloc] init];
+    _menuController.view.frame = CGRectMake(0, CGRectGetMaxY(self.view.frame),
+                                            self.view.frame.size.width, self.view.frame.size.height);
+    [_menuController viewWillAppear:YES];
+    _menuController.view.alpha = 0;
+    [self.view addSubview:_menuController.view];
+    [UIView animateWithDuration:.25 animations:^{
+        _menuController.view.alpha = 1;
+        _menuController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    } completion:^(BOOL finished) {
+        if (finished) {
+            [_menuController viewDidAppear:YES];
+        }
+    }];
+}
+
+- (void)hideMenuController
+{
+    if (!_menuController) {
+        NSLog(@"tried to hide the menu controller there's nothing to hide");
+        return;
+    }
+    [_menuController viewWillDisappear:YES];
+    [UIView animateWithDuration:.25 animations:^{
+        _menuController.view.alpha = 0;
+        _menuController.view.frame = CGRectMake(0, CGRectGetMaxY(self.view.frame),
+                                                self.view.frame.size.width, self.view.frame.size.height);
+    } completion:^(BOOL finished) {
+        [_menuController viewDidDisappear:YES];
+        [_menuController.view removeFromSuperview];
+        _menuController = nil;
+    }];
 }
 
 - (void)viewDidLoad
