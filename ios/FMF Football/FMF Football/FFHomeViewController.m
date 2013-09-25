@@ -124,9 +124,15 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
         _contests.delegate = nil;
         _contests = nil;
     }
+    
     NSString *path = [NSString stringWithFormat:@"/contests/for_market/%@", market.objId];
-    _contests = [FFContest getBulkPath:path withSession:self.session authorized:YES];
+    
+    SBModelQuery *query = [[[self.session queryBuilderForClass:[FFContest class]]
+                           property:@"marketId" isEqualTo:market.objId] query];
+    
+    _contests = [FFContest getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
     _contests.delegate = self;
+    
     [_contests refresh];
 }
 
@@ -169,6 +175,10 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
         cell = [tableView dequeueReusableCellWithIdentifier:@"MarketSelectorCell" forIndexPath:indexPath];
         [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
+        UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(cell.contentView.frame)-1, 300, 1)];
+        sep.backgroundColor = [FFStyle tableViewSeparatorColor];
+        sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+        
         if (indexPath.row == 0) {
             [cell.contentView addSubview:_userBit];
         } else if (indexPath.row == 1) {
@@ -176,9 +186,6 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
         } else if (indexPath.row == 2) {
             [cell.contentView addSubview:_gameButtonView];
         }
-        UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(cell.contentView.frame), 300, 1)];
-        sep.backgroundColor = [FFStyle tableViewSeparatorColor];
-        sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [cell.contentView addSubview:sep];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ContestCell" forIndexPath:indexPath];

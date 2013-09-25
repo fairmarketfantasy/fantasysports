@@ -46,4 +46,12 @@
             }];
 }
 
++ (NSArray *)indexes
+{
+    return [[super indexes] arrayByAddingObjectsFromArray:@[
+            @[ @"marketId", @"userKey" ]]];
+//            @[ @"lastName", @"firstName" ], // sorting
+//            @[ @"objId", @"type", @"userKey", @"synced" ]]]; // contact identify is a property of their objId and type
+}
+
 @end
