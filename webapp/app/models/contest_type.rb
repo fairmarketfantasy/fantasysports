@@ -9,6 +9,7 @@ class ContestTypeValidator < ActiveModel::Validator
     elsif total_payout != total_buy_in - total_buy_in * record.rake
       record.errors[:payout_structure] = "Payout structure doesn't equal max_entries * buy_in - rake * max_entries * buy_in"
     end
+    raise "Buy in must be between $1 and $1000" unless (1..1000).include?(record.buy_in)
   end
 end
 class ContestType < ActiveRecord::Base

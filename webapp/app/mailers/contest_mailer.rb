@@ -1,13 +1,13 @@
 class ContestMailer < ActionMailer::Base
-  default from: "change-me-in-contest_mailer.rb@pleasechange.com"
+  default from: "no-reply@fairmarketfantasy.com"
 
-  def invite(contest, email)
-    @code = contest.invitation_code
-    @contest = contest
-    @owner   = contest.owner
+  def invite(invitation, email)
+    @invitation = invitation
+    subject = invitation.contest.private? ? 
+        "#{inviter.name} invited you to their league on FairMarketFantasy.com" : "#{inviter.name} challenged you on FairMarketFantasy.com"
     envelope = {
       to: email,
-      subject: "Invitation from #{contest.owner.name} to join this contest."
+      subject: subject
     }
     mail(envelope)
   end

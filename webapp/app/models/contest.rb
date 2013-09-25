@@ -8,8 +8,7 @@ class Contest < ActiveRecord::Base
   belongs_to :owner, class_name: "User"
   belongs_to :contest_type
 
-  # after_create :create_owners_roster!
-  # before_save :set_invitation_code, on: :create
+  before_save :set_invitation_code, on: :create
 
   validates :owner_id, :contest_type_id, :buy_in, :market_id, presence: true
 
@@ -29,9 +28,40 @@ class Contest < ActiveRecord::Base
   end
 
   #creates a roster for the owner and creates an invitation code
-  def make_private
-    set_invitation_code
-    create_owners_roster!
+  def self.create_private_contest(opts) 
+    market = Market.where(opts[:market_id], :conditions => {state: ['published', 'opened']}).first
+    raise "Market must be active to create a contest" unless market
+    raise "It's too close to market close to create a contest" if Time.new + 5.minutes > market.closed_at
+    # H2H don't have to be an existing contst type, and in fact are always new ones so that if your challenged person doesn't accept, the roster is cancelled
+    if params[:contest_type_id == 'h2h']
+      buy_in       = params[:buy_in]
+      rake = 0.03
+      contest_type = ContestType.create!(
+        :market_id => market.id,
+        :name => 'custom h2h',
+        :description => 'custom h2h',
+        :max_entries => 2,
+        :buy_in => params[:buy_in],
+        :rake => rake,
+        :payout_structure => [buy_in - buy_in * rake * 2].to_json,
+        :user_id => opts[:user_id],
+        :private => true,
+        :salary_cap => opts[:salary_cap],
+        :payout_description => "Winner take all"
+      )
+    else
+      contest_type = ContestType.find(params[:contest_type_id])
+    end
+    invitees     = params[:emails]
+
+    contest = Contest.create!(
+      market: market,
+      owner_id: opts[:user_id],
+      user_cap: contest_type.max_entries,
+      buy_in: contest_type.buy_in,
+      contest_type: contest_type
+    )
+
   end
 
   def rake_amount
@@ -95,10 +125,6 @@ class Contest < ActiveRecord::Base
 
     def set_invitation_code
       self.invitation_code = SecureRandom.urlsafe_base64
-    end
-
-    def create_owners_roster!
-      Roster.generate(owner, contest_type)
     end
 
 end
