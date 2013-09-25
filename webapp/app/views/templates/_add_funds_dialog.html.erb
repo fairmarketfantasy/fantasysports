@@ -8,6 +8,7 @@
   <img src='/assets/ajax-loader-big.gif'>
 </div>
 <div class='modal-body' ng-show='loaded'>
+  <form>
     <div flash-alert active-class="alert in" class="flash fade" >
       <strong class="alert-heading"></strong>
       <span class="alert-message">{{flash.message}}</span>
@@ -61,6 +62,7 @@
       </p>
       <span class='muted tilt'>*At least $5.</span>
     </div>
+  </form>
 </div>
 <div class='modal-footer'>
   <a href="javascript://" class="btn" ng-click="close()">close</a>
