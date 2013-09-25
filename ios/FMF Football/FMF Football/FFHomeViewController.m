@@ -159,7 +159,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
         }
         return 44;
     }
-    return 135;
+    return 145;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -176,6 +176,10 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
         } else if (indexPath.row == 2) {
             [cell.contentView addSubview:_gameButtonView];
         }
+        UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(cell.contentView.frame), 300, 1)];
+        sep.backgroundColor = [FFStyle tableViewSeparatorColor];
+        sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+        [cell.contentView addSubview:sep];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ContestCell" forIndexPath:indexPath];
         FFContest2UpTabelViewCell *c_cell = (FFContest2UpTabelViewCell *)cell;
@@ -185,11 +189,6 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate>
         }
         c_cell.contests = contests;
     }
-
-    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(cell.contentView.frame), 300, 1)];
-    sep.backgroundColor = [FFStyle tableViewSeparatorColor];
-    sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-    [cell.contentView addSubview:sep];
     
     return cell;
 }
