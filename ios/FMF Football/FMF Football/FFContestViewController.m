@@ -10,6 +10,7 @@
 #import <FormatterKit/TTTOrdinalNumberFormatter.h>
 #import "FFContestView.h"
 #import <QuartzCore/QuartzCore.h>
+#import "FFRoster.h"
 
 typedef enum {
     ViewContest,

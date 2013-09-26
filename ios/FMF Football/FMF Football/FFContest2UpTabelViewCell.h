@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FFContest.h"
+#import "FFContestType.h"
 
 @protocol FFContest2UpTableViewCellDelegate <NSObject>
 
-- (void)didChooseContest:(FFContest *)contest;
+- (void)didChooseContest:(FFContestType *)contest;
 
 @end
 

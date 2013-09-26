@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 FairMarketFantasy. All rights reserved.
 //
 
-#import "FFContest.h"
+#import "FFContestType.h"
 #import <SBData/NSDictionary+Convenience.h>
 
-@implementation FFContest
+@implementation FFContestType
 
 @dynamic buyIn;
 @dynamic contestDescription;
@@ -23,7 +23,7 @@
 @dynamic rake;
 @dynamic userId;
 
-+ (NSString *)tableName { return @"ffcontest"; }
++ (NSString *)tableName { return @"ffcontesttype"; }
 
 + (void)load { [self registerModel:self]; }
 
@@ -50,8 +50,6 @@
 {
     return [[super indexes] arrayByAddingObjectsFromArray:@[
             @[ @"marketId", @"userKey" ]]];
-//            @[ @"lastName", @"firstName" ], // sorting
-//            @[ @"objId", @"type", @"userKey", @"synced" ]]]; // contact identify is a property of their objId and type
 }
 
 @end

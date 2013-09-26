@@ -97,7 +97,7 @@
     return self;
 }
 
-- (void)setContest:(FFContest *)contest
+- (void)setContest:(FFContestType *)contest
 {
     _contest = contest;
     
