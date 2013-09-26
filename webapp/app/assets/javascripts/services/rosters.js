@@ -176,7 +176,11 @@ angular.module('app.data')
             };
 
         var d = $dialog.dialog(dialogOpts);
-        d.open();
+        d.open().then(function(invitees) {
+          fs.contests.invite(roster.contest_id, invitees, roster.contest.invitation_code).then(function() {
+            flash.success = "Invitations sent successfully";
+          });
+        });
       };
 
       this.setPoller = function(fn, interval) {

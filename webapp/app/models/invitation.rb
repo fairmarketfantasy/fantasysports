@@ -12,7 +12,7 @@ class Invitation < ActiveRecord::Base
       t.string :code, :null => false
       t.boolean :redeemed, :default => false
 =end
-  def self.for_contest(inviter, email, contest)
+  def self.for_contest(inviter, email, contest, message)
     user = User.find_by_email(email)
     invitation = nil
     if user.nil?
@@ -24,7 +24,7 @@ class Invitation < ActiveRecord::Base
         code: SecureRandom.hex(16)
       )
     end
-    ContestMailer.invite_to_contest(invitation, inviter, contest, email)
+    ContestMailer.invite_to_contest(invitation, inviter, contest, email, message)
   end
 
 end
