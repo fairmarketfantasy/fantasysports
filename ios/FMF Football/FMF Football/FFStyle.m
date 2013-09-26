@@ -85,6 +85,11 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return [UIColor colorWithWhite:.85 alpha:1];
 }
 
++ (UIColor *)brightOrange
+{
+    return [UIColor colorWithRed:246.0/255.0 green:146.0/255.0 blue:30.0/255.0 alpha:1];
+}
+
 // FONTS ---------------------------------------------------------------------------------------------------------------
 
 + (UIFont *)blockFont:(int)size
