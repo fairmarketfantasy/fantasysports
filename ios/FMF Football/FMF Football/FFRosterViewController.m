@@ -50,7 +50,7 @@
 {
     [super viewDidAppear:animated];
     
-    _rosters = [FFRoster getBulkWithSession:self.session authorized:YES];
+    _rosters = [FFRoster getBulkPath:@"/rosters/mine" withSession:self.session authorized:YES];
     _rosters.delegate = self;
     
     [_rosters refresh];
