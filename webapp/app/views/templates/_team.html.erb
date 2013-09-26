@@ -1,7 +1,9 @@
     <div class="roster"> 
       <div class="roster-area">
-        <h4 class="team-heading inline-heading">Roster</h4>
-        <div class="salary-cap score" ng-show="inThePast(market.started_at)">Team Score: {{roster.score | zeroIfEmpty}}
+        <div class="clearfix">
+          <h4 class="team-heading inline-heading">Roster</h4>
+          <div class="salary-cap score" ng-show="inThePast(market.started_at)">Team Score: {{roster.score | zeroIfEmpty}}
+          </div>
         </div>
 
         <div class="roster-overflow">

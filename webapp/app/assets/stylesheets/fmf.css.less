@@ -176,7 +176,7 @@ footer {
   text-align: left;
 }
 .user-name {
-  font-size: 20px;
+  font-size: 16px;
   color: @offWhite;
   display: block;
   font-weight: 400;
@@ -462,7 +462,6 @@ footer {
   margin-bottom: 6px;
 }
 
-
 .contest-info-image {
   width: 170px;
   margin: 8px 8px 0 0;
@@ -470,7 +469,7 @@ footer {
 }
 .contest-info-description {
   float: left;
-  max-width: 62%;
+  max-width: 54%;
 }
 
 .games {
@@ -565,7 +564,13 @@ footer {
 .inline-heading {
   width: 40%;
   display: inline-block;
-  vertical-align: middle; 
+  vertical-align: middle;
+  line-height: 1;
+  margin-top: 8px; 
+}
+.opponent {
+  float: right;
+  text-align: right;
 }
 .team-selection {
   background-color: @gray;  
@@ -580,10 +585,11 @@ footer {
   .border-radius(4px);
   background-color: @green;
   color: @white;
-  width: 44%;
+  width: 47%;
   display: inline-block;
   vertical-align: middle; 
-  margin: 6px 0 8px 13%; 
+  margin: 6px 0 8px 0;
+  float:right;  
   text-align: center;
   height: 30px;
   font-size: 17px;
@@ -593,8 +599,8 @@ footer {
   height: 20px;
   font-size: 14px;
   line-height: 18px;
-  width: 45%;
-  margin: 0 0 8px 10%; 
+  width: 40%;
+  margin: 0 0 8px 0;
   background-color: @white;
   color: @greenDark;
 }
@@ -695,9 +701,9 @@ input[type="text"].players-search {
   display: inline-block;
   vertical-align: middle;
 }
-.dropdown {
+.game-dropdown {
   display: inline-block;
-  margin-left: 19%;
+  float:right;
   margin-bottom: 10px;
   .btn-small.btn-info {
     color: white;
@@ -781,6 +787,12 @@ input[type="text"].players-search {
   position: absolute;
   right: 10px;
   top: 10px;
+  z-index: 100;
+}
+.btn.btn-invite-friends {
+  position: absolute;
+  right: 10px;
+  top: 60px;
   z-index: 100;
 }
 .btn-contest-cta {

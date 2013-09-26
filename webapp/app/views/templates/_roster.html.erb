@@ -1,8 +1,8 @@
 <div ng-show="rosters.currentRoster">
   <div class="contest-info">
     <div class="relative clearfix">
-      <a href="javascript://" class="btn btn-inverse btn-cancel-entry" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
-      <a href="javascript://" class="btn btn-inverse" ng-click="rosters.openInviteFriends(rosters.currentRoster)">Challenge Friends</a>
+      <a href="javascript://" class="btn btn-danger btn-cancel-entry" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
+      <a href="javascript://" class="btn btn-orange btn-invite-friends" ng-click="rosters.openInviteFriends(rosters.currentRoster)">Invite Friends</a>
       <a href="#/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster">Back to Contests</a>
       <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name}}.png" class="contest-info-image" />
       <div class="contest-info-description">
@@ -58,10 +58,12 @@
   </div>
 
   <div class="entries-container">
-    <div class="roster-title my-roster-title">  
+    <div class="roster-title my-roster-title clearfix">  
       <h3 class="inline-heading"><span ng-show="rosters.currentRoster.owner_id == currentUser.id">Your Team</span><span ng-show="rosters.currentRoster.owner_id != currentUser.id">{{rosters.currentRoster.owner_name}}'s Team</span></h3>
 
-      <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}">
+      <h3 class="inline-heading opponent" ng-show="rosters.opponentRoster">{{rosters.opponentRoster.owner_name}}</h3>
+
+      <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}" ng-hide="rosters.opponentRoster">
         Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
       </div>
     </div>
