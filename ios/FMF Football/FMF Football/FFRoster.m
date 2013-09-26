@@ -27,7 +27,7 @@
 @dynamic ownerId;
 @dynamic ownerName;
 @dynamic paidAt;
-//@dynamic players;
+@dynamic players;
 @dynamic positions;
 @dynamic remainingSalary;
 @dynamic score;
@@ -39,7 +39,7 @@
 
 + (void)load { [self registerModel:self]; }
 
-+ (NSString *)bulkPath { return @"/rosters/mine"; }
++ (NSString *)bulkPath { return @"/rosters"; }
 
 + (NSDictionary *)propertyToNetworkKeyMapping
 {
@@ -81,7 +81,7 @@
 {
     NSDictionary *params = @{@"contest_type_id": [NSNumber numberWithInteger:cTyp]};
     
-    [sesh authorizedJSONRequestWithMethod:@"POST" path:@"/rosters" paramters:params success:
+    [sesh authorizedJSONRequestWithMethod:@"POST" path:[self bulkPath] paramters:params success:
      ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
          FFRoster *roster = [[FFRoster alloc] initWithSession:sesh];
          [roster setValuesForKeysWithNetworkDictionary:JSON];
