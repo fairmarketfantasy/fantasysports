@@ -1,7 +1,7 @@
 angular.module("app.controllers")
-.controller('InviteController', ['$scope', 'dialog', 'fs', function($scope, dialog, fs) {
+.controller('InviteController', ['$scope', 'dialog', function($scope, dialog) {
   $scope.sendInvites = function() {
-    $scope.close($scope.invitees);
+    $scope.close({invitees: $scope.invitees, message: $scope.message});
   };
 
   $scope.close = function(result) {

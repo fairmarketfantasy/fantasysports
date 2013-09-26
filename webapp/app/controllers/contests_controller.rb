@@ -29,7 +29,7 @@ class ContestsController < ApplicationController
     contest = Contest.create_private_contest(params)
     roster = Roster.generate(current_user, contest.contest_type)
     roster.update_attribute(:contest_id, contest.id)
-    send_invitations(contest)
+    send_invitations(contest, params[:message])
     render_api_response roster
   end
 
