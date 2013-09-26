@@ -75,6 +75,10 @@ namespace :market do
         shadow_bets = 0
       end
       mp = market.market_players.where("player_stats_id = '#{player_stats_id}'").first
+      if mp.nil?
+        puts "WARNING: No market player found with id #{player_stats_id}"
+        next
+      end
       mp.shadow_bets = mp.initial_shadow_bets = mp.bets = shadow_bets
       mp.save!
       total_bets += shadow_bets
