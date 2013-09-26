@@ -74,7 +74,8 @@ angular.module("app.controllers")
 
     var d = $dialog.dialog(dialogOpts);
     d.open().then(function(result) {
-      $scope.fs.contests.create(marketService.currentMarket.id, result.contest_type, result.buy_in, result.invitees, result.message).then(function(roster) {
+      if (!result) { return; }
+      $scope.fs.contests.create(marketService.currentMarket.id, result.contest_type, result.buy_in * 100, result.invitees, result.message).then(function(roster) {
         flash.success = "Awesome, your contest is all setup. Now lets create your entry into the contest."
         rosters.selectRoster(roster);
         $location.path('/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
