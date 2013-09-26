@@ -66,6 +66,7 @@
                         <segue destination="o10-6a-SgK" kind="push" identifier="GotoCreateGame" id="zmq-Yt-SVd"/>
                         <segue destination="grh-Mm-aP7" kind="push" identifier="GotoFindGame" id="jEr-zx-nET"/>
                         <segue destination="p8F-hD-oki" kind="push" identifier="GotoContest" id="TY5-BO-lyU"/>
+                        <segue destination="hCT-9z-KON" kind="push" identifier="GotoMyGames" id="LS3-BI-IKJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -85,7 +86,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rVk-lt-2Nf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1326" y="660"/>
+            <point key="canvasLocation" x="1982" y="642"/>
         </scene>
         <!--Find Game View Controller-->
         <scene sceneID="U8n-i5-qSF">
@@ -101,6 +102,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RpM-QX-u65" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="917" y="1508"/>
+        </scene>
+        <!--Roster View Controller-->
+        <scene sceneID="IVF-Wj-l8j">
+            <objects>
+                <viewController id="hCT-9z-KON" customClass="FFRosterViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mwA-MK-sYY">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="nOj-so-bKu"/>
+                    <connections>
+                        <segue destination="p8F-hD-oki" kind="push" identifier="GotoContest" id="0q8-z9-AZT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6vq-Cb-eCp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1462" y="1200"/>
         </scene>
     </scenes>
     <classes>
@@ -119,6 +138,9 @@
         <class className="FFHomeViewController" superclassName="FFBaseViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FFHomeViewController.h"/>
         </class>
+        <class className="FFRosterViewController" superclassName="FFBaseViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFRosterViewController.h"/>
+        </class>
         <class className="FFSessionViewController" superclassName="FFBaseViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FFSessionViewController.h"/>
         </class>
@@ -129,6 +151,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="0q8-z9-AZT"/>
         <segue reference="Zjb-xv-NwD"/>
     </inferredMetricsTieBreakers>
 </document>

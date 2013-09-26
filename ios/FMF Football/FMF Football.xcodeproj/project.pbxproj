@@ -76,6 +76,7 @@
 		15D756BA17F38F000080AE4F /* FFContestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756B917F38F000080AE4F /* FFContestViewController.m */; };
 		15D756BD17F3A9320080AE4F /* FFContestView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756BC17F3A9320080AE4F /* FFContestView.m */; };
 		15D756C017F3D4AD0080AE4F /* FFRoster.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756BF17F3D4AD0080AE4F /* FFRoster.m */; };
+		15D756C317F3E5B50080AE4F /* FFRosterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756C217F3E5B50080AE4F /* FFRosterViewController.m */; };
 		52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE50D82857A45A1B1A9DFA0 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -191,6 +192,8 @@
 		15D756BC17F3A9320080AE4F /* FFContestView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContestView.m; sourceTree = "<group>"; };
 		15D756BE17F3D4AD0080AE4F /* FFRoster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFRoster.h; sourceTree = "<group>"; };
 		15D756BF17F3D4AD0080AE4F /* FFRoster.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFRoster.m; sourceTree = "<group>"; };
+		15D756C117F3E5B50080AE4F /* FFRosterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFRosterViewController.h; sourceTree = "<group>"; };
+		15D756C217F3E5B50080AE4F /* FFRosterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFRosterViewController.m; sourceTree = "<group>"; };
 		CCE50D82857A45A1B1A9DFA0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -358,6 +361,8 @@
 				15D756B217F37E7A0080AE4F /* FFMenuViewController.m */,
 				15D756B817F38F000080AE4F /* FFContestViewController.h */,
 				15D756B917F38F000080AE4F /* FFContestViewController.m */,
+				15D756C117F3E5B50080AE4F /* FFRosterViewController.h */,
+				15D756C217F3E5B50080AE4F /* FFRosterViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -622,6 +627,7 @@
 				15D756BA17F38F000080AE4F /* FFContestViewController.m in Sources */,
 				15D756BD17F3A9320080AE4F /* FFContestView.m in Sources */,
 				15D756C017F3D4AD0080AE4F /* FFRoster.m in Sources */,
+				15D756C317F3E5B50080AE4F /* FFRosterViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
