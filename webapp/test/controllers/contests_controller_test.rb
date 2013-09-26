@@ -11,10 +11,12 @@ class ContestsControllerTest < ActionController::TestCase
   end
 
   test "invite to private contest" do
-    assert_difference 'Invitation.count', 3 do
-      post :create, :market_id => @market.id, 
-          :contest_type_id => @roster.contest_type_id, 
-          :invitees => "bob@my-jollies.com, fredrickson@withoutpajamas.uk.co\nwhoami@lostconsciousness.com"
+    assert_difference 'Contest.count', 1 do
+      assert_difference 'Invitation.count', 3 do
+        post :create, :market_id => @market.id, 
+            :contest_type_id => @roster.contest_type_id, 
+            :invitees => "bob@my-jollies.com, fredrickson@withoutpajamas.uk.co\nwhoami@lostconsciousness.com"
+      end
     end
   end
 
