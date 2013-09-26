@@ -176,8 +176,9 @@ angular.module('app.data')
             };
 
         var d = $dialog.dialog(dialogOpts);
-        d.open().then(function(invitees) {
-          fs.contests.invite(roster.contest_id, invitees, roster.contest.invitation_code).then(function() {
+        d.open().then(function(result) {
+          if (!result) { return; }
+          fs.contests.invite(roster.contest_id, result.invitees, result.message, roster.contest.invitation_code).then(function() {
             flash.success = "Invitations sent successfully";
           });
         });
