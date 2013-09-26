@@ -11,6 +11,9 @@
 #import "FFContestView.h"
 #import <QuartzCore/QuartzCore.h>
 #import "FFRoster.h"
+#import "FFSessionViewController.h"
+#import "FFAlertView.h"
+
 
 typedef enum {
     ViewContest,
@@ -19,6 +22,7 @@ typedef enum {
     UnstartedGame,
     StartedGame
 } FFContestViewControllerState;
+
 
 @interface FFContestViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -63,6 +67,22 @@ typedef enum {
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"ContestCell"];
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"EnterCell"];
     [self.view addSubview:_tableView];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if (!_market || !_contest) {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                       reason:@"showing the contest view controller but don't have a "
+                                              @"contest or a market, dying now..."
+                                     userInfo:@{}];
+    }
+    if (_roster) {
+        if ([_roster.state isEqualToString:@"in_progress"]) {
+            [self transitionToState:ChoosePlayers withContext:nil];
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -242,9 +262,21 @@ typedef enum {
 
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx
 {
+    if (newState == _state) {
+        NSLog(@"tried to transition to the current state... ignoring");
+        return;
+    }
     FFContestViewControllerState previousState = _state;
     _state = newState;
     switch (_state) {
+        case ViewContest:
+            [self.tableView beginUpdates];
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1]
+                          withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView endUpdates];
+            break;
         case ChoosePlayers:
             if (previousState == ViewContest) {
                 [self.tableView beginUpdates];
@@ -253,6 +285,29 @@ typedef enum {
                 [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1]
                               withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView endUpdates];
+                if (_roster) {
+                    // already have a roster, so no need to create one
+                    break;
+                }
+                FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Starting Roster", nil)
+                                                               messsage:nil
+                                                           loadingStyle:FFAlertViewLoadingStylePlain];
+                [alert showInView:self.view];
+                [FFRoster createRosterWithContestTypeId:[_contest.objId integerValue]
+                                                session:self.session success:
+                 ^(id successObj) {
+                     [alert hide];
+                     _roster = successObj;
+                     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                                   withRowAnimation:UITableViewRowAnimationAutomatic];
+                 } failure:^(NSError *error) {
+                     [alert hide];
+                     FFAlertView *alert = [[FFAlertView alloc] initWithError:error title:nil
+                                                           cancelButtonTitle:nil okayButtonTitle:@"Dismiss"
+                                                                    autoHide:YES];
+                     [alert showInView:self.view];
+                     [self transitionToState:ViewContest withContext:nil];
+                 }];
             } else {
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                               withRowAnimation:UITableViewRowAnimationAutomatic];

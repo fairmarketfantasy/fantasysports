@@ -9,10 +9,12 @@
 #import "FFBaseViewController.h"
 #import "FFContestType.h"
 #import "FFMarket.h"
+#import "FFRoster.h"
 
 @interface FFContestViewController : FFBaseViewController
 
 @property (nonatomic) FFContestType *contest;
 @property (nonatomic) FFMarket *market;
+@property (nonatomic) FFRoster *roster;
 
 @end

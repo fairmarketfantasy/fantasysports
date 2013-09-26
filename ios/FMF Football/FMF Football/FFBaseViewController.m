@@ -17,7 +17,7 @@
 @end
 
 
-@interface FFBaseViewController () <UIGestureRecognizerDelegate>
+@interface FFBaseViewController () <UIGestureRecognizerDelegate, FFMenuViewControllerDelegate>
 
 @property (nonatomic) UITableView *_resizingTableView;
 
@@ -368,6 +368,7 @@
         return;
     }
     _menuController = [[FFMenuViewController alloc] init];
+    _menuController.delegate = self;
     _menuController.view.frame = CGRectMake(0, CGRectGetMaxY(self.view.frame),
                                             self.view.frame.size.width, self.view.frame.size.height);
     [_menuController viewWillAppear:YES];
@@ -399,6 +400,16 @@
         [_menuController.view removeFromSuperview];
         _menuController = nil;
     }];
+}
+
+- (void)performMenuSegue:(NSString *)ident
+{
+    if (!self.menuController) {
+        NSLog(@"how did we even get here?");
+        return;
+    }
+    [self hideMenuController];
+    [self performSegueWithIdentifier:ident sender:self.menuController];
 }
 
 - (void)viewDidLoad

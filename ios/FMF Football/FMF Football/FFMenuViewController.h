@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol FFMenuViewControllerDelegate <NSObject>
+
+- (void)performMenuSegue:(NSString *)ident;
+
+@end
+
 @interface FFMenuViewController : UIViewController
+
+@property (nonatomic, weak) id<FFMenuViewControllerDelegate> delegate;
 
 @end

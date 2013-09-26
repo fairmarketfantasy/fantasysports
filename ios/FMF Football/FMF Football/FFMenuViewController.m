@@ -101,8 +101,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (!self.delegate || ![self.delegate respondsToSelector:@selector(performMenuSegue:)]) {
+        NSLog(@"all dressed up with no delegate and no where to go");
+        return;
+    }
     switch (indexPath.row) {
         case 0:
+            [self.delegate performMenuSegue:@"GotoMyGames"];
             break;
         case 1:
             break;
