@@ -24,6 +24,7 @@
 + (UIColor *)brightRed;
 + (UIColor *)yellowErrorColor;
 + (UIColor *)tableViewSeparatorColor;
++ (UIColor *)brightOrange;
 
 + (UIFont *)blockFont:(int)size;
 + (UIFont *)regularFont:(int)size;
