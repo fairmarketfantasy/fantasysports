@@ -28,7 +28,7 @@ class Contest < ActiveRecord::Base
     raise "Market must be active to create a contest" unless market
     raise "It's too close to market close to create a contest" if Time.new + 5.minutes > market.closed_at
     # H2H don't have to be an existing contst type, and in fact are always new ones so that if your challenged person doesn't accept, the roster is cancelled
-    if opts[:contest_type_id == 'h2h']
+    if opts[:type] == 'h2h'
       buy_in       = opts[:buy_in]
       rake = 0.03
       contest_type = ContestType.create!(
@@ -45,7 +45,8 @@ class Contest < ActiveRecord::Base
         :payout_description => "Winner take all"
       )
     else
-      contest_type = ContestType.find(opts[:contest_type_id])
+      contest_type = market.contest_types.where(:name => opts[:type], :buy_in => opts[:buy_in]).first
+      raise HttpException(404, "No such contest type found") unless contest_type
     end
 
     contest = Contest.create!(

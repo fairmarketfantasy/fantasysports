@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', function($scope, rosters, $routeParams, $location, marketService, flash) {
+.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog) {
   $scope.marketService = marketService;
 
   marketService.fetchUpcoming($routeParams.market_id);
@@ -20,7 +20,7 @@ angular.module("app.controllers")
     }
     marketService.gamesFor(marketService.currentMarket.id).then(function(games) {
       $scope.games = games;
-    })
+    });
 
     $scope.fs.contests.for_market(marketService.currentMarket.id).then(function(contestTypes) {
       $scope.contestClasses = {};
@@ -60,6 +60,26 @@ angular.module("app.controllers")
     $scope.justSubmittedRoster = null;
     $location.path('/');
     flash.success = "Awesome, You're IN. Good luck!";
+  };
+
+  $scope.openCreateDialog = function() {
+    var dialogOpts = {
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          dialogClass: 'modal',
+          templateUrl: '/create_contest.html',
+          controller: 'CreateContestController'
+        };
+
+    var d = $dialog.dialog(dialogOpts);
+    d.open().then(function(result) {
+      $scope.fs.contests.create(marketService.currentMarket.id, result.contest_type, result.buy_in, result.invitees, result.message).then(function(roster) {
+        flash.success = "Awesome, your contest is all setup. Now lets create your entry into the contest."
+        rosters.selectRoster(roster);
+        $location.path('/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
+      });
+    });
   };
 
 }]);
