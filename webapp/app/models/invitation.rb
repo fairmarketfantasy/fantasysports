@@ -24,7 +24,7 @@ class Invitation < ActiveRecord::Base
         code: SecureRandom.hex(16)
       )
     end
-    ContestMailer.invite_to_contest(invitation, inviter, contest, email, message)
+    ContestMailer.invite_to_contest(invitation, inviter, contest, email, message).deliver!
   end
 
 end

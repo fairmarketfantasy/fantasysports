@@ -18,6 +18,7 @@
     </ul>
 
     <div ng-hide="rosters.inProgressRoster">
+      <a class="btn" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create a contest</a>
       <ul class="clearfix no-no" ng-cloak>
         <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses">
           <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
