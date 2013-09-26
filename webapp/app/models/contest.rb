@@ -31,14 +31,15 @@ class Contest < ActiveRecord::Base
     if opts[:type] == 'h2h'
       buy_in       = opts[:buy_in]
       rake = 0.03
+
       contest_type = ContestType.create!(
         :market_id => market.id,
-        :name => 'custom h2h',
+        :name => 'h2h',
         :description => 'custom h2h',
         :max_entries => 2,
         :buy_in => opts[:buy_in],
         :rake => rake,
-        :payout_structure => [buy_in - buy_in * rake * 2].to_json,
+        :payout_structure => [2 * buy_in - buy_in * rake * 2].to_json,
         :user_id => opts[:user_id],
         :private => true,
         :salary_cap => opts[:salary_cap],
