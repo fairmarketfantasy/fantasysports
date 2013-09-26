@@ -126,6 +126,11 @@
         view.market = _market;
         view.contest = _contest;
         [cell.contentView addSubview:view];
+        
+        UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(cell.contentView.frame)-1,
+                                                               cell.contentView.frame.size.width, 1)];
+        sep.backgroundColor = [UIColor colorWithWhite:.8 alpha:1];
+        [cell.contentView addSubview:sep];
     }
     
     return cell;
