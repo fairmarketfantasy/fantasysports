@@ -345,6 +345,7 @@ typedef enum {
                 [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1]
                               withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView endUpdates];
+                
                 [self showRosterPlayers];
                 break;
             } else {

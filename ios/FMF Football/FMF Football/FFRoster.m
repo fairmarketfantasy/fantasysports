@@ -9,6 +9,8 @@
 #import "FFRoster.h"
 #import <SBData/NSDictionary+Convenience.h>
 #import "FFContestType.h"
+#import <objc/runtime.h>
+#import <dispatch/dispatch.h>
 
 @implementation FFRoster
 
@@ -85,10 +87,13 @@
      ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
          FFRoster *roster = [[FFRoster alloc] initWithSession:sesh];
          [roster setValuesForKeysWithNetworkDictionary:JSON];
-         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+         dispatch_queue_t q = (dispatch_queue_t)objc_getAssociatedObject([self class], "processingQueue");
+         dispatch_async(q, ^{
              [[self meta] inTransaction:^(SBModelMeta *meta, BOOL *rollback) {
-                 [roster save];
-                 success(roster);
+                 [[[self class] meta] save:roster];
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     success(roster);
+                 });
              }];
          });
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
