@@ -1,5 +1,5 @@
 angular.module('app.data')
-  .factory('rosters', ['fs', '$q', '$location', 'flash', 'currentUserService', function(fs, $q, $location, flash, currentUserService) {
+  .factory('rosters', ['fs', '$q', '$location', 'flash', 'currentUserService', '$dialog', function(fs, $q, $location, flash, currentUserService, $dialog) {
     var rosterData = {};
     return new function() {
       var fetchRoster = function(id) {
@@ -163,6 +163,20 @@ angular.module('app.data')
           self.reset();
           $location.path('/market/' + currentRoster.market_id);
         });
+      };
+
+      this.openInviteFriends = function(roster) {
+        var dialogOpts = {
+              backdrop: true,
+              keyboard: true,
+              backdropClick: true,
+              dialogClass: 'modal',
+              templateUrl: '/invite.html',
+              controller: 'InviteController'
+            };
+
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
       };
 
       this.setPoller = function(fn, interval) {

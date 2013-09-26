@@ -12,11 +12,6 @@ class Contest < ActiveRecord::Base
 
   validates :owner_id, :contest_type_id, :buy_in, :market_id, presence: true
 
-  def invite(email)
-    self.save if self.new_record?
-    ContestMailer.invite(self, email).deliver
-  end
-
   def submit_roster(roster)
     raise "Only in progress rosters may be submitted" unless roster.state != 'in_progress'
     Contest.transaction do
@@ -29,19 +24,19 @@ class Contest < ActiveRecord::Base
 
   #creates a roster for the owner and creates an invitation code
   def self.create_private_contest(opts) 
-    market = Market.where(opts[:market_id], :conditions => {state: ['published', 'opened']}).first
+    market = Market.where(:id => opts[:market_id], state: ['published', 'opened']).first
     raise "Market must be active to create a contest" unless market
     raise "It's too close to market close to create a contest" if Time.new + 5.minutes > market.closed_at
     # H2H don't have to be an existing contst type, and in fact are always new ones so that if your challenged person doesn't accept, the roster is cancelled
-    if params[:contest_type_id == 'h2h']
-      buy_in       = params[:buy_in]
+    if opts[:contest_type_id == 'h2h']
+      buy_in       = opts[:buy_in]
       rake = 0.03
       contest_type = ContestType.create!(
         :market_id => market.id,
         :name => 'custom h2h',
         :description => 'custom h2h',
         :max_entries => 2,
-        :buy_in => params[:buy_in],
+        :buy_in => opts[:buy_in],
         :rake => rake,
         :payout_structure => [buy_in - buy_in * rake * 2].to_json,
         :user_id => opts[:user_id],
@@ -50,16 +45,16 @@ class Contest < ActiveRecord::Base
         :payout_description => "Winner take all"
       )
     else
-      contest_type = ContestType.find(params[:contest_type_id])
+      contest_type = ContestType.find(opts[:contest_type_id])
     end
-    invitees     = params[:emails]
 
     contest = Contest.create!(
       market: market,
       owner_id: opts[:user_id],
       user_cap: contest_type.max_entries,
       buy_in: contest_type.buy_in,
-      contest_type: contest_type
+      contest_type: contest_type,
+      private: true
     )
 
   end

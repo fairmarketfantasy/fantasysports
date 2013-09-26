@@ -1,0 +1,8 @@
+<% if @contest.private? %>
+  <%= @inviter.name %> just invited you to their league on FairMarketFantasy.com.
+<% else %>
+  <%= @inviter.name %> challenged you on FairMarketFantasy.com
+<% end %>
+to join their <%= @contest.contest_type.description %>
+
+<a href="<%= SITE %>/#/contests/<%= @contest.id %>/join?contest_code=<%= @contest.invitation_code %>&referral_code=<%= @invitation && @invitation.code %>">Click here to join the game!</a>
