@@ -131,7 +131,10 @@ angular.module('app.services')
         },
         join: function(contest_type_id, copy_roster_id) {
           return $http({method: 'POST', url: '/rosters', data: {contest_type_id: contest_type_id, copy_roster_id: copy_roster_id}});
-        }
+        },
+        invite: function(contest_id, invitees, message, invitation_code) {
+          return $http({method: 'POST', url: '/contests/' + contest_id + '/invite', data: {invitees: invitees, message: message, invitation_code: invitation_code}});
+        },
       },
       games: {
         list: function(market_id) {
