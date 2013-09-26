@@ -2,6 +2,7 @@
   <div class="contest-info">
     <div class="relative clearfix">
       <a href="javascript://" class="btn btn-inverse btn-cancel-entry" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
+      <a href="javascript://" class="btn btn-inverse" ng-click="rosters.openInviteFriends(rosters.currentRoster)">Challenge Friends</a>
       <a href="#/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster">Back to Contests</a>
       <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name}}.png" class="contest-info-image" />
       <div class="contest-info-description">

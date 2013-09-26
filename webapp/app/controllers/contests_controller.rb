@@ -27,14 +27,14 @@ class ContestsController < ApplicationController
   def create
     params[:user_id] = current_user.id
     contest = Contest.create_private_contest(params)
-    roster = Roster.generate(owner, contest.contest_type)
-    roster.update_attribute(:contest_id => contest.id)
+    roster = Roster.generate(current_user, contest.contest_type)
+    roster.update_attribute(:contest_id, contest.id)
     send_invitations(contest)
     render_api_response roster
   end
 
   def invite
-    contest = Contest.find(params[:contest_id])
+    contest = Contest.find(params[:id])
     raise "You must post an invitation_code for private contests" if contest.private? && params[:invitation_code] != contest.invitation_code
     send_invitations(contest)
     render :nothing => true, :status => 201
@@ -44,7 +44,7 @@ class ContestsController < ApplicationController
 
   def send_invitations(contest)
     params['invitees'].split(/[,\n]/).each do |email|
-      contest.invite(email)
+      Invitation.for_contest(current_user, email, contest)
     end
   end
 
