@@ -12,7 +12,7 @@
 
 @interface FFContestBitView : UIButton
 
-@property (nonatomic) FFContest *contest;
+@property (nonatomic) FFContestType *contest;
 
 @property (nonatomic) UIImageView *img;
 @property (nonatomic) UILabel *label;
@@ -53,7 +53,7 @@
     return self;
 }
 
-- (void)setContest:(FFContest *)contest
+- (void)setContest:(FFContestType *)contest
 {
     _contest = contest;
     

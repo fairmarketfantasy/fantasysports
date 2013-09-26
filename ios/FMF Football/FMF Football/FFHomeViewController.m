@@ -12,7 +12,7 @@
 #import "FFMarketSelector.h"
 #import "FFUserBitView.h"
 #import "FFGameButtonView.h"
-#import "FFContest.h"
+#import "FFContestType.h"
 #import "FFContest2UpTabelViewCell.h"
 #import "FFContestViewController.h"
 
@@ -127,7 +127,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
 #pragma mark -
 #pragma mark ffcontest cell delegate
 
-- (void)didChooseContest:(FFContest *)contest
+- (void)didChooseContest:(FFContestType *)contest
 {
     [self performSegueWithIdentifier:@"GotoContest" sender:self context:@[contest, _marketSelector.selectedMarket]];
 }
@@ -156,10 +156,10 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
     
     NSString *path = [NSString stringWithFormat:@"/contests/for_market/%@", market.objId];
     
-    SBModelQuery *query = [[[self.session queryBuilderForClass:[FFContest class]]
+    SBModelQuery *query = [[[self.session queryBuilderForClass:[FFContestType class]]
                            property:@"marketId" isEqualTo:market.objId] query];
     
-    _contests = [FFContest getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
+    _contests = [FFContestType getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
     _contests.delegate = self;
     
     [_contests refresh];

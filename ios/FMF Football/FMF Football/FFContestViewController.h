@@ -7,12 +7,12 @@
 //
 
 #import "FFBaseViewController.h"
-#import "FFContest.h"
+#import "FFContestType.h"
 #import "FFMarket.h"
 
 @interface FFContestViewController : FFBaseViewController
 
-@property (nonatomic) FFContest *contest;
+@property (nonatomic) FFContestType *contest;
 @property (nonatomic) FFMarket *market;
 
 @end

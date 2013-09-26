@@ -9,7 +9,7 @@
 #import <SBData/SBDataObject.h>
 #import <SBData/SBTypes.h>
 
-@interface FFContest : SBDataObject
+@interface FFContestType : SBDataObject
 
 @property (nonatomic) SBInteger *buyIn;
 @property (nonatomic) NSString  *contestDescription;
