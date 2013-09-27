@@ -123,6 +123,32 @@ angular.module('guide.controllers', [])
 .controller('TypeaheadController', ['$scope', function($scope){
   $scope.selected = 'California';
   $scope.states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Dakota', 'North Carolina', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+}])
+.controller('RadioButtonsController', ['$scope', function($scope){
+  $scope.selectedRadio = 'radio2';
+
+  $scope.select = function(radio){
+    $scope.selectedRadio = radio;
+  };
+
+  $scope.isSelected = function(radio){
+    return $scope.selectedRadio === radio;
+  };
+
+}])
+.controller('CheckBoxesController', ['$scope', function($scope){
+
+  $scope.checked1 = false;
+  $scope.checked2 = true;
+
+  $scope.toggleChecked = function(checkedN){
+    $scope[checkedN] = !$scope[checkedN];
+  };
+
+  $scope.toggleChecked2 = function(){
+    $scope.checked2 = !$scope.checked2;
+  };
+
 }]);
 
 
