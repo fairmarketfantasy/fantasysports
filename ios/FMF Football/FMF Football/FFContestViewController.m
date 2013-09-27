@@ -33,6 +33,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 @property (nonatomic) NSMutableArray *rosterPlayers; // the players in the current roster
 @property (nonatomic) id currentPickPlayer;      // the current position we are picking or trading
 @property (nonatomic) NSArray *availablePlayers; // shown in PickPlayer
+@property (nonatomic) UIView *submitButtonView;
 
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx;
 
@@ -395,6 +396,11 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     }];
 }
 
+- (void)submitRoster:(UIButton *)sender
+{
+    
+}
+
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx
 {
     if (newState == _state) {
@@ -405,6 +411,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     _state = newState;
     switch (_state) {
         case ViewContest:
+            [self hideSubmitRosterBanner];
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -453,12 +460,18 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     [self _reloadRosterPlayers];
 
     [_roster refreshInBackgroundWithBlock:^(id successObj) {
+        if (_state != ShowRoster) {
+            return;
+        }
         _roster = successObj;
         
         [self _reloadRosterPlayers];
         
-        [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
-                  withRowAnimation:UITableViewRowAnimationNone];
+        NSMutableArray *paths = [NSMutableArray arrayWithCapacity:_rosterPlayers.count];
+        for (int i = 0; i < _rosterPlayers.count; i++) {
+            [paths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
+        }
+        [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
         
         double delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -479,21 +492,31 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 {
     NSArray *positions = [_roster.positions componentsSeparatedByString:@","];
     NSMutableArray *slots = [NSMutableArray arrayWithCapacity:positions.count];
+    NSMutableSet *alreadyAssigned = [NSMutableSet set]; // keep who is already assigned to which position
+    int numMissing = 0;
     for (int i = 0; i < positions.count; i++) {
         NSString *pos = positions[i];
         NSDictionary *chosenPlayer;
         for (NSDictionary *player in _roster.players) {
-            if ([player[@"position"] isEqualToString:pos]) {
+            if ([player[@"position"] isEqualToString:pos] && ![alreadyAssigned containsObject:player[@"id"]]) {
                 chosenPlayer = player;
+                [alreadyAssigned addObject:player[@"id"]];
                 goto found_player;
             }
         }
+        numMissing++;
         [slots addObject:pos]; // just the position string means the slot isn't yet filled
         continue;
     found_player:
         [slots addObject:chosenPlayer];
     }
     _rosterPlayers = slots;
+    
+    if (numMissing == 0) {
+        [self showSubmitRosterBanner];
+    } else {
+        [self hideSubmitRosterBanner];
+    }
 }
 
 - (void)showPlayersForPosition:(NSString *)pos
@@ -519,6 +542,55 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                         autoHide:YES];
          [alert showInView:self.view];
      }];
+}
+
+- (void)showSubmitRosterBanner
+{
+    if (!_submitButtonView) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.view.frame),
+                                                                self.view.frame.size.width, 80)];
+        view.backgroundColor = [UIColor colorWithWhite:.25 alpha:1];
+        
+        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, 30)];
+        lab.backgroundColor = view.backgroundColor;
+        lab.font = [FFStyle regularFont:14];
+        lab.textColor = [UIColor colorWithWhite:.95 alpha:1];
+        lab.textAlignment = NSTextAlignmentCenter;
+        lab.text = NSLocalizedString(@"All slots are filled!", nil);
+        [view addSubview:lab];
+        
+        UIButton *butt = [FFStyle coloredButtonWithText:NSLocalizedString(@"Submit Roster!", nil)
+                                                  color:[FFStyle brightOrange]
+                                            borderColor:[FFStyle brightOrange]];
+        butt.frame = CGRectMake(15, 30, 290, 38);
+        butt.titleLabel.font = [FFStyle blockFont:18];
+        [butt addTarget:self action:@selector(submitRoster:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:butt];
+        
+        _submitButtonView = view;
+        [self.view addSubview:view];
+        
+        [UIView animateWithDuration:.25 animations:^{
+            view.frame = CGRectOffset(view.frame, 0, -view.frame.size.height);
+            _tableView.contentInset = UIEdgeInsetsMake(0, 0, view.frame.size.height, 0);
+        }];
+    }
+}
+
+- (void)hideSubmitRosterBanner
+{
+    if (_submitButtonView) {
+        UIView *view = _submitButtonView;
+        _submitButtonView = nil;
+        [UIView animateWithDuration:.25 animations:^{
+            view.frame = CGRectOffset(view.frame, 0, view.frame.size.height);
+            _tableView.contentInset = UIEdgeInsetsZero;
+        } completion:^(BOOL finished) {
+            if (finished) {
+                [view removeFromSuperview];
+            }
+        }];
+    }
 }
 
 @end
