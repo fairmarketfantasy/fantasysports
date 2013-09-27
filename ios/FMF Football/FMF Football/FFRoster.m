@@ -85,17 +85,7 @@
     
     [sesh authorizedJSONRequestWithMethod:@"POST" path:[self bulkPath] paramters:params success:
      ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
-         dispatch_queue_t q = (dispatch_queue_t)objc_getAssociatedObject([self class], "processingQueue");
-         dispatch_async(q, ^{
-             [[self meta] inTransaction:^(SBModelMeta *meta, BOOL *rollback) {
-                 FFRoster *roster = [[FFRoster alloc] initWithSession:sesh];
-                 [roster setValuesForKeysWithNetworkDictionary:JSON];
-                 [[[self class] meta] save:roster];
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     success(roster);
-                 });
-             }];
-         });
+         [self createWithNetworkRepresentation:JSON session:sesh success:success failure:failure];
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
          failure(error);
      }];
@@ -117,16 +107,7 @@
     NSString *path = [[self path] stringByAppendingString:@"/submit"];
     [self.session authorizedJSONRequestWithMethod:@"POST" path:path paramters:@{} success:
      ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
-         dispatch_queue_t q = (dispatch_queue_t)objc_getAssociatedObject([self class], "processingQueue");
-         dispatch_async(q, ^{
-             [[[self class] meta] inTransaction:^(SBModelMeta *meta, BOOL *rollback) {
-                 [self setValuesForKeysWithNetworkDictionary:JSON];
-                 [meta save:self];
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     success(self);
-                 });
-             }];
-         });
+         [self updateWithNetworkRepresentation:JSON success:success failure:failure];
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
          failure(error);
      }];
