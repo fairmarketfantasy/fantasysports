@@ -36,7 +36,8 @@
 {
     [super viewDidLoad];
     
-    _tableView = [[UITableView alloc] initWithFrame:self.view.frame];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
+                                                               self.view.frame.size.height)];
     _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _tableView.backgroundColor = [UIColor clearColor];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -46,9 +47,9 @@
     [self.view addSubview:_tableView];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     
     SBModelQuery *query = [[[self.session queryBuilderForClass:[FFRoster class]]
                             property:@"ownerId" isEqualTo:self.session.user.objId]
@@ -57,6 +58,11 @@
     _rosters = [FFRoster getBulkPath:@"/rosters/mine" cacheQuery:query withSession:self.session authorized:YES];
     _rosters.clearsCollectionBeforeSaving = YES;
     _rosters.delegate = self;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     
     [_rosters refresh];
     
