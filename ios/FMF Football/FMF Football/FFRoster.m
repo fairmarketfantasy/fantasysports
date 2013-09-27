@@ -102,6 +102,17 @@
      }];
 }
 
+- (void)removePlayer:(NSDictionary *)player success:(SBSuccessBlock)success failure:(SBErrorBlock)failure
+{
+    NSString *path = [[self path] stringByAppendingFormat:@"/remove_player/%@", player[@"id"]];
+    [self.session authorizedJSONRequestWithMethod:@"POST" path:path paramters:@{} success:
+     ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
+         success(JSON);
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
+         failure(error);
+     }];
+}
+
 - (void)submitSuccess:(SBSuccessBlock)success failure:(SBErrorBlock)failure
 {
     NSString *path = [[self path] stringByAppendingString:@"/submit"];
