@@ -50,7 +50,11 @@
 {
     [super viewDidAppear:animated];
     
-    _rosters = [FFRoster getBulkPath:@"/rosters/mine" withSession:self.session authorized:YES];
+    SBModelQuery *query = [[[self.session queryBuilderForClass:[FFRoster class]]
+                            property:@"ownerId" isEqualTo:self.session.user.objId]
+                           query];
+    
+    _rosters = [FFRoster getBulkPath:@"/rosters/mine" cacheQuery:query withSession:self.session authorized:YES];
     _rosters.clearsCollectionBeforeSaving = YES;
     _rosters.delegate = self;
     
