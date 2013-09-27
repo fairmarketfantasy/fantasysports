@@ -34,6 +34,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 @property (nonatomic) id currentPickPlayer;      // the current position we are picking or trading
 @property (nonatomic) NSArray *availablePlayers; // shown in PickPlayer
 @property (nonatomic) UIView *submitButtonView;
+@property (nonatomic) UILabel *remainingSalaryLabel;
 
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx;
 
@@ -270,7 +271,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         price.textColor = [FFStyle brightGreen];
         price.font = [FFStyle blockFont:26];
         price.textAlignment = NSTextAlignmentRight;
-        price.text = @"$100,000";
+        price.text = [NSString stringWithFormat:@"$%d", [[_roster.remainingSalary description] integerValue]];
+        _remainingSalaryLabel = price;
         [header addSubview:price];
         
         if (_state == ShowRoster) {
@@ -398,7 +400,21 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 - (void)submitRoster:(UIButton *)sender
 {
-    
+    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Submitting", nil)
+                                                   messsage:nil
+                                               loadingStyle:FFAlertViewLoadingStylePlain];
+    [alert showInView:self.view];
+    [_roster submitSuccess:^(id successObj) {
+        [alert hide];
+    } failure:^(NSError *error) {
+        [alert hide];
+        FFAlertView *eAlert = [[FFAlertView alloc] initWithError:error
+                                                           title:nil
+                                               cancelButtonTitle:nil
+                                                 okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                        autoHide:YES];
+        [eAlert showInView:self.view];
+    }];
 }
 
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx
@@ -511,6 +527,11 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         [slots addObject:chosenPlayer];
     }
     _rosterPlayers = slots;
+    
+    if (_remainingSalaryLabel) {
+        _remainingSalaryLabel.text = [NSString stringWithFormat:@"$%d",
+                                      [[_roster.remainingSalary description] integerValue]];
+    }
     
     if (numMissing == 0) {
         [self showSubmitRosterBanner];
