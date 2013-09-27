@@ -35,7 +35,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _tableView = [[UITableView alloc] initWithFrame:self.view.frame];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
+                                                               self.view.frame.size.height)];
     _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _tableView.backgroundColor = [UIColor clearColor];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -51,9 +52,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     
     NSString *path = [NSString stringWithFormat:@"/rosters/in_contest/%@", _contest[@"id"]];
     SBModelQuery *query = [[[self.session queryBuilderForClass:[FFRoster class]]
@@ -62,6 +63,11 @@
     _rosters = [FFRoster getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
     _rosters.clearsCollectionBeforeSaving = YES;
     _rosters.delegate = self;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     
     [_rosters refresh];
     
