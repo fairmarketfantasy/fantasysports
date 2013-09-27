@@ -18,7 +18,7 @@
 @dynamic buyIn;
 @dynamic canceledAt;
 @dynamic canceledCause;
-//@dynamic contest;
+@dynamic contest;
 @dynamic contestId;
 @dynamic contestRank;
 @dynamic contestRankPayout;
@@ -50,7 +50,7 @@
             @"buyIn":               @"buy_in",
             @"canceledAt":          @"canceled_at",
             @"canceledCause":       @"canceled_cause",
-//            @"contest":             @"contest",
+            @"contest":             @"contest",
             @"contestId":           @"contest_id",
             @"contestRank":         @"contest_rank",
             @"contestRankPayout":   @"contest_rank_payout",

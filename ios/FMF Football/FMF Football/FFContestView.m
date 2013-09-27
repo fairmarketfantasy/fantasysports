@@ -45,7 +45,7 @@
         ent.backgroundColor = [UIColor clearColor];
         ent.textColor = [FFStyle greyTextColor];
         ent.font = [FFStyle regularFont:14];
-        ent.text = NSLocalizedString(@"Entries:", nil);
+        ent.text = NSLocalizedString(@"Max Entries:", nil);
         [self addSubview:ent];
         
         _entries = [[UILabel alloc] initWithFrame:CGRectMake(82, 81, 220, 18)];
