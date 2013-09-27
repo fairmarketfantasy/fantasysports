@@ -477,6 +477,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     [alert showInView:self.view];
     [_roster submitSuccess:^(id successObj) {
         [alert hide];
+        _roster = successObj;
+        [self transitionToState:ContestEntered withContext:nil];
     } failure:^(NSError *error) {
         [alert hide];
         FFAlertView *eAlert = [[FFAlertView alloc] initWithError:error
@@ -534,17 +536,21 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             break;
         case ContestEntered:
             [self showRosterPlayers];
-            [self.tableView reloadData];
-//            [self.tableView beginUpdates];
-////            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
-////                                  withRowAnimation:UITableViewRowAnimationAutomatic];
-//            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0]
-//                          withRowAnimation:UITableViewRowAnimationAutomatic];
-//            if (previousState == ViewContest) {
-//                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1]
-//                              withRowAnimation:UITableViewRowAnimationAutomatic];
-//            }
-//            [self.tableView endUpdates];
+            if (previousState == ViewContest) {
+                [self.tableView reloadData];
+            } else {
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
+                                      withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]]
+                                      withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView endUpdates];
+            }
+            if (previousState == ShowRoster) {
+                [self hideSubmitRosterBanner];
+            }
             break;
         default:
             break;
