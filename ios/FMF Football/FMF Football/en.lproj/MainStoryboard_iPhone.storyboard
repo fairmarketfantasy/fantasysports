@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yyQ-O8-5CC">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yyQ-O8-5CC">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
@@ -20,7 +20,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xva-34-xG7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-87" y="117"/>
+            <point key="canvasLocation" x="-619" y="985"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="B5d-DO-DPj">
@@ -83,10 +83,28 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="wCm-06-7DN"/>
+                    <connections>
+                        <segue destination="cwg-tH-LTB" kind="push" identifier="GotoContestEntrants" id="sI8-Z0-TJP"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rVk-lt-2Nf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1982" y="642"/>
+            <point key="canvasLocation" x="1974" y="686"/>
+        </scene>
+        <!--Contest Entrants View Controller-->
+        <scene sceneID="mPE-7E-tZa">
+            <objects>
+                <viewController id="cwg-tH-LTB" customClass="FFContestEntrantsViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="x5f-Ku-Xoy">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="6sU-EV-DEY"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NYK-UU-gIK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2460" y="686"/>
         </scene>
         <!--Find Game View Controller-->
         <scene sceneID="U8n-i5-qSF">
@@ -101,7 +119,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RpM-QX-u65" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="917" y="1508"/>
+            <point key="canvasLocation" x="917" y="1716"/>
         </scene>
         <!--Roster View Controller-->
         <scene sceneID="IVF-Wj-l8j">
@@ -119,12 +137,15 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6vq-Cb-eCp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1462" y="1200"/>
+            <point key="canvasLocation" x="1434" y="1348"/>
         </scene>
     </scenes>
     <classes>
         <class className="FFBaseViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FFBaseViewController.h"/>
+        </class>
+        <class className="FFContestEntrantsViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFContestEntrantsViewController.h"/>
         </class>
         <class className="FFContestViewController" superclassName="FFBaseViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FFContestViewController.h"/>
