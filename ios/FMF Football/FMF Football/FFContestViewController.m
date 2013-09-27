@@ -15,6 +15,7 @@
 #import "FFAlertView.h"
 #import "FFRosterSlotCell.h"
 #import "FFPlayerSelectCell.h"
+#import "FFContestEntrantsViewController.h"
 
 
 typedef enum {
@@ -36,6 +37,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 @property (nonatomic) NSArray *availablePlayers; // shown in PickPlayer
 @property (nonatomic) UIView *submitButtonView;
 @property (nonatomic) UILabel *remainingSalaryLabel;
+@property (nonatomic) UILabel *numEntrantsLabel;
 
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx;
 
@@ -251,6 +253,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             NSString *text = [NSString stringWithFormat:@"%@ %@",
                               _roster.contest[@"num_rosters"], NSLocalizedString(@"Contest Entrants", nil)];
             cell.textLabel.text = text;
+            _numEntrantsLabel = cell.textLabel;
             
             UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, 0,
                                                                    cell.contentView.frame.size.width, 1)];
@@ -362,6 +365,16 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (_state == ContestEntered && indexPath.row == 3) {
+        [self performSegueWithIdentifier:@"GotoContestEntrants" sender:nil];
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"GotoContestEntrants"]) {
+        ((FFContestEntrantsViewController *)segue.destinationViewController).contest = _roster.contest;
+    }
 }
 
 - (void)enterGame:(UIButton *)button
@@ -625,6 +638,12 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     if (_remainingSalaryLabel) {
         _remainingSalaryLabel.text = [NSString stringWithFormat:@"$%d",
                                       [[_roster.remainingSalary description] integerValue]];
+    }
+    
+    if (_numEntrantsLabel) {
+        _numEntrantsLabel.text = [NSString stringWithFormat:@"%@ %@",
+                                  _roster.contest[@"num_rosters"],
+                                  NSLocalizedString(@"Contest Entrants", nil)];
     }
     
     if (numMissing == 0) {
