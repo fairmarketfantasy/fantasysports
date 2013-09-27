@@ -51,6 +51,7 @@
     [super viewDidAppear:animated];
     
     _rosters = [FFRoster getBulkPath:@"/rosters/mine" withSession:self.session authorized:YES];
+    _rosters.clearsCollectionBeforeSaving = YES;
     _rosters.delegate = self;
     
     [_rosters refresh];
