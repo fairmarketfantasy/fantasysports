@@ -43,6 +43,8 @@
 
 - (void)addPlayer:(NSDictionary *)player success:(SBSuccessBlock)success failure:(SBErrorBlock)failure;
 
+- (void)removePlayer:(NSDictionary *)player success:(SBSuccessBlock)success failure:(SBErrorBlock)failure;
+
 - (void)submitSuccess:(SBSuccessBlock)success failure:(SBErrorBlock)failure;
 
 @end

@@ -113,7 +113,7 @@
         _trade.hidden = NO;
         _name.text = player[@"name"];
         NSString *ppg = [player[@"ppg"] isEqual:[NSNull null]] ? @"0" : player[@"ppg"];
-        _team.text = [NSString stringWithFormat:@"Team: %@ PPG: %@", player[@"team"], ppg];
+        _team.text = [NSString stringWithFormat:@"%@ Team: %@ PPG: %@", player[@"position"], player[@"team"], ppg];
         _price.text = [NSString stringWithFormat:@"$%@", player[@"buy_price"]];
         if ([player[@"image"] isKindOfClass:[NSString class]]) {
             [_img setImageWithURL:[NSURL URLWithString:player[@"image"]]

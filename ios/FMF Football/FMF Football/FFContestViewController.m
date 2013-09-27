@@ -20,7 +20,8 @@
 typedef enum {
     ViewContest,
     ShowRoster,
-    PickPlayer
+    PickPlayer,
+    ContestEntered
 } FFContestViewControllerState;
 
 
@@ -374,7 +375,22 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 - (void)rosterCellReplacePlayer:(FFRosterSlotCell *)cell
 {
-    
+    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:@"Removing Player"
+                                                   messsage:nil
+                                               loadingStyle:FFAlertViewLoadingStylePlain];
+    [alert showInView:self.view];
+    [_roster removePlayer:cell.player success:^(id successObj) {
+        [alert hide];
+        cell.player = cell.player[@"position"];
+    } failure:^(NSError *error) {
+        [alert hide];
+        FFAlertView *eAlert = [[FFAlertView alloc] initWithError:error
+                                                           title:nil
+                                               cancelButtonTitle:nil
+                                                 okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                        autoHide:YES];
+        [eAlert showInView:self.view];
+    }];
 }
 
 - (void)playerSelectCellDidBuy:(FFPlayerSelectCell *)cell
