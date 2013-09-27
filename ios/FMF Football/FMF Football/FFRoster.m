@@ -72,7 +72,9 @@
 + (NSArray *)indexes
 {
     return [[super indexes] arrayByAddingObjectsFromArray:@[
-            @[@"contestTypeId"]
+            @[@"userKey", @"contestTypeId"],
+            @[@"userKey", @"contestId"],
+            @[@"userKey", @"ownerId"]
             ]];
 }
 
