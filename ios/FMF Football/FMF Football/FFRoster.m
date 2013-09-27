@@ -61,7 +61,7 @@
             @"ownerId":             @"owner_id",
             @"ownerName":           @"owner_name",
             @"paidAt":              @"paid_at",
-//            @"players":             @"players",
+            @"players":             @"players",
             @"positions":           @"positions",
             @"remainingSalary":     @"remaining_salary",
             @"score":               @"score",
@@ -96,6 +96,17 @@
                  });
              }];
          });
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
+         failure(error);
+     }];
+}
+
+- (void)addPlayer:(NSDictionary *)player success:(SBSuccessBlock)success failure:(SBErrorBlock)failure
+{
+    NSString *path = [[self path] stringByAppendingFormat:@"/add_player/%@", player[@"id"]];
+    [self.session authorizedJSONRequestWithMethod:@"POST" path:path  paramters:nil success:
+     ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
+         success(JSON);
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
          failure(error);
      }];

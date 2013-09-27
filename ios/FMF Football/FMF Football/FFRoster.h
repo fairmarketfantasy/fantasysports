@@ -41,4 +41,6 @@
                               success:(SBSuccessBlock)success
                               failure:(SBErrorBlock)failure;
 
+- (void)addPlayer:(NSDictionary *)player success:(SBSuccessBlock)success failure:(SBErrorBlock)failure;
+
 @end

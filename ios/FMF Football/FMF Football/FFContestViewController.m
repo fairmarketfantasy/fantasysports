@@ -14,6 +14,7 @@
 #import "FFSessionViewController.h"
 #import "FFAlertView.h"
 #import "FFRosterSlotCell.h"
+#import "FFPlayerSelectCell.h"
 
 
 typedef enum {
@@ -23,12 +24,15 @@ typedef enum {
 } FFContestViewControllerState;
 
 
-@interface FFContestViewController () <UITableViewDataSource, UITableViewDelegate, FFRosterSlotCellDelegate>
+@interface FFContestViewController ()
+<UITableViewDataSource, UITableViewDelegate,
+FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) FFContestViewControllerState state;
-@property (nonatomic) NSArray *rosterPlayers;
-@property (nonatomic) SBDataObjectResultSet *resultSet;
+@property (nonatomic) FFContestViewControllerState state; // current state of the FSM
+@property (nonatomic) NSMutableArray *rosterPlayers; // the players in the current roster
+@property (nonatomic) id currentPickPlayer;      // the current position we are picking or trading
+@property (nonatomic) NSArray *availablePlayers; // shown in PickPlayer
 
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx;
 
@@ -67,6 +71,7 @@ typedef enum {
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"ContestCell"];
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"EnterCell"];
     [_tableView registerClass:[FFRosterSlotCell class] forCellReuseIdentifier:@"RosterPlayer"];
+    [_tableView registerClass:[FFPlayerSelectCell class] forCellReuseIdentifier:@"PlayerSelect"];
     [self.view addSubview:_tableView];
 }
 
@@ -104,6 +109,8 @@ typedef enum {
         switch (_state) {
             case ShowRoster:
                 return _rosterPlayers != nil ? _rosterPlayers.count : 0;
+            case PickPlayer:
+                return _availablePlayers != nil ? _availablePlayers.count : 0;
             default:
                 return 0;
         }
@@ -219,6 +226,12 @@ typedef enum {
             cell = [tableView dequeueReusableCellWithIdentifier:@"RosterPlayer" forIndexPath:indexPath];
             FFRosterSlotCell *r_cell = (FFRosterSlotCell *)cell;
             r_cell.player = player;
+            r_cell.delegate = self;
+        } else if (_state == PickPlayer) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"PlayerSelect" forIndexPath:indexPath];
+            FFPlayerSelectCell *s_cell = (FFPlayerSelectCell *)cell;
+            s_cell.player = _availablePlayers[indexPath.row];
+            s_cell.delegate = self;
         }
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -265,6 +278,32 @@ typedef enum {
             lab.backgroundColor = [UIColor clearColor];
             lab.textColor = [UIColor colorWithWhite:.15 alpha:1];
             lab.text = NSLocalizedString(@"Pick Your Team", nil);
+            [header addSubview:lab];
+        } else if (_state == PickPlayer) {
+            UIButton *back = [UIButton buttonWithType:UIButtonTypeCustom];
+            back.frame = CGRectMake(5, 0, 40, 40);
+            [back setBackgroundImage:[UIImage imageNamed:@"sectionback.png"] forState:UIControlStateNormal];
+            [back addTarget:self action:@selector(backFromPlayerSelect:) forControlEvents:UIControlEventTouchUpInside];
+            [header addSubview:back];
+            
+            NSString *pos;
+            if ([_currentPickPlayer isKindOfClass:[NSString class]]) {
+                pos = _currentPickPlayer;
+            } else {
+                pos = _currentPickPlayer[@"position"];
+            }
+            NSDictionary *names = @{@"QB":  NSLocalizedString(@"Quarterback", nil),
+                                    @"RB":  NSLocalizedString(@"Running Back", nil),
+                                    @"WR":  NSLocalizedString(@"Wide Receiver", nil),
+                                    @"DEF": NSLocalizedString(@"Defense", nil),
+                                    @"K":   NSLocalizedString(@"Kicker", nil),
+                                    @"TE":  NSLocalizedString(@"Tight End", nil)};
+            
+            UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(45, 0, 320, 40)];
+            lab.font = [FFStyle lightFont:26];
+            lab.backgroundColor = [UIColor clearColor];
+            lab.textColor = [UIColor colorWithWhite:.15 alpha:1];
+            lab.text = names[pos];
             [header addSubview:lab];
         }
         return header;
@@ -320,6 +359,42 @@ typedef enum {
     }];
 }
 
+- (void)backFromPlayerSelect:(UIButton *)button
+{
+    [self transitionToState:ShowRoster withContext:nil];
+}
+
+- (void)rosterCellSelectPlayer:(FFRosterSlotCell *)cell
+{
+    [self transitionToState:PickPlayer withContext:cell.player];
+}
+
+- (void)rosterCellReplacePlayer:(FFRosterSlotCell *)cell
+{
+    
+}
+
+- (void)playerSelectCellDidBuy:(FFPlayerSelectCell *)cell
+{
+    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Buying Player", nil)
+                                                   messsage:nil
+                                               loadingStyle:FFAlertViewLoadingStylePlain];
+    [alert showInView:self.view];
+    __weak id weakSelf = self;
+    [_roster addPlayer:cell.player success:^(id successObj) {
+        [alert hide];
+        [weakSelf transitionToState:ShowRoster withContext:nil];
+    } failure:^(NSError *error) {
+        [alert hide];
+        FFAlertView *eAlert = [[FFAlertView alloc] initWithError:error
+                                                          title:nil
+                                              cancelButtonTitle:nil
+                                                okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                       autoHide:YES];
+        [eAlert showInView:[weakSelf view]];
+    }];
+}
+
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx
 {
     if (newState == _state) {
@@ -338,20 +413,30 @@ typedef enum {
             [self.tableView endUpdates];
             break;
         case ShowRoster:
+            [self.tableView beginUpdates];
             if (previousState == ViewContest) {
-                [self.tableView beginUpdates];
                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
                                       withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1]
                               withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableView endUpdates];
-                
-                [self showRosterPlayers];
-                break;
-            } else {
+            } else if (previousState == PickPlayer) {
+                [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
+                                      withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                               withRowAnimation:UITableViewRowAnimationAutomatic];
             }
+            [self showRosterPlayers];
+            [self.tableView endUpdates];
+            break;
+        case PickPlayer:
+            _currentPickPlayer = ctx;
+            [self showPlayersForPosition:[ctx isKindOfClass:[NSString class]] ? ctx : ctx[@"position"]];
+            [self.tableView beginUpdates];
+            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                          withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView endUpdates];
             break;
         default:
             break;
@@ -359,6 +444,38 @@ typedef enum {
 }
 
 - (void)showRosterPlayers
+{
+    if (_state != ShowRoster) {
+        NSLog(@"attempting to show roster players, but in the wrong state");
+        return;
+    }
+
+    [self _reloadRosterPlayers];
+
+    [_roster refreshInBackgroundWithBlock:^(id successObj) {
+        _roster = successObj;
+        
+        [self _reloadRosterPlayers];
+        
+        [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                  withRowAnimation:UITableViewRowAnimationNone];
+        
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self showRosterPlayers];
+        });
+    } failure:^(NSError *error) {
+        FFAlertView *alert = [[FFAlertView alloc] initWithError:error
+                                                          title:nil
+                                              cancelButtonTitle:nil
+                                                okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                       autoHide:YES];
+        [alert showInView:alert];
+    }];
+}
+
+- (void)_reloadRosterPlayers
 {
     NSArray *positions = [_roster.positions componentsSeparatedByString:@","];
     NSMutableArray *slots = [NSMutableArray arrayWithCapacity:positions.count];
@@ -377,18 +494,31 @@ typedef enum {
         [slots addObject:chosenPlayer];
     }
     _rosterPlayers = slots;
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
-                  withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)rosterCellReplacePlayer:(FFRosterSlotCell *)cell
+- (void)showPlayersForPosition:(NSString *)pos
 {
-    
-}
-
-- (void)rosterCellSelectPlayer:(FFRosterSlotCell *)cell
-{
-    
+    if (_state != PickPlayer) {
+        NSLog(@"attempting to show players but in the wrong state");
+        return;
+    }
+    NSDictionary *params = @{@"position": pos, @"roster_id": _roster.objId};
+    [self.session authorizedJSONRequestWithMethod:@"GET" path:@"/players/" paramters:params success:
+     ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
+         if (_state != PickPlayer) {
+             return;
+         }
+         _availablePlayers = JSON;
+         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                       withRowAnimation:UITableViewRowAnimationAutomatic];
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
+         FFAlertView *alert = [[FFAlertView alloc] initWithError:error
+                                                           title:nil
+                                               cancelButtonTitle:nil
+                                                 okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                        autoHide:YES];
+         [alert showInView:self.view];
+     }];
 }
 
 @end
