@@ -2,13 +2,13 @@
       <div class="roster-area">
         <div class="clearfix">
           <h4 class="team-heading inline-heading">Roster</h4>
-          <div class="salary-cap score" ng-show="inThePast(market.started_at)">Team Score: {{roster.score | zeroIfEmpty}}
+          <div class="salary-cap score" ng-show="inThePast(market.started_at)" highlight-changes="roster">Team Score: {{roster.score | zeroIfEmpty}}
           </div>
         </div>
 
         <div class="roster-overflow">
             
-          <ul class="no-no">
+          <ul class="no-no" highlight-changes-in-list="roster.players" key-to-watch="score">
             <li class="mr-item clearfix" ng-repeat="player in roster.players">
             <div ng-show="player.id" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': 'url(' + player.headshot_url +')'}"></div>
               <div ng-hide="player.id" class="mr-player-image"></div>
@@ -19,10 +19,10 @@
                 <span class="mr-stats" ng-show="player.id">{{player.team}} {{player.position}} ({{player.ppg | zeroIfEmpty}} PPG)</span>
                 <span class="mr-stats" ng-show="player.id">
                   <span ng-show="isInPlay(roster)">
-                    ${{player.sell_price | number:0}} 
+                    ${{player.purchase_price | number:0}}
                   </span>
                   <span ng-show="!isInPlay(roster)">
-                    ${{player.buy_price | number:0}} 
+                    ${{player.buy_price | number:0}}
                   </span>
                   <span ng-show="market.state != 'published' && roster.state != 'in_progress'">
                     (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">

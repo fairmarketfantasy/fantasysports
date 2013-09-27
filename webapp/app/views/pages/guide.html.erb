@@ -602,81 +602,60 @@
 
   <div class="demo-row">
     <h3 class="demo-title">Checkboxes &<br /> Radio-buttons</h3>
-    <div class="demo-col">
-      <label class="checkbox" for="checkbox1">
-        <input type="checkbox" value="" id="checkbox1" data-toggle="checkbox">
-        Unchecked
-      </label>
-      <label class="checkbox" for="checkbox2">
-        <input type="checkbox" checked="checked" value="" id="checkbox2" data-toggle="checkbox" checked="">
-        Checked
-      </label>
-      <label class="checkbox" for="checkbox3">
-        <input type="checkbox" value="" id="checkbox3" data-toggle="checkbox" disabled="">
-        Disabled unchecked
-      </label>
-      <label class="checkbox" for="checkbox4">
-        <input type="checkbox" checked="checked" value="" id="checkbox4" data-toggle="checkbox" disabled="" checked="">
-        Disabled checked
-      </label>
+    <div class="demo-col" ng-controller='CheckBoxesController'>
+      <div class="col-md-3">
+        <label class="checkbox" for="checkbox1" ng-click="toggleChecked('checked1')" ng-class="{'checked': checked1}">
+          <span class="icons">
+            <span class="first-icon fui-checkbox-unchecked"></span>
+            <span class="second-icon fui-checkbox-checked"></span>
+          </span>
+          Unchecked
+        </label>
+        <label class="checkbox" for="checkbox2" ng-click="toggleChecked('checked2')" ng-class="{'checked': checked2}">
+          <span class="icons">
+            <span class="first-icon fui-checkbox-unchecked"></span>
+            <span class="second-icon fui-checkbox-checked"></span>
+          </span>
+          Checked
+        </label>
+        <label class="checkbox disabled" for="checkbox3">
+          <span class="icons">
+            <span class="first-icon fui-checkbox-unchecked"></span>
+            <span class="second-icon fui-checkbox-checked"></span>
+          </span>
+          Disabled unchecked
+        </label>
+        <label class="checkbox disabled checked" for="checkbox4">
+          <span class="icons">
+            <span class="first-icon fui-checkbox-unchecked"></span>
+            <span class="second-icon fui-checkbox-checked"></span>
+          </span>
+          Disabled checked
+        </label>
+      </div>
     </div><!-- /.demo-col -->
-    <div class="demo-col">
-      <label class="radio">
-        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" data-toggle="radio">
+    <div class="demo-col" ng-controller='RadioButtonsController'>
+      <label class="radio" ng-class="{checked: isSelected('radio1')}">
+        <span class="icons" ng-click="select('radio1')">
+          <span class="first-icon fui-radio-unchecked"></span>
+          <span class="second-icon fui-radio-checked"></span>
+        </span>
         Radio is off
       </label>
-      <label class="radio">
-        <input type="radio" name="optionsRadios" id="optionsRadios2" value="option1" data-toggle="radio" checked="">
+      <label class="radio" ng-class="{checked: isSelected('radio2')}">
+        <span class="icons" ng-click="select('radio2')">
+          <span class="first-icon fui-radio-unchecked"></span>
+          <span class="second-icon fui-radio-checked"></span>
+        </span>
         Radio is on
       </label>
 
-      <label class="radio">
-        <input type="radio" name="optionsRadiosDisabled" id="optionsRadios3" value="option2" data-toggle="radio" disabled="">
+      <label class="radio disabled">
+        <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
         Disabled radio is off
       </label>
-      <label class="radio">
-        <input type="radio" name="optionsRadiosDisabled" id="optionsRadios4" value="option2" data-toggle="radio" checked="" disabled="">
-        Disabled radio is on
-      </label>
-    </div><!-- /.demo-col -->
-  </div><!-- /demo-row -->
-
-  <div class="demo-row">
-    <h3 class="demo-title">Custom color</h3>
-    <div class="demo-col">
-      <label class="checkbox primary" for="checkbox5">
-        <input type="checkbox" value="" id="checkbox5" data-toggle="checkbox">
-        Unchecked
-      </label>
-      <label class="checkbox primary" for="checkbox6">
-        <input type="checkbox" checked="checked" value="" id="checkbox6" data-toggle="checkbox" checked="">
-        Checked
-      </label>
-      <label class="checkbox primary" for="checkbox7">
-        <input type="checkbox" value="" id="checkbox7" data-toggle="checkbox" disabled="">
-        Disabled unchecked
-      </label>
-      <label class="checkbox primary" for="checkbox8">
-        <input type="checkbox" checked="checked" value="" id="checkbox8" data-toggle="checkbox" disabled="" checked="">
-        Disabled checked
-      </label>
-    </div><!-- /.demo-col -->
-    <div class="demo-col">
-      <label class="radio primary">
-        <input type="radio" name="optionsRadios2" id="optionsRadios5" value="option1" data-toggle="radio">
-        Radio is off
-      </label>
-      <label class="radio primary">
-        <input type="radio" name="optionsRadios2" id="optionsRadios6" value="option1" data-toggle="radio" checked="">
-        Radio is on
-      </label>
-
-      <label class="radio primary">
-        <input type="radio" name="optionsRadiosDisabled2" id="optionsRadios7" value="option2" data-toggle="radio" disabled="">
-        Disabled radio is off
-      </label>
-      <label class="radio primary">
-        <input type="radio" name="optionsRadiosDisabled2" id="optionsRadios" value="option2" data-toggle="radio" checked="" disabled="">
+      <label class="radio disabled">
+        <span class="icons"><span class="first-icon fui-radio-unchecked"></span><span class="second-icon fui-radio-checked"></span></span>
         Disabled radio is on
       </label>
     </div><!-- /.demo-col -->
@@ -684,39 +663,58 @@
 
   <div class="demo-row">
     <h3 class="demo-title">Switches</h3>
-    <div class="last-col">
-      <div class="demo-col">
-        <input type="checkbox" checked data-toggle="switch" />
-      </div><!-- /.demo-col -->
-
-      <div class="demo-col">
-        <input type="checkbox" data-toggle="switch" />
-      </div><!-- /.demo-col -->
-
-      <div class="demo-col ptl">
-        <div class="switch switch-square"
-          data-on-label="<i class='fui-check'></i>"
-          data-off-label="<i class='fui-cross'></i>">
-          <input type="checkbox" />
+    <div class="demo-col">
+      <div class='switch has-switch'>
+        <div class='switch-animate' ng-class="{'switch-on': switch1, 'switch-off': !switch1}">
+          <span class='switch-left' ng-click='switch1 = false'>ON</span>
+          <label>&nbsp</label>
+          <span class='switch-right' ng-click='switch1 = true'>OFF</span>
         </div>
-      </div><!-- /.demo-col -->
-
-      <div class="demo-col ptl">
-        <div class="switch switch-square"
-          data-on-label="<i class='fui-check'></i>"
-          data-off-label="<i class='fui-cross'></i>">
-          <input type="checkbox" checked />
+      </div>
+      <div class='switch has-switch'>
+        <div class="switch-animate" ng-class="{'switch-on': !switch2, 'switch-off': switch2}">
+          <span class='switch-left' ng-click='switch2 = true'>ON</span>
+          <label>&nbsp</label>
+          <span class='switch-right' ng-click='switch2 = false'>OFF</span>
         </div>
-      </div><!-- /.demo-col -->
-
-      <div class="demo-col ptl">
-        <input type="checkbox" disabled data-toggle="switch" />
-      </div><!-- /.demo-col -->
-
-      <div class="demo-col ptl">
-        <input type="checkbox" checked disabled data-toggle="switch" />
-      </div><!-- /.demo-col -->
-    </div><!-- /.demo-row -->
+      </div><br />
+      <div class="switch switch-square has-switch">
+        <div class="switch-animate" ng-class="{'switch-on': switch3, 'switch-off': !switch3}">
+          <span class="switch-left">
+            <i class="fui-check" ng-click='switch3 = false'></i>
+          </span>
+          <label>&nbsp;</label>
+          <span class="switch-right">
+            <i class="fui-cross" ng-click='switch3 = true'></i>
+          </span>
+        </div>
+      </div>
+      <div class="switch switch-square has-switch">
+        <div class="switch-animate" ng-class="{'switch-on': !switch4, 'switch-off': switch4}">
+          <span class="switch-left">
+            <i class="fui-check" ng-click='switch4 = true'></i>
+          </span>
+          <label>&nbsp;</label>
+          <span class="switch-right">
+            <i class="fui-cross" ng-click='switch4 = false'></i>
+          </span>
+        </div>
+      </div><br />
+      <div class='switch has-switch deactivate'>
+        <div class='switch-animate switch-on'>
+          <span class='switch-left'>ON</span>
+          <label>&nbsp</label>
+          <span class='switch-right'>OFF</span>
+        </div>
+      </div>
+      <div class='switch has-switch deactivate'>
+        <div class="switch-animate switch-off">
+          <span class='switch-left'>ON</span>
+          <label>&nbsp</label>
+          <span class='switch-right'>OFF</span>
+        </div>
+      </div><br />
+    </div><!-- /.demo-col -->
   </div>
 
   <div class="demo-row demo-navigation">
