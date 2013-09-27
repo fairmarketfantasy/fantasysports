@@ -7,7 +7,7 @@
 //
 
 #import "FFAppDelegate.h"
-#import <SBData/SBData.h>
+#import <SBData/SBModel.h>
 #import "FFStyle.h"
 
 @implementation FFAppDelegate

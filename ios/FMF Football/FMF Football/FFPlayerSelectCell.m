@@ -1,29 +1,28 @@
 //
-//  FFRosterSlotCell.m
+//  FFPlayerSelectCell.m
 //  FMF Football
 //
 //  Created by Samuel Sutch on 9/26/13.
 //  Copyright (c) 2013 FairMarketFantasy. All rights reserved.
 //
 
-#import "FFRosterSlotCell.h"
+#import "FFPlayerSelectCell.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
 
-@interface FFRosterSlotCell ()
+@interface FFPlayerSelectCell ()
 
 @property (nonatomic) UIImageView *img;
-@property (nonatomic) UILabel *emptyPosition;
 @property (nonatomic) UILabel *name;
 @property (nonatomic) UILabel *team;
 @property (nonatomic) UILabel *price;
-@property (nonatomic) UIButton *select;
-@property (nonatomic) UIButton *trade;
+@property (nonatomic) FFCustomButton *select;
+@property (nonatomic) UILabel *inactive;
 
 @end
 
 
-@implementation FFRosterSlotCell
+@implementation FFPlayerSelectCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -58,27 +57,19 @@
         _price.textColor = [FFStyle darkGreyTextColor];
         [self.contentView addSubview:_price];
         
-        _emptyPosition = [[UILabel alloc] initWithFrame:CGRectMake(82, 0, 80, self.frame.size.height)];
-        _emptyPosition.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-        _emptyPosition.backgroundColor = [UIColor clearColor];
-        _emptyPosition.font = [FFStyle regularFont:19];
-        _emptyPosition.textColor = [FFStyle greyTextColor];
-        [self.contentView addSubview:_emptyPosition];
-        
-        _select = [FFStyle coloredButtonWithText:NSLocalizedString(@"Select", nil)
+        _select = [FFStyle coloredButtonWithText:NSLocalizedString(@"Buy", nil)
                                            color:[FFStyle brightGreen]
                                      borderColor:[FFStyle white]];
         _select.frame = CGRectMake(224, 21, 80, 38);
         [_select addTarget:self action:@selector(select:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_select];
         
-        _trade = [FFStyle coloredButtonWithText:NSLocalizedString(@"Trade", nil)
-                                           color:[FFStyle brightRed]
-                                     borderColor:[FFStyle white]];
-        _trade.frame = CGRectMake(224, 21, 80, 38);
-        _trade.hidden = YES;
-        [_trade addTarget:self action:@selector(replace:) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:_trade];
+        _inactive = [[UILabel alloc] initWithFrame:CGRectMake(224-50, 0, 40, 80)];
+        _inactive.backgroundColor = [UIColor clearColor];
+        _inactive.textColor = [FFStyle brightRed];
+        _inactive.text = NSLocalizedString(@"INACTIVE", nil);
+        _inactive.font = [FFStyle regularFont:12];
+        [self.contentView addSubview:_inactive];
         
         UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(7, 78, 306, 1)];
         sep.backgroundColor = [UIColor colorWithWhite:.8 alpha:.5];
@@ -91,50 +82,42 @@
     return self;
 }
 
-- (void)setPlayer:(id)player
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+    [super setSelected:selected animated:animated];
+
+    // Configure the view for the selected state
+}
+
+- (void)setPlayer:(NSDictionary *)player
 {
     _player = player;
     
-    if ([player isKindOfClass:[NSString class]]) {
-        // it's an empty slot
-        _emptyPosition.text = player;
-        _emptyPosition.hidden = NO;
-        _select.hidden = NO;
-        _name.hidden = YES;
-        _team.hidden = YES;
-        _price.hidden = YES;
-        _trade.hidden = YES;
+    _name.text = player[@"name"];
+    NSString *ppg = [player[@"ppg"] isEqual:[NSNull null]] ? @"0" : player[@"ppg"];
+    _team.text = [NSString stringWithFormat:@"Team: %@ PPG: %@", player[@"team"], ppg];
+    _price.text = [NSString stringWithFormat:@"$%@", player[@"buy_price"]];
+    if ([player[@"image"] isKindOfClass:[NSString class]]) {
+        [_img setImageWithURL:[NSURL URLWithString:player[@"image"]]
+             placeholderImage:[UIImage imageNamed:@"rosterslotempty.png"]];
     } else {
-        _emptyPosition.hidden = YES;
-        _select.hidden = YES;
-        _name.hidden = NO;
-        _team.hidden = NO;
-        _price.hidden = NO;
-        _trade.hidden = NO;
-        _name.text = player[@"name"];
-        NSString *ppg = [player[@"ppg"] isEqual:[NSNull null]] ? @"0" : player[@"ppg"];
-        _team.text = [NSString stringWithFormat:@"Team: %@ PPG: %@", player[@"team"], ppg];
-        _price.text = [NSString stringWithFormat:@"$%@", player[@"buy_price"]];
-        if ([player[@"image"] isKindOfClass:[NSString class]]) {
-            [_img setImageWithURL:[NSURL URLWithString:player[@"image"]]
-                 placeholderImage:[UIImage imageNamed:@"rosterslotempty.png"]];
-        } else {
-            _img.image = [UIImage imageNamed:@"rosterslotempty.png"];
-        }
+        _img.image = [UIImage imageNamed:@"rosterslotempty.png"];
+    }
+    _inactive.hidden = YES; //[player[@"status"] isEqual:@"ACT"];
+    _select.enabled = [player[@"status"] isEqual:@"ACT"];
+    if (!_select.enabled) {
+        [_select setTitle:NSLocalizedString(@"INACTIVE", nil) forState:UIControlStateNormal];
+        _select.alpha = .3;
+    } else {
+        [_select setTitle:NSLocalizedString(@"Select", nil) forState:UIControlStateNormal];
+        _select.alpha = 1;
     }
 }
 
 - (void)select:(UIButton *)sender
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(rosterCellSelectPlayer:)]) {
-        [self.delegate rosterCellSelectPlayer:self];
-    }
-}
-
-- (void)replace:(UIButton *)sender
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(rosterCellReplacePlayer:)]) {
-        [self.delegate rosterCellReplacePlayer:self];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(playerSelectCellDidBuy:)]) {
+        [self.delegate playerSelectCellDidBuy:self];
     }
 }
 
