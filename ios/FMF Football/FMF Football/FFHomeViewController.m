@@ -95,6 +95,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
 //    });
     
     _markets = [FFMarket getBulkWithSession:self.session authorized:YES];
+    _markets.clearsCollectionBeforeSaving = YES;
     _markets.delegate = self;
     [_markets refresh];
     
