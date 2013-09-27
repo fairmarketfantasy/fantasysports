@@ -30,6 +30,33 @@
   <a class="see-all" href="/#/rosters">See All Live Contests</a>
 
 </div>
+<div ng-show="!rosters.mine().length" class="entries-container">
+  <div class="roster-title">  
+    <h3>Past Entries</h3>
+  </div>
+  
+  <ul class="entries-info-list clearfix">
+    <li class="ei-item">
+      <p class="ei-number">12/42</p>
+      <span class="ei-info">Wins/Entries</span>
+    </li>
+    <li class="ei-item">
+      <p class="ei-number">99</p>
+      <span class="ei-info">Top Score</span>
+    </li>
+    <li class="ei-item">
+      <p class="ei-number">47</p>
+      <span class="ei-info">Average Score</span>
+    </li>
+    <li class="ei-item">
+      <p class="ei-number">$17,990</p>
+      <span class="ei-info">Payout</span>
+    </li>
+  </ul>
+
+  <a class="see-all" href="/#/history">See All Past Contests</a>
+
+</div>
 
 <div class="market-container" ng-class="{ roundTop: !rosters.top(3).length }">
   <div class="market-title">  
