@@ -247,12 +247,20 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             cell = [tableView dequeueReusableCellWithIdentifier:@"EntrantsCell" forIndexPath:indexPath];
             [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
             
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            cell.textLabel.font = [FFStyle regularFont:17];
-            cell.textLabel.textColor = [FFStyle greyTextColor];
+            UIImageView *disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 14.5, 10, 15)];
+            disclosure.image = [UIImage imageNamed:@"disclosurelight.png"];
+            disclosure.backgroundColor = [UIColor clearColor];
+            [cell.contentView addSubview:disclosure];
+            
+            UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 250, 44)];
+            lab.backgroundColor = [UIColor clearColor];
+            lab.font = [FFStyle regularFont:17];
+            lab.textColor = [FFStyle greyTextColor];
             NSString *text = [NSString stringWithFormat:@"%@ %@",
                               _roster.contest[@"num_rosters"], NSLocalizedString(@"Contest Entrants", nil)];
-            cell.textLabel.text = text;
+            lab.text = text;
+            [cell.contentView addSubview:lab];
+            
             _numEntrantsLabel = cell.textLabel;
             
             UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, 0,

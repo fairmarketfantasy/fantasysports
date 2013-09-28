@@ -84,10 +84,104 @@
     return [_rosters count];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 60;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 50;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
+    header.backgroundColor = [FFStyle white];
+    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 290, 50)];
+    lab.backgroundColor = [UIColor clearColor];
+    lab.font = [FFStyle lightFont:26];
+    lab.textColor = [FFStyle tableViewSectionHeaderColor];
+    lab.text = NSLocalizedString(@"Your Contest Entries", nil);
+    [header addSubview:lab];
+    return header;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    cell.textLabel.text = [[_rosters objectAtIndex:indexPath.row] description];
+    [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
+    UIImageView *disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 22.5, 10, 15)];
+    disclosure.image = [UIImage imageNamed:@"disclosurelight.png"];
+    disclosure.backgroundColor = [UIColor clearColor];
+    [cell.contentView addSubview:disclosure];
+    
+    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(cell.contentView.frame), 290, 1)];
+    sep.backgroundColor = [FFStyle tableViewSeparatorColor];
+    sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+    [cell.contentView addSubview:sep];
+    
+    FFRoster *roster = [_rosters objectAtIndex:indexPath.row];
+    FFContestType *cType = roster.contestType;
+    
+    CGFloat labw = [cType.name sizeWithFont:[FFStyle mediumFont:19]].width;
+    
+    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, labw, 36)];
+    lab.backgroundColor = [UIColor clearColor];
+    lab.font = [FFStyle mediumFont:19];
+    lab.text = cType.name;
+    [cell.contentView addSubview:lab];
+    
+    UIImageView *status = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    status.center = CGPointMake(CGRectGetMaxX(lab.frame)+10, CGRectGetMidY(lab.frame));
+    status.backgroundColor = [UIColor clearColor];
+    NSDictionary *states = @{@"in_progress": @"greydot.png",
+                             @"submitted": @"bluedot.png",
+                             @"finished": @"greendog.png"};
+    if (states[roster.state]) {
+        status.image = [UIImage imageNamed:states[roster.state]];
+        [cell.contentView addSubview:status];
+    }
+    
+    UILabel *entry = [[UILabel alloc] initWithFrame:CGRectMake(15, 32, 170, 20)];
+    entry.backgroundColor = [UIColor clearColor];
+    entry.font = [FFStyle regularFont:13];
+    entry.textColor = [FFStyle greyTextColor];
+    entry.text = [NSString stringWithFormat:@"%@ %@  %@ %@",
+                  NSLocalizedString(@"Entry:", 0), cType.buyIn,
+                  NSLocalizedString(@"Payout:", nil), (roster.amountPaid != nil ? roster.amountPaid : @"0")];
+    [cell.contentView addSubview:entry];
+    
+    UILabel *rankLab = [[UILabel alloc] initWithFrame:CGRectMake(165, 5, 50, 30)];
+    rankLab.backgroundColor = [UIColor clearColor];
+    rankLab.font = [FFStyle regularFont:15];
+    rankLab.textColor = [FFStyle darkerColorForColor:[FFStyle lightGrey]];
+    rankLab.text = NSLocalizedString(@"Rank:", 0);
+    [cell.contentView addSubview:rankLab];
+    
+    UILabel *scoreLab = [[UILabel alloc] initWithFrame:CGRectMake(165, 32, 50, 20)];
+    scoreLab.backgroundColor = [UIColor clearColor];
+    scoreLab.font = [FFStyle regularFont:14];
+    scoreLab.text = NSLocalizedString(@"Score:", 0);
+    scoreLab.textColor = [FFStyle darkerColorForColor:[FFStyle lightGrey]];
+    [cell.contentView addSubview:scoreLab];
+    
+    UILabel *rank = [[UILabel alloc] initWithFrame:CGRectMake(210, 5, 65, 30)];
+    rank.backgroundColor = [UIColor clearColor];
+    rank.font = [FFStyle mediumFont:15];
+    rank.textColor = [FFStyle darkGreyTextColor];
+    rank.text = [NSString stringWithFormat:@"%@ %@ %@",
+                 roster.contestRank, NSLocalizedString(@"of", nil), cType.maxEntries];
+    [cell.contentView addSubview:rank];
+    
+    UILabel *score = [[UILabel alloc] initWithFrame:CGRectMake(210, 32, 65, 20)];
+    score.backgroundColor = [UIColor clearColor];
+    score.font = [FFStyle mediumFont:14];
+    score.textColor = [FFStyle darkGreyTextColor];
+    score.text = [NSString stringWithFormat:@"%@", roster.score];
+    [cell.contentView addSubview:score];
+
     return cell;
 }
 
