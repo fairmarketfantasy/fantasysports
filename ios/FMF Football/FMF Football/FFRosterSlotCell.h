@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FFRoster.h"
+#import "FFMarket.h"
 
 @class FFRosterSlotCell;
 
@@ -14,12 +16,15 @@
 
 - (void)rosterCellSelectPlayer:(FFRosterSlotCell *)cell;
 - (void)rosterCellReplacePlayer:(FFRosterSlotCell *)cell;
+- (void)rosterCellStatsForPlayer:(FFRosterSlotCell *)cell;
 
 @end
 
 @interface FFRosterSlotCell : UITableViewCell
 
 @property (nonatomic) id player;
+@property (nonatomic) FFRoster *roster;
+@property (nonatomic) FFMarket *market;
 @property (nonatomic, weak) id<FFRosterSlotCellDelegate> delegate;
 
 @end
