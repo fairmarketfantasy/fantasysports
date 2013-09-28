@@ -319,7 +319,8 @@ DROP FUNCTION publish_market(integer);
 CREATE OR REPLACE FUNCTION publish_market(_market_id integer, OUT _market markets) RETURNS markets AS $$
 DECLARE
 	_total_ppg numeric;
-	_game games;
+	_games numeric;
+  _price_multiplier numeric;
 	_bets numeric;
 BEGIN
 	--ensure that the market exists and may be published
@@ -396,6 +397,14 @@ BEGIN
 	--set bets and initial_shadow_bets shadow bets for all those players we just added - avoids calculating it thrice per player
 	UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets WHERE market_id = _market_id;
 
+  -- Get the total number of games in the market, calculate price multiplier
+  SELECT count(id) FROM games_markets WHERE market_id = _market_id INTO _games;
+  IF _games > 1 THEN
+    _price_multiplier = 10;
+  ELSE
+    _price_multiplier = 2;
+  END IF;
+
 	--set market to published. reset closed_at time, in case the game time has moved since the market was created
 	WITH game_times as ( 
 		SELECT 
@@ -405,7 +414,7 @@ BEGIN
 		JOIN games_markets gm on g.stats_id = gm.game_stats_id 
 		WHERE gm.market_id = _market_id
 	) UPDATE markets SET opened_at = min_time, closed_at = max_time,
-		state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = 1
+		state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = _price_multiplier
 		FROM game_times
 		WHERE id = _market_id;
 
