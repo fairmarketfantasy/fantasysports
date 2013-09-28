@@ -12,6 +12,14 @@
 #import <objc/runtime.h>
 #import <dispatch/dispatch.h>
 
+
+@interface FFRoster ()
+
+@property (nonatomic) FFContestType *_contestType;
+
+@end
+
+
 @implementation FFRoster
 
 @dynamic amountPaid;
@@ -130,8 +138,20 @@
 {
     [super setValuesForKeysWithNetworkDictionary:keyedValues];
     
+    self.contestTypeId = keyedValues[@"contest_type"][@"id"];
+    
     // save the connected contest type
     [FFContestType fromNetworkRepresentation:keyedValues[@"contest_type"] session:self.session save:YES];
+}
+
+- (FFContestType *)contestType
+{
+    if (!__contestType) {
+        __contestType = [[[[[self.session queryBuilderForClass:[FFContestType class]]
+                            property:@"objId" isEqualTo:self.contestTypeId]
+                           query] results] first];
+    }
+    return __contestType;
 }
 
 @end

@@ -69,6 +69,11 @@
 		15AFA2E417EBFBEF00374613 /* helmet-placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AFA2E317EBFBEF00374613 /* helmet-placeholder@2x.png */; };
 		15AFA2E617EBFDF000374613 /* player-cutout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15AFA2E517EBFDF000374613 /* player-cutout@2x.png */; };
 		15B06A1117F6048300832F6D /* FFContestEntrantsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15B06A1017F6048300832F6D /* FFContestEntrantsViewController.m */; };
+		15CD294617F73D9F0027DFEC /* greydot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CD294317F73D9F0027DFEC /* greydot@2x.png */; };
+		15CD294717F73D9F0027DFEC /* greendot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CD294417F73D9F0027DFEC /* greendot@2x.png */; };
+		15CD294817F73D9F0027DFEC /* reddot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CD294517F73D9F0027DFEC /* reddot@2x.png */; };
+		15CD294A17F73EA30027DFEC /* bluedot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CD294917F73EA30027DFEC /* bluedot@2x.png */; };
+		15CD294C17F73F890027DFEC /* disclosurelight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CD294B17F73F890027DFEC /* disclosurelight@2x.png */; };
 		15CE07E717F4BE5B0086EB78 /* sectionback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */; };
 		15CE07EA17F4DBEB0086EB78 /* FFPlayerSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 15CE07E917F4DBEB0086EB78 /* FFPlayerSelectCell.m */; };
 		15D756AE17F29AA90080AE4F /* FFContestType.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756AD17F29AA90080AE4F /* FFContestType.m */; };
@@ -187,6 +192,11 @@
 		15AFA2E517EBFDF000374613 /* player-cutout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-cutout@2x.png"; sourceTree = "<group>"; };
 		15B06A0F17F6048300832F6D /* FFContestEntrantsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFContestEntrantsViewController.h; sourceTree = "<group>"; };
 		15B06A1017F6048300832F6D /* FFContestEntrantsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContestEntrantsViewController.m; sourceTree = "<group>"; };
+		15CD294317F73D9F0027DFEC /* greydot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greydot@2x.png"; sourceTree = "<group>"; };
+		15CD294417F73D9F0027DFEC /* greendot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greendot@2x.png"; sourceTree = "<group>"; };
+		15CD294517F73D9F0027DFEC /* reddot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reddot@2x.png"; sourceTree = "<group>"; };
+		15CD294917F73EA30027DFEC /* bluedot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bluedot@2x.png"; sourceTree = "<group>"; };
+		15CD294B17F73F890027DFEC /* disclosurelight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "disclosurelight@2x.png"; sourceTree = "<group>"; };
 		15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sectionback@2x.png"; sourceTree = "<group>"; };
 		15CE07E817F4DBEB0086EB78 /* FFPlayerSelectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFPlayerSelectCell.h; sourceTree = "<group>"; };
 		15CE07E917F4DBEB0086EB78 /* FFPlayerSelectCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFPlayerSelectCell.m; sourceTree = "<group>"; };
@@ -389,10 +399,15 @@
 			children = (
 				15A2379A17E2813700225942 /* 0-percent.png */,
 				15A2379B17E2813700225942 /* 40-percent.png */,
+				15CD294317F73D9F0027DFEC /* greydot@2x.png */,
+				15CD294417F73D9F0027DFEC /* greendot@2x.png */,
+				15CD294517F73D9F0027DFEC /* reddot@2x.png */,
+				15CD294917F73EA30027DFEC /* bluedot@2x.png */,
 				15AAC76217F26603007313EF /* backbtn@2x.png */,
 				15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */,
 				15E06C2117F5048000E8AB4D /* playerselectmask@2x.png */,
 				15D756B417F3881C0080AE4F /* disclosuredark@2x.png */,
+				15CD294B17F73F890027DFEC /* disclosurelight@2x.png */,
 				15AAC74E17F1F83B007313EF /* rightshuttle@2x.png */,
 				15AAC74F17F1F83B007313EF /* leftshuttle@2x.png */,
 				1589CEAB17E96FE600A7233E /* darkgreen.png */,
@@ -563,6 +578,11 @@
 				15D756C817F489050080AE4F /* rosterslotempty@2x.png in Resources */,
 				15CE07E717F4BE5B0086EB78 /* sectionback@2x.png in Resources */,
 				15E06C2217F5048000E8AB4D /* playerselectmask@2x.png in Resources */,
+				15CD294617F73D9F0027DFEC /* greydot@2x.png in Resources */,
+				15CD294717F73D9F0027DFEC /* greendot@2x.png in Resources */,
+				15CD294817F73D9F0027DFEC /* reddot@2x.png in Resources */,
+				15CD294A17F73EA30027DFEC /* bluedot@2x.png in Resources */,
+				15CD294C17F73F890027DFEC /* disclosurelight@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

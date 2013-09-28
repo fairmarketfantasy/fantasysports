@@ -48,7 +48,7 @@
         ent.text = NSLocalizedString(@"Max Entries:", nil);
         [self addSubview:ent];
         
-        _entries = [[UILabel alloc] initWithFrame:CGRectMake(82, 81, 220, 18)];
+        _entries = [[UILabel alloc] initWithFrame:CGRectMake(95, 81, 180, 18)];
         _entries.backgroundColor = [UIColor clearColor];
         _entries.textColor = [FFStyle darkGreyTextColor];
         _entries.font = [FFStyle regularFont:14];
@@ -61,7 +61,7 @@
         cst.text = NSLocalizedString(@"Cost:", nil);
         [self addSubview:cst];
         
-        _cost = [[UILabel alloc] initWithFrame:CGRectMake(82, 99, 220, 18)];
+        _cost = [[UILabel alloc] initWithFrame:CGRectMake(95, 99, 180, 18)];
         _cost.backgroundColor = [UIColor clearColor];
         _cost.textColor = [FFStyle darkGreyTextColor];
         _cost.font = [FFStyle regularFont:14];
@@ -74,7 +74,7 @@
         po.text = NSLocalizedString(@"Payouts:", nil);
         [self addSubview:po];
         
-        _payouts = [[UILabel alloc] initWithFrame:CGRectMake(82, 117, 220, 18)];
+        _payouts = [[UILabel alloc] initWithFrame:CGRectMake(95, 117, 180, 18)];
         _payouts.backgroundColor = [UIColor clearColor];
         _payouts.textColor = [FFStyle darkGreyTextColor];
         _payouts.font = [FFStyle regularFont:14];
