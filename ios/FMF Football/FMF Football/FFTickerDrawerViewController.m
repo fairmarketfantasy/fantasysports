@@ -98,6 +98,10 @@
         FFSession *tempSession = [FFSession anonymousSession];
         [tempSession anonymousJSONRequestWithMethod:@"GET" path:@"/players/public" parameters:@{} success:
          ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
+             if (![JSON isKindOfClass:[NSArray class]]) {
+                 [self showError:[NSError errorWithDomain:@"" code:500 userInfo:@{ }]];
+                 return;
+             }
              self.tickerData = JSON;
              self.lastFetch = [NSDate date];
              [self.collectionView reloadData];
@@ -115,6 +119,10 @@
               // there were no results from mine, so get the public one
               [self.session authorizedJSONRequestWithMethod:@"GET" path:@"/players/public" paramters:@{} success:
                ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
+                   if (![JSON isKindOfClass:[NSArray class]]) {
+                       [self showError:[NSError errorWithDomain:@"" code:500 userInfo:@{ }]];
+                       return;
+                   }
                    self.tickerData = JSON;
                    self.lastFetch = [NSDate date];
                    [self.collectionView reloadData];

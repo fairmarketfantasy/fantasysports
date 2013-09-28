@@ -169,37 +169,45 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         if (indexPath.row == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"BannerCell" forIndexPath:indexPath];
             [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-            cell.contentView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            cell.textLabel.font = [FFStyle regularFont:14];
-            cell.textLabel.textColor = [FFStyle darkGreyTextColor];
-            cell.textLabel.backgroundColor = cell.contentView.backgroundColor;
-            cell.textLabel.textAlignment = NSTextAlignmentCenter;
-            cell.textLabel.adjustsFontSizeToFitWidth = YES;
-            cell.textLabel.adjustsLetterSpacingToFitWidth = YES;
-            
-            TTTOrdinalNumberFormatter *ordinalNumberFormatter = [[TTTOrdinalNumberFormatter alloc] init];
-            [ordinalNumberFormatter setLocale:[NSLocale currentLocale]];
-            [ordinalNumberFormatter setGrammaticalGender:TTTOrdinalNumberFormatterMaleGender];
-            
-            NSDateFormatter *mformatter = [[NSDateFormatter alloc] init];
-            mformatter.dateFormat = @"eeee MMMM";
-            
-            NSDateFormatter *tformatter = [[NSDateFormatter alloc] init];
-            [tformatter setLocale:[NSLocale currentLocale]];
-            [tformatter setTimeZone:[NSTimeZone systemTimeZone]];
-            tformatter.dateFormat = @"ha";
-            
-            NSDateComponents *components = [[NSCalendar currentCalendar] components:
-                                            NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit
-                                                                           fromDate:_market.startedAt];
-            
-            NSString *str = [NSString stringWithFormat:@"%@ %@ %@ at %@",
-                             NSLocalizedString(@"Game starts", nil),
-                             [mformatter stringFromDate:_market.startedAt],
-                             [ordinalNumberFormatter stringFromNumber:@(components.day)],
-                             [tformatter stringFromDate:_market.startedAt]];
-            cell.textLabel.text = str;
+            if ([_roster.live integerValue]) {
+                cell.contentView.backgroundColor = [FFStyle brightGreen];
+                cell.textLabel.font = [FFStyle regularFont:18];
+                cell.textLabel.textColor = [FFStyle white];
+                cell.textLabel.backgroundColor = cell.contentView.backgroundColor;
+                cell.textLabel.textAlignment = NSTextAlignmentCenter;
+                cell.textLabel.text = NSLocalizedString(@"Game has started!", nil);
+            } else {
+                cell.contentView.backgroundColor = [UIColor colorWithWhite:.95 alpha:1];
+                cell.textLabel.font = [FFStyle regularFont:14];
+                cell.textLabel.textColor = [FFStyle darkGreyTextColor];
+                cell.textLabel.backgroundColor = cell.contentView.backgroundColor;
+                cell.textLabel.textAlignment = NSTextAlignmentCenter;
+                cell.textLabel.adjustsFontSizeToFitWidth = YES;
+                cell.textLabel.adjustsLetterSpacingToFitWidth = YES;
+                
+                TTTOrdinalNumberFormatter *ordinalNumberFormatter = [[TTTOrdinalNumberFormatter alloc] init];
+                [ordinalNumberFormatter setLocale:[NSLocale currentLocale]];
+                [ordinalNumberFormatter setGrammaticalGender:TTTOrdinalNumberFormatterMaleGender];
+                
+                NSDateFormatter *mformatter = [[NSDateFormatter alloc] init];
+                mformatter.dateFormat = @"eeee MMMM";
+                
+                NSDateFormatter *tformatter = [[NSDateFormatter alloc] init];
+                [tformatter setLocale:[NSLocale currentLocale]];
+                [tformatter setTimeZone:[NSTimeZone systemTimeZone]];
+                tformatter.dateFormat = @"ha";
+                
+                NSDateComponents *components = [[NSCalendar currentCalendar] components:
+                                                NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit
+                                                                               fromDate:_market.startedAt];
+                
+                NSString *str = [NSString stringWithFormat:@"%@ %@ %@ at %@",
+                                 NSLocalizedString(@"Game starts", nil),
+                                 [mformatter stringFromDate:_market.startedAt],
+                                 [ordinalNumberFormatter stringFromNumber:@(components.day)],
+                                 [tformatter stringFromDate:_market.startedAt]];
+                cell.textLabel.text = str;
+            }
             
             UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(cell.contentView.frame),
                                                                    cell.contentView.frame.size.width, 1)];
@@ -285,6 +293,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             cell = [tableView dequeueReusableCellWithIdentifier:@"RosterPlayer" forIndexPath:indexPath];
             FFRosterSlotCell *r_cell = (FFRosterSlotCell *)cell;
             r_cell.player = player;
+            r_cell.market = _market;
+            r_cell.roster = _roster;
             r_cell.delegate = self;
         } else if (_state == PickPlayer) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"PlayerSelect" forIndexPath:indexPath];
@@ -501,6 +511,11 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     }];
 }
 
+- (void)rosterCellStatsForPlayer:(FFRosterSlotCell *)cell
+{
+    
+}
+
 - (void)submitRoster:(UIButton *)sender
 {
     FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Submitting", nil)
@@ -568,7 +583,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             break;
         case ContestEntered:
             [self showRosterPlayers];
-            if (previousState == ViewContest) {
+            if (previousState == NoState) {
                 [self.tableView reloadData];
             } else {
                 [self.tableView beginUpdates];
