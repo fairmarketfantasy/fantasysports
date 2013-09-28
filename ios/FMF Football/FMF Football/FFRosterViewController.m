@@ -17,6 +17,7 @@
 
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) SBDataObjectResultSet *rosters;
+@property (nonatomic) SBDataObjectResultSet *historicalRosters;
 
 @end
 
@@ -51,13 +52,26 @@
 {
     [super viewWillAppear:animated];
     
-    SBModelQuery *query = [[[self.session queryBuilderForClass:[FFRoster class]]
-                            property:@"ownerId" isEqualTo:self.session.user.objId]
+    SBModelQuery *query = [[[[[[self.session queryBuilderForClass:[FFRoster class]]
+                               property:@"ownerId" isEqualTo:self.session.user.objId]
+                              property:@"state" isNotEqualTo:@"finished"]
+                             orderByProperties:@[@"objId"]]
+                            sort:SBModelDescending]
                            query];
     
     _rosters = [FFRoster getBulkPath:@"/rosters/mine" cacheQuery:query withSession:self.session authorized:YES];
     _rosters.clearsCollectionBeforeSaving = YES;
     _rosters.delegate = self;
+    
+    SBModelQuery *hQuery = [[[[[[self.session queryBuilderForClass:[FFRoster class]]
+                                property:@"ownerId" isEqualTo:self.session.user.objId]
+                               property:@"state" isEqualTo:@"finished"]
+                              orderByProperties:@[@"objId"]]
+                             sort:SBModelDescending]
+                            query];
+    _historicalRosters = [FFRoster getBulkPath:@"/rosters/mine?historical=y" cacheQuery:hQuery
+                                   withSession:self.session authorized:YES];
+    _historicalRosters.delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -65,23 +79,35 @@
     [super viewDidAppear:animated];
     
     [_rosters refresh];
+    [_historicalRosters refresh];
     
     [self.tableView reloadData];
 }
 
 - (void)resultSetDidReload:(SBDataObjectResultSet *)resultSet
 {
-    [self.tableView reloadData];
+    if (resultSet == _rosters) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
+    } else if (resultSet == _historicalRosters) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [_rosters count];
+    if (section == 0) {
+        return [_rosters count];
+    } else if (section == 1) {
+        return [_historicalRosters count];
+    }
+    return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -102,7 +128,11 @@
     lab.backgroundColor = [UIColor clearColor];
     lab.font = [FFStyle lightFont:26];
     lab.textColor = [FFStyle tableViewSectionHeaderColor];
-    lab.text = NSLocalizedString(@"Your Contest Entries", nil);
+    if (section == 0) {
+        lab.text = NSLocalizedString(@"Live Contest Entries", nil);
+    } else if (section == 1 && _historicalRosters.count) {
+        lab.text = NSLocalizedString(@"Past Entries", nil);
+    }
     [header addSubview:lab];
     return header;
 }
@@ -122,7 +152,12 @@
     sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [cell.contentView addSubview:sep];
     
-    FFRoster *roster = [_rosters objectAtIndex:indexPath.row];
+    FFRoster *roster;
+    if (indexPath.section == 0) {
+        roster = [_rosters objectAtIndex:indexPath.row];
+    } else if (indexPath.section == 1) {
+        roster = [_historicalRosters objectAtIndex:indexPath.row];
+    }
     FFContestType *cType = roster.contestType;
     
     CGFloat labw = [cType.name sizeWithFont:[FFStyle mediumFont:19]].width;
@@ -137,8 +172,8 @@
     status.center = CGPointMake(CGRectGetMaxX(lab.frame)+10, CGRectGetMidY(lab.frame));
     status.backgroundColor = [UIColor clearColor];
     NSDictionary *states = @{@"in_progress": @"greydot.png",
-                             @"submitted": @"bluedot.png",
-                             @"finished": @"greendog.png"};
+                             @"submitted": @"greendot.png",
+                             @"finished": @"bluedot.png"};
     if (states[roster.state]) {
         status.image = [UIImage imageNamed:states[roster.state]];
         [cell.contentView addSubview:status];

@@ -57,8 +57,10 @@
     [super viewWillAppear:animated];
     
     NSString *path = [NSString stringWithFormat:@"/rosters/in_contest/%@", _contest[@"id"]];
-    SBModelQuery *query = [[[self.session queryBuilderForClass:[FFRoster class]]
-                            property:@"contestId" isEqualTo:_contest[@"id"]]
+    SBModelQuery *query = [[[[[self.session queryBuilderForClass:[FFRoster class]]
+                              property:@"contestId" isEqualTo:_contest[@"id"]]
+                             orderByProperties:@[@"contestRank"]]
+                            sort:SBModelAscending]
                            query];
     _rosters = [FFRoster getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
     _rosters.clearsCollectionBeforeSaving = YES;
