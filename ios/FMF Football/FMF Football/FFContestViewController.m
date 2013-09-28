@@ -19,6 +19,7 @@
 
 
 typedef enum {
+    NoState,
     ViewContest,
     ShowRoster,
     PickPlayer,
@@ -85,10 +86,14 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
     if (!_market || !_contest) {
         @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                        reason:@"showing the contest view controller but don't have a "
-                                              @"contest or a market, dying now..."
+                @"contest or a market, dying now..."
                                      userInfo:@{}];
     }
     if (_roster) {
@@ -98,6 +103,12 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             [self transitionToState:ContestEntered withContext:nil];
         }
     }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [self transitionToState:NoState withContext:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -580,7 +591,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 - (void)showRosterPlayers
 {
-    if (_state == ViewContest || _state == PickPlayer) {
+    if (!(_state == ShowRoster || _state == ContestEntered)) {
         NSLog(@"attempting to show roster players, but in the wrong state");
         return;
     }
@@ -588,7 +599,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     [self _reloadRosterPlayers];
 
     [_roster refreshInBackgroundWithBlock:^(id successObj) {
-        if (_state == ViewContest || _state == PickPlayer) {
+        if (!(_state == ShowRoster || _state == ContestEntered)) {
             return;
         }
         _roster = successObj;
@@ -604,6 +615,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         double delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            // only poll if we're viewing this screen
             [self showRosterPlayers];
         });
     } failure:^(NSError *error) {
@@ -676,6 +688,21 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          _availablePlayers = JSON;
          [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                        withRowAnimation:UITableViewRowAnimationAutomatic];
+         
+         __strong FFContestViewController *strongSelf = self;
+         
+         double delayInSeconds = 2.0;
+         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+             NSString *lastPos = ((strongSelf->_currentPickPlayer
+                                   && [strongSelf->_currentPickPlayer isKindOfClass:[NSDictionary class]])
+                                  ? strongSelf->_currentPickPlayer[@"position"]
+                                  : strongSelf->_currentPickPlayer);
+             // only poll again if we are still picking a player and picking the correct one
+             if (strongSelf->_state == PickPlayer && [pos isEqualToString:lastPos]) {
+                 [strongSelf showPlayersForPosition:lastPos];
+             }
+         });
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
          if (_state != PickPlayer) {
              return;
