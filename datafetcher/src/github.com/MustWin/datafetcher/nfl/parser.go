@@ -316,7 +316,9 @@ func rushingReceivingParser(state *ParseState) *models.StatEvent {
 	fumbles, _ := strconv.Atoi(state.CurrentElementAttr("fum"))
 	yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
 	touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
-	event.PointValue = float64(6*touchdowns + 1*yards/10 - 2*fumbles)
+	receptions, _ := strconv.Atoi(state.CurrentElementAttr("rec")) // PICK UP HERE, TEST THIS
+	points := 6.0*touchdowns + 1*yards/10 + 1.0*receptions/2 - 2*fumbles
+	event.PointValue = float64(points)
 	return event
 }
 
