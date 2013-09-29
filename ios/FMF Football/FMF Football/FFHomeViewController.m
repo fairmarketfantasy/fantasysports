@@ -81,13 +81,13 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
 {
     UIViewController *cont2 = [[UIViewController alloc] init];
     cont2.view.backgroundColor = [UIColor redColor];
-    [self showControllerInDrawer:self.sessionController.maximizedTicker
-         minimizedViewController:self.sessionController.minimizedTicker
+    [self showControllerInDrawer:self.maximizedTicker
+         minimizedViewController:self.minimizedTicker
                           inView:self.view
                  resizeTableView:self.tableView
                         animated:YES];
     
-    [self.sessionController.tickerDataSource refresh];
+    [self.tickerDataSource refresh];
     
     // uncomment to test the banner
 //    double delayInSeconds = 2.0;

@@ -10,8 +10,16 @@
 #import "FFDrawerViewController.h"
 #import "FFMenuViewController.h"
 #import <A2StoryboardSegueContext/A2StoryboardSegueContext.h>
+#import "FFTickerDataSource.h"
+#import "FFTickerMaximizedDrawerViewController.h"
+#import "FFTickerMinimizedDrawerViewController.h"
+
 
 @interface FFBaseViewController : UIViewController
+
+@property (nonatomic) FFTickerMaximizedDrawerViewController *maximizedTicker;
+@property (nonatomic) FFTickerMinimizedDrawerViewController *minimizedTicker;
+@property (nonatomic) FFTickerDataSource *tickerDataSource;
 
 @property (nonatomic, readonly) UIView *banner;
 @property (nonatomic, readonly) FFDrawerViewController *drawerController;

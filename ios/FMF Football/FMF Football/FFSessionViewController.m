@@ -34,9 +34,6 @@
 @property (nonatomic) CGFloat               keyboardHeight;
 @property (nonatomic) BOOL                  keyboardIsShowing;
 @property (nonatomic) UIView                *_balanceView;
-@property (nonatomic) FFTickerMaximizedDrawerViewController *_maximizedTicker;
-@property (nonatomic) FFTickerMinimizedDrawerViewController *_minimizedTicker;
-@property (nonatomic) FFTickerDataSource    *_tickerDataSource;
 
 - (void)setupSignInView;
 - (void)setupSignUpView;
@@ -101,6 +98,7 @@
     }
     
     [self.tickerDataSource refresh];
+    [self showControllerInDrawer:self.maximizedTicker minimizedViewController:nil inView:self.signUpView animated:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -211,8 +209,6 @@
     [fbSignUp addTarget:self action:@selector(signUpFacebook:) forControlEvents:UIControlEventTouchUpInside];
     [self.signUpView addSubview:fbSignUp];
     self.signUpFacebookButton = fbSignUp;
-    
-    [self showControllerInDrawer:self.maximizedTicker minimizedViewController:nil inView:self.signUpView animated:NO];
 }
 
 - (void)setupSignInView
@@ -595,13 +591,6 @@ validate_error:
 
 // session controller stuff --------------------------------------------------------------------------------------------
 
-- (void)setSession:(SBSession *)session
-{
-    _session = session;
-    __maximizedTicker.session = session;
-    __minimizedTicker.session = session;
-}
-
 - (UIView *)balanceView
 {
     if (!__balanceView) {
@@ -632,36 +621,6 @@ validate_error:
         [background addSubview:value];
     }
     return __balanceView;
-}
-
-- (FFTickerDataSource *)tickerDataSource
-{
-    if (!__tickerDataSource) {
-        __tickerDataSource = [[FFTickerDataSource alloc] init];
-    }
-    return __tickerDataSource;
-}
-
-- (FFTickerMaximizedDrawerViewController *)maximizedTicker
-{
-    if (!__maximizedTicker) {
-        __maximizedTicker = [[FFTickerMaximizedDrawerViewController alloc] init];
-        __maximizedTicker.view.backgroundColor = [FFStyle darkGreen];
-        __maximizedTicker.session = self.session;
-        [self.tickerDataSource addDelegate:__maximizedTicker];
-    }
-    return __maximizedTicker;
-}
-
-- (FFTickerMinimizedDrawerViewController *)minimizedTicker
-{
-    if (!__minimizedTicker) {
-        __minimizedTicker = [[FFTickerMinimizedDrawerViewController alloc] init];
-        __minimizedTicker.view.backgroundColor = [FFStyle darkGreen];
-        __minimizedTicker.session = self.session;
-        [self.tickerDataSource addDelegate:__minimizedTicker];
-    }
-    return __minimizedTicker;
 }
 
 @end

@@ -24,7 +24,6 @@
 @property (nonatomic) FFSession *session;
 @property (nonatomic) NSArray *tickerData;
 @property (nonatomic) NSDate *lastFetch;
-//@property (nonatomic, weak) id<FFTickerDataSourceDelegate> delegate;
 
 - (void)addDelegate:(NSObject<FFTickerDataSourceDelegate> *)delegate;
 - (void)removeDelete:(NSObject<FFTickerDataSourceDelegate> *)delegate;

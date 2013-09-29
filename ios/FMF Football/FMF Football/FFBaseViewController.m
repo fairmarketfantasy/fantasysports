@@ -144,8 +144,9 @@
     CGRect viewFrame = view.frame;
     viewFrame.size.height -= DRAWER_HEIGHT;
     
-    UISwipeGestureRecognizer *minSwipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                             action:@selector(swipeDrawer:)];
+    UISwipeGestureRecognizer *minSwipeRecognizer = [[UISwipeGestureRecognizer alloc]
+                                                    initWithTarget:self
+                                                    action:@selector(swipeDrawer:)];
     minSwipeRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
     minSwipeRecognizer.delegate = self;
     [vc.view addGestureRecognizer:minSwipeRecognizer];
@@ -171,14 +172,15 @@
     [vc viewWillAppear:YES];
     
     FFDrawerBackingView *mview = [[FFDrawerBackingView alloc] initWithFrame:
-                                 CGRectMake(0, viewFrame.size.height, viewFrame.size.width, DRAWER_HEIGHT)];
+                                 CGRectMake(0, viewFrame.size.height+DRAWER_HEIGHT, viewFrame.size.width,
+                                            DRAWER_HEIGHT)];
     [mview addSubview:vc.view];
     [view addSubview:mview];
     
     void (^ani)(void) = ^{
-        view.frame = CGRectMake(0, viewFrame.size.height, viewFrame.size.width, DRAWER_HEIGHT);
+        mview.frame = CGRectMake(0, viewFrame.size.height, viewFrame.size.width, DRAWER_HEIGHT);
         mview.frameLocked = YES; // ss: hackity hack
-        view.frame = viewFrame;
+//        view.frame = viewFrame;
         if (__resizingTableView) {
             __resizingTableView.contentInset = UIEdgeInsetsMake(0, 0, DRAWER_HEIGHT, 0);
         }
@@ -233,7 +235,7 @@
     [(FFDrawerBackingView *)_minimizedDrawerController.view.superview setFrameLocked:NO];
     
     void (^ani)(void) = ^{
-        _drawerController.view.superview.superview.frame = viewFrame;
+//        _drawerController.view.superview.superview.frame = viewFrame;
         _drawerController.view.superview.frame = CGRectOffset(_drawerController.view.superview.frame, 0, diff);
         _drawerController.view.superview.alpha = 1;
         _minimizedDrawerController.view.superview.frame = CGRectOffset(_minimizedDrawerController.view.superview.frame, 0, diff);
@@ -284,7 +286,7 @@
     [(FFDrawerBackingView *)_minimizedDrawerController.view.superview setFrameLocked:NO];
 
     void (^ani)(void) = ^{
-        _drawerController.view.superview.superview.frame = viewFrame;
+//        _drawerController.view.superview.superview.frame = viewFrame;
         _drawerController.view.superview.frame = CGRectOffset(_drawerController.view.superview.frame, 0, diff);
         _drawerController.view.superview.alpha = 0;
         _minimizedDrawerController.view.superview.frame = CGRectOffset(_minimizedDrawerController.view.superview.frame, 0, diff);
@@ -370,7 +372,7 @@
     }
     _menuController = [[FFMenuViewController alloc] init];
     _menuController.delegate = self;
-    _menuController.session = self.session;
+    _menuController.session = (FFSession *)self.session;
     _menuController.view.frame = CGRectMake(0, CGRectGetMaxY(self.view.frame),
                                             self.view.frame.size.width, self.view.frame.size.height);
     [_menuController viewWillAppear:YES];
@@ -414,6 +416,36 @@
     [self performSegueWithIdentifier:ident sender:self.menuController];
 }
 
+- (FFTickerDataSource *)tickerDataSource
+{
+    if (!_tickerDataSource) {
+        _tickerDataSource = [[FFTickerDataSource alloc] init];
+    }
+    return _tickerDataSource;
+}
+
+- (FFTickerMaximizedDrawerViewController *)maximizedTicker
+{
+    if (!_maximizedTicker) {
+        _maximizedTicker = [[FFTickerMaximizedDrawerViewController alloc] init];
+        _maximizedTicker.view.backgroundColor = [FFStyle darkGreen];
+        _maximizedTicker.session = self.session;
+        [self.tickerDataSource addDelegate:_maximizedTicker];
+    }
+    return _maximizedTicker;
+}
+
+- (FFTickerMinimizedDrawerViewController *)minimizedTicker
+{
+    if (!_minimizedTicker) {
+        _minimizedTicker = [[FFTickerMinimizedDrawerViewController alloc] init];
+        _minimizedTicker.view.backgroundColor = [FFStyle darkGreen];
+        _minimizedTicker.session = self.session;
+        [self.tickerDataSource addDelegate:_minimizedTicker];
+    }
+    return _minimizedTicker;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -437,11 +469,11 @@
 
 @implementation FFDrawerBackingView
 
-- (void)setFrame:(CGRect)frame
-{
-    if (!_frameLocked) {
-        [super setFrame:frame];
-    }
-}
+//- (void)setFrame:(CGRect)frame
+//{
+//    if (!_frameLocked) {
+//        [super setFrame:frame];
+//    }
+//}
 
 @end

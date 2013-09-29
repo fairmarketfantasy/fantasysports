@@ -19,9 +19,6 @@
 @property (nonatomic) SBSession *session;
 
 @property (nonatomic, readonly) UIView *balanceView;
-@property (nonatomic, readonly) FFTickerMaximizedDrawerViewController *maximizedTicker;
-@property (nonatomic, readonly) FFTickerMinimizedDrawerViewController *minimizedTicker;
-@property (nonatomic, readonly) FFTickerDataSource *tickerDataSource;
 
 @end
 
