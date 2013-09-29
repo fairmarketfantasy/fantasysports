@@ -246,7 +246,6 @@ BEGIN
 		--perform the updates.
 		UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
 		UPDATE market_players SET bets = bets + _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
-		UPDATE rosters SET remaining_salary = remaining_salary - _price WHERE id = _roster_id;
 		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 			   VALUES (_roster.market_id, _roster_id, 'buy', _player_id, _price);
 	END IF;
@@ -303,6 +302,9 @@ BEGIN
 		--perform the updates.
 		UPDATE markets SET total_bets = total_bets - _roster.buy_in WHERE id = _roster.market_id;
 		UPDATE market_players SET bets = bets - _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
+    IF _roster.remaining_salary + _price < -5000 THEN
+		  RAISE EXCEPTION 'You can not afford this roster!';
+    END IF;
 		UPDATE rosters set remaining_salary = remaining_salary + _price where id = _roster_id;
 		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 		  	VALUES (_roster.market_id, _roster_id, 'sell', _player_id, _price);
@@ -451,7 +453,7 @@ BEGIN
 
     --update the remaining salary for all rosters in the market
     UPDATE rosters set remaining_salary = 100000 - 
-    	(SELECT sum(purchase_price) FROM rosters_players WHERE roster_id = rosters.id) 
+    	(SELECT COALESCE(sum(purchase_price), 0) FROM rosters_players WHERE roster_id = rosters.id) 
     	WHERE market_id = _market_id;
 
 	UPDATE markets SET state='opened', opened_at = CURRENT_TIMESTAMP WHERE id = _market_id;
@@ -544,7 +546,6 @@ $$ LANGUAGE plpgsql;
 DROP FUNCTION tabulate_scores(integer);
 
 CREATE OR REPLACE FUNCTION tabulate_scores(_market_id integer) RETURNS VOID AS $$
-
 	UPDATE market_players set score = 
 		(select Greatest(0, sum(point_value)) FROM stat_events 
 			WHERE player_stats_id = market_players.player_stats_id and game_stats_id in 
@@ -557,13 +558,9 @@ CREATE OR REPLACE FUNCTION tabulate_scores(_market_id integer) RETURNS VOID AS $
 		) where market_id = $1;
 
 	WITH ranks as 
-		(SELECT id, rank() OVER (PARTITION BY contest_id ORDER BY score DESC) FROM rosters WHERE market_id = $1) 
-		UPDATE rosters set contest_rank = rank FROM ranks where rosters.id = ranks.id;
-
+		(SELECT rosters.id, rank() OVER (PARTITION BY contest_id ORDER BY score DESC), salary_cap FROM rosters JOIN contest_types ct ON rosters.contest_type_id = ct.id  WHERE rosters.market_id = $1) 
+		UPDATE rosters set contest_rank = rank, score = LEAST(1, 1 + remaining_salary / salary_cap) * score FROM ranks where rosters.id = ranks.id;
 $$ LANGUAGE SQL;
-
-
-
 
 /*
 Helpful functions
