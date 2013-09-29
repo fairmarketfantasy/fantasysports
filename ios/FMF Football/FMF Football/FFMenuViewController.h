@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FFSession.h"
 
 @protocol FFMenuViewControllerDelegate <NSObject>
 
@@ -17,5 +18,6 @@
 @interface FFMenuViewController : UIViewController
 
 @property (nonatomic, weak) id<FFMenuViewControllerDelegate> delegate;
+@property (nonatomic) FFSession *session;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "FFBaseViewController.h"
 #import "FFStyle.h"
+#import "FFSessionViewController.h"
 
 
 @interface FFDrawerBackingView : UIView
@@ -369,6 +370,7 @@
     }
     _menuController = [[FFMenuViewController alloc] init];
     _menuController.delegate = self;
+    _menuController.session = self.session;
     _menuController.view.frame = CGRectMake(0, CGRectGetMaxY(self.view.frame),
                                             self.view.frame.size.width, self.view.frame.size.height);
     [_menuController viewWillAppear:YES];

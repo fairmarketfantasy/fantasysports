@@ -73,7 +73,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     self.navigationController.navigationBarHidden = YES;
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
+//    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -86,19 +86,6 @@
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-    if (self.session != nil) {
-        [self.session syncUser];
-        [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
-    }
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)awakeFromNib
-{
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(gotLogout:)
                                                  name:SBLogoutNotification
@@ -107,12 +94,23 @@
                                              selector:@selector(gotLogout:)
                                                  name:SBLoginDidBecomeInvalidNotification
                                                object:nil];
+    if (self.session != nil) {
+        [self.session syncUser];
+        [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)gotLogout:(NSNotification *)note
 {
     NSLog(@"Got login/logout notification: %@", note);
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    self.session = nil;
+//    [self.navigationController popToRootViewControllerAnimated:YES];
 
     [self dismissViewControllerAnimated:YES completion:^{
         NSLog(@"done dismissing view controllers");
@@ -122,19 +120,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.signInView = [[UIView alloc] initWithFrame:CGRectOffset(self.view.frame, 0, -20)];
+    self.signInView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
     [self setupSignInView];
     
-    self.signUpView = [[UIView alloc] initWithFrame:CGRectOffset(self.view.frame, 0, -20)];
+    self.signUpView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
     [self setupSignUpView];
     
     [self.view addSubview:self.signInView];
     [self.view addSubview:self.signUpView];
     
-     _dismissKeyboardRecognizer = [[UITapGestureRecognizer alloc]
-                                   initWithTarget:self
-                                   action:@selector(dismissKeyboard:)];
+    _dismissKeyboardRecognizer = [[UITapGestureRecognizer alloc]
+                                  initWithTarget:self
+                                  action:@selector(dismissKeyboard:)];
     _dismissKeyboardRecognizer.delegate = self;
     [self.view addGestureRecognizer:_dismissKeyboardRecognizer];
 }
@@ -659,26 +656,39 @@ validate_error:
 
 @implementation UIViewController (FFSessionController)
 
-- (FFSessionViewController *)sessionController {
-    UIViewController *iter = self.parentViewController;
-    while (iter) {
-        if ([iter isKindOfClass:[FFSessionViewController class]]) {
-            return (FFSessionViewController *)iter;
-        } else if (iter.parentViewController && iter.parentViewController != iter) {
-            iter = iter.parentViewController;
-        } else {
-            iter = nil;
+- (FFSessionViewController *)sessionController
+{
+    return [self lookForSessionController:self];
+}
+
+- (FFSessionViewController *)lookForSessionController:(UIViewController *)vc 
+{
+    if ([vc isKindOfClass:[FFSessionViewController class]]) {
+        return (FFSessionViewController *)vc;
+    }
+    if (vc.parentViewController) {
+        id ret = [self lookForSessionController:vc.parentViewController];
+        if (ret) {
+            return ret;
         }
     }
-    if (!iter) {
-        iter = self.presentingViewController;
-        while (iter) {
-            if ([iter isKindOfClass:[FFSessionViewController class]]) {
-                return (FFSessionViewController *)iter;
-            } else if (iter.presentingViewController && iter.presentingViewController != iter) {
-                iter = iter.presentingViewController;
-            } else {
-                iter = nil;
+    if (vc.presentingViewController) {
+        id ret = [self lookForSessionController:vc.presentingViewController];
+        if (ret) {
+            return ret;
+        }
+    }
+    UINavigationController *navVc = nil;
+    if (vc.navigationController) {
+        navVc = vc.navigationController;
+    } else if ([vc isKindOfClass:[UINavigationController class]]) {
+        navVc = (UINavigationController *)vc;
+    }
+    if (navVc) {
+        for (UIViewController *nvc in navVc.viewControllers) {
+            id ret = [self lookForSessionController:nvc];
+            if (ret) {
+                return ret;
             }
         }
     }
