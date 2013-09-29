@@ -7,6 +7,7 @@
 //
 
 #import "FFMenuViewController.h"
+#import "FFSessionViewController.h"
 
 @interface FFMenuViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -118,6 +119,7 @@
         case 4:
             break;
         case 5:
+            [self.session logout];
             break;
         default:
             break;
