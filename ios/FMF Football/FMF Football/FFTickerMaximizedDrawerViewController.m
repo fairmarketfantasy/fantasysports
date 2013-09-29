@@ -49,13 +49,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (self.shouldUpdateTickerData) {
-        [self getTicker:^(id successObj) {
-            // pass
-        } failure:^(NSError *error) {
-            // pass
-        }];
-    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -78,7 +71,8 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MaxCell" forIndexPath:indexPath];
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MaxCell"
+                                                                           forIndexPath:indexPath];
     
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
@@ -87,7 +81,8 @@
     UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 56, 56)];
     img.contentMode = UIViewContentModeScaleAspectFit;
     [cell.contentView addSubview:img];
-    [img setImageWithURL:[NSURL URLWithString:player[@"headshot_url"]] placeholderImage:[UIImage imageNamed:@"helmet-placeholder.png"]];
+    [img setImageWithURL:[NSURL URLWithString:player[@"headshot_url"]]
+        placeholderImage:[UIImage imageNamed:@"helmet-placeholder.png"]];
     
     UIImageView *overlay = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 56, 56)];
     overlay.contentMode = UIViewContentModeScaleAspectFit;
@@ -105,7 +100,9 @@
     nam.text = nameValue;
     [cell.contentView addSubview:nam];
     
-    NSString *ppgValue = [NSString stringWithFormat:@"%@ PPG", player[@"ppg"]];
+    NSString *ppgValue = [NSString stringWithFormat:@"%@ PPG", (![player[@"ppg"] isEqual:[NSNull null]]
+                                                                ? player[@"ppg"]
+                                                                : @"0")];
     UILabel *ppg = [[UILabel alloc] initWithFrame:CGRectMake(56, 23, 60, 15)];
     ppg.textColor = [FFStyle white];
     ppg.backgroundColor = [FFStyle darkGreen];

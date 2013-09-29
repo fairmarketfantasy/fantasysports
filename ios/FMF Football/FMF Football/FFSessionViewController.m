@@ -36,6 +36,7 @@
 @property (nonatomic) UIView                *_balanceView;
 @property (nonatomic) FFTickerMaximizedDrawerViewController *_maximizedTicker;
 @property (nonatomic) FFTickerMinimizedDrawerViewController *_minimizedTicker;
+@property (nonatomic) FFTickerDataSource    *_tickerDataSource;
 
 - (void)setupSignInView;
 - (void)setupSignUpView;
@@ -98,6 +99,8 @@
         [self.session syncUser];
         [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
     }
+    
+    [self.tickerDataSource refresh];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -631,12 +634,21 @@ validate_error:
     return __balanceView;
 }
 
+- (FFTickerDataSource *)tickerDataSource
+{
+    if (!__tickerDataSource) {
+        __tickerDataSource = [[FFTickerDataSource alloc] init];
+    }
+    return __tickerDataSource;
+}
+
 - (FFTickerMaximizedDrawerViewController *)maximizedTicker
 {
     if (!__maximizedTicker) {
         __maximizedTicker = [[FFTickerMaximizedDrawerViewController alloc] init];
         __maximizedTicker.view.backgroundColor = [FFStyle darkGreen];
         __maximizedTicker.session = self.session;
+        [self.tickerDataSource addDelegate:__maximizedTicker];
     }
     return __maximizedTicker;
 }
@@ -647,6 +659,7 @@ validate_error:
         __minimizedTicker = [[FFTickerMinimizedDrawerViewController alloc] init];
         __minimizedTicker.view.backgroundColor = [FFStyle darkGreen];
         __minimizedTicker.session = self.session;
+        [self.tickerDataSource addDelegate:__minimizedTicker];
     }
     return __minimizedTicker;
 }
