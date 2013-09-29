@@ -39,6 +39,8 @@
         _img = [[UIImageView alloc] initWithFrame:CGRectMake(15, 11, 57, 57)];
         _img.backgroundColor = [UIColor clearColor];
         _img.image = [UIImage imageNamed:@"rosterslotempty.png"];
+        _img.contentMode = UIViewContentModeScaleAspectFill;
+        _img.clipsToBounds = YES;
         [self.contentView addSubview:_img];
         
         UIImageView *mask = [[UIImageView alloc] initWithFrame:CGRectMake(15, 11, 57, 57)];
@@ -147,8 +149,8 @@
         NSString *ppg = [player[@"ppg"] isEqual:[NSNull null]] ? @"0" : player[@"ppg"];
         _team.text = [NSString stringWithFormat:@"%@ %@ %@ PPG", player[@"position"], player[@"team"], ppg];
         
-        if ([player[@"image"] isKindOfClass:[NSString class]]) {
-            [_img setImageWithURL:[NSURL URLWithString:player[@"image"]]
+        if ([player[@"headshot_url"] isKindOfClass:[NSString class]]) {
+            [_img setImageWithURL:[NSURL URLWithString:player[@"headshot_url"]]
                  placeholderImage:[UIImage imageNamed:@"rosterslotempty.png"]];
         } else {
             _img.image = [UIImage imageNamed:@"rosterslotempty.png"];
@@ -175,12 +177,15 @@
             _price.text = [NSString stringWithFormat:@"$%@", player[@"buy_price"]];
             _price.frame = CGRectMake(82, 50, 80, 16);
         }
+        
         _trade.hidden = !(([_market.state isEqualToString:@"published"]
                           || [_market.state isEqualToString:@"opened"])
                           && ![player[@"locked"] boolValue]);
+        
         if ([self marketStarted]) {
             _points.hidden = NO;
             int score = [player[@"score"] integerValue];
+            
             if (score) {
                 _points.textColor = [FFStyle darkerColorForColor:[FFStyle brightBlue]];
             } else {

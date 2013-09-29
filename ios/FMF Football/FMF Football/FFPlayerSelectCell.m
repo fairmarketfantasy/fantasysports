@@ -31,6 +31,8 @@
         self.contentView.backgroundColor = [UIColor colorWithWhite:.94 alpha:1];
         _img = [[UIImageView alloc] initWithFrame:CGRectMake(15, 11, 57, 57)];
         _img.backgroundColor = [UIColor clearColor];
+        _img.contentMode = UIViewContentModeScaleAspectFill;
+        _img.clipsToBounds = YES;
         _img.image = [UIImage imageNamed:@"rosterslotempty.png"];
         [self.contentView addSubview:_img];
         
@@ -92,20 +94,23 @@
 - (void)setPlayer:(NSDictionary *)player
 {
     _player = player;
+    NSString *ppg = [player[@"ppg"] isEqual:[NSNull null]] ? @"0" : player[@"ppg"];
     
     _name.text = player[@"name"];
-    NSString *ppg = [player[@"ppg"] isEqual:[NSNull null]] ? @"0" : player[@"ppg"];
     _team.text = [NSString stringWithFormat:@"Team: %@ PPG: %@", player[@"team"], ppg];
     _price.text = [NSString stringWithFormat:@"$%@", player[@"buy_price"]];
-    if ([player[@"image"] isKindOfClass:[NSString class]]) {
-        [_img setImageWithURL:[NSURL URLWithString:player[@"image"]]
+    
+    if ([player[@"headshot_url"] isKindOfClass:[NSString class]]) {
+        [_img setImageWithURL:[NSURL URLWithString:player[@"headshot_url"]]
              placeholderImage:[UIImage imageNamed:@"rosterslotempty.png"]];
     } else {
         _img.image = [UIImage imageNamed:@"rosterslotempty.png"];
     }
-    _inactive.hidden = YES; //[player[@"status"] isEqual:@"ACT"];
+    
+    _inactive.hidden = YES;
     _select.enabled = ([player[@"status"] isEqual:@"ACT"] // < if they are active; \/ and not locked
                        || (![player[@"locked"] isEqual:[NSNull null]] && [player[@"locked"] boolValue]));
+    
     if (!_select.enabled) {
         [_select setTitle:NSLocalizedString(@"INACTIVE", nil) forState:UIControlStateNormal];
         _select.alpha = .3;
