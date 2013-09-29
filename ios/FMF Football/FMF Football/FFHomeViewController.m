@@ -26,6 +26,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
 @property (nonatomic) FFUserBitView *userBit;
 @property (nonatomic) FFGameButtonView *gameButtonView;
 @property (nonatomic) SBDataObjectResultSet *contests;
+@property (nonatomic) UIButton *globalMenuButton;
 
 @end
 
@@ -49,6 +50,7 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
     [gmenu setImage:[UIImage imageNamed:@"globalmenu.png"] forState:UIControlStateNormal];
     [gmenu addTarget:self action:@selector(globalMenuButton:) forControlEvents:UIControlEventTouchUpInside];
     gmenu.frame = CGRectMake(-2, -2, 35, 44);
+    _globalMenuButton = gmenu;
     [leftView addSubview:gmenu];
     UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
     logo.frame = CGRectMake(32, 13, 150, 19);
@@ -126,6 +128,12 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
         ((FFContestViewController *)segue.destinationViewController).contest = segue.context[0];
         ((FFContestViewController *)segue.destinationViewController).market = segue.context[1];
     }
+}
+
+- (void)hideMenuController
+{
+    [super hideMenuController];
+    [_globalMenuButton setImage:[UIImage imageNamed:@"globalmenu.png"] forState:UIControlStateNormal];
 }
 
 #pragma mark -
