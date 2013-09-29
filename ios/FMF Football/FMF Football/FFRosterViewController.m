@@ -112,10 +112,10 @@
 {
     if (resultSet == _rosters) {
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0]
-                      withRowAnimation:UITableViewRowAnimationAutomatic];
+                      withRowAnimation:UITableViewRowAnimationNone];
     } else if (resultSet == _historicalRosters) {
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
-                      withRowAnimation:UITableViewRowAnimationAutomatic];
+                      withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 
@@ -256,7 +256,7 @@
     if ([segue.identifier isEqualToString:@"GotoContest"]) {
         FFRoster *roster = segue.context;
         FFContestType *contest = [[[[[self.session queryBuilderForClass:[FFContestType class]]
-                                     property:@"contestTypeId" isEqualTo:roster.contestTypeId]
+                                     property:@"objId" isEqualTo:roster.contestTypeId]
                                     query] results] first];
         FFMarket *market = [[[[[self.session queryBuilderForClass:[FFMarket class]]
                                property:@"objId" isEqualTo:contest.marketId]
