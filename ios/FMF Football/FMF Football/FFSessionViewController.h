@@ -12,6 +12,7 @@
 #import "FFTickerMaximizedDrawerViewController.h"
 #import "FFTickerMinimizedDrawerViewController.h"
 #import "FFBaseViewController.h"
+#import "FFTickerDataSource.h"
 
 @interface FFSessionViewController : FFBaseViewController
 
@@ -20,6 +21,7 @@
 @property (nonatomic, readonly) UIView *balanceView;
 @property (nonatomic, readonly) FFTickerMaximizedDrawerViewController *maximizedTicker;
 @property (nonatomic, readonly) FFTickerMinimizedDrawerViewController *minimizedTicker;
+@property (nonatomic, readonly) FFTickerDataSource *tickerDataSource;
 
 @end
 

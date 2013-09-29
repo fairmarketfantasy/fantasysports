@@ -9,14 +9,13 @@
 #import "FFTickerDrawerViewController.h"
 #import "FFSession.h"
 
+
 @interface FFTickerDrawerViewController ()
 
-@property (nonatomic) NSDate *lastFetch;
 @property (nonatomic) UICollectionViewFlowLayout *flowLayout;
 
 @end
 
-#define TICKER_UPDATE_FREQUENCY_IN_SECONDS 60
 
 @implementation FFTickerDrawerViewController
 
@@ -60,14 +59,6 @@
         [self.view insertSubview:_activityIndicator belowSubview:_collectionView];
         [_activityIndicator stopAnimating];
         
-//        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_collectionView]|"
-//                                                                          options:0
-//                                                                          metrics:nil
-//                                                                            views:NSDictionaryOfVariableBindings(_collectionView)]];
-//        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_collectionView]|"
-//                                                                          options:0 metrics:nil
-//                                                                            views:NSDictionaryOfVariableBindings(_collectionView)]];
-        
         _collectionView.backgroundColor = [UIColor clearColor];
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
@@ -82,106 +73,49 @@
     [super viewDidLoad];
 }
 
-- (void)refresh
+- (void)viewWillAppear:(BOOL)animated
 {
-    [self.collectionView reloadData];
+    [super viewWillAppear:animated];
+    if (self.tickerData) {
+        [self.collectionView reloadData];
+    } else {
+        [self tickerShowLoading:nil];
+    }
 }
 
-- (void)getTicker:(SBSuccessBlock)onSuccess failure:(SBErrorBlock)fail
-{
-    if (!self.tickerData || !self.tickerData.count) {
-        // show loading, haven't gotten anything yet
-        [self showLoading];
-    }
-    // not logged in yet, so use an anonymous session
-    if (!self.session) {
-        FFSession *tempSession = [FFSession anonymousSession];
-        [tempSession anonymousJSONRequestWithMethod:@"GET" path:@"/players/public" parameters:@{} success:
-         ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
-             if (![JSON isKindOfClass:[NSArray class]]) {
-                 [self showError:[NSError errorWithDomain:@"" code:500 userInfo:@{ }]];
-                 return;
-             }
-             self.tickerData = JSON;
-             self.lastFetch = [NSDate date];
-             [self.collectionView reloadData];
-             [self hideLoading];
-             onSuccess(JSON);
-         } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
-             NSLog(@"failed to get public player timeline %@ %@", error, JSON);
-             [self showError:error];
-         }];
-        return;
-    }
-    [self.session authorizedJSONRequestWithMethod:@"GET" path:@"/players/mine" paramters:@{} success:
-     ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
-          if (![JSON count]) {
-              // there were no results from mine, so get the public one
-              [self.session authorizedJSONRequestWithMethod:@"GET" path:@"/players/public" paramters:@{} success:
-               ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
-                   if (![JSON isKindOfClass:[NSArray class]]) {
-                       [self showError:[NSError errorWithDomain:@"" code:500 userInfo:@{ }]];
-                       return;
-                   }
-                   self.tickerData = JSON;
-                   self.lastFetch = [NSDate date];
-                   [self.collectionView reloadData];
-                   [self hideLoading];
-                   onSuccess(JSON);
-               } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
-                   NSLog(@"failed to get ticker 2: %@ %@", error, JSON);
-                   [self showError:error];
-                   fail(error);
-               }];
-          } else {
-              self.tickerData = JSON;
-              self.lastFetch = [NSDate date];
-              [self hideLoading];
-              [self.collectionView reloadData];
-              onSuccess(JSON);
-          }
-      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
-          NSLog(@"failed to get ticker: %@ %@", error, JSON);
-          [self showError:error];
-          fail(error);
-      }];
-}
+// ticker data source delegate -----------------------------------------------------------------------------------------
 
-- (BOOL)shouldUpdateTickerData
-{
-    if (!self.lastFetch) {
-        return YES; // hasn't yet been fetched
-    }
-    NSDate *expires = [NSDate dateWithTimeIntervalSinceNow:TICKER_UPDATE_FREQUENCY_IN_SECONDS];
-    if ([expires compare:self.lastFetch] == NSOrderedDescending) {
-        return NO;
-    }
-    return YES;
-}
-
-- (void)showLoading
+- (void)tickerShowLoading:(FFTickerDataSource *)source
 {
     self.errorLabel.hidden = YES;
+    self.collectionView.hidden = YES;
+    
     self.loadingLabel.hidden = NO;
     [self.activityIndicator startAnimating];
 }
 
-- (void)hideLoading
+- (void)ticker:(FFTickerDataSource *)ticker showError:(NSString *)errStr
 {
     self.loadingLabel.hidden = YES;
     [self.activityIndicator stopAnimating];
+    self.collectionView.hidden = YES;
+    
+    self.errorLabel.hidden = NO;
+    if (!errStr) {
+        errStr = NSLocalizedString(@"Error retrieving live stream", nil);
+    }
+    self.errorLabel.text = errStr;
 }
 
-- (void)showError:(NSError *)error
+- (void)tickerGotData:(FFTickerDataSource *)ticker
 {
-    NSString *errstr = nil;
-    if (!(errstr = [error localizedDescription])) {
-        errstr = NSLocalizedString(@"Error retrieving live stream", nil);
-    }
-    self.errorLabel.text = errstr;
-    self.errorLabel.hidden = NO;
-    self.loadingLabel.hidden = NO;
+    self.loadingLabel.hidden = YES;
     [self.activityIndicator stopAnimating];
+    self.errorLabel.hidden = YES;
+    
+    self.collectionView.hidden = NO;
+    [self.collectionView reloadData];
+    self.tickerData = [ticker.tickerData copy];
 }
 
 // collection view data source -----------------------------------------------------------------------------------------

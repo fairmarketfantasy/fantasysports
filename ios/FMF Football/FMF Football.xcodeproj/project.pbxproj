@@ -34,6 +34,8 @@
 		153BBC5D17DFC2E40071E63B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153BBC3517DFC2E40071E63B /* Foundation.framework */; };
 		153BBC6517DFC2E40071E63B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 153BBC6317DFC2E40071E63B /* InfoPlist.strings */; };
 		153BBC6817DFC2E40071E63B /* FMF_FootballTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 153BBC6717DFC2E40071E63B /* FMF_FootballTests.m */; };
+		155F649F17F7D0DE00500035 /* FFTickerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F649E17F7D0DE00500035 /* FFTickerDataSource.m */; };
+		155F64A517F7DDDE00500035 /* FFWeakReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64A417F7DDDE00500035 /* FFWeakReference.m */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
@@ -146,6 +148,10 @@
 		153BBC6417DFC2E40071E63B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		153BBC6617DFC2E40071E63B /* FMF_FootballTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FMF_FootballTests.h; sourceTree = "<group>"; };
 		153BBC6717DFC2E40071E63B /* FMF_FootballTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FMF_FootballTests.m; sourceTree = "<group>"; };
+		155F649D17F7D0DE00500035 /* FFTickerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTickerDataSource.h; sourceTree = "<group>"; };
+		155F649E17F7D0DE00500035 /* FFTickerDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTickerDataSource.m; sourceTree = "<group>"; };
+		155F64A317F7DDDE00500035 /* FFWeakReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFWeakReference.h; sourceTree = "<group>"; };
+		155F64A417F7DDDE00500035 /* FFWeakReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFWeakReference.m; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -454,6 +460,10 @@
 				15A2379017E2747000225942 /* FFStyle.m */,
 				15A237A517E29BF800225942 /* UIView+FindFirstResponder.h */,
 				15A237A617E29BF800225942 /* UIView+FindFirstResponder.m */,
+				155F649D17F7D0DE00500035 /* FFTickerDataSource.h */,
+				155F649E17F7D0DE00500035 /* FFTickerDataSource.m */,
+				155F64A317F7DDDE00500035 /* FFWeakReference.h */,
+				155F64A417F7DDDE00500035 /* FFWeakReference.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -698,6 +708,8 @@
 				15B06A1117F6048300832F6D /* FFContestEntrantsViewController.m in Sources */,
 				15CD294F17F77C840027DFEC /* FFInviteViewController.m in Sources */,
 				15CD295217F77E4B0027DFEC /* FFBubblePicker.m in Sources */,
+				155F649F17F7D0DE00500035 /* FFTickerDataSource.m in Sources */,
+				155F64A517F7DDDE00500035 /* FFWeakReference.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

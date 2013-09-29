@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "FFUser.h"
 #import "FFDrawerViewController.h"
+#import "FFTickerDataSource.h"
 
 @interface FFTickerDrawerViewController : FFDrawerViewController
-    <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, FFTickerDataSourceDelegate>
 
 @property (nonatomic) SBSession *session;
 
@@ -21,11 +22,5 @@
 @property (nonatomic) UIActivityIndicatorView *activityIndicator;
 
 @property (nonatomic) NSArray *tickerData;
-
-- (void)getTicker:(SBSuccessBlock)onSuccess failure:(SBErrorBlock)fail;
-- (BOOL)shouldUpdateTickerData;
-- (void)refresh;
-- (void)showLoading;
-- (void)showError:(NSError *)error;
 
 @end

@@ -32,13 +32,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (self.shouldUpdateTickerData) {
-        [self getTicker:^(id successObj) {
-            // pass
-        } failure:^(NSError *error) {
-            // pass
-        }];
-    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -61,7 +54,8 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MinCell" forIndexPath:indexPath];
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MinCell"
+                                                                           forIndexPath:indexPath];
     
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
@@ -70,7 +64,8 @@
     UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 48, 48)];
     img.contentMode = UIViewContentModeScaleAspectFit;
     [cell.contentView addSubview:img];
-    [img setImageWithURL:[NSURL URLWithString:player[@"headshot_url"]] placeholderImage:[UIImage imageNamed:@"helmet-placeholder.png"]];
+    [img setImageWithURL:[NSURL URLWithString:player[@"headshot_url"]]
+        placeholderImage:[UIImage imageNamed:@"helmet-placeholder.png"]];
     
     UIImageView *overlay = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 48, 48)];
     overlay.contentMode = UIViewContentModeScaleAspectFit;
