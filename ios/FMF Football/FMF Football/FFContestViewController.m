@@ -296,9 +296,10 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             id player = [_rosterPlayers objectAtIndex:indexPath.row];
             cell = [tableView dequeueReusableCellWithIdentifier:@"RosterPlayer" forIndexPath:indexPath];
             FFRosterSlotCell *r_cell = (FFRosterSlotCell *)cell;
-            r_cell.player = player;
-            r_cell.market = _market;
-            r_cell.roster = _roster;
+//            r_cell.player = player;
+//            r_cell.market = _market;
+//            r_cell.roster = _roster;
+            [r_cell setPlayer:player andRoster:_roster andMarket:_market];
             r_cell.delegate = self;
         } else if (_state == PickPlayer) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"PlayerSelect" forIndexPath:indexPath];
@@ -463,7 +464,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 - (void)backFromPlayerSelect:(UIButton *)button
 {
-    [self transitionToState:ShowRoster withContext:nil];
+    [self transitionToState:([self.roster.state isEqualToString:@"submitted"] ? ContestEntered : ShowRoster)
+                withContext:nil];
 }
 
 - (void)rosterCellSelectPlayer:(FFRosterSlotCell *)cell
@@ -479,7 +481,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     [alert showInView:self.view];
     [_roster removePlayer:cell.player success:^(id successObj) {
         [alert hide];
-        cell.player = cell.player[@"position"];
+//        cell.player = cell.player[@"position"];
+        [cell setPlayer:cell.player[@"position"] andRoster:_roster andMarket:_market];
+        [self showRosterPlayers];
     } failure:^(NSError *error) {
         [alert hide];
         FFAlertView *eAlert = [[FFAlertView alloc] initWithError:error
@@ -584,6 +588,11 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
+            if (previousState == ContestEntered) {
+                // need to get rid of the "contest entrants" row
+                [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]]
+                                      withRowAnimation:UITableViewRowAnimationNone];
+            }
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
             [self.tableView endUpdates];
@@ -594,8 +603,13 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                 [self.tableView reloadData];
             } else {
                 [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
-                                      withRowAnimation:UITableViewRowAnimationAutomatic];
+                if (previousState == PickPlayer) {
+                    [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:2 inSection:0]]
+                                          withRowAnimation:UITableViewRowAnimationAutomatic];
+                } else {
+                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
+                                          withRowAnimation:UITableViewRowAnimationAutomatic];
+                }
                 [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]]
                                       withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
@@ -681,7 +695,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         _remainingSalaryLabel.text = [NSString stringWithFormat:@"$%d",
                                       [[_roster.remainingSalary description] integerValue]];
     }
-    
+
     if (_numEntrantsLabel) {
         _numEntrantsLabel.text = [NSString stringWithFormat:@"%@ %@",
                                   _roster.contest[@"num_rosters"],

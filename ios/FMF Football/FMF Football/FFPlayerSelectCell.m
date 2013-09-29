@@ -104,7 +104,8 @@
         _img.image = [UIImage imageNamed:@"rosterslotempty.png"];
     }
     _inactive.hidden = YES; //[player[@"status"] isEqual:@"ACT"];
-    _select.enabled = [player[@"status"] isEqual:@"ACT"];
+    _select.enabled = ([player[@"status"] isEqual:@"ACT"] // < if they are active; \/ and not locked
+                       || (![player[@"locked"] isEqual:[NSNull null]] && [player[@"locked"] boolValue]));
     if (!_select.enabled) {
         [_select setTitle:NSLocalizedString(@"INACTIVE", nil) forState:UIControlStateNormal];
         _select.alpha = .3;
