@@ -76,7 +76,7 @@ RETURNS TABLE(player_id integer, buy_price numeric) AS $$
 		r.id = $1 AND
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
-		mp.locked = false AND
+		mp.locked_at < NOW() AND
 		mp.player_id NOT IN (SELECT rosters_players.player_id 
 			FROM rosters_players WHERE roster_id = $1);
 $$ LANGUAGE SQL;

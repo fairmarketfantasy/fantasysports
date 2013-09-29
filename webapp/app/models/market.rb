@@ -163,16 +163,124 @@ class Market < ActiveRecord::Base
   end
 
   @@default_contest_types = [
-    ['100k', '100k Lollapalooza! 5000 to 1 payout for 1st prize!',       0, 1000, 0.03, '[5000000, 2500000, 1200000, 600000, 300000, 200000, 100000, 48500, 48500]', "Winner takes half, top 9 slots win big."],
-    ['970', 'Free contest, winner gets 10 FanFrees!',                   10, 0, 0, '[]', "Winner takes all"],
-    ['970', '10 teams, $1 entry fee, winner takes home $9.70',         10, 100, 0.03, '[970]', "Winner takes all"],
-    ['970', '10 teams, $10 entry fee, winner takes home $97.00',        10, 1000, 0.03, '[9700]', "Winner takes all"],
-    ['194', 'Free contest, top 5 winners get 2 FanFrees!',              10, 0, 0, '[]', "Top half wins"],
-    ['194', '10 teams, $1 entry fee, top 5 winners take home $1.94',    10, 100, 0.03, '[194, 194, 194, 194, 194]', "Top half wins"],
-    ['194', '10 teams, $10 entry fee, top 5 winners take home $19.40',  10, 1000, 0.03, '[1940, 1940, 1940, 1940, 1940]', "Top half wins"],
-    ['h2h', 'Free h2h contest, winner gets 1 FanFree!',                  2, 0, 0, '[]', "Winner takes all"],
-    ['h2h', 'h2h contest, $1 entry fee, winner takes home $3.88',        2, 100, 0.03, '[194]', "Winner takes all"],
-    ['h2h', 'h2h contest, $10 entry fee, winner takes home $19.40',      2, 1000, 0.03, '[1940]', "Winner takes all"]
+    # Name, description,                                              max_entries, buy_in, rake, payout_structure
+    {
+      name: '100k',
+      description: '100k Lollapalooza! 5000 to 1 payout for 1st prize!',
+      max_entries: 0,
+      buy_in: 1000,
+      rake: 0.03,
+      payout_structure: '[5000000, 2500000, 1200000, 600000, 300000, 200000, 100000, 48500, 48500]',
+      payout_description: "Winner takes half, top 9 slots win big."
+    },
+    {
+      name: '970',
+      description: 'Free contest, winner gets 10 FanFrees!',
+      max_entries: 10,
+      buy_in: 0,
+      rake: 0.03,
+      payout_structure: '[]',
+      payout_description: "Winner takes all",
+    },
+    {
+      name: '970',
+      description: '10 teams, $1 entry fee, winner takes home $9.70',
+      max_entries: 10,
+      buy_in: 100,
+      rake: 0.03,
+      payout_structure: '[970]',
+      payout_description: "Winner takes all",
+    },
+    {
+      name: '970',
+      description: '10 teams, $10 entry fee, winner takes home $97.00',
+      max_entries: 10,
+      buy_in: 1000,
+      rake: 0.03,
+      payout_structure: '[9700]',
+      payout_description: "Winner takes all",
+    },
+    {
+      name: '194',
+      description: 'Free contest, top 5 winners get 194 FanFrees!',
+      max_entries: 10,
+      buy_in: 0, #100 ff
+      rake: 0.03,
+      payout_structure: '[]',
+      payout_description: "Top half wins",
+    },
+    {
+      name: '194',
+      description: '10 teams, $1 entry fee, top 5 winners take home $1.94',
+      max_entries: 10,
+      buy_in: 100,
+      rake: 0.03,
+      payout_structure: '[194,194,194,194,194]',
+      payout_description: "Top half wins",
+    },
+    {
+      name: '194',
+      description: '10 teams, $10 entry fee, top 5 winners take home $19.40',
+      max_entries: 10,
+      buy_in: 1000,
+      rake: 0.03,
+      payout_structure: '[1940,1940,1940,1940,1940]',
+      payout_description: "Top half wins",
+    },
+    {
+      name: 'h2h',
+      description: 'Free h2h contest, winner gets 1 FanFree!',
+      max_entries: 2,
+      buy_in: 0,
+      rake: 0.03,
+      payout_structure: '[]',
+      payout_description: "Winner takes all",
+    },
+    {
+      name: 'h2h',
+      description: 'h2h contest, $1 entry fee, winner takes home $1.94',
+      max_entries: 2,
+      buy_in: 100,
+      rake: 0.03,
+      payout_structure: '[194]',
+      payout_description: "Winner takes all",
+    },
+    {
+      name: 'h2h',
+      description: 'h2h contest, $10 entry fee, winner takes home $19.40',
+      max_entries: 2,
+      buy_in: 1000,
+      rake: 0.03,
+      payout_structure: '[1940]',
+      payout_description: "Winner takes all",
+    },
+    {
+      name: 'h2h rr',
+      description: 'Free 10 team, h2h round-robin contest, 900 entry fee, 9 games for 194 per win',
+      max_entries: 10,
+      buy_in: 0,
+      rake: 0.03,
+      payout_structure: '[]',
+      payout_description: "9 h2h games for $1.94 each",
+    },
+    {
+      name: 'h2h rr',
+      description: '10 team, h2h round-robin contest, $9 entry fee, 9 games for $1.94 per win',
+      max_entries: 10,
+      buy_in: 900,
+      rake: 0.03,
+      payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194]',
+      payout_description: "9 h2h games for $1.94 each",
+    },
+    {
+      name: 'h2h rr',
+      description: 'Free 10 team, h2h round-robin contest, $90 entry fee, 9 games for $19.40 per win',
+      max_entries: 10,
+      buy_in: 9000,
+      rake: 0.03,
+      payout_structure: '[17460, 15520, 13580, 11640, 9700, 7760, 5820, 3880, 1940]',
+      payout_description: "9 h2h games for $19.40 each",
+    }
   ];
 
   #TODO: is this safe if run concurrently?
@@ -180,16 +288,17 @@ class Market < ActiveRecord::Base
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
+        pp data
       ContestType.create!(
         market_id: self.id,
-        name: data[0],
-        description: data[1],
-        max_entries: data[2],
-        buy_in: data[3],
-        rake: data[4],
-        payout_structure: data[5],
+        name: data[:name],
+        description: data[:description],
+        max_entries: data[:max_entries],
+        buy_in: data[:buy_in],
+        rake: data[:rake],
+        payout_structure: data[:payout_structure],
         salary_cap: 100000,
-        payout_description: data[6]
+        payout_description: data[:payout_description]
         )
       end
     end
