@@ -18,6 +18,7 @@
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) SBDataObjectResultSet *rosters;
 @property (nonatomic) SBDataObjectResultSet *historicalRosters;
+@property (nonatomic) BOOL disappeared;
 
 @end
 
@@ -81,10 +82,30 @@
 {
     [super viewDidAppear:animated];
     
-    [_rosters refresh];
+    self.disappeared = NO;
+    
+    [self refreshLiveData];
     [_historicalRosters refresh];
     
     [self.tableView reloadData];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    self.disappeared = YES;
+}
+
+- (void)refreshLiveData
+{
+    [_rosters refresh];
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        if (!self.disappeared) {
+            [self refreshLiveData];
+        }
+    });
 }
 
 - (void)resultSetDidReload:(SBDataObjectResultSet *)resultSet
