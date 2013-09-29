@@ -74,6 +74,10 @@
 		15CD294817F73D9F0027DFEC /* reddot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CD294517F73D9F0027DFEC /* reddot@2x.png */; };
 		15CD294A17F73EA30027DFEC /* bluedot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CD294917F73EA30027DFEC /* bluedot@2x.png */; };
 		15CD294C17F73F890027DFEC /* disclosurelight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CD294B17F73F890027DFEC /* disclosurelight@2x.png */; };
+		15CD294F17F77C840027DFEC /* FFInviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15CD294E17F77C840027DFEC /* FFInviteViewController.m */; };
+		15CD295217F77E4B0027DFEC /* FFBubblePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 15CD295117F77E4B0027DFEC /* FFBubblePicker.m */; };
+		15CD295517F7804A0027DFEC /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CD295317F7804A0027DFEC /* AddressBook.framework */; };
+		15CD295617F7804A0027DFEC /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CD295417F7804A0027DFEC /* AddressBookUI.framework */; };
 		15CE07E717F4BE5B0086EB78 /* sectionback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */; };
 		15CE07EA17F4DBEB0086EB78 /* FFPlayerSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 15CE07E917F4DBEB0086EB78 /* FFPlayerSelectCell.m */; };
 		15D756AE17F29AA90080AE4F /* FFContestType.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756AD17F29AA90080AE4F /* FFContestType.m */; };
@@ -197,6 +201,12 @@
 		15CD294517F73D9F0027DFEC /* reddot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reddot@2x.png"; sourceTree = "<group>"; };
 		15CD294917F73EA30027DFEC /* bluedot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bluedot@2x.png"; sourceTree = "<group>"; };
 		15CD294B17F73F890027DFEC /* disclosurelight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "disclosurelight@2x.png"; sourceTree = "<group>"; };
+		15CD294D17F77C840027DFEC /* FFInviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFInviteViewController.h; sourceTree = "<group>"; };
+		15CD294E17F77C840027DFEC /* FFInviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFInviteViewController.m; sourceTree = "<group>"; };
+		15CD295017F77E4B0027DFEC /* FFBubblePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFBubblePicker.h; sourceTree = "<group>"; };
+		15CD295117F77E4B0027DFEC /* FFBubblePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFBubblePicker.m; sourceTree = "<group>"; };
+		15CD295317F7804A0027DFEC /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		15CD295417F7804A0027DFEC /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sectionback@2x.png"; sourceTree = "<group>"; };
 		15CE07E817F4DBEB0086EB78 /* FFPlayerSelectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFPlayerSelectCell.h; sourceTree = "<group>"; };
 		15CE07E917F4DBEB0086EB78 /* FFPlayerSelectCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFPlayerSelectCell.m; sourceTree = "<group>"; };
@@ -228,6 +238,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15CD295517F7804A0027DFEC /* AddressBook.framework in Frameworks */,
+				15CD295617F7804A0027DFEC /* AddressBookUI.framework in Frameworks */,
 				15A2379F17E2865A00225942 /* QuartzCore.framework in Frameworks */,
 				1527AE3317DFDCFB00D181D7 /* SystemConfiguration.framework in Frameworks */,
 				1527AE3117DFDCEF00D181D7 /* MobileCoreServices.framework in Frameworks */,
@@ -295,6 +307,8 @@
 		153BBC3217DFC2E40071E63B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				15CD295317F7804A0027DFEC /* AddressBook.framework */,
+				15CD295417F7804A0027DFEC /* AddressBookUI.framework */,
 				15A237AA17E2DBD400225942 /* FacebookSDK.framework */,
 				15A2379E17E2865A00225942 /* QuartzCore.framework */,
 				1527AE3217DFDCFB00D181D7 /* SystemConfiguration.framework */,
@@ -390,6 +404,8 @@
 				15D756C217F3E5B50080AE4F /* FFRosterViewController.m */,
 				15B06A0F17F6048300832F6D /* FFContestEntrantsViewController.h */,
 				15B06A1017F6048300832F6D /* FFContestEntrantsViewController.m */,
+				15CD294D17F77C840027DFEC /* FFInviteViewController.h */,
+				15CD294E17F77C840027DFEC /* FFInviteViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -457,6 +473,8 @@
 				15AAC75A17F22792007313EF /* FFGameButtonView.m */,
 				15D756BB17F3A9320080AE4F /* FFContestView.h */,
 				15D756BC17F3A9320080AE4F /* FFContestView.m */,
+				15CD295017F77E4B0027DFEC /* FFBubblePicker.h */,
+				15CD295117F77E4B0027DFEC /* FFBubblePicker.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -678,6 +696,8 @@
 				15D756C617F485F10080AE4F /* FFRosterSlotCell.m in Sources */,
 				15CE07EA17F4DBEB0086EB78 /* FFPlayerSelectCell.m in Sources */,
 				15B06A1117F6048300832F6D /* FFContestEntrantsViewController.m in Sources */,
+				15CD294F17F77C840027DFEC /* FFInviteViewController.m in Sources */,
+				15CD295217F77E4B0027DFEC /* FFBubblePicker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

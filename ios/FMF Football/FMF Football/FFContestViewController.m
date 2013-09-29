@@ -16,6 +16,7 @@
 #import "FFRosterSlotCell.h"
 #import "FFPlayerSelectCell.h"
 #import "FFContestEntrantsViewController.h"
+#import "FFInviteViewController.h"
 
 
 typedef enum {
@@ -404,6 +405,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     if ([segue.identifier isEqualToString:@"GotoContestEntrants"]) {
         ((FFContestEntrantsViewController *)segue.destinationViewController).contest = _roster.contest;
     }
+    if ([segue.identifier isEqualToString:@"GotoInvite"]) {
+        ((FFInviteViewController *)segue.destinationViewController).roster = _roster;
+    }
 }
 
 - (void)enterGame:(UIButton *)button
@@ -451,7 +455,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 - (void)inviteToGame:(UIButton *)button
 {
-    
+    [self performSegueWithIdentifier:@"GotoInvite" sender:nil];
 }
 
 - (void)backFromPlayerSelect:(UIButton *)button
