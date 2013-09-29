@@ -7,6 +7,7 @@
 //
 
 #import "FFCreateGameViewController.h"
+#import "FFSessionViewController.h"
 
 @interface FFCreateGameViewController ()
 
@@ -26,6 +27,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:
+                                              self.sessionController.balanceView];
 	// Do any additional setup after loading the view.
 }
 

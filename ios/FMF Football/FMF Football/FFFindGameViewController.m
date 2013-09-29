@@ -7,6 +7,7 @@
 //
 
 #import "FFFindGameViewController.h"
+#import "FFSessionViewController.h"
 
 @interface FFFindGameViewController ()
 

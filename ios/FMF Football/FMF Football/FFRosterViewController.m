@@ -46,6 +46,9 @@
     _tableView.delegate = self;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self.view addSubview:_tableView];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:
+                                              self.sessionController.balanceView];
 }
 
 - (void)viewWillAppear:(BOOL)animated

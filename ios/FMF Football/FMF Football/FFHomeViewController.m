@@ -55,7 +55,8 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
     [leftView addSubview:logo];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftView];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.sessionController.balanceView];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:
+                                              self.sessionController.balanceView];
     
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
     _tableView.delegate = self;
