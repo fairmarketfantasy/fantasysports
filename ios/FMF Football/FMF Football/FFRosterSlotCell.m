@@ -19,8 +19,12 @@
 @property (nonatomic) UILabel *price;
 @property (nonatomic) UIButton *select;
 @property (nonatomic) UIButton *trade;
-@property (nonatomic) UIButton *stats;
 @property (nonatomic) UILabel *diff;
+@property (nonatomic) UILabel *points;
+
+@property (nonatomic) id player;
+@property (nonatomic) FFRoster *roster;
+@property (nonatomic) FFMarket *market;
 
 @end
 
@@ -88,13 +92,12 @@
         [_trade addTarget:self action:@selector(replace:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_trade];
         
-        _stats = [FFStyle coloredButtonWithText:NSLocalizedString(@"Stats", nil)
-                                          color:[FFStyle brightBlue]
-                                    borderColor:[FFStyle white]];
-        _stats.frame = CGRectMake(224, 21, 80, 38);
-        _stats.hidden = YES;
-        [_stats addTarget:self action:@selector(stats:) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:_stats];
+        _points = [[UILabel alloc] initWithFrame:CGRectMake(200, 0, 20, self.contentView.frame.size.height)];
+        _points.backgroundColor = [UIColor clearColor];
+        _points.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+        _points.font = [FFStyle regularFont:16];
+        _points.hidden = YES;
+        [self.contentView addSubview:_points];
         
         UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(7, 78, 306, 1)];
         sep.backgroundColor = [UIColor colorWithWhite:.8 alpha:.5];
@@ -114,16 +117,18 @@
 
 - (BOOL)marketStarted
 {
-    return [self.market.startedAt compare:[NSDate date]] == NSOrderedAscending;
+    return [self.market.startedAt compare:[NSDate date]] == NSOrderedDescending;
 }
 
-- (void)setPlayer:(id)player
+- (void)setPlayer:(id)player andRoster:(FFRoster *)roster andMarket:(FFMarket *)market
 {
     _player = player;
+    _roster = roster;
+    _market = market;
     
     if ([player isKindOfClass:[NSString class]]) {
         // it's an empty slot
-        _emptyPosition.text = player;
+        _emptyPosition.text = (NSString *)player;
         _emptyPosition.hidden = NO;
         _select.hidden = NO;
         _name.hidden = YES;
@@ -131,7 +136,6 @@
         _price.hidden = YES;
         _trade.hidden = YES;
         _diff.hidden = YES;
-        _stats.hidden = YES;
     } else {
         _emptyPosition.hidden = YES;
         _select.hidden = YES;
@@ -153,23 +157,36 @@
             _price.text = [NSString stringWithFormat:@"$%@", player[@"purchase_price"]];
             _price.frame = CGRectMake(82, 50, [_price.text sizeWithFont:_price.font].width, 16);
             _diff.hidden = NO;
-            double diff =  (([player[@"sell_price"] doubleValue] - [player[@"purchase_price"] doubleValue])
-                            / [player[@"purchase_price"] doubleValue]) * 100;
+            
+            double sellPrice = [player[@"sell_price"] doubleValue],
+               purchasePrice = [player[@"purchase_price"] doubleValue];
+            double diff =  ((sellPrice - purchasePrice) / purchasePrice) * 100;
+            
             _diff.text = [NSString stringWithFormat:@"%.2lf%%", diff];
             _diff.frame = CGRectMake(CGRectGetMaxX(_price.frame)+5, 50, 80, 16);
+            
+            if ((sellPrice - purchasePrice) < 0) {
+                _diff.textColor = [FFStyle brightRed];
+            } else {
+                _diff.textColor = [FFStyle brightGreen];
+            }
         } else {
             _diff.hidden = YES;
             _price.text = [NSString stringWithFormat:@"$%@", player[@"buy_price"]];
             _price.frame = CGRectMake(82, 50, 80, 16);
         }
-        if (![self marketStarted]) {
-            _trade.hidden = NO;
-            _stats.hidden = YES;
-        } else {
-            _trade.hidden = YES;
-            _stats.hidden = NO;
-            [_stats setTitle:[NSString stringWithFormat:@"%@ %@", player[@"score"], NSLocalizedString(@"Points", nil)]
-                    forState:UIControlStateNormal];
+        _trade.hidden = !(([_market.state isEqualToString:@"published"]
+                          || [_market.state isEqualToString:@"opened"])
+                          && ![player[@"locked"] boolValue]);
+        if ([self marketStarted]) {
+            _points.hidden = NO;
+            int score = [player[@"score"] integerValue];
+            if (score) {
+                _points.textColor = [FFStyle darkerColorForColor:[FFStyle brightBlue]];
+            } else {
+                _points.textColor = [FFStyle greyTextColor];
+            }
+            _points.text = [NSString stringWithFormat:@"%d", score];
         }
     }
 }
@@ -185,13 +202,6 @@
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(rosterCellReplacePlayer:)]) {
         [self.delegate rosterCellReplacePlayer:self];
-    }
-}
-
-- (void)stats:(UIButton *)sender
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(rosterCellStatsForPlayer::)]) {
-        [self.delegate rosterCellStatsForPlayer:self];
     }
 }
 

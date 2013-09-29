@@ -22,9 +22,12 @@
 
 @interface FFRosterSlotCell : UITableViewCell
 
-@property (nonatomic) id player;
-@property (nonatomic) FFRoster *roster;
-@property (nonatomic) FFMarket *market;
+@property (nonatomic, readonly) id player;
+@property (nonatomic, readonly) FFRoster *roster;
+@property (nonatomic, readonly) FFMarket *market;
+
+- (void)setPlayer:(id)player andRoster:(FFRoster *)roster andMarket:(FFMarket *)market;
+
 @property (nonatomic, weak) id<FFRosterSlotCellDelegate> delegate;
 
 @end

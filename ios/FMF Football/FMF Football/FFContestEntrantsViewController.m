@@ -155,7 +155,7 @@
     FFRoster *roster = [_rosters objectAtIndex:indexPath.row];
 //    FFContestType *cType = roster.contestType;
     
-    NSString *tit = [NSString stringWithFormat:@"#%@ %@", roster.score,
+    NSString *tit = [NSString stringWithFormat:@"#%@ %@", roster.contestRank,
                      (roster.ownerName != nil && roster.ownerName.length
                       ? roster.ownerName
                       : NSLocalizedString(@"Entrant", nil))];
