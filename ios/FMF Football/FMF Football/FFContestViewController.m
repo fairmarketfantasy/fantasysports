@@ -82,6 +82,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     [_tableView registerClass:[FFPlayerSelectCell class] forCellReuseIdentifier:@"PlayerSelect"];
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"EntrantsCell"];
     [self.view addSubview:_tableView];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:
+                                              self.sessionController.balanceView];
 }
 
 - (void)viewDidAppear:(BOOL)animated
