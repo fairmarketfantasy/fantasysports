@@ -95,10 +95,13 @@
     if (self.session != nil) {
         [self.session syncUser];
         [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
+    } else {
+        [self.tickerDataSource refresh];
+        [self showControllerInDrawer:self.maximizedTicker
+             minimizedViewController:nil
+                              inView:self.signUpView
+                            animated:YES];
     }
-    
-    [self.tickerDataSource refresh];
-    [self showControllerInDrawer:self.maximizedTicker minimizedViewController:nil inView:self.signUpView animated:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated

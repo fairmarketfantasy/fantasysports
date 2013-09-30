@@ -13,11 +13,11 @@
 #import <dispatch/dispatch.h>
 
 
-@interface FFRoster ()
-
-@property (nonatomic) FFContestType *_contestType;
-
-@end
+//@interface FFRoster ()
+//
+//@property (nonatomic) FFContestType *_contestType;
+//
+//@end
 
 
 @implementation FFRoster
@@ -43,6 +43,7 @@
 @dynamic score;
 @dynamic state;
 
+@dynamic contestType;
 @dynamic contestTypeId;
 
 + (NSString *)tableName { return @"ffroster"; }
@@ -143,17 +144,20 @@
     self.contestTypeId = keyedValues[@"contest_type"][@"id"];
     
     // save the connected contest type
-    [FFContestType fromNetworkRepresentation:keyedValues[@"contest_type"] session:self.session save:YES];
+    self.contestType = [FFContestType fromNetworkRepresentation:keyedValues[@"contest_type"]
+                                                        session:self.session
+                                                           save:YES];
+    
 }
 
-- (FFContestType *)contestType
-{
-    if (!__contestType) {
-        __contestType = [[[[[self.session queryBuilderForClass:[FFContestType class]]
-                            property:@"objId" isEqualTo:self.contestTypeId]
-                           query] results] first];
-    }
-    return __contestType;
-}
+//- (FFContestType *)contestType
+//{
+//    if (!__contestType) {
+//        __contestType = [[[[[self.session queryBuilderForClass:[FFContestType class]]
+//                            property:@"objId" isEqualTo:self.contestTypeId]
+//                           query] results] first];
+//    }
+//    return __contestType;
+//}
 
 @end
