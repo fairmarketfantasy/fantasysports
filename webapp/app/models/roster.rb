@@ -1,3 +1,4 @@
+
 class Roster < ActiveRecord::Base
   attr_protected
 
@@ -29,6 +30,10 @@ class Roster < ActiveRecord::Base
 
   def sellable_players
     Player.with_sell_prices(self).sellable
+  end
+
+  def market_players
+    MarketPlayer.where(:market_id => self.market_id, :player_stats_id => self.rosters_players.map(&:player_stats_id))
   end
 
   #create a roster. does not deduct funds until roster is submitted.
@@ -74,6 +79,12 @@ class Roster < ActiveRecord::Base
     else
       self[:remaining_salary]
     end
+  end
+
+  def set_records!
+    rk = RecordKeeper.for_roster(self)
+    self.wins = rk.wins
+    self.losses = rk.losses
   end
 
   #set the state to 'submitted'. If it's in a private contest, increment the number of 

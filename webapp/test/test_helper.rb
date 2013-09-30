@@ -1,11 +1,11 @@
 ENV["RAILS_ENV"] ||= "test"
+require 'stripe_mock'
 require File.expand_path('../../config/environment', __FILE__)
 require File.expand_path('../../db/seeds', __FILE__)
 require 'rails/test_help'
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'minitest/pride'
-require 'stripe_mock'
 require 'debugger'
 
 Market.load_sql_functions

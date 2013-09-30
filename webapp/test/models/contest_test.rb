@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ContestTest < ActiveSupport::TestCase
-
   test "payday" do
     setup_simple_market
     contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 100").first
@@ -61,6 +60,59 @@ class ContestTest < ActiveSupport::TestCase
     assert_equal by_rank[2].length, 2
   end
 
+  def play_single_contest(ct)
+    users = (1..10).map{ create(:paid_user) }
+    @rosters = []
+    users.each_with_index do |user, i|
+      roster = Roster.generate(user, ct)
+      @players[0..i].each{|player| roster.add_player(player) }
+      roster.submit!
+      @rosters << roster
+    end
+    @market.update_attribute(:closed_at, Time.new - 1.minute)
+    @players.each do |p| 
+      StatEvent.create!(
+        :game_stats_id => @game.stats_id,
+        :player_stats_id => p.stats_id,
+        :point_value => 1,
+        :activity => 'rushing',
+        :data => ''
+      )
+    end
+    @rosters.each{|r| r.update_attribute(:remaining_salary, 100)} # Fake out the score compensator
+    @market.update_attribute :state, 'opened'
+    @game.update_attribute :status, 'closed'
+    Market.tend # Close it
+    Market.tend # Complete it
+  end
+
+  test 'record keeping' do
+    setup_simple_market
+    ct = @market.contest_types.where("name='194' AND buy_in = 1000 AND max_entries = 10").first
+    play_single_contest(ct)
+    @rosters.each_with_index do |r, i|
+      r.reload
+      if i <5
+        assert_equal 1, r.losses
+        assert_equal 0, r.wins
+      else
+        assert_equal 0, r.losses
+        assert_equal 1, r.wins
+      end
+    end
+  end
+
+  test 'h2h rr record keeping' do
+    setup_simple_market
+    ct = @market.contest_types.where("name='h2h rr' AND buy_in = 900 AND max_entries = 10").first
+    play_single_contest(ct)
+    @rosters.each_with_index do |r, i|
+      r.reload
+      assert_equal 9-i, r.losses
+      assert_equal i, r.wins
+    end
+  end
+
   describe Contest do
 
     before(:all) do
@@ -70,31 +122,6 @@ class ContestTest < ActiveSupport::TestCase
                              contest_type:  create(:contest_type),
                              buy_in:    10,
                              market_id: @market.id)
-    end
-
-    describe "#make_private" do
-      it "should create a contest for the owner" do
-        assert_difference("@user.contests.count", 1) do
-          @contest.save!
-        end
-      end
-    end
-
-    describe "#create_owners_roster!" do
-      it "should create a roster for the owner" do
-        assert_difference("@user.rosters.count", 1) do
-          @contest.make_private
-        end
-      end
-    end
-
-    describe "#invite" do
-      it "should send an email to the invitee" do
-        assert_difference("ActionMailer::Base.deliveries.size", 1) do
-          @contest.make_private
-          @contest.invite("yodawg@gmail.com")
-        end
-      end
     end
 
   end

@@ -14,10 +14,12 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def set_stripe_id
-    resp = Stripe::Customer.create({
+    unless Rails.env == 'test' && self.stripe_id
+      resp = Stripe::Customer.create({
                                       description: "Customer for #{user.email}"
                                     })
-    self.stripe_id = resp.id
+      self.stripe_id = resp.id
+    end
   end
 
   def cards
