@@ -88,7 +88,7 @@ class Market < ActiveRecord::Base
     end
     self
   end
-  
+
   def open
     Market.find_by_sql("select * from open_market(#{self.id})")
     reload
@@ -122,7 +122,7 @@ class Market < ActiveRecord::Base
       self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
 
       #re-allocate rosters in under-subscribed private contests to public contests
-      self.contests.where("invitation_code is not null and num_rosters < user_cap").find_each do |contest|
+      self.contests.where("private AND num_rosters < user_cap").find_each do |contest|
         contest.rosters.find_each do |roster|
           roster.contest_id, roster.cancelled_cause, roster.state = nil, 'private contest under-subscribed', 'in_progress'
           roster.save!
@@ -261,7 +261,7 @@ class Market < ActiveRecord::Base
       buy_in: 0,
       rake: 0.03,
       payout_structure: '[]',
-      payout_description: "9 h2h games for $1.94 each",
+      payout_description: "9 h2h games each pay out 194",
     },
     {
       name: 'h2h rr',
@@ -270,7 +270,7 @@ class Market < ActiveRecord::Base
       buy_in: 900,
       rake: 0.03,
       payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194]',
-      payout_description: "9 h2h games for $1.94 each",
+      payout_description: "9 h2h games each pay out $1.94",
     },
     {
       name: 'h2h rr',
@@ -279,7 +279,7 @@ class Market < ActiveRecord::Base
       buy_in: 9000,
       rake: 0.03,
       payout_structure: '[17460, 15520, 13580, 11640, 9700, 7760, 5820, 3880, 1940]',
-      payout_description: "9 h2h games for $19.40 each",
+      payout_description: "9 h2h games each pay out $19.40",
     }
   ];
 
@@ -288,7 +288,6 @@ class Market < ActiveRecord::Base
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
-        pp data
       ContestType.create!(
         market_id: self.id,
         name: data[:name],

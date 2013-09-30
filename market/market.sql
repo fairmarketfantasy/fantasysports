@@ -7,7 +7,7 @@
 
 ------------------------------------- PRICE --------------------------------------------
 
-/* The pricing function. Right now, it's a straight linear shot and assumes a 100k salary cap with a 1k minimum price */
+-- /* The pricing function. Right now, it's a straight linear shot and assumes a 100k salary cap with a 1k minimum price */
 DROP FUNCTION price(numeric, numeric, numeric, numeric);
 
 CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric) 
@@ -76,7 +76,7 @@ RETURNS TABLE(player_id integer, buy_price numeric) AS $$
 		r.id = $1 AND
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
-		mp.locked_at < NOW() AND
+		NOT (mp.locked_at < NOW() OR mp.locked) AND
 		mp.player_id NOT IN (SELECT rosters_players.player_id 
 			FROM rosters_players WHERE roster_id = $1);
 $$ LANGUAGE SQL;
@@ -201,7 +201,7 @@ $$ LANGUAGE plpgsql;
 
 --------------------------------------  BUY ----------------------------------------
 
-/* buy a player for a roster */
+-- /* buy a player for a roster */
 DROP FUNCTION buy(integer, integer);
 CREATE OR REPLACE FUNCTION buy(_roster_id integer, _player_id integer, OUT _price numeric) RETURNS numeric AS $$
 DECLARE
@@ -254,7 +254,7 @@ $$ LANGUAGE plpgsql;
 
 ------------------------------------------------- SELL ----------------------------------------------------
 
-/* sell a player on a roster */
+-- /* sell a player on a roster */
 DROP FUNCTION sell(integer, integer);
 CREATE OR REPLACE FUNCTION sell(_roster_id integer, _player_id integer, OUT _price numeric) RETURNS numeric AS $$
 DECLARE
@@ -546,21 +546,24 @@ $$ LANGUAGE plpgsql;
 DROP FUNCTION tabulate_scores(integer);
 
 CREATE OR REPLACE FUNCTION tabulate_scores(_market_id integer) RETURNS VOID AS $$
+begin
 	UPDATE market_players set score = 
 		(select Greatest(0, sum(point_value)) FROM stat_events 
 			WHERE player_stats_id = market_players.player_stats_id and game_stats_id in 
 				(select game_stats_id from games_markets where market_id = $1)
 		) where market_id = $1;
 
-	UPDATE rosters set score = 
-		(select sum(score) from market_players where player_stats_id in 
-			(select player_stats_id from rosters_players where roster_id = rosters.id) AND market_id = $1
-		) where market_id = $1;
+  WITH contest_info as
+    (SELECT rosters.id, contest_types.salary_cap FROM rosters JOIN contest_types ON rosters.contest_type_id=contest_types.id WHERE rosters.market_id=$1)
+	  UPDATE rosters set score = LEAST(1, 1 + remaining_salary / salary_cap) * (select sum(score) from market_players where player_stats_id IN(
+        SELECT player_stats_id FROM rosters_players WHERE roster_id = rosters.id) AND market_id = $1)
+    FROM contest_info WHERE rosters.id=contest_info.id;
 
-	WITH ranks as 
-		(SELECT rosters.id, rank() OVER (PARTITION BY contest_id ORDER BY score DESC), salary_cap FROM rosters JOIN contest_types ct ON rosters.contest_type_id = ct.id  WHERE rosters.market_id = $1) 
-		UPDATE rosters set contest_rank = rank, score = LEAST(1, 1 + remaining_salary / salary_cap) * score FROM ranks where rosters.id = ranks.id;
-$$ LANGUAGE SQL;
+	WITH ranks as
+		(SELECT rosters.id, rank() OVER (PARTITION BY contest_id ORDER BY score DESC) FROM rosters WHERE rosters.market_id = $1)
+		UPDATE rosters set contest_rank = rank FROM ranks where rosters.id = ranks.id;
+end
+$$ LANGUAGE plpgsql;--SQL;
 
 /*
 Helpful functions

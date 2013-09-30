@@ -113,18 +113,20 @@ class MarketTest < ActiveSupport::TestCase
     3.times {
       create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
     }
-    private_contest = create(:contest, :market => @market, :contest_type => contest_type, :user_cap => 2, :buy_in => 1000)
+    user1 = create(:paid_user)
+    private_contest = Contest.create_private_contest(:type => 'h2h', :buy_in => 1000, :user_id => user1.id, :market_id => @market.id)
     2.times {
       create(:roster, :market => @market, :contest_type => contest_type, :contest => private_contest).fill_randomly.submit!
     }
-    private_contest_2 = create(:contest, :market => @market, :contest_type => contest_type, :user_cap => 2, :buy_in => 1000)
+    private_contest_2 = Contest.create_private_contest(:type => 'h2h', :buy_in => 1000, :user_id => user1.id, :market_id => @market.id)
     create(:roster, :market => @market, :contest_type => contest_type, :contest => private_contest_2).fill_randomly.submit!
 
     #verify the state of affairs
     assert_equal 6, @market.rosters.where("state = 'submitted'").length
     assert_equal 2, private_contest.rosters.length
     assert_equal 1, private_contest_2.rosters.length
-    assert_equal 2, @market.contests.where("invitation_code is not null").length
+    assert_equal 4, @market.contests.where("invitation_code is not null").length
+    assert_equal 2, @market.contests.where("private").length
 
     #close market, should move the one roster in the private contest to the public contest
     @market.shadow_bets, @market.initial_shadow_bets = 0, 0
@@ -136,7 +138,7 @@ class MarketTest < ActiveSupport::TestCase
     #should be 3 contests: two public, one private
     assert_equal 'closed', @market.state
     assert_equal 3, @market.contests.length, "#{@market.contests.each {|c| c.inspect + '\n'}}"
-    assert_equal 2, @market.contests.where("invitation_code is null").length
+    assert_equal 2, @market.contests.where("NOT private").length
     assert_equal 0, @market.rosters.where("cancelled = true").length
     assert_equal 2, private_contest.reload.rosters.length
   end
@@ -210,6 +212,34 @@ class MarketTest < ActiveSupport::TestCase
     end
   end
 
+  test "tabulate scores" do
+    setup_simple_market
+    ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 10").first
+    users = (1..10).map{ create(:paid_user) }
+    rosters = []
+    users.each_with_index do |user, i|
+      roster = Roster.generate(user, ct2)
+      @players[0..i].each{|player| roster.add_player(player) }
+      roster.submit!
+      rosters << roster
+    end
+    @players.each do |p| 
+      StatEvent.create!(
+        :game_stats_id => @game.stats_id,
+        :player_stats_id => p.stats_id,
+        :point_value => 1,
+        :activity => 'rushing',
+        :data => ''
+      )
+    end
+    rosters.each{|r| r.update_attribute(:remaining_salary, 100)} # Fake out the score compensator
+    Market.tend
+    rosters.each_with_index do |r, i|
+      assert_equal i+1, r.reload.score
+      assert_equal 10-i, r.contest_rank
+    end
+  end
+
   test "game play" do
     # Make a published market
     setup_simple_market
@@ -273,6 +303,9 @@ class MarketTest < ActiveSupport::TestCase
         :data => ''
       )
     end
+    @rosters.each do |ct, rosters|
+      rosters.each{|r| r.update_attribute(:remaining_salary, 100) } # Fake out the score compensator
+    end
     Market.tend
     # Rosters are scored and ranked
     @rosters.each do |ct, rosters|
@@ -281,8 +314,10 @@ class MarketTest < ActiveSupport::TestCase
       rosters.each do |roster|
         roster.reload
         next if roster.cancelled?
-        assert roster.score > score
-        assert roster.contest_rank < rank if roster.contest_type != ct1
+        if roster.contest_type != ct1
+          assert roster.score > score
+          assert roster.contest_rank < rank
+        end
         score = roster.score
         rank = roster.contest_rank
       end
