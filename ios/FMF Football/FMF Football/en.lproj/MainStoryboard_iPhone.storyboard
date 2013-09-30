@@ -53,21 +53,6 @@
             </objects>
             <point key="canvasLocation" x="-87" y="985"/>
         </scene>
-        <!--Create Game View Controller-->
-        <scene sceneID="6Fi-Hw-asP">
-            <objects>
-                <viewController id="o10-6a-SgK" customClass="FFCreateGameViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Rl0-wR-98p">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="vXR-OR-Yz8"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="D9I-uc-4o5" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="917" y="312"/>
-        </scene>
         <!--Home View Controller-->
         <scene sceneID="Vzx-Xm-1VD">
             <objects>
@@ -79,15 +64,91 @@
                     </view>
                     <navigationItem key="navigationItem" id="T3d-ve-48l"/>
                     <connections>
-                        <segue destination="o10-6a-SgK" kind="push" identifier="GotoCreateGame" id="zmq-Yt-SVd"/>
                         <segue destination="grh-Mm-aP7" kind="push" identifier="GotoFindGame" id="jEr-zx-nET"/>
                         <segue destination="p8F-hD-oki" kind="push" identifier="GotoContest" id="TY5-BO-lyU"/>
                         <segue destination="hCT-9z-KON" kind="push" identifier="GotoMyGames" id="LS3-BI-IKJ"/>
+                        <segue destination="gvr-Qo-eMi" kind="modal" identifier="GotoCreateGame" id="XNP-sm-m6o"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="364" y="985"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="AbY-Zq-EXM">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="gvr-Qo-eMi" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="zJa-sO-jGH">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="IOK-Ey-2eg" kind="relationship" relationship="rootViewController" id="rhL-i5-0dw"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BX4-hG-r5Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="917" y="286"/>
+        </scene>
+        <!--Create Game View Controller-->
+        <scene sceneID="J0I-7M-4nr">
+            <objects>
+                <viewController id="IOK-Ey-2eg" customClass="FFCreateGameViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Fgi-Q2-xWT">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="GDv-Kw-x5a"/>
+                    <connections>
+                        <segue destination="tib-l9-5N3" kind="push" identifier="GotoContestTypeSelect" id="Wp1-1T-r31"/>
+                        <segue destination="GvS-oa-fs3" kind="push" identifier="GotoEntryFeeEntry" id="3uT-OT-6XS"/>
+                        <segue destination="tib-l9-5N3" kind="push" identifier="GotoEntryFeeSelect" id="fi4-Ba-2tM"/>
+                        <segue destination="tib-l9-5N3" kind="push" identifier="GotoMarketSelect" id="u0q-yD-ZaH"/>
+                        <segue destination="tib-l9-5N3" kind="push" identifier="GotoSalaryCapSelect" id="1w9-1v-Zym"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2kF-zM-tDn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1355" y="286"/>
+        </scene>
+        <!--Option Select Controller-->
+        <scene sceneID="MKG-hN-wyb">
+            <objects>
+                <viewController id="tib-l9-5N3" customClass="FFOptionSelectController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wg8-03-gr4">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Fdn-19-pnV"/>
+                    <attributedString key="userComments">
+                        <fragment content="poop">
+                            <attributes>
+                                <font key="NSFont" size="60" name="LucidaGrande"/>
+                                <font key="NSOriginalFont" size="60" name="LucidaGrande"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                            </attributes>
+                        </fragment>
+                    </attributedString>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TRR-gI-oHC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1387" y="-723"/>
+        </scene>
+        <!--Value Entry Controller-->
+        <scene sceneID="VwE-U3-ibh">
+            <objects>
+                <viewController id="GvS-oa-fs3" customClass="FFValueEntryController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3lB-qV-5VQ">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="snZ-cC-mf7"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="goJ-uE-Ypw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2047" y="-482"/>
         </scene>
         <!--Contest View Controller-->
         <scene sceneID="71A-Hu-P0F">
@@ -194,11 +255,17 @@
         <class className="FFInviteViewController" superclassName="FFBaseViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FFInviteViewController.h"/>
         </class>
+        <class className="FFOptionSelectController" superclassName="FFBaseViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFOptionSelectController.h"/>
+        </class>
         <class className="FFRosterViewController" superclassName="FFBaseViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FFRosterViewController.h"/>
         </class>
         <class className="FFSessionViewController" superclassName="FFBaseViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/FFSessionViewController.h"/>
+        </class>
+        <class className="FFValueEntryController" superclassName="FFBaseViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFValueEntryController.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -209,5 +276,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="Zjb-xv-NwD"/>
         <segue reference="0q8-z9-AZT"/>
+        <segue reference="u0q-yD-ZaH"/>
     </inferredMetricsTieBreakers>
 </document>

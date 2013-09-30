@@ -36,6 +36,8 @@
 		153BBC6817DFC2E40071E63B /* FMF_FootballTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 153BBC6717DFC2E40071E63B /* FMF_FootballTests.m */; };
 		155F649F17F7D0DE00500035 /* FFTickerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F649E17F7D0DE00500035 /* FFTickerDataSource.m */; };
 		155F64A517F7DDDE00500035 /* FFWeakReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64A417F7DDDE00500035 /* FFWeakReference.m */; };
+		155F64EA17FA2B4D00500035 /* FFOptionSelectController.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64E917FA2B4C00500035 /* FFOptionSelectController.m */; };
+		155F64ED17FA2B6000500035 /* FFValueEntryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64EC17FA2B5F00500035 /* FFValueEntryController.m */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
@@ -152,6 +154,10 @@
 		155F649E17F7D0DE00500035 /* FFTickerDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTickerDataSource.m; sourceTree = "<group>"; };
 		155F64A317F7DDDE00500035 /* FFWeakReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFWeakReference.h; sourceTree = "<group>"; };
 		155F64A417F7DDDE00500035 /* FFWeakReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFWeakReference.m; sourceTree = "<group>"; };
+		155F64E817FA2B4B00500035 /* FFOptionSelectController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFOptionSelectController.h; sourceTree = "<group>"; };
+		155F64E917FA2B4C00500035 /* FFOptionSelectController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFOptionSelectController.m; sourceTree = "<group>"; };
+		155F64EB17FA2B5F00500035 /* FFValueEntryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFValueEntryController.h; sourceTree = "<group>"; };
+		155F64EC17FA2B5F00500035 /* FFValueEntryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFValueEntryController.m; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -400,6 +406,10 @@
 				152B545617EBC93100C4B7F7 /* FFTickerMinimizedDrawerViewController.m */,
 				15AAC75C17F261F4007313EF /* FFCreateGameViewController.h */,
 				15AAC75D17F261F4007313EF /* FFCreateGameViewController.m */,
+				155F64E817FA2B4B00500035 /* FFOptionSelectController.h */,
+				155F64E917FA2B4C00500035 /* FFOptionSelectController.m */,
+				155F64EB17FA2B5F00500035 /* FFValueEntryController.h */,
+				155F64EC17FA2B5F00500035 /* FFValueEntryController.m */,
 				15AAC75F17F26202007313EF /* FFFindGameViewController.h */,
 				15AAC76017F26202007313EF /* FFFindGameViewController.m */,
 				15D756B117F37E7A0080AE4F /* FFMenuViewController.h */,
@@ -710,6 +720,8 @@
 				15CD295217F77E4B0027DFEC /* FFBubblePicker.m in Sources */,
 				155F649F17F7D0DE00500035 /* FFTickerDataSource.m in Sources */,
 				155F64A517F7DDDE00500035 /* FFWeakReference.m in Sources */,
+				155F64EA17FA2B4D00500035 /* FFOptionSelectController.m in Sources */,
+				155F64ED17FA2B6000500035 /* FFValueEntryController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
