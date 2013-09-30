@@ -33,6 +33,7 @@
 @property (nonatomic) SBInteger     *score;
 @property (nonatomic) NSString      *state;
 
+@property (nonatomic) FFContestType *contestType;
 @property (nonatomic) NSString      *contestTypeId;
 
 // rosters dont have a contest_type_id, so we have to post that separately to /rosters which then returns a roster
@@ -46,7 +47,5 @@
 - (void)removePlayer:(NSDictionary *)player success:(SBSuccessBlock)success failure:(SBErrorBlock)failure;
 
 - (void)submitSuccess:(SBSuccessBlock)success failure:(SBErrorBlock)failure;
-
-- (FFContestType *)contestType;
 
 @end
