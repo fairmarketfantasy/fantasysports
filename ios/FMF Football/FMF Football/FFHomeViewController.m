@@ -132,7 +132,7 @@ FFCreateGameViewControllerDelegate>
         ((FFContestViewController *)segue.destinationViewController).market = segue.context[1];
     }
     else if ([segue.identifier isEqualToString:@"GotoCreateGame"]) {
-        ((FFCreateGameViewController *)segue.destinationViewController).delegate = self;
+        ((FFCreateGameViewController *)[segue.destinationViewController viewControllers][0]).delegate = self;
     }
     else if ([segue.identifier isEqualToString:@"GotoRoster"]) {
         FFRoster *roster = segue.context;
@@ -187,6 +187,7 @@ FFCreateGameViewControllerDelegate>
 
 - (void)createGameControllerDidCreateGame:(FFRoster *)roster
 {
+    [self dismissViewControllerAnimated:YES completion:nil];
     [self performSegueWithIdentifier:@"GotoRoster" sender:self context:roster];
 }
 

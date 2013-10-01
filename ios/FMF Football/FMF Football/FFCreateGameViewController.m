@@ -134,7 +134,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     NSDictionary *params = @{@"market_id": _selectedMarket.objId,
                              @"invitees": @"",
                              @"message": @"",
-                             @"type": _selectedContestType,
+                             @"type": [_selectedContestType lowercaseString],
                              @"buy_in": buyIn,
                              @"salary_cap": @(100000)};
     
