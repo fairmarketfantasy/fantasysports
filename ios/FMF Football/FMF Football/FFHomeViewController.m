@@ -136,15 +136,7 @@ FFCreateGameViewControllerDelegate>
     }
     else if ([segue.identifier isEqualToString:@"GotoRoster"]) {
         FFRoster *roster = segue.context;
-//        FFContestType *contest = [[[[[self.session queryBuilderForClass:[FFContestType class]]
-//                                     property:@"objId" isEqualTo:roster.contestTypeId]
-//                                    query] results] first];
-//        FFMarket *market = [[[[[self.session queryBuilderForClass:[FFMarket class]]
-//                               property:@"objId" isEqualTo:contest.marketId]
-//                              query] results] first];
         ((FFContestViewController *)segue.destinationViewController).roster = roster;
-//        ((FFContestViewController *)segue.destinationViewController).contest = contest;
-//        ((FFContestViewController *)segue.destinationViewController).market = market;
     }
 }
 

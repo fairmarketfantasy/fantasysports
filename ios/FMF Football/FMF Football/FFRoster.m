@@ -85,7 +85,7 @@
     return [[super indexes] arrayByAddingObjectsFromArray:@[
             @[@"userKey", @"contestTypeId"],
             @[@"userKey", @"contestId"],
-            @[@"userKey", @"ownerId", @"state"],
+            @[@"userKey", @"ownerId", @"state", @"objId"],
             @[@"contestRank"], // for sorting
             @[@"objId"] // also for sorting
             ]];
