@@ -145,7 +145,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     
     [FFRoster createWithContestDef:params session:self.session success:^(id successObj) {
         [alert hide];
-        FFAlertView *salert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Contest Created!", nil)
+        FFAlertView *salert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Contest Created", nil)
                                                          message:NSLocalizedString(@"Now invite some friends!", nil)];
         [salert showInView:self.view];
         double delayInSeconds = 2.0;
