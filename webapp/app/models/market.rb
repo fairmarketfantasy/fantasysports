@@ -175,12 +175,13 @@ class Market < ActiveRecord::Base
     },
     {
       name: '970',
-      description: 'Free contest, winner gets 10 FanFrees!',
+      description: '100FF contest, winner gets 970 FanFrees!',
       max_entries: 10,
-      buy_in: 0,
+      buy_in: 100,
       rake: 0.03,
-      payout_structure: '[]',
+      payout_structure: '[970]',
       payout_description: "Winner takes all",
+      takes_tokens: true,
     },
     {
       name: '970',
@@ -202,12 +203,13 @@ class Market < ActiveRecord::Base
     },
     {
       name: '194',
-      description: 'Free contest, top 5 winners get 194 FanFrees!',
+      description: '100FF contest, top 5 winners get 194 FanFrees!',
       max_entries: 10,
-      buy_in: 0, #100 ff
+      buy_in: 100, #100 ff
       rake: 0.03,
-      payout_structure: '[]',
+      payout_structure: '[194,194,194,194,194]',
       payout_description: "Top half wins",
+      takes_tokens: true,
     },
     {
       name: '194',
@@ -229,12 +231,13 @@ class Market < ActiveRecord::Base
     },
     {
       name: 'h2h',
-      description: 'Free h2h contest, winner gets 1 FanFree!',
+      description: '100FF h2h contest, winner gets 194 FanFrees!',
       max_entries: 2,
-      buy_in: 0,
+      buy_in: 100,
       rake: 0.03,
-      payout_structure: '[]',
+      payout_structure: '[194]',
       payout_description: "Winner takes all",
+      takes_tokens: true,
     },
     {
       name: 'h2h',
@@ -256,12 +259,13 @@ class Market < ActiveRecord::Base
     },
     {
       name: 'h2h rr',
-      description: 'Free 10 team, h2h round-robin contest, 900 entry fee, 9 games for 194 per win',
+      description: '10 team, h2h round-robin contest, 900FF entry fee, 9 games for 194 per win',
       max_entries: 10,
-      buy_in: 0,
+      buy_in: 900,
       rake: 0.03,
-      payout_structure: '[]',
+      payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194]',
       payout_description: "9 h2h games each pay out 194",
+      takes_tokens: true,
     },
     {
       name: 'h2h rr',
@@ -274,7 +278,7 @@ class Market < ActiveRecord::Base
     },
     {
       name: 'h2h rr',
-      description: 'Free 10 team, h2h round-robin contest, $90 entry fee, 9 games for $19.40 per win',
+      description: '10 team, h2h round-robin contest, $90 entry fee, 9 games for $19.40 per win',
       max_entries: 10,
       buy_in: 9000,
       rake: 0.03,
@@ -297,7 +301,8 @@ class Market < ActiveRecord::Base
         rake: data[:rake],
         payout_structure: data[:payout_structure],
         salary_cap: 100000,
-        payout_description: data[:payout_description]
+        payout_description: data[:payout_description],
+        takes_tokens: data[:takes_tokens]
         )
       end
     end

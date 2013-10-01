@@ -3,7 +3,7 @@ class ContestsController < ApplicationController
   def for_market
     market = Market.find(params[:id])
     if ['opened', 'published'].include?(market.state)
-      types = market.contest_types.public.order("name asc, buy_in asc")
+      types = market.contest_types.public.order("name asc, takes_tokens = false desc, buy_in asc")
       render_api_response types
     else
       render_api_response []
