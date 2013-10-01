@@ -165,6 +165,8 @@ FFCreateGameViewControllerDelegate>
         } else {
             [super performSegueWithIdentifier:identifier sender:sender context:context];
         }
+    } else {
+        [super performSegueWithIdentifier:identifier sender:sender context:context];
     }
 }
 
