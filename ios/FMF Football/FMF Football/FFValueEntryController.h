@@ -8,10 +8,12 @@
 
 #import "FFBaseViewController.h"
 
+@class FFValueEntryController;
+
 
 @protocol FFValueEntryControllerDelegate <NSObject>
 
-- (void)valueEntryController:(id)cont didEnterValue:(NSString *)value;
+- (void)valueEntryController:(FFValueEntryController *)cont didEnterValue:(NSString *)value;
 
 @end
 

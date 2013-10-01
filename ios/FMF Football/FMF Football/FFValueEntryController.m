@@ -13,6 +13,7 @@
 @interface FFValueEntryController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) UITextField *textField;
 
 @end
 
@@ -84,7 +85,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
-    UITextField *field = [[FFTextField alloc] initWithFrame:CGRectMake(15, 4, 290, 38)];
+    UITextField *field = _textField = [[FFTextField alloc] initWithFrame:CGRectMake(15, 4, 290, 38)];
     field.borderStyle = UITextBorderStyleNone;
     field.font = [FFStyle regularFont:17];
     field.textColor = [FFStyle darkGreyTextColor];
@@ -92,9 +93,22 @@
     field.keyboardType = self.keyboardType;
     [cell.contentView addSubview:field];
     
+    UIToolbar *tb = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    tb.items = @[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
+                 [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)]];
+    
+    field.inputAccessoryView = tb;
+    
     UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 1)];
     sep.backgroundColor = [UIColor colorWithWhite:.8 alpha:1];
     [cell.contentView addSubview:sep];
+    
+    sep = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height-1, 320, 1)];
+    sep.backgroundColor = [UIColor colorWithWhite:.8 alpha:1];
+    cell.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+    [cell.contentView addSubview:sep];
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }
@@ -102,6 +116,13 @@
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [cell.contentView.subviews[0] becomeFirstResponder];
+}
+
+- (void)done:(UIControl *)sender
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(valueEntryController:didEnterValue:)]) {
+        [self.delegate valueEntryController:self didEnterValue:_textField.text];
+    }
 }
 
 @end

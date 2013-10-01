@@ -93,8 +93,15 @@
     lab.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     lab.font = [FFStyle regularFont:17];
     lab.textColor = [FFStyle darkGreyTextColor];
-    lab.text = _options[indexPath.row];
+    lab.text = [_options[indexPath.row] description];
     [cell.contentView addSubview:lab];
+    
+    if (_selectedOption == indexPath.row) {
+        UIImageView *disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(282, 14.5, 20, 19)];
+        disclosure.image = [UIImage imageNamed:@"checkmark.png"];
+        disclosure.backgroundColor = [UIColor clearColor];
+        [cell.contentView addSubview:disclosure];
+    }
     
     UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 1)];
     sep.backgroundColor = [UIColor colorWithWhite:.8 alpha:1];
@@ -106,6 +113,16 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSUInteger prev = _selectedOption;
+    _selectedOption = indexPath.row;
+    if (_selectedOption != prev) {
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:prev inSection:0],
+                                                 [NSIndexPath indexPathForRow:_selectedOption inSection:0]]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    if (self.delegate && [self.delegate respondsToSelector:@selector(optionSelectController:didSelectOption:)]) {
+        [self.delegate optionSelectController:self didSelectOption:_selectedOption];
+    }
 }
 
 @end

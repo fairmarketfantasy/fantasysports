@@ -15,10 +15,13 @@
 #import "FFContestType.h"
 #import "FFContest2UpTabelViewCell.h"
 #import "FFContestViewController.h"
+#import "FFCreateGameViewController.h"
+
 
 @interface FFHomeViewController ()
 <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
-FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDelegate>
+FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDelegate,
+FFCreateGameViewControllerDelegate>
 
 @property (nonatomic) SBDataObjectResultSet *markets;
 @property (nonatomic) UITableView *tableView;
@@ -128,12 +131,35 @@ FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDel
         ((FFContestViewController *)segue.destinationViewController).contest = segue.context[0];
         ((FFContestViewController *)segue.destinationViewController).market = segue.context[1];
     }
+    else if ([segue.identifier isEqualToString:@"GotoCreateGame"]) {
+        ((FFCreateGameViewController *)segue.destinationViewController).delegate = self;
+    }
+    else if ([segue.identifier isEqualToString:@"GotoRoster"]) {
+        FFRoster *roster = segue.context;
+        FFContestType *contest = [[[[[self.session queryBuilderForClass:[FFContestType class]]
+                                     property:@"objId" isEqualTo:roster.contestTypeId]
+                                    query] results] first];
+        FFMarket *market = [[[[[self.session queryBuilderForClass:[FFMarket class]]
+                               property:@"objId" isEqualTo:contest.marketId]
+                              query] results] first];
+        ((FFContestViewController *)segue.destinationViewController).roster = roster;
+        ((FFContestViewController *)segue.destinationViewController).contest = contest;
+        ((FFContestViewController *)segue.destinationViewController).market = market;
+    }
 }
 
 - (void)hideMenuController
 {
     [super hideMenuController];
     [_globalMenuButton setImage:[UIImage imageNamed:@"globalmenu.png"] forState:UIControlStateNormal];
+}
+
+#pragma mark -
+#pragma mark ffcreategame controller delegate
+
+- (void)createGameControllerDidCreateGame:(FFRoster *)roster
+{
+    [self performSegueWithIdentifier:@"GotoRoster" sender:self context:roster];
 }
 
 #pragma mark -

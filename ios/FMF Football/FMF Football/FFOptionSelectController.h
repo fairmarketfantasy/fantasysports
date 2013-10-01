@@ -9,9 +9,12 @@
 #import "FFBaseViewController.h"
 
 
+@class FFOptionSelectController;
+
+
 @protocol FFOptionSelectControllerDelegate <NSObject>
 
-- (void)optionSelectController:(id)cont didSelectOption:(NSUInteger)idx;
+- (void)optionSelectController:(FFOptionSelectController *)cont didSelectOption:(NSUInteger)idx;
 
 @end
 

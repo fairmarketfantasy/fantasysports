@@ -38,6 +38,7 @@
 		155F64A517F7DDDE00500035 /* FFWeakReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64A417F7DDDE00500035 /* FFWeakReference.m */; };
 		155F64EA17FA2B4D00500035 /* FFOptionSelectController.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64E917FA2B4C00500035 /* FFOptionSelectController.m */; };
 		155F64ED17FA2B6000500035 /* FFValueEntryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64EC17FA2B5F00500035 /* FFValueEntryController.m */; };
+		155F64EF17FA3B8000500035 /* checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 155F64EE17FA3B8000500035 /* checkmark@2x.png */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
@@ -158,6 +159,7 @@
 		155F64E917FA2B4C00500035 /* FFOptionSelectController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFOptionSelectController.m; sourceTree = "<group>"; };
 		155F64EB17FA2B5F00500035 /* FFValueEntryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFValueEntryController.h; sourceTree = "<group>"; };
 		155F64EC17FA2B5F00500035 /* FFValueEntryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFValueEntryController.m; sourceTree = "<group>"; };
+		155F64EE17FA3B8000500035 /* checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkmark@2x.png"; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 				15CD294417F73D9F0027DFEC /* greendot@2x.png */,
 				15CD294517F73D9F0027DFEC /* reddot@2x.png */,
 				15CD294917F73EA30027DFEC /* bluedot@2x.png */,
+				155F64EE17FA3B8000500035 /* checkmark@2x.png */,
 				15AAC76217F26603007313EF /* backbtn@2x.png */,
 				15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */,
 				15E06C2117F5048000E8AB4D /* playerselectmask@2x.png */,
@@ -621,6 +624,7 @@
 				15CD294817F73D9F0027DFEC /* reddot@2x.png in Resources */,
 				15CD294A17F73EA30027DFEC /* bluedot@2x.png in Resources */,
 				15CD294C17F73F890027DFEC /* disclosurelight@2x.png in Resources */,
+				155F64EF17FA3B8000500035 /* checkmark@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

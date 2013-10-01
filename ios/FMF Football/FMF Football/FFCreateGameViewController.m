@@ -11,6 +11,8 @@
 #import "FFMarket.h"
 #import "FFOptionSelectController.h"
 #import "FFValueEntryController.h"
+#import "FFRoster.h"
+#import "FFAlertView.h"
 
 
 #define SALARYCAP @"salarycap"
@@ -25,7 +27,8 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) SBDataObjectResultSet *markets;
 @property (nonatomic) FFMarket *selectedMarket;
-@property (nonatomic) NSDictionary *contestTypes;
+@property (nonatomic) NSArray *contestTypes;
+@property (nonatomic) NSDictionary *contestTypeDesc;
 @property (nonatomic) NSString *selectedContestType;
 @property (nonatomic) NSUInteger selectedSalaryCap;
 @property (nonatomic) NSUInteger selectedEntryFee;
@@ -80,12 +83,13 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 {
     [super viewWillAppear:animated];
     
-    self.contestTypes = @{@"H2H": @{SALARYCAP: @[@"$100,000"],
-                                    ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
-                          @"190": @{SALARYCAP: @[@"$100,000"],
-                                    ENTRYFEE: @[@(0), @(1), @(10)]},
-                          @"270": @{SALARYCAP: @[@"$100,000"],
-                                    ENTRYFEE: @[@(0), @(1), @(10)]}};
+    self.contestTypes = @[@"H2H", @"190", @"270"];
+    self.contestTypeDesc = @{@"H2H": @{SALARYCAP: @[@"$100,000"],
+                                       ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
+                             @"190": @{SALARYCAP: @[@"$100,000"],
+                                       ENTRYFEE: @[@(0), @(1), @(10)]},
+                             @"270": @{SALARYCAP: @[@"$100,000"],
+                                       ENTRYFEE: @[@(0), @(1), @(10)]}};
     
     _markets = [FFMarket getBulkWithSession:self.session authorized:YES];
     _markets.clearsCollectionBeforeSaving = YES;
@@ -93,7 +97,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     [_markets refresh];
     
     if (!_selectedContestType) {
-        _selectedContestType = _contestTypes.allKeys[0];
+        _selectedContestType = _contestTypes[0];
         _selectedSalaryCap = 0;
         _selectedEntryFee = 0;
     }
@@ -112,11 +116,55 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
  2. h2h allows choosing an entry fee
  3. 294 and 270 allow an entry fee of free, $1 and $10
  
+ data sent:
+ {"market_id":142,"invitees":"","message":"","type":"h2h","buy_in":100,"salary_cap":100000}
+ 
  */
 
 - (void)create:(UIButton *)sender
 {
+    NSDictionary *contestType = self.contestTypeDesc[_selectedContestType];
+    NSNumber *buyIn;
+    if ([contestType[ENTRYFEE][_selectedEntryFee] isEqual:ENTRYFEE_UNDEFINED]) {
+        buyIn = @(_chosenEntryFee);
+    } else {
+        buyIn = contestType[ENTRYFEE][_selectedEntryFee];
+    }
     
+    NSDictionary *params = @{@"market_id": _selectedMarket.objId,
+                             @"invitees": @"",
+                             @"message": @"",
+                             @"type": _selectedContestType,
+                             @"buy_in": buyIn,
+                             @"salary_cap": @(100000)};
+    
+    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:@"Creating Contest"
+                                                   messsage:nil
+                                               loadingStyle:FFAlertViewLoadingStylePlain];
+    [alert showInView:self.view];
+    
+    [FFRoster createWithContestDef:params session:self.session success:^(id successObj) {
+        [alert hide];
+        FFAlertView *salert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Contest Created!", nil)
+                                                         message:NSLocalizedString(@"Now invite some friends!", nil)];
+        [salert showInView:self.view];
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [salert hide];
+            if (self.delegate && [self.delegate respondsToSelector:@selector(createGameControllerDidCreateGame:)]) {
+                [self.delegate createGameControllerDidCreateGame:successObj];
+            }
+        });
+    } failure:^(NSError *error) {
+        [alert hide];
+        FFAlertView *ealert = [[FFAlertView alloc] initWithError:error
+                                                           title:nil
+                                               cancelButtonTitle:nil
+                                                 okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                        autoHide:YES];
+        [ealert showInView:self.view];
+    }];
 }
 
 - (void)cancel:(UIButton *)sender
@@ -267,7 +315,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }
     else if (indexPath.section == 3) {
         // salary cap
-        NSDictionary *contestType = _contestTypes[_selectedContestType];
+        NSDictionary *contestType = _contestTypeDesc[_selectedContestType];
         
         UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, cell.contentView.frame.size.height)];
         lab.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -288,18 +336,18 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }
     else if (indexPath.section == 4) {
         // entry fee
-        NSDictionary *contestType = _contestTypes[_selectedContestType];
+        NSDictionary *contestType = _contestTypeDesc[_selectedContestType];
         
         UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, cell.contentView.frame.size.height)];
         lab.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         lab.font = [FFStyle regularFont:17];
         lab.textColor = [FFStyle darkGreyTextColor];
         
-        if ([contestType[ENTRYFEE][_selectedSalaryCap] isEqual:ENTRYFEE_UNDEFINED]) {
+        if ([contestType[ENTRYFEE][_selectedEntryFee] isEqual:ENTRYFEE_UNDEFINED]) {
             lab.text = [NSString stringWithFormat:@"%d %@", _chosenEntryFee, NSLocalizedString(@"Tokens", nil)];
         } else {
             lab.text = [NSString stringWithFormat:@"%@ %@",
-                        contestType[ENTRYFEE][_selectedSalaryCap], NSLocalizedString(@"Tokens", nil)];
+                        contestType[ENTRYFEE][_selectedEntryFee], NSLocalizedString(@"Tokens", nil)];
         }
         [cell.contentView addSubview:lab];
         
@@ -333,7 +381,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }
     else if (indexPath.section == 3) {
         // salary cap
-        NSDictionary *contestType = _contestTypes[_selectedContestType];
+        NSDictionary *contestType = _contestTypeDesc[_selectedContestType];
         
         if ([contestType[SALARYCAP] count] > 1) {
             // goto salary cap
@@ -342,7 +390,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }
     else if (indexPath.section == 4) {
         // entry fee
-        NSDictionary *contestType = _contestTypes[_selectedContestType];
+        NSDictionary *contestType = _contestTypeDesc[_selectedContestType];
         
         if ([contestType[ENTRYFEE][_selectedSalaryCap] isEqual:ENTRYFEE_UNDEFINED]) {
             // goto value entry
@@ -358,9 +406,8 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 {
     if ([segue.identifier isEqualToString:@"GotoContestTypeSelect"]) {
         FFOptionSelectController *c = segue.destinationViewController;
-        NSArray *opts = _contestTypes.allKeys;
-        c.options = opts;
-        c.selectedOption = [opts indexOfObject:_selectedContestType];
+        c.options = self.contestTypes;
+        c.selectedOption = [self.contestTypes indexOfObject:_selectedContestType];
         c.name = segue.identifier;
         c.delegate = self;
         c.sectionTitle = NSLocalizedString(@"Choose Contest Type", nil);
@@ -394,7 +441,11 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }
     else if ([segue.identifier isEqualToString:@"GotoEntryFeeSelect"]) {
         FFOptionSelectController *c = segue.destinationViewController;
-        c.options = _contestTypes[_selectedContestType][ENTRYFEE];
+        NSMutableArray *opts = [NSMutableArray array];
+        for (NSNumber *n in _contestTypeDesc[_selectedContestType][ENTRYFEE]) {
+            [opts addObject:[NSString stringWithFormat:@"%@ %@", n, NSLocalizedString(@"Tokens", nil)]];
+        }
+        c.options = opts;
         c.selectedOption = _selectedEntryFee;
         c.name = segue.identifier;
         c.delegate = self;
@@ -408,6 +459,41 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         c.delegate = self;
         c.sectionTitle = NSLocalizedString(@"Set Entry Fee", nil);
     }
+}
+
+- (void)optionSelectController:(FFOptionSelectController *)cont didSelectOption:(NSUInteger)idx
+{
+    if ([cont.name isEqualToString:@"GotoContestTypeSelect"]) {
+        if (![_contestTypes[idx] isEqualToString:_selectedContestType]) {
+            // they chose a new option
+            _selectedContestType = _contestTypes[idx];
+            _selectedEntryFee = 0;
+            _selectedSalaryCap = 0;
+            _chosenEntryFee = 0;
+            [self.tableView reloadData];
+        }
+    }
+    else if ([cont.name isEqualToString:@"GotoMarketSelect"]) {
+        _selectedMarket = _markets.allObjects[idx];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:2]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    else if ([cont.name isEqualToString:@"GotoEntryFeeSelect"]) {
+        _selectedEntryFee = idx;
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:4]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    [self.navigationController popToViewController:self animated:YES];
+}
+
+- (void)valueEntryController:(FFValueEntryController *)cont didEnterValue:(NSString *)value
+{
+    if ([cont.name isEqualToString:@"GotoEntryFeeEntry"]) {
+        _chosenEntryFee = [value integerValue];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:4]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    [self.navigationController popToViewController:self animated:YES];
 }
 
 @end
