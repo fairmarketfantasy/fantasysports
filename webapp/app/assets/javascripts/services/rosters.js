@@ -144,7 +144,11 @@ angular.module('app.data')
         var self = this;
         fs.rosters.submit(this.currentRoster.id).then(function(roster) {
           $location.path('/market/' + self.currentRoster.market_id);
-          currentUserService.currentUser.balance -= roster.buy_in;
+          if (roster.contest_type.takes_tokens) {
+            currentUserService.currentUser.token_balance -= roster.buy_in;
+          } else {
+            currentUserService.currentUser.balance -= roster.buy_in;
+          }
           self.reset();
           self.justSubmittedRoster = roster;
         });

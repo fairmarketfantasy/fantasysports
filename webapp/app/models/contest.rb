@@ -12,16 +12,6 @@ class Contest < ActiveRecord::Base
 
   validates :owner_id, :contest_type_id, :buy_in, :market_id, presence: true
 
-  def submit_roster(roster)
-    raise "Only in progress rosters may be submitted" unless roster.state != 'in_progress'
-    Contest.transaction do
-      roster.state = 'submitted'
-      # we dock the balance on roster create now
-      # roster.owner.customer_object.decrease_balance(roster.buy_in, 'buy_in')
-      roster.save!
-    end
-  end
-
   #creates a roster for the owner and creates an invitation code
   def self.create_private_contest(opts) 
     market = Market.where(:id => opts[:market_id], state: ['published', 'opened']).first
@@ -42,12 +32,12 @@ class Contest < ActiveRecord::Base
         :payout_structure => [2 * buy_in - buy_in * rake * 2].to_json,
         :user_id => opts[:user_id],
         :private => true,
-        :salary_cap => opts[:salary_cap],
+        :salary_cap => opts[:salary_cap] || 100000,
         :payout_description => "Winner take all"
       )
     else
       contest_type = market.contest_types.where(:name => opts[:type], :buy_in => opts[:buy_in]).first
-      raise HttpException(404, "No such contest type found") unless contest_type
+      raise HttpException.new(404, "No such contest type found") unless contest_type
     end
 
     contest = Contest.create!(
@@ -81,24 +71,23 @@ class Contest < ActiveRecord::Base
       #for each rank, make payments
       rosters_by_rank.each_pair do |rank, rosters|
         payment = rank_payment[rank]
-        if payment.nil?
-          roster.paid_at = Time.new
-          roster.amount_paid = 0
-          roster.state = 'finished'
-          roster.save!
-          next
-        end
         payment_per_roster = Float(payment) / rosters.length
         rosters.each do |roster|
+          roster.set_records!
+          roster.paid_at = Time.new
+          roster.state = 'finished'
+          if payment.nil?
+            roster.amount_paid = 0
+            roster.save!
+            next
+          end
           # puts "roster #{roster.id} won #{payment_per_roster}!"
           roster.owner.customer_object.increase_balance(payment_per_roster, 'payout', roster.id, self.id)
-          roster.paid_at = Time.new
           roster.amount_paid = payment_per_roster
-          roster.state = 'finished'
           roster.save!
         end
       end
-      TransactionRecord.create!(:user => SYSTEM_USER, :amount => self.rake_amount, :event => 'rake', :contest_id => self.id)
+      SYSTEM_USER.customer_object.increase_balance(self.rake_amount, 'rake', nil, self.id)
       self.paid_at = Time.new
       self.save!
       TransactionRecord.validate_contest(self)
