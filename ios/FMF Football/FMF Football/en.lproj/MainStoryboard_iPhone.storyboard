@@ -68,6 +68,7 @@
                         <segue destination="p8F-hD-oki" kind="push" identifier="GotoContest" id="TY5-BO-lyU"/>
                         <segue destination="hCT-9z-KON" kind="push" identifier="GotoMyGames" id="LS3-BI-IKJ"/>
                         <segue destination="gvr-Qo-eMi" kind="modal" identifier="GotoCreateGame" id="XNP-sm-m6o"/>
+                        <segue destination="p8F-hD-oki" kind="push" identifier="GotoRoster" id="BCy-eg-VQx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -275,7 +276,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="Zjb-xv-NwD"/>
-        <segue reference="0q8-z9-AZT"/>
+        <segue reference="BCy-eg-VQx"/>
         <segue reference="u0q-yD-ZaH"/>
     </inferredMetricsTieBreakers>
 </document>

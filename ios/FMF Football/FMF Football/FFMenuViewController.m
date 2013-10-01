@@ -111,6 +111,7 @@
             [self.delegate performMenuSegue:@"GotoMyGames"];
             break;
         case 1:
+            [self.delegate performMenuSegue:@"GotoCreateGame"];
             break;
         case 2:
             break;

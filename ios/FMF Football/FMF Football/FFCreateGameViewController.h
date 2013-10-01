@@ -8,7 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "FFBaseViewController.h"
+#import "FFRoster.h"
+
+
+@protocol FFCreateGameViewControllerDelegate <NSObject>
+
+- (void)createGameControllerDidCreateGame:(FFRoster *)roster;
+
+@end
+
 
 @interface FFCreateGameViewController : FFBaseViewController
+
+@property (nonatomic, weak) id<FFCreateGameViewControllerDelegate> delegate;
 
 @end

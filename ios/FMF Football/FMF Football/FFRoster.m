@@ -104,6 +104,19 @@
      }];
 }
 
++ (void)createWithContestDef:(NSDictionary *)dict
+                     session:(SBSession *)sesh
+                     success:(SBSuccessBlock)success
+                     failure:(SBErrorBlock)failure
+{
+    [sesh authorizedJSONRequestWithMethod:@"POST" path:@"/contests" paramters:dict success:
+     ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
+         [self createWithNetworkRepresentation:JSON session:sesh success:success failure:failure];
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
+         failure(error);
+     }];
+}
+
 - (void)addPlayer:(NSDictionary *)player success:(SBSuccessBlock)success failure:(SBErrorBlock)failure
 {
     NSString *path = [[self path] stringByAppendingFormat:@"/add_player/%@", player[@"id"]];
