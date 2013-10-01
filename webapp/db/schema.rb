@@ -11,23 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130929235351) do
+ActiveRecord::Schema.define(version: 20131001034942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "contest_types", force: true do |t|
-    t.integer "market_id",                       null: false
-    t.string  "name",                            null: false
+    t.integer "market_id",                          null: false
+    t.string  "name",                               null: false
     t.text    "description"
-    t.integer "max_entries",                     null: false
-    t.integer "buy_in",                          null: false
-    t.decimal "rake",                            null: false
-    t.text    "payout_structure",                null: false
+    t.integer "max_entries",                        null: false
+    t.integer "buy_in",                             null: false
+    t.decimal "rake",                               null: false
+    t.text    "payout_structure",                   null: false
     t.integer "user_id"
     t.boolean "private"
     t.integer "salary_cap"
-    t.string  "payout_description", default: "", null: false
+    t.string  "payout_description", default: "",    null: false
+    t.boolean "takes_tokens",       default: false
   end
 
   add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
@@ -326,11 +327,12 @@ ActiveRecord::Schema.define(version: 20130929235351) do
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
 
   create_table "transaction_records", force: true do |t|
-    t.string  "event",      null: false
+    t.string  "event",                      null: false
     t.integer "user_id"
     t.integer "roster_id"
     t.integer "amount"
     t.integer "contest_id"
+    t.boolean "is_tokens",  default: false
   end
 
   add_index "transaction_records", ["roster_id"], name: "index_transaction_records_on_roster_id", using: :btree
@@ -361,6 +363,7 @@ ActiveRecord::Schema.define(version: 20130929235351) do
     t.integer  "total_points",           default: 0,     null: false
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
+    t.integer  "token_balance",          default: 0
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

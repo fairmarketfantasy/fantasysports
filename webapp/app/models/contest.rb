@@ -12,16 +12,6 @@ class Contest < ActiveRecord::Base
 
   validates :owner_id, :contest_type_id, :buy_in, :market_id, presence: true
 
-  def submit_roster(roster)
-    raise "Only in progress rosters may be submitted" unless roster.state != 'in_progress'
-    Contest.transaction do
-      roster.state = 'submitted'
-      # we dock the balance on roster create now
-      # roster.owner.customer_object.decrease_balance(roster.buy_in, 'buy_in')
-      roster.save!
-    end
-  end
-
   #creates a roster for the owner and creates an invitation code
   def self.create_private_contest(opts) 
     market = Market.where(:id => opts[:market_id], state: ['published', 'opened']).first
@@ -47,7 +37,7 @@ class Contest < ActiveRecord::Base
       )
     else
       contest_type = market.contest_types.where(:name => opts[:type], :buy_in => opts[:buy_in]).first
-      raise HttpException(404, "No such contest type found") unless contest_type
+      raise HttpException.new(404, "No such contest type found") unless contest_type
     end
 
     contest = Contest.create!(

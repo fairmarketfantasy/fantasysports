@@ -91,7 +91,8 @@ class Roster < ActiveRecord::Base
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!
     #buy all the players on the roster. This sql function handles all of that.
-    raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(contest_type.buy_in)
+    #// PICK UP HERE, add switch in can_charge for token type, add weighting to bets for free players in market
+    raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
     self.transaction do
 
       #purchase all the players and update roster state to submitted
@@ -135,7 +136,7 @@ class Roster < ActiveRecord::Base
 
       #charge account
       if contest_type.buy_in > 0
-        self.owner.customer_object.decrease_balance(self.contest_type.buy_in, 'buy_in', self.id, self.contest_id)
+        self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
       end
 
     end

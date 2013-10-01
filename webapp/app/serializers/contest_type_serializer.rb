@@ -1,5 +1,5 @@
 class ContestTypeSerializer < ActiveModel::Serializer
-  attributes :id, :market_id, :name, :description, :max_entries, :buy_in, :rake, :payout_structure, :user_id, :private, :payout_description, :icon_url, :contest_class_desc
+  attributes :id, :market_id, :name, :description, :max_entries, :buy_in, :rake, :payout_structure, :user_id, :private, :payout_description, :icon_url, :contest_class_desc, :takes_tokens
 
   CONTEST_CLASS_DESCRIPTIONS = {
     'h2h'  => "Challenge your friends to head to head games and channel some truly intimate aggression.",
