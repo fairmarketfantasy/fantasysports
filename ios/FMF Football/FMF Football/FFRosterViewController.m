@@ -232,14 +232,16 @@
     rank.font = [FFStyle mediumFont:15];
     rank.textColor = [FFStyle darkGreyTextColor];
     rank.text = [NSString stringWithFormat:@"%@ %@ %@",
-                 roster.contestRank, NSLocalizedString(@"of", nil), cType.maxEntries];
+                 (roster.contestRank == nil ? @"0" : roster.contestRank),
+                 NSLocalizedString(@"of", nil),
+                 (cType.maxEntries == nil ? @"0" : cType.maxEntries)];
     [cell.contentView addSubview:rank];
     
     UILabel *score = [[UILabel alloc] initWithFrame:CGRectMake(210, 32, 65, 20)];
     score.backgroundColor = [UIColor clearColor];
     score.font = [FFStyle mediumFont:14];
     score.textColor = [FFStyle darkGreyTextColor];
-    score.text = [NSString stringWithFormat:@"%@", roster.score];
+    score.text = [NSString stringWithFormat:@"%@", (roster.score == nil ? @"0" : roster.score)];
     [cell.contentView addSubview:score];
 
     return cell;
@@ -276,15 +278,7 @@
 {
     if ([segue.identifier isEqualToString:@"GotoContest"]) {
         FFRoster *roster = segue.context;
-//        FFContestType *contest = [[[[[self.session queryBuilderForClass:[FFContestType class]]
-//                                     property:@"objId" isEqualTo:roster.contestTypeId]
-//                                    query] results] first];
-//        FFMarket *market = [[[[[self.session queryBuilderForClass:[FFMarket class]]
-//                               property:@"objId" isEqualTo:contest.marketId]
-//                              query] results] first];
         ((FFContestViewController *)segue.destinationViewController).roster = roster;
-//        ((FFContestViewController *)segue.destinationViewController).contest = contest;
-//        ((FFContestViewController *)segue.destinationViewController).market = market;
     }
 }
 
