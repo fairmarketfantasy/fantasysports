@@ -291,7 +291,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             lab.text = text;
             [cell.contentView addSubview:lab];
             
-            _numEntrantsLabel = cell.textLabel;
+            _numEntrantsLabel = lab;
             
             UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, 0,
                                                                    cell.contentView.frame.size.width, 1)];
