@@ -18,7 +18,7 @@
 @end
 
 
-@interface FFBaseViewController () <UIGestureRecognizerDelegate, FFMenuViewControllerDelegate>
+@interface FFBaseViewController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic) UITableView *_resizingTableView;
 

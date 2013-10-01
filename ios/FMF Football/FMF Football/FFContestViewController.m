@@ -120,6 +120,13 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     [super didReceiveMemoryWarning];
 }
 
+- (void)setRoster:(FFRoster *)roster
+{
+    _roster = roster;
+    _market = roster.market;
+    _contest = roster.contestType;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1 + (_state != ViewContest ? 1 : 0);
@@ -702,7 +709,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                   NSLocalizedString(@"Contest Entrants", nil)];
     }
     
-    if (numMissing == 0) {
+    if (numMissing == 0 && _state == ShowRoster) {
         [self showSubmitRosterBanner];
     } else {
         [self hideSubmitRosterBanner];
