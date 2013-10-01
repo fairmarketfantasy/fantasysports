@@ -19,7 +19,7 @@
 @property (nonatomic) NSString  *name;
 @property (nonatomic) NSString  *payoutDescription;
 @property (nonatomic) NSString  *payoutStructure;
-@property (nonatomic) NSInteger *isPrivate;
+@property (nonatomic) SBInteger *isPrivate;
 @property (nonatomic) SBFloat   *rake;
 @property (nonatomic) NSString  *userId;
 

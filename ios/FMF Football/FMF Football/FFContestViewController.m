@@ -452,7 +452,12 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     [alert showInView:self.view];
     [_roster removeInBackgroundWithBlock:^(id successObj) {
         [alert hide];
-        [self transitionToState:ViewContest withContext:nil];
+        if ([_contest.isPrivate integerValue]) {
+            // we just left the contest we created, so don't show it anymore
+            [self.navigationController popViewControllerAnimated:YES];
+        } else {
+            [self transitionToState:ViewContest withContext:nil];
+        }
     } failure:^(NSError *error) {
         [alert hide];
         FFAlertView *eAlert = [[FFAlertView alloc] initWithError:error
