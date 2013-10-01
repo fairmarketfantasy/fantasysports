@@ -67,7 +67,6 @@
                             sort:SBModelAscending]
                            query];
     _rosters = [FFRoster getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
-    _rosters.clearsCollectionBeforeSaving = YES;
     _rosters.delegate = self;
 }
 
