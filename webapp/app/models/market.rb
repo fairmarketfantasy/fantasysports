@@ -171,7 +171,8 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
       payout_structure: '[5000000, 2500000, 1200000, 600000, 300000, 200000, 100000, 48500, 48500]',
-      payout_description: "Winner takes half, top 9 slots win big."
+      payout_description: "Winner takes half, top 9 slots win big.",
+      takes_tokens: false,
     },
     {
       name: '970',
@@ -191,6 +192,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[970]',
       payout_description: "Winner takes all",
+      takes_tokens: false,
     },
     {
       name: '970',
@@ -200,6 +202,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[9700]',
       payout_description: "Winner takes all",
+      takes_tokens: false,
     },
     {
       name: '194',
@@ -219,6 +222,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[194,194,194,194,194]',
       payout_description: "Top half wins",
+      takes_tokens: false,
     },
     {
       name: '194',
@@ -228,6 +232,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[1940,1940,1940,1940,1940]',
       payout_description: "Top half wins",
+      takes_tokens: false,
     },
     {
       name: 'h2h',
@@ -247,6 +252,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[194]',
       payout_description: "Winner takes all",
+      takes_tokens: false,
     },
     {
       name: 'h2h',
@@ -256,6 +262,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[1940]',
       payout_description: "Winner takes all",
+      takes_tokens: false,
     },
     {
       name: 'h2h rr',
@@ -275,6 +282,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194]',
       payout_description: "9 h2h games each pay out $1.94",
+      takes_tokens: false,
     },
     {
       name: 'h2h rr',
@@ -284,6 +292,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[17460, 15520, 13580, 11640, 9700, 7760, 5820, 3880, 1940]',
       payout_description: "9 h2h games each pay out $19.40",
+      takes_tokens: false,
     }
   ];
 

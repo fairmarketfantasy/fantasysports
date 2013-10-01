@@ -128,12 +128,14 @@ FactoryGirl.define do
       after(:create) do |user|
         user.customer_object = create(:customer_object, user: user)
         user.recipient       = create(:recipient, user: user)
+        user.token_balance = 2000
+        user.save!
       end
     end
   end
 
   factory :customer_object do
-    balance 10000
+    balance 20000
     token { generate(:random_string) }
     after(:create) do |customer_object|
       create(:credit_card, token: StripeMock.generate_card_token(last4: "4242", exp_year: 2017), customer_object: customer_object)
