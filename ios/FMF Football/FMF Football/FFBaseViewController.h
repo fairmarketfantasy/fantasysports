@@ -15,7 +15,7 @@
 #import "FFTickerMinimizedDrawerViewController.h"
 
 
-@interface FFBaseViewController : UIViewController
+@interface FFBaseViewController : UIViewController <FFMenuViewControllerDelegate>
 
 @property (nonatomic) FFTickerMaximizedDrawerViewController *maximizedTicker;
 @property (nonatomic) FFTickerMinimizedDrawerViewController *minimizedTicker;

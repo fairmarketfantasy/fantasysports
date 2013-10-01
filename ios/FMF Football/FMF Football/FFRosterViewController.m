@@ -11,6 +11,7 @@
 #import "FFSessionViewController.h"
 #import "FFContestViewController.h"
 #import <A2StoryboardSegueContext/A2StoryboardSegueContext.h>
+#import "FFAlertView.h"
 
 
 @interface FFRosterViewController () <UITableViewDataSource, UITableViewDelegate, SBDataObjectResultSetDelegate>
@@ -247,7 +248,27 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FFRoster *roster = [_rosters objectAtIndex:indexPath.row];
-    [self performSegueWithIdentifier:@"GotoContest" sender:self context:roster];
+    if (!roster.market) {
+        FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
+                                                       messsage:nil
+                                                   loadingStyle:FFAlertViewLoadingStylePlain];
+        [alert showInView:self.view];
+        [FFMarket get:roster.marketId session:self.session success:^(id successObj) {
+            roster.market = successObj;
+            [roster save];
+            [alert hide];
+            [self performSegueWithIdentifier:@"GotoContest" sender:nil context:roster];
+        } failure:^(NSError *error) {
+            FFAlertView *ealert = [[FFAlertView alloc] initWithError:error 
+                                                               title:nil
+                                                   cancelButtonTitle:nil
+                                                     okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                            autoHide:YES];
+            [ealert showInView:self.view];
+        }];
+    } else {
+        [self performSegueWithIdentifier:@"GotoContest" sender:self context:roster];
+    }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -255,15 +276,15 @@
 {
     if ([segue.identifier isEqualToString:@"GotoContest"]) {
         FFRoster *roster = segue.context;
-        FFContestType *contest = [[[[[self.session queryBuilderForClass:[FFContestType class]]
-                                     property:@"objId" isEqualTo:roster.contestTypeId]
-                                    query] results] first];
-        FFMarket *market = [[[[[self.session queryBuilderForClass:[FFMarket class]]
-                               property:@"objId" isEqualTo:contest.marketId]
-                              query] results] first];
+//        FFContestType *contest = [[[[[self.session queryBuilderForClass:[FFContestType class]]
+//                                     property:@"objId" isEqualTo:roster.contestTypeId]
+//                                    query] results] first];
+//        FFMarket *market = [[[[[self.session queryBuilderForClass:[FFMarket class]]
+//                               property:@"objId" isEqualTo:contest.marketId]
+//                              query] results] first];
         ((FFContestViewController *)segue.destinationViewController).roster = roster;
-        ((FFContestViewController *)segue.destinationViewController).contest = contest;
-        ((FFContestViewController *)segue.destinationViewController).market = market;
+//        ((FFContestViewController *)segue.destinationViewController).contest = contest;
+//        ((FFContestViewController *)segue.destinationViewController).market = market;
     }
 }
 

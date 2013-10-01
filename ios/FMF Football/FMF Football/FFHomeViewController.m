@@ -16,7 +16,7 @@
 #import "FFContest2UpTabelViewCell.h"
 #import "FFContestViewController.h"
 #import "FFCreateGameViewController.h"
-
+#import "FFAlertView.h"
 
 @interface FFHomeViewController ()
 <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
@@ -136,15 +136,43 @@ FFCreateGameViewControllerDelegate>
     }
     else if ([segue.identifier isEqualToString:@"GotoRoster"]) {
         FFRoster *roster = segue.context;
-        FFContestType *contest = [[[[[self.session queryBuilderForClass:[FFContestType class]]
-                                     property:@"objId" isEqualTo:roster.contestTypeId]
-                                    query] results] first];
-        FFMarket *market = [[[[[self.session queryBuilderForClass:[FFMarket class]]
-                               property:@"objId" isEqualTo:contest.marketId]
-                              query] results] first];
+//        FFContestType *contest = [[[[[self.session queryBuilderForClass:[FFContestType class]]
+//                                     property:@"objId" isEqualTo:roster.contestTypeId]
+//                                    query] results] first];
+//        FFMarket *market = [[[[[self.session queryBuilderForClass:[FFMarket class]]
+//                               property:@"objId" isEqualTo:contest.marketId]
+//                              query] results] first];
         ((FFContestViewController *)segue.destinationViewController).roster = roster;
-        ((FFContestViewController *)segue.destinationViewController).contest = contest;
-        ((FFContestViewController *)segue.destinationViewController).market = market;
+//        ((FFContestViewController *)segue.destinationViewController).contest = contest;
+//        ((FFContestViewController *)segue.destinationViewController).market = market;
+    }
+}
+
+- (void)performSegueWithIdentifier:(NSString *)identifier sender:(id)sender context:(id)context
+{
+    if ([identifier isEqualToString:@"GotoRoster"]) {
+        FFRoster *roster = context;
+        if (!roster.market) {
+            FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
+                                                           messsage:nil
+                                                       loadingStyle:FFAlertViewLoadingStylePlain];
+            [alert showInView:self.view];
+            [FFMarket get:roster.marketId session:self.session success:^(id successObj) {
+                roster.market = successObj;
+                [roster save];
+                [alert hide];
+                [super performSegueWithIdentifier:identifier sender:sender context:context];
+            } failure:^(NSError *error) {
+                FFAlertView *ealert = [[FFAlertView alloc] initWithError:error
+                                                                   title:nil
+                                                       cancelButtonTitle:nil
+                                                         okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                                autoHide:YES];
+                [ealert showInView:self.view];
+            }];
+        } else {
+            [super performSegueWithIdentifier:identifier sender:sender context:context];
+        }
     }
 }
 

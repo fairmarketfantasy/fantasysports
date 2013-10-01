@@ -32,7 +32,6 @@
 @dynamic contestRankPayout;
 //@dynamic contestType;
 @dynamic live;
-@dynamic marketId;
 @dynamic nextGameTime;
 @dynamic ownerId;
 @dynamic ownerName;
@@ -43,8 +42,11 @@
 @dynamic score;
 @dynamic state;
 
-@dynamic contestType;
+//@dynamic contestType;
 @dynamic contestTypeId;
+
+//@dynamic market;
+@dynamic marketId;
 
 + (NSString *)tableName { return @"ffroster"; }
 
@@ -161,16 +163,32 @@
                                                         session:self.session
                                                            save:YES];
     
+    FFMarket *market = [[FFMarket unsafeMeta] findOne:@{@"objId": self.marketId}];
+    if (!market) {
+        NSLog(@"we should really have a market here...");
+    } else {
+        self.market = market;
+    }
 }
 
-//- (FFContestType *)contestType
-//{
-//    if (!__contestType) {
-//        __contestType = [[[[[self.session queryBuilderForClass:[FFContestType class]]
-//                            property:@"objId" isEqualTo:self.contestTypeId]
-//                           query] results] first];
-//    }
-//    return __contestType;
-//}
+- (FFContestType *)contestType
+{
+    if (!_contestType) {
+        _contestType = [[[[[self.session queryBuilderForClass:[FFContestType class]]
+                            property:@"objId" isEqualTo:self.contestTypeId]
+                           query] results] first];
+    }
+    return _contestType;
+}
+
+- (FFMarket *)market
+{
+    if (!_market) {
+        _market = [[[[[self.session queryBuilderForClass:[FFMarket class]]
+                            property:@"objId" isEqualTo:self.contestTypeId]
+                           query] results] first];
+    }
+    return _market;
+}
 
 @end
