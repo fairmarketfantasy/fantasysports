@@ -74,7 +74,6 @@ class User < ActiveRecord::Base
     return true
   end
 
-  #def increase_balance(amount, event, roster_id = nil, contest_id = nil)
   def charge(amount, use_tokens, opts = {})
     if use_tokens
       ActiveRecord::Base.transaction do
@@ -86,6 +85,20 @@ class User < ActiveRecord::Base
       end
     else
       self.customer_object.decrease_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id])
+    end
+  end
+
+  #def increase_balance(amount, event, roster_id = nil, contest_id = nil)
+  def payout(amount, use_tokens, opts)
+    if use_tokens
+      ActiveRecord::Base.transaction do
+        self.reload
+        self.token_balance += amount
+        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id], :is_tokens => true)
+        self.save
+      end
+    else
+      self.customer_object.increase_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id])
     end
   end
 end

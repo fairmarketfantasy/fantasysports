@@ -3,7 +3,7 @@ require 'test_helper'
 class ContestTest < ActiveSupport::TestCase
   test "payday" do
     setup_simple_market
-    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 100").first
+    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 100 and NOT takes_tokens").first
     refute_nil contest_type
 
     user1 = create(:user)
@@ -23,8 +23,8 @@ class ContestTest < ActiveSupport::TestCase
 
     total_payout = contest_type.get_payout_structure.sum
     rake = total_payout * contest_type.rake
-    assert_difference 'user1.customer_object.reload.balance', contest_type.buy_in * 2 - 2 * contest_type.buy_in * contest_type.rake do
-      assert_difference 'user2.customer_object.reload.balance', 0 do
+    assert_difference 'user1.customer_object.reload.balance.to_f', contest_type.buy_in * 2 - 2 * contest_type.buy_in * contest_type.rake do
+      assert_difference 'user2.customer_object.reload.balance.to_f', 0 do
         roster1.contest.payday!
       end
     end

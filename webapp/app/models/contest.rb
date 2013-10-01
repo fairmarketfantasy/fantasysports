@@ -82,12 +82,12 @@ class Contest < ActiveRecord::Base
             next
           end
           # puts "roster #{roster.id} won #{payment_per_roster}!"
-          roster.owner.customer_object.increase_balance(payment_per_roster, 'payout', roster.id, self.id)
+          roster.owner.payout(payment_per_roster, self.contest_type.takes_tokens?, :event => 'payout', :roster_id => roster.id, :contest_id => self.id)
           roster.amount_paid = payment_per_roster
           roster.save!
         end
       end
-      SYSTEM_USER.customer_object.increase_balance(self.rake_amount, 'rake', nil, self.id)
+      SYSTEM_USER.payout(self.rake_amount, self.contest_type.takes_tokens?, :event => 'rake', :roster_id => nil, :contest_id => self.id)
       self.paid_at = Time.new
       self.save!
       TransactionRecord.validate_contest(self)
