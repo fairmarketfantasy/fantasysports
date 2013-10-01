@@ -131,6 +131,7 @@
     if ([player isKindOfClass:[NSString class]]) {
         // it's an empty slot
         _emptyPosition.text = (NSString *)player;
+        _img.image = [UIImage imageNamed:@"rosterslotempty.png"];
         _emptyPosition.hidden = NO;
         _select.hidden = NO;
         _name.hidden = YES;
