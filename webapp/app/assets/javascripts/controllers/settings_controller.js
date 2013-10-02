@@ -12,6 +12,17 @@
 
   $scope.user = {};
 
+  $scope.results = function(content, completed) {
+    console.log(content, completed);
+    if (completed && content.length > 0)
+      console.log(content); // process content
+    else
+    {
+      // 1. ignore content and adjust your model to show/hide UI snippets; or
+      // 2. show content as an _operation progress_ information
+    }
+  };
+
   $scope.resendConfirmation = function(){
     fs.user.resendConfirmation().then(function(resp){
       flash.error = null;

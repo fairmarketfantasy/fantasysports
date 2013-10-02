@@ -13,9 +13,9 @@
   {{ currentUser.email }} &nbsp<span ng-show='currentUser.confirmed'><span class='fui-check txt-green'></span> Confirmed</span>
   <a href="javascript://" ng-hide='currentUser.confirmed' ng-click="resendConfirmation()">Resend confirmation Email</a>
   <img ng-src="{{currentUser.image_url}}"/>
-  <form>
-    <input id="avatar" ng-model="user.file" type='file' />
-    <button type='submit' class='btn btn-primary' ng-click='updateSettings()'>Save</button>
+  <form ng-upload action="/users/uploads">
+    <input name="user[avatar]" type='file' />
+    <a href="javascript://" class="btn btn-primary" upload-submit="results(contents, completed)" >Save</a>
   </form>
 </div>
 <div class='modal-footer'>

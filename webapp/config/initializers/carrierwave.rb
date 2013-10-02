@@ -2,8 +2,7 @@ CarrierWave.configure do |config|
   config.fog_credentials = {
     :provider              => 'AWS',
     :aws_access_key_id     => AWS_ACCESS_KEY,
-    :aws_secret_access_key => AWS_SECRET_KEY,
-    :region                => 'us-west-2'
+    :aws_secret_access_key => AWS_SECRET_KEY
   }
   config.fog_directory = 'fairmarketfantasy-dev'
   config.asset_host = 'https://s3.amazonaws.com'
