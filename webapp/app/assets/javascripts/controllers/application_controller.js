@@ -13,12 +13,16 @@ angular.module("app.controllers")
     currentUserService.withdrawFundsModal();
   };
 
+  $scope.settingsModal = function(){
+    currentUserService.settingsModal();
+  };
+
   $scope.inThePast = function(time) {
     if (!time) {
       return false;
     }
     return new Date(time) < new Date();
-  }
+  };
 
   // TODO: deprecate this and switch them all to inThePast
   $scope.gameStarted = function(game) {
