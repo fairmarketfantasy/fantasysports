@@ -1,0 +1,23 @@
+<div class='modal-header'>
+  <h3 class='inline-block'>Account Settings</h3>
+</div>
+<!-- <div class='mal centered' ng-hide='loaded'>
+  <img src='/assets/ajax-loader-big.gif'>
+</div> -->
+<div class='modal-body'>
+  <div flash-alert active-class="alert in" class="flash fade" >
+    <strong class="alert-heading"></strong>
+    <span class="alert-message">{{flash.message}}</span>
+  </div>
+  <span class='bold'>Email:</span>
+  {{ currentUser.email }} &nbsp<span ng-show='currentUser.confirmed'><span class='fui-check txt-green'></span> Confirmed</span>
+  <a href="javascript://" ng-hide='currentUser.confirmed' ng-click="resendConfirmation()">Resend confirmation Email</a>
+  <img ng-src="{{currentUser.image_url}}"/>
+  <form>
+    <input id="avatar" ng-model="user.file" type='file' />
+    <button type='submit' class='btn btn-primary' ng-click='updateSettings()'>Save</button>
+  </form>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn" ng-click="close()">close</a>
+</div>

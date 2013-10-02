@@ -1,31 +1,29 @@
 angular.module('app.services')
   .factory('currentUserService', ['$dialog', function($dialog) {
+    var dialogOpts = {
+              backdrop: true,
+              keyboard: true,
+              backdropClick: true,
+              dialogClass: 'modal'
+            };
+
     return {
       currentUser: window.App.currentUser,
       addFundsModal: function(){
-        var dialogOpts = {
-              backdrop: true,
-              keyboard: true,
-              backdropClick: true,
-              dialogClass: 'modal',
-              templateUrl: '/add_funds_dialog.html',
-              controller: 'AddFundsDialogController'
-            };
-
+        dialogOpts.controller  = 'AddFundsDialogController';
+        dialogOpts.templateUrl = '/add_funds_dialog.html';
         var d = $dialog.dialog(dialogOpts);
         d.open();
       },
-
       withdrawFundsModal: function(){
-        var dialogOpts = {
-              backdrop: true,
-              keyboard: true,
-              backdropClick: true,
-              dialogClass: 'modal',
-              templateUrl: '/withdraw_funds_dialog.html',
-              controller: 'WithdrawFundsDialogController'
-            };
-
+        dialogOpts.templateUrl = '/withdraw_funds_dialog.html';
+        dialogOpts.controller  = 'WithdrawFundsDialogController';
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+      },
+      settingsModal: function(){
+        dialogOpts.templateUrl = '/settings_dialog.html';
+        dialogOpts.controller  = 'SettingsController';
         var d = $dialog.dialog(dialogOpts);
         d.open();
       }
@@ -81,6 +79,12 @@ angular.module('app.services')
       user: {
         create: function(user_attrs){
           return $http({method: 'POST', url: '/users', data: {user: user_attrs}});
+        },
+        update:  function(user_attrs){
+          return $http({method: 'PATCH',
+                        url: '/users',
+                        data: {user: user_attrs},
+                        headers: {'Content-Type': 'multipart/form-data'}})
         },
         login: function(user_attrs){
           return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});

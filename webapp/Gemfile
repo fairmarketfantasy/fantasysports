@@ -38,6 +38,12 @@ gem 'aws-sdk'
 #pagination
 gem 'kaminari'
 
+#assets to s3
+gem 'carrierwave'
+gem 'fog'
+#resizing uploads
+gem "rmagick"
+
 #payments
 gem 'stripe'
 
