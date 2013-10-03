@@ -31,7 +31,7 @@ class RosterSerializer < ActiveModel::Serializer
   end
 
   def owner_name
-    object.owner.name
+    object.owner.user_name
   end
 
   def contest_rank_payout
