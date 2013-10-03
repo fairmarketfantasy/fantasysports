@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
 
 
   def self.find_for_facebook_oauth(auth)
-    user = User.find_by(email: auth.email) || User.where(uid: auth.uid, provider: auth.provider).first_or_create
+    user = User.find_by(email: auth.info.email) || User.where(uid: auth.uid, provider: auth.provider).first_or_create
     user.email = auth.info.email
     user.name = auth.extra.raw_info.name
     user.image_url = auth.info.image.gsub('http', 'https')
