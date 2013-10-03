@@ -9,9 +9,9 @@ class RosterTest < ActiveSupport::TestCase
 
   #make sure that you can't play a h2h against yourself
   test "no self h2h or other contests" do
-    h2h = @market.contest_types.where("max_entries = 2").first
-    user1 = create(:user)
-    user2 = create(:user)
+    h2h = @market.contest_types.where("max_entries = 2 and not takes_tokens").first
+    user1 = create(:paid_user)
+    user2 = create(:paid_user)
     roster1 = Roster.generate(user1, h2h).submit!
     roster1.reload
     #should be in h2h contest
