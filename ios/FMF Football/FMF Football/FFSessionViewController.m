@@ -23,6 +23,7 @@
 @property (nonatomic) UIView                *signUpView;
 @property (nonatomic) UITextField           *usernameSignupField;
 @property (nonatomic) UITextField           *passwordSignupField;
+@property (nonatomic) UITextField           *nameSignupField;
 @property (nonatomic) UIButton              *signUpButton;
 @property (nonatomic) UIButton              *signUpFacebookButton;
 @property (nonatomic) UIButton              *signInButton;
@@ -34,6 +35,7 @@
 @property (nonatomic) CGFloat               keyboardHeight;
 @property (nonatomic) BOOL                  keyboardIsShowing;
 @property (nonatomic) UIView                *_balanceView;
+@property (nonatomic) FFTickerMaximizedDrawerViewController *signInTicker, *signUpTicker;
 
 - (void)setupSignInView;
 - (void)setupSignUpView;
@@ -74,6 +76,15 @@
 //    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
 }
 
+- (id)ticker
+{
+    FFTickerMaximizedDrawerViewController *_maximizedTicker = [[FFTickerMaximizedDrawerViewController alloc] init];
+    _maximizedTicker.view.backgroundColor = [FFStyle darkGreen];
+    _maximizedTicker.session = self.session;
+    [self.tickerDataSource addDelegate:_maximizedTicker];
+    return _maximizedTicker;
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -98,10 +109,10 @@
         [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
     } else {
         [self.tickerDataSource refresh];
-        [self showControllerInDrawer:self.maximizedTicker
-             minimizedViewController:nil
-                              inView:self.signUpView
-                            animated:YES];
+//        [self showControllerInDrawer:self.maximizedTicker
+//             minimizedViewController:nil
+//                              inView:self.signUpView
+//                            animated:YES];
     }
 }
 
@@ -144,7 +155,7 @@
 - (void)setupSignUpView
 {
     // background
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-splash-bg.png"]];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loginbg.png"]];
     bg.contentMode = UIViewContentModeTop;
     bg.frame = self.signUpView.frame;
     [self.signUpView addSubview:bg];
@@ -164,16 +175,38 @@
     [greenBg addSubview:signIn];
     [signIn addTarget:self action:@selector(signInHeaderSwitch:) forControlEvents:UIControlEventTouchUpInside];
     self.signInHeaderButton = signIn;
+//
+//    UIImageView *marketingCopy = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"dailyfantasyfootball.png"]];
+//    marketingCopy.frame = CGRectMake(0, 44, 320, 60);
+//    marketingCopy.contentMode = UIViewContentModeTop;
+//    [self.signUpView addSubview:marketingCopy];
     
-    UIImageView *marketingCopy = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-splash-copy.png"]];
-    [marketingCopy sizeToFit];
-    marketingCopy.center = CGPointMake(160, 130);
-    [self.signUpView addSubview:marketingCopy];
+    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 90, 290, 60)];
+    lab.font = [FFStyle lightFont:30];
+    lab.text = NSLocalizedString(@"Sign Up", nil);
+    lab.backgroundColor = [UIColor clearColor];
+    lab.textColor = [FFStyle white];
+    [self.signUpView addSubview:lab];
     
     // text inputs
+    UITextField *nam = [[FFTextField alloc] init];
+    nam.layer.borderWidth = 1;
+    nam.frame = CGRectMake(15, 151, 290, 44);
+    nam.layer.borderColor = [FFStyle greyBorder].CGColor;
+    nam.backgroundColor = [FFStyle white];
+    nam.delegate = self;
+    nam.placeholder = NSLocalizedString(@"name", nil);
+    nam.returnKeyType = UIReturnKeyNext;
+    nam.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    nam.autocorrectionType = UITextAutocorrectionTypeNo;
+    nam.keyboardType = UIKeyboardTypeEmailAddress;
+    //    un.text = //@"sam@mustw.in"; // TOOD: remove
+    [self.signUpView addSubview:nam];
+    self.nameSignupField = nam;
+    
     UITextField *un = [[FFTextField alloc] init];
     un.layer.borderWidth = 1;
-    un.frame = CGRectMake(15, 225, 290, 44);
+    un.frame = CGRectMake(15, 205, 290, 44);
     un.layer.borderColor = [FFStyle greyBorder].CGColor;
     un.backgroundColor = [FFStyle white];
     un.delegate = self;
@@ -191,7 +224,7 @@
     pw.layer.borderColor = [FFStyle greyBorder].CGColor;
     pw.backgroundColor = [FFStyle white];
     pw.delegate = self;
-    pw.frame = CGRectMake(15, 280, 290, 44);
+    pw.frame = CGRectMake(15, 260, 290, 44);
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
 //    pw.text = @"omgnowai"; // TODO: remove
@@ -202,23 +235,27 @@
     // sign up buttons
     UIButton *signUp = [FFStyle coloredButtonWithText:NSLocalizedString(@"Sign Up", nil)
                                                 color:[FFStyle brightGreen] borderColor:[FFStyle white]];
-    signUp.frame = CGRectMake(15, 340, 290, 38);
+    signUp.frame = CGRectMake(15, 320, 290, 38);
     [signUp addTarget:self action:@selector(signUp:) forControlEvents:UIControlEventTouchUpInside];
     [self.signUpView addSubview:signUp];
     self.signUpButton = signUp;
     
     UIButton *fbSignUp = [FFStyle coloredButtonWithText:NSLocalizedString(@"Sign Up With Facebook", nil)
                                                   color:[FFStyle brightBlue] borderColor:[FFStyle white]];
-    fbSignUp.frame = CGRectMake(15, 390, 290, 38);
+    fbSignUp.frame = CGRectMake(15, 370, 290, 38);
     [fbSignUp addTarget:self action:@selector(signUpFacebook:) forControlEvents:UIControlEventTouchUpInside];
     [self.signUpView addSubview:fbSignUp];
     self.signUpFacebookButton = fbSignUp;
+    
+    _signUpTicker = [self ticker];
+    _signUpTicker.view.frame = CGRectMake(0, CGRectGetMaxY(self.signUpView.frame)-95, 320, 95);
+    [self.signUpView addSubview:_signUpTicker.view];
 }
 
 - (void)setupSignInView
 {
     // background
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-splash-bg2.png"]];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loginbg.png"]];
     bg.contentMode = UIViewContentModeTop;
     bg.frame = self.signInView.frame;
     [self.signInView addSubview:bg];
@@ -292,36 +329,35 @@
     [forgot setTitleColor:[FFStyle darkerColorForColor:[FFStyle white]] forState:UIControlStateHighlighted];
     [forgot addTarget:self action:@selector(forgotPassword:) forControlEvents:UIControlEventTouchUpInside];
     [self.signInView addSubview:forgot];
+    
+    _signInTicker = [self ticker];
+    _signInTicker.view.frame = CGRectMake(0, CGRectGetMaxY(self.signInView.frame)-95, 320, 95);
+    [self.signInView addSubview:_signInTicker.view];
 }
 
 // IBACTIONS -----------------------------------------------------------------------------------------------------------
 
 - (void)signInHeaderSwitch:(id)sender
 {
-    [self closeDrawerAnimated:NO];
     [UIView transitionFromView:self.signUpView
                         toView:self.signInView
                       duration:.35
                        options:UIViewAnimationOptionTransitionFlipFromRight
                     completion:^(BOOL finished) {
                         if (finished) {
-                            [self showControllerInDrawer:self.maximizedTicker minimizedViewController:nil
-                                                  inView:self.signInView animated:NO];
                         }
                     }];
 }
 
 - (void)signUpHeaderSwitch:(id)sender
 {
-    [self closeDrawerAnimated:NO];
     [UIView transitionFromView:self.signInView
                         toView:self.signUpView
                       duration:.35
                        options:UIViewAnimationOptionTransitionFlipFromRight
                     completion:^(BOOL finished) {
                         if (finished) {
-                            [self showControllerInDrawer:self.maximizedTicker minimizedViewController:nil
-                                                  inView:self.signUpView animated:NO];
+
                         }
                     }];
 }
@@ -346,7 +382,7 @@
     NSString *error = nil;
     
     if (!self.usernameSigninField.text.length) {
-        error = NSLocalizedString(@"Please provide your username", nil);
+        error = NSLocalizedString(@"Please provide your email address", nil);
         goto validate_error;
     }
     {
@@ -436,8 +472,11 @@ validate_error:
     NSString *error = nil;
     
     if (!self.usernameSignupField.text.length) {
-        error = NSLocalizedString(@"Pleaes provide your username", nil);
+        error = NSLocalizedString(@"Please provide your email address", nil);
         goto validate_error;
+    }
+    if (!self.nameSignupField.text.length) {
+        error = NSLocalizedString(@"Please provide a name", nil);
     }
     {
         NSString *email = self.usernameSignupField.text;
@@ -464,8 +503,7 @@ validate_error:
     }
     
     FFAlertView *progressAlert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Creating Account", @"creating account")
-                                                           messsage:NSLocalizedString(@"In a few short moments you'll be on your way!",
-                                                                                      @"on singup, tells the user they will be signed up soon")
+                                                           messsage:NSLocalizedString(@"In a few short moments you'll be on your way!", nil)
                                                        loadingStyle:FFAlertViewLoadingStylePlain];
     [progressAlert showInView:self.view];
     
@@ -473,6 +511,7 @@ validate_error:
     
     FFUser *user = [[FFUser alloc] initWithSession:sesh];
     user.email = self.usernameSignupField.text;
+    user.name = self.nameSignupField.text;
     NSString *password = self.passwordSignupField.text;
     
     SBErrorBlock onErr = ^(NSError *err) {
