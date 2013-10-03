@@ -51,6 +51,7 @@
 		1561B7E417FD268000444F22 /* FMF@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E317FD268000444F22 /* FMF@2x.png */; };
 		1561B7E617FD401A00444F22 /* loginbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E517FD401A00444F22 /* loginbg@2x.png */; };
 		1561B7E817FD437C00444F22 /* dailyfantasyfootball@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E717FD437C00444F22 /* dailyfantasyfootball@2x.png */; };
+		1561B7EB17FD4E1A00444F22 /* FFWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
@@ -182,6 +183,8 @@
 		1561B7E317FD268000444F22 /* FMF@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "FMF@2x.png"; path = "../FMF@2x.png"; sourceTree = "<group>"; };
 		1561B7E517FD401A00444F22 /* loginbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loginbg@2x.png"; sourceTree = "<group>"; };
 		1561B7E717FD437C00444F22 /* dailyfantasyfootball@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dailyfantasyfootball@2x.png"; sourceTree = "<group>"; };
+		1561B7E917FD4E1A00444F22 /* FFWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFWebViewController.h; sourceTree = "<group>"; };
+		1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFWebViewController.m; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -460,6 +463,8 @@
 				15B06A1017F6048300832F6D /* FFContestEntrantsViewController.m */,
 				15CD294D17F77C840027DFEC /* FFInviteViewController.h */,
 				15CD294E17F77C840027DFEC /* FFInviteViewController.m */,
+				1561B7E917FD4E1A00444F22 /* FFWebViewController.h */,
+				1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -774,6 +779,7 @@
 				155F64A517F7DDDE00500035 /* FFWeakReference.m in Sources */,
 				155F64EA17FA2B4D00500035 /* FFOptionSelectController.m in Sources */,
 				155F64ED17FA2B6000500035 /* FFValueEntryController.m in Sources */,
+				1561B7EB17FD4E1A00444F22 /* FFWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

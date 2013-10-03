@@ -204,8 +204,26 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
 // customize uiappearance ----------------------------------------------------------------------------------------------
 + (void)customizeAppearance
 {
-    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"] forBarMetrics:UIBarMetricsDefault];
-    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"] forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"]
+                                       forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"]
+                                       forBarMetrics:UIBarMetricsLandscapePhone];
+    
+    [[UINavigationBar appearance] setTitleTextAttributes:@{
+                                UITextAttributeTextColor: [FFStyle white],
+                          UITextAttributeTextShadowColor: [UIColor colorWithWhite:0 alpha:.15],
+                         UITextAttributeTextShadowOffset: [NSValue valueWithUIOffset:UIOffsetMake(0, -1)],
+                                     UITextAttributeFont: [FFStyle regularFont:22]
+     }];
+    
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:-3 forBarMetrics:UIBarMetricsDefault];
+    
+    [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"]
+                            forToolbarPosition:UIToolbarPositionAny
+                                 barMetrics:UIBarMetricsDefault];
+    [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"]
+                            forToolbarPosition:UIToolbarPositionAny
+                                 barMetrics:UIBarMetricsLandscapePhone];
 }
 
 @end

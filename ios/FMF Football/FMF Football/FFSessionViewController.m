@@ -14,6 +14,7 @@
 #import <SBData/SBData.h>
 #import "FFUser.h"
 #import "FFSession.h"
+#import "FFWebViewController.h"
 
 @interface FFSessionViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate>
 {
@@ -433,23 +434,32 @@ validate_error:
 
 - (void)forgotPassword:(id)sender
 {
-    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:nil
-                                                   messsage:NSLocalizedString(@"Looking for your account...", nil)
-                                               loadingStyle:FFAlertViewLoadingStylePlain];
-    [alert showInView:self.view];
-    
-    double delayInSeconds = 2.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-        // TODO: actually do this...
-        [alert hide];
-        FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Check your email", nil)
-                                                        message:NSLocalizedString(@"We sent you an email with a link to reset your passord.", nil)
-                                              cancelButtonTitle:nil
-                                                okayButtonTitle:NSLocalizedString(@"Okay", nil)
-                                                       autoHide:YES];
-        [alert showInView:self.view];
-    });
+//    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:nil
+//                                                   messsage:NSLocalizedString(@"Looking for your account...", nil)
+//                                               loadingStyle:FFAlertViewLoadingStylePlain];
+//    [alert showInView:self.view];
+//    
+//    double delayInSeconds = 2.0;
+//    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+//    dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+//        // TODO: actually do this...
+//        [alert hide];
+//        FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Check your email", nil)
+//                                                        message:NSLocalizedString(@"We sent you an email with a link to reset your passord.", nil)
+//                                              cancelButtonTitle:nil
+//                                                okayButtonTitle:NSLocalizedString(@"Okay", nil)
+//                                                       autoHide:YES];
+//        [alert showInView:self.view];
+//    });
+    [self performSegueWithIdentifier:@"GotoForgotPassword" sender:nil];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"GotoForgotPassword"]) {
+        FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
+        vc.URL = [NSURL URLWithString:@"http://google.com"];
+    }
 }
 
 - (void)signUp:(id)sender
