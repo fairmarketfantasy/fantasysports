@@ -15,7 +15,7 @@ Market.load_sql_functions
 class ActiveSupport::TestCase
 
   ActiveRecord::Migration.check_pending!
-  # include ActionDispatch::TestProcess
+  include ActionDispatch::TestProcess
 
   setup { StripeMock.start }
   teardown { StripeMock.stop }
