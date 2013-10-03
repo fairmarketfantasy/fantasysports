@@ -164,6 +164,7 @@
                     <connections>
                         <segue destination="cwg-tH-LTB" kind="push" identifier="GotoContestEntrants" id="sI8-Z0-TJP"/>
                         <segue destination="akw-3p-maf" kind="modal" identifier="GotoInvite" id="VdQ-vO-Afc"/>
+                        <segue destination="7Pd-eE-fcY" kind="push" identifier="GotoPickPlayer" id="z5M-Gc-4YQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rVk-lt-2Nf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -184,6 +185,21 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NYK-UU-gIK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2460" y="286"/>
+        </scene>
+        <!--Contest View Controller-->
+        <scene sceneID="tUY-on-bAW">
+            <objects>
+                <viewController id="7Pd-eE-fcY" customClass="FFContestViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="gX6-RE-arx">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="9zu-DV-hD5"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zAV-ew-7Cb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2839" y="686"/>
         </scene>
         <!--Invite View Controller-->
         <scene sceneID="0tD-jC-KGB">
