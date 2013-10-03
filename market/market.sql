@@ -456,7 +456,7 @@ BEGIN
     	(SELECT COALESCE(sum(purchase_price), 0) FROM rosters_players WHERE roster_id = rosters.id) 
     	WHERE market_id = _market_id;
 
-	UPDATE markets SET state='opened', opened_at = CURRENT_TIMESTAMP WHERE id = _market_id;
+	UPDATE markets SET state='opened' WHERE id = _market_id;
 
 END;
 $$ LANGUAGE plpgsql;
