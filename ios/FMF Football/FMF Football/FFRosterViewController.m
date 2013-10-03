@@ -49,8 +49,9 @@
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self.view addSubview:_tableView];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:
-                                              self.sessionController.balanceView];
+    UIButton *balanceView = [self.sessionController balanceView];
+    [balanceView addTarget:self action:@selector(showBalance:) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:balanceView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -95,6 +96,16 @@
 {
     [super viewWillDisappear:animated];
     self.disappeared = YES;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+}
+
+- (void)showBalance:(UIButton *)seder
+{
+    [self performSegueWithIdentifier:@"GotoTokenPurchase" sender:nil];
 }
 
 - (void)refreshLiveData

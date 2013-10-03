@@ -62,8 +62,9 @@ FFCreateGameViewControllerDelegate>
     [leftView addSubview:logo];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftView];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:
-                                              self.sessionController.balanceView];
+    UIButton *balanceView = [self.sessionController balanceView];
+    [balanceView addTarget:self action:@selector(showBalance:) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:balanceView];
     
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
     _tableView.delegate = self;
@@ -84,8 +85,15 @@ FFCreateGameViewControllerDelegate>
     _gameButtonView.delegate = self;
 }
 
+- (void)showBalance:(UIButton *)seder
+{
+    [self performSegueWithIdentifier:@"GotoTokenPurchase" sender:nil];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+    
     UIViewController *cont2 = [[UIViewController alloc] init];
     cont2.view.backgroundColor = [UIColor redColor];
     [self showControllerInDrawer:self.maximizedTicker
@@ -119,6 +127,11 @@ FFCreateGameViewControllerDelegate>
                                              selector:@selector(didUpdateUser:) 
                                                  name:FFSessionDidUpdateUserNotification
                                                object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
 }
 
 - (void)didUpdateUser:(NSNotification *)note

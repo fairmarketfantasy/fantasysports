@@ -13,6 +13,7 @@
 #import "FFTickerMinimizedDrawerViewController.h"
 #import "FFBaseViewController.h"
 #import "FFTickerDataSource.h"
+#import "FFBalanceButton.h"
 
 #define FFSessionDidUpdateUserNotification @"didupdateuser"
 #define FFUserKey @"user"
@@ -21,7 +22,8 @@
 
 @property (nonatomic) SBSession *session;
 
-@property (nonatomic, readonly) UIView *balanceView;
+//@property (nonatomic, readonly) UIButton *balanceView;
+- (FFBalanceButton *)balanceView;
 
 @end
 

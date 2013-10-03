@@ -25,6 +25,7 @@ PODS:
   - FormatterKit/TimeIntervalFormatter (1.2.1)
   - FormatterKit/UnitOfInformationFormatter (1.2.1)
   - FormatterKit/URLRequestFormatter (1.2.1)
+  - IAPManager (0.2.2)
   - ISO8601DateFormatter (0.6)
   - JSONKit (1.5pre)
   - Reachability (3.0.0)
@@ -47,6 +48,7 @@ PODS:
 DEPENDENCIES:
   - A2StoryboardSegueContext (~> 1.0.1)
   - FormatterKit (~> 1.2.1)
+  - IAPManager (~> 0.2.2)
   - ISO8601DateFormatter (~> 0.6)
   - Reachability (~> 3.0.0)
   - RHAddressBook (~> 1.0.2)
@@ -62,8 +64,9 @@ SPEC CHECKSUMS:
   AFHTTPRequestOperationLogger: c6ad1f4bfd64fc9a8dbe94c8489420d195f15cb0
   AFNetworking: 0700ec7a58c36ad217173e167f6e4df7270df66b
   AFOAuth2Client: 039596f19e8a4bdd852cb3fc44ddbe45e12c290a
-  FMDB: 2769004a271eae0bbd8bd4f45a3f2acfd0d3df0e
+  FMDB: 8e5b7e0c644a13a70be0ec5dbffc6b30e524ab5d
   FormatterKit: 43c6567e367a872196747fda0c26395c37bd7dd6
+  IAPManager: fb36017e64524e2ecb9ae2101daaa83165cc5211
   ISO8601DateFormatter: 077ce9d8cfba171bc1ced6cba0d2ae4aefab7619
   JSONKit: 409734ab3407fce90ef7eaa95d7168f38d9a6601
   Reachability: 500bd76bf6cd8ff2c6fb715fc5f44ef6e4c024f2

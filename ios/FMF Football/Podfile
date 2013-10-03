@@ -6,5 +6,6 @@ pod 'ISO8601DateFormatter', '~> 0.6'
 pod 'A2StoryboardSegueContext', '~> 1.0.1'
 pod 'FormatterKit', '~> 1.2.1'
 pod 'RHAddressBook', '~> 1.0.2'
+pod 'IAPManager', '~> 0.2.2'
 
 pod 'SparkInspector'

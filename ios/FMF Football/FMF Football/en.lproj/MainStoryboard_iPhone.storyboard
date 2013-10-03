@@ -106,6 +106,7 @@
                         <segue destination="p8F-hD-oki" kind="push" identifier="GotoRoster" id="BCy-eg-VQx"/>
                         <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoTerms" id="Hte-By-9kI"/>
                         <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoRules" id="4v0-56-RT2"/>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="8Up-JT-o81"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -202,6 +203,7 @@
                         <segue destination="cwg-tH-LTB" kind="push" identifier="GotoContestEntrants" id="sI8-Z0-TJP"/>
                         <segue destination="akw-3p-maf" kind="modal" identifier="GotoInvite" id="VdQ-vO-Afc"/>
                         <segue destination="7Pd-eE-fcY" kind="push" identifier="GotoPickPlayer" id="z5M-Gc-4YQ"/>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="vCt-5X-syV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rVk-lt-2Nf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -218,6 +220,9 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="6sU-EV-DEY"/>
+                    <connections>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="Vgf-W4-inr"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NYK-UU-gIK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -233,6 +238,9 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="9zu-DV-hD5"/>
+                    <connections>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="GXw-Uh-EhX"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zAV-ew-7Cb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -252,6 +260,37 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ra3-ii-8ZR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2452" y="1133"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ZpD-iP-xkT">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="dLz-wm-uBh" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="GNJ-ix-muR"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="MCu-U4-oZh">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="ocV-1w-9vs" kind="relationship" relationship="rootViewController" id="xbE-pr-yZu"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DNx-M7-M4J" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2047" y="2094"/>
+        </scene>
+        <!--Token Purchase View Controller-->
+        <scene sceneID="pPy-FI-lcF">
+            <objects>
+                <viewController id="ocV-1w-9vs" customClass="FFTokenPurchaseViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="k9z-Ne-4Nl">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="BXL-os-RPu"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Djh-Vs-TpF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2495" y="2094"/>
         </scene>
         <!--Find Game View Controller-->
         <scene sceneID="U8n-i5-qSF">
@@ -280,6 +319,7 @@
                     <navigationItem key="navigationItem" id="nOj-so-bKu"/>
                     <connections>
                         <segue destination="p8F-hD-oki" kind="push" identifier="GotoContest" id="0q8-z9-AZT"/>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="2FU-nH-8KH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6vq-Cb-eCp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -296,6 +336,7 @@
         <segue reference="Hte-By-9kI"/>
         <segue reference="Zjb-xv-NwD"/>
         <segue reference="BCy-eg-VQx"/>
+        <segue reference="GXw-Uh-EhX"/>
         <segue reference="u0q-yD-ZaH"/>
     </inferredMetricsTieBreakers>
 </document>

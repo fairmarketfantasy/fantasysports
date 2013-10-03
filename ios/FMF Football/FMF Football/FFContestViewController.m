@@ -74,8 +74,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"EntrantsCell"];
     [self.view addSubview:_tableView];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:
-                                              self.sessionController.balanceView];
+    UIButton *balanceView = [self.sessionController balanceView];
+    [balanceView addTarget:self action:@selector(showBalance:) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:balanceView];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -109,6 +110,12 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     [super viewDidDisappear:animated];
     [self transitionToState:NoState withContext:nil];
 }
+
+- (void)showBalance:(UIButton *)seder
+{
+    [self performSegueWithIdentifier:@"GotoTokenPurchase" sender:nil];
+}
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -608,12 +615,16 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     switch (_state) {
         case ViewContest:
             [self hideSubmitRosterBanner];
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1]
-                          withRowAnimation:UITableViewRowAnimationAutomatic];
-            [self.tableView endUpdates];
+            if (previousState == NoState) {
+                [self.tableView reloadData];
+            } else {
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
+                                      withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView endUpdates];
+            }
             break;
         case ShowRoster:
             [self.tableView beginUpdates];
