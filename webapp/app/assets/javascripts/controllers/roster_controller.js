@@ -141,6 +141,22 @@ angular.module("app.controllers")
     });
   };
 
+  $scope.addPlayer = function(player) {
+    var promise = rosters.addPlayer(player);
+    promise && promise.then(function() {
+      // Check to see if all slots for this positions are full
+      var position = rosters.nextPosition(player);
+      if (position) {
+        $scope.filterPlayers({position: position}, true);
+      }
+    })
+  };
+
+  $scope.removePlayer = function(player) {
+    rosters.removePlayer(player);
+    $scope.filterPlayers({position: player.position}, true);
+  };
+
 }]);
 
 
