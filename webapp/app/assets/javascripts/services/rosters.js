@@ -108,7 +108,7 @@ angular.module('app.data')
         var self = this;
         var index = indexForPlayerInRoster(this.currentRoster, player)
         if (index >= 0) {
-          fs.rosters.add_player(this.currentRoster.id, player.id).then(function(market_order) {
+          return fs.rosters.add_player(this.currentRoster.id, player.id).then(function(market_order) {
             self.currentRoster.remaining_salary -= market_order.price;
             player.purchase_price = market_order.price;
             player.sell_price = market_order.price;
@@ -126,6 +126,16 @@ angular.module('app.data')
           self.currentRoster.remaining_salary = parseFloat(self.currentRoster.remaining_salary) + parseFloat(market_order.price);
           var index = _.findIndex(self.currentRoster.players, function(p) { return p.id === player.id; });
           self.currentRoster.players[index] = {position: player.position};
+        });
+      };
+
+      this.nextPosition = function(justAddedPlayer) {
+        var self = this;
+        var nextPositions = this.uniqPositionList.slice(_.findIndex(this.uniqPositionList, function(p) { return (justAddedPlayer || self.currentRoster.players.first).position == p; }));
+        return _.find(nextPositions, function(position) {
+          if (indexForPlayerInRoster(self.currentRoster, {position: position}) >= 0) {
+            return position;
+          }
         });
       };
 
