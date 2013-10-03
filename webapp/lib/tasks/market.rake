@@ -69,7 +69,10 @@ namespace :market do
       player_stats_id, shadow_bets = row[0], row[4]
       if !shadow_bets.blank?
         p = Player.where(:stats_id => player_stats_id).first
-        puts "ERROR: NO PLAYER WITH STATS_ID #{player_stats_id} FOUND"
+        if p.nil?
+          puts "ERROR: NO PLAYER WITH STATS_ID #{player_stats_id} FOUND"
+          next
+        end
         puts "betting $#{shadow_bets} on #{p.name}"
         shadow_bets = Integer(shadow_bets) * 100
       else
