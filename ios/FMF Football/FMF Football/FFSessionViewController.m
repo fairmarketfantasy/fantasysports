@@ -181,7 +181,7 @@
     un.autocapitalizationType = UITextAutocapitalizationTypeNone;
     un.autocorrectionType = UITextAutocorrectionTypeNo;
     un.keyboardType = UIKeyboardTypeEmailAddress;
-    un.text = @"sam@mustw.in"; // TOOD: remove
+//    un.text = //@"sam@mustw.in"; // TOOD: remove
     [self.signUpView addSubview:un];
     self.usernameSignupField = un;
     
@@ -193,7 +193,7 @@
     pw.frame = CGRectMake(15, 280, 290, 44);
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
-    pw.text = @"omgnowai"; // TODO: remove
+//    pw.text = @"omgnowai"; // TODO: remove
     pw.returnKeyType = UIReturnKeyGo;
     [self.signUpView addSubview:pw];
     self.passwordSignupField = pw;
@@ -257,7 +257,7 @@
     un.autocapitalizationType = UITextAutocapitalizationTypeNone;
     un.autocorrectionType = UITextAutocorrectionTypeNo;
     un.keyboardType = UIKeyboardTypeEmailAddress;
-    un.text = @"sam@mustw.in"; // TODO: remove
+//    un.text = @"sam@mustw.in"; // TODO: remove
     [self.signInView addSubview:un];
     self.usernameSigninField = un;
     
@@ -270,7 +270,7 @@
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
     pw.returnKeyType = UIReturnKeyGo;
-    pw.text = @"omgnowai"; // TODO: remove
+//    pw.text = @"omgnowai"; // TODO: remove
     [self.signInView addSubview:pw];
     self.passwordSigninField = pw;
     
@@ -344,19 +344,19 @@
     
     NSString *error = nil;
     
-    if (!self.usernameSignupField.text.length) {
-        error = NSLocalizedString(@"Pleaes provide your username", nil);
+    if (!self.usernameSigninField.text.length) {
+        error = NSLocalizedString(@"Please provide your username", nil);
         goto validate_error;
     }
     {
-        NSString *email = self.usernameSignupField.text;
+        NSString *email = self.usernameSigninField.text;
         NSTextCheckingResult *result = [regex firstMatchInString:email options:0 range:NSMakeRange(0, email.length)];
         if (!result.range.length) {
             error = NSLocalizedString(@"Please provide a valid email address", nil);
             goto validate_error;
         }
     }
-    if (!(self.passwordSignupField.text.length > 6)) {
+    if (!(self.passwordSigninField.text.length > 6)) {
         error = NSLocalizedString(@"Please provide a password at least 6 characters long", nil);
         goto validate_error;
     }

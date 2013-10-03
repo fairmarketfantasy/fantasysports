@@ -106,6 +106,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         } else if ([_roster.state isEqualToString:@"submitted"]) {
             [self transitionToState:ContestEntered withContext:nil];
         }
+    } else {
+        [self transitionToState:ViewContest withContext:nil];
     }
 }
 
