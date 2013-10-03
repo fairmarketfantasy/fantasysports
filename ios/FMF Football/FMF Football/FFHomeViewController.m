@@ -217,8 +217,10 @@ FFCreateGameViewControllerDelegate>
     
     NSString *path = [NSString stringWithFormat:@"/contests/for_market/%@", market.objId];
     
-    SBModelQuery *query = [[[self.session queryBuilderForClass:[FFContestType class]]
-                           property:@"marketId" isEqualTo:market.objId] query];
+    SBModelQuery *query = [[[[self.session queryBuilderForClass:[FFContestType class]]
+                             property:@"marketId" isEqualTo:market.objId]
+                            property:@"takesTokens" isEqualTo:@"1"]
+                           query];
     
     _contests = [FFContestType getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
     _contests.delegate = self;

@@ -22,6 +22,7 @@
 @dynamic isPrivate;
 @dynamic rake;
 @dynamic userId;
+@dynamic takesTokens;
 
 + (NSString *)tableName { return @"ffcontesttype"; }
 
@@ -42,14 +43,15 @@
                 @"payoutStructure":     @"payout_structure",
                 @"isPrivate":           @"private",
                 @"rake":                @"rake",
-                @"userId":              @"userId"
+                @"userId":              @"user_id",
+                @"takesTokens":         @"takes_tokens"
             }];
 }
 
 + (NSArray *)indexes
 {
     return [[super indexes] arrayByAddingObjectsFromArray:@[
-            @[ @"marketId", @"userKey" ]]];
+            @[ @"marketId", @"userKey", @"takesTokens" ]]];
 }
 
 @end

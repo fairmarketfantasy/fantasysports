@@ -22,5 +22,6 @@
 @property (nonatomic) SBInteger *isPrivate;
 @property (nonatomic) SBFloat   *rake;
 @property (nonatomic) NSString  *userId;
+@property (nonatomic) SBInteger *takesTokens;
 
 @end
