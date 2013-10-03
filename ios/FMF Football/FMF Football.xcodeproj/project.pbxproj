@@ -55,6 +55,7 @@
 		1561B7EE17FDE5D300444F22 /* FFTokenPurchaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7ED17FDE5D200444F22 /* FFTokenPurchaseViewController.m */; };
 		1561B7F117FDF2E400444F22 /* FFBalanceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7F017FDF2E400444F22 /* FFBalanceButton.m */; };
 		1561B7F317FDFB1E00444F22 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1561B7F217FDFB1E00444F22 /* StoreKit.framework */; };
+		1561B7F617FE185E00444F22 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7F517FE185E00444F22 /* NSData+Base64.m */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
@@ -193,6 +194,8 @@
 		1561B7EF17FDF2E400444F22 /* FFBalanceButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFBalanceButton.h; sourceTree = "<group>"; };
 		1561B7F017FDF2E400444F22 /* FFBalanceButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFBalanceButton.m; sourceTree = "<group>"; };
 		1561B7F217FDFB1E00444F22 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		1561B7F417FE185E00444F22 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		1561B7F517FE185E00444F22 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -532,6 +535,8 @@
 				155F649E17F7D0DE00500035 /* FFTickerDataSource.m */,
 				155F64A317F7DDDE00500035 /* FFWeakReference.h */,
 				155F64A417F7DDDE00500035 /* FFWeakReference.m */,
+				1561B7F417FE185E00444F22 /* NSData+Base64.h */,
+				1561B7F517FE185E00444F22 /* NSData+Base64.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -796,6 +801,7 @@
 				1561B7EB17FD4E1A00444F22 /* FFWebViewController.m in Sources */,
 				1561B7EE17FDE5D300444F22 /* FFTokenPurchaseViewController.m in Sources */,
 				1561B7F117FDF2E400444F22 /* FFBalanceButton.m in Sources */,
+				1561B7F617FE185E00444F22 /* NSData+Base64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
