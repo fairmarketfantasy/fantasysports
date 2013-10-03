@@ -10,6 +10,17 @@ class UsersController < ApplicationController
     render_api_response user
   end
 
+  def name_taken
+    user = User.where(:username => params[:name]).first
+    render_api_response({"result" => !user})
+  end
+
+  def set_username
+    current_user.username = params[:name]
+    current_user.save!
+    render_api_response({"result" => !!current_user})
+  end
+
   def add_money
     unless params[:amount]
       render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return

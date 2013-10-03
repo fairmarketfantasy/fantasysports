@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   devise :omniauthable, :omniauth_providers => [:facebook]
 
-  attr_accessible :name, :provider, :uid, :unconfirmed_email, :image_url, :takes_tokens,
+  attr_accessible :name, :username, :provider, :uid, :unconfirmed_email, :image_url, :takes_tokens,
       :email, :password, :password_confirmation, :remember_me, :first_name,
       :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync
 
