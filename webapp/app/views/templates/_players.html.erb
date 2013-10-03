@@ -5,6 +5,7 @@
       <div ng-show="market.state == 'published' || market.state == 'opened'" class="players-area">
         <div class="clearfix">
           <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
+          <input name="removeLowFilter" class="" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" /><label for="removeLowFilter">Remove the bad</label>
 
           <div class="dropdown game-dropdown">
             <div class="btn-group">
