@@ -93,6 +93,12 @@ angular.module('app.services')
         },
         resendConfirmation: function(){
           return $http({method: 'POST', url: '/users/confirmation'})
+        },
+        setUsername: function(name) {
+          return $http({method: 'POST', url: '/users/set_username', params: {name: name}})
+        },
+        isNameAvailable: function(name) {
+          return $http({method: 'GET', url: '/users/name_taken', params: {name: name}})
         }
       },
       recipients: {

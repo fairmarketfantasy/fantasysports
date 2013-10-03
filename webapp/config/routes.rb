@@ -29,7 +29,9 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:show] do
     collection do
+      get 'name_taken',      action: :name_taken
       get 'token_plans',      action: :token_plans
+      post 'set_username',      action: :set_username
       post 'add_money',      action: :add_money
       post 'add_tokens',      action: :add_tokens
       post 'withdraw_money', action: :withdraw_money
