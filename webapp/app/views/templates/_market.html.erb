@@ -20,13 +20,15 @@
     <div ng-hide="rosters.inProgressRoster">
       <a class="btn hide" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create a contest</a>
       <ul class="clearfix no-no" ng-cloak>
-        <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses">
-          <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
-          <h2>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
-          <p class="small-p">{{contestTypes[0].contest_class_desc}}</p>
-          <ul class="contests no-no">
+        <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses" ng-class="{'full-row': contestClass == '100k'}">
+          <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" ng-class="{'constrain-image': contestClass == '100k'}" />
+          <div ng-class="{'contest-copy': contestClass == '100k'}" >
+            <h2>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
+            <p class="small-p">{{contestTypes[0].contest_class_desc}}</p>
+          </div>
+          <ul class="contests no-no" ng-class="{'left-buttons': contestClass == '100k'}">
             <li class="enter-contest" ng-repeat="contestType in contestTypes">
-            <a class="btn btn-small btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens}"href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">
+            <a class="btn btn-small btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">
               <span ng-show="contestType.takes_tokens">Enter for {{ contestType.buy_in }} FanFrees</span>
               <span ng-hide="contestType.takes_tokens">Enter for {{ contestType.buy_in | centsToDollars }}</span>
             </a>
