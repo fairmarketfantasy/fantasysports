@@ -39,6 +39,16 @@
 		155F64EA17FA2B4D00500035 /* FFOptionSelectController.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64E917FA2B4C00500035 /* FFOptionSelectController.m */; };
 		155F64ED17FA2B6000500035 /* FFValueEntryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64EC17FA2B5F00500035 /* FFValueEntryController.m */; };
 		155F64EF17FA3B8000500035 /* checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 155F64EE17FA3B8000500035 /* checkmark@2x.png */; };
+		1561B7D917FD264500444F22 /* FMF-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D117FD264500444F22 /* FMF-72.png */; };
+		1561B7DA17FD264500444F22 /* FMF-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D217FD264500444F22 /* FMF-72@2x.png */; };
+		1561B7DB17FD264500444F22 /* FMF-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D317FD264500444F22 /* FMF-Small-50.png */; };
+		1561B7DC17FD264500444F22 /* FMF-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D417FD264500444F22 /* FMF-Small-50@2x.png */; };
+		1561B7DD17FD264500444F22 /* FMF-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D517FD264500444F22 /* FMF-Small.png */; };
+		1561B7DE17FD264500444F22 /* FMF-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D617FD264500444F22 /* FMF-Small@2x.png */; };
+		1561B7DF17FD264500444F22 /* FMF.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D717FD264500444F22 /* FMF.png */; };
+		1561B7E017FD264500444F22 /* FMF@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D817FD264500444F22 /* FMF@2x.png */; };
+		1561B7E217FD267C00444F22 /* FMF.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E117FD267C00444F22 /* FMF.png */; };
+		1561B7E417FD268000444F22 /* FMF@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E317FD268000444F22 /* FMF@2x.png */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
@@ -160,6 +170,16 @@
 		155F64EB17FA2B5F00500035 /* FFValueEntryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFValueEntryController.h; sourceTree = "<group>"; };
 		155F64EC17FA2B5F00500035 /* FFValueEntryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFValueEntryController.m; sourceTree = "<group>"; };
 		155F64EE17FA3B8000500035 /* checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkmark@2x.png"; sourceTree = "<group>"; };
+		1561B7D117FD264500444F22 /* FMF-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-72.png"; sourceTree = "<group>"; };
+		1561B7D217FD264500444F22 /* FMF-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-72@2x.png"; sourceTree = "<group>"; };
+		1561B7D317FD264500444F22 /* FMF-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-Small-50.png"; sourceTree = "<group>"; };
+		1561B7D417FD264500444F22 /* FMF-Small-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-Small-50@2x.png"; sourceTree = "<group>"; };
+		1561B7D517FD264500444F22 /* FMF-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-Small.png"; sourceTree = "<group>"; };
+		1561B7D617FD264500444F22 /* FMF-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-Small@2x.png"; sourceTree = "<group>"; };
+		1561B7D717FD264500444F22 /* FMF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FMF.png; sourceTree = "<group>"; };
+		1561B7D817FD264500444F22 /* FMF@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF@2x.png"; sourceTree = "<group>"; };
+		1561B7E117FD267C00444F22 /* FMF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FMF.png; sourceTree = "<group>"; };
+		1561B7E317FD268000444F22 /* FMF@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF@2x.png"; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -301,6 +321,8 @@
 		153BBC2717DFC2E40071E63B = {
 			isa = PBXGroup;
 			children = (
+				1561B7E317FD268000444F22 /* FMF@2x.png */,
+				1561B7E117FD267C00444F22 /* FMF.png */,
 				153BBC3917DFC2E40071E63B /* FMF Football */,
 				153BBC6017DFC2E40071E63B /* FMF FootballTests */,
 				153BBC3217DFC2E40071E63B /* Frameworks */,
@@ -357,6 +379,7 @@
 		153BBC3A17DFC2E40071E63B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1561B7D017FD25E100444F22 /* Icons */,
 				15A2379417E277F700225942 /* ProhibitionRound.ttf */,
 				15A2378717E269A600225942 /* Images */,
 				153BBC3B17DFC2E40071E63B /* FMF Football-Info.plist */,
@@ -387,6 +410,21 @@
 				153BBC6317DFC2E40071E63B /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1561B7D017FD25E100444F22 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				1561B7D117FD264500444F22 /* FMF-72.png */,
+				1561B7D217FD264500444F22 /* FMF-72@2x.png */,
+				1561B7D317FD264500444F22 /* FMF-Small-50.png */,
+				1561B7D417FD264500444F22 /* FMF-Small-50@2x.png */,
+				1561B7D517FD264500444F22 /* FMF-Small.png */,
+				1561B7D617FD264500444F22 /* FMF-Small@2x.png */,
+				1561B7D717FD264500444F22 /* FMF.png */,
+				1561B7D817FD264500444F22 /* FMF@2x.png */,
+			);
+			name = Icons;
 			sourceTree = "<group>";
 		};
 		15A2377F17E2670C00225942 /* Controllers */ = {
@@ -625,6 +663,16 @@
 				15CD294A17F73EA30027DFEC /* bluedot@2x.png in Resources */,
 				15CD294C17F73F890027DFEC /* disclosurelight@2x.png in Resources */,
 				155F64EF17FA3B8000500035 /* checkmark@2x.png in Resources */,
+				1561B7D917FD264500444F22 /* FMF-72.png in Resources */,
+				1561B7DA17FD264500444F22 /* FMF-72@2x.png in Resources */,
+				1561B7DB17FD264500444F22 /* FMF-Small-50.png in Resources */,
+				1561B7DC17FD264500444F22 /* FMF-Small-50@2x.png in Resources */,
+				1561B7DD17FD264500444F22 /* FMF-Small.png in Resources */,
+				1561B7DE17FD264500444F22 /* FMF-Small@2x.png in Resources */,
+				1561B7DF17FD264500444F22 /* FMF.png in Resources */,
+				1561B7E017FD264500444F22 /* FMF@2x.png in Resources */,
+				1561B7E217FD267C00444F22 /* FMF.png in Resources */,
+				1561B7E417FD268000444F22 /* FMF@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -855,6 +903,7 @@
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
 				INFOPLIST_FILE = "FMF Football/FMF Football-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -877,6 +926,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

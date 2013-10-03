@@ -93,7 +93,8 @@
                                                  name:SBLoginDidBecomeInvalidNotification
                                                object:nil];
     if (self.session != nil) {
-        [self.session syncUser];
+//        [self.session syncUser];
+        [self pollUser];
         [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
     } else {
         [self.tickerDataSource refresh];
@@ -621,9 +622,32 @@ validate_error:
         value.textColor = [FFStyle white];
         value.textAlignment = NSTextAlignmentCenter;
         value.text = @"1000";
+        value.tag = 1337;
         [background addSubview:value];
     }
     return __balanceView;
+}
+
+- (void)pollUser
+{
+    [self.session syncUserSuccess:^(id successObj) {
+        FFUser *user = successObj;
+        
+        UILabel *lab = (UILabel *)[self.balanceView viewWithTag:1337];
+        lab.text = [NSString stringWithFormat:@"%d", [user.tokenBalance integerValue]];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:FFSessionDidUpdateUserNotification
+                                                            object:nil
+                                                          userInfo:@{FFUserKey: user}];
+        
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self pollUser];
+        });
+    } failure:^(NSError *error) {
+        //
+    }];
 }
 
 @end

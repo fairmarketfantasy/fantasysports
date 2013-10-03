@@ -12,12 +12,14 @@
 
 @interface FFUser : SBUser
 
-@property (nonatomic) SBFloat *balance;
-@property (nonatomic) SBInteger *numberOfWins;
-@property (nonatomic) SBFloat *winPercentile;
-@property (nonatomic) SBInteger *points;
-@property (nonatomic) SBDate *joinDate;
-@property (nonatomic) NSString *name;
-@property (nonatomic) NSString *imageUrl;
+@property (nonatomic) SBFloat       *balance;
+@property (nonatomic) SBFloat       *winPercentile;
+@property (nonatomic) SBDate        *joinDate;
+@property (nonatomic) NSString      *name;
+@property (nonatomic) NSString      *imageUrl;
+@property (nonatomic) SBInteger     *tokenBalance;
+@property (nonatomic) NSString      *email;
+@property (nonatomic) SBInteger     *totalPoints;
+@property (nonatomic) SBInteger     *totalWins;
 
 @end

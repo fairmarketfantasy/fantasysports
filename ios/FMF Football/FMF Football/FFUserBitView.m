@@ -73,6 +73,17 @@
 - (void)setUser:(FFUser *)user
 {
     _user = user;
+    
+    NSDateFormatter *df = [NSDateFormatter new];
+    [df setDateStyle:NSDateFormatterMediumStyle];
+    
+    _name.text = user.name;
+    _memberSince.text = [NSString stringWithFormat:@"Member Since %@", [df stringFromDate:_user.joinDate]];
+    _points.text = [NSString stringWithFormat:@"%d points", [_user.totalPoints integerValue]];
+    _wins.text = [NSString stringWithFormat:@"%d wins (%.2f win %%)",
+                  [_user.totalWins integerValue], [_user.winPercentile floatValue]];
+    NSURL *url = [NSURL URLWithString:_user.imageUrl];
+    [_image setImageWithURL:url placeholderImage:[UIImage imageNamed:@"defaultuser.png"]];
 }
 
 @end
