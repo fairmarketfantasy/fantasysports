@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :name, :admin, :email, :balance, :image_url, :win_percentile, :total_points, :total_wins, :joined_at, :token_balance
+  attributes :id, :name, :admin, :email, :balance, :image_url, :win_percentile, :total_points, :total_wins, :joined_at, :token_balance, :provider
   has_one :in_progress_roster
 
   attribute :confirmed?, key: :confirmed

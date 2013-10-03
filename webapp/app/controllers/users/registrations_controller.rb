@@ -50,8 +50,20 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # Almost copied from: https://github.com/plataformatec/devise/blob/692175b897a45786e67c38c7b48f230084934652/app/controllers/devise/registrations_controller.rb#L39
   # STOLEN FROM ANOTHER PROJECT, Most of this may not be relevant
   def update
-    resource.update_attributes!(params[:user])
-    render json: resource.reload
+    # devise_parameter_sanitizer.for(:account_update)
+    # account_update_params
+    prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
+    prev_confirmed_email   = resource.email
+
+    change_unconfirmed_email if prev_unconfirmed_email
+
+    if resource.update_without_password(account_update_params)
+      nil_confirmed_at_if_email_changed(prev_confirmed_email)
+      render json: resource.reload, status: :ok
+    else
+      clean_up_passwords(resource)
+      render json: {error: resource.errors.full_messages.first}, status: :unprocessable_entity
+    end
     # image_s3_path = params[:user].delete(:image_s3_path)
 
     # self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
@@ -88,4 +100,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
     #   }
     # end
   end
+
+  protected
+
+    def nil_confirmed_at_if_email_changed(prev_email)
+      if prev_email != resource.email
+        resource.confirmed_at = nil
+        resource.save
+      end
+    end
+
+    #when this gets changed, devise fires off an email to the new email address
+    def change_unconfirmed_email
+      resource.unconfirmed_email = account_update_params[:email]
+    end
 end

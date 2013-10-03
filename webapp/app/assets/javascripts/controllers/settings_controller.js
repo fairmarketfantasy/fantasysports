@@ -4,18 +4,27 @@
   $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;
 
-  if(!$scope.currentUser.confirmed){
-    $timeout(function(){
-      flash.error = "You haven't confirmed your email address yet.";
-    }, 100);
-  }
+  var flashForConfirm = function(){
+    if(!$scope.currentUser.confirmed){
+      $timeout(function(){
+        flash.error = "You haven't confirmed your email address yet.";
+      }, 100);
+    }
+  };
 
-  $scope.user = {};
+  flashForConfirm();
 
+  $scope.userInfo = $scope.userInfo || {name: $scope.currentUser.name, email: $scope.currentUser.email};
+
+  $scope.isAuthedWithFacebook = !!$scope.currentUser.provider;
+
+//fires after multipart upload for picture has completed
   $scope.results = function(content, completed) {
-    console.log(content, completed);
-    if (completed && content.length > 0)
-      console.log(content); // process content
+    if (completed)
+      fs.user.refresh().then(function(resp){
+        $scope.currentUser = resp;
+        $scope.showUpload  = false;
+      });
     else
     {
       // 1. ignore content and adjust your model to show/hide UI snippets; or
@@ -32,9 +41,11 @@
     });
   };
 
-  $scope.updateSettings = function(){
-    fs.user.update($scope.user).then(function(resp){
-      console.log(resp);
+  $scope.updateUser = function(){
+    fs.user.update($scope.userInfo).then(function(resp){
+      flash.success = "Success, user info saved";
+      flashForConfirm();
+      $scope.currentUser = resp;
     });
   };
 
