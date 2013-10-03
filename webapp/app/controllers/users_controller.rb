@@ -20,6 +20,26 @@ class UsersController < ApplicationController
     end
   end
 
+  def token_plans
+    render_api_response User::TOKEN_SKUS
+  end
+
+  def add_tokens
+    if params[:receipt] # From iOS
+      data = Venice::Receipt.verify(params[:receipt]).to_h
+      current_user.token_balance += User::TOKEN_SKUS[data[:bid]][:tokens]
+      current_user.save!
+      render_api_response current_user
+    else
+      current_user.customer_object.set_default_card(params[:card_id])
+      if current_user.customer_object.charge(params[:amount])
+        current_user.token_balance += User::TOKEN_SKUS[params[:bid]][:tokens]
+        current_user.save!
+        render_api_response current_user
+      end
+    end
+  end
+
   def withdraw_money
     authenticate_user!
     unless params[:amount]
