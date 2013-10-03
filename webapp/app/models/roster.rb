@@ -92,7 +92,7 @@ class Roster < ActiveRecord::Base
   def submit!
     #buy all the players on the roster. This sql function handles all of that.
     #// PICK UP HERE, add switch in can_charge for token type, add weighting to bets for free players in market
-    raise HttpException.new(402, "Insufficient funds") unless owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
+    raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") unless owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
     self.transaction do
 
       #purchase all the players and update roster state to submitted
