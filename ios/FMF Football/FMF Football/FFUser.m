@@ -14,10 +14,12 @@
 @dynamic name;
 @dynamic imageUrl;
 @dynamic balance;
-@dynamic numberOfWins;
-@dynamic points;
 @dynamic joinDate;
 @dynamic winPercentile;
+@dynamic tokenBalance;
+@dynamic email;
+@dynamic totalPoints;
+@dynamic totalWins;
 
 + (NSString *)tableName { return @"ffuser"; }
 
@@ -33,10 +35,16 @@
 + (NSDictionary *)propertyToNetworkKeyMapping
 {
     return [[super propertyToNetworkKeyMapping] dictionaryByMergingWithDictionary:@{
-                @"userId":      @"id",
-                @"name":        @"name",
-                @"imageUrl":    @"image_url",
-                @"balance":     @"balance"
+                @"userId":          @"id",
+                @"name":            @"name",
+                @"imageUrl":        @"image_url",
+                @"balance":         @"balance",
+                @"tokenBalance":    @"token_balance",
+                @"totalPoints":     @"total_points",
+                @"totalWins":       @"total_wins",
+                @"winPercentile":   @"win_percentile",
+                @"email":           @"email",
+                @"joinDate":        @"joined_at"
             }];
 }
 

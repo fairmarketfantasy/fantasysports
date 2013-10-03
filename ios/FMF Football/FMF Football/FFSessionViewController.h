@@ -14,6 +14,9 @@
 #import "FFBaseViewController.h"
 #import "FFTickerDataSource.h"
 
+#define FFSessionDidUpdateUserNotification @"didupdateuser"
+#define FFUserKey @"user"
+
 @interface FFSessionViewController : FFBaseViewController
 
 @property (nonatomic) SBSession *session;

@@ -30,6 +30,7 @@ FFCreateGameViewControllerDelegate>
 @property (nonatomic) FFGameButtonView *gameButtonView;
 @property (nonatomic) SBDataObjectResultSet *contests;
 @property (nonatomic) UIButton *globalMenuButton;
+@property (nonatomic) NSArray *filteredContests;
 
 @end
 
@@ -112,6 +113,19 @@ FFCreateGameViewControllerDelegate>
     _userBit.user = (FFUser *)self.session.user;
     
     [_tableView reloadData];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didUpdateUser:) 
+                                                 name:FFSessionDidUpdateUserNotification
+                                               object:nil];
+}
+
+- (void)didUpdateUser:(NSNotification *)note
+{
+    FFUser *user = note.userInfo[FFUserKey];
+    if (user) {
+        _userBit.user = user;
+    }
 }
 
 - (void)globalMenuButton:(UIButton *)button
@@ -224,8 +238,9 @@ FFCreateGameViewControllerDelegate>
     
     _contests = [FFContestType getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
     _contests.delegate = self;
-    
     [_contests refresh];
+    
+    _filteredContests = [_contests allObjects];
 }
 
 #pragma mark -
@@ -241,8 +256,8 @@ FFCreateGameViewControllerDelegate>
     if (section == 0) {
         return 3;
     }
-    if (_contests && [_contests count]) {
-        return [_contests count] / 2 + [_contests count] % 2;
+    if (_filteredContests && [_filteredContests count]) {
+        return [_filteredContests count] / 2 + [_filteredContests count] % 2;
     }
     return 0;
 }
@@ -283,9 +298,9 @@ FFCreateGameViewControllerDelegate>
         cell = [tableView dequeueReusableCellWithIdentifier:@"ContestCell" forIndexPath:indexPath];
         FFContest2UpTabelViewCell *c_cell = (FFContest2UpTabelViewCell *)cell;
         c_cell.delegate = self;
-        NSMutableArray *contests = [NSMutableArray arrayWithObject:[_contests objectAtIndex:indexPath.row*2]];
-        if ((indexPath.row * 2 + 1) != _contests.count) {
-            [contests addObject:[_contests objectAtIndex:indexPath.row * 2 + 1]];
+        NSMutableArray *contests = [NSMutableArray arrayWithObject:[_filteredContests objectAtIndex:indexPath.row*2]];
+        if ((indexPath.row * 2 + 1) != _filteredContests.count) {
+            [contests addObject:[_filteredContests objectAtIndex:indexPath.row * 2 + 1]];
         }
         c_cell.contests = contests;
     }
@@ -311,6 +326,16 @@ FFCreateGameViewControllerDelegate>
     if (resultSet == _markets) {
         _marketSelector.markets = [resultSet allObjects];
     } else if (resultSet == _contests) {
+        // the server does not filter, and the result set by defaults shows what the server shows, hence we must
+        // do our own pass of filtering to show only takesTokens==True contest types
+        NSMutableArray *filtered = [NSMutableArray array];
+        for (FFContestType *ct in [_contests allObjects]) {
+            if ([ct.takesTokens integerValue]) {
+                [filtered addObject:ct];
+            }
+        }
+        _filteredContests = filtered;
+        
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                       withRowAnimation:UITableViewRowAnimationAutomatic];
     }
