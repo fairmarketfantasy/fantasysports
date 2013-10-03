@@ -75,7 +75,7 @@ angular.module("app.controllers")
   $scope.filterPlayers = function(opts, override) {
     rosters.selectOpponentRoster(null);
     if (override) {
-      filterOpts = angular.extend({sort: filterOpts.sort, removeLow: filterOpts.removeLow}, opts);
+      filterOpts = angular.extend({sort: filterOpts.sort, dir: filterOpts.dir, removeLow: filterOpts.removeLow}, opts);
     } else {
       if (filterOpts.sort == opts.sort) {
         filterOpts.dir = filterOpts.dir == "desc" ? 'asc' : 'desc';
