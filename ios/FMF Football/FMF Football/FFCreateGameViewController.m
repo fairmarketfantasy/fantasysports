@@ -83,13 +83,15 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 {
     [super viewWillAppear:animated];
     
-    self.contestTypes = @[@"H2H", @"190", @"270"];
-    self.contestTypeDesc = @{@"H2H": @{SALARYCAP: @[@"$100,000"],
-                                       ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
-                             @"190": @{SALARYCAP: @[@"$100,000"],
-                                       ENTRYFEE: @[@(0), @(1), @(10)]},
-                             @"270": @{SALARYCAP: @[@"$100,000"],
-                                       ENTRYFEE: @[@(0), @(1), @(10)]}};
+    self.contestTypes = @[@"H2H", @"H2H RR", @"194", @"970"];
+    self.contestTypeDesc = @{@"H2H":    @{SALARYCAP: @[@"$100,000"],
+                                          ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
+                             @"H2H RR": @{SALARYCAP: @[@"$100,000"],
+                                          ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
+                             @"194":    @{SALARYCAP: @[@"$100,000"],
+                                          ENTRYFEE: @[@(0), @(1), @(10)]},
+                             @"970":    @{SALARYCAP: @[@"$100,000"],
+                                          ENTRYFEE: @[@(0), @(1), @(10)]}};
     
     _markets = [FFMarket getBulkWithSession:self.session authorized:YES];
     _markets.clearsCollectionBeforeSaving = YES;
