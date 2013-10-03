@@ -58,7 +58,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     change_unconfirmed_email if prev_unconfirmed_email
 
     if resource.update_without_password(account_update_params)
-      nil_confirmed_at_if_email_changed(prev_confirmed_email)
+      sign_in resource_name, resource, :bypass => true
       render json: resource.reload, status: :ok
     else
       clean_up_passwords(resource)
@@ -102,13 +102,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   protected
-
-    def nil_confirmed_at_if_email_changed(prev_email)
-      if prev_email != resource.email
-        resource.confirmed_at = nil
-        resource.save
-      end
-    end
 
     #when this gets changed, devise fires off an email to the new email address
     def change_unconfirmed_email
