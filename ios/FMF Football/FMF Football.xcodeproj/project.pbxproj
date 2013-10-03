@@ -178,8 +178,8 @@
 		1561B7D617FD264500444F22 /* FMF-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-Small@2x.png"; sourceTree = "<group>"; };
 		1561B7D717FD264500444F22 /* FMF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FMF.png; sourceTree = "<group>"; };
 		1561B7D817FD264500444F22 /* FMF@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF@2x.png"; sourceTree = "<group>"; };
-		1561B7E117FD267C00444F22 /* FMF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FMF.png; sourceTree = "<group>"; };
-		1561B7E317FD268000444F22 /* FMF@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF@2x.png"; sourceTree = "<group>"; };
+		1561B7E117FD267C00444F22 /* FMF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FMF.png; path = ../FMF.png; sourceTree = "<group>"; };
+		1561B7E317FD268000444F22 /* FMF@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "FMF@2x.png"; path = "../FMF@2x.png"; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -321,8 +321,6 @@
 		153BBC2717DFC2E40071E63B = {
 			isa = PBXGroup;
 			children = (
-				1561B7E317FD268000444F22 /* FMF@2x.png */,
-				1561B7E117FD267C00444F22 /* FMF.png */,
 				153BBC3917DFC2E40071E63B /* FMF Football */,
 				153BBC6017DFC2E40071E63B /* FMF FootballTests */,
 				153BBC3217DFC2E40071E63B /* Frameworks */,
@@ -469,6 +467,8 @@
 		15A2378717E269A600225942 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1561B7E317FD268000444F22 /* FMF@2x.png */,
+				1561B7E117FD267C00444F22 /* FMF.png */,
 				15A2379A17E2813700225942 /* 0-percent.png */,
 				15A2379B17E2813700225942 /* 40-percent.png */,
 				15CD294317F73D9F0027DFEC /* greydot@2x.png */,

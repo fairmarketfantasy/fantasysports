@@ -19,15 +19,6 @@
 #import "FFInviteViewController.h"
 
 
-typedef enum {
-    NoState,
-    ViewContest,
-    ShowRoster,
-    PickPlayer,
-    ContestEntered
-} FFContestViewControllerState;
-
-
 @interface FFContestViewController ()
 <UITableViewDataSource, UITableViewDelegate,
 FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
@@ -35,7 +26,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) FFContestViewControllerState state; // current state of the FSM
 @property (nonatomic) NSMutableArray *rosterPlayers; // the players in the current roster
-@property (nonatomic) id currentPickPlayer;      // the current position we are picking or trading
+//@property (nonatomic) id currentPickPlayer;      // the current position we are picking or trading
 @property (nonatomic) NSArray *availablePlayers; // shown in PickPlayer
 @property (nonatomic) UIView *submitButtonView;
 @property (nonatomic) UILabel *remainingSalaryLabel;
@@ -101,7 +92,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                      userInfo:@{}];
     }
     if (_roster) {
-        if ([_roster.state isEqualToString:@"in_progress"]) {
+        if (self.currentPickPlayer) {
+            [self transitionToState:PickPlayer withContext:self.currentPickPlayer];
+        } else if ([_roster.state isEqualToString:@"in_progress"]) {
             [self transitionToState:ShowRoster withContext:nil];
         } else if ([_roster.state isEqualToString:@"submitted"]) {
             [self transitionToState:ContestEntered withContext:nil];
@@ -137,6 +130,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 0) {
+        if (_state == PickPlayer) {
+            return 0;
+        }
         int rows = 2;
         if (_state == ViewContest || _state == ShowRoster || _state == ContestEntered) {
             rows++;
@@ -367,11 +363,11 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             lab.text = NSLocalizedString(@"Pick Your Team", nil);
             [header addSubview:lab];
         } else if (_state == PickPlayer) {
-            UIButton *back = [UIButton buttonWithType:UIButtonTypeCustom];
-            back.frame = CGRectMake(5, 0, 40, 40);
-            [back setBackgroundImage:[UIImage imageNamed:@"sectionback.png"] forState:UIControlStateNormal];
-            [back addTarget:self action:@selector(backFromPlayerSelect:) forControlEvents:UIControlEventTouchUpInside];
-            [header addSubview:back];
+//            UIButton *back = [UIButton buttonWithType:UIButtonTypeCustom];
+//            back.frame = CGRectMake(5, 0, 40, 40);
+//            [back setBackgroundImage:[UIImage imageNamed:@"sectionback.png"] forState:UIControlStateNormal];
+//            [back addTarget:self action:@selector(backFromPlayerSelect:) forControlEvents:UIControlEventTouchUpInside];
+//            [header addSubview:back];
             
             NSString *pos;
             if ([_currentPickPlayer isKindOfClass:[NSString class]]) {
@@ -386,7 +382,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                     @"K":   NSLocalizedString(@"Kicker", nil),
                                     @"TE":  NSLocalizedString(@"Tight End", nil)};
             
-            UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(45, 0, 320, 40)];
+            UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, 40)];
             lab.font = [FFStyle lightFont:26];
             lab.backgroundColor = [UIColor clearColor];
             lab.textColor = [UIColor colorWithWhite:.15 alpha:1];
@@ -420,6 +416,16 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     }
     if ([segue.identifier isEqualToString:@"GotoInvite"]) {
         ((FFInviteViewController *)segue.destinationViewController).roster = _roster;
+    }
+    if ([segue.identifier isEqualToString:@"GotoPickPlayer"]) {
+        FFContestViewController *next = segue.destinationViewController;
+        next.roster = _roster;
+        next.market = _market;
+        next.contest = _contest;
+//        next.currentPickPlayer = segue.context;
+        next.delegate = self;
+//        [next showState:PickPlayer];
+        [next showPickPlayer:segue.context];
     }
 }
 
@@ -484,7 +490,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 - (void)rosterCellSelectPlayer:(FFRosterSlotCell *)cell
 {
-    [self transitionToState:PickPlayer withContext:cell.player];
+//    [self transitionToState:PickPlayer withContext:cell.player];
+    [self performSegueWithIdentifier:@"GotoPickPlayer" sender:nil context:cell.player];
 }
 
 - (void)rosterCellReplacePlayer:(FFRosterSlotCell *)cell
@@ -515,16 +522,21 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                    messsage:nil
                                                loadingStyle:FFAlertViewLoadingStylePlain];
     [alert showInView:self.view];
-    FFContestViewController *weakSelf = self;
+    __weak FFContestViewController *weakSelf = self;
     [_roster addPlayer:cell.player success:^(id successObj) {
         [alert hide];
-        FFContestViewControllerState next;
-        if ([weakSelf->_roster.state isEqualToString:@"submitted"]) {
-            next = ContestEntered;
-        } else {
-            next = ShowRoster;
+//        FFContestViewControllerState next;
+//        if ([weakSelf->_roster.state isEqualToString:@"submitted"]) {
+//            next = ContestEntered;
+//        } else {
+//            next = ShowRoster;
+//        }
+//        [weakSelf transitionToState:next withContext:nil];
+        __strong FFContestViewController *strongSelf = weakSelf;
+        if (strongSelf->_delegate
+                && [strongSelf->_delegate respondsToSelector:@selector(contestController:didPickPlayer:)]) {
+            [strongSelf->_delegate contestController:strongSelf didPickPlayer:cell.player];
         }
-        [weakSelf transitionToState:next withContext:nil];
     } failure:^(NSError *error) {
         [alert hide];
         FFAlertView *eAlert = [[FFAlertView alloc] initWithError:error
@@ -534,6 +546,18 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                        autoHide:YES];
         [eAlert showInView:[weakSelf view]];
     }];
+}
+
+- (void)contestController:(id)cont didPickPlayer:(NSDictionary *)player
+{
+    FFContestViewControllerState next;
+    if ([_roster.state isEqualToString:@"submitted"]) {
+        next = ContestEntered;
+    } else {
+        next = ShowRoster;
+    }
+    [self transitionToState:next withContext:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)rosterCellStatsForPlayer:(FFRosterSlotCell *)cell
@@ -560,6 +584,17 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                         autoHide:YES];
         [eAlert showInView:self.view];
     }];
+}
+
+//- (void)showState:(FFContestViewControllerState)state
+//{
+//    _state = state;
+//    [self transitionToState:state withContext:nil];
+//}
+- (void)showPickPlayer:(id)player
+{
+//    [self transitionToState:PickPlayer withContext:player];
+    _currentPickPlayer = player;
 }
 
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx
