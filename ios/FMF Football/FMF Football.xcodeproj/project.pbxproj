@@ -52,6 +52,9 @@
 		1561B7E617FD401A00444F22 /* loginbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E517FD401A00444F22 /* loginbg@2x.png */; };
 		1561B7E817FD437C00444F22 /* dailyfantasyfootball@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E717FD437C00444F22 /* dailyfantasyfootball@2x.png */; };
 		1561B7EB17FD4E1A00444F22 /* FFWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */; };
+		1561B7EE17FDE5D300444F22 /* FFTokenPurchaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7ED17FDE5D200444F22 /* FFTokenPurchaseViewController.m */; };
+		1561B7F117FDF2E400444F22 /* FFBalanceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7F017FDF2E400444F22 /* FFBalanceButton.m */; };
+		1561B7F317FDFB1E00444F22 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1561B7F217FDFB1E00444F22 /* StoreKit.framework */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
@@ -185,6 +188,11 @@
 		1561B7E717FD437C00444F22 /* dailyfantasyfootball@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dailyfantasyfootball@2x.png"; sourceTree = "<group>"; };
 		1561B7E917FD4E1A00444F22 /* FFWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFWebViewController.h; sourceTree = "<group>"; };
 		1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFWebViewController.m; sourceTree = "<group>"; };
+		1561B7EC17FDE5D200444F22 /* FFTokenPurchaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTokenPurchaseViewController.h; sourceTree = "<group>"; };
+		1561B7ED17FDE5D200444F22 /* FFTokenPurchaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTokenPurchaseViewController.m; sourceTree = "<group>"; };
+		1561B7EF17FDF2E400444F22 /* FFBalanceButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFBalanceButton.h; sourceTree = "<group>"; };
+		1561B7F017FDF2E400444F22 /* FFBalanceButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFBalanceButton.m; sourceTree = "<group>"; };
+		1561B7F217FDFB1E00444F22 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -275,6 +283,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1561B7F317FDFB1E00444F22 /* StoreKit.framework in Frameworks */,
 				15CD295517F7804A0027DFEC /* AddressBook.framework in Frameworks */,
 				15CD295617F7804A0027DFEC /* AddressBookUI.framework in Frameworks */,
 				15A2379F17E2865A00225942 /* QuartzCore.framework in Frameworks */,
@@ -344,6 +353,7 @@
 		153BBC3217DFC2E40071E63B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1561B7F217FDFB1E00444F22 /* StoreKit.framework */,
 				15CD295317F7804A0027DFEC /* AddressBook.framework */,
 				15CD295417F7804A0027DFEC /* AddressBookUI.framework */,
 				15A237AA17E2DBD400225942 /* FacebookSDK.framework */,
@@ -465,6 +475,8 @@
 				15CD294E17F77C840027DFEC /* FFInviteViewController.m */,
 				1561B7E917FD4E1A00444F22 /* FFWebViewController.h */,
 				1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */,
+				1561B7EC17FDE5D200444F22 /* FFTokenPurchaseViewController.h */,
+				1561B7ED17FDE5D200444F22 /* FFTokenPurchaseViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -541,6 +553,8 @@
 				15D756BC17F3A9320080AE4F /* FFContestView.m */,
 				15CD295017F77E4B0027DFEC /* FFBubblePicker.h */,
 				15CD295117F77E4B0027DFEC /* FFBubblePicker.m */,
+				1561B7EF17FDF2E400444F22 /* FFBalanceButton.h */,
+				1561B7F017FDF2E400444F22 /* FFBalanceButton.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -780,6 +794,8 @@
 				155F64EA17FA2B4D00500035 /* FFOptionSelectController.m in Sources */,
 				155F64ED17FA2B6000500035 /* FFValueEntryController.m in Sources */,
 				1561B7EB17FD4E1A00444F22 /* FFWebViewController.m in Sources */,
+				1561B7EE17FDE5D300444F22 /* FFTokenPurchaseViewController.m in Sources */,
+				1561B7F117FDF2E400444F22 /* FFBalanceButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

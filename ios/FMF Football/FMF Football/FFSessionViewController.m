@@ -16,7 +16,7 @@
 #import "FFSession.h"
 #import "FFWebViewController.h"
 
-@interface FFSessionViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate>
+@interface FFSessionViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate, FFBalanceViewDataSource>
 {
 }
 
@@ -35,7 +35,7 @@
 @property (nonatomic) UIGestureRecognizer   *dismissKeyboardRecognizer;
 @property (nonatomic) CGFloat               keyboardHeight;
 @property (nonatomic) BOOL                  keyboardIsShowing;
-@property (nonatomic) UIView                *_balanceView;
+//@property (nonatomic) UIButton              *_balanceView;
 @property (nonatomic) FFTickerMaximizedDrawerViewController *signInTicker, *signUpTicker;
 
 - (void)setupSignInView;
@@ -646,35 +646,48 @@ validate_error:
 
 - (UIView *)balanceView
 {
-    if (!__balanceView) {
-        __balanceView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 44)];
-        __balanceView.backgroundColor = [UIColor clearColor];
-        __balanceView.opaque = YES;
-        
-        UILabel *balance = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 44)];
-        balance.backgroundColor = [UIColor clearColor];
-        balance.font = [FFStyle regularFont:12];
-        balance.textColor = [UIColor whiteColor];
-        balance.text = NSLocalizedString(@"Balance", nil);
-        [__balanceView addSubview:balance];
-        
-        UIView *background = [[UIView alloc] initWithFrame:CGRectMake(56, 10, 49, 24)];
-        background.backgroundColor = [FFStyle brightGreen];
-        background.layer.borderWidth = 1;
-        background.layer.borderColor = [FFStyle white].CGColor;
-        background.layer.cornerRadius = 4;
-        [__balanceView addSubview:background];
-        
-        UILabel *value = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 49, 24)];
-        value.backgroundColor = [UIColor clearColor];
-        value.font = [FFStyle boldFont:14];
-        value.textColor = [FFStyle white];
-        value.textAlignment = NSTextAlignmentCenter;
-        value.text = @"1000";
-        value.tag = 1337;
-        [background addSubview:value];
-    }
-    return __balanceView;
+//    if (!__balanceView) {
+//        __balanceView = [UIButton buttonWithType:UIButtonTypeCustom]; //[[UIView alloc] initWithFrame:CGRectMake(0, 0, 105, 44)];
+//        __balanceView.frame = CGRectMake(0, 0, 105, 44);
+//        __balanceView.backgroundColor = [UIColor clearColor];
+//        __balanceView.opaque = YES;
+//        
+//        UILabel *balance = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 44)];
+//        balance.backgroundColor = [UIColor clearColor];
+//        balance.font = [FFStyle regularFont:12];
+//        balance.textColor = [UIColor whiteColor];
+//        balance.text = NSLocalizedString(@"Balance", nil);
+//        balance.userInteractionEnabled = NO;
+//        [__balanceView addSubview:balance];
+//        
+//        UIView *background = [[UIView alloc] initWithFrame:CGRectMake(56, 10, 49, 24)];
+//        background.backgroundColor = [FFStyle brightGreen];
+//        background.layer.borderWidth = 1;
+//        background.layer.borderColor = [FFStyle white].CGColor;
+//        background.layer.cornerRadius = 4;
+//        background.userInteractionEnabled = NO;
+//        [__balanceView addSubview:background];
+//        
+//        UILabel *value = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 49, 24)];
+//        value.backgroundColor = [UIColor clearColor];
+//        value.font = [FFStyle boldFont:14];
+//        value.textColor = [FFStyle white];
+//        value.textAlignment = NSTextAlignmentCenter;
+//        value.text = @"1000";
+//        value.tag = 1337;
+//        value.userInteractionEnabled = NO;
+//        [background addSubview:value];
+//    }
+//    return __balanceView;
+    FFBalanceButton *ret = [[FFBalanceButton alloc] initWithFrame:CGRectZero];
+    ret.dataSource = self;
+    return ret;
+}
+
+- (NSInteger)balanceViewGetBalance:(FFBalanceButton *)view
+{
+    FFUser *user = (FFUser *)self.session.user;
+    return [user.tokenBalance integerValue];
 }
 
 - (void)pollUser
@@ -682,8 +695,8 @@ validate_error:
     [self.session syncUserSuccess:^(id successObj) {
         FFUser *user = successObj;
         
-        UILabel *lab = (UILabel *)[self.balanceView viewWithTag:1337];
-        lab.text = [NSString stringWithFormat:@"%d", [user.tokenBalance integerValue]];
+//        UILabel *lab = (UILabel *)[self.balanceView viewWithTag:1337];
+//        lab.text = [NSString stringWithFormat:@"%d", [user.tokenBalance integerValue]];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:FFSessionDidUpdateUserNotification
                                                             object:nil
@@ -695,7 +708,11 @@ validate_error:
             [self pollUser];
         });
     } failure:^(NSError *error) {
-        //
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self pollUser];
+        });
     }];
 }
 

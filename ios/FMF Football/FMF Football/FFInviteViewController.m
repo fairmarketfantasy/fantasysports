@@ -105,26 +105,41 @@
     UINavigationBar *navBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     [self.view addSubview:navBar];
     
-    UIButton *closeButt = [UIButton buttonWithType:UIButtonTypeCustom];
-    closeButt.titleLabel.font = [FFStyle regularFont:15];
-    closeButt.titleLabel.textColor = [FFStyle white];
-    closeButt.frame = CGRectMake(0, 0, 56, 44);
-    [closeButt setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
-    [closeButt addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIButton *sendButt = [UIButton buttonWithType:UIButtonTypeCustom];
-    sendButt.titleLabel.font = [FFStyle regularFont:15];
-    sendButt.titleLabel.textColor = [FFStyle white];
-    sendButt.frame = CGRectMake(0, 0, 56, 44);
-    [sendButt setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
-    [sendButt addTarget:self action:@selector(send:) forControlEvents:UIControlEventTouchUpInside];
-
-    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:closeButt];
-    UIBarButtonItem *send = [[UIBarButtonItem alloc] initWithCustomView:sendButt];
+//    UIButton *closeButt = [UIButton buttonWithType:UIButtonTypeCustom];
+//    closeButt.titleLabel.font = [FFStyle regularFont:15];
+//    closeButt.titleLabel.textColor = [FFStyle white];
+//    closeButt.frame = CGRectMake(0, 0, 56, 44);
+//    [closeButt setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
+//    [closeButt addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    UIButton *sendButt = [UIButton buttonWithType:UIButtonTypeCustom];
+//    sendButt.titleLabel.font = [FFStyle regularFont:15];
+//    sendButt.titleLabel.textColor = [FFStyle white];
+//    sendButt.frame = CGRectMake(0, 0, 56, 44);
+//    [sendButt setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
+//    [sendButt addTarget:self action:@selector(send:) forControlEvents:UIControlEventTouchUpInside];
+//
+//    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:closeButt];
+//    UIBarButtonItem *send = [[UIBarButtonItem alloc] initWithCustomView:sendButt];
     UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@""];
-    item.leftBarButtonItem = close;
-    item.rightBarButtonItem = send;
     [navBar pushNavigationItem:item animated:NO];
+//    item.leftBarButtonItem = close;
+//    item.rightBarButtonItem = send;
+    
+    UIButton *cancel = [FFStyle clearButtonWithText:NSLocalizedString(@"Close", nil) borderColor:[FFStyle white]];
+    cancel.frame = CGRectMake(0, 0, 70, 30);
+    [cancel addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton *create = [FFStyle clearButtonWithText:NSLocalizedString(@"Send", nil) borderColor:[FFStyle white]];
+    create.frame = CGRectMake(0, 0, 70, 30);
+    [create addTarget:self action:@selector(send:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
+    [logo sizeToFit];
+    
+    item.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancel];
+    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:create];
+    item.titleView = logo;
 }
 
 - (void)viewWillAppear:(BOOL)animated
