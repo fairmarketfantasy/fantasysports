@@ -17,6 +17,7 @@
 #import "FFContestViewController.h"
 #import "FFCreateGameViewController.h"
 #import "FFAlertView.h"
+#import "FFWebViewController.h"
 
 @interface FFHomeViewController ()
 <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
@@ -151,6 +152,14 @@ FFCreateGameViewControllerDelegate>
     else if ([segue.identifier isEqualToString:@"GotoRoster"]) {
         FFRoster *roster = segue.context;
         ((FFContestViewController *)segue.destinationViewController).roster = roster;
+    }
+    else if ([segue.identifier isEqualToString:@"GotoRules"]) {
+        FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
+        vc.URL = [NSURL URLWithString:@"http://google.com"];
+    }
+    else if ([segue.identifier isEqualToString:@"GotoTerms"]) {
+        FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
+        vc.URL = [NSURL URLWithString:@"http://google.com"];
     }
 }
 

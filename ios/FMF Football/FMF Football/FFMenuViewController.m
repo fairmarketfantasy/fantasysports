@@ -71,10 +71,10 @@
             cell.textLabel.text = NSLocalizedString(@"Join Game", nil);
             break;
         case 3:
-            cell.textLabel.text = NSLocalizedString(@"My Account", nil);
+            cell.textLabel.text = NSLocalizedString(@"Rules", nil);
             break;
         case 4:
-            cell.textLabel.text = NSLocalizedString(@"Terms & Conditions", nil);
+            cell.textLabel.text = NSLocalizedString(@"Legal Stuff", nil);
             break;
         case 5:
             cell.textLabel.text = NSLocalizedString(@"Sign Out", nil);
@@ -116,8 +116,10 @@
         case 2:
             break;
         case 3:
+            [self.delegate performMenuSegue:@"GotoRules"];
             break;
         case 4:
+            [self.delegate performMenuSegue:@"GotoTerms"];
             break;
         case 5:
             [self.session logout];
