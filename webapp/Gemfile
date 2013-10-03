@@ -40,6 +40,7 @@ gem 'kaminari'
 
 #payments
 gem 'stripe'
+gem 'venice' # iOS receipt verification
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'

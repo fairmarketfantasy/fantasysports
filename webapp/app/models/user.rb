@@ -1,4 +1,9 @@
 class User < ActiveRecord::Base
+  TOKEN_SKUS = {
+    '1000' => {:tokens => 1000, :cost => 100},
+    '5000' => {:tokens => 5000, :cost => 500},
+    '10000' => {:tokens => 10000, :cost => 1000},
+  }
   #attr_protected :admin, :email, :password
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
