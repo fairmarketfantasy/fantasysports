@@ -21,6 +21,9 @@ angular.module("app.controllers")
   var fetchPlayers = function() {
     if (!rosters.currentRoster) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
+      if (filterOpts.removeLow) {
+        players = _.select(players, function(player) { return player.buy_price > 1100; });
+      }
       $scope.players = players;
     });
   };
@@ -68,10 +71,11 @@ angular.module("app.controllers")
       fetchContest();
     }, 10000);
 
+    // Override isn't really an override anymore...this could be better
   $scope.filterPlayers = function(opts, override) {
     rosters.selectOpponentRoster(null);
     if (override) {
-      filterOpts = opts;
+      filterOpts = angular.extend({sort: filterOpts.sort, removeLow: filterOpts.removeLow}, opts);
     } else {
       if (filterOpts.sort == opts.sort) {
         filterOpts.dir = filterOpts.dir == "desc" ? 'asc' : 'desc';
