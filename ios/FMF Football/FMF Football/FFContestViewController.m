@@ -772,7 +772,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          }
          _availablePlayers = JSON;
          [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
-                       withRowAnimation:UITableViewRowAnimationAutomatic];
+                       withRowAnimation:UITableViewRowAnimationNone];
          
          __strong FFContestViewController *strongSelf = self;
          
