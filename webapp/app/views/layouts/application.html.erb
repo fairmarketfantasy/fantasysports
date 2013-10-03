@@ -84,16 +84,16 @@
         </div>
         <div class="user-dash clearfix">
           <div class="user-balance no-border">
-            <small>Balance:</small>&nbsp;&nbsp;{{ currentUser.balance | centsToDollars }}
+            <small>Cash:</small>&nbsp;&nbsp;{{ currentUser.balance | centsToDollars }}
             <div class="user-dash no-border clearfix">
-              <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Add Funds</a>
+              <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Deposit Funds</a>
             </div>
           </div>
           <div class="user-balance no-border">
             <small>FanFrees:</small>&nbsp;&nbsp;{{ currentUser.token_balance }}
-            <!--<div class="user-dash no-border clearfix">
+            <div class="user-dash no-border clearfix">
               <a class="btn btn-small btn-success" href="javascript://" ng-click="">Add FanFrees</a>
-            </div>-->
+            </div>
           </div>
        </div>
 
@@ -113,7 +113,6 @@
             <li class="nav-item"><a href="/#/rosters">My Contests</a></li>
             <li class="nav-item"><a href="/#/history">History</a></li>
             <li class="nav-item"><a href="/#/rules" >Rules and Scoring</a></li>
-            <li class="nav-item"><a href="/#/promos" >Promos</a></li>
             <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
             <li class="nav-item end"><a href="/#/support">Support</a></li>
           </ul>
