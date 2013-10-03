@@ -33,9 +33,9 @@ class User < ActiveRecord::Base
 
 
   def self.find_for_facebook_oauth(auth)
-    user = User.where(uid: auth.uid, provider: auth.provider).first_or_create
-    user.name = auth.extra.raw_info.name
+    user = User.find_by(email: auth.email) || User.where(uid: auth.uid, provider: auth.provider).first_or_create
     user.email = auth.info.email
+    user.name = auth.extra.raw_info.name
     user.image_url = auth.info.image.gsub('http', 'https')
     user.password = Devise.friendly_token[0,20]
     user.save!
