@@ -591,7 +591,7 @@ validate_error:
 
 - (void)signUpFacebook:(id)sender
 {
-    [FBSession openActiveSessionWithReadPermissions:nil allowLoginUI:YES completionHandler:
+    [FBSession openActiveSessionWithReadPermissions:@[@"basic_info"] allowLoginUI:YES completionHandler:
      ^(FBSession *session, FBSessionState status, NSError *error) {
          [self fbSessionStateChanged:session state:status error:error];
      }];
@@ -604,7 +604,7 @@ validate_error:
     switch (state) {
         case FBSessionStateOpen:
             // pass the token back to the server
-            
+            [self loginFbToken:session.accessTokenData.accessToken];
             break;
         case FBSessionStateClosed:
         case FBSessionStateClosedLoginFailed:
@@ -623,6 +623,31 @@ validate_error:
                                   otherButtonTitles:nil];
         [alertView show];
     }    
+}
+
+- (void)loginFbToken:(NSString *)accessToken
+{
+    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Creating Account", nil)
+                                                   messsage:nil loadingStyle:FFAlertViewLoadingStylePlain];
+    [alert showInView:self.view];
+    
+    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        [alert hide];
+        if (error) {
+            FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
+                                                     okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
+            [ealert showInView:self.view];
+            return;
+        }
+        FFSession *sesh = [FFSession sessionWithEmailAddress:result[@"email"] userClass:[FFUser class]];
+        [sesh registerAndLoginUsingFBAccessToken:accessToken success:^(id successObj) {
+            //
+        } failure:^(NSError *error) {
+            FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
+                                                     okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
+            [ealert showInView:self.view];
+        }];
+    }];
 }
 
 // GESTURE RECOGNIZER --------------------------------------------------------------------------------------------------
