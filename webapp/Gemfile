@@ -28,9 +28,9 @@ gem 'twitter-bootstrap-rails'
 gem 'devise'
 gem 'omniauth'
 gem 'omniauth-facebook'
+gem 'omniauth-facebook-access-token'
 gem 'mustwin_devise_oauth2_providable', '1.1.5'#, :path => '/Users/mike/code/devise_oauth2_providable'
 gem 'protected_attributes'
-gem 'rails_admin'
 
 # data processing
 gem 'nokogiri'

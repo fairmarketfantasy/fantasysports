@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
          :oauth2_authorization_code_grantable,
          :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable
-  devise :omniauthable, :omniauth_providers => [:facebook]
+  devise :omniauthable, :omniauth_providers => [:facebook, :facebook_access_token]
 
   attr_accessible :name, :username, :provider, :uid, :unconfirmed_email, :image_url, :takes_tokens,
       :email, :password, :password_confirmation, :remember_me, :first_name,
