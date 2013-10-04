@@ -459,8 +459,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if (self.navigationController && self.navigationController.viewControllers.count && self.navigationController.viewControllers[0] != self) {
-        self.navigationItem.leftBarButtonItem = [FFStyle backBarItemForController:self];
+    if (self.navigationController && self.navigationController.viewControllers.count
+            && self.navigationController.viewControllers[0] != self) {
+        self.navigationItem.leftBarButtonItems = [FFStyle backBarItemsForController:self];
     }
 }
 

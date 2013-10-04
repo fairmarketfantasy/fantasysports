@@ -46,13 +46,17 @@
 {
     [super viewDidLoad];
 
-    UIButton *cancel = [FFStyle clearButtonWithText:NSLocalizedString(@"Close", nil) borderColor:[FFStyle white]];
-    cancel.frame = CGRectMake(0, 0, 70, 30);
-    [cancel addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *cancel = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Close", nil) borderColor:[FFStyle white]];
+//    cancel.frame = CGRectMake(0, 0, 70, 30);
+//    [cancel addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:cancel];
     
-    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:cancel];
-    
-    self.navigationItem.leftBarButtonItem = close;
+    self.navigationItem.leftBarButtonItems = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Close", nil)
+                                                                           borderColor:[FFStyle white]
+                                                                                target:self
+                                                                              selector:@selector(close:)
+                                                                         leftElseRight:YES];
     [self setupToolBarItems];
     
     self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
@@ -163,7 +167,7 @@
                                                                             action:nil];
     space_.width = 60.0f;
     
-    self.toolbarItems = @[self.stopLoadingButton, space, self.backButton, space_, self.forwardButton, space, actionButton];
+    self.toolbarItems = @[self.stopLoadingButton, space]; // , self.backButton, space_, self.forwardButton, space, actionButton];
 }
 
 - (void)toggleState
