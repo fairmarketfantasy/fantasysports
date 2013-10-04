@@ -112,6 +112,7 @@
     if (self.session != nil) {
 //        [self.session syncUser];
         [self pollUser];
+        [self.session syncPushToken];
         [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
         [self setNeedsStatusBarAppearanceUpdate];
     } else {
@@ -163,7 +164,6 @@
 
 - (void)setupSignUpView
 {
-    
     // background
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loginbg.png"]];
     bg.contentMode = UIViewContentModeTop;
@@ -464,6 +464,7 @@ validate_error:
         [progressAlert hide];
         [[self.view findFirstResponder] resignFirstResponder];
         self.session = sesh;
+        [self.session syncPushToken];
         [FFSession setLastUsedSession:sesh];
         [self performSegueWithIdentifier:@"GotoHome" sender:nil];
         NSLog(@"successful login %@", user);
@@ -581,6 +582,7 @@ validate_error:
         [[self.view findFirstResponder] resignFirstResponder];
         [FFSession setLastUsedSession:sesh];
         self.session = sesh;
+        [self.session syncPushToken];
         [self performSegueWithIdentifier:@"GotoHome" sender:nil];
     };
     
