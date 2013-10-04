@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131003195330) do
+ActiveRecord::Schema.define(version: 20131004061656) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -340,12 +340,14 @@ ActiveRecord::Schema.define(version: 20131003195330) do
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
 
   create_table "transaction_records", force: true do |t|
-    t.string  "event",                      null: false
+    t.string  "event",                              null: false
     t.integer "user_id"
     t.integer "roster_id"
     t.integer "amount"
     t.integer "contest_id"
-    t.boolean "is_tokens",  default: false
+    t.boolean "is_tokens",          default: false
+    t.string  "ios_transaction_id"
+    t.text    "transaction_data"
   end
 
   add_index "transaction_records", ["roster_id"], name: "index_transaction_records_on_roster_id", using: :btree
