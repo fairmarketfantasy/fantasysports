@@ -1,20 +1,19 @@
 class PushDevicesController < ApplicationController
 
   def create # or update
-    data = JSON.parse(request.body.read)
-    device = PushDevice.where(:device_id => data['device_id']).first
+    device = PushDevice.where(:device_id => params['device_id']).first
     if device
-      device.update_attributes(:token => data['token'], :environment => data['environment'])
+      device.update_attributes(:token => params['token'], :environment => params['environment'])
       if current_user != device.user
         device.user = current_user
         device.save!
       end
     else
       device = PushDevice.new(
-          :device_id => data['device_id'],
-          :device_type => data['device_type'],
-          :token => data['token'],
-          :environment => data['environment'])
+          :device_id => params['device_id'],
+          :device_type => params['device_type'],
+          :token => params['token'],
+          :environment => params['environment'])
       device.user = current_user
       device.save!
     end 
