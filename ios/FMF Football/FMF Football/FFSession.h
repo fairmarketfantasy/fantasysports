@@ -8,6 +8,9 @@
 
 #import "SBSession.h"
 
+#define FFDidReceiveRemoteNotificationAuthorization @"gotpushtoken"
+#define FFDidReceiveRemoteNotification @"gotpush"
+
 @interface FFSession : SBSession
 
 @end
