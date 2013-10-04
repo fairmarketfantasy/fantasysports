@@ -58,6 +58,10 @@ angular.module("app.controllers")
     }
   };
 
+  $scope.toggleChecked = function(checkedN){
+    $scope[checkedN] = !$scope[checkedN];
+  };
+
   var fetchContest = function() {
     if (!rosters.currentRoster.contest_id) { return; }
     rosters.fetchContest(rosters.currentRoster.contest_id).then(function(rosters) {

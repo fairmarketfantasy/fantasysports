@@ -5,7 +5,8 @@
       <div ng-show="market.state == 'published' || market.state == 'opened'" class="players-area">
         <div class="clearfix">
           <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
-          <input name="removeLowFilter" class="" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" /><label for="removeLowFilter">Remove the bad</label>
+
+          
 
           <div class="dropdown game-dropdown">
             <div class="btn-group">
@@ -19,12 +20,23 @@
             </div>
           </div>
         </div>
+        <div class="clearfix">
+          <label class="checkbox light-check" for="removeLowFilter" ng-click="toggleChecked('checked1')" ng-class="{'checked': checked1}">
+            <span class="icons">
+              <span class="first-icon fui-checkbox-unchecked"></span>
+              <span class="second-icon fui-checkbox-checked"></span>
+            </span>
+            Remove Back-ups
+          </label>
+        
+          <input id="removeLowFilter" class="hide" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" />
 
-        <ul ng-show="filter == 'positions'" class="positions-list clearfix hide">
-          <li class="position-item" ng-repeat="position in rosters.uniqPositionList">
-            <a class="position-link" ng-click="filterPlayers({position: position}, true)" href="javascript://">{{position}}</a>
-          </li>
-        </ul> 
+          <ul ng-show="filter == 'positions'" class="positions-list clearfix">
+            <li class="position-item" ng-repeat="position in rosters.uniqPositionList">
+              <a class="position-link" ng-click="filterPlayers({position: position}, true)" href="javascript://">{{position}}</a>
+            </li>
+          </ul> 
+        </div>
           <div class="player-overflow">
             <table class="players-table table table-striped">
               <thead>

@@ -485,7 +485,16 @@ footer {
     color: @green-sea;
   }
 }
-
+.light-check {
+  color: @offWhite;
+  float: left;
+  margin-top: 15px;
+  margin-bottom: 0;
+  font-size: 13px;
+}
+.light-check.checked, .light-check.checked .icons {
+  color: @success;
+}
 .mini-center {
   width: 50%;
   margin: 6px auto 0;
@@ -571,6 +580,8 @@ footer {
 .positions-list {
   margin: 10px 0 0;
   padding: 0;
+  width: 54%;
+  float: right;
 }
 .position-item {
   float: left;
