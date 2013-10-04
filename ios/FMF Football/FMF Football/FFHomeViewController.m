@@ -195,7 +195,8 @@ FFCreateGameViewControllerDelegate>
 
 - (void)updateUserCell
 {
-    [self.tableView reloadData];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
+                          withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (void)finishInProgressRoster:(id)sender
