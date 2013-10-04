@@ -20,11 +20,11 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.frame = CGRectMake(0, 0, 105, 44);
+        self.frame = CGRectMake(0, 0, 107, 44);
         self.backgroundColor = [UIColor clearColor];
         self.opaque = YES;
         
-        UILabel *balance = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 44)];
+        UILabel *balance = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 100, 44)];
         balance.backgroundColor = [UIColor clearColor];
         balance.font = [FFStyle regularFont:12];
         balance.textColor = [UIColor whiteColor];
@@ -32,7 +32,7 @@
         balance.userInteractionEnabled = NO;
         [self addSubview:balance];
         
-        UIView *background = [[UIView alloc] initWithFrame:CGRectMake(56, 10, 49, 24)];
+        UIView *background = [[UIView alloc] initWithFrame:CGRectMake(66, 10, 49, 24)];
         background.backgroundColor = [FFStyle brightGreen];
         background.layer.borderWidth = 1;
         background.layer.borderColor = [FFStyle white].CGColor;

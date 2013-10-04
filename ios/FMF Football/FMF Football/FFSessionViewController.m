@@ -15,6 +15,8 @@
 #import "FFUser.h"
 #import "FFSession.h"
 #import "FFWebViewController.h"
+#import "FFNavigationBarItemView.h"
+
 
 @interface FFSessionViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate, FFBalanceViewDataSource>
 {
