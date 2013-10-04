@@ -377,7 +377,6 @@ ActiveRecord::Schema.define(version: 20131003195330) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
-    t.string   "avatar"
     t.string   "username"
   end
 
