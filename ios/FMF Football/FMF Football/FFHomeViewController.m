@@ -109,9 +109,20 @@ FFCreateGameViewControllerDelegate>
     _gameButtonView.delegate = self;
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)showBalance:(UIButton *)seder
 {
     [self performSegueWithIdentifier:@"GotoTokenPurchase" sender:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)viewDidAppear:(BOOL)animated

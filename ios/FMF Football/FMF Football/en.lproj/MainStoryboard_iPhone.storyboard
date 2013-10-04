@@ -8,7 +8,7 @@
         <!--Navigation Controller-->
         <scene sceneID="t8J-Pa-n9W">
             <objects>
-                <navigationController definesPresentationContext="YES" toolbarHidden="NO" id="cHg-D4-mfC" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" toolbarHidden="NO" id="cHg-D4-mfC" customClass="FFNavigationController" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="O4K-zR-KET">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -85,7 +85,7 @@
         <!--Navigation Controller-->
         <scene sceneID="B5d-DO-DPj">
             <objects>
-                <navigationController definesPresentationContext="YES" id="tRX-Wo-l5Q" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="tRX-Wo-l5Q" customClass="FFNavigationController" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="krV-Dz-KRZ">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -129,7 +129,7 @@
         <!--Navigation Controller-->
         <scene sceneID="AbY-Zq-EXM">
             <objects>
-                <navigationController definesPresentationContext="YES" id="gvr-Qo-eMi" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="gvr-Qo-eMi" customClass="FFNavigationController" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="zJa-sO-jGH">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -286,7 +286,7 @@
         <!--Navigation Controller-->
         <scene sceneID="0GX-ih-Gev">
             <objects>
-                <navigationController definesPresentationContext="YES" id="U8M-Km-wAI" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="U8M-Km-wAI" customClass="FFNavigationController" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="xgs-kH-GBW">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -320,7 +320,7 @@
         <!--Navigation Controller-->
         <scene sceneID="ZpD-iP-xkT">
             <objects>
-                <navigationController definesPresentationContext="YES" id="dLz-wm-uBh" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="dLz-wm-uBh" customClass="FFNavigationController" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="GNJ-ix-muR"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="MCu-U4-oZh">
                         <autoresizingMask key="autoresizingMask"/>

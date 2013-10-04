@@ -76,6 +76,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
 //    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
 }
@@ -111,6 +112,7 @@
 //        [self.session syncUser];
         [self pollUser];
         [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
+        [self setNeedsStatusBarAppearanceUpdate];
     } else {
         [self.tickerDataSource refresh];
 //        [self showControllerInDrawer:self.maximizedTicker
