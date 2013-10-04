@@ -208,6 +208,8 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
                                        forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"]
                                        forBarMetrics:UIBarMetricsLandscapePhone];
+    [[UINavigationBar appearance] setBarTintColor:[FFStyle darkGreen]];
+    [[UINavigationBar appearance] setTintColor:[FFStyle white]];
     
     [[UINavigationBar appearance] setTitleTextAttributes:@{
                                 UITextAttributeTextColor: [FFStyle white],
@@ -217,6 +219,9 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
      }];
     
     [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:-3 forBarMetrics:UIBarMetricsDefault];
+    
+    [[UIToolbar appearance] setBarTintColor:[FFStyle darkGreen]];
+    [[UIToolbar appearance] setTintColor:[FFStyle white]];
     
     [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"]
                             forToolbarPosition:UIToolbarPositionAny

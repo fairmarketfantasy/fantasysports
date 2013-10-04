@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="YCa-BN-ps4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="YCa-BN-ps4">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
+        <deployment defaultVersion="1552" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -27,8 +28,12 @@
         <scene sceneID="nZJ-d5-kHC">
             <objects>
                 <viewController id="hU2-c5-iT7" customClass="FFWebViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lpT-aA-FBK"/>
+                        <viewControllerLayoutGuide type="bottom" id="G1w-12-dUs"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="jVT-Fx-ufJ">
-                        <rect key="frame" x="0.0" y="64" width="320" height="460"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -42,8 +47,12 @@
         <scene sceneID="Sek-pl-AkR">
             <objects>
                 <viewController id="yyQ-O8-5CC" customClass="FFSessionViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="NaG-LE-Ktq"/>
+                        <viewControllerLayoutGuide type="bottom" id="Ee1-gr-vDD"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="cYQ-bN-4L9">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -92,8 +101,12 @@
         <scene sceneID="Vzx-Xm-1VD">
             <objects>
                 <viewController id="jlJ-fd-tQu" customClass="FFHomeViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Us4-WD-VvG"/>
+                        <viewControllerLayoutGuide type="bottom" id="FxQ-se-JaL"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="HH2-Ui-QX7">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -132,8 +145,12 @@
         <scene sceneID="J0I-7M-4nr">
             <objects>
                 <viewController id="IOK-Ey-2eg" customClass="FFCreateGameViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ubp-Kv-ofH"/>
+                        <viewControllerLayoutGuide type="bottom" id="JMH-1t-ZR9"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Fgi-Q2-xWT">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -154,8 +171,12 @@
         <scene sceneID="MKG-hN-wyb">
             <objects>
                 <viewController id="tib-l9-5N3" customClass="FFOptionSelectController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="blH-ys-CwD"/>
+                        <viewControllerLayoutGuide type="bottom" id="4bC-5L-ZdA"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="wg8-03-gr4">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -178,8 +199,12 @@
         <scene sceneID="VwE-U3-ibh">
             <objects>
                 <viewController id="GvS-oa-fs3" customClass="FFValueEntryController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Q9Y-w7-O9i"/>
+                        <viewControllerLayoutGuide type="bottom" id="3t4-g4-pbn"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="3lB-qV-5VQ">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -193,8 +218,12 @@
         <scene sceneID="71A-Hu-P0F">
             <objects>
                 <viewController id="p8F-hD-oki" customClass="FFContestViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9ah-IZ-mCF"/>
+                        <viewControllerLayoutGuide type="bottom" id="4Ow-ZD-iNR"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="qsG-FL-iam">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -214,8 +243,12 @@
         <scene sceneID="mPE-7E-tZa">
             <objects>
                 <viewController id="cwg-tH-LTB" customClass="FFContestEntrantsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fRs-bF-wyX"/>
+                        <viewControllerLayoutGuide type="bottom" id="toj-zM-tO5"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="x5f-Ku-Xoy">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -232,8 +265,12 @@
         <scene sceneID="tUY-on-bAW">
             <objects>
                 <viewController id="7Pd-eE-fcY" customClass="FFContestViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lW2-LH-oKg"/>
+                        <viewControllerLayoutGuide type="bottom" id="tRf-qV-hKj"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="gX6-RE-arx">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -250,8 +287,12 @@
         <scene sceneID="0tD-jC-KGB">
             <objects>
                 <viewController id="akw-3p-maf" customClass="FFInviteViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="I0K-Ig-tfG"/>
+                        <viewControllerLayoutGuide type="bottom" id="r4V-eZ-uhF"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="bEP-nJ-eF1">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -281,8 +322,12 @@
         <scene sceneID="pPy-FI-lcF">
             <objects>
                 <viewController id="ocV-1w-9vs" customClass="FFTokenPurchaseViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qkJ-v7-awA"/>
+                        <viewControllerLayoutGuide type="bottom" id="FWu-6A-Xq0"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="k9z-Ne-4Nl">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -296,8 +341,12 @@
         <scene sceneID="U8n-i5-qSF">
             <objects>
                 <viewController id="grh-Mm-aP7" customClass="FFFindGameViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Hwi-jn-dEe"/>
+                        <viewControllerLayoutGuide type="bottom" id="DcN-TW-fwP"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="r4U-M0-ZUK">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -311,8 +360,12 @@
         <scene sceneID="IVF-Wj-l8j">
             <objects>
                 <viewController id="hCT-9z-KON" customClass="FFRosterViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="WVo-pq-gmg"/>
+                        <viewControllerLayoutGuide type="bottom" id="VkY-VQ-yk5"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="mwA-MK-sYY">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -333,10 +386,10 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Hte-By-9kI"/>
         <segue reference="Zjb-xv-NwD"/>
-        <segue reference="BCy-eg-VQx"/>
-        <segue reference="GXw-Uh-EhX"/>
+        <segue reference="Hte-By-9kI"/>
         <segue reference="u0q-yD-ZaH"/>
+        <segue reference="0q8-z9-AZT"/>
+        <segue reference="vCt-5X-syV"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -92,10 +92,16 @@
     cell.accessoryView = disc;
     
     // add separator to bottom
-    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(cell.contentView.frame),
-                                                           cell.contentView.frame.size.width, 1)];
+    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, 59, cell.contentView.frame.size.width, 1)];
     sep.backgroundColor = [UIColor colorWithWhite:1 alpha:.1];
+//    sep.translatesAutoresizingMaskIntoConstraints = NO;
+//    sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [cell.contentView addSubview:sep];
+//    [cell.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[sep]|"
+//                                                                             options:0 metrics:nil
+//                                                                               views:NSDictionaryOfVariableBindings(sep)]];
+    
+    cell.backgroundColor = [UIColor clearColor];
     
     return cell;
 }
