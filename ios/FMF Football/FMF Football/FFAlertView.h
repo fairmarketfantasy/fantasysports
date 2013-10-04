@@ -58,5 +58,6 @@ typedef enum {
 
 + (FFCustomButton *)redButtonTitled:(NSString *)str;
 + (FFCustomButton *)blueButtonTitled:(NSString *)str;
++ (FFCustomButton *)greyButtonTitled:(NSString *)str;
 
 @end

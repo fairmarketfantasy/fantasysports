@@ -120,6 +120,7 @@
                         <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoTerms" id="Hte-By-9kI"/>
                         <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoRules" id="4v0-56-RT2"/>
                         <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="8Up-JT-o81"/>
+                        <segue destination="OTg-9K-tZw" kind="push" identifier="GotoAccount" id="82M-rw-5uG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -352,6 +353,48 @@
             </objects>
             <point key="canvasLocation" x="2495" y="2094"/>
         </scene>
+        <!--My Account View Controller-->
+        <scene sceneID="cU3-IP-EBC">
+            <objects>
+                <viewController id="OTg-9K-tZw" customClass="FFMyAccountViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DRa-fZ-v4E"/>
+                        <viewControllerLayoutGuide type="bottom" id="Sj9-Cb-63u"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="tv0-hA-rxX">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="lih-EG-unW"/>
+                    <connections>
+                        <segue destination="pZl-V7-dzu" kind="push" identifier="GotoEmail" id="cDu-SF-FU8"/>
+                        <segue destination="pZl-V7-dzu" kind="push" identifier="GotoName" id="3y5-bZ-Hxu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hJ2-Qz-vm2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="636" y="2502"/>
+        </scene>
+        <!--Value Entry Controller-->
+        <scene sceneID="Prn-Or-j2f">
+            <objects>
+                <viewController id="pZl-V7-dzu" customClass="FFValueEntryController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="GHr-ma-pXP"/>
+                        <viewControllerLayoutGuide type="bottom" id="I0b-cn-LQA"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="j4o-io-8qU">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="ZTR-Ha-ceW"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="amf-BJ-ueR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1091" y="2502"/>
+        </scene>
         <!--Find Game View Controller-->
         <scene sceneID="U8n-i5-qSF">
             <objects>
@@ -401,10 +444,11 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="vCt-5X-syV"/>
+        <segue reference="0q8-z9-AZT"/>
         <segue reference="Zjb-xv-NwD"/>
         <segue reference="Hte-By-9kI"/>
+        <segue reference="3y5-bZ-Hxu"/>
         <segue reference="u0q-yD-ZaH"/>
-        <segue reference="0q8-z9-AZT"/>
-        <segue reference="vCt-5X-syV"/>
     </inferredMetricsTieBreakers>
 </document>
