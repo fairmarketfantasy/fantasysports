@@ -66,6 +66,11 @@
         _wins.textColor = [FFStyle greyTextColor];
         _wins.text = @"23 wins (0.492 win %)";
         [self addSubview:_wins];
+        
+        _finishInProgressRoster = [FFStyle coloredButtonWithText:NSLocalizedString(@"In Progress Roster", nil)
+                                                           color:[FFStyle brightOrange] borderColor:[FFStyle white]];
+        _finishInProgressRoster.frame = CGRectMake(15, 110, 290, 35);
+        [self addSubview:_finishInProgressRoster];
     }
     return self;
 }
@@ -84,6 +89,14 @@
                   [_user.totalWins integerValue], [_user.winPercentile floatValue]];
     NSURL *url = [NSURL URLWithString:_user.imageUrl];
     [_image setImageWithURL:url placeholderImage:[UIImage imageNamed:@"defaultuser.png"]];
+    
+    if (user.inProgressRoster != nil) {
+        _finishInProgressRoster.hidden = NO;
+//        self.frame = CGRectMake(0, 0, 320, 162);
+    } else {
+        _finishInProgressRoster.hidden = YES;
+//        self.frame = CGRectMake(0, 0, 320, 122);
+    }
 }
 
 @end

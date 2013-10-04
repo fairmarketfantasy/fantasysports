@@ -464,6 +464,7 @@ validate_error:
         [progressAlert hide];
         [[self.view findFirstResponder] resignFirstResponder];
         self.session = sesh;
+        [self pollUser];
         [self.session syncPushToken];
         [FFSession setLastUsedSession:sesh];
         [self performSegueWithIdentifier:@"GotoHome" sender:nil];
@@ -582,6 +583,7 @@ validate_error:
         [[self.view findFirstResponder] resignFirstResponder];
         [FFSession setLastUsedSession:sesh];
         self.session = sesh;
+        [self pollUser];
         [self.session syncPushToken];
         [self performSegueWithIdentifier:@"GotoHome" sender:nil];
     };
