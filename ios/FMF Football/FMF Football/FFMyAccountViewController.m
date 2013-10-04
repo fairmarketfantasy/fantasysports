@@ -19,6 +19,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) FFAlertView *alert;
+@property (nonatomic) BOOL shouldSave;
 
 @end
 
@@ -84,7 +85,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
         return 0;
     }
     if (section == 4) {
-        return 3;
+        return 2;
     }
     return 1;
 }
@@ -192,10 +193,10 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
         if (indexPath.row == 0) {
             lab.text = NSLocalizedString(@"Change Password", nil);
         }
+//        else if (indexPath.row == 1) {
+//            lab.text = NSLocalizedString(@"Delete Account", nil);
+//        }
         else if (indexPath.row == 1) {
-            lab.text = NSLocalizedString(@"Delete Account", nil);
-        }
-        else if (indexPath.row == 2) {
             lab.text = NSLocalizedString(@"Sign out", nil);
         }
     }
@@ -258,7 +259,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    UIImage *img = info[UIImagePickerControllerOriginalImage];
+//    UIImage *img = info[UIImagePickerControllerOriginalImage];
 
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -293,6 +294,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
         c.delegate = self;
         c.sectionTitle = NSLocalizedString(@"Set Email", nil);
     }
+    _shouldSave = YES;
 }
 
 - (void)valueEntryController:(FFValueEntryController *)cont didEnterValue:(NSString *)value
@@ -306,6 +308,37 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     }
     [self.tableView reloadData];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)valueEntryController:(FFValueEntryController *)cont didUpdateValue:(NSString *)value
+{
+    FFUser *user = (FFUser *)self.session.user;
+    if ([cont.name isEqualToString:@"GotoName"]) {
+        user.name = value;
+    }
+    else if ([cont.name isEqualToString:@"GotoEmail"]) {
+        user.email = value;
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if (_shouldSave) {
+        FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Saving", nil) messsage:nil
+                                                   loadingStyle:FFAlertViewLoadingStylePlain];
+        [alert showInView:self.view];
+        FFUser *user = (FFUser *)self.session.user;
+        [user updateInBackgroundWithBlock:^(id successObj) {
+            [alert hide];
+        } failure:^(NSError *error) {
+            [alert hide];
+            FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
+                                                     okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
+            [ealert showInView:self.view];
+        }];
+        _shouldSave = NO;
+    }
 }
 
 @end
