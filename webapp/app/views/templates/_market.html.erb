@@ -9,7 +9,7 @@
   </ul>
   
   <div class="contest-list">
-    <h3 class="selected-market" ng-cloak>{{marketService.currentMarket.market_duration}} Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</h3>
+    <h3 class="selected-market" ng-cloak><span ng-show="marketService.currentMarket.market_duration == 'week'">Weekly</span><span ng-show="marketService.currentMarket.market_duration == 'day'">Daily</span> Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</h3>
 
     <ul class="games hide" ng-cloak>
       <li ng-repeat="game in games" ng-class="{started: gameStarted(game)}">
@@ -22,14 +22,14 @@
         <li class="contest-classes full-row">
           <h4>It's More Fun With Friends!</h4>
           <p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>
-          <a class="btn" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create a contest</a>
+          <a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create a contest</a>
         </li>
         <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses" ng-class="{'full-row': contestClass == '100k'}">
           <div ng-class="{'contest-copy': contestClass == '100k'}" >
             <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
             <h2>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
           </div>
-          <div ng-class="{'contest-copy': contestClass == '100k'}" >
+          <div ng-class="{'contest-copy contest-long': contestClass == '100k'}" >
             <p class="small-p">{{contestTypes[0].contest_class_desc}}</p>
             <ul class="contests no-no">
               <li class="enter-contest" ng-repeat="contestType in contestTypes">
