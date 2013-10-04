@@ -38,7 +38,7 @@ class UsersController < ApplicationController
   def add_tokens
     if params[:receipt] # From iOS
       data = Venice::Receipt.verify(params[:receipt]).to_h
-      current_user.token_balance += User::TOKEN_SKUS[data[:bid]][:tokens]
+      current_user.token_balance += User::TOKEN_SKUS[data[:product_id]][:tokens]
       current_user.save!
       render_api_response current_user
     else
