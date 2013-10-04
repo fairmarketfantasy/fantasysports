@@ -230,9 +230,9 @@
                     <navigationItem key="navigationItem" id="wCm-06-7DN"/>
                     <connections>
                         <segue destination="cwg-tH-LTB" kind="push" identifier="GotoContestEntrants" id="sI8-Z0-TJP"/>
-                        <segue destination="akw-3p-maf" kind="modal" identifier="GotoInvite" id="VdQ-vO-Afc"/>
                         <segue destination="7Pd-eE-fcY" kind="push" identifier="GotoPickPlayer" id="z5M-Gc-4YQ"/>
                         <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="vCt-5X-syV"/>
+                        <segue destination="U8M-Km-wAI" kind="modal" identifier="GotoInvite" id="3an-pR-290"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rVk-lt-2Nf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -283,6 +283,21 @@
             </objects>
             <point key="canvasLocation" x="2839" y="686"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="0GX-ih-Gev">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="U8M-Km-wAI" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="xgs-kH-GBW">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="akw-3p-maf" kind="relationship" relationship="rootViewController" id="tdj-1n-dCp"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="l0c-pS-3dm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2895" y="1538"/>
+        </scene>
         <!--Invite View Controller-->
         <scene sceneID="0tD-jC-KGB">
             <objects>
@@ -300,7 +315,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ra3-ii-8ZR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2452" y="1133"/>
+            <point key="canvasLocation" x="3344" y="1529"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ZpD-iP-xkT">
