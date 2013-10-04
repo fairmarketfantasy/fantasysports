@@ -905,12 +905,21 @@ input[type="text"].players-search {
   line-height: 58px;
   margin-top: 22px;    
 }
+.table th, .table td {
+  font-size: 13px;
+}
+textarea[class*="span"] {
+  width: 94% !important;
+}
 
 /* Media Queries: 980-1199px
   ------------------------------------------------------ */
 @media (min-width: 980px) and (max-width: 1199px) {
   .contest-copy .contest-image {
     width: 98%;
+  }
+  .btn.btn-small {
+    padding: 4px 7px 3px;
   }
   .user-dash .btn.btn-small {
     padding: 4px;
@@ -935,6 +944,7 @@ input[type="text"].players-search {
   .light-check {
     font-size: 11px;
     line-height: 1.4;
+    padding-left: 26px;
   }
   .contest-title {
     font-size: 34px;

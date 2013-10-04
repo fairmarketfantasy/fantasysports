@@ -1,4 +1,22 @@
-<h3>Support</h3>
+<div class="alert alert-error">
+  <h3>Need Some Help?</h3>
+  <p>The fastest way to find help is our FAQ. If you can't find an answer please feel free to submit a support request and a representative will respond ASAP.</p>
+
+  <form class="clearfix no-no">
+    <div flash-alert active-class="alert in" class="flash fade" >
+      <strong class="alert-heading"></strong>
+      <span class="alert-message">{{flash.message}}</span>
+    </div>
+    <div>
+      <input type='text' placeholder='Message Title' class='mvm span7' /><br />
+      <input type='email' placeholder='Email' class='mvm span7' /><br />
+      <textarea class="mvm span7">Your Message Here</textarea>
+      
+      <p><a href="javascript://" class="btn btn-primary btn-create-contest" ng-class="{ disabled: !isValid()}">Submit Support Request</a></p>
+    </div>
+  </form>
+
+</div>
 
 <h4>FAQ</h4>
 
