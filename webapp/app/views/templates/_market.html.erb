@@ -26,7 +26,8 @@
         </li>
         <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses" ng-class="{'full-row': contestClass == '100k'}">
           <div ng-class="{'contest-copy': contestClass == '100k'}" >
-            <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
+            <img ng-hide="contestClass == 'h2h rr'" ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
+            <img ng-show="contestClass == 'h2h rr'" ng-src="/assets/icon-h2h-rr.png" class="contest-image" />
             <h2>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
           </div>
           <div ng-class="{'contest-copy contest-long': contestClass == '100k'}" >
