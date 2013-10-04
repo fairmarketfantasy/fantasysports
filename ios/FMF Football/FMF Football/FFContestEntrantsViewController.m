@@ -36,15 +36,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
-                                                               self.view.frame.size.height)];
-    _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:_tableView];
+    if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+        [_tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        id topGuide = self.topLayoutGuide;
+        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_tableView, topGuide);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topGuide][_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+    } else {
+        _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
     _tableView.backgroundColor = [UIColor clearColor];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-    [self.view addSubview:_tableView];
     
     UIButton *balanceView = [self.sessionController balanceView];
     [balanceView addTarget:self action:@selector(showBalance:) forControlEvents:UIControlEventTouchUpInside];

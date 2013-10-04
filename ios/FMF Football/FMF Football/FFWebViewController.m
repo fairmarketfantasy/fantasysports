@@ -46,31 +46,35 @@
 {
     [super viewDidLoad];
 
-    UIButton *closeButt = [UIButton buttonWithType:UIButtonTypeCustom];
-    closeButt.titleLabel.font = [FFStyle regularFont:15];
-    closeButt.titleLabel.textColor = [FFStyle white];
-    closeButt.frame = CGRectMake(0, 0, 56, 44);
-    [closeButt setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
-    [closeButt addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
+    UIButton *cancel = [FFStyle clearButtonWithText:NSLocalizedString(@"Close", nil) borderColor:[FFStyle white]];
+    cancel.frame = CGRectMake(0, 0, 70, 30);
+    [cancel addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
     
-    UIButton *sendButt = [UIButton buttonWithType:UIButtonTypeCustom];
-    sendButt.titleLabel.font = [FFStyle regularFont:15];
-    sendButt.titleLabel.textColor = [FFStyle white];
-    sendButt.frame = CGRectMake(0, 0, 56, 44);
-    [sendButt setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
-    [sendButt addTarget:self action:@selector(done:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:closeButt];
-    UIBarButtonItem *send = [[UIBarButtonItem alloc] initWithCustomView:sendButt];
+    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:cancel];
     
     self.navigationItem.leftBarButtonItem = close;
-    self.navigationItem.rightBarButtonItem = send;
     [self setupToolBarItems];
     
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     self.webView.scalesPageToFit = YES;
     [self.view addSubview:self.webView];
+    
+    if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+        [_webView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        id topGuide = self.topLayoutGuide;
+        id bottomGuide = self.bottomLayoutGuide;
+        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_webView, topGuide, bottomGuide);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topGuide][_webView][bottomGuide]"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_webView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+    } else {
+        _webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -103,6 +107,7 @@
         UIGraphicsBeginImageContextWithOptions(size, NO, 0.0f);
         
         UIBezierPath *path = [UIBezierPath bezierPath];
+        [[UIColor whiteColor] set];
         [path moveToPoint:CGPointMake(0.0f, 8.0f)];
         [path addLineToPoint:CGPointMake(14.0f, 0.0f)];
         [path addLineToPoint:CGPointMake(14.0f, 16.0f)];

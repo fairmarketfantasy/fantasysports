@@ -36,6 +36,11 @@
     return self;
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)showBanner:(NSString *)text target:(id)target selector:(SEL)sel animated:(BOOL)animated
 {
     if (_banner) {
@@ -378,9 +383,14 @@
     [_menuController viewWillAppear:YES];
     _menuController.view.alpha = 0;
     [self.view addSubview:_menuController.view];
+    
+    CGFloat topOffset = 0;
+    if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+        topOffset = self.topLayoutGuide.length;
+    }
     [UIView animateWithDuration:.25 animations:^{
         _menuController.view.alpha = 1;
-        _menuController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+        _menuController.view.frame = CGRectMake(0, topOffset, self.view.frame.size.width, self.view.frame.size.height);
     } completion:^(BOOL finished) {
         if (finished) {
             [_menuController viewDidAppear:YES];

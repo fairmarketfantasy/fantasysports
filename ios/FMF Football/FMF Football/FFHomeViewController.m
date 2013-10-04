@@ -67,13 +67,27 @@ FFCreateGameViewControllerDelegate>
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:balanceView];
     
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:_tableView];
+    if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+        [_tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        id topGuide = self.topLayoutGuide;
+        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_tableView, topGuide);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topGuide][_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+    } else {
+        _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
     _tableView.delegate = self;
     _tableView.dataSource = self;
-    _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"MarketSelectorCell"];
     [_tableView registerClass:[FFContest2UpTabelViewCell class] forCellReuseIdentifier:@"ContestCell"];
-    [self.view addSubview:_tableView];
     
     _marketSelector = [[FFMarketSelector alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     _marketSelector.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;

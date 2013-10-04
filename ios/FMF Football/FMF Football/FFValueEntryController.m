@@ -32,15 +32,27 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
-                                                                   self.view.frame.size.height)
-                                                  style:UITableViewStylePlain];
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:_tableView];
+    if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+        [_tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        id topGuide = self.topLayoutGuide;
+        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_tableView, topGuide);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topGuide][_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+    } else {
+        _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-    _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:_tableView];
 }
 
 - (void)didReceiveMemoryWarning
