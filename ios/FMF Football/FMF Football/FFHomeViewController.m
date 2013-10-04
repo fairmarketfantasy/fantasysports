@@ -21,6 +21,17 @@
 #import "FFNavigationBarItemView.h"
 
 
+@interface Fart : UITableViewCell
+
+@end
+
+@implementation Fart
+
+//
+
+@end
+
+
 @interface FFHomeViewController ()
 <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
 FFMarketSelectorDelegate, FFGameButtonViewDelegate, FFContest2UpTableViewCellDelegate,
@@ -97,13 +108,14 @@ FFCreateGameViewControllerDelegate>
     _tableView.dataSource = self;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"MarketSelectorCell"];
+    [_tableView registerClass:[Fart class] forCellReuseIdentifier:@"UserBitCell"];
     [_tableView registerClass:[FFContest2UpTabelViewCell class] forCellReuseIdentifier:@"ContestCell"];
     
     _marketSelector = [[FFMarketSelector alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     _marketSelector.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _marketSelector.delegate = self;
     
-    _userBit = [[FFUserBitView alloc] initWithFrame:CGRectMake(0, 0, 320, 122)];
+//    _userBit = [[FFUserBitView alloc] initWithFrame:CGRectMake(0, 0, 320, 122)];
     
     _gameButtonView = [[FFGameButtonView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     _gameButtonView.delegate = self;
@@ -154,7 +166,9 @@ FFCreateGameViewControllerDelegate>
     
     _marketSelector.markets = [_markets allObjects];
     
-    _userBit.user = (FFUser *)self.session.user;
+//    _userBit.user = (FFUser *)self.session.user;
+//    [_userBit.finishInProgressRoster addTarget:self action:@selector(finishInProgressRoster:)
+//                              forControlEvents:UIControlEventTouchUpInside];
     
     [_tableView reloadData];
     
@@ -171,9 +185,35 @@ FFCreateGameViewControllerDelegate>
 
 - (void)didUpdateUser:(NSNotification *)note
 {
-    FFUser *user = note.userInfo[FFUserKey];
-    if (user) {
-        _userBit.user = user;
+//    FFUser *user = note.userInfo[FFUserKey];
+//    if (user) {
+//        _userBit.user = user;
+        // work around for a lame memory leak
+        [self performSelector:@selector(updateUserCell) withObject:nil afterDelay:0.001];
+//    }
+}
+
+- (void)updateUserCell
+{
+    [self.tableView reloadData];
+}
+
+- (void)finishInProgressRoster:(id)sender
+{
+    FFRoster *rost = [(FFUser *)self.session.user getInProgressRoster];
+    if (rost) {
+        FFAlertView *loading = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading", nil)
+                                                         messsage:nil loadingStyle:FFAlertViewLoadingStylePlain];
+        [loading showInView:self.view];
+        [rost refreshInBackgroundWithBlock:^(id successObj) {
+            [loading hide];
+            [self performSegueWithIdentifier:@"GotoRoster" sender:nil context:successObj];
+        } failure:^(NSError *error) {
+            [loading hide];
+            FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
+                                                     okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
+            [ealert showInView:self.view];
+        }];
     }
 }
 
@@ -323,6 +363,10 @@ FFCreateGameViewControllerDelegate>
 {
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
+            FFUser *user = (FFUser *)self.session.user;
+            if (user.inProgressRoster != nil) {
+                return 162;
+            }
             return 122;
         } else if (indexPath.row == 2) {
             return 58;
@@ -335,8 +379,12 @@ FFCreateGameViewControllerDelegate>
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
-    if (indexPath.section == 0) {        
-        cell = [tableView dequeueReusableCellWithIdentifier:@"MarketSelectorCell" forIndexPath:indexPath];
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"UserBitCell" forIndexPath:indexPath];
+        } else {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"MarketSelectorCell" forIndexPath:indexPath];
+        }
         [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
         UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(cell.contentView.frame)-1, 300, 1)];
@@ -344,7 +392,16 @@ FFCreateGameViewControllerDelegate>
         sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         
         if (indexPath.row == 0) {
-            [cell.contentView addSubview:_userBit];
+            FFUser *user = (FFUser *)self.session.user;
+            CGFloat height = 122;
+            if (user.inProgressRoster != nil) {
+                height = 162;
+            }
+            FFUserBitView *userBit = [[FFUserBitView alloc] initWithFrame:CGRectMake(0, 0, 320, height)];
+            userBit.user = (FFUser *)self.session.user;
+            [userBit.finishInProgressRoster addTarget:self action:@selector(finishInProgressRoster:)
+                                      forControlEvents:UIControlEventTouchUpInside];
+            [cell.contentView addSubview:userBit];
         } else if (indexPath.row == 1) {
             [cell.contentView addSubview:_marketSelector];
         } else if (indexPath.row == 2) {

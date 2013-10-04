@@ -13,4 +13,6 @@
 
 @property (nonatomic) FFUser *user;
 
+@property (nonatomic) UIButton *finishInProgressRoster;
+
 @end

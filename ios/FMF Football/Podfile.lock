@@ -40,7 +40,7 @@ PODS:
     - SecureUDID (~> 1.1)
     - sqlite3 (~> 3.8.0.2)
   - SecureUDID (1.1)
-  - SparkInspector (1.0.12)
+  - SparkInspector (1.0.13)
   - sqlite3 (3.8.0.2):
     - sqlite3/common
   - sqlite3/common (3.8.0.2)
@@ -73,7 +73,7 @@ SPEC CHECKSUMS:
   RHAddressBook: 64f78a4058e0a7849275c970bf19fe195edf94d0
   SBData: 84cdf6a4cc52adcfa4f1b2e91a5d1d6a28470ff7
   SecureUDID: f29e17c7fc56968b6c42ce328b901a9fec87bb44
-  SparkInspector: 217a5276cd35ba6db71578147f95734797b71710
+  SparkInspector: 4bd64457d0d8b488b071839cfa7d459fcc33c967
   sqlite3: da2547a00213287224486db2893bb9c181c6f8d2
 
 COCOAPODS: 0.25.0

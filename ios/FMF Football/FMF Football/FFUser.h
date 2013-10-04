@@ -8,7 +8,12 @@
 
 #import "SBUser.h"
 
+
 #define FF_EMAIL_REGEX @"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*|^\"([\001-\010\013\014\016-\037!#-\\[\\]-\177]|\\[\001-011\013\014\016-\177])*\")@(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\\.)+[A-Z]{2,6}\\.?$"
+
+
+@class FFRoster;
+
 
 @interface FFUser : SBUser
 
@@ -21,5 +26,8 @@
 @property (nonatomic) NSString      *email;
 @property (nonatomic) SBInteger     *totalPoints;
 @property (nonatomic) SBInteger     *totalWins;
+@property (nonatomic) NSDictionary  *inProgressRoster;
+
+- (FFRoster *)getInProgressRoster;
 
 @end
