@@ -115,8 +115,6 @@ FFCreateGameViewControllerDelegate>
     _marketSelector.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _marketSelector.delegate = self;
     
-//    _userBit = [[FFUserBitView alloc] initWithFrame:CGRectMake(0, 0, 320, 122)];
-    
     _gameButtonView = [[FFGameButtonView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     _gameButtonView.delegate = self;
 }
@@ -166,10 +164,6 @@ FFCreateGameViewControllerDelegate>
     
     _marketSelector.markets = [_markets allObjects];
     
-//    _userBit.user = (FFUser *)self.session.user;
-//    [_userBit.finishInProgressRoster addTarget:self action:@selector(finishInProgressRoster:)
-//                              forControlEvents:UIControlEventTouchUpInside];
-    
     [_tableView reloadData];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -185,12 +179,7 @@ FFCreateGameViewControllerDelegate>
 
 - (void)didUpdateUser:(NSNotification *)note
 {
-//    FFUser *user = note.userInfo[FFUserKey];
-//    if (user) {
-//        _userBit.user = user;
-        // work around for a lame memory leak
-        [self performSelector:@selector(updateUserCell) withObject:nil afterDelay:0.001];
-//    }
+    [self performSelector:@selector(updateUserCell) withObject:nil afterDelay:0.001];
 }
 
 - (void)updateUserCell

@@ -14,6 +14,7 @@
 @protocol FFValueEntryControllerDelegate <NSObject>
 
 - (void)valueEntryController:(FFValueEntryController *)cont didEnterValue:(NSString *)value;
+- (void)valueEntryController:(FFValueEntryController *)cont didUpdateValue:(NSString *)value;
 
 @end
 
