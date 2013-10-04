@@ -1,3 +1,4 @@
+=begin
 ActiveAdmin.register AdminUser do
   index do
     column :email
@@ -23,3 +24,4 @@ ActiveAdmin.register AdminUser do
     end
   end
 end
+=end
