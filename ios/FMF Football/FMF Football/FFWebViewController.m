@@ -15,8 +15,8 @@
 
 @property (strong, nonatomic) UIBarButtonItem *stopLoadingButton;
 @property (strong, nonatomic) UIBarButtonItem *reloadButton;
-@property (strong, nonatomic) UIBarButtonItem *backButton;
-@property (strong, nonatomic) UIBarButtonItem *forwardButton;
+//@property (strong, nonatomic) UIBarButtonItem *backButton;
+//@property (strong, nonatomic) UIBarButtonItem *forwardButton;
 
 @end
 
@@ -141,39 +141,39 @@
                                                                       target:self.webView
                                                                       action:@selector(reload)];
     
-    self.backButton = [[UIBarButtonItem alloc] initWithImage:[self leftTriangleImage]
-                                                       style:UIBarButtonItemStylePlain
-                                                      target:self.webView
-                                                      action:@selector(goBack)];
+//    self.backButton = [[UIBarButtonItem alloc] initWithImage:[self leftTriangleImage]
+//                                                       style:UIBarButtonItemStylePlain
+//                                                      target:self.webView
+//                                                      action:@selector(goBack)];
+//    
+//    self.forwardButton = [[UIBarButtonItem alloc] initWithImage:[self rightTriangleImage]
+//                                                          style:UIBarButtonItemStylePlain
+//                                                         target:self.webView
+//                                                         action:@selector(goForward)];
+//    
+//    self.backButton.enabled = NO;
+//    self.forwardButton.enabled = NO;
     
-    self.forwardButton = [[UIBarButtonItem alloc] initWithImage:[self rightTriangleImage]
-                                                          style:UIBarButtonItemStylePlain
-                                                         target:self.webView
-                                                         action:@selector(goForward)];
-    
-    self.backButton.enabled = NO;
-    self.forwardButton.enabled = NO;
-    
-    UIBarButtonItem *actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                                  target:self
-                                                                                  action:@selector(action:)];
+//    UIBarButtonItem *actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+//                                                                                  target:self
+//                                                                                  action:@selector(action:)];
     
     UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                                                                            target:nil
                                                                            action:nil];
     
-    UIBarButtonItem *space_ = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                                                            target:nil
-                                                                            action:nil];
-    space_.width = 60.0f;
+//    UIBarButtonItem *space_ = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+//                                                                            target:nil
+//                                                                            action:nil];
+//    space_.width = 60.0f;
     
     self.toolbarItems = @[self.stopLoadingButton, space]; // , self.backButton, space_, self.forwardButton, space, actionButton];
 }
 
 - (void)toggleState
 {
-    self.backButton.enabled = self.webView.canGoBack;
-    self.forwardButton.enabled = self.webView.canGoForward;
+//    self.backButton.enabled = self.webView.canGoBack;
+//    self.forwardButton.enabled = self.webView.canGoForward;
     
     NSMutableArray *toolbarItems = [self.toolbarItems mutableCopy];
     if (self.webView.loading) {
