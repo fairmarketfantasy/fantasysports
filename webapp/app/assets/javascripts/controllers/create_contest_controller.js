@@ -12,5 +12,12 @@ angular.module("app.controllers")
   $scope.close = function(result) {
     dialog.close(result);
   };
+
+  $scope.checked1 = false;
+
+  $scope.toggleChecked = function(checkedN){
+    $scope[checkedN] = !$scope[checkedN];
+  };
+
 }]);
 
