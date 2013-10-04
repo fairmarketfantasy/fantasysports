@@ -255,6 +255,10 @@
 
 - (void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions
 {
+    if (_alert) {
+        [_alert hide];
+        _alert = nil;
+    }
     NSLog(@"removed transactions %@", transactions);
 }
 
@@ -286,11 +290,25 @@
                 break;
             case SKPaymentTransactionStateFailed:
                 NSLog(@"transaction failed %@ %@ %@", t, t.payment, t.error);
+                [queue finishTransaction:t];
+                [self failedAddToken:t.error];
                 break;
             default:
                 break;
         }
     }
+}
+
+- (void)failedAddToken:(NSError *)err
+{
+    if (_alert) {
+        [_alert hide];
+        _alert = nil;
+    }
+    
+    FFAlertView *ealert = [[FFAlertView alloc] initWithError:err title:nil cancelButtonTitle:nil
+                                             okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
+    [ealert showInView:self.view];
 }
 
 - (void)addTokens:(SKPaymentTransaction *)transaction
@@ -305,10 +323,9 @@
          
          [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
          
-         [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
-         
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
          NSLog(@"error verifying transaction %@", error);
+         [self failedAddToken:error];
      }];
 }
 
