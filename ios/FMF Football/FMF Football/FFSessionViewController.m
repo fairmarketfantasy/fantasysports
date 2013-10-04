@@ -16,6 +16,7 @@
 #import "FFSession.h"
 #import "FFWebViewController.h"
 #import "FFNavigationBarItemView.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 
 @interface FFSessionViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate, FFBalanceViewDataSource>
@@ -588,7 +589,38 @@ validate_error:
 
 - (void)signUpFacebook:(id)sender
 {
+    [FBSession openActiveSessionWithReadPermissions:nil allowLoginUI:YES completionHandler:
+     ^(FBSession *session, FBSessionState status, NSError *error) {
+         [self fbSessionStateChanged:session state:status error:error];
+     }];
+}
+
+- (void)fbSessionStateChanged:(FBSession *)session
+                      state:(FBSessionState) state
+                      error:(NSError *)error
+{
+    switch (state) {
+        case FBSessionStateOpen:
+            // pass the token back to the server
+            
+            break;
+        case FBSessionStateClosed:
+        case FBSessionStateClosedLoginFailed:
+            [FBSession.activeSession closeAndClearTokenInformation];
+            break;
+        default:
+            break;
+    }
     
+    if (error) {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Error"
+                                  message:error.localizedDescription
+                                  delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }    
 }
 
 // GESTURE RECOGNIZER --------------------------------------------------------------------------------------------------

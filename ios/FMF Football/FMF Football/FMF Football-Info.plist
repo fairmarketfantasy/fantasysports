@@ -72,5 +72,18 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>FacebookAppID</key>
+	<string>436114143174192</string>
+	<key>FacebookDisplayName</key>
+	<string>FMF Football</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb436114143174192</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
