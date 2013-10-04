@@ -18,6 +18,8 @@
 #import "FFCreateGameViewController.h"
 #import "FFAlertView.h"
 #import "FFWebViewController.h"
+#import "FFNavigationBarItemView.h"
+
 
 @interface FFHomeViewController ()
 <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
@@ -50,7 +52,7 @@ FFCreateGameViewControllerDelegate>
 {
     [super viewDidLoad];
 
-    UIView *leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    UIView *leftView = [[FFNavigationBarItemView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
     UIButton *gmenu = [UIButton buttonWithType:UIButtonTypeCustom];
     [gmenu setImage:[UIImage imageNamed:@"globalmenu.png"] forState:UIControlStateNormal];
     [gmenu addTarget:self action:@selector(globalMenuButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -61,7 +63,15 @@ FFCreateGameViewControllerDelegate>
     logo.frame = CGRectMake(32, 13, 150, 19);
     [leftView addSubview:logo];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftView];
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        UIBarButtonItem *negspace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                                  target:nil action:NULL];
+        negspace.width = -16;
+        self.navigationItem.leftBarButtonItems = @[negspace, [[UIBarButtonItem alloc]initWithCustomView:leftView]];
+    } else {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftView];
+    }
+    
     UIButton *balanceView = [self.sessionController balanceView];
     [balanceView addTarget:self action:@selector(showBalance:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:balanceView];
@@ -99,9 +109,20 @@ FFCreateGameViewControllerDelegate>
     _gameButtonView.delegate = self;
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)showBalance:(UIButton *)seder
 {
     [self performSegueWithIdentifier:@"GotoTokenPurchase" sender:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)viewDidAppear:(BOOL)animated

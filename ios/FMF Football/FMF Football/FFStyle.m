@@ -8,6 +8,7 @@
 
 #import "FFStyle.h"
 #import <QuartzCore/QuartzCore.h>
+#import "FFNavigationBarItemView.h"
 
 
 // HELPER FUNCTIONS ----------------------------------------------------------------------------------------------------
@@ -143,6 +144,47 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return b;
 }
 
+//+ (UIButton *)clearNavigationBarButtonWithText:(NSString *)text borderColor:(UIColor *)color
+//+ (NSArray *)clearNavigationBarButtonWithText:(NSString *)text borderColor:(UIColor *)color leftElseRight:(BOOL)left
++ (NSArray *)clearNavigationBarButtonWithText:(NSString *)text
+                                  borderColor:(UIColor *)color
+                                       target:(id)target
+                                     selector:(SEL)selector
+                                leftElseRight:(BOOL)left
+{
+    UIButton *b = [FFNavigationBarItemButton buttonWithType:UIButtonTypeCustom];
+    b.frame = CGRectMake(0, 0, 65, 27);
+    b.layer.borderColor = color.CGColor;
+    b.layer.borderWidth = 1;
+    b.layer.cornerRadius = 3;
+    b.layer.masksToBounds = YES;
+    [b setBackgroundImage:[UIImage imageNamed:@"0-percent.png"] forState:UIControlStateNormal];
+    [b setBackgroundImage:[UIImage imageNamed:@"40-percent.png"] forState:UIControlStateHighlighted];
+    b.titleLabel.font = [FFStyle blockFont:14];
+    [b setTitle:text forState:UIControlStateNormal];
+    [b addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithCustomView:b];
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                                target:nil action:NULL];
+        spacer.width = -8;
+        if (left) {
+            return @[spacer, item];
+        } else {
+            UIView *cont = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 65, 27)];
+            cont.backgroundColor = [UIColor clearColor];
+            b.frame = CGRectOffset(b.frame, 7, 0);
+            [cont addSubview:b];
+            return @[[[UIBarButtonItem alloc] initWithCustomView:cont]];
+//            return @[item, spacer];
+        }
+    } else {
+        return @[item];
+    }
+}
+
 + (UIButton *)coloredButtonWithText:(NSString *)text color:(UIColor *)color borderColor:(UIColor *)borderColor
 {
     FFCustomButton *b = [[FFCustomButton alloc] init];
@@ -156,9 +198,9 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     return b;
 }
 
-+ (UIBarButtonItem *)backBarItemForController:(UIViewController *)controller
++ (NSArray *)backBarItemsForController:(UIViewController *)controller
 {
-    UIView *leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    UIView *leftView = [[FFNavigationBarItemButton alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
     UIButton *gmenu = [UIButton buttonWithType:UIButtonTypeCustom];
     [gmenu setImage:[UIImage imageNamed:@"backbtn.png"] forState:UIControlStateNormal];
     [gmenu addTarget:controller.navigationController
@@ -170,7 +212,16 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
     logo.frame = CGRectMake(32, 13, 150, 19);
     [leftView addSubview:logo];
     
-    return [[UIBarButtonItem alloc] initWithCustomView:leftView];
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                              target:nil
+                                                                              action:NULL];
+        item.width = -16;
+        
+        return @[item, [[UIBarButtonItem alloc] initWithCustomView:leftView]];
+    } else {
+        return @[[[UIBarButtonItem alloc] initWithCustomView:leftView]];
+    }
 }
 
 + (UIColor *)lighterColorForColor:(UIColor *)c
@@ -218,7 +269,7 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
                                      UITextAttributeFont: [FFStyle regularFont:22]
      }];
     
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:-3 forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
     
     [[UIToolbar appearance] setBarTintColor:[FFStyle darkGreen]];
     [[UIToolbar appearance] setTintColor:[FFStyle white]];

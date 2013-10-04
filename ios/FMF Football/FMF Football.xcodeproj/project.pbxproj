@@ -64,6 +64,7 @@
 		1596551617FE355700A93633 /* FMF-80.png in Resources */ = {isa = PBXBuildFile; fileRef = 1596551317FE355700A93633 /* FMF-80.png */; };
 		1596551717FE355700A93633 /* FMF-58.png in Resources */ = {isa = PBXBuildFile; fileRef = 1596551417FE355700A93633 /* FMF-58.png */; };
 		1596551817FE355700A93633 /* FMF-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 1596551517FE355700A93633 /* FMF-120.png */; };
+		1598800117FE5AA900EBA131 /* FFNavigationBarItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1598800017FE5AA900EBA131 /* FFNavigationBarItemView.m */; };
 		15A2378517E268AA00225942 /* FFSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A2378317E268AA00225942 /* FFSessionViewController.m */; };
 		15A2378B17E26E9900225942 /* fmf-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378A17E26E9900225942 /* fmf-logo@2x.png */; };
 		15A2378D17E2708100225942 /* fmf-splash-copy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */; };
@@ -103,6 +104,8 @@
 		15CD295617F7804A0027DFEC /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CD295417F7804A0027DFEC /* AddressBookUI.framework */; };
 		15CE07E717F4BE5B0086EB78 /* sectionback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */; };
 		15CE07EA17F4DBEB0086EB78 /* FFPlayerSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 15CE07E917F4DBEB0086EB78 /* FFPlayerSelectCell.m */; };
+		15D5C46717FE80100077E90C /* FFMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D5C46617FE80100077E90C /* FFMyAccountViewController.m */; };
+		15D5C46A17FE84190077E90C /* FFNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D5C46917FE84190077E90C /* FFNavigationController.m */; };
 		15D756AE17F29AA90080AE4F /* FFContestType.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756AD17F29AA90080AE4F /* FFContestType.m */; };
 		15D756B017F2A7F80080AE4F /* contestcircle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15D756AF17F2A7F80080AE4F /* contestcircle@2x.png */; };
 		15D756B317F37E7A0080AE4F /* FFMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756B217F37E7A0080AE4F /* FFMenuViewController.m */; };
@@ -209,6 +212,8 @@
 		1596551317FE355700A93633 /* FMF-80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-80.png"; sourceTree = "<group>"; };
 		1596551417FE355700A93633 /* FMF-58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-58.png"; sourceTree = "<group>"; };
 		1596551517FE355700A93633 /* FMF-120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-120.png"; sourceTree = "<group>"; };
+		15987FFF17FE5AA900EBA131 /* FFNavigationBarItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFNavigationBarItemView.h; sourceTree = "<group>"; };
+		1598800017FE5AA900EBA131 /* FFNavigationBarItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFNavigationBarItemView.m; sourceTree = "<group>"; };
 		15A2378217E268AA00225942 /* FFSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFSessionViewController.h; sourceTree = "<group>"; };
 		15A2378317E268AA00225942 /* FFSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFSessionViewController.m; sourceTree = "<group>"; };
 		15A2378A17E26E9900225942 /* fmf-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-logo@2x.png"; sourceTree = "<group>"; };
@@ -264,6 +269,10 @@
 		15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sectionback@2x.png"; sourceTree = "<group>"; };
 		15CE07E817F4DBEB0086EB78 /* FFPlayerSelectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFPlayerSelectCell.h; sourceTree = "<group>"; };
 		15CE07E917F4DBEB0086EB78 /* FFPlayerSelectCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFPlayerSelectCell.m; sourceTree = "<group>"; };
+		15D5C46517FE80100077E90C /* FFMyAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFMyAccountViewController.h; sourceTree = "<group>"; };
+		15D5C46617FE80100077E90C /* FFMyAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFMyAccountViewController.m; sourceTree = "<group>"; };
+		15D5C46817FE84190077E90C /* FFNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFNavigationController.h; sourceTree = "<group>"; };
+		15D5C46917FE84190077E90C /* FFNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFNavigationController.m; sourceTree = "<group>"; };
 		15D756AC17F29AA90080AE4F /* FFContestType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFContestType.h; sourceTree = "<group>"; };
 		15D756AD17F29AA90080AE4F /* FFContestType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContestType.m; sourceTree = "<group>"; };
 		15D756AF17F2A7F80080AE4F /* contestcircle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contestcircle@2x.png"; sourceTree = "<group>"; };
@@ -457,6 +466,8 @@
 				15A2378317E268AA00225942 /* FFSessionViewController.m */,
 				1589CEAD17E9746A00A7233E /* FFBaseViewController.h */,
 				1589CEAE17E9746A00A7233E /* FFBaseViewController.m */,
+				15D5C46817FE84190077E90C /* FFNavigationController.h */,
+				15D5C46917FE84190077E90C /* FFNavigationController.m */,
 				1589CEA617E90C1700A7233E /* FFHomeViewController.h */,
 				1589CEA717E90C1700A7233E /* FFHomeViewController.m */,
 				152B545817EBCEC600C4B7F7 /* FFDrawerViewController.h */,
@@ -489,6 +500,8 @@
 				1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */,
 				1561B7EC17FDE5D200444F22 /* FFTokenPurchaseViewController.h */,
 				1561B7ED17FDE5D200444F22 /* FFTokenPurchaseViewController.m */,
+				15D5C46517FE80100077E90C /* FFMyAccountViewController.h */,
+				15D5C46617FE80100077E90C /* FFMyAccountViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -569,6 +582,8 @@
 				15CD295117F77E4B0027DFEC /* FFBubblePicker.m */,
 				1561B7EF17FDF2E400444F22 /* FFBalanceButton.h */,
 				1561B7F017FDF2E400444F22 /* FFBalanceButton.m */,
+				15987FFF17FE5AA900EBA131 /* FFNavigationBarItemView.h */,
+				1598800017FE5AA900EBA131 /* FFNavigationBarItemView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -773,6 +788,7 @@
 			files = (
 				153BBC4017DFC2E40071E63B /* main.m in Sources */,
 				153BBC4417DFC2E40071E63B /* FFAppDelegate.m in Sources */,
+				15D5C46717FE80100077E90C /* FFMyAccountViewController.m in Sources */,
 				1535142C17DFF2B600F776AC /* FFUser.m in Sources */,
 				15A2378517E268AA00225942 /* FFSessionViewController.m in Sources */,
 				15A2379117E2747000225942 /* FFStyle.m in Sources */,
@@ -782,6 +798,7 @@
 				1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */,
 				1589CEAF17E9746A00A7233E /* FFBaseViewController.m in Sources */,
 				152B545117EBA80600C4B7F7 /* FFTickerDrawerViewController.m in Sources */,
+				1598800117FE5AA900EBA131 /* FFNavigationBarItemView.m in Sources */,
 				152B545417EBA97300C4B7F7 /* FFTickerMaximizedDrawerViewController.m in Sources */,
 				152B545717EBC93100C4B7F7 /* FFTickerMinimizedDrawerViewController.m in Sources */,
 				152B545A17EBCEC600C4B7F7 /* FFDrawerViewController.m in Sources */,
@@ -804,6 +821,7 @@
 				15D756C617F485F10080AE4F /* FFRosterSlotCell.m in Sources */,
 				15CE07EA17F4DBEB0086EB78 /* FFPlayerSelectCell.m in Sources */,
 				15B06A1117F6048300832F6D /* FFContestEntrantsViewController.m in Sources */,
+				15D5C46A17FE84190077E90C /* FFNavigationController.m in Sources */,
 				15CD294F17F77C840027DFEC /* FFInviteViewController.m in Sources */,
 				15CD295217F77E4B0027DFEC /* FFBubblePicker.m in Sources */,
 				155F649F17F7D0DE00500035 /* FFTickerDataSource.m in Sources */,

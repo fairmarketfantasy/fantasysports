@@ -52,19 +52,28 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 {
     [super viewDidLoad];
     
-    UIButton *cancel = [FFStyle clearButtonWithText:NSLocalizedString(@"Cancel", nil) borderColor:[FFStyle white]];
-    cancel.frame = CGRectMake(0, 0, 70, 30);
-    [cancel addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIButton *create = [FFStyle clearButtonWithText:NSLocalizedString(@"Create!", nil) borderColor:[FFStyle white]];
-    create.frame = CGRectMake(0, 0, 70, 30);
-    [create addTarget:self action:@selector(create:) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *cancel = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Cancel", nil) borderColor:[FFStyle white]];
+//    cancel.frame = CGRectMake(0, 0, 70, 30);
+//    [cancel addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    UIButton *create = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Create!", nil) borderColor:[FFStyle white]];
+//    create.frame = CGRectMake(0, 0, 70, 30);
+//    [create addTarget:self action:@selector(create:) forControlEvents:UIControlEventTouchUpInside];
     
     UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
-    [logo sizeToFit];
+    logo.contentMode = UIViewContentModeCenter;
+//    logo.frame = CGRectMake(0, 0, 320, 44);
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancel];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:create];
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancel];
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:create];
+    self.navigationItem.leftBarButtonItems = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Cancel", nil)
+                                                                           borderColor:[FFStyle white]
+                                                                                target:self selector:@selector(cancel:)
+                                                                         leftElseRight:YES];
+    self.navigationItem.rightBarButtonItems = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Create!", nil)
+                                                                            borderColor:[FFStyle white]
+                                                                                 target:self selector:@selector(create:)
+                                                                          leftElseRight:NO];
     self.navigationItem.titleView = logo;
     
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
