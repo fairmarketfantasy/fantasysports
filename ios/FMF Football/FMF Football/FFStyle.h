@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+
+#define IS_SMALL_DEVICE                             (([[UIScreen mainScreen] bounds].size.height < 568) ? YES : NO)
+
 @class FFCustomButton;
 
 @interface FFStyle : NSObject
@@ -38,8 +46,13 @@
 + (UIColor *)darkerColorForColor:(UIColor *)c;
 
 + (UIButton *)clearButtonWithText:(NSString *)text borderColor:(UIColor *)color;
++ (NSArray *)clearNavigationBarButtonWithText:(NSString *)text
+                                  borderColor:(UIColor *)color
+                                       target:(id)target
+                                     selector:(SEL)selector
+                                leftElseRight:(BOOL)left;
 + (FFCustomButton *)coloredButtonWithText:(NSString *)text color:(UIColor *)color borderColor:(UIColor *)color;
-+ (UIBarButtonItem *)backBarItemForController:(UIViewController *)controller;
++ (NSArray *)backBarItemsForController:(UIViewController *)controller;
 
 + (void)customizeAppearance;
 

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FFNavigationBarItemView.h"
 
 @class FFBalanceButton;
 
@@ -17,7 +18,7 @@
 @end
 
 
-@interface FFBalanceButton : UIButton
+@interface FFBalanceButton : FFNavigationBarItemButton
 
 @property (nonatomic, weak) id<FFBalanceViewDataSource> dataSource;
 

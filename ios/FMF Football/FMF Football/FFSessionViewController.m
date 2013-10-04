@@ -15,6 +15,8 @@
 #import "FFUser.h"
 #import "FFSession.h"
 #import "FFWebViewController.h"
+#import "FFNavigationBarItemView.h"
+
 
 @interface FFSessionViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate, FFBalanceViewDataSource>
 {
@@ -37,6 +39,7 @@
 @property (nonatomic) BOOL                  keyboardIsShowing;
 //@property (nonatomic) UIButton              *_balanceView;
 @property (nonatomic) FFTickerMaximizedDrawerViewController *signInTicker, *signUpTicker;
+@property (nonatomic) BOOL                  onSignUpView;
 
 - (void)setupSignInView;
 - (void)setupSignUpView;
@@ -73,6 +76,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
 //    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
 }
@@ -108,6 +112,7 @@
 //        [self.session syncUser];
         [self pollUser];
         [self performSegueWithIdentifier:@"GoImmediatelyToHome" sender:nil];
+        [self setNeedsStatusBarAppearanceUpdate];
     } else {
         [self.tickerDataSource refresh];
 //        [self showControllerInDrawer:self.maximizedTicker
@@ -151,10 +156,13 @@
                                   action:@selector(dismissKeyboard:)];
     _dismissKeyboardRecognizer.delegate = self;
     [self.view addGestureRecognizer:_dismissKeyboardRecognizer];
+    
+    _onSignUpView = YES;
 }
 
 - (void)setupSignUpView
 {
+    
     // background
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loginbg.png"]];
     bg.contentMode = UIViewContentModeTop;
@@ -176,18 +184,28 @@
     [greenBg addSubview:signIn];
     [signIn addTarget:self action:@selector(signInHeaderSwitch:) forControlEvents:UIControlEventTouchUpInside];
     self.signInHeaderButton = signIn;
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        greenBg.frame = CGRectMake(0, 0, 320, 65);
+        logo.frame = CGRectOffset(logo.frame, 0, 17);
+        signIn.frame = CGRectOffset(signIn.frame, 0, 20);
+    }
 //
 //    UIImageView *marketingCopy = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"dailyfantasyfootball.png"]];
 //    marketingCopy.frame = CGRectMake(0, 44, 320, 60);
 //    marketingCopy.contentMode = UIViewContentModeTop;
 //    [self.signUpView addSubview:marketingCopy];
     
+    UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
+    container.backgroundColor = [UIColor clearColor];
+    [self.signUpView insertSubview:container belowSubview:greenBg];
+    
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 90, 290, 60)];
     lab.font = [FFStyle lightFont:30];
     lab.text = NSLocalizedString(@"Sign Up", nil);
     lab.backgroundColor = [UIColor clearColor];
     lab.textColor = [FFStyle white];
-    [self.signUpView addSubview:lab];
+    [container addSubview:lab];
     
     // text inputs
     UITextField *nam = [[FFTextField alloc] init];
@@ -202,7 +220,7 @@
     nam.autocorrectionType = UITextAutocorrectionTypeNo;
     nam.keyboardType = UIKeyboardTypeEmailAddress;
     //    un.text = //@"sam@mustw.in"; // TOOD: remove
-    [self.signUpView addSubview:nam];
+    [container addSubview:nam];
     self.nameSignupField = nam;
     
     UITextField *un = [[FFTextField alloc] init];
@@ -217,7 +235,7 @@
     un.autocorrectionType = UITextAutocorrectionTypeNo;
     un.keyboardType = UIKeyboardTypeEmailAddress;
 //    un.text = //@"sam@mustw.in"; // TOOD: remove
-    [self.signUpView addSubview:un];
+    [container addSubview:un];
     self.usernameSignupField = un;
     
     UITextField *pw = [[FFTextField alloc] init];
@@ -230,7 +248,7 @@
     pw.placeholder = NSLocalizedString(@"password", nil);
 //    pw.text = @"omgnowai"; // TODO: remove
     pw.returnKeyType = UIReturnKeyGo;
-    [self.signUpView addSubview:pw];
+    [container addSubview:pw];
     self.passwordSignupField = pw;
     
     // sign up buttons
@@ -238,15 +256,21 @@
                                                 color:[FFStyle brightGreen] borderColor:[FFStyle white]];
     signUp.frame = CGRectMake(15, 320, 290, 38);
     [signUp addTarget:self action:@selector(signUp:) forControlEvents:UIControlEventTouchUpInside];
-    [self.signUpView addSubview:signUp];
+    [container addSubview:signUp];
     self.signUpButton = signUp;
     
     UIButton *fbSignUp = [FFStyle coloredButtonWithText:NSLocalizedString(@"Sign Up With Facebook", nil)
                                                   color:[FFStyle brightBlue] borderColor:[FFStyle white]];
     fbSignUp.frame = CGRectMake(15, 370, 290, 38);
     [fbSignUp addTarget:self action:@selector(signUpFacebook:) forControlEvents:UIControlEventTouchUpInside];
-    [self.signUpView addSubview:fbSignUp];
+    [container addSubview:fbSignUp];
     self.signUpFacebookButton = fbSignUp;
+    
+    if (IS_SMALL_DEVICE) {
+        container.frame = CGRectOffset(container.frame, 0, -40);
+        lab.font = [FFStyle lightFont:24];
+        lab.frame = CGRectOffset(lab.frame, 0, 8);
+    }
     
     _signUpTicker = [self ticker];
     _signUpTicker.view.frame = CGRectMake(0, CGRectGetMaxY(self.signUpView.frame)-95, 320, 95);
@@ -277,12 +301,23 @@
     [signup addTarget:self action:@selector(signUpHeaderSwitch:) forControlEvents:UIControlEventTouchUpInside];
     self.signUpHeaderButton = signup;
     
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        greenBg.frame = CGRectMake(0, 0, 320, 65);
+        logo.frame = CGRectOffset(logo.frame, 0, 17);
+        signup.frame = CGRectOffset(signup.frame, 0, 20);
+    }
+    
+    UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
+    container.backgroundColor = [UIColor clearColor];
+    [self.signInView insertSubview:container belowSubview:greenBg];
+    
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, 290, 60)];
     lab.font = [FFStyle lightFont:30];
     lab.text = NSLocalizedString(@"Sign In", nil);
     lab.backgroundColor = [UIColor clearColor];
     lab.textColor = [FFStyle white];
-    [self.signInView addSubview:lab];
+    [container addSubview:lab];
     
     // text inputs
     UITextField *un = [[FFTextField alloc] init];
@@ -297,7 +332,7 @@
     un.autocorrectionType = UITextAutocorrectionTypeNo;
     un.keyboardType = UIKeyboardTypeEmailAddress;
 //    un.text = @"sam@mustw.in"; // TODO: remove
-    [self.signInView addSubview:un];
+    [container addSubview:un];
     self.usernameSigninField = un;
     
     UITextField *pw = [[FFTextField alloc] init];
@@ -310,7 +345,7 @@
     pw.placeholder = NSLocalizedString(@"password", nil);
     pw.returnKeyType = UIReturnKeyGo;
 //    pw.text = @"omgnowai"; // TODO: remove
-    [self.signInView addSubview:pw];
+    [container addSubview:pw];
     self.passwordSigninField = pw;
     
     // sign in buttons
@@ -318,7 +353,7 @@
                                                 color:[FFStyle brightGreen] borderColor:[FFStyle white]];
     signIn.frame = CGRectMake(15, 310, 290, 38);
     [signIn addTarget:self action:@selector(signIn:) forControlEvents:UIControlEventTouchUpInside];
-    [self.signInView addSubview:signIn];
+    [container addSubview:signIn];
     self.signInButton = signIn;
     
     UIButton *forgot = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -329,7 +364,13 @@
     [forgot setTitleColor:[FFStyle white] forState:UIControlStateNormal];
     [forgot setTitleColor:[FFStyle darkerColorForColor:[FFStyle white]] forState:UIControlStateHighlighted];
     [forgot addTarget:self action:@selector(forgotPassword:) forControlEvents:UIControlEventTouchUpInside];
-    [self.signInView addSubview:forgot];
+    [container addSubview:forgot];
+    
+    if (IS_SMALL_DEVICE) {
+        container.frame = CGRectOffset(container.frame, 0, -40);
+        lab.font = [FFStyle lightFont:24];
+        lab.frame = CGRectOffset(lab.frame, 0, 8);
+    }
     
     _signInTicker = [self ticker];
     _signInTicker.view.frame = CGRectMake(0, CGRectGetMaxY(self.signInView.frame)-95, 320, 95);
@@ -340,6 +381,7 @@
 
 - (void)signInHeaderSwitch:(id)sender
 {
+    _onSignUpView = NO;
     [UIView transitionFromView:self.signUpView
                         toView:self.signInView
                       duration:.35
@@ -352,6 +394,7 @@
 
 - (void)signUpHeaderSwitch:(id)sender
 {
+    _onSignUpView = YES;
     [UIView transitionFromView:self.signInView
                         toView:self.signUpView
                       duration:.35
@@ -611,7 +654,15 @@ validate_error:
     if (!_keyboardIsShowing)
     {
         _keyboardIsShowing = YES;
-        CGRect frame = CGRectOffset(self.view.frame, 0, -100);
+        CGFloat offset = -100;
+        if (IS_SMALL_DEVICE) {
+            if (_onSignUpView) {
+                offset = -65;
+            } else {
+                offset = -70;
+            }
+        }
+        CGRect frame = CGRectOffset(self.view.frame, 0, offset);
         
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationBeginsFromCurrentState:YES];
@@ -631,7 +682,15 @@ validate_error:
     if (_keyboardIsShowing)
     {
         _keyboardIsShowing = NO;
-        CGRect frame = CGRectOffset(self.view.frame, 0, 100);
+        CGFloat offset = 100;
+        if (IS_SMALL_DEVICE) {
+            if (_onSignUpView) {
+                offset = 65;
+            } else {
+                offset = 70;
+            }
+        }
+        CGRect frame = CGRectOffset(self.view.frame, 0, offset);
         
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationBeginsFromCurrentState:YES];

@@ -435,7 +435,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         ((FFContestEntrantsViewController *)segue.destinationViewController).contest = _roster.contest;
     }
     if ([segue.identifier isEqualToString:@"GotoInvite"]) {
-        ((FFInviteViewController *)segue.destinationViewController).roster = _roster;
+        ((FFInviteViewController *)[segue.destinationViewController viewControllers][0]).roster = _roster;
     }
     if ([segue.identifier isEqualToString:@"GotoPickPlayer"]) {
         FFContestViewController *next = segue.destinationViewController;

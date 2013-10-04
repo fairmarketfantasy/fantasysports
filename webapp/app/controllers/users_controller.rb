@@ -36,19 +36,24 @@ class UsersController < ApplicationController
   end
 
   def add_tokens
-    if params[:receipt] # From iOS
-      data = Venice::Receipt.verify(params[:receipt]).to_h
-      current_user.token_balance += User::TOKEN_SKUS[data[:bid]][:tokens]
-      current_user.save!
-      render_api_response current_user
-    else
-      current_user.customer_object.set_default_card(params[:card_id])
-      if current_user.customer_object.charge(params[:amount])
-        current_user.token_balance += User::TOKEN_SKUS[params[:bid]][:tokens]
+    current_user.transaction do
+      if params[:receipt] # From iOS
+        data = Venice::Receipt.verify(params[:receipt]).to_h
+        raise HttpException.new(403, "That receipt has already been redeemed") if TransactionRecord.where(:ios_transaction_id => data[:transaction_id]).first
+        current_user.token_balance += User::TOKEN_SKUS[data[:product_id]][:tokens]
         current_user.save!
-        render_api_response current_user
+        TransactionRecord.create!(:user => current_user, :event => 'token_buy_ios', :amount => User::TOKEN_SKUS[data[:product_id]], :ios_transaction_id => data[:transaction_id], :transaction_data => data.to_json)
+      else
+        current_user.customer_object.set_default_card(params[:card_id])
+        sku = User::TOKEN_SKUS[params[:product_id]]
+        if current_user.customer_object.charge(sku[:cost])
+          current_user.token_balance += sku[:tokens]
+          current_user.save!
+          TransactionRecord.create!(:user => current_user, :event => 'token_buy', :amount => sku[:cost], :transaction_data => sku.to_json)
+        end
       end
     end
+    render_api_response current_user
   end
 
   def withdraw_money
