@@ -77,7 +77,7 @@
             cell.textLabel.text = NSLocalizedString(@"Legal Stuff", nil);
             break;
         case 5:
-            cell.textLabel.text = NSLocalizedString(@"Sign Out", nil);
+            cell.textLabel.text = NSLocalizedString(@"Settings", nil);
             break;
         default:
             break;
@@ -128,7 +128,7 @@
             [self.delegate performMenuSegue:@"GotoTerms"];
             break;
         case 5:
-            [self.session logout];
+            [self.delegate performMenuSegue:@"GotoAccount"];
             break;
         default:
             break;
