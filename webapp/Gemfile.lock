@@ -155,7 +155,7 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.8.0)
     multipart-post (1.2.0)
-    mustwin_devise_oauth2_providable (1.1.5)
+    mustwin_devise_oauth2_providable (1.1.6)
       devise (>= 3.0.0)
       protected_attributes
       rack-oauth2 (>= 1.0.0)
@@ -299,7 +299,7 @@ DEPENDENCIES
   less-rails
   mocha
   mustwin-stripe-ruby-mock!
-  mustwin_devise_oauth2_providable (= 1.1.5)
+  mustwin_devise_oauth2_providable (= 1.1.6)
   nokogiri
   omniauth
   omniauth-facebook

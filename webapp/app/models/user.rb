@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :oauth2_providable, 
+         :oauth2_facebook_grantable,
          :oauth2_password_grantable,
          :oauth2_refresh_token_grantable,
          :oauth2_authorization_code_grantable,
@@ -16,7 +17,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   devise :omniauthable, :omniauth_providers => [:facebook, :facebook_access_token]
 
-  attr_accessible :name, :username, :provider, :uid, :unconfirmed_email, :image_url, :takes_tokens,
+  attr_accessible :name, :username, :provider, :uid, :fb_token, :unconfirmed_email, :image_url, :takes_tokens,
       :email, :password, :password_confirmation, :remember_me, :first_name,
       :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync
 
@@ -39,8 +40,10 @@ class User < ActiveRecord::Base
 
 
   def self.find_for_facebook_oauth(auth)
-    user = User.find_by(email: auth.info.email) || User.where(uid: auth.uid, provider: auth.provider).first_or_create
+    Rails.logger.debug(auth.pretty_inspect)
+    user = User.find_by(email: auth.info.email) || User.where(uid: auth.uid, provider: auth.provider, fb_token: auth.credentials.token).first_or_create
     user.email = auth.info.email
+    user.fb_token = auth.credentials.token
     user.name = auth.extra.raw_info.name
     user.image_url = auth.info.image.gsub('http', 'https')
     user.password = Devise.friendly_token[0,20]
