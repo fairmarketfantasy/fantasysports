@@ -52,12 +52,12 @@ DEPENDENCIES:
   - ISO8601DateFormatter (~> 0.6)
   - Reachability (~> 3.0.0)
   - RHAddressBook (~> 1.0.2)
-  - SBData (from `/Users/samuelsutch/dev/shadowart/projects/SBData/SBData/SBData.podspec`)
+  - SBData (from `SBData/SBData.podspec`)
   - SparkInspector
 
 EXTERNAL SOURCES:
   SBData:
-    :path: /Users/samuelsutch/dev/shadowart/projects/SBData/SBData/SBData.podspec
+    :path: SBData/SBData.podspec
 
 SPEC CHECKSUMS:
   A2StoryboardSegueContext: c5ee4ebdfcc29ac4e544cbe832f6489cade23213
