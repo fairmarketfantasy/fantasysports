@@ -43,13 +43,8 @@ namespace :market do
     market = Market.find args.market_id
     file = File.join(Rails.root, "market_players_#{market.id}.csv")
     puts "Writing to file: #{file}"
-    CSV.open(file, "wb") do |csv|
-      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us"]
-      csv << ["Canonical Id", "Name", "Team", "Position", "Desired Shadow Bets"]
-      market.players.each do |player|
-        csv << [player.stats_id, player.name, player.team.abbrev, player.position]
-      end
-    end
+    csv = market.dump_players_csv
+    File.open(file, "wb") {|f| f.write(csv) }
   end
 
   task :import_players, [:market_id] => :environment do |t, args|
@@ -57,44 +52,7 @@ namespace :market do
     puts "Opening file: #{file}"
     market = Market.find args.market_id
     #reset market
-    market.state = nil
-    market.save!
-    market.publish
-
-    count = 0
-    total_bets = 0
-    CSV.foreach(file) do |row|
-      count += 1
-      next if count <= 2
-      player_stats_id, shadow_bets = row[0], row[4]
-      if !shadow_bets.blank?
-        p = Player.where(:stats_id => player_stats_id).first
-        if p.nil?
-          puts "ERROR: NO PLAYER WITH STATS_ID #{player_stats_id} FOUND"
-          next
-        end
-        puts "betting $#{shadow_bets} on #{p.name}"
-        shadow_bets = Integer(shadow_bets) * 100
-      else
-        shadow_bets = 0
-      end
-      mp = market.market_players.where("player_stats_id = '#{player_stats_id}'").first
-      if mp.nil?
-        puts "WARNING: No market player found with id #{player_stats_id}"
-        next
-      end
-      mp.shadow_bets = mp.initial_shadow_bets = mp.bets = shadow_bets
-      mp.save!
-      total_bets += shadow_bets
-    end
-
-    #set the shadow bets to whatever they should be
-    puts "\nTotal bets: $#{total_bets/100}"
-    market.shadow_bets = market.total_bets = market.initial_shadow_bets = total_bets
-    #TEMPORARY: artificially raise the price multiplier
-    market.price_multiplier = market.market_players.size / 50
-    puts "using price multiplier: #{market.price_multiplier}"
-    market.save!
+    market.import_players_csv(file)
   end
 
 end

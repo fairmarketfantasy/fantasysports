@@ -9,6 +9,8 @@ Fantasysports::Application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   Rails.application.routes.draw do
+    devise_for :admin_users, ActiveAdmin::Devise.config
+    ActiveAdmin.routes(self)
     # oauth routes can be mounted to any path (ex: /oauth2 or /oauth)
     mount Devise::Oauth2Providable::Engine => '/oauth2'
   end

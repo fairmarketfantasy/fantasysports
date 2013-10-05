@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< Updated upstream
 ActiveRecord::Schema.define(version: 20131005014625) do
+=======
+ActiveRecord::Schema.define(version: 20131004071600) do
+>>>>>>> Stashed changes
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -260,6 +264,7 @@ ActiveRecord::Schema.define(version: 20131005014625) do
   add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
   add_index "players", ["team"], name: "index_players_on_team", using: :btree
 
+<<<<<<< Updated upstream
   create_table "push_devices", force: true do |t|
     t.string   "device_id"
     t.string   "device_type"
@@ -270,6 +275,8 @@ ActiveRecord::Schema.define(version: 20131005014625) do
     t.datetime "updated_at"
   end
 
+=======
+>>>>>>> Stashed changes
   create_table "recipients", force: true do |t|
     t.string  "stripe_id", null: false
     t.integer "user_id",   null: false
