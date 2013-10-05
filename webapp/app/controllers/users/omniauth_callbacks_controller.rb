@@ -22,7 +22,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       sign_in @user, event: :authentication #this will throw if @user is not activated
       render_api_response @user
     else
-      render_api_response {:error => @user.errors.first.message }
+      render_api_response({:error => @user.errors.first.message })
     end
   end
 end
