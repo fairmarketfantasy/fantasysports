@@ -16,6 +16,7 @@
 @interface FFSession : SBSession
 
 - (void)registerAndLoginUsingFBAccessToken:(NSString *)accessToken
+                                     fbUid:(NSString *)fbUid
                                    success:(SBSuccessBlock)success
                                    failure:(SBErrorBlock)failure;
 

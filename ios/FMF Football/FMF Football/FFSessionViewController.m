@@ -634,16 +634,23 @@ validate_error:
     [alert showInView:self.view];
     
     [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        [alert hide];
         if (error) {
+            [alert hide];
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
             [ealert showInView:self.view];
             return;
         }
         FFSession *sesh = [FFSession sessionWithEmailAddress:result[@"email"] userClass:[FFUser class]];
-        [sesh registerAndLoginUsingFBAccessToken:accessToken success:^(id successObj) {
-            //
+        [sesh registerAndLoginUsingFBAccessToken:accessToken fbUid:[result[@"id"] description] success:^(id successObj) {
+            [alert hide];
+            
+            [[self.view findFirstResponder] resignFirstResponder];
+            [FFSession setLastUsedSession:sesh];
+            self.session = sesh;
+            [self pollUser];
+            [self.session syncPushToken];
+            [self performSegueWithIdentifier:@"GotoHome" sender:nil];
         } failure:^(NSError *error) {
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
