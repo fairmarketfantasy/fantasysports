@@ -8,6 +8,25 @@ GIT
       jimson-temp
       stripe (>= 1.8.4)
 
+GIT
+  remote: git://github.com/gregbell/active_admin.git
+  revision: 5c9beacee296e6429fa740971e0840b2a96dafe1
+  branch: master
+  specs:
+    activeadmin (0.6.1)
+      arbre (~> 1.0)
+      bourbon
+      coffee-rails
+      devise (~> 3.0)
+      formtastic (~> 2.3.0.rc2)
+      inherited_resources (~> 1.3)
+      jquery-rails
+      jquery-ui-rails
+      kaminari (~> 0.13)
+      rails (>= 3.2, < 4.1)
+      ransack (~> 1.0)
+      sass-rails
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -37,6 +56,8 @@ GEM
       multi_json (~> 1.3)
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
+    arbre (1.0.1)
+      activesupport (>= 3.0.0)
     arel (4.0.0)
     atomic (1.1.14)
     attr_required (0.0.5)
@@ -46,6 +67,9 @@ GEM
       uuidtools (~> 2.1)
     bcrypt-ruby (3.1.2)
     blankslate (3.1.2)
+    bourbon (3.1.8)
+      sass (>= 3.2.0)
+      thor
     builder (3.1.4)
     capistrano (2.15.5)
       highline
@@ -68,6 +92,13 @@ GEM
       rest-client (>= 1.0.4, < 1.7.0)
       yajl-ruby (~> 1.1)
     coderay (1.0.9)
+    coffee-rails (4.0.0)
+      coffee-script (>= 2.2.0)
+      railties (>= 4.0.0.beta, < 5.0)
+    coffee-script (2.2.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.6.3)
     columnize (0.3.6)
     commander (4.1.5)
       highline (~> 1.6.11)
@@ -106,13 +137,21 @@ GEM
       nokogiri (~> 1.5)
       ruby-hmac
     formatador (0.2.4)
+    formtastic (2.3.0.rc2)
+      actionpack (>= 3.0)
     god (0.13.3)
+    has_scope (0.6.0.rc)
+      actionpack (>= 3.2, < 5)
+      activesupport (>= 3.2, < 5)
     hashie (2.0.5)
     highline (1.6.19)
     hike (1.2.3)
     httpauth (0.2.0)
     httpclient (2.3.4.1)
     i18n (0.6.5)
+    inherited_resources (1.4.1)
+      has_scope (~> 0.6.0.rc)
+      responders (~> 1.0.0.rc)
     ipaddress (0.8.0)
     jbuilder (1.5.1)
       activesupport (>= 3.0.0)
@@ -122,6 +161,11 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.4)
       rest-client (~> 1.0)
+    jquery-rails (3.0.4)
+      railties (>= 3.0, < 5.0)
+      thor (>= 0.14, < 2.0)
+    jquery-ui-rails (4.0.5)
+      railties (>= 3.1.0)
     json (1.7.7)
     jwt (0.1.8)
       multi_json (>= 1.5)
@@ -153,7 +197,7 @@ GEM
     mixlib-shellout (1.2.0)
     mocha (0.14.0)
       metaclass (~> 0.0.1)
-    multi_json (1.8.0)
+    multi_json (1.8.1)
     multipart-post (1.2.0)
     mustwin_devise_oauth2_providable (1.1.6)
       devise (>= 3.0.0)
@@ -199,6 +243,8 @@ GEM
       omniauth (~> 1.0)
     orm_adapter (0.4.0)
     pg (0.17.0)
+    polyamorous (0.6.4)
+      activerecord (>= 3.0)
     polyglot (0.3.3)
     protected_attributes (1.0.3)
       activemodel (>= 4.0.0, < 5.0)
@@ -233,10 +279,21 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.1.0)
+    ransack (1.0.0)
+      actionpack (>= 3.0)
+      activerecord (>= 3.0)
+      polyamorous (~> 0.6.0)
     ref (1.0.5)
+    responders (1.0.0)
+      railties (>= 3.2, < 5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     ruby-hmac (0.4.0)
+    sass (3.2.12)
+    sass-rails (4.0.0)
+      railties (>= 4.0.0.beta, < 5.0)
+      sass (>= 3.1.10)
+      sprockets-rails (~> 2.0.0)
     slop (3.4.6)
     sprockets (2.10.0)
       hike (~> 1.2)
@@ -285,6 +342,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
+  activeadmin!
   aws-sdk
   capistrano
   chef (~> 11.6.0)

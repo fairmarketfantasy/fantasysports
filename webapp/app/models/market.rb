@@ -334,30 +334,56 @@ class Market < ActiveRecord::Base
     num_rosters.times { Roster.generate(system_user, contest_type).fill_randomly.submit! }
   end
 
-  rails_admin do
-    configure :id, :integer 
-    configure :name, :string 
-    configure :shadow_bets, :decimal 
-    configure :shadow_bet_rate, :decimal 
-    configure :opened_at, :datetime 
-    configure :closed_at, :datetime 
-    configure :published_at, :datetime 
-    configure :state, :string 
-    configure :total_bets, :decimal 
-    configure :sport_id, :integer         # Hidden 
-    configure :initial_shadow_bets, :decimal 
-    configure :price_multiplier, :decimal 
-    configure :started_at, :datetime 
-
-    list do
-      filters [:id, :name]  # Array of field names which filters should be shown by default in the table header
-      items_per_page 100    # Override default_items_per_page
-      sort_by :id           # Sort column (default is primary key)
-      sort_reverse true     # Sort direction (default is true for primary key, last created first)
+  def dump_players_csv
+    csv = CSV.generate({}) do |csv|
+      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us"]
+      csv << ["Canonical Id", "Name", "Team", "Position", "Desired Shadow Bets"]
+      self.players.each do |player|
+        csv << [player.stats_id, player.name, player.team.abbrev, player.position]
+      end
     end
-    show do; end
-    edit do; end
   end
 
+  def import_players_csv(data)
+    self.state = nil
+    self.save!
+    self.publish
+
+    count = 0
+    total_bets = 0
+    CSV.parse(data) do |row|
+      count += 1
+      next if count <= 2
+      player_stats_id, shadow_bets = row[0], row[4]
+      if !shadow_bets.blank?
+        p = Player.where(:stats_id => player_stats_id).first
+        if p.nil?
+          puts "ERROR: NO PLAYER WITH STATS_ID #{player_stats_id} FOUND"
+          next
+        end
+        puts "betting $#{shadow_bets} on #{p.name}"
+        shadow_bets = Integer(shadow_bets) * 100
+      else
+        shadow_bets = 0
+      end
+      mp = self.market_players.where("player_stats_id = '#{player_stats_id}'").first
+      if mp.nil?
+        puts "WARNING: No market player found with id #{player_stats_id}"
+        next
+      end
+      mp.shadow_bets = mp.initial_shadow_bets = mp.bets = shadow_bets
+      mp.save!
+      total_bets += shadow_bets
+    end
+
+    #set the shadow bets to whatever they should be
+    puts "\nTotal bets: $#{total_bets/100}"
+    self.shadow_bets = self.total_bets = self.initial_shadow_bets = total_bets
+    #TEMPORARY: artificially raise the price multiplier
+    #self.price_multiplier = self.market_players.size / 50
+    puts "using price multiplier: #{self.price_multiplier}"
+    self.save!
+
+  end
 
 end
