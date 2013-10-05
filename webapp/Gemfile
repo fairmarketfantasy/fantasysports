@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+# Use debugger
+gem 'debugger', group: [:development, :test]
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
 
@@ -29,7 +32,7 @@ gem 'devise'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-facebook-access-token'
-gem 'mustwin_devise_oauth2_providable', '1.1.5'#, :path => '/Users/mike/code/devise_oauth2_providable'
+gem 'mustwin_devise_oauth2_providable', '1.1.6'#, :path => '/Users/mike/code/devise_oauth2_providable'
 gem 'protected_attributes'
 
 # data processing
@@ -78,5 +81,3 @@ gem 'knife-ec2'
 # Use Capistrano for deployment
 gem 'capistrano', group: :development
 
-# Use debugger
-gem 'debugger', group: [:development, :test]

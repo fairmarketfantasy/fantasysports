@@ -334,4 +334,30 @@ class Market < ActiveRecord::Base
     num_rosters.times { Roster.generate(system_user, contest_type).fill_randomly.submit! }
   end
 
+  rails_admin do
+    configure :id, :integer 
+    configure :name, :string 
+    configure :shadow_bets, :decimal 
+    configure :shadow_bet_rate, :decimal 
+    configure :opened_at, :datetime 
+    configure :closed_at, :datetime 
+    configure :published_at, :datetime 
+    configure :state, :string 
+    configure :total_bets, :decimal 
+    configure :sport_id, :integer         # Hidden 
+    configure :initial_shadow_bets, :decimal 
+    configure :price_multiplier, :decimal 
+    configure :started_at, :datetime 
+
+    list do
+      filters [:id, :name]  # Array of field names which filters should be shown by default in the table header
+      items_per_page 100    # Override default_items_per_page
+      sort_by :id           # Sort column (default is primary key)
+      sort_reverse true     # Sort direction (default is true for primary key, last created first)
+    end
+    show do; end
+    edit do; end
+  end
+
+
 end
