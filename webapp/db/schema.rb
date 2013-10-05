@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< Updated upstream
-ActiveRecord::Schema.define(version: 20131005014625) do
-=======
-ActiveRecord::Schema.define(version: 20131004071600) do
->>>>>>> Stashed changes
+ActiveRecord::Schema.define(version: 20131005191802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -187,6 +183,8 @@ ActiveRecord::Schema.define(version: 20131004071600) do
     t.datetime "started_at"
   end
 
+  add_index "markets", ["closed_at", "started_at", "sport_id"], name: "index_markets_on_closed_at_and_started_at_and_sport_id", unique: true, using: :btree
+
   create_table "oauth2_access_tokens", force: true do |t|
     t.integer  "user_id"
     t.integer  "client_id"
@@ -264,7 +262,6 @@ ActiveRecord::Schema.define(version: 20131004071600) do
   add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
   add_index "players", ["team"], name: "index_players_on_team", using: :btree
 
-<<<<<<< Updated upstream
   create_table "push_devices", force: true do |t|
     t.string   "device_id"
     t.string   "device_type"
@@ -275,8 +272,6 @@ ActiveRecord::Schema.define(version: 20131004071600) do
     t.datetime "updated_at"
   end
 
-=======
->>>>>>> Stashed changes
   create_table "recipients", force: true do |t|
     t.string  "stripe_id", null: false
     t.integer "user_id",   null: false
