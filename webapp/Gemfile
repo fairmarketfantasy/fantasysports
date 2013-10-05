@@ -35,8 +35,6 @@ gem 'omniauth-facebook-access-token'
 gem 'mustwin_devise_oauth2_providable', '1.1.6'#, :path => '/Users/mike/code/devise_oauth2_providable'
 gem 'protected_attributes'
 gem 'activeadmin', github: 'gregbell/active_admin', branch: 'master'
-#gem 'sass-rails'
-#gem "meta_search"
 
 # data processing
 gem 'nokogiri'
