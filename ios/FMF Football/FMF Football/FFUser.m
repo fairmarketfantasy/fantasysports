@@ -25,6 +25,8 @@
 @dynamic totalWins;
 @dynamic inProgressRoster;
 
+@dynamic fbUid;
+
 + (NSString *)tableName { return @"ffuser"; }
 
 + (void)load { [self registerModel:self]; }

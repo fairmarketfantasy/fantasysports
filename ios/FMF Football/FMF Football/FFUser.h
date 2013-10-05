@@ -28,6 +28,8 @@
 @property (nonatomic) SBInteger     *totalWins;
 @property (nonatomic) NSDictionary  *inProgressRoster;
 
+@property (nonatomic) NSString      *fbUid;
+
 - (FFRoster *)getInProgressRoster;
 
 @end
