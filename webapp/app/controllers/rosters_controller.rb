@@ -55,5 +55,17 @@ class RostersController < ApplicationController
     roster.destroy!
     render :nothing => true, :status => :ok
   end
+
+  def past_stats
+    stats = current_user.rosters.where('paid_at is not null').select('SUM(amount_paid) as total_payout, MAX(score) as top_score, AVG(score) as avg_score, SUM(wins) as wins, SUM(losses) as losses')[0]
+    render_api_response({
+      total_payout: stats[:total_payout].to_i,
+      avg_score: stats[:avg_score].to_f,
+      top_score: stats[:top_score],
+      total_entries: (stats[:wins] || 0) + (stats[:losses] || 0),
+      wins: stats[:wins] || 0,
+      losses: stats[:losses] || 0,
+    })
+  end
 end
 

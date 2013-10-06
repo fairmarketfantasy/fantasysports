@@ -37,19 +37,19 @@
   
   <ul class="entries-info-list clearfix">
     <li class="ei-item">
-      <p class="ei-number">12/42</p>
+      <p class="ei-number">{{rosters.pastStats().wins}}/{{rosters.pastStats().total_entries}}</p>
       <span class="ei-info">Wins/Entries</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">99</p>
+      <p class="ei-number">{{rosters.pastStats().top_score}}</p>
       <span class="ei-info">Top Score</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">47</p>
+    <p class="ei-number">{{rosters.pastStats().avg_score}}</p>
       <span class="ei-info">Average Score</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">$17,990</p>
+      <p class="ei-number">{{rosters.pastStats().total_payout}}</p>
       <span class="ei-info">Payout</span>
     </li>
   </ul>
