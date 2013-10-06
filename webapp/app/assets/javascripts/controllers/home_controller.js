@@ -2,6 +2,7 @@ angular.module("app.controllers")
 .controller('HomeController', ['$scope', 'rosters', '$dialog', function($scope, rosters, $dialog) {
   $scope.rosters = rosters;
   rosters.fetchMine();
+  rosters.fetchPastStats();
   rosters.setPoller(function() { rosters.fetchMine(); }, 10000);
 
   // Force them to set a user!
