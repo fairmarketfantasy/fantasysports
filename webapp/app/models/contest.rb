@@ -13,7 +13,7 @@ class Contest < ActiveRecord::Base
   validates :owner_id, :contest_type_id, :buy_in, :market_id, presence: true
 
   #creates a roster for the owner and creates an invitation code
-  def self.create_private_contest(opts) 
+  def self.create_private_contest(opts)
     market = Market.where(:id => opts[:market_id], state: ['published', 'opened']).first
     raise "Market must be active to create a contest" unless market
     raise "It's too close to market close to create a contest" if Time.new + 5.minutes > market.closed_at
@@ -25,7 +25,7 @@ class Contest < ActiveRecord::Base
       contest_type = ContestType.create!(
         :market_id => market.id,
         :name => 'h2h',
-        :description => 'custom h2h',
+        :description => 'custom h2h contest',
         :max_entries => 2,
         :buy_in => opts[:buy_in],
         :rake => rake,

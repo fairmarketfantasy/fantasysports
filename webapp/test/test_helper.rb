@@ -39,10 +39,21 @@ class ActiveSupport::TestCase
 
   include FactoryGirl::Syntax::Methods
 
+  def assert_email_sent(address = nil, &block)
+    assert_difference('ActionMailer::Base.deliveries.size', &block)
+    if address.present?
+      assert_equal address, ActionMailer::Base.deliveries.last['to'].to_s
+    end
+  end
+
+  def assert_email_not_sent(&block)
+    assert_no_difference('ActionMailer::Base.deliveries.size', &block)
+  end
+
   def resp_json
     resp = JSON.parse(response.body)
     if resp["data"]
-        resp["data"] = JSONH.unpack(resp["data"])
+      resp["data"] = JSONH.unpack(resp["data"])
     end
     resp
   end

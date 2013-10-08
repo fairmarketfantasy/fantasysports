@@ -62,10 +62,11 @@ Fantasysports::Application.routes.draw do
   resources :contests, only: [:create] do
     collection do
       get 'for_market/:id', :action => 'for_market'
+      post 'join'
+      get 'join'
     end
 
     member do
-      post 'join'
       post 'invite'
     end
   end

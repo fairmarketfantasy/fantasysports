@@ -211,7 +211,7 @@ class Market < ActiveRecord::Base
       buy_in: 100, #100 ff
       rake: 0.03,
       payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top half wins",
+      payout_description: "Top half wins 194 FanFrees",
       takes_tokens: true,
     },
     {
@@ -221,7 +221,7 @@ class Market < ActiveRecord::Base
       buy_in: 100,
       rake: 0.03,
       payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top half wins",
+      payout_description: "Top half wins $1.94",
       takes_tokens: false,
     },
     {
@@ -231,7 +231,7 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
       payout_structure: '[1940,1940,1940,1940,1940]',
-      payout_description: "Top half wins",
+      payout_description: "Top half wins $19.40",
       takes_tokens: false,
     },
     {
