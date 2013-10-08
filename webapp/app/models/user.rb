@@ -19,13 +19,14 @@ class User < ActiveRecord::Base
 
   attr_accessible :name, :username, :provider, :uid, :fb_token, :unconfirmed_email, :image_url, :takes_tokens,
       :email, :password, :password_confirmation, :remember_me, :first_name,
-      :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync
+      :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync, :inviter_id
 
   has_many :rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner_id
   has_many :push_devices
   has_one  :customer_object
   has_one  :recipient
+  belongs_to :inviter, :class_name => 'User'
 
   before_create :set_blank_name
   before_create :award_tokens
@@ -89,25 +90,28 @@ class User < ActiveRecord::Base
         self.reload
         raise HttpException.new(409, "You don't have enough FanFrees for that.") if amount > self.token_balance
         self.token_balance -= amount
-        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => -amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id], :is_tokens => true)
+        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => -amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id],:invitation_id => opts[:invitation_id], :is_tokens => use_tokens)
         self.save
       end
     else
-      self.customer_object.decrease_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id])
+      self.customer_object.decrease_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id])
     end
   end
 
-  #def increase_balance(amount, event, roster_id = nil, contest_id = nil)
+  #def increase_balance(amount, event, roster_id = nil, contest_id = nil, invitation_id= nil)
   def payout(amount, use_tokens, opts)
     if use_tokens
       ActiveRecord::Base.transaction do
         self.reload
         self.token_balance += amount
-        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id], :is_tokens => true)
+        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id], :invitation_id => opts[:invitation_id], :is_tokens => use_tokens)
         self.save
       end
     else
-      self.customer_object.increase_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id])
+      if self.customer_object.nil?
+        CustomerObject.create!(:user_id => self.id)
+      end
+      self.reload.customer_object.increase_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id])
     end
   end
 end

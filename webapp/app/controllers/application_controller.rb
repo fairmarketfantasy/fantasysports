@@ -16,10 +16,13 @@ class ApplicationController < ActionController::Base
   end
 
   def render_api_response(data, opts = {}) # TODO: handle pagination?
-    opts[:json] = data
     if data.respond_to?(:to_a) && data.class != Hash
       opts[:serializer] = ApiArraySerializer
     end
+    if opts[:redirect]
+      response.headers['X-CLIENT-REDIRECT'] = opts.delete(:redirect)
+    end
+    opts[:json] = data
     render opts
   end
 

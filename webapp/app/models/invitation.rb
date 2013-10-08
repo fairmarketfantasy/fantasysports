@@ -3,6 +3,7 @@ class Invitation < ActiveRecord::Base
   belongs_to :inviter, :class_name => 'User'
   belongs_to :private_contest, :class_name => 'Contest'
   belongs_to :contest_type, :class_name => 'ContestType'
+  has_one :transaction_record
   validates_presence_of :inviter_id
 =begin
       t.string :email, :null => false
@@ -25,6 +26,21 @@ class Invitation < ActiveRecord::Base
       )
     end
     ContestMailer.invite_to_contest(invitation, inviter, contest, email, message).deliver!
+    invitation
+  end
+
+  def self.redeem(current_user, code)
+    inv = Invitation.where(:code => code).first
+    raise HttpException.new(404, "No invitation found with that code") unless inv
+    inv.transaction do
+      if !inv.redeemed
+        current_user.inviter = inv.inviter
+        current_user.save!
+        inv.inviter.payout(10, false, :event => 'referral_payout', :invitation_id => inv.id)
+        inv.redeemed = true
+        inv.save!
+      end
+    end
   end
 
 end

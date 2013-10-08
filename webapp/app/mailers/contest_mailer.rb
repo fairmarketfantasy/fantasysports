@@ -6,7 +6,7 @@ class ContestMailer < ActionMailer::Base
     @inviter = inviter
     @contest = contest
     @message = message
-    subject = invitation.private_contest ?
+    subject = contest.private? ?
         "#{inviter.name} invited you to their league on FairMarketFantasy.com" : "#{inviter.name} challenged you on FairMarketFantasy.com"
     envelope = {
       to: email,
