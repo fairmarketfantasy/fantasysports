@@ -13,6 +13,9 @@
 @interface FFTickerDrawerViewController ()
 
 @property (nonatomic) UICollectionViewFlowLayout *flowLayout;
+@property (nonatomic) NSDate *dontTickUntil; // you can block the ticker for a period of time
+@property (nonatomic) BOOL doTick;
+@property (nonatomic) NSUInteger currentTickItem;
 
 @end
 
@@ -64,6 +67,8 @@
         _collectionView.dataSource = self;
         _collectionView.alwaysBounceHorizontal = YES;
         _collectionView.showsHorizontalScrollIndicator = NO;
+        
+        _currentTickItem = 0;
     }
     return self;
 }
@@ -81,6 +86,55 @@
     } else {
         [self tickerShowLoading:nil];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    _doTick = YES;
+    [self tick];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    _doTick = NO;
+}
+
+- (void)tick
+{
+    if (!_doTick) {
+        return;
+    }
+    double delayInSeconds = 2.5;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        // don't scroll if we were recently scrolling or something
+        if (self.dontTickUntil) {
+            NSDate *now = [NSDate date];
+            if ([now compare:self.dontTickUntil] == NSOrderedAscending) {
+                NSLog(@"ignoring ticker tick");
+                return [self tick];
+            } else {
+                self.dontTickUntil = nil;
+                // we just scrolled, so set tickernext to the first visible cell
+                _currentTickItem = [(NSIndexPath *)[self.collectionView indexPathsForVisibleItems][0] item];
+            }
+        }
+        // scroll to the next one if available
+        NSLog(@"ticker ticking");
+        NSArray *visible = [self.collectionView indexPathsForVisibleItems];
+        if (visible.count > 1) {
+            NSIndexPath *next = [NSIndexPath indexPathForItem:_currentTickItem inSection:0];
+            if (next.item < self.tickerData.count) {
+                [self.collectionView scrollToItemAtIndexPath:next
+                                            atScrollPosition:UICollectionViewScrollPositionLeft
+                                                    animated:YES];
+            }
+        }
+        _currentTickItem++;
+        [self tick];
+    });
 }
 
 // ticker data source delegate -----------------------------------------------------------------------------------------
@@ -144,6 +198,11 @@
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:@"this method must be implemented in a subclass"
                                  userInfo:nil];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    self.dontTickUntil = [NSDate dateWithTimeIntervalSinceNow:5];
 }
 
 @end

@@ -150,8 +150,9 @@
     self.signUpView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
     [self setupSignUpView];
     
-    [self.view addSubview:self.signInView];
     [self.view addSubview:self.signUpView];
+    [self.view addSubview:self.signInView];
+    [_signInTicker viewDidAppear:NO];
     
     _dismissKeyboardRecognizer = [[UITapGestureRecognizer alloc]
                                   initWithTarget:self
@@ -275,6 +276,7 @@
     
     _signUpTicker = [self ticker];
     _signUpTicker.view.frame = CGRectMake(0, CGRectGetMaxY(self.signUpView.frame)-95, 320, 95);
+    [_signUpTicker viewWillAppear:NO];
     [self.signUpView addSubview:_signUpTicker.view];
 }
 
@@ -375,6 +377,7 @@
     
     _signInTicker = [self ticker];
     _signInTicker.view.frame = CGRectMake(0, CGRectGetMaxY(self.signInView.frame)-95, 320, 95);
+    [_signInTicker viewWillAppear:NO];
     [self.signInView addSubview:_signInTicker.view];
 }
 
@@ -389,6 +392,8 @@
                        options:UIViewAnimationOptionTransitionFlipFromRight
                     completion:^(BOOL finished) {
                         if (finished) {
+                            [_signUpTicker viewDidDisappear:NO];
+                            [_signInTicker viewDidAppear:NO];
                         }
                     }];
 }
@@ -402,7 +407,8 @@
                        options:UIViewAnimationOptionTransitionFlipFromRight
                     completion:^(BOOL finished) {
                         if (finished) {
-
+                            [_signInTicker viewDidDisappear:NO];
+                            [_signUpTicker viewDidAppear:NO];
                         }
                     }];
 }
