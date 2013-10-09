@@ -315,7 +315,7 @@
     container.backgroundColor = [UIColor clearColor];
     [self.signInView insertSubview:container belowSubview:greenBg];
     
-    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, 290, 60)];
+    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 90, 290, 60)];
     lab.font = [FFStyle lightFont:30];
     lab.text = NSLocalizedString(@"Sign In", nil);
     lab.backgroundColor = [UIColor clearColor];
@@ -325,7 +325,7 @@
     // text inputs
     UITextField *un = [[FFTextField alloc] init];
     un.layer.borderWidth = 1;
-    un.frame = CGRectMake(15, 195, 290, 44);
+    un.frame = CGRectMake(15, 155, 290, 44);
     un.layer.borderColor = [FFStyle greyBorder].CGColor;
     un.backgroundColor = [FFStyle white];
     un.delegate = self;
@@ -343,7 +343,7 @@
     pw.layer.borderColor = [FFStyle greyBorder].CGColor;
     pw.backgroundColor = [FFStyle white];
     pw.delegate = self;
-    pw.frame = CGRectMake(15, 250, 290, 44);
+    pw.frame = CGRectMake(15, 210, 290, 44);
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
     pw.returnKeyType = UIReturnKeyGo;
@@ -354,20 +354,36 @@
     // sign in buttons
     UIButton *signIn = [FFStyle coloredButtonWithText:NSLocalizedString(@"Sign In", nil)
                                                 color:[FFStyle brightGreen] borderColor:[FFStyle white]];
-    signIn.frame = CGRectMake(15, 310, 290, 38);
+    signIn.frame = CGRectMake(15, 265, 290, 38);
     [signIn addTarget:self action:@selector(signIn:) forControlEvents:UIControlEventTouchUpInside];
     [container addSubview:signIn];
     self.signInButton = signIn;
     
+    UIButton *fbSignUp = [FFStyle coloredButtonWithText:NSLocalizedString(@"Sign In With Facebook", nil)
+                                                  color:[FFStyle brightBlue] borderColor:[FFStyle white]];
+    fbSignUp.frame = CGRectMake(15, 315, 290, 38);
+    [fbSignUp addTarget:self action:@selector(signUpFacebook:) forControlEvents:UIControlEventTouchUpInside];
+    [container addSubview:fbSignUp];
+    
     UIButton *forgot = [UIButton buttonWithType:UIButtonTypeCustom];
     [forgot setTitle:NSLocalizedString(@"Forgot Your Password?", nil) forState:UIControlStateNormal];
-    forgot.frame = CGRectMake(15, 355, 290, 50);
-    forgot.titleLabel.font = [FFStyle lightFont:19];
+    forgot.frame = CGRectMake(15, 385, 290, 50);
+    forgot.titleLabel.font = [FFStyle regularFont:12];
     forgot.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [forgot setTitleColor:[FFStyle white] forState:UIControlStateNormal];
+    [forgot setTitleColor:[FFStyle lightGrey] forState:UIControlStateNormal];
     [forgot setTitleColor:[FFStyle darkerColorForColor:[FFStyle white]] forState:UIControlStateHighlighted];
     [forgot addTarget:self action:@selector(forgotPassword:) forControlEvents:UIControlEventTouchUpInside];
     [container addSubview:forgot];
+    
+    UIButton *already = [UIButton buttonWithType:UIButtonTypeCustom];
+    [already setTitle:NSLocalizedString(@"Need an Account?", nil) forState:UIControlStateNormal];
+    already.frame = CGRectMake(15, 355, 290, 50);
+    already.titleLabel.font = [FFStyle lightFont:19];
+    already.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [already setTitleColor:[FFStyle white] forState:UIControlStateNormal];
+    [already setTitleColor:[FFStyle darkerColorForColor:[FFStyle white]] forState:UIControlStateHighlighted];
+    [already addTarget:self action:@selector(signUpHeaderSwitch:) forControlEvents:UIControlEventTouchUpInside];
+    [container addSubview:already];
     
     if (IS_SMALL_DEVICE) {
         container.frame = CGRectOffset(container.frame, 0, -40);

@@ -170,6 +170,13 @@ FFCreateGameViewControllerDelegate>
                                              selector:@selector(didUpdateUser:) 
                                                  name:FFSessionDidUpdateUserNotification
                                                object:nil];
+    if (IS_SMALL_DEVICE) {
+        double delayInSeconds = 1.5;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self minimizeDrawerAnimated:YES];
+        });
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
