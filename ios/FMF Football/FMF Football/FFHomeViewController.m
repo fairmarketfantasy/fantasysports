@@ -310,7 +310,7 @@ FFCreateGameViewControllerDelegate>
 
 - (void)gameButtonViewJoinGame
 {
-    [self performSegueWithIdentifier:@"GotoFindGame" sender:self];
+    [self performSegueWithIdentifier:@"GotoMyGames" sender:self];
 }
 
 #pragma mark -
