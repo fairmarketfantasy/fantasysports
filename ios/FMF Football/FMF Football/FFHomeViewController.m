@@ -162,7 +162,7 @@ FFCreateGameViewControllerDelegate>
     _markets.delegate = self;
     [_markets refresh];
     
-    _marketSelector.markets = [_markets allObjects];
+    _marketSelector.markets = [FFMarket filteredMarkets:[_markets allObjects]];
     
     [_tableView reloadData];
     
@@ -435,7 +435,7 @@ FFCreateGameViewControllerDelegate>
 - (void)resultSetDidReload:(SBDataObjectResultSet *)resultSet
 {
     if (resultSet == _markets) {
-        _marketSelector.markets = [resultSet allObjects];
+        _marketSelector.markets = [FFMarket filteredMarkets:[resultSet allObjects]];
     } else if (resultSet == _contests) {
         // the server does not filter, and the result set by defaults shows what the server shows, hence we must
         // do our own pass of filtering to show only takesTokens==True contest types
