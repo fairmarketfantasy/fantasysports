@@ -15,6 +15,10 @@ class ContestsController < ApplicationController
     invitation = Invitation.where(:code => params[:referral_code]).first
     contest = Contest.where(:invitation_code => params[:contest_code]).first
     if current_user
+      if current_user.in_progress_roster
+        current_user.in_progress_roster.cancel!("Cancelled on invitation click")
+        current_user.in_progress_roster.destroy
+      end
       roster = Roster.generate(current_user, contest.contest_type)
       roster.update_attribute(:contest_id, contest.id)
       redirect_to "/#/market/#{roster.market_id}/roster/#{roster.id}"
@@ -22,7 +26,7 @@ class ContestsController < ApplicationController
       flash[:success] = "You need to sign up or login to join this contest!"
       session[:referral_code] = invitation.code if invitation
       session[:contest_code] = contest.invitation_code
-      redirect_to "/" #// Trigger sign up modal
+      redirect_to "/#?autologin=You need to create an account to join that contest" #// Trigger sign up modal
     end
   end
 
