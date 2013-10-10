@@ -315,7 +315,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         marketLabel.frame = mlr;
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"E d @ h:m a"];
+        [dateFormatter setDateFormat:@"E d @ h:mm a"];
         
         UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(mlr)+6, 0, 250,
                                                                        cell.contentView.frame.size.height)];

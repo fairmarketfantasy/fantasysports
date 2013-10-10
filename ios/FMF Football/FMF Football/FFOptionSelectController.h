@@ -14,6 +14,7 @@
 
 @protocol FFOptionSelectControllerDelegate <NSObject>
 
+@optional
 - (void)optionSelectController:(FFOptionSelectController *)cont didSelectOption:(NSUInteger)idx;
 
 @end
