@@ -794,7 +794,15 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          if (_state != PickPlayer) {
              return;
          }
-         _availablePlayers = JSON;
+         
+         NSMutableArray *sorted = [JSON mutableCopy];
+         [sorted sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+             NSString *str1 = [obj1 objectForKey:@"buy_price"];
+             NSString *str2 = [obj2 objectForKey:@"buy_price"];
+             return [str1 compare:str2 options:NSNumericSearch];
+         }];
+         
+         _availablePlayers = sorted;
          [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                        withRowAnimation:UITableViewRowAnimationNone];
          
