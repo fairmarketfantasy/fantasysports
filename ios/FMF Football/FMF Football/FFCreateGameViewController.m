@@ -26,6 +26,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) SBDataObjectResultSet *markets;
+@property (nonatomic) NSArray *filteredMarkets;
 @property (nonatomic) FFMarket *selectedMarket;
 @property (nonatomic) NSArray *contestTypes;
 @property (nonatomic) NSDictionary *contestTypeDesc;
@@ -116,6 +117,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     _markets = [FFMarket getBulkWithSession:self.session authorized:YES];
     _markets.clearsCollectionBeforeSaving = YES;
     _markets.delegate = self;
+    _filteredMarkets = [FFMarket filteredMarkets:[_markets allObjects]];
     [_markets refresh];
     
     if (!_selectedContestType) {
@@ -205,6 +207,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 - (void)resultSetDidReload:(SBDataObjectResultSet *)resultSet
 {
     if (!_selectedMarket && [[resultSet allObjects] count]) {
+        _filteredMarkets = [FFMarket filteredMarkets:[resultSet allObjects]];
         _selectedMarket = [[resultSet allObjects] objectAtIndex:0];
         [_tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:2]]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -436,9 +439,9 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }
     else if ([segue.identifier isEqualToString:@"GotoMarketSelect"]) {
         FFOptionSelectController *c = segue.destinationViewController;
-        NSUInteger sel = [[_markets allObjects] indexOfObject:_selectedMarket];
+        NSUInteger sel = [_filteredMarkets indexOfObject:_selectedMarket];
         NSMutableArray *opts = [NSMutableArray array];
-        for (FFMarket *market in [_markets allObjects]) {
+        for (FFMarket *market in _filteredMarkets) {
             NSString *mkt;
             if (market.name && market.name.length) {
                 mkt = market.name;
@@ -447,7 +450,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
             }
             
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateFormat:@"E d @ h:m a"];
+            [dateFormatter setDateFormat:@"E d @ h:mm a"];
             
             [opts addObject:[NSString stringWithFormat:@"%@ - %@", mkt,
                              [dateFormatter stringFromDate:market.startedAt]]];
