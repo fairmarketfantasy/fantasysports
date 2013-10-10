@@ -124,7 +124,13 @@ NSDate * SBDateFromISO8601String(NSString *ISO8601String) {
 
 - (id<SBField>)fromNetwork:(id)value
 {
-    return [[SBDate alloc] initWithDate:SBDateFromISO8601String(value)];
+    static NSDateFormatter *_formatter = nil;
+    if (_formatter == nil) {
+        _formatter = [[NSDateFormatter alloc] init];
+        [_formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+        [_formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    }
+    return [[SBDate alloc] initWithDate:[_formatter dateFromString:value]];
 }
 
 - (id)toNetwork:(id<SBField>)value
