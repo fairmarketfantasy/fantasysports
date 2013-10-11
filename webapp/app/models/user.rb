@@ -60,11 +60,7 @@ class User < ActiveRecord::Base
   end
 
   def email
-    if self[:unconfirmed_email].presence
-      self[:unconfirmed_email]
-    else
-      self[:email]
-    end
+    self[:email].blank? ? self.unconfirmed_email : self[:email]
   end
 
   def image_url
