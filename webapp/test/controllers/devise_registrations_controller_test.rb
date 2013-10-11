@@ -22,7 +22,7 @@ class Users::RegistrationsControllerTest < ActionController::TestCase
     end
   end
 
-  test "new user private contest invitation post-signup" do
+  test "new user private contest invitation post signup" do
     setup_simple_market
     @user = create(:paid_user)
     contest = Contest.create_private_contest(
@@ -35,10 +35,9 @@ class Users::RegistrationsControllerTest < ActionController::TestCase
 
     request.session[:referral_code] = inv.code
     request.session[:contest_code] = contest.invitation_code
-    assert_difference '@user.customer_object.reload.balance', 100 do
+    assert_difference '@user.customer_object.reload.balance', Invitation::FREE_USER_REFERRAL_PAYOUT do
       xhr :post, :create, format: :json, user: {name: "Terry P", email: "bob@there.com", password: "1234abcd", password_confirmation: "1234abcd"}
     end
-    debugger
     assert response.headers['X-CLIENT-REDIRECT']
   end
 
