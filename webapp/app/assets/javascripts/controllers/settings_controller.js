@@ -23,6 +23,7 @@
     if (completed)
       fs.user.refresh().then(function(resp){
         $scope.currentUser = resp;
+        window.App.currentUser = resp;
         $scope.showUpload  = false;
       });
     else
