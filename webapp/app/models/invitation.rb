@@ -48,6 +48,7 @@ class Invitation < ActiveRecord::Base
   def self.redeem_paid(current_user)
     if current_user.inviter && TransactionRecord.where(:event => 'paid_referral_payout', :referred_id => current_user.id).first.nil?
       current_user.inviter.payout(PAID_USER_REFERRAL_PAYOUT, false, :event => 'paid_referral_payout', :referred_id => current_user.id)
+      current_user.payout(PAID_USER_REFERRAL_PAYOUT, false, :event => 'referred_join_payout', :referred_id => current_user.id)
     end
   end
 end

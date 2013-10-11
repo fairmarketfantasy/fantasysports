@@ -30,5 +30,6 @@ class InvitationTest < ActiveSupport::TestCase
       Invitation.redeem_paid(user2)
       Invitation.redeem_paid(user2)
     end
+    assert_equal Invitation::PAID_USER_REFERRAL_PAYOUT, user2.customer_object.balance
   end
 end
