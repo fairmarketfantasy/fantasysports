@@ -13,7 +13,7 @@ God.watch do |w|
   w.env = {"PATH" => "$PATH:/usr/local/go/bin",
            "GOPATH" => "#{BASE_DIR}/current/datafetcher",
            "RAILS_ENV" => ENV['RAILS_ENV'],
-           "PIDFILE" => pid_file
+           "PIDFILE" => pid_file,
            "DB_HOST" => yaml['host']}
   w.stop          = -> { `kill -s KILL #{IO.read(pid_file)}` }
   w.start_grace   = 5.seconds
