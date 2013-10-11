@@ -42,7 +42,7 @@
         
         _enter = [UIButton buttonWithType:UIButtonTypeCustom];
         _enter.titleLabel.font = [FFStyle blockFont:18];
-        [_enter setTitle:NSLocalizedString(@"Enter Game", nil) forState:UIControlStateNormal];
+        [_enter setTitle:NSLocalizedString(@"My Games", nil) forState:UIControlStateNormal];
         _enter.frame = CGRectMake(frame.size.width/2, 0, frame.size.width/2-12, frame.size.height-5);
         [_enter setTitleColor:[FFStyle white] forState:UIControlStateNormal];
         [_enter setTitleColor:[FFStyle lightGrey] forState:UIControlStateHighlighted];

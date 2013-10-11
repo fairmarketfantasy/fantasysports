@@ -21,4 +21,24 @@ class Users::RegistrationsControllerTest < ActionController::TestCase
       assert_equal "Email can't be blank", resp['error']
     end
   end
+
+  test "new user private contest invitation post signup" do
+    setup_simple_market
+    @user = create(:paid_user)
+    contest = Contest.create_private_contest(
+      :market_id => @market.id,
+      :type => 'h2h',
+      :buy_in => 100,
+      :user_id => @user.id,
+    )
+    inv = Invitation.for_contest(@user, 'bob@there.com', contest, 'HI BOB')
+
+    request.session[:referral_code] = inv.code
+    request.session[:contest_code] = contest.invitation_code
+    assert_difference '@user.customer_object.reload.balance', Invitation::FREE_USER_REFERRAL_PAYOUT do
+      xhr :post, :create, format: :json, user: {name: "Terry P", email: "bob@there.com", password: "1234abcd", password_confirmation: "1234abcd"}
+    end
+    assert response.headers['X-CLIENT-REDIRECT']
+  end
+
 end

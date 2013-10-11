@@ -47,11 +47,36 @@
     titleLab.textColor = [FFStyle tableViewSectionHeaderColor];
     [self.view addSubview:titleLab];
     
+    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(15, 94, 290, 1)];
+    sep.backgroundColor = [FFStyle tableViewSeparatorColor];
+    [self.view addSubview:sep];
+    
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(titleLab.frame), 320,
                                                                  self.view.frame.size.height
                                                                  -CGRectGetMaxY(titleLab.frame))];
     _scrollView.alwaysBounceVertical = YES;
     [self.view addSubview:_scrollView];
+    
+    if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+        [_scrollView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        titleLab.translatesAutoresizingMaskIntoConstraints = NO;
+        sep.translatesAutoresizingMaskIntoConstraints = NO;
+        id topGuide = self.topLayoutGuide;
+        id bottomGuide = self.bottomLayoutGuide;
+        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_scrollView, topGuide, bottomGuide, titleLab, sep);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topGuide][titleLab(44)][sep(1)][_scrollView][bottomGuide]"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_scrollView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[titleLab]-15-|"
+                                                                          options:0 metrics:nil views:viewsDictionary]];
+    } else {
+        _scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
     
     UILabel *toLab = [[UILabel alloc] initWithFrame:CGRectMake(15, 5, 50, 30)];
     toLab.text = NSLocalizedString(@"To:", nil);
@@ -92,39 +117,60 @@
     [_autocompleteView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [_lowerHalf addSubview:_autocompleteView];
     
-    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(15, 0, 290, 1)];
+    sep = [[UIView alloc] initWithFrame:CGRectMake(15, 0, 290, 1)];
     sep.backgroundColor = [FFStyle tableViewSeparatorColor];
     [_lowerHalf addSubview:sep];
     
-    sep = [[UIView alloc] initWithFrame:CGRectMake(15, 94, 290, 1)];
-    sep.backgroundColor = [FFStyle tableViewSeparatorColor];
-    [self.view addSubview:sep];
-    
     // -----
     
-    UINavigationBar *navBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    [self.view addSubview:navBar];
+//    UINavigationBar *navBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+//    [self.view addSubview:navBar];
     
-    UIButton *closeButt = [UIButton buttonWithType:UIButtonTypeCustom];
-    closeButt.titleLabel.font = [FFStyle regularFont:15];
-    closeButt.titleLabel.textColor = [FFStyle white];
-    closeButt.frame = CGRectMake(0, 0, 56, 44);
-    [closeButt setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
-    [closeButt addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *closeButt = [UIButton buttonWithType:UIButtonTypeCustom];
+//    closeButt.titleLabel.font = [FFStyle regularFont:15];
+//    closeButt.titleLabel.textColor = [FFStyle white];
+//    closeButt.frame = CGRectMake(0, 0, 56, 44);
+//    [closeButt setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
+//    [closeButt addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    UIButton *sendButt = [UIButton buttonWithType:UIButtonTypeCustom];
+//    sendButt.titleLabel.font = [FFStyle regularFont:15];
+//    sendButt.titleLabel.textColor = [FFStyle white];
+//    sendButt.frame = CGRectMake(0, 0, 56, 44);
+//    [sendButt setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
+//    [sendButt addTarget:self action:@selector(send:) forControlEvents:UIControlEventTouchUpInside];
+//
+//    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:closeButt];
+//    UIBarButtonItem *send = [[UIBarButtonItem alloc] initWithCustomView:sendButt];
+//    UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@""];
+//    [navBar pushNavigationItem:item animated:NO];
+//    item.leftBarButtonItem = close;
+//    item.rightBarButtonItem = send;
     
-    UIButton *sendButt = [UIButton buttonWithType:UIButtonTypeCustom];
-    sendButt.titleLabel.font = [FFStyle regularFont:15];
-    sendButt.titleLabel.textColor = [FFStyle white];
-    sendButt.frame = CGRectMake(0, 0, 56, 44);
-    [sendButt setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
-    [sendButt addTarget:self action:@selector(send:) forControlEvents:UIControlEventTouchUpInside];
-
-    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:closeButt];
-    UIBarButtonItem *send = [[UIBarButtonItem alloc] initWithCustomView:sendButt];
-    UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@""];
-    item.leftBarButtonItem = close;
-    item.rightBarButtonItem = send;
-    [navBar pushNavigationItem:item animated:NO];
+//    UIButton *cancel = [FFStyle clearButtonWithText:NSLocalizedString(@"Close", nil) borderColor:[FFStyle white]];
+//    cancel.frame = CGRectMake(0, 0, 70, 30);
+//    [cancel addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    UIButton *create = [FFStyle clearButtonWithText:NSLocalizedString(@"Send", nil) borderColor:[FFStyle white]];
+//    create.frame = CGRectMake(0, 0, 70, 30);
+//    [create addTarget:self action:@selector(send:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
+    [logo sizeToFit];
+    
+    self.navigationItem.titleView = logo;
+    self.navigationItem.leftBarButtonItems = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Close", nil)
+                                                                           borderColor:[FFStyle white] target:self
+                                                                              selector:@selector(close:)
+                                                                         leftElseRight:YES];
+    self.navigationItem.rightBarButtonItems = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Send", nil)
+                                                                            borderColor:[FFStyle white] target:self
+                                                                               selector:@selector(send:)
+                                                                          leftElseRight:NO];
+    
+//    item.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancel];
+//    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:create];
+//    item.titleView = logo;
 }
 
 - (void)viewWillAppear:(BOOL)animated

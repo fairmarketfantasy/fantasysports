@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+# Use debugger
+gem 'debugger', group: [:development, :test]
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
 
@@ -28,8 +31,10 @@ gem 'twitter-bootstrap-rails'
 gem 'devise'
 gem 'omniauth'
 gem 'omniauth-facebook'
-gem 'mustwin_devise_oauth2_providable', '1.1.5'#, :path => '/Users/mike/code/devise_oauth2_providable'
+gem 'omniauth-facebook-access-token'
+gem 'mustwin_devise_oauth2_providable', '1.1.6'#, :path => '/Users/mike/code/devise_oauth2_providable'
 gem 'protected_attributes'
+gem 'activeadmin', github: 'gregbell/active_admin', branch: 'master'
 
 # data processing
 gem 'nokogiri'
@@ -46,6 +51,7 @@ gem "rmagick"
 
 #payments
 gem 'stripe'
+gem 'venice' # iOS receipt verification
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
@@ -77,9 +83,8 @@ end
 gem 'god'
 gem 'puma'
 gem 'chef', '~> 11.6.0'
+gem 'knife-ec2'
 
 # Use Capistrano for deployment
 gem 'capistrano', group: :development
 
-# Use debugger
-gem 'debugger', group: [:development, :test]

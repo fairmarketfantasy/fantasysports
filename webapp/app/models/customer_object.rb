@@ -53,7 +53,7 @@ class CustomerObject < ActiveRecord::Base
       currency: "usd",
       customer: stripe_id,
     })
-    increase_balance(resp.amount, 'deposit')
+    increase_balance(resp.amount, 'deposit') # Don't change this without changing them elsewhere
     resp
     # rescue Stripe::CardError => e
     #   #card has been declined, handle this exception and log it somewhere
@@ -70,21 +70,22 @@ class CustomerObject < ActiveRecord::Base
     sprintf( '%.2f', (balance/100) )
   end
 
-  def increase_balance(amount, event, roster_id = nil, contest_id = nil)
+  # TODO: refactor this argument nonsense
+  def increase_balance(amount, event, roster_id = nil, contest_id = nil, invitation_id = nil, referred_id = nil)
     ActiveRecord::Base.transaction do
       self.balance += amount
-      TransactionRecord.create!(:user => self.user, :event => event, :amount => amount, :roster_id => roster_id, :contest_id => contest_id)
-      self.save
+      TransactionRecord.create!(:user => self.user, :event => event, :amount => amount, :roster_id => roster_id, :contest_id => contest_id, :invitation_id => invitation_id, :referred_id => referred_id)
+      self.save!
     end
   end
 
-  def decrease_balance(amount, event, roster_id = nil, contest_id = nil)
+  def decrease_balance(amount, event, roster_id = nil, contest_id = nil, invitation_id = nil, referred_id = nil)
     ActiveRecord::Base.transaction do
       self.reload
-      raise HttpException.new(409, "You're trying to transfer more than you have.") if self.balance - amount < 0
+      raise HttpException.new(409, "You're trying to transfer more than you have.") if self.balance - amount < 0 && self.user != SYSTEM_USER
       self.balance -= amount
-      TransactionRecord.create!(:user => self.user, :event => event, :amount => -amount, :roster_id => roster_id, :contest_id => contest_id)
-      self.save
+      TransactionRecord.create!(:user => self.user, :event => event, :amount => -amount, :roster_id => roster_id, :contest_id => contest_id, :invitation_id => invitation_id, :referred_id => referred_id)
+      self.save!
     end
   end
 

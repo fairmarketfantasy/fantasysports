@@ -13,7 +13,7 @@ class Contest < ActiveRecord::Base
   validates :owner_id, :contest_type_id, :buy_in, :market_id, presence: true
 
   #creates a roster for the owner and creates an invitation code
-  def self.create_private_contest(opts) 
+  def self.create_private_contest(opts)
     market = Market.where(:id => opts[:market_id], state: ['published', 'opened']).first
     raise "Market must be active to create a contest" unless market
     raise "It's too close to market close to create a contest" if Time.new + 5.minutes > market.closed_at
@@ -25,7 +25,7 @@ class Contest < ActiveRecord::Base
       contest_type = ContestType.create!(
         :market_id => market.id,
         :name => 'h2h',
-        :description => 'custom h2h',
+        :description => 'custom h2h contest',
         :max_entries => 2,
         :buy_in => opts[:buy_in],
         :rake => rake,
@@ -82,12 +82,12 @@ class Contest < ActiveRecord::Base
             next
           end
           # puts "roster #{roster.id} won #{payment_per_roster}!"
-          roster.owner.customer_object.increase_balance(payment_per_roster, 'payout', roster.id, self.id)
+          roster.owner.payout(payment_per_roster, self.contest_type.takes_tokens?, :event => 'payout', :roster_id => roster.id, :contest_id => self.id)
           roster.amount_paid = payment_per_roster
           roster.save!
         end
       end
-      SYSTEM_USER.customer_object.increase_balance(self.rake_amount, 'rake', nil, self.id)
+      SYSTEM_USER.payout(self.rake_amount, self.contest_type.takes_tokens?, :event => 'rake', :roster_id => nil, :contest_id => self.id)
       self.paid_at = Time.new
       self.save!
       TransactionRecord.validate_contest(self)

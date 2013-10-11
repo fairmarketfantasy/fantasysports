@@ -175,7 +175,7 @@
     }
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"E d @ h:m a"];
+    [dateFormatter setDateFormat:@"E d @ h:mm a"];
     
     UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width/3.0f, 0, cell.contentView.frame.size.width/3.0f*2.0f, cell.contentView.frame.size.height)];
     timeLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;

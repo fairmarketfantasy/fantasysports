@@ -40,10 +40,21 @@ class ActiveSupport::TestCase
 
   include FactoryGirl::Syntax::Methods
 
+  def assert_email_sent(address = nil, &block)
+    assert_difference('ActionMailer::Base.deliveries.size', &block)
+    if address.present?
+      assert_equal address, ActionMailer::Base.deliveries.last['to'].to_s
+    end
+  end
+
+  def assert_email_not_sent(&block)
+    assert_no_difference('ActionMailer::Base.deliveries.size', &block)
+  end
+
   def resp_json
     resp = JSON.parse(response.body)
     if resp["data"]
-        resp["data"] = JSONH.unpack(resp["data"])
+      resp["data"] = JSONH.unpack(resp["data"])
     end
     resp
   end
@@ -54,13 +65,11 @@ class ActiveSupport::TestCase
               create(:team1, :abbrev => "BB"),
               create(:team1, :abbrev => "CC"),
               create(:team1, :abbrev => "DD")]
-    @games = [create(:game, :home_team => @teams[0], :away_team => @teams[1]),
-              create(:game, :home_team => @teams[2], :away_team => @teams[3], 
-                :game_day => Time.now.tomorrow.tomorrow.beginning_of_day,
-                :game_time => Time.now.tomorrow.tomorrow)]
+    @games = [create(:game, :home_team => @teams[0], :away_team => @teams[1], :game_time => Time.now.tomorrow + 10.minutes),
+              create(:game, :home_team => @teams[2], :away_team => @teams[3], :game_time => Time.now.tomorrow  + 10.minutes, :game_day => Time.now.tomorrow.tomorrow.beginning_of_day)]
     @teams.each do |team|
       @players = Positions.default_NFL.split(',').map do |position|
-        player = create :player, :team => team, :position => position
+        create :player, :team => team, :position => position
       end
     end
     @market = create :new_market
@@ -129,12 +138,14 @@ FactoryGirl.define do
       after(:create) do |user|
         user.customer_object = create(:customer_object, user: user)
         user.recipient       = create(:recipient, user: user)
+        user.token_balance = 2000
+        user.save!
       end
     end
   end
 
   factory :customer_object do
-    balance 10000
+    balance 20000
     token { generate(:random_string) }
     after(:create) do |customer_object|
       create(:credit_card, token: StripeMock.generate_card_token(last4: "4242", exp_year: 2017), customer_object: customer_object)
@@ -201,9 +212,9 @@ FactoryGirl.define do
   factory :new_market, class: Market do
     shadow_bets 100000
     shadow_bet_rate 0.5
-    published_at Time.now - 4000
-    opened_at Time.now - 1000
-    closed_at Time.now - 100
+    published_at Time.now - 1.day
+    opened_at Time.now + 1.minute
+    closed_at Time.now + 2.minute
     total_bets 0
     sport_id 1
   end

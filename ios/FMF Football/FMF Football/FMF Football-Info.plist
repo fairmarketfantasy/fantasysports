@@ -8,8 +8,22 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>FMF-80</string>
+				<string>FMF-58</string>
+				<string>FMF-120</string>
+				<string>FMF.png</string>
+				<string>FMF@2x.png</string>
+			</array>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.fairmarketfantasy.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.fairmarketfantasy.fmf-football</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -17,13 +31,26 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>0.7</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb436114143174192</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>FFEmailRegex</key>
-	<string>(^[-!#$%&amp;&apos;*+/=?^_`{}|~0-9A-Z]+(\\.[-!#$%&amp;&apos;*+/=?^_`{}|~0-9A-Z]+)*|^\&quot;([\001-\010\013\014\016-\037!#-\\[\\]-\177]|\\[\001-011\013\014\016-\177])*\&quot;)@(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\\.)+[A-Z]{2,6}\\.?$</string>
+	<string>(^[-!#$%&amp;'*+/=?^_`{}|~0-9A-Z]+(\\.[-!#$%&amp;'*+/=?^_`{}|~0-9A-Z]+)*|^\"([\001-\010\013\014\016-\037!#-\\[\\]-\177]|\\[\001-011\013\014\016-\177])*\")@(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\\.)+[A-Z]{2,6}\\.?$</string>
+	<key>FacebookAppID</key>
+	<string>436114143174192</string>
+	<key>FacebookDisplayName</key>
+	<string>FMF Football</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>SBAPIAllowInvalidSSLCertificate</key>
@@ -56,5 +83,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
 </dict>
 </plist>

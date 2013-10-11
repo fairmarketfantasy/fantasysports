@@ -17,6 +17,20 @@
 #import "FFContestViewController.h"
 #import "FFCreateGameViewController.h"
 #import "FFAlertView.h"
+#import "FFWebViewController.h"
+#import "FFNavigationBarItemView.h"
+
+
+@interface Fart : UITableViewCell
+
+@end
+
+@implementation Fart
+
+//
+
+@end
+
 
 @interface FFHomeViewController ()
 <SBDataObjectResultSetDelegate, UITableViewDataSource, UITableViewDelegate,
@@ -30,6 +44,7 @@ FFCreateGameViewControllerDelegate>
 @property (nonatomic) FFGameButtonView *gameButtonView;
 @property (nonatomic) SBDataObjectResultSet *contests;
 @property (nonatomic) UIButton *globalMenuButton;
+@property (nonatomic) NSArray *filteredContests;
 
 @end
 
@@ -48,7 +63,7 @@ FFCreateGameViewControllerDelegate>
 {
     [super viewDidLoad];
 
-    UIView *leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    UIView *leftView = [[FFNavigationBarItemView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
     UIButton *gmenu = [UIButton buttonWithType:UIButtonTypeCustom];
     [gmenu setImage:[UIImage imageNamed:@"globalmenu.png"] forState:UIControlStateNormal];
     [gmenu addTarget:self action:@selector(globalMenuButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -59,31 +74,71 @@ FFCreateGameViewControllerDelegate>
     logo.frame = CGRectMake(32, 13, 150, 19);
     [leftView addSubview:logo];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftView];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:
-                                              self.sessionController.balanceView];
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        UIBarButtonItem *negspace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                                  target:nil action:NULL];
+        negspace.width = -16;
+        self.navigationItem.leftBarButtonItems = @[negspace, [[UIBarButtonItem alloc]initWithCustomView:leftView]];
+    } else {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftView];
+    }
+    
+    UIButton *balanceView = [self.sessionController balanceView];
+    [balanceView addTarget:self action:@selector(showBalance:) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:balanceView];
     
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:_tableView];
+    if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+        [_tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        id topGuide = self.topLayoutGuide;
+        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_tableView, topGuide);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topGuide][_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+    } else {
+        _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
     _tableView.delegate = self;
     _tableView.dataSource = self;
-    _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"MarketSelectorCell"];
+    [_tableView registerClass:[Fart class] forCellReuseIdentifier:@"UserBitCell"];
     [_tableView registerClass:[FFContest2UpTabelViewCell class] forCellReuseIdentifier:@"ContestCell"];
-    [self.view addSubview:_tableView];
     
     _marketSelector = [[FFMarketSelector alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     _marketSelector.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _marketSelector.delegate = self;
     
-    _userBit = [[FFUserBitView alloc] initWithFrame:CGRectMake(0, 0, 320, 122)];
-    
     _gameButtonView = [[FFGameButtonView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     _gameButtonView.delegate = self;
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
+- (void)showBalance:(UIButton *)seder
+{
+    [self performSegueWithIdentifier:@"GotoTokenPurchase" sender:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+    
     UIViewController *cont2 = [[UIViewController alloc] init];
     cont2.view.backgroundColor = [UIColor redColor];
     [self showControllerInDrawer:self.maximizedTicker
@@ -107,11 +162,56 @@ FFCreateGameViewControllerDelegate>
     _markets.delegate = self;
     [_markets refresh];
     
-    _marketSelector.markets = [_markets allObjects];
-    
-    _userBit.user = (FFUser *)self.session.user;
+    _marketSelector.markets = [FFMarket filteredMarkets:[_markets allObjects]];
     
     [_tableView reloadData];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didUpdateUser:) 
+                                                 name:FFSessionDidUpdateUserNotification
+                                               object:nil];
+    if (IS_SMALL_DEVICE) {
+        double delayInSeconds = 1.5;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self minimizeDrawerAnimated:YES];
+        });
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+}
+
+- (void)didUpdateUser:(NSNotification *)note
+{
+    [self performSelector:@selector(updateUserCell) withObject:nil afterDelay:0.001];
+}
+
+- (void)updateUserCell
+{
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
+                          withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)finishInProgressRoster:(id)sender
+{
+    FFRoster *rost = [(FFUser *)self.session.user getInProgressRoster];
+    if (rost) {
+        FFAlertView *loading = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading", nil)
+                                                         messsage:nil loadingStyle:FFAlertViewLoadingStylePlain];
+        [loading showInView:self.view];
+        [rost refreshInBackgroundWithBlock:^(id successObj) {
+            [loading hide];
+            [self performSegueWithIdentifier:@"GotoRoster" sender:nil context:successObj];
+        } failure:^(NSError *error) {
+            [loading hide];
+            FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
+                                                     okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
+            [ealert showInView:self.view];
+        }];
+    }
 }
 
 - (void)globalMenuButton:(UIButton *)button
@@ -137,6 +237,14 @@ FFCreateGameViewControllerDelegate>
     else if ([segue.identifier isEqualToString:@"GotoRoster"]) {
         FFRoster *roster = segue.context;
         ((FFContestViewController *)segue.destinationViewController).roster = roster;
+    }
+    else if ([segue.identifier isEqualToString:@"GotoRules"]) {
+        FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
+        vc.URL = [NSURL URLWithString:@"http://google.com"];
+    }
+    else if ([segue.identifier isEqualToString:@"GotoTerms"]) {
+        FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
+        vc.URL = [NSURL URLWithString:@"http://google.com"];
     }
 }
 
@@ -202,7 +310,7 @@ FFCreateGameViewControllerDelegate>
 
 - (void)gameButtonViewJoinGame
 {
-    [self performSegueWithIdentifier:@"GotoFindGame" sender:self];
+    [self performSegueWithIdentifier:@"GotoMyGames" sender:self];
 }
 
 #pragma mark -
@@ -217,13 +325,16 @@ FFCreateGameViewControllerDelegate>
     
     NSString *path = [NSString stringWithFormat:@"/contests/for_market/%@", market.objId];
     
-    SBModelQuery *query = [[[self.session queryBuilderForClass:[FFContestType class]]
-                           property:@"marketId" isEqualTo:market.objId] query];
+    SBModelQuery *query = [[[[self.session queryBuilderForClass:[FFContestType class]]
+                             property:@"marketId" isEqualTo:market.objId]
+                            property:@"takesTokens" isEqualTo:@"1"]
+                           query];
     
     _contests = [FFContestType getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
     _contests.delegate = self;
-    
     [_contests refresh];
+    
+    _filteredContests = [_contests allObjects];
 }
 
 #pragma mark -
@@ -239,8 +350,8 @@ FFCreateGameViewControllerDelegate>
     if (section == 0) {
         return 3;
     }
-    if (_contests && [_contests count]) {
-        return [_contests count] / 2 + [_contests count] % 2;
+    if (_filteredContests && [_filteredContests count]) {
+        return [_filteredContests count] / 2 + [_filteredContests count] % 2;
     }
     return 0;
 }
@@ -249,6 +360,10 @@ FFCreateGameViewControllerDelegate>
 {
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
+            FFUser *user = (FFUser *)self.session.user;
+            if (user.inProgressRoster != nil) {
+                return 162;
+            }
             return 122;
         } else if (indexPath.row == 2) {
             return 58;
@@ -261,8 +376,12 @@ FFCreateGameViewControllerDelegate>
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
-    if (indexPath.section == 0) {        
-        cell = [tableView dequeueReusableCellWithIdentifier:@"MarketSelectorCell" forIndexPath:indexPath];
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"UserBitCell" forIndexPath:indexPath];
+        } else {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"MarketSelectorCell" forIndexPath:indexPath];
+        }
         [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
         UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(cell.contentView.frame)-1, 300, 1)];
@@ -270,7 +389,16 @@ FFCreateGameViewControllerDelegate>
         sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         
         if (indexPath.row == 0) {
-            [cell.contentView addSubview:_userBit];
+            FFUser *user = (FFUser *)self.session.user;
+            CGFloat height = 122;
+            if (user.inProgressRoster != nil) {
+                height = 162;
+            }
+            FFUserBitView *userBit = [[FFUserBitView alloc] initWithFrame:CGRectMake(0, 0, 320, height)];
+            userBit.user = (FFUser *)self.session.user;
+            [userBit.finishInProgressRoster addTarget:self action:@selector(finishInProgressRoster:)
+                                      forControlEvents:UIControlEventTouchUpInside];
+            [cell.contentView addSubview:userBit];
         } else if (indexPath.row == 1) {
             [cell.contentView addSubview:_marketSelector];
         } else if (indexPath.row == 2) {
@@ -281,9 +409,9 @@ FFCreateGameViewControllerDelegate>
         cell = [tableView dequeueReusableCellWithIdentifier:@"ContestCell" forIndexPath:indexPath];
         FFContest2UpTabelViewCell *c_cell = (FFContest2UpTabelViewCell *)cell;
         c_cell.delegate = self;
-        NSMutableArray *contests = [NSMutableArray arrayWithObject:[_contests objectAtIndex:indexPath.row*2]];
-        if ((indexPath.row * 2 + 1) != _contests.count) {
-            [contests addObject:[_contests objectAtIndex:indexPath.row * 2 + 1]];
+        NSMutableArray *contests = [NSMutableArray arrayWithObject:[_filteredContests objectAtIndex:indexPath.row*2]];
+        if ((indexPath.row * 2 + 1) != _filteredContests.count) {
+            [contests addObject:[_filteredContests objectAtIndex:indexPath.row * 2 + 1]];
         }
         c_cell.contests = contests;
     }
@@ -307,8 +435,18 @@ FFCreateGameViewControllerDelegate>
 - (void)resultSetDidReload:(SBDataObjectResultSet *)resultSet
 {
     if (resultSet == _markets) {
-        _marketSelector.markets = [resultSet allObjects];
+        _marketSelector.markets = [FFMarket filteredMarkets:[resultSet allObjects]];
     } else if (resultSet == _contests) {
+        // the server does not filter, and the result set by defaults shows what the server shows, hence we must
+        // do our own pass of filtering to show only takesTokens==True contest types
+        NSMutableArray *filtered = [NSMutableArray array];
+        for (FFContestType *ct in [_contests allObjects]) {
+            if ([ct.takesTokens integerValue]) {
+                [filtered addObject:ct];
+            }
+        }
+        _filteredContests = filtered;
+        
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                       withRowAnimation:UITableViewRowAnimationAutomatic];
     }

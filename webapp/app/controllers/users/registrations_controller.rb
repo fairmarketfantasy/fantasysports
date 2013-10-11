@@ -7,7 +7,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     if resource.save
       if resource.active_for_authentication?
         sign_up(resource_name, resource)
-        render :json => resource, status: :created
+        render_api_response resource, handle_referrals.merge({status: :created})
       else
         expire_session_data_after_sign_in!
         render :json => {error: resource.errors.full_messages.first}, status: :unprocessable_entity
@@ -26,24 +26,52 @@ class Users::RegistrationsController < Devise::RegistrationsController
       r = user
     end
     if r.save
-      render_api_response r.reload
+      opts = handle_referrals
+      render_api_response r.reload, opts
     else
       render :json => {:error => resource.errors.values.join(', ')}, :status => :unprocessable_entity
     end
   end
 
+  def handle_referrals
+    resp = {}
+    if session[:referral_code]
+      Invitation.redeem(current_user, session[:referral_code])
+      session[:referral_code] = nil
+    end
+    if session[:contest_code]
+      contest = Contest.where(:invitation_code => session[:contest_code]).first
+      if contest.private?
+        raise HttpException.new(403, "You already have a roster in this contest") if contest.rosters.map(&:owner_id).include?(current_user.id)
+        roster = Roster.generate(current_user, contest.contest_type)
+        roster.update_attribute(:contest_id, contest.id)
+      else
+        roster = Roster.generate(current_user, contest.contest_type)
+      end
+      session[:contest_code] = nil
+      resp.merge! redirect: "/market/#{contest.market_id}/roster/#{roster.id}"
+    end
+    resp
+  end
+
   def create
-    respond_to do |format|
-      format.html {
-        super
-      }
-      format.json {
-        if request.headers['content-type'] == 'application/json'
-          sign_up_from_json
-        else
-          sign_up_from_html
-        end
-      }
+    begin
+      respond_to do |format|
+        format.html {
+          super
+        }
+        format.json {
+          if request.headers['content-type'] == 'application/json'
+            sign_up_from_json
+          else
+            sign_up_from_html
+          end
+        }
+      end
+    rescue StandardError => e
+      if e.message =~ /username.*already exists/
+        raise HttpException.new(422, "That username is taken. Choose another one")
+      end
     end
   end
 

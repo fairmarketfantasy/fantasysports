@@ -171,7 +171,8 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
       payout_structure: '[5000000, 2500000, 1200000, 600000, 300000, 200000, 100000, 48500, 48500]',
-      payout_description: "Winner takes half, top 9 slots win big."
+      payout_description: "Winner takes half, top 9 slots win big.",
+      takes_tokens: false,
     },
     {
       name: '970',
@@ -191,6 +192,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[970]',
       payout_description: "Winner takes all",
+      takes_tokens: false,
     },
     {
       name: '970',
@@ -200,6 +202,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[9700]',
       payout_description: "Winner takes all",
+      takes_tokens: false,
     },
     {
       name: '194',
@@ -208,7 +211,7 @@ class Market < ActiveRecord::Base
       buy_in: 100, #100 ff
       rake: 0.03,
       payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top half wins",
+      payout_description: "Top half wins 194 FanFrees",
       takes_tokens: true,
     },
     {
@@ -218,7 +221,8 @@ class Market < ActiveRecord::Base
       buy_in: 100,
       rake: 0.03,
       payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top half wins",
+      payout_description: "Top half wins $1.94",
+      takes_tokens: false,
     },
     {
       name: '194',
@@ -227,7 +231,8 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
       payout_structure: '[1940,1940,1940,1940,1940]',
-      payout_description: "Top half wins",
+      payout_description: "Top half wins $19.40",
+      takes_tokens: false,
     },
     {
       name: 'h2h',
@@ -247,6 +252,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[194]',
       payout_description: "Winner takes all",
+      takes_tokens: false,
     },
     {
       name: 'h2h',
@@ -256,6 +262,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[1940]',
       payout_description: "Winner takes all",
+      takes_tokens: false,
     },
     {
       name: 'h2h rr',
@@ -275,6 +282,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194]',
       payout_description: "9 h2h games each pay out $1.94",
+      takes_tokens: false,
     },
     {
       name: 'h2h rr',
@@ -284,6 +292,7 @@ class Market < ActiveRecord::Base
       rake: 0.03,
       payout_structure: '[17460, 15520, 13580, 11640, 9700, 7760, 5820, 3880, 1940]',
       payout_description: "9 h2h games each pay out $19.40",
+      takes_tokens: false,
     }
   ];
 
@@ -323,6 +332,58 @@ class Market < ActiveRecord::Base
     system_user = User.where(:name => 'SYSTEM USER').first
     raise "could not find system user" if system_user.nil?
     num_rosters.times { Roster.generate(system_user, contest_type).fill_randomly.submit! }
+  end
+
+  def dump_players_csv
+    csv = CSV.generate({}) do |csv|
+      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us"]
+      csv << ["Canonical Id", "Name", "Team", "Position", "Desired Shadow Bets"]
+      self.players.each do |player|
+        csv << [player.stats_id, player.name, player.team.abbrev, player.position]
+      end
+    end
+  end
+
+  def import_players_csv(data)
+    self.state = nil
+    self.save!
+    self.publish
+
+    count = 0
+    total_bets = 0
+    CSV.parse(data) do |row|
+      count += 1
+      next if count <= 2
+      player_stats_id, shadow_bets = row[0], row[4]
+      if !shadow_bets.blank?
+        p = Player.where(:stats_id => player_stats_id).first
+        if p.nil?
+          puts "ERROR: NO PLAYER WITH STATS_ID #{player_stats_id} FOUND"
+          next
+        end
+        puts "betting $#{shadow_bets} on #{p.name}"
+        shadow_bets = Integer(shadow_bets) * 100
+      else
+        shadow_bets = 0
+      end
+      mp = self.market_players.where("player_stats_id = '#{player_stats_id}'").first
+      if mp.nil?
+        puts "WARNING: No market player found with id #{player_stats_id}"
+        next
+      end
+      mp.shadow_bets = mp.initial_shadow_bets = mp.bets = shadow_bets
+      mp.save!
+      total_bets += shadow_bets
+    end
+
+    #set the shadow bets to whatever they should be
+    puts "\nTotal bets: $#{total_bets/100}"
+    self.shadow_bets = self.total_bets = self.initial_shadow_bets = total_bets
+    #TEMPORARY: artificially raise the price multiplier
+    #self.price_multiplier = self.market_players.size / 50
+    puts "using price multiplier: #{self.price_multiplier}"
+    self.save!
+
   end
 
 end

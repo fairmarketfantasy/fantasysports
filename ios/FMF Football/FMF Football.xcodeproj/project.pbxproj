@@ -39,13 +39,33 @@
 		155F64EA17FA2B4D00500035 /* FFOptionSelectController.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64E917FA2B4C00500035 /* FFOptionSelectController.m */; };
 		155F64ED17FA2B6000500035 /* FFValueEntryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 155F64EC17FA2B5F00500035 /* FFValueEntryController.m */; };
 		155F64EF17FA3B8000500035 /* checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 155F64EE17FA3B8000500035 /* checkmark@2x.png */; };
+		1561B7D917FD264500444F22 /* FMF-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D117FD264500444F22 /* FMF-72.png */; };
+		1561B7DA17FD264500444F22 /* FMF-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D217FD264500444F22 /* FMF-72@2x.png */; };
+		1561B7DB17FD264500444F22 /* FMF-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D317FD264500444F22 /* FMF-Small-50.png */; };
+		1561B7DC17FD264500444F22 /* FMF-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D417FD264500444F22 /* FMF-Small-50@2x.png */; };
+		1561B7DD17FD264500444F22 /* FMF-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D517FD264500444F22 /* FMF-Small.png */; };
+		1561B7DE17FD264500444F22 /* FMF-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D617FD264500444F22 /* FMF-Small@2x.png */; };
+		1561B7DF17FD264500444F22 /* FMF.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D717FD264500444F22 /* FMF.png */; };
+		1561B7E017FD264500444F22 /* FMF@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7D817FD264500444F22 /* FMF@2x.png */; };
+		1561B7E217FD267C00444F22 /* FMF.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E117FD267C00444F22 /* FMF.png */; };
+		1561B7E417FD268000444F22 /* FMF@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E317FD268000444F22 /* FMF@2x.png */; };
+		1561B7E617FD401A00444F22 /* loginbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E517FD401A00444F22 /* loginbg@2x.png */; };
+		1561B7E817FD437C00444F22 /* dailyfantasyfootball@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1561B7E717FD437C00444F22 /* dailyfantasyfootball@2x.png */; };
+		1561B7EB17FD4E1A00444F22 /* FFWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */; };
+		1561B7EE17FDE5D300444F22 /* FFTokenPurchaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7ED17FDE5D200444F22 /* FFTokenPurchaseViewController.m */; };
+		1561B7F117FDF2E400444F22 /* FFBalanceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7F017FDF2E400444F22 /* FFBalanceButton.m */; };
+		1561B7F317FDFB1E00444F22 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1561B7F217FDFB1E00444F22 /* StoreKit.framework */; };
+		1561B7F617FE185E00444F22 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7F517FE185E00444F22 /* NSData+Base64.m */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
 		1589CEAF17E9746A00A7233E /* FFBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEAE17E9746A00A7233E /* FFBaseViewController.m */; };
 		1589CEB117E9804100A7233E /* bannerclose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEB017E9804000A7233E /* bannerclose@2x.png */; };
+		1596551617FE355700A93633 /* FMF-80.png in Resources */ = {isa = PBXBuildFile; fileRef = 1596551317FE355700A93633 /* FMF-80.png */; };
+		1596551717FE355700A93633 /* FMF-58.png in Resources */ = {isa = PBXBuildFile; fileRef = 1596551417FE355700A93633 /* FMF-58.png */; };
+		1596551817FE355700A93633 /* FMF-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 1596551517FE355700A93633 /* FMF-120.png */; };
+		1598800117FE5AA900EBA131 /* FFNavigationBarItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1598800017FE5AA900EBA131 /* FFNavigationBarItemView.m */; };
 		15A2378517E268AA00225942 /* FFSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A2378317E268AA00225942 /* FFSessionViewController.m */; };
-		15A2378917E269BB00225942 /* fmf-splash-bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */; };
 		15A2378B17E26E9900225942 /* fmf-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378A17E26E9900225942 /* fmf-logo@2x.png */; };
 		15A2378D17E2708100225942 /* fmf-splash-copy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */; };
 		15A2379117E2747000225942 /* FFStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A2379017E2747000225942 /* FFStyle.m */; };
@@ -54,7 +74,6 @@
 		15A2379C17E2813700225942 /* 0-percent.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2379A17E2813700225942 /* 0-percent.png */; };
 		15A2379D17E2813700225942 /* 40-percent.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A2379B17E2813700225942 /* 40-percent.png */; };
 		15A2379F17E2865A00225942 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15A2379E17E2865A00225942 /* QuartzCore.framework */; };
-		15A237A117E2925300225942 /* fmf-splash-bg2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15A237A017E2925300225942 /* fmf-splash-bg2@2x.png */; };
 		15A237A417E29ACC00225942 /* FFAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A237A317E29ACC00225942 /* FFAlertView.m */; };
 		15A237A717E29BF800225942 /* UIView+FindFirstResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A237A617E29BF800225942 /* UIView+FindFirstResponder.m */; };
 		15A237AB17E2DBD400225942 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15A237AA17E2DBD400225942 /* FacebookSDK.framework */; };
@@ -85,6 +104,8 @@
 		15CD295617F7804A0027DFEC /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CD295417F7804A0027DFEC /* AddressBookUI.framework */; };
 		15CE07E717F4BE5B0086EB78 /* sectionback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */; };
 		15CE07EA17F4DBEB0086EB78 /* FFPlayerSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 15CE07E917F4DBEB0086EB78 /* FFPlayerSelectCell.m */; };
+		15D5C46717FE80100077E90C /* FFMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D5C46617FE80100077E90C /* FFMyAccountViewController.m */; };
+		15D5C46A17FE84190077E90C /* FFNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D5C46917FE84190077E90C /* FFNavigationController.m */; };
 		15D756AE17F29AA90080AE4F /* FFContestType.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756AD17F29AA90080AE4F /* FFContestType.m */; };
 		15D756B017F2A7F80080AE4F /* contestcircle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15D756AF17F2A7F80080AE4F /* contestcircle@2x.png */; };
 		15D756B317F37E7A0080AE4F /* FFMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D756B217F37E7A0080AE4F /* FFMenuViewController.m */; };
@@ -160,6 +181,27 @@
 		155F64EB17FA2B5F00500035 /* FFValueEntryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFValueEntryController.h; sourceTree = "<group>"; };
 		155F64EC17FA2B5F00500035 /* FFValueEntryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFValueEntryController.m; sourceTree = "<group>"; };
 		155F64EE17FA3B8000500035 /* checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkmark@2x.png"; sourceTree = "<group>"; };
+		1561B7D117FD264500444F22 /* FMF-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-72.png"; sourceTree = "<group>"; };
+		1561B7D217FD264500444F22 /* FMF-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-72@2x.png"; sourceTree = "<group>"; };
+		1561B7D317FD264500444F22 /* FMF-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-Small-50.png"; sourceTree = "<group>"; };
+		1561B7D417FD264500444F22 /* FMF-Small-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-Small-50@2x.png"; sourceTree = "<group>"; };
+		1561B7D517FD264500444F22 /* FMF-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-Small.png"; sourceTree = "<group>"; };
+		1561B7D617FD264500444F22 /* FMF-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-Small@2x.png"; sourceTree = "<group>"; };
+		1561B7D717FD264500444F22 /* FMF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FMF.png; sourceTree = "<group>"; };
+		1561B7D817FD264500444F22 /* FMF@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF@2x.png"; sourceTree = "<group>"; };
+		1561B7E117FD267C00444F22 /* FMF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FMF.png; path = ../FMF.png; sourceTree = "<group>"; };
+		1561B7E317FD268000444F22 /* FMF@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "FMF@2x.png"; path = "../FMF@2x.png"; sourceTree = "<group>"; };
+		1561B7E517FD401A00444F22 /* loginbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loginbg@2x.png"; sourceTree = "<group>"; };
+		1561B7E717FD437C00444F22 /* dailyfantasyfootball@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dailyfantasyfootball@2x.png"; sourceTree = "<group>"; };
+		1561B7E917FD4E1A00444F22 /* FFWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFWebViewController.h; sourceTree = "<group>"; };
+		1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFWebViewController.m; sourceTree = "<group>"; };
+		1561B7EC17FDE5D200444F22 /* FFTokenPurchaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTokenPurchaseViewController.h; sourceTree = "<group>"; };
+		1561B7ED17FDE5D200444F22 /* FFTokenPurchaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTokenPurchaseViewController.m; sourceTree = "<group>"; };
+		1561B7EF17FDF2E400444F22 /* FFBalanceButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFBalanceButton.h; sourceTree = "<group>"; };
+		1561B7F017FDF2E400444F22 /* FFBalanceButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFBalanceButton.m; sourceTree = "<group>"; };
+		1561B7F217FDFB1E00444F22 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		1561B7F417FE185E00444F22 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		1561B7F517FE185E00444F22 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -167,9 +209,13 @@
 		1589CEAD17E9746A00A7233E /* FFBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFBaseViewController.h; sourceTree = "<group>"; };
 		1589CEAE17E9746A00A7233E /* FFBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFBaseViewController.m; sourceTree = "<group>"; };
 		1589CEB017E9804000A7233E /* bannerclose@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerclose@2x.png"; sourceTree = "<group>"; };
+		1596551317FE355700A93633 /* FMF-80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-80.png"; sourceTree = "<group>"; };
+		1596551417FE355700A93633 /* FMF-58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-58.png"; sourceTree = "<group>"; };
+		1596551517FE355700A93633 /* FMF-120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FMF-120.png"; sourceTree = "<group>"; };
+		15987FFF17FE5AA900EBA131 /* FFNavigationBarItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFNavigationBarItemView.h; sourceTree = "<group>"; };
+		1598800017FE5AA900EBA131 /* FFNavigationBarItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFNavigationBarItemView.m; sourceTree = "<group>"; };
 		15A2378217E268AA00225942 /* FFSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFSessionViewController.h; sourceTree = "<group>"; };
 		15A2378317E268AA00225942 /* FFSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFSessionViewController.m; sourceTree = "<group>"; };
-		15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-splash-bg@2x.png"; sourceTree = "<group>"; };
 		15A2378A17E26E9900225942 /* fmf-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-logo@2x.png"; sourceTree = "<group>"; };
 		15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-splash-copy@2x.png"; sourceTree = "<group>"; };
 		15A2378F17E2747000225942 /* FFStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFStyle.h; sourceTree = "<group>"; };
@@ -180,7 +226,6 @@
 		15A2379A17E2813700225942 /* 0-percent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0-percent.png"; sourceTree = "<group>"; };
 		15A2379B17E2813700225942 /* 40-percent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "40-percent.png"; sourceTree = "<group>"; };
 		15A2379E17E2865A00225942 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		15A237A017E2925300225942 /* fmf-splash-bg2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fmf-splash-bg2@2x.png"; sourceTree = "<group>"; };
 		15A237A217E29ACC00225942 /* FFAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFAlertView.h; sourceTree = "<group>"; };
 		15A237A317E29ACC00225942 /* FFAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFAlertView.m; sourceTree = "<group>"; };
 		15A237A517E29BF800225942 /* UIView+FindFirstResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+FindFirstResponder.h"; sourceTree = "<group>"; };
@@ -224,6 +269,10 @@
 		15CE07E617F4BE5B0086EB78 /* sectionback@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sectionback@2x.png"; sourceTree = "<group>"; };
 		15CE07E817F4DBEB0086EB78 /* FFPlayerSelectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFPlayerSelectCell.h; sourceTree = "<group>"; };
 		15CE07E917F4DBEB0086EB78 /* FFPlayerSelectCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFPlayerSelectCell.m; sourceTree = "<group>"; };
+		15D5C46517FE80100077E90C /* FFMyAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFMyAccountViewController.h; sourceTree = "<group>"; };
+		15D5C46617FE80100077E90C /* FFMyAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFMyAccountViewController.m; sourceTree = "<group>"; };
+		15D5C46817FE84190077E90C /* FFNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFNavigationController.h; sourceTree = "<group>"; };
+		15D5C46917FE84190077E90C /* FFNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFNavigationController.m; sourceTree = "<group>"; };
 		15D756AC17F29AA90080AE4F /* FFContestType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFContestType.h; sourceTree = "<group>"; };
 		15D756AD17F29AA90080AE4F /* FFContestType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFContestType.m; sourceTree = "<group>"; };
 		15D756AF17F2A7F80080AE4F /* contestcircle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "contestcircle@2x.png"; sourceTree = "<group>"; };
@@ -252,6 +301,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1561B7F317FDFB1E00444F22 /* StoreKit.framework in Frameworks */,
 				15CD295517F7804A0027DFEC /* AddressBook.framework in Frameworks */,
 				15CD295617F7804A0027DFEC /* AddressBookUI.framework in Frameworks */,
 				15A2379F17E2865A00225942 /* QuartzCore.framework in Frameworks */,
@@ -321,6 +371,7 @@
 		153BBC3217DFC2E40071E63B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1561B7F217FDFB1E00444F22 /* StoreKit.framework */,
 				15CD295317F7804A0027DFEC /* AddressBook.framework */,
 				15CD295417F7804A0027DFEC /* AddressBookUI.framework */,
 				15A237AA17E2DBD400225942 /* FacebookSDK.framework */,
@@ -357,6 +408,7 @@
 		153BBC3A17DFC2E40071E63B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1561B7D017FD25E100444F22 /* Icons */,
 				15A2379417E277F700225942 /* ProhibitionRound.ttf */,
 				15A2378717E269A600225942 /* Images */,
 				153BBC3B17DFC2E40071E63B /* FMF Football-Info.plist */,
@@ -389,6 +441,24 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		1561B7D017FD25E100444F22 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				1596551317FE355700A93633 /* FMF-80.png */,
+				1596551417FE355700A93633 /* FMF-58.png */,
+				1596551517FE355700A93633 /* FMF-120.png */,
+				1561B7D117FD264500444F22 /* FMF-72.png */,
+				1561B7D217FD264500444F22 /* FMF-72@2x.png */,
+				1561B7D317FD264500444F22 /* FMF-Small-50.png */,
+				1561B7D417FD264500444F22 /* FMF-Small-50@2x.png */,
+				1561B7D517FD264500444F22 /* FMF-Small.png */,
+				1561B7D617FD264500444F22 /* FMF-Small@2x.png */,
+				1561B7D717FD264500444F22 /* FMF.png */,
+				1561B7D817FD264500444F22 /* FMF@2x.png */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
 		15A2377F17E2670C00225942 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -396,6 +466,8 @@
 				15A2378317E268AA00225942 /* FFSessionViewController.m */,
 				1589CEAD17E9746A00A7233E /* FFBaseViewController.h */,
 				1589CEAE17E9746A00A7233E /* FFBaseViewController.m */,
+				15D5C46817FE84190077E90C /* FFNavigationController.h */,
+				15D5C46917FE84190077E90C /* FFNavigationController.m */,
 				1589CEA617E90C1700A7233E /* FFHomeViewController.h */,
 				1589CEA717E90C1700A7233E /* FFHomeViewController.m */,
 				152B545817EBCEC600C4B7F7 /* FFDrawerViewController.h */,
@@ -424,6 +496,12 @@
 				15B06A1017F6048300832F6D /* FFContestEntrantsViewController.m */,
 				15CD294D17F77C840027DFEC /* FFInviteViewController.h */,
 				15CD294E17F77C840027DFEC /* FFInviteViewController.m */,
+				1561B7E917FD4E1A00444F22 /* FFWebViewController.h */,
+				1561B7EA17FD4E1A00444F22 /* FFWebViewController.m */,
+				1561B7EC17FDE5D200444F22 /* FFTokenPurchaseViewController.h */,
+				1561B7ED17FDE5D200444F22 /* FFTokenPurchaseViewController.m */,
+				15D5C46517FE80100077E90C /* FFMyAccountViewController.h */,
+				15D5C46617FE80100077E90C /* FFMyAccountViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -431,6 +509,8 @@
 		15A2378717E269A600225942 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1561B7E317FD268000444F22 /* FMF@2x.png */,
+				1561B7E117FD267C00444F22 /* FMF.png */,
 				15A2379A17E2813700225942 /* 0-percent.png */,
 				15A2379B17E2813700225942 /* 40-percent.png */,
 				15CD294317F73D9F0027DFEC /* greydot@2x.png */,
@@ -453,9 +533,9 @@
 				1589CEA917E96E1400A7233E /* globalmenu@2x.png */,
 				15D756B617F389570080AE4F /* globalmenu-highlighted@2x.png */,
 				15A2378C17E2708100225942 /* fmf-splash-copy@2x.png */,
+				1561B7E717FD437C00444F22 /* dailyfantasyfootball@2x.png */,
+				1561B7E517FD401A00444F22 /* loginbg@2x.png */,
 				15A2378A17E26E9900225942 /* fmf-logo@2x.png */,
-				15A2378817E269BB00225942 /* fmf-splash-bg@2x.png */,
-				15A237A017E2925300225942 /* fmf-splash-bg2@2x.png */,
 				15AFA2E117EBFB9C00374613 /* helmet-placeholder.png */,
 				15AFA2E317EBFBEF00374613 /* helmet-placeholder@2x.png */,
 				15AFA2E517EBFDF000374613 /* player-cutout@2x.png */,
@@ -477,6 +557,8 @@
 				155F649E17F7D0DE00500035 /* FFTickerDataSource.m */,
 				155F64A317F7DDDE00500035 /* FFWeakReference.h */,
 				155F64A417F7DDDE00500035 /* FFWeakReference.m */,
+				1561B7F417FE185E00444F22 /* NSData+Base64.h */,
+				1561B7F517FE185E00444F22 /* NSData+Base64.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -498,6 +580,10 @@
 				15D756BC17F3A9320080AE4F /* FFContestView.m */,
 				15CD295017F77E4B0027DFEC /* FFBubblePicker.h */,
 				15CD295117F77E4B0027DFEC /* FFBubblePicker.m */,
+				1561B7EF17FDF2E400444F22 /* FFBalanceButton.h */,
+				1561B7F017FDF2E400444F22 /* FFBalanceButton.m */,
+				15987FFF17FE5AA900EBA131 /* FFNavigationBarItemView.h */,
+				1598800017FE5AA900EBA131 /* FFNavigationBarItemView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -595,27 +681,28 @@
 				153BBC4A17DFC2E40071E63B /* Default-568h@2x.png in Resources */,
 				153BBC4D17DFC2E40071E63B /* MainStoryboard_iPhone.storyboard in Resources */,
 				153BBC5017DFC2E40071E63B /* MainStoryboard_iPad.storyboard in Resources */,
-				15A2378917E269BB00225942 /* fmf-splash-bg@2x.png in Resources */,
 				15A2378B17E26E9900225942 /* fmf-logo@2x.png in Resources */,
 				15A2378D17E2708100225942 /* fmf-splash-copy@2x.png in Resources */,
 				15A2379517E277F700225942 /* ProhibitionRound.ttf in Resources */,
 				15A2379C17E2813700225942 /* 0-percent.png in Resources */,
 				15A2379D17E2813700225942 /* 40-percent.png in Resources */,
-				15A237A117E2925300225942 /* fmf-splash-bg2@2x.png in Resources */,
 				1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */,
 				1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */,
 				1589CEB117E9804100A7233E /* bannerclose@2x.png in Resources */,
 				15AFA2E217EBFB9C00374613 /* helmet-placeholder.png in Resources */,
 				15AFA2E417EBFBEF00374613 /* helmet-placeholder@2x.png in Resources */,
+				1596551717FE355700A93633 /* FMF-58.png in Resources */,
 				15AFA2E617EBFDF000374613 /* player-cutout@2x.png in Resources */,
 				15AAC75017F1F83B007313EF /* rightshuttle@2x.png in Resources */,
 				15AAC75117F1F83B007313EF /* leftshuttle@2x.png in Resources */,
 				15AAC75617F20866007313EF /* avatarmask@2x.png in Resources */,
 				15AAC75817F20EFE007313EF /* defaultuser@2x.png in Resources */,
+				1596551817FE355700A93633 /* FMF-120.png in Resources */,
 				15AAC76317F26603007313EF /* backbtn@2x.png in Resources */,
 				15D756B017F2A7F80080AE4F /* contestcircle@2x.png in Resources */,
 				15D756B517F3881C0080AE4F /* disclosuredark@2x.png in Resources */,
 				15D756B717F389570080AE4F /* globalmenu-highlighted@2x.png in Resources */,
+				1596551617FE355700A93633 /* FMF-80.png in Resources */,
 				15D756C817F489050080AE4F /* rosterslotempty@2x.png in Resources */,
 				15CE07E717F4BE5B0086EB78 /* sectionback@2x.png in Resources */,
 				15E06C2217F5048000E8AB4D /* playerselectmask@2x.png in Resources */,
@@ -625,6 +712,18 @@
 				15CD294A17F73EA30027DFEC /* bluedot@2x.png in Resources */,
 				15CD294C17F73F890027DFEC /* disclosurelight@2x.png in Resources */,
 				155F64EF17FA3B8000500035 /* checkmark@2x.png in Resources */,
+				1561B7D917FD264500444F22 /* FMF-72.png in Resources */,
+				1561B7DA17FD264500444F22 /* FMF-72@2x.png in Resources */,
+				1561B7DB17FD264500444F22 /* FMF-Small-50.png in Resources */,
+				1561B7DC17FD264500444F22 /* FMF-Small-50@2x.png in Resources */,
+				1561B7DD17FD264500444F22 /* FMF-Small.png in Resources */,
+				1561B7DE17FD264500444F22 /* FMF-Small@2x.png in Resources */,
+				1561B7DF17FD264500444F22 /* FMF.png in Resources */,
+				1561B7E017FD264500444F22 /* FMF@2x.png in Resources */,
+				1561B7E217FD267C00444F22 /* FMF.png in Resources */,
+				1561B7E417FD268000444F22 /* FMF@2x.png in Resources */,
+				1561B7E617FD401A00444F22 /* loginbg@2x.png in Resources */,
+				1561B7E817FD437C00444F22 /* dailyfantasyfootball@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -689,6 +788,7 @@
 			files = (
 				153BBC4017DFC2E40071E63B /* main.m in Sources */,
 				153BBC4417DFC2E40071E63B /* FFAppDelegate.m in Sources */,
+				15D5C46717FE80100077E90C /* FFMyAccountViewController.m in Sources */,
 				1535142C17DFF2B600F776AC /* FFUser.m in Sources */,
 				15A2378517E268AA00225942 /* FFSessionViewController.m in Sources */,
 				15A2379117E2747000225942 /* FFStyle.m in Sources */,
@@ -698,6 +798,7 @@
 				1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */,
 				1589CEAF17E9746A00A7233E /* FFBaseViewController.m in Sources */,
 				152B545117EBA80600C4B7F7 /* FFTickerDrawerViewController.m in Sources */,
+				1598800117FE5AA900EBA131 /* FFNavigationBarItemView.m in Sources */,
 				152B545417EBA97300C4B7F7 /* FFTickerMaximizedDrawerViewController.m in Sources */,
 				152B545717EBC93100C4B7F7 /* FFTickerMinimizedDrawerViewController.m in Sources */,
 				152B545A17EBCEC600C4B7F7 /* FFDrawerViewController.m in Sources */,
@@ -720,12 +821,17 @@
 				15D756C617F485F10080AE4F /* FFRosterSlotCell.m in Sources */,
 				15CE07EA17F4DBEB0086EB78 /* FFPlayerSelectCell.m in Sources */,
 				15B06A1117F6048300832F6D /* FFContestEntrantsViewController.m in Sources */,
+				15D5C46A17FE84190077E90C /* FFNavigationController.m in Sources */,
 				15CD294F17F77C840027DFEC /* FFInviteViewController.m in Sources */,
 				15CD295217F77E4B0027DFEC /* FFBubblePicker.m in Sources */,
 				155F649F17F7D0DE00500035 /* FFTickerDataSource.m in Sources */,
 				155F64A517F7DDDE00500035 /* FFWeakReference.m in Sources */,
 				155F64EA17FA2B4D00500035 /* FFOptionSelectController.m in Sources */,
 				155F64ED17FA2B6000500035 /* FFValueEntryController.m in Sources */,
+				1561B7EB17FD4E1A00444F22 /* FFWebViewController.m in Sources */,
+				1561B7EE17FDE5D300444F22 /* FFTokenPurchaseViewController.m in Sources */,
+				1561B7F117FDF2E400444F22 /* FFBalanceButton.m in Sources */,
+				1561B7F617FE185E00444F22 /* NSData+Base64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -855,6 +961,7 @@
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
 				INFOPLIST_FILE = "FMF Football/FMF Football-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -863,6 +970,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/SBData-espmonekakqqpmdrtmmgxghainfj/Build/Products/Debug-iphoneos\"",
@@ -873,6 +982,9 @@
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
 				INFOPLIST_FILE = "FMF Football/FMF Football-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

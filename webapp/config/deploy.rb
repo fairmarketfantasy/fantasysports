@@ -30,12 +30,12 @@ task :staging do
 end
 
 
-# Don't do any normal shit, instead, just run chef client on the matching hosts
+# Don't do any normal shit, instead, just run chef client on the matching hosts, one at a time
 namespace :deploy do
  task :start do ; end
  task :stop do ; end
  task :restart do ; end
- task :update_code do 
+ task :update_code, :max_hosts => 1 do
     run "sudo chef-client"
  end #override this task to prevent capistrano to upload on servers
  task :create_symlink do ; end #don't create the current symlink to the last release

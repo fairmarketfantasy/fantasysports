@@ -9,6 +9,8 @@ Fantasysports::Application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   Rails.application.routes.draw do
+    devise_for :admin_users, ActiveAdmin::Devise.config
+    ActiveAdmin.routes(self)
     # oauth routes can be mounted to any path (ex: /oauth2 or /oauth)
     mount Devise::Oauth2Providable::Engine => '/oauth2'
   end
@@ -29,7 +31,11 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:show] do
     collection do
+      get 'name_taken',      action: :name_taken
+      get 'token_plans',      action: :token_plans
+      post 'set_username',      action: :set_username
       post 'add_money',      action: :add_money
+      post 'add_tokens',      action: :add_tokens
       post 'withdraw_money', action: :withdraw_money
     end
   end
@@ -45,6 +51,7 @@ Fantasysports::Application.routes.draw do
   resources :rosters, only: [:create, :show, :destroy] do
     collection do
       get 'mine', :action => 'mine'
+      get 'past_stats', :action => 'past_stats'
       get 'in_contest/:contest_id', :action => 'in_contest'
     end
     member do post 'submit', :action => 'submit'
@@ -56,10 +63,11 @@ Fantasysports::Application.routes.draw do
   resources :contests, only: [:create] do
     collection do
       get 'for_market/:id', :action => 'for_market'
+      post 'join'
+      get 'join'
     end
 
     member do
-      post 'join'
       post 'invite'
     end
   end
@@ -87,6 +95,8 @@ Fantasysports::Application.routes.draw do
       get 'for_players', :action => 'for_players'
     end
   end
+
+  resources :push_devices, :only => [:create]
 
   #Stripe webhooks
   post '/webhooks', to: "webhooks#new"

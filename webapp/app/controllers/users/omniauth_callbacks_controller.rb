@@ -1,5 +1,5 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-   def facebook
+  def facebook
     @user = User.find_for_facebook_oauth(request.env["omniauth.auth"])
 
     if @user.persisted?
@@ -11,6 +11,18 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       render '/users/create_error', :layout => false
       #this is what devise wants to do, but I'm not exactly sure why yet.
       #session["devise.facebook_data"] = request.env["omniauth.auth"]
+    end
+  end
+
+  def facebook_access_token
+
+    @user = User.find_for_facebook_oauth(request.env["omniauth.auth"])
+
+    if @user.persisted?
+      sign_in @user, event: :authentication #this will throw if @user is not activated
+      render_api_response @user
+    else
+      render_api_response({:error => @user.errors.first.message })
     end
   end
 end

@@ -7,8 +7,9 @@
 
 
 def run_fetcher(args)
+  yaml = YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))[Rails.env]
   root = File.join(Rails.root, '..', 'datafetcher')
-  `PATH=$PATH:/usr/local/go/bin GOPATH=#{root} go run #{root}/src/github.com/MustWin/datafetcher/datafetcher.go #{args}`
+  `PATH=$PATH:/usr/local/go/bin DB_HOST=#{yaml["host"]} GOPATH=#{root} go run #{root}/src/github.com/MustWin/datafetcher/datafetcher.go #{args}`
 end
 
 namespace :seed do
@@ -37,6 +38,12 @@ namespace :seed do
     task :data do
       #ensure that another datafetcher task is not running
       run_fetcher "-year 2013 -fetch serve"
+    end
+
+    task :player_stats_for_games => :environment do
+      Game.where(["game_time < ? AND game_time > ?", Time.new, Time.new(2013)]).each do |game|
+        run_fetcher "-fetch stats -year #{game.season_year} -season #{game.season_type} -week #{game.season_week} -away #{game.away_team} -home #{game.home_team}"
+      end
     end
 
     task :market, [:market_id] =>  :environment do |t, args|

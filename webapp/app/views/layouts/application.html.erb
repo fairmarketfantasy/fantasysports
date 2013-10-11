@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <!--[if IE]><![endif]-->
-<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
-<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
-<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
-<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="redpen" id="redpen"> <![endif]-->
+<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
 <!--[if !IE]><!--> <html lang="en" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <!--<![endif]-->
 <head>
   <!-- http://docs.angularjs.org/guide/ie -->
@@ -33,7 +33,7 @@
   <meta name="fb:app_id" content="<%= nil %>" property="fb:app_id" />
   <meta name="fb:admins" content="" property="fb:admins" />
   <meta name="description" content="<%= description %>" property="og:description" />
-  <meta name="copyright" content="RedPen Corp" />
+  <meta name="copyright" content="MustWin, LLC" />
   <meta name="author" content="MustWin, LLC" />
 
   <!-- SEO -->
@@ -64,7 +64,7 @@
       </div>
       <div class="span3">
         <div class="links text-right">
-          <a class="sub-title txt-green-hover" href="javascript://">Support</a>
+          <a class="sub-title txt-green-hover" href="/#/support">Support</a>
           <a class="sub-title txt-green-hover" href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a>
         </div>
       </div>
@@ -77,23 +77,23 @@
         <div class="clearfix user-box">
           <img ng-src="{{currentUser.image_url}}" class='user-avatar'/>
           <div class="user-info">
-            <span class="user-name">{{ currentUser.name }}</span>
+            <span class="user-name">{{ currentUser.username || currentUser.name }}</span>
             <a href="javascript://" class='txt-white txt-red-hover' ng-click="settingsModal()">settings</a><br />
             <%= link_to 'sign out', destroy_user_session_path, class: 'user-logout txt-red-hover' %>
           </div>
         </div>
         <div class="user-dash clearfix">
           <div class="user-balance no-border">
-            <small>Balance:</small>&nbsp;&nbsp;{{ currentUser.balance | centsToDollars }}
+            <small>Cash:</small>&nbsp;&nbsp;{{ currentUser.balance | centsToDollars }}
             <div class="user-dash no-border clearfix">
-              <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Add Funds</a>
+              <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Deposit Funds</a>
             </div>
           </div>
           <div class="user-balance no-border">
-            <small>FanFrees:</small>&nbsp;&nbsp;{{ currentUser.token_balance }}
-            <!--<div class="user-dash no-border clearfix">
+            <small>FF:</small>&nbsp;&nbsp;{{ currentUser.token_balance }}
+            <div class="user-dash no-border clearfix">
               <a class="btn btn-small btn-success" href="javascript://" ng-click="">Add FanFrees</a>
-            </div>-->
+            </div>
           </div>
        </div>
 
@@ -113,7 +113,6 @@
             <li class="nav-item"><a href="/#/rosters">My Contests</a></li>
             <li class="nav-item"><a href="/#/history">History</a></li>
             <li class="nav-item"><a href="/#/rules" >Rules and Scoring</a></li>
-            <li class="nav-item"><a href="/#/promos" >Promos</a></li>
             <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
             <li class="nav-item end"><a href="/#/support">Support</a></li>
           </ul>
