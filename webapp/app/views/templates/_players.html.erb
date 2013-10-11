@@ -57,7 +57,7 @@
                   </td>
                   <td class="tiny">{{player.position | dashIfDEF}}</td>
                   <td class="tiny">{{player.team}}</td>
-                  <td class="tiny">{{player.ppg | zeroIfEmpty}}</td>
+                  <td class="tiny">{{player.ppg | number:0 |zeroIfEmpty}}</td>
                   <td>${{player.buy_price | number:0}}</td>
                   <td class="tiny"><a class="btn btn-small btn-success" href="javascript://" ng-click="addPlayer(player)">Add</a></td>
                 </tr>
