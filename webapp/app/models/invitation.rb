@@ -38,17 +38,23 @@ class Invitation < ActiveRecord::Base
       if !inv.redeemed
         current_user.inviter = inv.inviter
         current_user.save!
-        inv.inviter.payout(FREE_USER_REFERRAL_PAYOUT, false, :event => 'free_referral_payout', :invitation_id => inv.id, :referred_id => current_user.id)
-        inv.redeemed = true
-        inv.save!
+        current_user.transaction do
+          inv.inviter.payout(FREE_USER_REFERRAL_PAYOUT, false, :event => 'free_referral_payout', :invitation_id => inv.id, :referred_id => current_user.id)
+          inv.redeemed = true
+          inv.save!
+        end
       end
     end
   end
 
   def self.redeem_paid(current_user)
     if current_user.inviter && TransactionRecord.where(:event => 'paid_referral_payout', :referred_id => current_user.id).first.nil?
-      current_user.inviter.payout(PAID_USER_REFERRAL_PAYOUT, false, :event => 'paid_referral_payout', :referred_id => current_user.id)
-      current_user.payout(PAID_USER_REFERRAL_PAYOUT, false, :event => 'referred_join_payout', :referred_id => current_user.id)
+      current_user.transaction do
+        SYSTEM_USER.charge(PAID_USER_REFERRAL_PAYOUT, false, :event => 'paid_referral_payout', :referred_id => current_user.inviter.id)
+        current_user.inviter.payout(PAID_USER_REFERRAL_PAYOUT, false, :event => 'paid_referral_payout', :referred_id => current_user.id)
+        SYSTEM_USER.charge(PAID_USER_REFERRAL_PAYOUT, false, :event => 'paid_referral_payout', :referred_id => current_user.id)
+        current_user.payout(PAID_USER_REFERRAL_PAYOUT, false, :event => 'referred_join_payout', :referred_id => current_user.id)
+      end
     end
   end
 end
