@@ -3,8 +3,8 @@ class TransactionRecordValidator < ActiveModel::Validator
     if TransactionRecord::CONTEST_TYPES.include?(record.event) && record.contest_id.nil?
       record.errors[:contest_id] = "Contest_id is required for #{record.event} types"
     end
-    if record.event =~ /referral/
-      record.errors[:referred_id] = "Referral_id is required for #{record.event} types"
+    if record.event =~ /referral/ && record.referred.nil?
+      record.errors[:referred_id] = "Referred_id is required for #{record.event} types"
     end
   end
 end

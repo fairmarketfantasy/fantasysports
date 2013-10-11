@@ -104,14 +104,14 @@ class User < ActiveRecord::Base
       ActiveRecord::Base.transaction do
         self.reload
         self.token_balance += amount
-        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id], :invitation_id => opts[:invitation_id], :referral_id => opts[:referred_id], :is_tokens => use_tokens)
+        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id], :invitation_id => opts[:invitation_id], :referred_id => opts[:referred_id], :is_tokens => use_tokens)
         self.save
       end
     else
       if self.customer_object.nil?
         CustomerObject.create!(:user_id => self.id)
       end
-      self.reload.customer_object.increase_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id], :referred_id => opts[:referred_id])
+      self.reload.customer_object.increase_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id], opts[:referred_id])
     end
   end
 end
