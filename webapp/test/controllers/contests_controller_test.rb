@@ -43,8 +43,8 @@ class ContestsControllerTest < ActionController::TestCase
       end
     end
     get :join, :referral_code => inv.code, :contest_code => inv.private_contest.invitation_code
-    assert_redirected_to '/'
-    assert session["referral_code"]
+    assert(/autologin/ =~ response.headers["Location"])
+    assert session["referrral_code"]
     assert session["contest_code"]
   end
 

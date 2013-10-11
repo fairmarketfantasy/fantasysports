@@ -1,6 +1,18 @@
 namespace :deploy do
   # Put tasks that need to be done at deploy time here
-  task :do => ['deploy:fetch_go_deps', 'db:seed', 'deploy:create_oauth_client', 'assets:precompile', 'db:setup_functions'] do
+  task :all => ['deploy:setup', 'deploy:worker', 'deploy:web'] do
+    true
+  end
+
+  task :setup => ['db:seed', 'deploy:create_oauth_client', 'db:setup_functions'] do
+    true
+  end
+
+  task :web => ['assets:precompile'] do
+    true
+  end
+
+  task :worker => ['deploy:fetch_go_deps'] do
     true
   end
 

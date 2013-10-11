@@ -1,4 +1,6 @@
 class Invitation < ActiveRecord::Base
+  FREE_USER_REFERRAL_PAYOUT = 0
+  PAID_USER_REFERRAL_PAYOUT = 100
   attr_protected
   belongs_to :inviter, :class_name => 'User'
   belongs_to :private_contest, :class_name => 'Contest'
@@ -36,11 +38,16 @@ class Invitation < ActiveRecord::Base
       if !inv.redeemed
         current_user.inviter = inv.inviter
         current_user.save!
-        inv.inviter.payout(10, false, :event => 'referral_payout', :invitation_id => inv.id)
+        inv.inviter.payout(FREE_USER_REFERRAL_PAYOUT, false, :event => 'free_referral_payout', :invitation_id => inv.id, :referral_id => current_user.id)
         inv.redeemed = true
         inv.save!
       end
     end
   end
 
+  def self.redeem_paid(current_user)
+    if current_user.inviter && TransactionRecord.where(:event => 'deposit', :referral_id => current_user.id).first.nil?
+      current_user.inviter.payout(PAID_USER_REFERRAL_PAYOUT, false, :event => 'paid_referral_payout', :referral_id => current_user.id)
+    end
+  end
 end
