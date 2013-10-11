@@ -1,6 +1,8 @@
 angular.module("app.controllers")
-.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', function($scope, dialog, flash, fs) {
+.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', 'message', function($scope, dialog, flash, fs, message) {
   $scope.user = $scope.user || {};
+  console.log(message);
+  $scope.message = message;
   $scope.signInForm = false;
 
   $scope.signUp = function() {

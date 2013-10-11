@@ -29,4 +29,27 @@ angular.module("app.controllers")
     console && console.log(obj);
   };
 
+//# TODO: separate sign up controller from login controller.  Right now sign up template calls login controller and login controller calls sign up
+  $scope.signUpModal = function(message){
+    var dialogOpts = {
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          dialogClass: 'modal',
+          templateUrl: '/sign_up_dialog.html',
+          controller: 'SignUpDialogController',
+          resolve: {message: function(){ return message; }},
+        };
+
+     var d = $dialog.dialog(dialogOpts);
+     d.open();
+  };
+
+
+  if ($location.search().autologin) {
+    var message = $location.search().autologin;
+    $location.search('autologin', null);
+    $scope.signUpModal(message);
+  }
+
 }]);

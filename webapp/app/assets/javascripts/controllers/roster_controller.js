@@ -137,6 +137,10 @@ angular.module("app.controllers")
     return $scope.market.state != 'published' && roster.state != 'in_progress';
   };
 
+  $scope.dayBefore = function(time) {
+    return moment(time).subtract('days', 1);
+  };
+
   $scope.enterAgain = function() {
     $scope.fs.contests.join(rosters.currentRoster.contest_type.id, rosters.currentRoster.id).then(function(data) {
       rosters.selectRoster(data);
