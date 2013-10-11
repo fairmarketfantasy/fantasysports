@@ -1,4 +1,5 @@
 class ContestsController < ApplicationController
+  skip_before_filter :authenticate_user!, :only => :join
 
   def for_market
     market = Market.find(params[:id])
@@ -11,16 +12,21 @@ class ContestsController < ApplicationController
   end
 
   def join
-    if request.get?
-      #this is the inbound link from the invite code
-      # params[:invitation_code]
-      render json: {success: "success"}
-    elsif request.post?
-      # Submit your roster to the contest
-      roster = Roster.find(params[:roster_id])
-      # TODO: validate roster
-      Contest.submit_roster(roster)
-      render json: roster
+    invitation = Invitation.where(:code => params[:referral_code]).first
+    contest = Contest.where(:invitation_code => params[:contest_code]).first
+    if current_user
+      if current_user.in_progress_roster
+        current_user.in_progress_roster.cancel!("Cancelled on invitation click")
+        current_user.in_progress_roster.destroy
+      end
+      roster = Roster.generate(current_user, contest.contest_type)
+      roster.update_attribute(:contest_id, contest.id)
+      redirect_to "/#/market/#{roster.market_id}/roster/#{roster.id}"
+    else
+      flash[:success] = "You need to sign up or login to join this contest!"
+      session[:referral_code] = invitation.code if invitation
+      session[:contest_code] = contest.invitation_code
+      redirect_to "/#?autologin=You need to create an account to join that contest" #// Trigger sign up modal
     end
   end
 

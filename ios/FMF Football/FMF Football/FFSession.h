@@ -8,6 +8,16 @@
 
 #import "SBSession.h"
 
+
+#define FFDidReceiveRemoteNotificationAuthorization @"gotpushtoken"
+#define FFDidReceiveRemoteNotification @"gotpush"
+
+
 @interface FFSession : SBSession
+
+- (void)registerAndLoginUsingFBAccessToken:(NSString *)accessToken
+                                     fbUid:(NSString *)fbUid
+                                   success:(SBSuccessBlock)success
+                                   failure:(SBErrorBlock)failure;
 
 @end

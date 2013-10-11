@@ -3,10 +3,9 @@
 <% else %>
   <%= @inviter.name %> challenged you on FairMarketFantasy.com
 <% end %>
-to join their <%= @contest.contest_type.description %>
 
 Go here to join the game:
 
-<%= SITE %>/#/contests/<%= @contest.id %>/join?contest_code=<%= @contest.invitation_code %>&referral_code=<%= @invitation.code %>
+<%= SITE %>/contests/join?contest_code=<%= @contest.invitation_code %>&referral_code=<%= @invitation.code %>
 
 <%= @message %>

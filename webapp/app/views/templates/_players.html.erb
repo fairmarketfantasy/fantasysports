@@ -6,6 +6,8 @@
         <div class="clearfix">
           <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
 
+          
+
           <div class="dropdown game-dropdown">
             <div class="btn-group">
               <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown">Games</button> 
@@ -18,12 +20,23 @@
             </div>
           </div>
         </div>
+        <div class="clearfix">
+          <label class="checkbox light-check" for="removeLowFilter" ng-click="toggleChecked('checked1')" ng-class="{'checked': checked1}">
+            <span class="icons">
+              <span class="first-icon fui-checkbox-unchecked"></span>
+              <span class="second-icon fui-checkbox-checked"></span>
+            </span>
+            Remove Back-ups
+          </label>
+        
+          <input id="removeLowFilter" class="hide" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" />
 
-        <ul ng-show="filter == 'positions'" class="positions-list clearfix hide">
-          <li class="position-item" ng-repeat="position in rosters.uniqPositionList">
-            <a class="position-link" ng-click="filterPlayers({position: position}, true)" href="javascript://">{{position}}</a>
-          </li>
-        </ul> 
+          <ul ng-show="filter == 'positions'" class="positions-list clearfix">
+            <li class="position-item" ng-repeat="position in rosters.uniqPositionList">
+              <a class="position-link" ng-click="filterPlayers({position: position}, true)" href="javascript://">{{position}}</a>
+            </li>
+          </ul> 
+        </div>
           <div class="player-overflow">
             <table class="players-table table table-striped">
               <thead>
@@ -44,9 +57,9 @@
                   </td>
                   <td class="tiny">{{player.position | dashIfDEF}}</td>
                   <td class="tiny">{{player.team}}</td>
-                  <td class="tiny">{{player.ppg | zeroIfEmpty}}</td>
+                  <td class="tiny">{{player.ppg | number:0 |zeroIfEmpty}}</td>
                   <td>${{player.buy_price | number:0}}</td>
-                  <td class="tiny"><a class="btn btn-small btn-success" href="javascript://" ng-click="rosters.addPlayer(player)">Add</a></td>
+                  <td class="tiny"><a class="btn btn-small btn-success" href="javascript://" ng-click="addPlayer(player)">Add</a></td>
                 </tr>
               </tbody>
             </table>

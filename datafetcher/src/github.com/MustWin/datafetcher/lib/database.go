@@ -5,13 +5,18 @@ import (
 	_ "github.com/bmizerany/pq"
 	"github.com/mikejihbe/beedb"
 	"log"
+	"os"
 )
 
 var orm *beedb.Model
 
 func init() {
 	log.Println("initializing database connection")
-	db, err := sql.Open("postgres", "user=fantasysports dbname=fantasysports password=F4n7a5y sslmode=disable")
+	dbHost := os.Getenv("DB_HOST") // TODO: make a config file...
+	if dbHost == "" {
+		panic("You must set the DB_HOST environment variable for the datafetcher")
+	}
+	db, err := sql.Open("postgres", "host="+dbHost+" user=fantasysports dbname=fantasysports password=F4n7a5y sslmode=disable")
 	if err != nil {
 		panic(err)
 	}

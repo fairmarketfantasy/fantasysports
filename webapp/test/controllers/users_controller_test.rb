@@ -30,4 +30,5 @@ class UsersControllerTest < ActionController::TestCase
     #   xhr :post, :withdraw_money, {amount: @amount}
     # end
   end
+
 end

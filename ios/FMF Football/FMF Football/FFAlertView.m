@@ -316,6 +316,13 @@ got_msg:
     return ret;
 }
 
++ (FFCustomButton *)greyButtonTitled:(NSString *)str
+{
+    FFCustomButton *ret = [FFStyle coloredButtonWithText:str color:[FFStyle darkGreyTextColor] borderColor:[FFStyle white]];
+    [self _configureBlueButton:ret];
+    return ret;
+}
+
 - (void)showInView:(UIView *)view
 {
     self.alpha = 0;

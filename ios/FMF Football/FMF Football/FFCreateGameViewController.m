@@ -26,6 +26,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) SBDataObjectResultSet *markets;
+@property (nonatomic) NSArray *filteredMarkets;
 @property (nonatomic) FFMarket *selectedMarket;
 @property (nonatomic) NSArray *contestTypes;
 @property (nonatomic) NSDictionary *contestTypeDesc;
@@ -52,48 +53,71 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 {
     [super viewDidLoad];
     
-    UIButton *cancel = [FFStyle clearButtonWithText:NSLocalizedString(@"Cancel", nil) borderColor:[FFStyle white]];
-    cancel.frame = CGRectMake(0, 0, 70, 30);
-    [cancel addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIButton *create = [FFStyle clearButtonWithText:NSLocalizedString(@"Create!", nil) borderColor:[FFStyle white]];
-    create.frame = CGRectMake(0, 0, 70, 30);
-    [create addTarget:self action:@selector(create:) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *cancel = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Cancel", nil) borderColor:[FFStyle white]];
+//    cancel.frame = CGRectMake(0, 0, 70, 30);
+//    [cancel addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    UIButton *create = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Create!", nil) borderColor:[FFStyle white]];
+//    create.frame = CGRectMake(0, 0, 70, 30);
+//    [create addTarget:self action:@selector(create:) forControlEvents:UIControlEventTouchUpInside];
     
     UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
-    [logo sizeToFit];
+    logo.contentMode = UIViewContentModeCenter;
+//    logo.frame = CGRectMake(0, 0, 320, 44);
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancel];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:create];
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancel];
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:create];
+    self.navigationItem.leftBarButtonItems = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Cancel", nil)
+                                                                           borderColor:[FFStyle white]
+                                                                                target:self selector:@selector(cancel:)
+                                                                         leftElseRight:YES];
+    self.navigationItem.rightBarButtonItems = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Create!", nil)
+                                                                            borderColor:[FFStyle white]
+                                                                                 target:self selector:@selector(create:)
+                                                                          leftElseRight:NO];
     self.navigationItem.titleView = logo;
     
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
-                                                                   self.view.frame.size.height)
-                                                  style:UITableViewStylePlain];
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:_tableView];
+    if ([self respondsToSelector:@selector(topLayoutGuide)]) {
+        [_tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        id topGuide = self.topLayoutGuide;
+        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_tableView, topGuide);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topGuide][_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tableView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:viewsDictionary]];
+    } else {
+        _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-    _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    
-    [self.view addSubview:_tableView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    self.contestTypes = @[@"H2H", @"190", @"270"];
-    self.contestTypeDesc = @{@"H2H": @{SALARYCAP: @[@"$100,000"],
-                                       ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
-                             @"190": @{SALARYCAP: @[@"$100,000"],
-                                       ENTRYFEE: @[@(0), @(1), @(10)]},
-                             @"270": @{SALARYCAP: @[@"$100,000"],
-                                       ENTRYFEE: @[@(0), @(1), @(10)]}};
+    self.contestTypes = @[@"H2H", @"H2H RR", @"194", @"970"];
+    self.contestTypeDesc = @{@"H2H":    @{SALARYCAP: @[@"$100,000"],
+                                          ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
+                             @"H2H RR": @{SALARYCAP: @[@"$100,000"],
+                                          ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
+                             @"194":    @{SALARYCAP: @[@"$100,000"],
+                                          ENTRYFEE: @[@(0), @(1), @(10)]},
+                             @"970":    @{SALARYCAP: @[@"$100,000"],
+                                          ENTRYFEE: @[@(0), @(1), @(10)]}};
     
     _markets = [FFMarket getBulkWithSession:self.session authorized:YES];
     _markets.clearsCollectionBeforeSaving = YES;
     _markets.delegate = self;
+    _filteredMarkets = [FFMarket filteredMarkets:[_markets allObjects]];
     [_markets refresh];
     
     if (!_selectedContestType) {
@@ -183,6 +207,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 - (void)resultSetDidReload:(SBDataObjectResultSet *)resultSet
 {
     if (!_selectedMarket && [[resultSet allObjects] count]) {
+        _filteredMarkets = [FFMarket filteredMarkets:[resultSet allObjects]];
         _selectedMarket = [[resultSet allObjects] objectAtIndex:0];
         [_tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:2]]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -290,7 +315,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         marketLabel.frame = mlr;
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"E d @ h:m a"];
+        [dateFormatter setDateFormat:@"E d @ h:mm a"];
         
         UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(mlr)+6, 0, 250,
                                                                        cell.contentView.frame.size.height)];
@@ -414,9 +439,9 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }
     else if ([segue.identifier isEqualToString:@"GotoMarketSelect"]) {
         FFOptionSelectController *c = segue.destinationViewController;
-        NSUInteger sel = [[_markets allObjects] indexOfObject:_selectedMarket];
+        NSUInteger sel = [_filteredMarkets indexOfObject:_selectedMarket];
         NSMutableArray *opts = [NSMutableArray array];
-        for (FFMarket *market in [_markets allObjects]) {
+        for (FFMarket *market in _filteredMarkets) {
             NSString *mkt;
             if (market.name && market.name.length) {
                 mkt = market.name;
@@ -425,7 +450,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
             }
             
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateFormat:@"E d @ h:m a"];
+            [dateFormatter setDateFormat:@"E d @ h:mm a"];
             
             [opts addObject:[NSString stringWithFormat:@"%@ - %@", mkt,
                              [dateFormatter stringFromDate:market.startedAt]]];

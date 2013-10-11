@@ -10,6 +10,7 @@ class MarketTest < ActiveSupport::TestCase
     
     #zero shadow bets should cause it to open
     @market.shadow_bets = 0
+    @market.opened_at = Time.new - 1.second
     @market.save!
     Market.tend
     assert_equal 'opened', @market.reload.state
@@ -214,6 +215,7 @@ class MarketTest < ActiveSupport::TestCase
 
   test "tabulate scores" do
     setup_simple_market
+    @market.open
     ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 10").first
     users = (1..10).map{ create(:paid_user) }
     rosters = []

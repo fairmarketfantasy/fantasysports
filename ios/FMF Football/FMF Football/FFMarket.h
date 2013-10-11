@@ -12,7 +12,7 @@
 @interface FFMarket : SBDataObject
 
 @property (nonatomic) SBDate    *closedAt;
-@property (nonatomic) NSString  *maretDuration;
+@property (nonatomic) NSString  *marketDuration;
 @property (nonatomic) NSString  *name;
 @property (nonatomic) SBDate    *openedAt;
 @property (nonatomic) SBFloat   *shadowBetRate;
@@ -21,5 +21,7 @@
 @property (nonatomic) SBDate    *startedAt;
 @property (nonatomic) NSString  *state;
 @property (nonatomic) SBFloat   *totalBets;
+
++ (NSArray *)filteredMarkets:(NSArray *)markets;
 
 @end

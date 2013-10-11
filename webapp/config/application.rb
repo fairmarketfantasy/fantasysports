@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'csv'
 require 'devise_oauth2_providable'
 require 'carrierwave'
 require 'carrierwave/orm/activerecord'

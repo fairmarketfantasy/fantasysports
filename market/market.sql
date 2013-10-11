@@ -410,7 +410,7 @@ BEGIN
 	--set market to published. reset closed_at time, in case the game time has moved since the market was created
 	WITH game_times as ( 
 		SELECT 
-			min(g.game_time) - INTERVAL '5m' as min_time,
+			min(g.game_time) - INTERVAL '24h' as min_time,
 			max(g.game_time) - INTERVAL '5m' as max_time
 		FROM games g 
 		JOIN games_markets gm on g.stats_id = gm.game_stats_id 

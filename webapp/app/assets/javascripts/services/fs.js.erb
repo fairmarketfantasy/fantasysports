@@ -34,6 +34,9 @@ angular.module('app.services')
     return function(promise) {
       var success = function(resp) {
         if (resp.headers()['content-type']  === "application/json; charset=utf-8") {
+          if (resp.data.redirect) {
+            $location.path(resp.data.redirect);
+          }
           if (resp.data.data) {
             return JSONH.unpack(resp.data.data);
           }
@@ -97,6 +100,12 @@ angular.module('app.services')
         },
         resendConfirmation: function(){
           return $http({method: 'POST', url: '/users/confirmation'})
+        },
+        setUsername: function(name) {
+          return $http({method: 'POST', url: '/users/set_username', params: {name: name}})
+        },
+        isNameAvailable: function(name) {
+          return $http({method: 'GET', url: '/users/name_taken', params: {name: name}})
         }
       },
       recipients: {
@@ -171,6 +180,9 @@ angular.module('app.services')
         },
         in_contest: function(contest_id) {
           return $http({method: 'GET', url: '/rosters/in_contest/' + contest_id});
+        },
+        past_stats: function() {
+          return $http({method: 'GET', url: '/rosters/past_stats'});
         },
         mine: function(opts) {
           opts = opts || {};

@@ -71,13 +71,13 @@
             cell.textLabel.text = NSLocalizedString(@"Join Game", nil);
             break;
         case 3:
-            cell.textLabel.text = NSLocalizedString(@"My Account", nil);
+            cell.textLabel.text = NSLocalizedString(@"Rules", nil);
             break;
         case 4:
-            cell.textLabel.text = NSLocalizedString(@"Terms & Conditions", nil);
+            cell.textLabel.text = NSLocalizedString(@"Legal Stuff", nil);
             break;
         case 5:
-            cell.textLabel.text = NSLocalizedString(@"Sign Out", nil);
+            cell.textLabel.text = NSLocalizedString(@"Settings", nil);
             break;
         default:
             break;
@@ -92,10 +92,16 @@
     cell.accessoryView = disc;
     
     // add separator to bottom
-    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(cell.contentView.frame),
-                                                           cell.contentView.frame.size.width, 1)];
+    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, 59, cell.contentView.frame.size.width, 1)];
     sep.backgroundColor = [UIColor colorWithWhite:1 alpha:.1];
+//    sep.translatesAutoresizingMaskIntoConstraints = NO;
+//    sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [cell.contentView addSubview:sep];
+//    [cell.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[sep]|"
+//                                                                             options:0 metrics:nil
+//                                                                               views:NSDictionaryOfVariableBindings(sep)]];
+    
+    cell.backgroundColor = [UIColor clearColor];
     
     return cell;
 }
@@ -116,11 +122,13 @@
         case 2:
             break;
         case 3:
+            [self.delegate performMenuSegue:@"GotoRules"];
             break;
         case 4:
+            [self.delegate performMenuSegue:@"GotoTerms"];
             break;
         case 5:
-            [self.session logout];
+            [self.delegate performMenuSegue:@"GotoAccount"];
             break;
         default:
             break;

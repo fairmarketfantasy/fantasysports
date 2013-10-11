@@ -1,5 +1,5 @@
 Fantasysports::Application.configure do
-  SITE = "localhost:3000"
+  SITE = "http://localhost:3000"
   SPORTS_DATA_API_KEY = "dmefnmpwjn7nk6uhbhgsnxd6"
   SPORTS_DATA_IMAGES_API_KEY = "yq9uk9qu774eygre2vg2jafe"
   FACEBOOK_APP_ID = "162183927304348"
@@ -28,6 +28,10 @@ Fantasysports::Application.configure do
 
   #devise told me to: 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.delivery_method = :file
+  config.action_mailer.file_settings = {
+    location: Rails.root.join('log/mail')
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

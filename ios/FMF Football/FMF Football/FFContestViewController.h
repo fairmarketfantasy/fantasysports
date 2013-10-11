@@ -11,10 +11,33 @@
 #import "FFMarket.h"
 #import "FFRoster.h"
 
-@interface FFContestViewController : FFBaseViewController
+
+typedef enum {
+    NoState,
+    ViewContest,
+    ShowRoster,
+    PickPlayer,
+    ContestEntered
+} FFContestViewControllerState;
+
+
+@protocol FFContestViewControllerDelegate <NSObject>
+
+- (void)contestController:(id)cont didPickPlayer:(NSDictionary *)player;
+
+@end
+
+
+@interface FFContestViewController : FFBaseViewController <FFContestViewControllerDelegate>
 
 @property (nonatomic) FFContestType *contest;
 @property (nonatomic) FFMarket *market;
 @property (nonatomic) FFRoster *roster;
+@property (nonatomic) id currentPickPlayer;      // the current position we are picking or trading
+
+@property (nonatomic, weak) id<FFContestViewControllerDelegate> delegate;
+
+//- (void)showState:(FFContestViewControllerState)state;
+- (void)showPickPlayer:(id)player;
 
 @end

@@ -21,6 +21,9 @@ angular.module("app.controllers")
   var fetchPlayers = function() {
     if (!rosters.currentRoster) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
+      if (filterOpts.removeLow) {
+        players = _.select(players, function(player) { return player.buy_price > 1100; });
+      }
       $scope.players = players;
     });
   };
@@ -55,6 +58,10 @@ angular.module("app.controllers")
     }
   };
 
+  $scope.toggleChecked = function(checkedN){
+    $scope[checkedN] = !$scope[checkedN];
+  };
+
   var fetchContest = function() {
     if (!rosters.currentRoster.contest_id) { return; }
     rosters.fetchContest(rosters.currentRoster.contest_id).then(function(rosters) {
@@ -68,10 +75,11 @@ angular.module("app.controllers")
       fetchContest();
     }, 10000);
 
+    // Override isn't really an override anymore...this could be better
   $scope.filterPlayers = function(opts, override) {
     rosters.selectOpponentRoster(null);
     if (override) {
-      filterOpts = opts;
+      filterOpts = angular.extend({sort: filterOpts.sort, dir: filterOpts.dir, removeLow: filterOpts.removeLow}, opts);
     } else {
       if (filterOpts.sort == opts.sort) {
         filterOpts.dir = filterOpts.dir == "desc" ? 'asc' : 'desc';
@@ -129,12 +137,32 @@ angular.module("app.controllers")
     return $scope.market.state != 'published' && roster.state != 'in_progress';
   };
 
+  $scope.dayBefore = function(time) {
+    return moment(time).subtract('days', 1);
+  };
+
   $scope.enterAgain = function() {
     $scope.fs.contests.join(rosters.currentRoster.contest_type.id, rosters.currentRoster.id).then(function(data) {
       rosters.selectRoster(data);
       flash.success = "Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!";
       $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
     });
+  };
+
+  $scope.addPlayer = function(player) {
+    var promise = rosters.addPlayer(player);
+    promise && promise.then(function() {
+      // Check to see if all slots for this positions are full
+      var position = rosters.nextPosition(player);
+      if (position) {
+        $scope.filterPlayers({position: position}, true);
+      }
+    })
+  };
+
+  $scope.removePlayer = function(player) {
+    rosters.removePlayer(player);
+    $scope.filterPlayers({position: player.position}, true);
   };
 
 }]);

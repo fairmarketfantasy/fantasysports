@@ -1,15 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="YCa-BN-ps4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="YCa-BN-ps4">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
+        <deployment defaultVersion="1552" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="t8J-Pa-n9W">
+            <objects>
+                <navigationController definesPresentationContext="YES" toolbarHidden="NO" id="cHg-D4-mfC" customClass="FFNavigationController" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="O4K-zR-KET">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="gQw-IV-EQk">
+                        <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="hU2-c5-iT7" kind="relationship" relationship="rootViewController" id="q7v-c8-aQK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4SF-yI-Psg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-536" y="70"/>
+        </scene>
+        <!--Web View Controller-->
+        <scene sceneID="nZJ-d5-kHC">
+            <objects>
+                <viewController id="hU2-c5-iT7" customClass="FFWebViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lpT-aA-FBK"/>
+                        <viewControllerLayoutGuide type="bottom" id="G1w-12-dUs"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jVT-Fx-ufJ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="48s-QM-xxQ"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fEB-cW-UuO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-87" y="70"/>
+        </scene>
         <!--Session View Controller-->
         <scene sceneID="Sek-pl-AkR">
             <objects>
                 <viewController id="yyQ-O8-5CC" customClass="FFSessionViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="NaG-LE-Ktq"/>
+                        <viewControllerLayoutGuide type="bottom" id="Ee1-gr-vDD"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="cYQ-bN-4L9">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -17,6 +60,7 @@
                     <connections>
                         <segue destination="tRX-Wo-l5Q" kind="modal" identifier="GotoHome" id="O9s-83-Qzo"/>
                         <segue destination="tRX-Wo-l5Q" kind="modal" identifier="GoImmediatelyToHome" animates="NO" id="Zjb-xv-NwD"/>
+                        <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoForgotPassword" id="N1l-vH-mFu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xva-34-xG7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -41,7 +85,7 @@
         <!--Navigation Controller-->
         <scene sceneID="B5d-DO-DPj">
             <objects>
-                <navigationController definesPresentationContext="YES" id="tRX-Wo-l5Q" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="tRX-Wo-l5Q" customClass="FFNavigationController" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="krV-Dz-KRZ">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -57,8 +101,12 @@
         <scene sceneID="Vzx-Xm-1VD">
             <objects>
                 <viewController id="jlJ-fd-tQu" customClass="FFHomeViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Us4-WD-VvG"/>
+                        <viewControllerLayoutGuide type="bottom" id="FxQ-se-JaL"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="HH2-Ui-QX7">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -69,6 +117,10 @@
                         <segue destination="hCT-9z-KON" kind="push" identifier="GotoMyGames" id="LS3-BI-IKJ"/>
                         <segue destination="gvr-Qo-eMi" kind="modal" identifier="GotoCreateGame" id="XNP-sm-m6o"/>
                         <segue destination="p8F-hD-oki" kind="push" identifier="GotoRoster" id="BCy-eg-VQx"/>
+                        <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoTerms" id="Hte-By-9kI"/>
+                        <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoRules" id="4v0-56-RT2"/>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="8Up-JT-o81"/>
+                        <segue destination="OTg-9K-tZw" kind="push" identifier="GotoAccount" id="82M-rw-5uG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -78,7 +130,7 @@
         <!--Navigation Controller-->
         <scene sceneID="AbY-Zq-EXM">
             <objects>
-                <navigationController definesPresentationContext="YES" id="gvr-Qo-eMi" sceneMemberID="viewController">
+                <navigationController definesPresentationContext="YES" id="gvr-Qo-eMi" customClass="FFNavigationController" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="zJa-sO-jGH">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -94,8 +146,12 @@
         <scene sceneID="J0I-7M-4nr">
             <objects>
                 <viewController id="IOK-Ey-2eg" customClass="FFCreateGameViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ubp-Kv-ofH"/>
+                        <viewControllerLayoutGuide type="bottom" id="JMH-1t-ZR9"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Fgi-Q2-xWT">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -116,8 +172,12 @@
         <scene sceneID="MKG-hN-wyb">
             <objects>
                 <viewController id="tib-l9-5N3" customClass="FFOptionSelectController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="blH-ys-CwD"/>
+                        <viewControllerLayoutGuide type="bottom" id="4bC-5L-ZdA"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="wg8-03-gr4">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -140,8 +200,12 @@
         <scene sceneID="VwE-U3-ibh">
             <objects>
                 <viewController id="GvS-oa-fs3" customClass="FFValueEntryController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Q9Y-w7-O9i"/>
+                        <viewControllerLayoutGuide type="bottom" id="3t4-g4-pbn"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="3lB-qV-5VQ">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -155,15 +219,21 @@
         <scene sceneID="71A-Hu-P0F">
             <objects>
                 <viewController id="p8F-hD-oki" customClass="FFContestViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9ah-IZ-mCF"/>
+                        <viewControllerLayoutGuide type="bottom" id="4Ow-ZD-iNR"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="qsG-FL-iam">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="wCm-06-7DN"/>
                     <connections>
                         <segue destination="cwg-tH-LTB" kind="push" identifier="GotoContestEntrants" id="sI8-Z0-TJP"/>
-                        <segue destination="akw-3p-maf" kind="modal" identifier="GotoInvite" id="VdQ-vO-Afc"/>
+                        <segue destination="7Pd-eE-fcY" kind="push" identifier="GotoPickPlayer" id="z5M-Gc-4YQ"/>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="vCt-5X-syV"/>
+                        <segue destination="U8M-Km-wAI" kind="modal" identifier="GotoInvite" id="3an-pR-290"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rVk-lt-2Nf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -174,23 +244,71 @@
         <scene sceneID="mPE-7E-tZa">
             <objects>
                 <viewController id="cwg-tH-LTB" customClass="FFContestEntrantsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fRs-bF-wyX"/>
+                        <viewControllerLayoutGuide type="bottom" id="toj-zM-tO5"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="x5f-Ku-Xoy">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="6sU-EV-DEY"/>
+                    <connections>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="Vgf-W4-inr"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NYK-UU-gIK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2460" y="286"/>
         </scene>
+        <!--Contest View Controller-->
+        <scene sceneID="tUY-on-bAW">
+            <objects>
+                <viewController id="7Pd-eE-fcY" customClass="FFContestViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lW2-LH-oKg"/>
+                        <viewControllerLayoutGuide type="bottom" id="tRf-qV-hKj"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="gX6-RE-arx">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="9zu-DV-hD5"/>
+                    <connections>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="GXw-Uh-EhX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zAV-ew-7Cb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2839" y="686"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="0GX-ih-Gev">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="U8M-Km-wAI" customClass="FFNavigationController" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="xgs-kH-GBW">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="akw-3p-maf" kind="relationship" relationship="rootViewController" id="tdj-1n-dCp"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="l0c-pS-3dm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2895" y="1538"/>
+        </scene>
         <!--Invite View Controller-->
         <scene sceneID="0tD-jC-KGB">
             <objects>
                 <viewController id="akw-3p-maf" customClass="FFInviteViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="I0K-Ig-tfG"/>
+                        <viewControllerLayoutGuide type="bottom" id="r4V-eZ-uhF"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="bEP-nJ-eF1">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -198,14 +316,95 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ra3-ii-8ZR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2452" y="1133"/>
+            <point key="canvasLocation" x="3344" y="1529"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ZpD-iP-xkT">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="dLz-wm-uBh" customClass="FFNavigationController" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="GNJ-ix-muR"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="MCu-U4-oZh">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="ocV-1w-9vs" kind="relationship" relationship="rootViewController" id="xbE-pr-yZu"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DNx-M7-M4J" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2047" y="2094"/>
+        </scene>
+        <!--Token Purchase View Controller-->
+        <scene sceneID="pPy-FI-lcF">
+            <objects>
+                <viewController id="ocV-1w-9vs" customClass="FFTokenPurchaseViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qkJ-v7-awA"/>
+                        <viewControllerLayoutGuide type="bottom" id="FWu-6A-Xq0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="k9z-Ne-4Nl">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="BXL-os-RPu"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Djh-Vs-TpF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2495" y="2094"/>
+        </scene>
+        <!--My Account View Controller-->
+        <scene sceneID="cU3-IP-EBC">
+            <objects>
+                <viewController id="OTg-9K-tZw" customClass="FFMyAccountViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DRa-fZ-v4E"/>
+                        <viewControllerLayoutGuide type="bottom" id="Sj9-Cb-63u"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="tv0-hA-rxX">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="lih-EG-unW"/>
+                    <connections>
+                        <segue destination="pZl-V7-dzu" kind="push" identifier="GotoEmail" id="cDu-SF-FU8"/>
+                        <segue destination="pZl-V7-dzu" kind="push" identifier="GotoName" id="3y5-bZ-Hxu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hJ2-Qz-vm2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="636" y="2502"/>
+        </scene>
+        <!--Value Entry Controller-->
+        <scene sceneID="Prn-Or-j2f">
+            <objects>
+                <viewController id="pZl-V7-dzu" customClass="FFValueEntryController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="GHr-ma-pXP"/>
+                        <viewControllerLayoutGuide type="bottom" id="I0b-cn-LQA"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="j4o-io-8qU">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="ZTR-Ha-ceW"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="amf-BJ-ueR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1091" y="2502"/>
         </scene>
         <!--Find Game View Controller-->
         <scene sceneID="U8n-i5-qSF">
             <objects>
                 <viewController id="grh-Mm-aP7" customClass="FFFindGameViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Hwi-jn-dEe"/>
+                        <viewControllerLayoutGuide type="bottom" id="DcN-TW-fwP"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="r4U-M0-ZUK">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -219,14 +418,19 @@
         <scene sceneID="IVF-Wj-l8j">
             <objects>
                 <viewController id="hCT-9z-KON" customClass="FFRosterViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="WVo-pq-gmg"/>
+                        <viewControllerLayoutGuide type="bottom" id="VkY-VQ-yk5"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="mwA-MK-sYY">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="nOj-so-bKu"/>
                     <connections>
                         <segue destination="p8F-hD-oki" kind="push" identifier="GotoContest" id="0q8-z9-AZT"/>
+                        <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="2FU-nH-8KH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6vq-Cb-eCp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -234,49 +438,17 @@
             <point key="canvasLocation" x="1434" y="1464"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="FFBaseViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFBaseViewController.h"/>
-        </class>
-        <class className="FFContestEntrantsViewController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFContestEntrantsViewController.h"/>
-        </class>
-        <class className="FFContestViewController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFContestViewController.h"/>
-        </class>
-        <class className="FFCreateGameViewController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFCreateGameViewController.h"/>
-        </class>
-        <class className="FFFindGameViewController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFFindGameViewController.h"/>
-        </class>
-        <class className="FFHomeViewController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFHomeViewController.h"/>
-        </class>
-        <class className="FFInviteViewController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFInviteViewController.h"/>
-        </class>
-        <class className="FFOptionSelectController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFOptionSelectController.h"/>
-        </class>
-        <class className="FFRosterViewController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFRosterViewController.h"/>
-        </class>
-        <class className="FFSessionViewController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFSessionViewController.h"/>
-        </class>
-        <class className="FFValueEntryController" superclassName="FFBaseViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FFValueEntryController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="vCt-5X-syV"/>
+        <segue reference="0q8-z9-AZT"/>
         <segue reference="Zjb-xv-NwD"/>
-        <segue reference="BCy-eg-VQx"/>
+        <segue reference="Hte-By-9kI"/>
+        <segue reference="3y5-bZ-Hxu"/>
         <segue reference="u0q-yD-ZaH"/>
     </inferredMetricsTieBreakers>
 </document>

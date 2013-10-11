@@ -1,19 +1,5 @@
 angular.module("app.controllers")
-.controller('LoginController', ['$scope', '$dialog', 'fs', function($scope, $dialog, fs) {
-
-  $scope.signUpModal = function(){
-    var dialogOpts = {
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          dialogClass: 'modal',
-          templateUrl: '/sign_up_dialog.html',
-          controller: 'SignUpDialogController',
-        };
-
-     var d = $dialog.dialog(dialogOpts);
-     d.open();
-  };
+.controller('LoginController', ['$scope', '$dialog', 'fs', '$location', function($scope, $dialog, fs, $location) {
 
   var serviceSizes = {
     facebook: 'height=460,width=730',

@@ -17,6 +17,10 @@ angular.module('app.data')
         });
       };
 
+      this.pastStats = function() {
+        return pastStats;
+      };
+
       this.myLiveStats = function() {
         var stats = {top: 0, avg: 0, total_payout: 0, total_score: 0, count: 0};
         _.each(this.mine(), function(roster) {
@@ -39,17 +43,23 @@ angular.module('app.data')
         return top;
       };
 
-      this.fetch = function(id) {
-        if (rosterData[id]) {
+      // Takes a value and a function returning a promise. If value is present, we return
+      // a promise resolved with that value. If not, we return the fetchPromise
+      var promiseWrapper = function(value, fetchPromise) {
+        if (value) {
           var fakeDeferred = $q.defer();
-          fakeDeferred.resolve(rosterData[id]);
+          fakeDeferred.resolve(value);
           return fakeDeferred.promise;
         } else {
-          return fs.rosters.show(id).then(function(roster) {
+          return fetchPromise;
+        }
+      };
+
+      this.fetch = function(id) {
+        return promiseWrapper(rosterData[id], fs.rosters.show(id).then(function(roster) {
             rosterData[roster.id] = roster;
             return roster;
-          });
-        }
+          }));
       };
 
       this.fetchMine = function(opts) {
@@ -59,6 +69,14 @@ angular.module('app.data')
           });
           return rosters;
         });
+      };
+
+      var pastStats;
+      this.fetchPastStats = function() {
+        // TODO: add throttle, effectively a cache TTL
+        return promiseWrapper(pastStats, fs.rosters.past_stats().then(function(stats) {
+          pastStats = stats;
+        }));
       };
 
       this.fetchContest = function(contest_id) {
@@ -108,7 +126,7 @@ angular.module('app.data')
         var self = this;
         var index = indexForPlayerInRoster(this.currentRoster, player)
         if (index >= 0) {
-          fs.rosters.add_player(this.currentRoster.id, player.id).then(function(market_order) {
+          return fs.rosters.add_player(this.currentRoster.id, player.id).then(function(market_order) {
             self.currentRoster.remaining_salary -= market_order.price;
             player.purchase_price = market_order.price;
             player.sell_price = market_order.price;
@@ -126,6 +144,16 @@ angular.module('app.data')
           self.currentRoster.remaining_salary = parseFloat(self.currentRoster.remaining_salary) + parseFloat(market_order.price);
           var index = _.findIndex(self.currentRoster.players, function(p) { return p.id === player.id; });
           self.currentRoster.players[index] = {position: player.position};
+        });
+      };
+
+      this.nextPosition = function(justAddedPlayer) {
+        var self = this;
+        var nextPositions = this.uniqPositionList.slice(_.findIndex(this.uniqPositionList, function(p) { return (justAddedPlayer || self.currentRoster.players.first).position == p; }));
+        return _.find(nextPositions, function(position) {
+          if (indexForPlayerInRoster(self.currentRoster, {position: position}) >= 0) {
+            return position;
+          }
         });
       };
 
