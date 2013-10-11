@@ -64,13 +64,11 @@ class ActiveSupport::TestCase
               create(:team1, :abbrev => "BB"),
               create(:team1, :abbrev => "CC"),
               create(:team1, :abbrev => "DD")]
-    @games = [create(:game, :home_team => @teams[0], :away_team => @teams[1]),
-              create(:game, :home_team => @teams[2], :away_team => @teams[3], 
-                :game_day => Time.now.tomorrow.tomorrow.beginning_of_day,
-                :game_time => Time.now.tomorrow.tomorrow)]
+    @games = [create(:game, :home_team => @teams[0], :away_team => @teams[1], :game_time => Time.now.tomorrow + 10.minutes),
+              create(:game, :home_team => @teams[2], :away_team => @teams[3], :game_time => Time.now.tomorrow  + 10.minutes, :game_day => Time.now.tomorrow.tomorrow.beginning_of_day)]
     @teams.each do |team|
       @players = Positions.default_NFL.split(',').map do |position|
-        player = create :player, :team => team, :position => position
+        create :player, :team => team, :position => position
       end
     end
     @market = create :new_market
@@ -213,9 +211,9 @@ FactoryGirl.define do
   factory :new_market, class: Market do
     shadow_bets 100000
     shadow_bet_rate 0.5
-    published_at Time.now - 4000
-    opened_at Time.now - 1000
-    closed_at Time.now - 100
+    published_at Time.now - 1.day
+    opened_at Time.now + 1.minute
+    closed_at Time.now + 2.minute
     total_bets 0
     sport_id 1
   end

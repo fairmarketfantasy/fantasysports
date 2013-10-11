@@ -57,7 +57,7 @@
   <a class="see-all" href="/#/history">See All Past Contests</a>
 
 </div>
-<div ng-show="rosters.pastStats().total_entries == 0" class="entries-container">
+<div ng-show="rosters.pastStats().total_entries == 0 && rosters.mine().length == 0" class="entries-container">
   <div class="roster-title">  
     <h3>YOU DONT HAVE ANY ENTRIES AT ALL. THIS MAKES ME SAD.</h3>
   </div>

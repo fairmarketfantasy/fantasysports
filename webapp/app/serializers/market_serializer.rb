@@ -3,7 +3,7 @@ class MarketSerializer < ActiveModel::Serializer
 
   def name
     if object.name.blank?
-      "One Day"
+      (object.closed_at - 6.hours).strftime "%A Night Football"
     else
       object.name
     end

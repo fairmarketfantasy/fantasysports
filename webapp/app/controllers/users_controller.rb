@@ -27,6 +27,7 @@ class UsersController < ApplicationController
     end
     current_user.customer_object.set_default_card(params[:card_id])
     if current_user.customer_object.charge(params[:amount])
+      Invitation.redeem_paid(current_user)
       render_api_response current_user
     end
   end
