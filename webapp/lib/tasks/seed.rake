@@ -39,6 +39,12 @@ namespace :seed do
       run_fetcher "-year 2013 -fetch serve"
     end
 
+    task :player_stats_for_games => :environment do
+      Game.where(["game_time < ? AND game_time > ?", Time.new, Time.new(2013)]).each do |game|
+        run_fetcher "-fetch stats -year #{game.season_year} -season #{game.season_type} -week #{game.season_week} -away #{game.away_team} -home #{game.home_team}"
+      end
+    end
+
     task :market, [:market_id] =>  :environment do |t, args|
       raise "Must pass market_id" if args.market_id.nil?
       market = Market.find(Integer(args.market_id))
