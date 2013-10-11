@@ -3,7 +3,8 @@ BASE_DIR = "/mnt/www/#{APP_NAME}"
 PID_PATH = "#{BASE_DIR}/shared/pids"
 God.pid_file_directory = PID_PATH
 
-od.watch do |w|
+yaml = YAML.load_file(File.join(BASE_DIR, 'current', 'webapp', 'config', 'database.yml'))[ENV['RAILS_ENV']]
+God.watch do |w|
   pid_file = PID_PATH + "/datafetcher.pid"
   w.name = "datafetcher"
   w.dir = BASE_DIR + '/current/datafetcher'
@@ -12,7 +13,8 @@ od.watch do |w|
   w.env = {"PATH" => "$PATH:/usr/local/go/bin",
            "GOPATH" => "#{BASE_DIR}/current/datafetcher",
            "RAILS_ENV" => ENV['RAILS_ENV'],
-           "PIDFILE" => pid_file}
+           "PIDFILE" => pid_file
+           "DB_HOST" => yaml['host']}
   w.stop          = -> { `kill -s KILL #{IO.read(pid_file)}` }
   w.start_grace   = 5.seconds
   w.restart_grace = 5.seconds
