@@ -88,13 +88,13 @@ class User < ActiveRecord::Base
     if use_tokens
       ActiveRecord::Base.transaction do
         self.reload
-        raise HttpException.new(409, "You don't have enough FanFrees for that.") if amount > self.token_balance
+        raise HttpException.new(409, "You don't have enough FanFrees for that.") if amount > self.token_balance && self != SYSTEM_USER
         self.token_balance -= amount
-        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => -amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id],:invitation_id => opts[:invitation_id], :is_tokens => use_tokens)
+        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => -amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id],:invitation_id => opts[:invitation_id], :is_tokens => use_tokens, :referred_id => opts[:referred_id])
         self.save
       end
     else
-      self.customer_object.decrease_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id])
+      self.customer_object.decrease_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id], opts[:referred_id])
     end
   end
 
