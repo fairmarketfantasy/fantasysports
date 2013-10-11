@@ -24,7 +24,7 @@ gem 'twitter-bootstrap-rails'
 
 gem 'carrierwave'
 gem 'fog'
-gem "rmagick"
+gem "mini_magick"
 
 # Use jquery as the JavaScript library
 #gem 'jquery-rails'

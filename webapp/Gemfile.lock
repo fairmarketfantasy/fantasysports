@@ -189,6 +189,8 @@ GEM
     metaclass (0.0.1)
     method_source (0.8.2)
     mime-types (1.25)
+    mini_magick (3.6.0)
+      subexec (~> 0.2.1)
     mini_portile (0.5.1)
     minitest (4.7.5)
     mixlib-authentication (1.3.0)
@@ -288,7 +290,6 @@ GEM
       railties (>= 3.2, < 5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    rmagick (2.13.2)
     ruby-hmac (0.4.0)
     sass (3.2.12)
     sass-rails (4.0.0)
@@ -312,6 +313,7 @@ GEM
     stripe (1.8.7)
       multi_json (>= 1.0.4, < 2)
       rest-client (~> 1.4)
+    subexec (0.2.3)
     systemu (2.5.2)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
@@ -365,6 +367,7 @@ DEPENDENCIES
   kaminari
   knife-ec2
   less-rails
+  mini_magick
   mocha
   mustwin-stripe-ruby-mock!
   mustwin_devise_oauth2_providable (= 1.1.6)
@@ -378,7 +381,6 @@ DEPENDENCIES
   puma
   quiet_assets
   rails (= 4.0.0)
-  rmagick
   stripe
   therubyracer
   twitter-bootstrap-rails
