@@ -9,6 +9,10 @@ Fantasysports::Application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   Rails.application.routes.draw do
+  get "mobile_pages/forgot_password"
+  get "mobile_pages/support"
+  get "mobile_pages/terms"
+  get "mobile_pages/rules"
     devise_for :admin_users, ActiveAdmin::Devise.config
     ActiveAdmin.routes(self)
     # oauth routes can be mounted to any path (ex: /oauth2 or /oauth)
@@ -24,6 +28,11 @@ Fantasysports::Application.routes.draw do
   get '/landing' => 'pages#landing'
   get '/about' => 'pages#about'
   get '/sign_up' => 'pages#sign_up'
+
+  get '/pages/mobile/forgot_password' => 'mobile_pages#forgot_password'
+  get '/pages/mobile/support' => 'mobile_pages#support'
+  get '/pages/mobile/terms' => 'mobile_pages#terms'
+  get '/pages/mobile/rules' => 'mobile_pages#rules'
 
   get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
 
