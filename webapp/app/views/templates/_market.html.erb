@@ -3,7 +3,8 @@
     <li class="market-li" ng-repeat="market in marketService.upcoming">
       <a href="#/market/{{market.id}}" class="market-link" ng-class="{ highlightMkt: isCurrent(market) }">
         <strong>{{market.name}}</strong><br /> 
-        {{market.started_at | shortFormTime}} 
+        <span ng-show="showMarketDesc(market)">{{market.started_at | shortFormDate}} - {{market.closed_at | shortFormDate}}</span>
+        <span ng-show="showGameDesc(market)">{{market.started_at | shortFormDate}} - {{market.closed_at | shortFormDate}}</span>
       </a>
     </li>
   </ul>
@@ -24,17 +25,16 @@
           <p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>
           <a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create a contest</a>
         </li>
-        <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses" ng-class="{'full-row': contestClass == '100k'}">
-          <div ng-class="{'contest-copy': contestClass == '100k'}" >
-            <img ng-hide="contestClass == 'h2h rr'" ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
-            <img ng-show="contestClass == 'h2h rr'" ng-src="/assets/icon-h2h-rr.png" class="contest-image" />
+        <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses" ng-class="{'full-row': contestClass == '10k'}">
+          <div ng-class="{'contest-copy': contestClass == '10k'}" >
+            <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
             <h2>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
           </div>
-          <div ng-class="{'contest-copy contest-long': contestClass == '100k'}" >
+          <div ng-class="{'contest-copy contest-long': contestClass == '10k'}" >
             <p class="small-p">{{contestTypes[0].contest_class_desc}}</p>
             <ul class="contests no-no">
               <li class="enter-contest" ng-repeat="contestType in contestTypes">
-                <a class="btn btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens, 'btn-small': contestClass != '100k', 'btn-primary': contestClass == '100k'}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">
+                <a class="btn btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens, 'btn-small': contestClass != '10k', 'btn-primary': contestClass == '10k'}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">
                   <span ng-show="contestType.takes_tokens">Enter for {{ contestType.buy_in }} FanFrees</span>
                   <span ng-hide="contestType.takes_tokens">Enter for {{ contestType.buy_in | centsToDollars }}</span>
                 </a>

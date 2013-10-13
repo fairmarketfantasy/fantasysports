@@ -165,13 +165,13 @@ class Market < ActiveRecord::Base
   @@default_contest_types = [
     # Name, description,                                              max_entries, buy_in, rake, payout_structure
     {
-      name: '100k',
-      description: '100k Lollapalooza! 5000 to 1 payout for 1st prize!',
+      name: '10k',
+      description: '10k Lollapalooza! 5000 to 1 payout for 1st prize!',
       max_entries: 0,
       buy_in: 1000,
       rake: 0.03,
-      payout_structure: '[5000000, 2500000, 1200000, 600000, 300000, 200000, 100000, 48500, 48500]',
-      payout_description: "Winner takes half, top 9 slots win big.",
+      payout_structure: '[500000, 200000, 100000, 50000, 30000, 20000, 10000, 10000, 10000, 10000, 5000, 5000,  5000, 5000, 5000, 5000]',
+      payout_description: "1st: $5k, 2nd: 2k, 3rd: 1k, 4th: $500, 5th: $300, 6th: $200, 7th-10th: $100, 10th-16th: $50",
       takes_tokens: false,
     },
     {
@@ -181,7 +181,7 @@ class Market < ActiveRecord::Base
       buy_in: 100,
       rake: 0.03,
       payout_structure: '[970]',
-      payout_description: "Winner takes all",
+      payout_description: "970ff prize purse, winner takes all",
       takes_tokens: true,
     },
     {
@@ -191,7 +191,7 @@ class Market < ActiveRecord::Base
       buy_in: 100,
       rake: 0.03,
       payout_structure: '[970]',
-      payout_description: "Winner takes all",
+      payout_description: "$9.70 prize purse, winner takes all",
       takes_tokens: false,
     },
     {
@@ -201,7 +201,7 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
       payout_structure: '[9700]',
-      payout_description: "Winner takes all",
+      payout_description: "$97 prize purse, winner takes all",
       takes_tokens: false,
     },
     {
@@ -211,7 +211,7 @@ class Market < ActiveRecord::Base
       buy_in: 100, #100 ff
       rake: 0.03,
       payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top half wins 194 FanFrees",
+      payout_description: "Top five win 194 FanFrees",
       takes_tokens: true,
     },
     {
@@ -221,7 +221,7 @@ class Market < ActiveRecord::Base
       buy_in: 100,
       rake: 0.03,
       payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top half wins $1.94",
+      payout_description: "Top five win $1.94",
       takes_tokens: false,
     },
     {
@@ -231,7 +231,7 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
       payout_structure: '[1940,1940,1940,1940,1940]',
-      payout_description: "Top half wins $19.40",
+      payout_description: "Top five win $19.40",
       takes_tokens: false,
     },
     {
@@ -241,7 +241,7 @@ class Market < ActiveRecord::Base
       buy_in: 100,
       rake: 0.03,
       payout_structure: '[194]',
-      payout_description: "Winner takes all",
+      payout_description: "194ff prize purse, winner takes all",
       takes_tokens: true,
     },
     {
@@ -251,7 +251,7 @@ class Market < ActiveRecord::Base
       buy_in: 100,
       rake: 0.03,
       payout_structure: '[194]',
-      payout_description: "Winner takes all",
+      payout_description: "$1.94 prize purse, winner takes all",
       takes_tokens: false,
     },
     {
@@ -261,7 +261,7 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
       payout_structure: '[1940]',
-      payout_description: "Winner takes all",
+      payout_description: "$19.40 prize purse, winner takes all",
       takes_tokens: false,
     },
     {
