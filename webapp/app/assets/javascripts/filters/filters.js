@@ -54,6 +54,14 @@ angular.module('app.filters')
       return input;
     };
   })
+  .filter('shortFormDate', function() {
+    return function(input, scope) {
+      if (!input) {
+        return '';
+      }
+      return moment(input).format("ddd DD");
+    };
+   })
   .filter('shortFormTime', function() {
     return function(input, scope) {
       if (!input) {

@@ -84,4 +84,8 @@ angular.module("app.controllers")
     });
   };
 
+  $scope.showMarketDesc = function(market) {
+    return new Date(market.closed_at) - new Date(market.started_at) > 24 * 60 * 60 * 1000;
+  }
+
 }]);
