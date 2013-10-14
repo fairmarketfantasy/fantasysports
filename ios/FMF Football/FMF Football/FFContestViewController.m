@@ -893,7 +893,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         [view addSubview:lab];
         
         UILabel *benchLab = [[UILabel alloc] initWithFrame:CGRectMake(15, 35, 60, 30)];
-        benchLab.text = NSLocalizedString(@"Show Bench Players", nil);
+        benchLab.text = NSLocalizedString(@"Hide Bench Players", nil);
         benchLab.font = [FFStyle regularFont:14];
         CGRect bf = benchLab.frame;
         bf.size.width = [benchLab.text sizeWithFont:benchLab.font].width + 2;

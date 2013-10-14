@@ -56,6 +56,7 @@
 		1561B7F117FDF2E400444F22 /* FFBalanceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7F017FDF2E400444F22 /* FFBalanceButton.m */; };
 		1561B7F317FDFB1E00444F22 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1561B7F217FDFB1E00444F22 /* StoreKit.framework */; };
 		1561B7F617FE185E00444F22 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7F517FE185E00444F22 /* NSData+Base64.m */; };
+		1575B363180CB85100822EF9 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1575B362180CB85100822EF9 /* Crashlytics.framework */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
@@ -202,6 +203,7 @@
 		1561B7F217FDFB1E00444F22 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1561B7F417FE185E00444F22 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		1561B7F517FE185E00444F22 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		1575B362180CB85100822EF9 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -303,6 +305,7 @@
 			files = (
 				1561B7F317FDFB1E00444F22 /* StoreKit.framework in Frameworks */,
 				15CD295517F7804A0027DFEC /* AddressBook.framework in Frameworks */,
+				1575B363180CB85100822EF9 /* Crashlytics.framework in Frameworks */,
 				15CD295617F7804A0027DFEC /* AddressBookUI.framework in Frameworks */,
 				15A2379F17E2865A00225942 /* QuartzCore.framework in Frameworks */,
 				1527AE3317DFDCFB00D181D7 /* SystemConfiguration.framework in Frameworks */,
@@ -371,6 +374,7 @@
 		153BBC3217DFC2E40071E63B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1575B362180CB85100822EF9 /* Crashlytics.framework */,
 				1561B7F217FDFB1E00444F22 /* StoreKit.framework */,
 				15CD295317F7804A0027DFEC /* AddressBook.framework */,
 				15CD295417F7804A0027DFEC /* AddressBookUI.framework */,
@@ -613,6 +617,7 @@
 				153BBC2D17DFC2E40071E63B /* Frameworks */,
 				153BBC2E17DFC2E40071E63B /* Resources */,
 				DA383C078B3740729BB0AA45 /* Copy Pods Resources */,
+				1575B361180CB82500822EF9 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -764,6 +769,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		1575B361180CB82500822EF9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run cc13321a1651e7db17b8b33743fa177c36f93713";
 		};
 		DA383C078B3740729BB0AA45 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -953,9 +971,8 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/SBData-espmonekakqqpmdrtmmgxghainfj/Build/Products/Debug-iphoneos\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../../../../../../Documents/FacebookSDK\"",
+					"$(SRCROOT)",
+					"~/Documents/FacebookSDK",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
@@ -974,9 +991,8 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../../../../../Library/Developer/Xcode/DerivedData/SBData-espmonekakqqpmdrtmmgxghainfj/Build/Products/Debug-iphoneos\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../../../../../../Documents/FacebookSDK\"",
+					"$(SRCROOT)",
+					"~/Documents/FacebookSDK",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
