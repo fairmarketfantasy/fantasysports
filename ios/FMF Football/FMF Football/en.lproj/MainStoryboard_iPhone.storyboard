@@ -121,6 +121,7 @@
                         <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoRules" id="4v0-56-RT2"/>
                         <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="8Up-JT-o81"/>
                         <segue destination="OTg-9K-tZw" kind="push" identifier="GotoAccount" id="82M-rw-5uG"/>
+                        <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoSupport" id="uzu-cf-ckN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -444,11 +445,11 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="vCt-5X-syV"/>
-        <segue reference="0q8-z9-AZT"/>
         <segue reference="Zjb-xv-NwD"/>
-        <segue reference="Hte-By-9kI"/>
-        <segue reference="3y5-bZ-Hxu"/>
+        <segue reference="uzu-cf-ckN"/>
         <segue reference="u0q-yD-ZaH"/>
+        <segue reference="0q8-z9-AZT"/>
+        <segue reference="vCt-5X-syV"/>
+        <segue reference="3y5-bZ-Hxu"/>
     </inferredMetricsTieBreakers>
 </document>

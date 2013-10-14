@@ -525,8 +525,9 @@ validate_error:
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"GotoForgotPassword"]) {
+        NSString *baseUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:SBApiBaseURLKey];
         FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
-        vc.URL = [NSURL URLWithString:@"http://google.com"];
+        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/forgot-password"]];
     }
 }
 
