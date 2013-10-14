@@ -26,6 +26,7 @@
 @property (nonatomic) NSString *name;
 @property (nonatomic, weak) id<FFValueEntryControllerDelegate> delegate;
 @property (nonatomic) UIKeyboardType keyboardType;
+@property (nonatomic) UITextAutocapitalizationType autocapitalizationType;
 @property (nonatomic) NSString *sectionTitle;
 
 @end

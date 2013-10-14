@@ -281,6 +281,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     if ([segue.identifier isEqualToString:@"GotoName"]) {
         FFValueEntryController *c = segue.destinationViewController;
         c.keyboardType = UIKeyboardTypeDefault;
+        c.autocapitalizationType = UITextAutocapitalizationTypeWords;
         c.value = user.name;
         c.name = segue.identifier;
         c.delegate = self;
@@ -289,6 +290,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     else if ([segue.identifier isEqualToString:@"GotoEmail"]) {
         FFValueEntryController *c = segue.destinationViewController;
         c.keyboardType = UIKeyboardTypeEmailAddress;
+        c.autocapitalizationType = UITextAutocapitalizationTypeNone;
         c.value = user.email;
         c.name = segue.identifier;
         c.delegate = self;
