@@ -11,6 +11,7 @@
 #import "FFStyle.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "FFSession.h"
+#import <Crashlytics/Crashlytics.h>
 
 
 @implementation FFAppDelegate
@@ -19,6 +20,7 @@
 {
     [SBModelMeta initDb];
     [FFStyle customizeAppearance];
+    [Crashlytics startWithAPIKey:@"cc13321a1651e7db17b8b33743fa177c36f93713"];
     return YES;
 }
 
