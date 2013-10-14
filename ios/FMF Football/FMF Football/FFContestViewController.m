@@ -185,6 +185,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             return 35;
+        } else if (indexPath.row == 1 && [_roster.live integerValue]) {
+            return 195;
         } else if (indexPath.row == 1) {
             return 150;
         } else if (indexPath.row == 2) {
@@ -256,6 +258,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             FFContestView *view = [[FFContestView alloc] initWithFrame:CGRectMake(0, 0, 320, 150)];
             view.market = _market;
             view.contest = _contest;
+            view.roster = _roster;
             [cell.contentView addSubview:view];
             
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
