@@ -18,7 +18,7 @@
           <li>Buy-in: {{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</li>
           <li>Entries: {{rosters.currentRoster.contest_type.max_entries | unlimitedIfZero}}</li>
           <li>Payout: {{rosters.currentRoster.contest_type.payout_description}}</li>
-          <li ng-show="rosters.currentRoster.contest_rank">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
+          <li ng-show="rosters.currentRoster.contest_rank && rosters.state != 'in_progress'">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
       </div>
     </div>
 
