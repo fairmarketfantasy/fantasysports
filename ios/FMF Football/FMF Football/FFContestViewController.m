@@ -799,7 +799,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          [sorted sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
              NSString *str1 = [obj1 objectForKey:@"buy_price"];
              NSString *str2 = [obj2 objectForKey:@"buy_price"];
-             return [str1 compare:str2 options:NSNumericSearch];
+             return [str2 compare:str1 options:NSNumericSearch];
          }];
          
          _availablePlayers = sorted;
