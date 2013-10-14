@@ -17,7 +17,8 @@ typedef enum {
     ViewContest,
     ShowRoster,
     PickPlayer,
-    ContestEntered
+    ContestEntered,
+    ShowFriendRoster
 } FFContestViewControllerState;
 
 
@@ -36,6 +37,7 @@ typedef enum {
 @property (nonatomic) id currentPickPlayer;      // the current position we are picking or trading
 
 @property (nonatomic, weak) id<FFContestViewControllerDelegate> delegate;
+@property (nonatomic) BOOL notMine; // are we looking at what is supposed to be someone elses roster?
 
 //- (void)showState:(FFContestViewControllerState)state;
 - (void)showPickPlayer:(id)player;

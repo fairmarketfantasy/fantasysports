@@ -201,7 +201,7 @@ FFCreateGameViewControllerDelegate>
     if (rost) {
         FFAlertView *loading = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading", nil)
                                                          messsage:nil loadingStyle:FFAlertViewLoadingStylePlain];
-        [loading showInView:self.view];
+        [loading showInView:self.navigationController.view];
         [rost refreshInBackgroundWithBlock:^(id successObj) {
             [loading hide];
             [self performSegueWithIdentifier:@"GotoRoster" sender:nil context:successObj];
@@ -209,7 +209,7 @@ FFCreateGameViewControllerDelegate>
             [loading hide];
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
-            [ealert showInView:self.view];
+            [ealert showInView:self.navigationController.view];
         }];
     }
 }
@@ -261,7 +261,7 @@ FFCreateGameViewControllerDelegate>
             FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
                                                            messsage:nil
                                                        loadingStyle:FFAlertViewLoadingStylePlain];
-            [alert showInView:self.view];
+            [alert showInView:self.navigationController.view];
             [FFMarket get:roster.marketId session:self.session success:^(id successObj) {
                 roster.market = successObj;
                 [roster save];
@@ -273,7 +273,7 @@ FFCreateGameViewControllerDelegate>
                                                        cancelButtonTitle:nil
                                                          okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                                 autoHide:YES];
-                [ealert showInView:self.view];
+                [ealert showInView:self.navigationController.view];
             }];
         } else {
             [super performSegueWithIdentifier:identifier sender:sender context:context];

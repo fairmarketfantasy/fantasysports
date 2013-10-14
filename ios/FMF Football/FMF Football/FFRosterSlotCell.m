@@ -197,6 +197,14 @@
     }
 }
 
+- (void)setShowButtons:(BOOL)showButtons
+{
+    _showButtons = showButtons;
+    if (!_showButtons) {
+        _trade.hidden = YES;
+    }
+}
+
 - (void)select:(UIButton *)sender
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(rosterCellSelectPlayer:)]) {
