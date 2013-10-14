@@ -396,7 +396,29 @@
 //
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [_contacts count];
+    NSInteger add = 0;
+    
+    // add 1 for the email if the currently entered value is an email address
+    __strong static NSRegularExpression *regex = nil;
+    if (regex == nil) {
+        NSError *error = nil;
+        NSString *emailRe = FF_EMAIL_REGEX;
+        regex = [NSRegularExpression regularExpressionWithPattern:emailRe
+                                                          options:NSRegularExpressionCaseInsensitive
+                                                            error:&error];
+        if (error) {
+            @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                           reason:@"Could not compile regex"
+                                         userInfo:NSDictionaryOfVariableBindings(emailRe)];
+        }
+    }
+    NSString *txt = [_bubblePicker.textViewValue copy];
+    NSTextCheckingResult *result = [regex firstMatchInString:txt options:0 range:NSMakeRange(0, txt.length)];
+    if (result.range.length) {
+        add += 1;
+    }
+    
+    return [_contacts count] + add;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -414,13 +436,19 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
-    RHPerson *person = _contacts[indexPath.row][0];
-    NSString *tit = [NSString stringWithFormat:@"%@ %@", person.firstName, person.lastName];
+    NSString *title;
+    
+    if (indexPath.row < _contacts.count) {
+        RHPerson *person = _contacts[indexPath.row][0];
+        title = [NSString stringWithFormat:@"%@ %@", person.firstName, person.lastName];
+    } else {
+        title = _bubblePicker.textViewValue;
+    }
     
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, 290, 30)];
     lab.backgroundColor = [UIColor clearColor];
     lab.font = [FFStyle regularFont:17];
-    lab.text = tit;
+    lab.text = title;
     lab.textColor = [FFStyle darkGreyTextColor];
     [cell.contentView addSubview:lab];
     
@@ -428,7 +456,11 @@
     elab.backgroundColor = [UIColor clearColor];
     elab.font = [FFStyle regularFont:13];
     elab.textColor = [FFStyle greyTextColor];
-    elab.text = _contacts[indexPath.row][1];
+    if (indexPath.row < _contacts.count) {
+        elab.text = _contacts[indexPath.row][1];
+    } else {
+        elab.text = @"";
+    }
     [cell.contentView addSubview:elab];
     
     UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(15, 53, 290, 1)];
@@ -440,10 +472,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    RHPerson *person = _contacts[indexPath.row][0];
-    NSString *tit = [NSString stringWithFormat:@"%@ %@", person.firstName, person.lastName];
+    if (indexPath.row < _contacts.count) {
+        RHPerson *person = _contacts[indexPath.row][0];
+        NSString *title = [NSString stringWithFormat:@"%@ %@", person.firstName, person.lastName];
     
-    [_bubblePicker addItem:_contacts[indexPath.row] title:tit animated:YES];
+        [_bubblePicker addItem:_contacts[indexPath.row] title:title animated:YES];
+    } else {
+        NSString *title = _bubblePicker.textViewValue;
+        [_bubblePicker addItem:@[[NSNull null], [title copy]] title:[title copy] animated:YES];
+    }
     [_bubblePicker resetTextView];
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
