@@ -103,6 +103,7 @@
     field.textColor = [FFStyle darkGreyTextColor];
     field.delegate = self;
     field.keyboardType = self.keyboardType;
+    field.autocapitalizationType = self.autocapitalizationType;
     [cell.contentView addSubview:field];
     
     UIToolbar *tb = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
