@@ -165,13 +165,13 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     FFAlertView *alert = [[FFAlertView alloc] initWithTitle:@"Creating Contest"
                                                    messsage:nil
                                                loadingStyle:FFAlertViewLoadingStylePlain];
-    [alert showInView:self.view];
+    [alert showInView:self.navigationController.view];
     
     [FFRoster createWithContestDef:params session:self.session success:^(id successObj) {
         [alert hide];
         FFAlertView *salert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Contest Created", nil)
                                                          message:NSLocalizedString(@"Now invite some friends!", nil)];
-        [salert showInView:self.view];
+        [salert showInView:self.navigationController.view];
         double delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -187,7 +187,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
                                                cancelButtonTitle:nil
                                                  okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                         autoHide:YES];
-        [ealert showInView:self.view];
+        [ealert showInView:self.navigationController.view];
     }];
 }
 

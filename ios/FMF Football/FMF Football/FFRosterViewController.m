@@ -278,7 +278,7 @@
         FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
                                                        messsage:nil
                                                    loadingStyle:FFAlertViewLoadingStylePlain];
-        [alert showInView:self.view];
+        [alert showInView:self.navigationController.view];
         [FFMarket get:roster.marketId session:self.session success:^(id successObj) {
             roster.market = successObj;
             [roster save];
@@ -290,7 +290,7 @@
                                                    cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                             autoHide:YES];
-            [ealert showInView:self.view];
+            [ealert showInView:self.navigationController.view];
         }];
     } else {
         [self performSegueWithIdentifier:@"GotoContest" sender:self context:roster];

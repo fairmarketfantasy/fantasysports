@@ -30,4 +30,6 @@
 
 @property (nonatomic, weak) id<FFRosterSlotCellDelegate> delegate;
 
+@property (nonatomic) BOOL showButtons;
+
 @end
