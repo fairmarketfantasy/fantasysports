@@ -675,6 +675,7 @@ validate_error:
             [self.session syncPushToken];
             [self performSegueWithIdentifier:@"GotoHome" sender:nil];
         } failure:^(NSError *error) {
+            [alert hide];
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
             [ealert showInView:self.view];
