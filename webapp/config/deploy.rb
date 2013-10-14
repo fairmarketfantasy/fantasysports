@@ -17,10 +17,8 @@ Chef::Config.from_file(File.expand_path("~/chef-repo/.chef/knife.rb"))
 query = Chef::Search::Query.new
 
 task :production do 
-  query_string = "recipes:#{application} AND chef_environment:production"
+  query_string = "recipes:#{application} AND chef_environment:production AND recipes:mustwin-basics"
   nodes = query.search('node', query_string).first rescue []
-  pp nodes
-  exit
   role :app, *nodes.map{|n| n.ec2.public_hostname }
 end
 task :staging do 
@@ -44,4 +42,3 @@ namespace :deploy do
    task :precompile do ; end
  end
 end
-
