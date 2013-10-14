@@ -227,6 +227,7 @@ FFCreateGameViewControllerDelegate>
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    NSString *baseUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:SBApiBaseURLKey];
     if ([segue.identifier isEqualToString:@"GotoContest"]) {
         ((FFContestViewController *)segue.destinationViewController).contest = segue.context[0];
         ((FFContestViewController *)segue.destinationViewController).market = segue.context[1];
@@ -240,11 +241,15 @@ FFCreateGameViewControllerDelegate>
     }
     else if ([segue.identifier isEqualToString:@"GotoRules"]) {
         FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
-        vc.URL = [NSURL URLWithString:@"http://google.com"];
+        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/rules"]];
     }
     else if ([segue.identifier isEqualToString:@"GotoTerms"]) {
         FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
-        vc.URL = [NSURL URLWithString:@"http://google.com"];
+        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/terms"]];
+    }
+    else if ([segue.identifier isEqualToString:@"GotoSupport"]) {
+        FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
+        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/support"]];
     }
 }
 

@@ -85,7 +85,6 @@
 {
     [super viewWillAppear:animated];
     self.webView.delegate = self;
-    self.URL = [NSURL URLWithString:@"http://google.com"];
     if (self.URL) {
         [self load];
     }
