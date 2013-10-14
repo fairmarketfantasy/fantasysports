@@ -31,6 +31,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 @property (nonatomic) UIView *submitButtonView;
 @property (nonatomic) UILabel *remainingSalaryLabel;
 @property (nonatomic) UILabel *numEntrantsLabel;
+@property (nonatomic) UIView *playerFilterView;
 
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx;
 
@@ -38,6 +39,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 
 @implementation FFContestViewController
+{
+    BOOL _filterBenchPlayers;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -597,6 +601,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     } else {
         next = ShowRoster;
     }
+    [self hidePlayerFilterBanner];
     [self transitionToState:next withContext:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -679,6 +684,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         case PickPlayer:
             _currentPickPlayer = ctx;
             [self showPlayersForPosition:[ctx isKindOfClass:[NSString class]] ? ctx : ctx[@"position"]];
+            [self showPlayerFilterBanner];
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -828,6 +834,15 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
              return [str2 compare:str1 options:NSNumericSearch];
          }];
          
+         if (_filterBenchPlayers && sorted.count > 3) {
+             [sorted filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+                 if ([evaluatedObject[@"ppg"] isKindOfClass:[NSNumber class]] && [evaluatedObject[@"ppg"] integerValue] < 2) {
+                     return NO;
+                 }
+                 return YES;
+             }]];
+         }
+         
          _availablePlayers = sorted;
          [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                        withRowAnimation:UITableViewRowAnimationNone];
@@ -859,11 +874,76 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
      }];
 }
 
+- (void)showPlayerFilterBanner
+{
+    if (_state != PickPlayer) {
+        return;
+    }
+    if (!_playerFilterView) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.view.frame),
+                                                                self.view.frame.size.width, 80)];
+        view.backgroundColor = [UIColor colorWithWhite:.25 alpha:1];
+        
+        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, 30)];
+        lab.backgroundColor = view.backgroundColor;
+        lab.font = [FFStyle regularFont:14];
+        lab.textColor = [UIColor colorWithWhite:.95 alpha:1];
+        lab.textAlignment = NSTextAlignmentCenter;
+        lab.text = NSLocalizedString(@"Filters", nil);
+        [view addSubview:lab];
+        
+        UILabel *benchLab = [[UILabel alloc] initWithFrame:CGRectMake(15, 35, 60, 30)];
+        benchLab.text = NSLocalizedString(@"Show Bench Players", nil);
+        benchLab.font = [FFStyle regularFont:14];
+        CGRect bf = benchLab.frame;
+        bf.size.width = [benchLab.text sizeWithFont:benchLab.font].width + 2;
+        benchLab.frame = bf;
+        benchLab.textColor = [UIColor colorWithWhite:.9 alpha:1];
+        benchLab.backgroundColor = [UIColor clearColor];
+        [view addSubview:benchLab];
+        
+        UISwitch *benchSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(CGRectGetMaxX(bf)+15, 35, 90, 30)];
+        [benchSwitch setOn:NO];
+        [benchSwitch addTarget:self action:@selector(benchSwitch:) forControlEvents:UIControlEventValueChanged];
+        [view addSubview:benchSwitch];
+        
+        _playerFilterView = view;
+        [self.view addSubview:view];
+        
+        [UIView animateWithDuration:.25 animations:^{
+            view.frame = CGRectOffset(view.frame, 0, -view.frame.size.height);
+            _tableView.contentInset = UIEdgeInsetsMake(0, 0, view.frame.size.height, 0);
+        }];
+    }
+}
+
+- (void)benchSwitch:(UISwitch *)swit
+{
+    _filterBenchPlayers = swit.isOn;
+}
+
+- (void)hidePlayerFilterBanner
+{
+    if (_playerFilterView) {
+        UIView *view = _playerFilterView;
+        _playerFilterView = nil;
+        [UIView animateWithDuration:.25 animations:^{
+            view.frame = CGRectOffset(view.frame, 0, view.frame.size.height);
+            _tableView.contentInset = UIEdgeInsetsZero;
+        } completion:^(BOOL finished) {
+            if (finished) {
+                [view removeFromSuperview];
+            }
+        }];
+    }
+}
+
 - (void)showSubmitRosterBanner
 {
     if (_state != ShowRoster) {
         return;
     }
+    _filterBenchPlayers = NO;
     if (!_submitButtonView) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.view.frame),
                                                                 self.view.frame.size.width, 80)];
