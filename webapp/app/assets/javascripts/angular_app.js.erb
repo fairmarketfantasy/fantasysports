@@ -31,7 +31,7 @@ angular.module('app', [
         var path = '/market/' + roster.market_id + '/roster/' + roster.id;
         var whiteList = ['/rules', '/legal', '/support'];
         if (path != $location.path() && !_.contains(whiteList, $location.path())) {
-          flash.success = "Looks like you already have a roster going.  Let's finish entering!";
+          flash.success = "You've already got a roster in progress, so let's get you entered into this contest.  You must finish entering or cancel it to proceed.";
           $location.path(path).replace();
           rosters.selectRoster(roster);
         }

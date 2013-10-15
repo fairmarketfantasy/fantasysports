@@ -25,16 +25,16 @@
           <p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>
           <a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create a contest</a>
         </li>
-        <li class="contest-classes" ng-repeat="(contestClass, contestTypes) in contestClasses" ng-class="{'full-row': contestClass == '10k'}">
-          <div ng-class="{'contest-copy': contestClass == '10k'}" >
+        <li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">
+          <div ng-class="{'contest-copy': isBigContest(contestClass)}" >
             <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
             <h2>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
           </div>
-          <div ng-class="{'contest-copy contest-long': contestClass == '10k'}" >
-            <p class="small-p">{{contestTypes[0].contest_class_desc}}</p>
+          <div ng-class="{'contest-copy contest-long': isBigContest(contestClass)}" >
+            <p class="small-p">{{contestClasses[contestClass][0].contest_class_desc}}</p>
             <ul class="contests no-no">
-              <li class="enter-contest" ng-repeat="contestType in contestTypes">
-                <a class="btn btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens, 'btn-small': contestClass != '10k', 'btn-primary': contestClass == '10k'}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">
+              <li class="enter-contest" ng-repeat="contestType in contestClasses[contestClass]">
+                <a class="btn btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens, 'btn-small': !isBigContest(contestClass), 'btn-primary': isBigContest(contestClass)}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">
                   <span ng-show="contestType.takes_tokens">Enter for {{ contestType.buy_in }} FanFrees</span>
                   <span ng-hide="contestType.takes_tokens">Enter for {{ contestType.buy_in | centsToDollars }}</span>
                 </a>

@@ -165,6 +165,17 @@ class Market < ActiveRecord::Base
   @@default_contest_types = [
     # Name, description,                                              max_entries, buy_in, rake, payout_structure
     {
+      name: '5k',
+      description: '5k Lollapalooza! $2500 for 1st prize!',
+      max_entries: 0,
+      buy_in: 1000,
+      rake: 0.03,
+      payout_structure: '[250000, 100000, 50000, 25000, 15000, 10000, 5000, 5000, 5000, 5000, 2500, 2500,  2500, 2500, 2500, 2500]',
+      payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $500, 4th: $250, 5th: $150, 6th: $100, 7th-10th: $50, 10th-16th: $25",
+      takes_tokens: false,
+    },
+=begin
+    {
       name: '10k',
       description: '10k Lollapalooza! 5000 to 1 payout for 1st prize!',
       max_entries: 0,
@@ -174,6 +185,7 @@ class Market < ActiveRecord::Base
       payout_description: "1st: $5k, 2nd: 2k, 3rd: 1k, 4th: $500, 5th: $300, 6th: $200, 7th-10th: $100, 10th-16th: $50",
       takes_tokens: false,
     },
+=end
     {
       name: '970',
       description: '100FF contest, winner gets 970 FanFrees!',
