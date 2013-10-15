@@ -11,22 +11,14 @@ angular.module('app.data')
         var self = this;
         var defaultMarket;
         return fs.markets.list().then(function(markets) {
-          self.upcoming = [];
-          // find the first week market
-          self.upcoming.push(defaultMarket = _.find(markets, function(market){
-            return market.market_duration === 'week';
-          }));
-          // find the first day market
-          self.upcoming.push(_.find(markets, function(market){
-            return market.market_duration === 'day';
-          }));
+          self.upcoming = markets;
           _.each(markets, function(market) {
             marketData[market.id] = market;
           });
           if (id) {
             self.currentMarket = marketData[id];
           } else {
-            self.currentMarket = defaultMarket;
+            self.currentMarket = markets[0];
           }
         });
       };

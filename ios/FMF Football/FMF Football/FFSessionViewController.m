@@ -525,8 +525,9 @@ validate_error:
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"GotoForgotPassword"]) {
+        NSString *baseUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:SBApiBaseURLKey];
         FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
-        vc.URL = [NSURL URLWithString:@"http://google.com"];
+        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/forgot-password"]];
     }
 }
 
@@ -674,6 +675,7 @@ validate_error:
             [self.session syncPushToken];
             [self performSegueWithIdentifier:@"GotoHome" sender:nil];
         } failure:^(NSError *error) {
+            [alert hide];
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
             [ealert showInView:self.view];

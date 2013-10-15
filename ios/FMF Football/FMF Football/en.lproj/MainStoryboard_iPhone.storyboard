@@ -121,6 +121,7 @@
                         <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoRules" id="4v0-56-RT2"/>
                         <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="8Up-JT-o81"/>
                         <segue destination="OTg-9K-tZw" kind="push" identifier="GotoAccount" id="82M-rw-5uG"/>
+                        <segue destination="cHg-D4-mfC" kind="modal" identifier="GotoSupport" id="uzu-cf-ckN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r19-DN-mIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -256,11 +257,31 @@
                     <navigationItem key="navigationItem" id="6sU-EV-DEY"/>
                     <connections>
                         <segue destination="dLz-wm-uBh" kind="modal" identifier="GotoTokenPurchase" id="Vgf-W4-inr"/>
+                        <segue destination="DjK-c4-a0h" kind="push" identifier="GotoContestRoster" id="OCc-lP-tXX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NYK-UU-gIK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2460" y="286"/>
+        </scene>
+        <!--Contest View Controller-->
+        <scene sceneID="nBq-ZC-afj">
+            <objects>
+                <viewController id="DjK-c4-a0h" customClass="FFContestViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="3L0-su-eJV"/>
+                        <viewControllerLayoutGuide type="bottom" id="GlY-5P-CCS"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="W8b-iT-b4V">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Koe-WS-wiS"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HMJ-u3-isR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3007" y="-142"/>
         </scene>
         <!--Contest View Controller-->
         <scene sceneID="tUY-on-bAW">
@@ -444,11 +465,11 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="vCt-5X-syV"/>
-        <segue reference="0q8-z9-AZT"/>
         <segue reference="Zjb-xv-NwD"/>
-        <segue reference="Hte-By-9kI"/>
-        <segue reference="3y5-bZ-Hxu"/>
+        <segue reference="uzu-cf-ckN"/>
         <segue reference="u0q-yD-ZaH"/>
+        <segue reference="0q8-z9-AZT"/>
+        <segue reference="Vgf-W4-inr"/>
+        <segue reference="3y5-bZ-Hxu"/>
     </inferredMetricsTieBreakers>
 </document>

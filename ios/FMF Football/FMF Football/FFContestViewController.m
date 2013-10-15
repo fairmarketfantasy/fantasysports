@@ -31,6 +31,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 @property (nonatomic) UIView *submitButtonView;
 @property (nonatomic) UILabel *remainingSalaryLabel;
 @property (nonatomic) UILabel *numEntrantsLabel;
+@property (nonatomic) UIView *playerFilterView;
 
 - (void)transitionToState:(FFContestViewControllerState)newState withContext:(id)ctx;
 
@@ -38,6 +39,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 
 @implementation FFContestViewController
+{
+    BOOL _filterBenchPlayers;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -108,6 +112,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     if (_roster) {
         if (self.currentPickPlayer) {
             [self transitionToState:PickPlayer withContext:self.currentPickPlayer];
+        } else if (_notMine) {
+            // it is someone elses roster
+            [self transitionToState:ShowFriendRoster withContext:nil];
         } else if ([_roster.state isEqualToString:@"in_progress"]) {
             [self transitionToState:ShowRoster withContext:nil];
         } else if ([_roster.state isEqualToString:@"submitted"]) {
@@ -128,7 +135,6 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 {
     [self performSegueWithIdentifier:@"GotoTokenPurchase" sender:nil];
 }
-
 
 - (void)didReceiveMemoryWarning
 {
@@ -153,6 +159,9 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         if (_state == PickPlayer) {
             return 0;
         }
+        if (_state == ShowFriendRoster) {
+            return 1;
+        }
         int rows = 2;
         if (_state == ViewContest || _state == ShowRoster || _state == ContestEntered) {
             rows++;
@@ -165,6 +174,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         switch (_state) {
             case ShowRoster:
             case ContestEntered:
+            case ShowFriendRoster:
                 return _rosterPlayers != nil ? _rosterPlayers.count : 0;
             case PickPlayer:
                 return _availablePlayers != nil ? _availablePlayers.count : 0;
@@ -179,6 +189,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             return 35;
+        } else if (indexPath.row == 1 && [_roster.live integerValue]) {
+            return 195;
         } else if (indexPath.row == 1) {
             return 150;
         } else if (indexPath.row == 2) {
@@ -250,6 +262,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             FFContestView *view = [[FFContestView alloc] initWithFrame:CGRectMake(0, 0, 320, 150)];
             view.market = _market;
             view.contest = _contest;
+            view.roster = _roster;
             [cell.contentView addSubview:view];
             
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -317,7 +330,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             [cell.contentView addSubview:sep];
         }
     } else if (indexPath.section == 1) {
-        if (_state == ShowRoster || _state == ContestEntered) {
+        if (_state == ShowRoster || _state == ContestEntered || _state == ShowFriendRoster) {
             id player = [_rosterPlayers objectAtIndex:indexPath.row];
             cell = [tableView dequeueReusableCellWithIdentifier:@"RosterPlayer" forIndexPath:indexPath];
             FFRosterSlotCell *r_cell = (FFRosterSlotCell *)cell;
@@ -326,6 +339,11 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 //            r_cell.roster = _roster;
             [r_cell setPlayer:player andRoster:_roster andMarket:_market];
             r_cell.delegate = self;
+            if (_state == ShowFriendRoster) {
+                r_cell.showButtons = NO;
+            } else {
+                r_cell.showButtons = YES;
+            }
         } else if (_state == PickPlayer) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"PlayerSelect" forIndexPath:indexPath];
             FFPlayerSelectCell *s_cell = (FFPlayerSelectCell *)cell;
@@ -415,6 +433,13 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             lab.textColor = [UIColor colorWithWhite:.15 alpha:1];
             lab.text = NSLocalizedString(@"My Team", nil);
             [header addSubview:lab];
+        } else if (_state == ShowFriendRoster) {
+            UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, 40)];
+            lab.font = [FFStyle lightFont:26];
+            lab.backgroundColor = [UIColor clearColor];
+            lab.textColor = [UIColor colorWithWhite:.15 alpha:1];
+            lab.text = [NSString stringWithFormat:@"%@'s Team", _roster.ownerName];
+            [header addSubview:lab];
         }
         return header;
     }
@@ -454,7 +479,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Starting Roster", nil)
                                                    messsage:nil
                                                loadingStyle:FFAlertViewLoadingStylePlain];
-    [alert showInView:self.view];
+    [alert showInView:self.navigationController.view];
     [FFRoster createRosterWithContestTypeId:[_contest.objId integerValue]
                                     session:self.session success:
      ^(id successObj) {
@@ -468,7 +493,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                cancelButtonTitle:nil
                                                  okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                         autoHide:YES];
-         [alert showInView:self.view];
+         [alert showInView:self.navigationController.view];
      }];
 }
 
@@ -477,7 +502,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading", nil)
                                                    messsage:nil
                                                loadingStyle:FFAlertViewLoadingStylePlain];
-    [alert showInView:self.view];
+    [alert showInView:self.navigationController.view];
     [_roster removeInBackgroundWithBlock:^(id successObj) {
         [alert hide];
         if ([_contest.isPrivate integerValue]) {
@@ -493,7 +518,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                cancelButtonTitle:nil
                                                  okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                         autoHide:YES];
-        [eAlert showInView:self.view];
+        [eAlert showInView:self.navigationController.view];
     }];
 }
 
@@ -519,7 +544,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     FFAlertView *alert = [[FFAlertView alloc] initWithTitle:@"Removing Player"
                                                    messsage:nil
                                                loadingStyle:FFAlertViewLoadingStylePlain];
-    [alert showInView:self.view];
+    [alert showInView:self.navigationController.view];
     [_roster removePlayer:cell.player success:^(id successObj) {
         [alert hide];
 //        cell.player = cell.player[@"position"];
@@ -532,7 +557,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                cancelButtonTitle:nil
                                                  okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                         autoHide:YES];
-        [eAlert showInView:self.view];
+        [eAlert showInView:self.navigationController.view];
     }];
 }
 
@@ -541,7 +566,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Buying Player", nil)
                                                    messsage:nil
                                                loadingStyle:FFAlertViewLoadingStylePlain];
-    [alert showInView:self.view];
+    [alert showInView:self.navigationController.view];
     __weak FFContestViewController *weakSelf = self;
     [_roster addPlayer:cell.player success:^(id successObj) {
         [alert hide];
@@ -576,6 +601,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     } else {
         next = ShowRoster;
     }
+    [self hidePlayerFilterBanner];
     [self transitionToState:next withContext:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -590,7 +616,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Submitting", nil)
                                                    messsage:nil
                                                loadingStyle:FFAlertViewLoadingStylePlain];
-    [alert showInView:self.view];
+    [alert showInView:self.navigationController.view];
     [_roster submitSuccess:^(id successObj) {
         [alert hide];
         _roster = successObj;
@@ -602,7 +628,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                cancelButtonTitle:nil
                                                  okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                         autoHide:YES];
-        [eAlert showInView:self.view];
+        [eAlert showInView:self.navigationController.view];
     }];
 }
 
@@ -658,6 +684,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         case PickPlayer:
             _currentPickPlayer = ctx;
             [self showPlayersForPosition:[ctx isKindOfClass:[NSString class]] ? ctx : ctx[@"position"]];
+            [self showPlayerFilterBanner];
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
                                   withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -693,6 +720,11 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                 [self hideSubmitRosterBanner];
             }
             break;
+        case ShowFriendRoster:
+            // previous state should always be none
+            [self showRosterPlayers];
+            [self.tableView reloadData];
+            break;
         default:
             break;
     }
@@ -700,7 +732,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 - (void)showRosterPlayers
 {
-    if (!(_state == ShowRoster || _state == ContestEntered)) {
+    if (!(_state == ShowRoster || _state == ContestEntered || _state == ShowFriendRoster)) {
         NSLog(@"attempting to show roster players, but in the wrong state");
         return;
     }
@@ -736,7 +768,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                               cancelButtonTitle:nil
                                                 okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                        autoHide:YES];
-        [alert showInView:self.view];
+        [alert showInView:self.navigationController.view];
     }];
 }
 
@@ -799,8 +831,17 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          [sorted sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
              NSString *str1 = [obj1 objectForKey:@"buy_price"];
              NSString *str2 = [obj2 objectForKey:@"buy_price"];
-             return [str1 compare:str2 options:NSNumericSearch];
+             return [str2 compare:str1 options:NSNumericSearch];
          }];
+         
+         if (_filterBenchPlayers && sorted.count > 3) {
+             [sorted filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+                 if ([evaluatedObject[@"ppg"] isKindOfClass:[NSNumber class]] && [evaluatedObject[@"ppg"] integerValue] < 2) {
+                     return NO;
+                 }
+                 return YES;
+             }]];
+         }
          
          _availablePlayers = sorted;
          [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
@@ -829,8 +870,72 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                cancelButtonTitle:nil
                                                  okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                         autoHide:YES];
-         [alert showInView:self.view];
+         [alert showInView:self.navigationController.view];
      }];
+}
+
+- (void)showPlayerFilterBanner
+{
+    if (_state != PickPlayer) {
+        return;
+    }
+    if (!_playerFilterView) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.view.frame),
+                                                                self.view.frame.size.width, 80)];
+        view.backgroundColor = [UIColor colorWithWhite:.25 alpha:1];
+        
+        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, 30)];
+        lab.backgroundColor = view.backgroundColor;
+        lab.font = [FFStyle regularFont:14];
+        lab.textColor = [UIColor colorWithWhite:.95 alpha:1];
+        lab.textAlignment = NSTextAlignmentCenter;
+        lab.text = NSLocalizedString(@"Filters", nil);
+        [view addSubview:lab];
+        
+        UILabel *benchLab = [[UILabel alloc] initWithFrame:CGRectMake(15, 35, 60, 30)];
+        benchLab.text = NSLocalizedString(@"Hide Bench Players", nil);
+        benchLab.font = [FFStyle regularFont:14];
+        CGRect bf = benchLab.frame;
+        bf.size.width = [benchLab.text sizeWithFont:benchLab.font].width + 2;
+        benchLab.frame = bf;
+        benchLab.textColor = [UIColor colorWithWhite:.9 alpha:1];
+        benchLab.backgroundColor = [UIColor clearColor];
+        [view addSubview:benchLab];
+        
+        UISwitch *benchSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(CGRectGetMaxX(bf)+15, 35, 90, 30)];
+        [benchSwitch setOn:NO];
+        [benchSwitch addTarget:self action:@selector(benchSwitch:) forControlEvents:UIControlEventValueChanged];
+        [view addSubview:benchSwitch];
+        
+        _playerFilterView = view;
+        [self.view addSubview:view];
+        
+        [UIView animateWithDuration:.25 animations:^{
+            view.frame = CGRectOffset(view.frame, 0, -view.frame.size.height);
+            _tableView.contentInset = UIEdgeInsetsMake(0, 0, view.frame.size.height, 0);
+        }];
+    }
+}
+
+- (void)benchSwitch:(UISwitch *)swit
+{
+    _filterBenchPlayers = swit.isOn;
+}
+
+- (void)hidePlayerFilterBanner
+{
+    if (_playerFilterView) {
+        UIView *view = _playerFilterView;
+        _playerFilterView = nil;
+        [UIView animateWithDuration:.25 animations:^{
+            view.frame = CGRectOffset(view.frame, 0, view.frame.size.height);
+            _tableView.contentInset = UIEdgeInsetsZero;
+        } completion:^(BOOL finished) {
+            if (finished) {
+                [view removeFromSuperview];
+            }
+        }];
+    }
 }
 
 - (void)showSubmitRosterBanner
@@ -838,6 +943,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     if (_state != ShowRoster) {
         return;
     }
+    _filterBenchPlayers = NO;
     if (!_submitButtonView) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.view.frame),
                                                                 self.view.frame.size.width, 80)];

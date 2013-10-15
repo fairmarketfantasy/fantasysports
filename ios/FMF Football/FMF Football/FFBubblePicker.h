@@ -32,6 +32,8 @@
 - (void)resetTextView;
 - (void)closeAutocomplete;
 - (void)openAutocomplete;
+- (NSString *)textViewValue;
+- (void)setTextViewValue:(NSString *)value;
 
 @end
 

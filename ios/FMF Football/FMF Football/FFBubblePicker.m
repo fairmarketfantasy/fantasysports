@@ -84,6 +84,16 @@
     return [_items copy];
 }
 
+- (NSString *)textViewValue
+{
+    return _textField.text;
+}
+
+- (void)setTextViewValue:(NSString *)value
+{
+    _textField.text = value;
+}
+
 - (void)addItem:(id)item title:(NSString *)title animated:(BOOL)animated
 {
     if ([_items containsObject:item]) {

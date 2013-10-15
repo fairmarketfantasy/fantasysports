@@ -241,13 +241,13 @@
     rankLab.backgroundColor = [UIColor clearColor];
     rankLab.font = [FFStyle regularFont:15];
     rankLab.textColor = [FFStyle darkerColorForColor:[FFStyle lightGrey]];
-    rankLab.text = NSLocalizedString(@"Rank:", 0);
+    rankLab.text = NSLocalizedString(@"Rank:", nil);
     [cell.contentView addSubview:rankLab];
     
     UILabel *scoreLab = [[UILabel alloc] initWithFrame:CGRectMake(165, 32, 50, 20)];
     scoreLab.backgroundColor = [UIColor clearColor];
     scoreLab.font = [FFStyle regularFont:14];
-    scoreLab.text = NSLocalizedString(@"Score:", 0);
+    scoreLab.text = NSLocalizedString(@"Score:", nil);
     scoreLab.textColor = [FFStyle darkerColorForColor:[FFStyle lightGrey]];
     [cell.contentView addSubview:scoreLab];
     
@@ -278,7 +278,7 @@
         FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
                                                        messsage:nil
                                                    loadingStyle:FFAlertViewLoadingStylePlain];
-        [alert showInView:self.view];
+        [alert showInView:self.navigationController.view];
         [FFMarket get:roster.marketId session:self.session success:^(id successObj) {
             roster.market = successObj;
             [roster save];
@@ -290,7 +290,7 @@
                                                    cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                             autoHide:YES];
-            [ealert showInView:self.view];
+            [ealert showInView:self.navigationController.view];
         }];
     } else {
         [self performSegueWithIdentifier:@"GotoContest" sender:self context:roster];

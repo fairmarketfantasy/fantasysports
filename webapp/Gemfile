@@ -84,5 +84,5 @@ gem 'chef', '~> 11.6.0'
 gem 'knife-ec2'
 
 # Use Capistrano for deployment
-gem 'capistrano', group: :development
+gem 'capistrano', '= 2.15.5', group: :development
 

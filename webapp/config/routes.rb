@@ -1,4 +1,5 @@
 Fantasysports::Application.routes.draw do
+  match "*path" => redirect("https://fairmarketfantasy.com/%{path}"), :constraints => { :subdomain => "www" }, :via => [:get] if Rails.env == 'production'
 
   root 'pages#index'
 

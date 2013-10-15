@@ -7,8 +7,8 @@ Fantasysports::Application.configure do
   AWS_ACCESS_KEY="AKIAJXV4UPD3IV4JK6DA"
   AWS_SECRET_KEY="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"
 
-  STRIPE_SECRET = "sk_test_yYZU66ChxfF3LhCJvDYQTCNr"
-  STRIPE_KEY = "pk_test_IJGbzv2tpcV1TAAwaEP8MDuJ"
+  STRIPE_SECRET = "sk_live_XN3VQhSv18rZFFJcpFbm1J4b"
+  STRIPE_KEY = "pk_live_RGRjUDHr47AlUX24PS2S6U22"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
