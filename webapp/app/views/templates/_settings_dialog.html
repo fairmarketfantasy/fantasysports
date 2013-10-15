@@ -18,12 +18,14 @@
   <div class='mtm' ng-hide='isAuthedWithFacebook'>
     <div ng-hide='showUserForm'>
       <span class='user-info-label'>Name:</span>{{ currentUser.name }}<br />
+      <span class='user-info-label'>Username:</span>{{ currentUser.username }}<br />
       <span class='user-info-label'>Password:</span> <span class='bold'>*****</span><br />
       <a href='javascript://' ng-click='showUserForm = true'>Edit</a>
     </div>
     <form ng-show='showUserForm'>
       <span class='user-info-label'>Email:</span><input type='text'  class='user-info-input' ng-model='userInfo.email' placeholder='Email' /><br />
       <span class='user-info-label'>Name:</span><input type='text'  class='user-info-input' ng-model='userInfo.name' placeholder='Name' /><br />
+      <span class='user-info-label'>Username:</span><input type='text'  class='user-info-input' ng-model='userInfo.username' placeholder='Username' /><br />
       <a href='javascript://' ng-hide='showPasswordForm' ng-click='showPasswordForm = true'>Change My Password</a>
       <a href='javascript://' ng-show='showPasswordForm' ng-click='showPasswordForm = false'>cancel</a><br />
       <div ng-show='showPasswordForm'>
