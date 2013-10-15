@@ -126,7 +126,7 @@ class Market < ActiveRecord::Base
         contest.rosters.find_each do |roster|
           roster.contest_id, roster.cancelled_cause, roster.state = nil, 'private contest under-subscribed', 'in_progress'
           roster.save!
-          roster.submit!
+          roster.submit!(false)
         end
         contest.destroy!
       end
