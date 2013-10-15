@@ -14,7 +14,7 @@
         <input type='text' placeholder='Username' ng-hide='signInForm' ng-model="user.username" class='mvm' /><br />
         <input type='text' placeholder='Real Name' ng-hide='signInForm' ng-model="user.name" class='mvm' /><br />
         <input type='text' placeholder='Email' ng-model="user.email" class='mvm' /><br />
-        <input type='password' placeholder='Password' ng-model="user.password" class='mvm' tooltip="Must be at least 8 characters" tooltip-placement='right' tooltip-trigger='focus' /><br />
+        <input type='password' placeholder='Password' ng-model="user.password" class='mvm' tooltip="Must be at least 6 characters" tooltip-placement='right' tooltip-trigger='focus' /><br />
         <input type='password' placeholder='Confirm' ng-hide='signInForm' ng-model="user.password_confirmation" class='mvm'/><br />
         <div class='mvm' ng-hide='signInForm'>
           Have an account?&nbsp<a href="javascript://" ng-click="toggleSignInForm()">Sign In</a>

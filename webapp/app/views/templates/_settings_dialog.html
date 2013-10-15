@@ -27,6 +27,7 @@
       <a href='javascript://' ng-hide='showPasswordForm' ng-click='showPasswordForm = true'>Change My Password</a>
       <a href='javascript://' ng-show='showPasswordForm' ng-click='showPasswordForm = false'>cancel</a><br />
       <div ng-show='showPasswordForm'>
+        <span class='user-info-label'>Current Password:</span><input type='password' class='user-info-input' ng-model='userInfo.current_password' placeholder='Current Password'/><br />
         <span class='user-info-label'>New Password:</span><input type='password' class='user-info-input' ng-model='userInfo.password' placeholder='New Password'/><br />
         <span class='user-info-label'>Confirmation:</span><input type='password' class='user-info-input' ng-model='userInfo.password_confirmation' placeholder='Confirm' /><br />
       </div>

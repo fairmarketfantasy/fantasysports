@@ -22,6 +22,26 @@ class Users::RegistrationsControllerTest < ActionController::TestCase
     end
   end
 
+  test "put to users" do
+    user = create(:user)
+    sign_in(user)
+    new_name = "New Name"
+    xhr :post, :update, format: :json, id: user.id, user: {name: new_name}
+    assert_response :success
+    resp = JSON.parse(response.body)
+    assert_equal new_name, resp["name"]
+  end
+
+  test "put to users with password changed" do
+    user = create(:user)
+    original_password = user.encrypted_password
+    sign_in(user)
+    xhr :post, :update, format: :json, id: user.id, user: {current_password: "123456", password: "aNewP4assW0rd", password_confirmation: "aNewP4assW0rd"}
+    assert_response :success
+    user.reload
+    refute_equal original_password, user.encrypted_password
+  end
+
   test "new user private contest invitation post signup" do
     setup_simple_market
     @user = create(:paid_user)
