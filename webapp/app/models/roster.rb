@@ -165,6 +165,10 @@ class Roster < ActiveRecord::Base
   def cleanup
   end
 
+  def started_at
+    market.started_at
+  end
+
   def live?
     MarketPlayer.players_live?(market_id, rosters_players)
   end
