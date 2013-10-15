@@ -25,7 +25,7 @@ func init() {
 	orm = &bdb
 
 	beedb.OnDebug = true
-	beedb.OnDebug = false
+	//beedb.OnDebug = false
 	beedb.PluralizeTableNames = true
 }
 
