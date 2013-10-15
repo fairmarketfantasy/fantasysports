@@ -27,7 +27,7 @@ type Market struct {
 	Name          string
 	SportId       int `model:"key"`
 	TotalBets     float64
-	ShadowBets    int
+	ShadowBets    float64
 	ShadowBetRate float64
 	PublishedAt   time.Time
 	State         string
