@@ -4,6 +4,7 @@ angular.module("app.controllers")
 
   marketService.fetchUpcoming($routeParams.market_id);
   $scope.rosters = rosters;
+  $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'h2h', 'h2h rr'];
 
   $scope.isCurrent = function(market){
     if (!market) { return; }
@@ -86,6 +87,10 @@ angular.module("app.controllers")
 
   $scope.showMarketDesc = function(market) {
     return new Date(market.closed_at) - new Date(market.started_at) > 24 * 60 * 60 * 1000;
+  }
+
+  $scope.isBigContest = function(contestClass) {
+    return contestClass.match(/\d+k/);
   }
 
 }]);
