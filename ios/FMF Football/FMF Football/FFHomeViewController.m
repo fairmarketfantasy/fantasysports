@@ -201,7 +201,7 @@ FFCreateGameViewControllerDelegate>
     if (rost) {
         FFAlertView *loading = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading", nil)
                                                          messsage:nil loadingStyle:FFAlertViewLoadingStylePlain];
-        [loading showInView:self.view];
+        [loading showInView:self.navigationController.view];
         [rost refreshInBackgroundWithBlock:^(id successObj) {
             [loading hide];
             [self performSegueWithIdentifier:@"GotoRoster" sender:nil context:successObj];
@@ -209,7 +209,7 @@ FFCreateGameViewControllerDelegate>
             [loading hide];
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
-            [ealert showInView:self.view];
+            [ealert showInView:self.navigationController.view];
         }];
     }
 }
@@ -227,6 +227,7 @@ FFCreateGameViewControllerDelegate>
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    NSString *baseUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:SBApiBaseURLKey];
     if ([segue.identifier isEqualToString:@"GotoContest"]) {
         ((FFContestViewController *)segue.destinationViewController).contest = segue.context[0];
         ((FFContestViewController *)segue.destinationViewController).market = segue.context[1];
@@ -240,11 +241,15 @@ FFCreateGameViewControllerDelegate>
     }
     else if ([segue.identifier isEqualToString:@"GotoRules"]) {
         FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
-        vc.URL = [NSURL URLWithString:@"http://google.com"];
+        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/rules"]];
     }
     else if ([segue.identifier isEqualToString:@"GotoTerms"]) {
         FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
-        vc.URL = [NSURL URLWithString:@"http://google.com"];
+        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/terms"]];
+    }
+    else if ([segue.identifier isEqualToString:@"GotoSupport"]) {
+        FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
+        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/support"]];
     }
 }
 
@@ -256,7 +261,7 @@ FFCreateGameViewControllerDelegate>
             FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
                                                            messsage:nil
                                                        loadingStyle:FFAlertViewLoadingStylePlain];
-            [alert showInView:self.view];
+            [alert showInView:self.navigationController.view];
             [FFMarket get:roster.marketId session:self.session success:^(id successObj) {
                 roster.market = successObj;
                 [roster save];
@@ -268,7 +273,7 @@ FFCreateGameViewControllerDelegate>
                                                        cancelButtonTitle:nil
                                                          okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
                                                                 autoHide:YES];
-                [ealert showInView:self.view];
+                [ealert showInView:self.navigationController.view];
             }];
         } else {
             [super performSegueWithIdentifier:identifier sender:sender context:context];

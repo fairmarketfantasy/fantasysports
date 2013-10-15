@@ -173,6 +173,7 @@ class Roster < ActiveRecord::Base
     MarketPlayer.next_game_time_for_players(self)
   end
 
+
   #buys random players to fill up the roster (all empty positions)
   #how randomly? well, that may change, but for now it's pretty random.
   def fill_randomly
@@ -190,7 +191,7 @@ class Roster < ActiveRecord::Base
     for_sale_by_pos = {}
     positions.each { |pos| for_sale_by_pos[pos] = []}
     for_sale.each do |player|
-      for_sale_by_pos[player.position] << player if for_sale_by_pos.include? player.position
+      for_sale_by_pos[player.position] << player if for_sale_by_pos.include?(player.position)
     end
     #sample players from each position and add to roster
     positions.each do |pos|
@@ -221,4 +222,48 @@ class Roster < ActiveRecord::Base
     end
   end
 
+end
+
+module PlayerSelection
+  def fill_pseudo_randomly
+    @candidate_players = {:indexes => {}}
+    position_array.each { |pos| @candidate_players[pos] = []; @candidate_players[:indexes][pos] = 0}
+    self.purchasable_players.each do |p| 
+      @candidate_players[p.position] << p if @candidate_players.include?(player.position)
+      @candidate_players[:indexes][pos] += 1 if player.buy_price > 1100
+    end
+    @candidate_players.each do |pos,players|
+      @candidate_players[pos] = @candidate_players[pos].sort_by{|p| -p.buy_price }
+    end
+
+    begin
+      position = remaining_positions.sample # One level of randomization
+      player = (@candidate_players[:indexes] > 0 ? @candidate_players.slice(0, @candidate_players[:indexes][position]) : @candidate_players).sample
+    end while(remaining_positions.length > 0)
+
+    #pick players that fill those positions
+    #organize players by position
+    positions.each do |pos|
+      players = for_sale_by_pos[pos]
+      player = players.sample
+      next if player.nil?
+      players.delete(player)
+      self.add_player(player)
+    end
+    self.reload 
+  end
+
+  def position_array
+    @position_list ||= self.positions.split(',') #TODO- could cache this
+  end
+
+  def remaining_positions
+    positions = position_array.dup
+    pos_taken = self.players.collect(&:position)
+    pos_taken.each do |pos|
+      i = positions.index(pos)
+      positions.delete_at(i) if not i.nil?
+    end
+    positions
+  end
 end

@@ -17,6 +17,9 @@
 @property (nonatomic) UILabel *cost;
 @property (nonatomic) UILabel *payouts;
 @property (nonatomic) UIImageView *img;
+@property (nonatomic) UILabel *curPayoutLabel, *curPayout;
+@property (nonatomic) UILabel *curPositionLabel, *curPosition;
+@property (nonatomic) UILabel *curScoreLabel, *curScore;
 
 @end
 
@@ -93,6 +96,45 @@
         _circle.center = CGPointMake(270, 48);
         _circle.userInteractionEnabled = NO;
         [self addSubview:_circle];
+        
+        _curScoreLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 135, 220, 18)];
+        _curScoreLabel.backgroundColor = [UIColor clearColor];
+        _curScoreLabel.textColor = [FFStyle greyTextColor];
+        _curScoreLabel.font = [FFStyle regularFont:14];
+        _curScoreLabel.text = NSLocalizedString(@"Score:", nil);
+        [self addSubview:_curScoreLabel];
+        
+        _curScore = [[UILabel alloc] initWithFrame:CGRectMake(95, 135, 180, 18)];
+        _curScore.backgroundColor = [UIColor clearColor];
+        _curScore.textColor = [FFStyle darkGreyTextColor];
+        _curScore.font = [FFStyle regularFont:14];
+        [self addSubview:_curScore];
+        
+        _curPositionLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 153, 220, 18)];
+        _curPositionLabel.backgroundColor = [UIColor clearColor];
+        _curPositionLabel.textColor = [FFStyle greyTextColor];
+        _curPositionLabel.font = [FFStyle regularFont:14];
+        _curPositionLabel.text = NSLocalizedString(@"Position:", nil);
+        [self addSubview:_curPositionLabel];
+        
+        _curPosition = [[UILabel alloc] initWithFrame:CGRectMake(95, 153, 180, 18)];
+        _curPosition.backgroundColor = [UIColor clearColor];
+        _curPosition.textColor = [FFStyle darkGreyTextColor];
+        _curPosition.font = [FFStyle regularFont:14];
+        [self addSubview:_curPosition];
+        
+        _curPayoutLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 171, 220, 18)];
+        _curPayoutLabel.backgroundColor = [UIColor clearColor];
+        _curPayoutLabel.textColor = [FFStyle greyTextColor];
+        _curPayoutLabel.font = [FFStyle regularFont:14];
+        _curPayoutLabel.text = NSLocalizedString(@"Payout:", nil);
+        [self addSubview:_curPayoutLabel];
+        
+        _curPayout = [[UILabel alloc] initWithFrame:CGRectMake(95, 171, 180, 18)];
+        _curPayout.backgroundColor = [UIColor clearColor];
+        _curPayout.textColor = [FFStyle darkGreyTextColor];
+        _curPayout.font = [FFStyle regularFont:14];
+        [self addSubview:_curPayout];
     }
     return self;
 }
@@ -116,6 +158,29 @@
 - (void)setMarket:(FFMarket *)market
 {
     _market = market;
+}
+
+- (void)setRoster:(FFRoster *)roster
+{
+    _roster = roster;
+    if (_roster && [_roster.live integerValue]) {
+        // show the shit
+        _curPayout.hidden = _curPayoutLabel.hidden = NO;
+        _curScore.hidden = _curScoreLabel.hidden = NO;
+        _curPosition.hidden = _curPositionLabel.hidden = NO;
+        
+        _curScore.text = (roster.score == nil ? @"0" : [roster.score description]);
+        _curPayout.text = (roster.amountPaid != nil ? [roster.amountPaid description] : @"0");
+        _curPosition.text = [NSString stringWithFormat:@"%@ %@ %@",
+                             (roster.contestRank == nil ? @"0" : roster.contestRank),
+                             NSLocalizedString(@"of", nil),
+                             (_contest.maxEntries == nil ? @"0" : _contest.maxEntries)];
+    } else {
+        // hide the shit
+        _curPayout.hidden = _curPayoutLabel.hidden = YES;
+        _curScore.hidden = _curScoreLabel.hidden = YES;
+        _curPosition.hidden = _curPositionLabel.hidden = YES;
+    }
 }
 
 @end

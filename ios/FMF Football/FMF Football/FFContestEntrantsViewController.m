@@ -10,6 +10,9 @@
 #import <SBData/SBDataObject.h>
 #import "FFRoster.h"
 #import "FFSessionViewController.h"
+#import <A2StoryboardSegueContext/A2StoryboardSegueContext.h>
+#import "FFContestViewController.h"
+#import "FFAlertView.h"
 
 
 @interface FFContestEntrantsViewController ()
@@ -234,8 +237,37 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FFRoster *roster = [_rosters objectAtIndex:indexPath.row];
-    [self performSegueWithIdentifier:@"GotoContest" sender:self context:roster];
+    if (!roster.market) {
+        FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
+                                                       messsage:nil
+                                                   loadingStyle:FFAlertViewLoadingStylePlain];
+        [alert showInView:self.navigationController.view];
+        [FFMarket get:roster.marketId session:self.session success:^(id successObj) {
+            roster.market = successObj;
+            [roster save];
+            [alert hide];
+            [self performSegueWithIdentifier:@"GotoContestRoster" sender:nil context:roster];
+        } failure:^(NSError *error) {
+            FFAlertView *ealert = [[FFAlertView alloc] initWithError:error
+                                                               title:nil
+                                                   cancelButtonTitle:nil
+                                                     okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
+                                                            autoHide:YES];
+            [ealert showInView:self.navigationController.view];
+        }];
+    } else {
+        [self performSegueWithIdentifier:@"GotoContestRoster" sender:self context:roster];
+    }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"GotoContestRoster"]) {
+        FFContestViewController *c = (FFContestViewController *)segue.destinationViewController;
+        c.roster = segue.context;
+        c.notMine = YES;
+    }
 }
 
 @end

@@ -224,7 +224,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
         
         _alert = [[FFAlertView alloc] initWithTitle:nil
                                                         message:nil buttons:@[camera, roll, cancel]];
-        [_alert showInView:self.view];
+        [_alert showInView:self.navigationController.view];
     }
     else if (indexPath.section == 2) {
         [self performSegueWithIdentifier:@"GotoName" sender:nil];
@@ -281,6 +281,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     if ([segue.identifier isEqualToString:@"GotoName"]) {
         FFValueEntryController *c = segue.destinationViewController;
         c.keyboardType = UIKeyboardTypeDefault;
+        c.autocapitalizationType = UITextAutocapitalizationTypeWords;
         c.value = user.name;
         c.name = segue.identifier;
         c.delegate = self;
@@ -289,6 +290,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     else if ([segue.identifier isEqualToString:@"GotoEmail"]) {
         FFValueEntryController *c = segue.destinationViewController;
         c.keyboardType = UIKeyboardTypeEmailAddress;
+        c.autocapitalizationType = UITextAutocapitalizationTypeNone;
         c.value = user.email;
         c.name = segue.identifier;
         c.delegate = self;
@@ -327,7 +329,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     if (_shouldSave) {
         FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Saving", nil) messsage:nil
                                                    loadingStyle:FFAlertViewLoadingStylePlain];
-        [alert showInView:self.view];
+        [alert showInView:self.navigationController.view];
         FFUser *user = (FFUser *)self.session.user;
         [user updateInBackgroundWithBlock:^(id successObj) {
             [alert hide];
@@ -335,7 +337,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
             [alert hide];
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
-            [ealert showInView:self.view];
+            [ealert showInView:self.navigationController.view];
         }];
         _shouldSave = NO;
     }

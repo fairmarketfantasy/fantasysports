@@ -67,14 +67,17 @@
         case 1:
             cell.textLabel.text = NSLocalizedString(@"Create Game", nil);
             break;
+//        case 2:
+//            cell.textLabel.text = NSLocalizedString(@"Join Game", nil);
+//            break;
         case 2:
-            cell.textLabel.text = NSLocalizedString(@"Join Game", nil);
-            break;
-        case 3:
             cell.textLabel.text = NSLocalizedString(@"Rules", nil);
             break;
-        case 4:
+        case 3:
             cell.textLabel.text = NSLocalizedString(@"Legal Stuff", nil);
+            break;
+        case 4:
+            cell.textLabel.text = NSLocalizedString(@"Support", nil);
             break;
         case 5:
             cell.textLabel.text = NSLocalizedString(@"Settings", nil);
@@ -119,13 +122,16 @@
         case 1:
             [self.delegate performMenuSegue:@"GotoCreateGame"];
             break;
+//        case 2:
+//            break;
         case 2:
-            break;
-        case 3:
             [self.delegate performMenuSegue:@"GotoRules"];
             break;
-        case 4:
+        case 3:
             [self.delegate performMenuSegue:@"GotoTerms"];
+            break;
+        case 4:
+            [self.delegate performMenuSegue:@"GotoSupport"];
             break;
         case 5:
             [self.delegate performMenuSegue:@"GotoAccount"];
