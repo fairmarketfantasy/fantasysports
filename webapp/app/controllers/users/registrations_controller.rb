@@ -85,7 +85,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     change_unconfirmed_email if prev_unconfirmed_email
 
-    if resource.update_without_password(account_update_params)
+    method =  if params[:user][:current_password].present?
+                :update_with_password
+              else
+                :update_without_password
+              end
+    if resource.send(method, account_update_params)
       sign_in resource_name, resource, :bypass => true
       render json: resource.reload, status: :ok
     else

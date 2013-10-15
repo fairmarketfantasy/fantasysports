@@ -20,8 +20,9 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   devise :omniauthable, :omniauth_providers => [:facebook, :facebook_access_token]
 
+  attr_accessor :current_password
   attr_accessible :name, :username, :provider, :uid, :fb_token, :unconfirmed_email, :image_url, :takes_tokens,
-      :email, :password, :password_confirmation, :remember_me, :first_name,
+      :email, :current_password, :password, :password_confirmation, :remember_me, :first_name,
       :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync, :inviter_id, :avatar, :avatar_cache, :remove_avatar
 
   has_many :rosters, foreign_key: :owner_id

@@ -47,6 +47,7 @@
       flash.success = "Success, user info saved";
       flashForConfirm();
       $scope.currentUser = resp;
+      $scope.userInfo = {};
     });
   };
 
