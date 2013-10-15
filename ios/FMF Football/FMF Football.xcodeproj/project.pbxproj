@@ -57,6 +57,7 @@
 		1561B7F317FDFB1E00444F22 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1561B7F217FDFB1E00444F22 /* StoreKit.framework */; };
 		1561B7F617FE185E00444F22 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1561B7F517FE185E00444F22 /* NSData+Base64.m */; };
 		1575B363180CB85100822EF9 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1575B362180CB85100822EF9 /* Crashlytics.framework */; };
+		1575B367180CBACF00822EF9 /* libFlurry_4.2.4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1575B366180CBACF00822EF9 /* libFlurry_4.2.4.a */; };
 		1589CEA817E90C1700A7233E /* FFHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1589CEA717E90C1700A7233E /* FFHomeViewController.m */; };
 		1589CEAA17E96E1400A7233E /* globalmenu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEA917E96E1400A7233E /* globalmenu@2x.png */; };
 		1589CEAC17E96FE600A7233E /* darkgreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1589CEAB17E96FE600A7233E /* darkgreen.png */; };
@@ -204,6 +205,8 @@
 		1561B7F417FE185E00444F22 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		1561B7F517FE185E00444F22 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		1575B362180CB85100822EF9 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		1575B365180CBACF00822EF9 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		1575B366180CBACF00822EF9 /* libFlurry_4.2.4.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_4.2.4.a; sourceTree = "<group>"; };
 		1589CEA617E90C1700A7233E /* FFHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFHomeViewController.h; sourceTree = "<group>"; };
 		1589CEA717E90C1700A7233E /* FFHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFHomeViewController.m; sourceTree = "<group>"; };
 		1589CEA917E96E1400A7233E /* globalmenu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globalmenu@2x.png"; sourceTree = "<group>"; };
@@ -311,6 +314,7 @@
 				1527AE3317DFDCFB00D181D7 /* SystemConfiguration.framework in Frameworks */,
 				1527AE3117DFDCEF00D181D7 /* MobileCoreServices.framework in Frameworks */,
 				1527AE2F17DFDCEA00D181D7 /* Security.framework in Frameworks */,
+				1575B367180CBACF00822EF9 /* libFlurry_4.2.4.a in Frameworks */,
 				153BBC3417DFC2E40071E63B /* UIKit.framework in Frameworks */,
 				153BBC3617DFC2E40071E63B /* Foundation.framework in Frameworks */,
 				153BBC3817DFC2E40071E63B /* CoreGraphics.framework in Frameworks */,
@@ -374,6 +378,7 @@
 		153BBC3217DFC2E40071E63B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1575B364180CBACF00822EF9 /* Flurry */,
 				1575B362180CB85100822EF9 /* Crashlytics.framework */,
 				1561B7F217FDFB1E00444F22 /* StoreKit.framework */,
 				15CD295317F7804A0027DFEC /* AddressBook.framework */,
@@ -461,6 +466,16 @@
 				1561B7D817FD264500444F22 /* FMF@2x.png */,
 			);
 			name = Icons;
+			sourceTree = "<group>";
+		};
+		1575B364180CBACF00822EF9 /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				1575B365180CBACF00822EF9 /* Flurry.h */,
+				1575B366180CBACF00822EF9 /* libFlurry_4.2.4.a */,
+			);
+			name = Flurry;
+			path = "FMF Football/Flurry";
 			sourceTree = "<group>";
 		};
 		15A2377F17E2670C00225942 /* Controllers */ = {
@@ -977,6 +992,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
 				INFOPLIST_FILE = "FMF Football/FMF Football-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/samuelsutch/dev/shadowart/clients/fmf-local/fantasysports/ios/FMF\\ Football/FMF\\ Football/Flurry",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
@@ -997,6 +1016,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
 				INFOPLIST_FILE = "FMF Football/FMF Football-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/samuelsutch/dev/shadowart/clients/fmf-local/fantasysports/ios/FMF\\ Football/FMF\\ Football/Flurry",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
