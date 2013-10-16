@@ -80,7 +80,6 @@ func (mgr *FetchManager) createMarket(name string, games Games) {
 	sort.Sort(games)
 	market := models.Market{}
 	market.Name = name
-	market.ShadowBets = 1000
 	market.ShadowBetRate = 0.75
 	market.PublishedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
 	market.OpenedAt = games[0].GameTime.Add(-45 * time.Hour)
@@ -106,7 +105,7 @@ func (mgr *FetchManager) createMarkets(games []*models.Game) {
 		appendForKey(weekKey, weekMarkets, games[i])
 	}
 	for _, daysGames := range dayMarkets {
-		mgr.createMarket("", daysGames)
+		mgr.createMarket("", []*models.Game{daysGames[len(daysGames)-1]})
 	}
 	for _, weekGames := range weekMarkets {
 		mgr.createMarket("Week "+strconv.Itoa(weekGames[0].SeasonWeek), weekGames)
