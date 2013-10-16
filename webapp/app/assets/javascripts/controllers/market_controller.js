@@ -20,7 +20,6 @@ angular.module("app.controllers")
     if (!marketService.currentMarket) {
       return;
     }
-    $scope.games = games;
 
     $scope.fs.contests.for_market(marketService.currentMarket.id).then(function(contestTypes) {
       $scope.contestClasses = {};
