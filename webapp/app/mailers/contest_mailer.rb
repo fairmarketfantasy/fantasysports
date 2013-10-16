@@ -1,5 +1,5 @@
 class ContestMailer < ActionMailer::Base
-  default from: "no-reply@fairmarketfantasy.com"
+  default from: "Fair Market Fantasy <no-reply@fairmarketfantasy.com>"
 
   def invite_to_contest(invitation, inviter, contest, email, message)
     @invitation = invitation

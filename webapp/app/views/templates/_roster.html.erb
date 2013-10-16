@@ -2,7 +2,7 @@
   <div class="contest-info">
     <div class="relative clearfix">
       <a href="javascript://" class="btn btn-danger btn-cancel-entry" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
-      <a href="javascript://" class="btn btn-orange btn-invite-friends" ng-click="rosters.openInviteFriends(rosters.currentRoster)" ng-show="market.state == 'published' || market.state == 'opened'">Invite Friends</a>
+      <a href="javascript://" class="btn btn-orange btn-invite-friends" ng-click="rosters.openInviteFriends(rosters.currentRoster)" ng-show="market.state == 'published' || market.state == 'opened' && roster.state != 'in_progress'">Invite Friends</a>
       <a href="#/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster">Back to Contests</a>
       <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name}}.png" class="contest-info-image" />
       <div class="contest-info-description">
@@ -11,7 +11,7 @@
           <span ng-show="rosters.currentRoster.contest_type.name == '100k'">THE LOLLAPALOOZA. First prize is $50k, that's a lot of cheddar for a $10 entry!</span>
           <span ng-show="rosters.currentRoster.contest_type.name == '194'">Top half nearly doubles their money. You're better than average, right? Go get 'em!</span>
           <span ng-show="rosters.currentRoster.contest_type.name == '970'">Show everyone what a true champion you are in this winner takes all league.</span>
-          <span ng-show="rosters.currentRoster.contest_type.name == 'h2h'">Challenge your friends to head to head games and channel some truly intimate aggression.</span>
+          <span ng-show="rosters.currentRoster.contest_type.name == 'h2h'">Play one on one games to channel some truly intimate aggression.</span>
         </p>
         <ul>
           <li>Starts: {{markets.currentMarket.started_at | shortFormTime }}</li>

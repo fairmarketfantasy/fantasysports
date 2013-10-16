@@ -4,6 +4,7 @@ angular.module("app.controllers")
 
   marketService.fetchUpcoming($routeParams.market_id);
   $scope.rosters = rosters;
+  $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'h2h', 'h2h rr'];
 
   $scope.isCurrent = function(market){
     if (!market) { return; }
@@ -19,9 +20,6 @@ angular.module("app.controllers")
     if (!marketService.currentMarket) {
       return;
     }
-    marketService.gamesFor(marketService.currentMarket.id).then(function(games) {
-      $scope.games = games;
-    });
 
     $scope.fs.contests.for_market(marketService.currentMarket.id).then(function(contestTypes) {
       $scope.contestClasses = {};
@@ -76,7 +74,7 @@ angular.module("app.controllers")
     var d = $dialog.dialog(dialogOpts);
     d.open().then(function(result) {
       if (!result) { return; }
-      $scope.fs.contests.create(marketService.currentMarket.id, result.contest_type, result.buy_in * 100, result.invitees, result.message).then(function(roster) {
+      $scope.fs.contests.create(marketService.currentMarket.id, result.contest_type, result.buy_in * (result.takes_tokens ? 1 : 100), result.takes_tokens, result.invitees, result.message).then(function(roster) {
         flash.success = "Awesome, your contest is all setup. Now lets create your entry into the contest."
         rosters.selectRoster(roster);
         $location.path('/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
@@ -84,8 +82,20 @@ angular.module("app.controllers")
     });
   };
 
-  $scope.showMarketDesc = function(market) {
+  $scope.showDayDesc = function(market) {
+    return market.games.length > 1 && new Date(market.closed_at) - new Date(market.started_at) < 24 * 60 * 60 * 1000;
+  };
+
+  $scope.showGameDesc = function(market) {
+    return market.games.length == 1;
+  };
+
+  $scope.showDateDesc = function(market) {
     return new Date(market.closed_at) - new Date(market.started_at) > 24 * 60 * 60 * 1000;
-  }
+  };
+
+  $scope.isBigContest = function(contestClass) {
+    return contestClass.match(/\d+k/);
+  };
 
 }]);

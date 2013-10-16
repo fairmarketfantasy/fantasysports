@@ -9,7 +9,7 @@
 def run_fetcher(args)
   yaml = YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))[Rails.env]
   root = File.join(Rails.root, '..', 'datafetcher')
-  `PATH=$PATH:/usr/local/go/bin DB_HOST=#{yaml["host"]} GOPATH=#{root} go run #{root}/src/github.com/MustWin/datafetcher/datafetcher.go #{args}`
+  `PATH=$PATH:/usr/local/go/bin DB_HOST=#{yaml["host"]} GOPATH=#{root} go run -a #{root}/src/github.com/MustWin/datafetcher/datafetcher.go #{args}`
 end
 
 namespace :seed do

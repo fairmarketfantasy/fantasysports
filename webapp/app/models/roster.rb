@@ -89,10 +89,10 @@ class Roster < ActiveRecord::Base
 
   #set the state to 'submitted'. If it's in a private contest, increment the number of 
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
-  def submit!
+  def submit!(charge = true)
     #buy all the players on the roster. This sql function handles all of that.
     #// PICK UP HERE, add switch in can_charge for token type, add weighting to bets for free players in market
-    raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") unless owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
+    raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
     self.transaction do
 
       #purchase all the players and update roster state to submitted
@@ -135,7 +135,7 @@ class Roster < ActiveRecord::Base
       end
 
       #charge account
-      if contest_type.buy_in > 0
+      if contest_type.buy_in > 0 && charge
         self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
       end
 
@@ -163,6 +163,10 @@ class Roster < ActiveRecord::Base
   end
 
   def cleanup
+  end
+
+  def started_at
+    market.started_at
   end
 
   def live?

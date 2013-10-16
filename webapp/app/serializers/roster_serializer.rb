@@ -15,6 +15,7 @@ class RosterSerializer < ActiveModel::Serializer
       :cancelled_cause, 
       :cancelled_at, 
       :positions,
+      :started_at,
       :next_game_time,
       :live
 
