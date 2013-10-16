@@ -12,6 +12,7 @@ class PagesController < ApplicationController
   end
 
   def terms
+    render layout: nil
   end
 
   def about
