@@ -80,7 +80,6 @@ func (mgr *FetchManager) createMarket(name string, games Games) {
 	sort.Sort(games)
 	market := models.Market{}
 	market.Name = name
-	market.ShadowBets = 1000
 	market.ShadowBetRate = 0.75
 	market.PublishedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
 	market.OpenedAt = games[0].GameTime.Add(-45 * time.Hour)
