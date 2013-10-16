@@ -313,6 +313,7 @@ class Market < ActiveRecord::Base
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
+        next if data[:name].match(/\d+k/) && market.closed_at - market.started_at < 1.day
       ContestType.create!(
         market_id: self.id,
         name: data[:name],
