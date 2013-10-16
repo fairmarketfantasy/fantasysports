@@ -49,7 +49,6 @@ angular.module("app.controllers")
      d.open();
   };
 
-
   if ($location.search().autologin) {
     var message = $location.search().autologin;
     $location.search('autologin', null);

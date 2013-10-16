@@ -145,8 +145,8 @@ angular.module('app.services')
         join: function(contest_type_id, copy_roster_id) {
           return $http({method: 'POST', url: '/rosters', data: {contest_type_id: contest_type_id, copy_roster_id: copy_roster_id}});
         },
-        create: function(market_id, type_name, buy_in, invitees, message) {
-          return $http({method: 'POST', url: '/contests', data: {market_id: market_id, invitees: invitees, message: message, type: type_name, buy_in: buy_in, salary_cap: 100000}});
+        create: function(market_id, type_name, buy_in, takes_tokens, invitees, message) {
+          return $http({method: 'POST', url: '/contests', data: {market_id: market_id, invitees: invitees, message: message, type: type_name, buy_in: buy_in, takes_tokens: takes_tokens, salary_cap: 100000}});
         },
         invite: function(contest_id, invitees, message, invitation_code) {
           return $http({method: 'POST', url: '/contests/' + contest_id + '/invite', data: {invitees: invitees, message: message, invitation_code: invitation_code}});

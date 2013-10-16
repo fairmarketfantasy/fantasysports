@@ -21,8 +21,8 @@ angular.module("app.controllers")
   var fetchPlayers = function() {
     if (!rosters.currentRoster) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
-      if (filterOpts.removeLow) {
-        players = _.select(players, function(player) { return player.buy_price > 1100; });
+      if (filterOpts.removeLow && players.length > 2) {
+        players = _.select(players, function(player) { return player.ppg > 1; });
       }
       $scope.players = players;
     });

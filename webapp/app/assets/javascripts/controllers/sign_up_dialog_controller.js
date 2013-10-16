@@ -3,7 +3,12 @@ angular.module("app.controllers")
   $scope.user = $scope.user || {};
   console.log(message);
   $scope.message = message;
-  $scope.signInForm = false;
+  if (message == 'signin') {
+    $scope.signInForm = true;    
+    $scope.message = '';
+  } else {
+    $scope.signInForm = false;    
+  }
 
   $scope.signUp = function() {
     fs.user.create($scope.user).then(function(resp){
