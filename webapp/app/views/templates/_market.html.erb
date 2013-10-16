@@ -3,8 +3,8 @@
     <li class="market-li" ng-repeat="market in marketService.upcoming">
       <a href="#/market/{{market.id}}" class="market-link" ng-class="{ highlightMkt: isCurrent(market) }">
         <strong>{{market.name}}</strong><br /> 
-        <span ng-show="showMarketDesc(market)">{{market.started_at | shortFormDate}} - {{market.closed_at | shortFormDate}}</span>
-        <span ng-show="showGameDesc(market)">{{market.started_at | shortFormDate}} - {{market.closed_at | shortFormDate}}</span>
+        <span ng-show="showMarketDesc(market)">All Games {{market.started_at | shortFormDate}} - {{market.closed_at | shortFormDate}}</span>
+        <span ng-show="!showMarketDesc(market)">Dallas at Green Bay on FOX</span>
       </a>
     </li>
   </ul>
@@ -20,7 +20,7 @@
 
     <div ng-hide="rosters.inProgressRoster">
       <ul class="clearfix no-no" ng-cloak>
-        <li class="contest-classes full-row">
+        <li class="contest-classes full-row" ng-class="{realfull: marketService.currentMarket.market_duration == 'week'}">
           <h4>It's More Fun With Friends!</h4>
           <p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>
           <a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create a contest</a>
