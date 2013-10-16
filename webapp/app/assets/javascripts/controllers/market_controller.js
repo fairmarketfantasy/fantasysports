@@ -20,9 +20,7 @@ angular.module("app.controllers")
     if (!marketService.currentMarket) {
       return;
     }
-    marketService.gamesFor(marketService.currentMarket.id).then(function(games) {
-      $scope.games = games;
-    });
+    $scope.games = games;
 
     $scope.fs.contests.for_market(marketService.currentMarket.id).then(function(contestTypes) {
       $scope.contestClasses = {};
@@ -85,12 +83,20 @@ angular.module("app.controllers")
     });
   };
 
-  $scope.showMarketDesc = function(market) {
+  $scope.showDayDesc = function(market) {
+    return market.games.length > 1 && new Date(market.closed_at) - new Date(market.started_at) < 24 * 60 * 60 * 1000;
+  };
+
+  $scope.showGameDesc = function(market) {
+    return market.games.length == 1;
+  };
+
+  $scope.showDateDesc = function(market) {
     return new Date(market.closed_at) - new Date(market.started_at) > 24 * 60 * 60 * 1000;
-  }
+  };
 
   $scope.isBigContest = function(contestClass) {
     return contestClass.match(/\d+k/);
-  }
+  };
 
 }]);
