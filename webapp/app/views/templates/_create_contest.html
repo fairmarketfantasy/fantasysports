@@ -7,16 +7,22 @@
       <h3>Contest Type</h3>
       <ul class="nav nav-pills modal-pills">
         <li ng-class="{active: contest_type == 'h2h'}"><a href="javascript://" ng-click="contest_type = 'h2h'">H2H</a></li>
+        <li ng-class="{active: contest_type == 'h2h rr'}"><a href="javascript://" ng-click="contest_type = 'h2h rr'">H2H RR</a></li>
         <li ng-class="{active: contest_type == '194'}"><a href="javascript://" ng-click="contest_type = '194'">194</a></li>
         <li ng-class="{active: contest_type == '970'}"><a href="javascript://" ng-click="contest_type = '970'">970</a></li>
       </ul>
     </div>
     <div class="full-row">
       <h3>Entry Fee</h3>
-      <ul ng-show="contest_type != 'h2h'"class="nav nav-pills modal-pills">
-        <li ng-class="{active: buy_in == 0}"><a href="javascript://"        ng-click="buy_in = 0">Free</a></li>
-        <li ng-class="{active: buy_in == 1}"><a href="javascript://"        ng-click="buy_in = 1">$1</a></li>
-        <li ng-class="{active: contest_type == 10}"><a href="javascript://" ng-click="buy_in = 10">$10</a></li>
+      <ul ng-show="contest_type == '194' || contest_type =='970'" class="nav nav-pills modal-pills">
+        <li ng-class="{active: buy_in == 100}"><a href="javascript://"      ng-click="buy_in = 100; takes_tokens = true">100 FF</a></li>
+        <li ng-class="{active: buy_in == 1}"><a href="javascript://"        ng-click="buy_in = 1; takes_tokens = false">$1</a></li>
+        <li ng-class="{active: contest_type == 10}"><a href="javascript://" ng-click="buy_in = 10; takes_tokens = false">$10</a></li>
+      </ul>
+      <ul ng-show="contest_type == 'h2h rr'" class="nav nav-pills modal-pills">
+        <li ng-class="{active: buy_in == 900}"><a href="javascript://"      ng-click="buy_in = 900; takes_tokens = true">900 FF</a></li>
+        <li ng-class="{active: buy_in == 1}"><a href="javascript://"        ng-click="buy_in = 9; takes_tokens = false">$9</a></li>
+        <li ng-class="{active: contest_type == 10}"><a href="javascript://" ng-click="buy_in = 90; takes_tokens = false">$90</a></li>
       </ul>
       <div ng-show="contest_type == 'h2h'">
         <span class="currency" ng-hide="isFree">$</span>
@@ -29,7 +35,7 @@
               <span class="first-icon fui-checkbox-unchecked"></span>
               <span class="second-icon fui-checkbox-checked"></span>
             </span>
-            Play FREE
+            Play FanFrees
           </label>
           <input type="checkbox" id="checkbox1" class="hide" ng-model="isFree"/>
         </div>

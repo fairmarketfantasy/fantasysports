@@ -36,7 +36,7 @@ class Contest < ActiveRecord::Base
         :payout_description => "Winner take all"
       )
     else
-      contest_type = market.contest_types.where(:name => opts[:type], :buy_in => opts[:buy_in]).first
+      contest_type = market.contest_types.where(:name => opts[:type], :buy_in => opts[:buy_in], :takes_tokens => !!opts[:takes_tokens]).first
       raise HttpException.new(404, "No such contest type found") unless contest_type
     end
 
