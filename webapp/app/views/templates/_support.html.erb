@@ -9,8 +9,8 @@
     </div>
     <div>
       <input type='text' placeholder='Message Title' class='mvm span7' /><br />
-      <input type='email' placeholder='Email' class='mvm span7' /><br />
-      <textarea class="mvm span7">Your Message Here</textarea>
+      <input type='email' placeholder='Email' class='mvm span7' value="{{currentUser.email}}"/><br />
+      <textarea class="mvm span7" placeholder="Your Message Here"></textarea>
       
       <p><a href="javascript://" class="btn btn-danger btn-create-contest" ng-class="{ disabled: !isValid()}">Submit Support Request</a></p>
     </div>
