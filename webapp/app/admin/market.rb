@@ -22,6 +22,7 @@ ActiveAdmin.register Market do
 =end
     column :name
     column :started_at
+    column :opened_at
     column :closed_at
     column :state
     column :total_bets
