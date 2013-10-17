@@ -1,6 +1,6 @@
 class Eventing
-  CLYNG_EVENT_API = 'go.clyng.com/events/process'
-  CLYNG_USER_API = 'go.clyng.com/api/user/setValues'
+  CLYNG_EVENT_API = 'http://go.clyng.com/events/process'
+  CLYNG_USER_API = 'http://go.clyng.com/api/user/setValues'
 =begin
 curl -X PUT -H "Content-Type: application/json" –data '{
     "apiKey": "pk-18d8a70d-3f69-455f-ab2c-0dbd8c0d8685", // this is your Private key
@@ -13,12 +13,14 @@ curl -X PUT -H "Content-Type: application/json" –data '{
     "fbAccessToken": "123456789"  // ... or even Facebook user access tokens...
 }' go.clyng.com/events/process
 =end
+
+  # EVENT NAME MUST BE CAMEL CASED
   def self.report(user, event, data = {})
     return if Rails.env == 'test'
-    params = default_params.merge({
+    params = default_params(user).merge({
       eventName: event,
     }).merge(data)
-    Typhoeus.post(CLYNG_API, headers: headers, body: params.to_json)
+    Typhoeus.post(CLYNG_EVENT_API, headers: headers, body: params.to_json)
   end
 
 =begin
@@ -31,8 +33,8 @@ curl -X PUT -H "Content-Type: application/json" –data '{
 =end
   def self.update_user(user, data)
     return if Rails.env == 'test'
-    params = default_params.merge(data)
-    Typhoeus.post(CLYNG_API, headers: headers, body: params.to_json)
+    params = default_params(user).merge(data)
+    Typhoeus.post(CLYNG_USER_API, headers: headers, body: params.to_json)
   end
 
   private
@@ -49,6 +51,7 @@ curl -X PUT -H "Content-Type: application/json" –data '{
       userId: user && user.email,
       environment: Rails.env,
       apiKey: "pk-18d8a70d-3f69-455f-ab2c-0dbd8c0d8685", # pk
+# private key: "84bc73ca-5947-4357-b37b-aa5692289113"; //this is your public key
     }
 
   end

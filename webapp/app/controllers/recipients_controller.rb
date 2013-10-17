@@ -9,6 +9,7 @@ class RecipientsController < ApplicationController
     begin
       recipient = Recipient.new(recipient_params.merge!(user: current_user))
       if recipient.save
+        Eventing.report(current_user, 'addBankAccount')
         render_api_response recipient, status: :ok
       else
         render json: {error: recipient.errors.full_messages.first}, status: :unprocessable_entity

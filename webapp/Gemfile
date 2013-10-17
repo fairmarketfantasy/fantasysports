@@ -82,3 +82,4 @@ gem 'knife-ec2'
 # Use Capistrano for deployment
 gem 'capistrano', '= 2.15.5', group: :development
 
+gem 'typhoeus'
