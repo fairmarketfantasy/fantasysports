@@ -1,29 +1,38 @@
 angular.module('app.services')
   .factory('currentUserService', ['$dialog', function($dialog) {
     var dialogOpts = {
-              backdrop: true,
-              keyboard: true,
-              backdropClick: true,
-              dialogClass: 'modal'
-            };
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          dialogClass: 'modal',
+    }
 
     return {
       currentUser: window.App.currentUser,
       addFundsModal: function(){
-        dialogOpts.controller  = 'AddFundsDialogController';
-        dialogOpts.templateUrl = '/add_funds_dialog.html';
+        dialogOpts.templateUrl = '/add_funds_dialog.html',
+        dialogOpts.controller  = 'AddFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
       },
-      withdrawFundsModal: function(){
-        dialogOpts.templateUrl = '/withdraw_funds_dialog.html';
-        dialogOpts.controller  = 'WithdrawFundsDialogController';
+
+      addFanFreesModal: function(){
+        dialogOpts.templateUrl = '/add_fan_frees_dialog.html',
+        dialogOpts.controller  = 'AddFanFreesDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
       },
+
       settingsModal: function(){
         dialogOpts.templateUrl = '/settings_dialog.html';
         dialogOpts.controller  = 'SettingsController';
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+       },
+
+      withdrawFundsModal: function(){
+        dialogOpts.templateUrl = '/withdraw_funds_dialog.html',
+        dialogOpts.controller  = 'WithdrawFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
       }
@@ -79,21 +88,21 @@ angular.module('app.services')
   }])
  .factory('fs', ['$http', function($http) {
     return {
+      sendSupportRequest: function(title, email, message) {
+        return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
+      },
       user: {
         create: function(user_attrs){
           return $http({method: 'POST', url: '/users', data: {user: user_attrs}});
-        },
-        refresh: function(){
-          return $http({method: 'GET', url: '/users'})
-        },
-        update:  function(user_attrs){
-          return $http({method: 'PUT', url: '/users', data: {user: user_attrs}})
         },
         login: function(user_attrs){
           return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});
         },
         addMoney: function(amount, card){
           return $http({method: 'POST', url: '/users/add_money', data: {amount: amount, card_id: card} });
+        },
+        addTokens: function(token_ct){
+          return $http({method: 'POST', url: '/users/add_tokens', data: {product_id: token_ct}})
         },
         withdrawMoney: function(amount){
           return $http({method: 'POST', url: '/users/withdraw_money', data: {amount: amount} })

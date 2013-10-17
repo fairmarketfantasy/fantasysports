@@ -58,6 +58,32 @@ footer {
   background-color: @gray;
   border-top: 3px solid @grayLight;
   .box-shadow(0 0 3px rgba(0,0,0,.6));
+  color: @grayLight;
+  font-size: 14px;
+  a {
+    color: mix(@white, rgba(0,0,0,0), 70%);
+    text-decoration: underline;
+  }
+  a:hover {
+    background-color: mix(@info, rgba(255,255,255,0), 70%);
+    color: @white;
+  }
+  p {
+    font-size: 14px;
+  }
+  .logo-font {
+    font-size: 30px;
+  }
+}
+.tos-padding {
+  padding-top: 24px;
+  p {
+    font-weight: 100;
+    margin-bottom: 8px;
+  }
+  a {
+    color: @grayLight;
+  }
 }
 .modal {
   width: 748px;
@@ -88,6 +114,9 @@ footer {
 .no-no {
   padding: 0;
   margin: 0;
+}
+.relative-parent {
+  position: relative;
 }
 
 /* Landing Page Styles
@@ -194,8 +223,8 @@ footer {
   }
 }
 .landing-icon {
-  max-width: 56%;
   width: 56%;
+  max-width: 250px;
   margin: 30px 22%;
   &.first-image {
     margin-top: 60px;
@@ -708,11 +737,22 @@ input, textarea, .uneditable-input {
   background-color: @white;
   padding: 0 5px 5px;
   .border-radius(5px);
+  position: relative;
 }
 .player-overflow {
   max-height: 400px;
   overflow: scroll;
   overflow-x: none;
+}
+.fixed-table-header {
+  position: absolute;
+  bottom: -32px;
+  left: 0;
+  z-index: 10; 
+  background-color: @white;
+  height: 34px;
+  padding: 0 5px;
+  .border-radius(6px 6px 0 0);
 }
 .players-table, .roster-table {
   font-size: 12px;
@@ -731,7 +771,15 @@ input, textarea, .uneditable-input {
       width: 10%;
       text-align: center;
     }
+    &.tiny-btn {
+      width: 54px;
+    }
   }
+}
+.btn.btn-small.btn-invisible {
+  background-color: @white;
+  color: @white;
+  cursor: default;
 }
 .player-heading {
   color: @white;
@@ -834,6 +882,9 @@ input, textarea, .uneditable-input {
   margin-right: 8px;
   background-color: @offWhite;
   background-repeat: no-repeat; 
+}
+.defense {
+  background-image: asset-url('helmet-filled.png');  
 }
 .filled {
   border-color: @green;
