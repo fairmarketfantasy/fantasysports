@@ -68,6 +68,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
           end
         }
       end
+      Eventing.report(current_user, 'new_user')
     rescue StandardError => e
       if e.message =~ /username.*already exists/
         raise HttpException.new(422, "That username is taken. Choose another one")
