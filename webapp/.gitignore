@@ -2,3 +2,4 @@
 log/mail
 log/*.log
 /tmp
+public/uploads

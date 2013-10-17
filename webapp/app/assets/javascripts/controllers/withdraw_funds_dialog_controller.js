@@ -10,6 +10,8 @@ angular.module("app.controllers")
 
   $scope.resendConfirmation = function(){
     fs.user.resendConfirmation().then(function(resp){
+      flash.error = null;
+      flash.success = null;
       $scope.close();
       flash.success = resp.message;
     });
