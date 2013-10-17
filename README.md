@@ -130,3 +130,15 @@ To get the price of player 2 for roster 1:
 If the roster does NOT have the player, it will return the BUY price for the player. If the roster DOES have the player, it will return the SELL price of the player.
 
 Enjoy!
+
+## The API
+
+To get an OAuth token:
+
+    $ curl -d 'client_id=fairmarketfantasy&client_secret=f4n7Astic&grant_type=password&username=fantasysports@mustw.in&password=F4n7a5y' 'http://vagrant.vm:3000/oauth2/token'
+    {"access_token":"ACCESS_TOKEN_HERE","token_type":"bearer","expires_in":86399,"refresh_token":"REFRESH_TOKEN_HERE"}
+
+To use an OAuth token to authenticate:
+
+    $ curl -H 'Authorization: Bearer ACCESS_TOKEN_HERE' 'http://vagrant.vm:3000/users'
+
