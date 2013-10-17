@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :except => [:support]
 
   def index
     unless current_user
@@ -22,4 +22,8 @@ class PagesController < ApplicationController
   	render layout: "guide"
   end
 
+  def support
+    SupportMailer.support_mail(params[:title], params[:email], params[:message]).deliver!
+    render :nothing => true, :status => :ok
+  end
 end
