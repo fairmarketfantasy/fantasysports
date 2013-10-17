@@ -1,4 +1,4 @@
-<div class="alert alert-error">
+<div class="alert alert-error" ng-controller="SupportController">
   <h3>Need Some Help?</h3>
   <p>The fastest way to find help is our FAQ. If you can't find an answer please feel free to submit a support request and a representative will respond ASAP.</p>
 
@@ -8,11 +8,11 @@
       <span class="alert-message">{{flash.message}}</span>
     </div>
     <div>
-      <input type='text' placeholder='Message Title' class='mvm span7' /><br />
-      <input type='email' placeholder='Email' class='mvm span7' value="{{currentUser.email}}"/><br />
-      <textarea class="mvm span7" placeholder="Your Message Here"></textarea>
+      <input type='text' placeholder='Message Title' class='mvm span7' ng-model="title"/><br />
+      <input type='email' placeholder='Email' class='mvm span7' ng-model="email"/><br />
+      <textarea class="mvm span7" placeholder="Your Message Here" ng-model="message"></textarea>
       
-      <p><a href="javascript://" class="btn btn-danger btn-create-contest" ng-class="{ disabled: !isValid()}">Submit Support Request</a></p>
+      <p><a href="javascript://" class="btn btn-danger btn-create-contest" ng-click="send()" ng-disabled="working">Submit Support Request</a></p>
     </div>
   </form>
 

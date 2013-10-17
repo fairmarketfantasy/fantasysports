@@ -9,6 +9,10 @@ angular.module("app.controllers")
     currentUserService.addFundsModal();
   };
 
+  $scope.addFanFreesModal = function(){
+    currentUserService.addFanFreesModal();
+  };
+
   $scope.withdrawFundsModal = function(){
     currentUserService.withdrawFundsModal();
   };

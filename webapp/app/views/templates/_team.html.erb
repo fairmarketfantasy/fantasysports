@@ -10,8 +10,9 @@
             
           <ul class="no-no" highlight-changes-in-list="roster.players" key-to-watch="score">
             <li class="mr-item clearfix" ng-repeat="player in roster.players">
-            <div ng-show="player.id" class="mr-player-image" ng-class="{filled: player.id, hide: player.position == 'def'}" ng-style="{'background-image': 'url(' + player.headshot_url +')'}"></div>
+            <div ng-show="player.id && player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': 'url(' + player.headshot_url +')'}"></div>
               <div ng-hide="player.id" class="mr-player-image"></div>
+              <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled"></div>
               
               <div class="mr-player-info">
                 <h3 class="mr-player-name" ng-show="player.id">{{player.name}}</h3>

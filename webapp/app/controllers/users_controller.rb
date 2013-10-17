@@ -45,7 +45,7 @@ class UsersController < ApplicationController
         current_user.save!
         TransactionRecord.create!(:user => current_user, :event => 'token_buy_ios', :amount => User::TOKEN_SKUS[data[:product_id]], :ios_transaction_id => data[:transaction_id], :transaction_data => data.to_json)
       else
-        current_user.customer_object.set_default_card(params[:card_id])
+        current_user.customer_object.set_default_card(params[:card_id]) if params[:card_id]
         sku = User::TOKEN_SKUS[params[:product_id]]
         if current_user.customer_object.charge(sku[:cost])
           current_user.token_balance += sku[:tokens]
