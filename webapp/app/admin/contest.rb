@@ -22,7 +22,7 @@ id              | integer                     | not null default nextval('contes
  paid_at         | timestamp without time zone | 
  private         | boolean                     | default false
 =end
-    column(:owner) {|user| user && user.email }
+    column(:owner) {|c| c.owner && c.owner.email }
     column :start_time
     column :end_time
     column(:contest_type){|c| c.contest_type.name}
