@@ -14,4 +14,20 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
       render json: {errors: ["Oops, something went wrong."]}
     end
   end
+
+  # GET /resource/confirmation?confirmation_token=abcdef
+  def show
+    self.resource = resource_class.confirm_by_token(params[:confirmation_token])
+    if resource.errors.empty?
+      if Devise.allow_insecure_sign_in_after_confirmation
+        sign_in(resource_name, resource)
+      else
+        set_flash_message(:notice, :confirmed) if is_navigational_format?
+      end
+      render '/users/confirmed_reload', :layout => false
+    else
+      render json: {errors: ["Oops, something went wrong."]}
+    end
+  end
+
 end
