@@ -9,6 +9,9 @@ Fantasysports::Application.configure do
 
   STRIPE_SECRET = "sk_live_XN3VQhSv18rZFFJcpFbm1J4b"
   STRIPE_KEY = "pk_live_RGRjUDHr47AlUX24PS2S6U22"
+
+  CLYNG_SECRET = "pk-63b8e4ef-7233-4556-9e70-90810641c134"
+  CLYNG_PUBLISHABLE = "d09f6229-1538-459c-8013-fe437bc974f6"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
