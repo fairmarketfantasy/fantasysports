@@ -15,6 +15,7 @@ development:
 
 staging:
   <<: *defaults
+  host: '54.213.15.243'
 
 test:
   <<: *defaults
