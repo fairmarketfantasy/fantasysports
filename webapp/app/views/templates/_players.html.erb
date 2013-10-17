@@ -20,7 +20,7 @@
             </div>
           </div>
         </div>
-        <div class="clearfix">
+        <div class="clearfix relative-parent">
           <label class="checkbox light-check" for="removeLowFilter" ng-click="toggleChecked('checked1')" ng-class="{'checked': checked1}">
             <span class="icons">
               <span class="first-icon fui-checkbox-unchecked"></span>
@@ -36,6 +36,21 @@
               <a class="position-link" ng-click="filterPlayers({position: position}, true)" href="javascript://">{{position}}</a>
             </li>
           </ul> 
+          
+          <div class="fixed-table-header">
+            <table class="players-table table table-striped">
+              <thead>
+                <tr>
+                  <th class="larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
+                  <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
+                  <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
+                  <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
+                  <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
+                  <th class="tiny-btn"><a class="btn btn-small btn-invisible" href="">Add</a></th>
+                </tr>
+              </thead>
+            </table>
+          </div>
         </div>
           <div class="player-overflow">
             <table class="players-table table table-striped">
@@ -46,7 +61,7 @@
                   <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
                   <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
                   <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
-                  <th class="tiny"></th>
+                  <th class="tiny-btn"></th>
                 </tr>
               </thead>
               <tbody>
@@ -59,7 +74,7 @@
                   <td class="tiny">{{player.team}}</td>
                   <td class="tiny">{{player.ppg | number:0 |zeroIfEmpty}}</td>
                   <td>${{player.buy_price | number:0}}</td>
-                  <td class="tiny"><a class="btn btn-small btn-success" href="javascript://" ng-click="addPlayer(player)">Add</a></td>
+                  <td class="tiny-btn"><a class="btn btn-small btn-success" href="javascript://" ng-click="addPlayer(player)">Add</a></td>
                 </tr>
               </tbody>
             </table>

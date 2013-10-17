@@ -81,6 +81,9 @@ angular.module('app.services')
   }])
  .factory('fs', ['$http', function($http) {
     return {
+      sendSupportRequest: function(title, email, message) {
+        return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
+      },
       user: {
         create: function(user_attrs){
           return $http({method: 'POST', url: '/users', data: {user: user_attrs}});

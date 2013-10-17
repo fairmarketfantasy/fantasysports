@@ -18,7 +18,7 @@
       <span class="ei-info">Top Score</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">{{rosters.myLiveStats().avg}}</p>
+      <p class="ei-number">{{rosters.myLiveStats().avg | number:2}}</p>
       <span class="ei-info">Average Score</span>
     </li>
     <li class="ei-item">
@@ -45,11 +45,11 @@
       <span class="ei-info">Top Score</span>
     </li>
     <li class="ei-item">
-    <p class="ei-number">{{rosters.pastStats().avg_score}}</p>
+    <p class="ei-number">{{rosters.pastStats().avg_score | number:2}}</p>
       <span class="ei-info">Average Score</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">{{rosters.pastStats().total_payout}}</p>
+      <p class="ei-number">{{rosters.pastStats().total_payout | number:2}}</p>
       <span class="ei-info">Payout</span>
     </li>
   </ul>
