@@ -50,10 +50,8 @@ curl -X PUT -H "Content-Type: application/json" –data '{
     {
       userId: user && user.email,
       environment: Rails.env,
-      apiKey: "pk-18d8a70d-3f69-455f-ab2c-0dbd8c0d8685", # pk
-# private key: "84bc73ca-5947-4357-b37b-aa5692289113"; //this is your public key
+      apiKey: CLYNG_SECRET
     }
-
   end
 
 end
