@@ -7,6 +7,13 @@
 
 ------------------------------------- PRICE --------------------------------------------
 
+-- /* The buy in ratio for a roster affecting market prices */
+DROP FUNCTION buy_in_ratio(boolean);
+
+CREATE OR REPLACE FUNCTION buy_in_ratio(boolean) RETURNS numeric AS $$
+  SELECT CASE($1) WHEN false THEN 1 ELSE 0.01 END;
+$$ LANGUAGE SQL IMMUTABLE;
+
 -- /* The pricing function. Right now, it's a straight linear shot and assumes a 100k salary cap with a 1k minimum price */
 DROP FUNCTION price(numeric, numeric, numeric, numeric);
 
@@ -133,13 +140,13 @@ BEGIN
 		WHERE rosters_players.id = locked_out.id;
 
 	-- increment bets for all market players in roster by buy_in amount
-	UPDATE market_players SET bets = bets + _roster.buy_in 
+	UPDATE market_players SET bets = bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
 		WHERE market_id = _roster.market_id AND player_id IN
 			(SELECT player_id from rosters_players where roster_id = _roster_id); 
 
 	-- increment total_bets by buy_in times number of players bought
 	update markets set total_bets = total_bets + 
-		_roster.buy_in * (select count(*) from rosters_players where roster_id  = _roster.id)
+		_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
 		where id = _roster.market_id;
 
 	-- update rosters_players with current sell prices of players
@@ -182,13 +189,13 @@ BEGIN
 	END IF;
 
 	-- decrement bets for all market players in roster by buy_in amount
-	UPDATE market_players SET bets = bets - _roster.buy_in 
+	UPDATE market_players SET bets = bets - _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
 		WHERE market_id = _roster.market_id AND player_id IN
 		(SELECT player_id from rosters_players where roster_id = _roster_id); 
 
 	-- decrement total_bets by buy_in times number of players bought
 	update markets set total_bets = total_bets -
-		_roster.buy_in * (select count(*) from rosters_players where roster_id  = _roster.id)
+		_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
 		where id = _roster.market_id;
 
 	-- delete rosters_players, market_orders, and finally the roster
@@ -244,8 +251,8 @@ BEGIN
 
 	IF _roster.state = 'submitted' THEN
 		--perform the updates.
-		UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
-		UPDATE market_players SET bets = bets + _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
+		UPDATE markets SET total_bets = total_bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens) WHERE id = _roster.market_id;
+		UPDATE market_players SET bets = bets + _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE market_id = _roster.market_id and player_id = _player_id;
 		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 			   VALUES (_roster.market_id, _roster_id, 'buy', _player_id, _price);
 	END IF;
@@ -300,8 +307,8 @@ BEGIN
 
 	IF _roster.state = 'submitted' THEN
 		--perform the updates.
-		UPDATE markets SET total_bets = total_bets - _roster.buy_in WHERE id = _roster.market_id;
-		UPDATE market_players SET bets = bets - _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
+		UPDATE markets SET total_bets = total_bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE id = _roster.market_id;
+		UPDATE market_players SET bets = bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE market_id = _roster.market_id and player_id = _player_id;
     IF _roster.remaining_salary + _price < -5000 THEN
 		  RAISE EXCEPTION 'You can not afford this roster!';
     END IF;
