@@ -24,8 +24,6 @@ end
 task :staging do 
   query_string = "recipes:#{application} AND chef_environment:staging"
   nodes = query.search('node', query_string).first rescue []
-pp nodes.map(&:name)
-pp nodes.length
   role :app, *nodes.map{|n| n.ec2.public_hostname }
 end
 
