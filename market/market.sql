@@ -108,6 +108,7 @@ DROP FUNCTION submit_roster(integer);
 CREATE OR REPLACE FUNCTION submit_roster(_roster_id integer) RETURNS VOID AS $$
 DECLARE
 	_roster rosters;
+	_buy_in_ratio numeric;
 BEGIN
 	--make sure the roster is in progress
 	SELECT * from rosters where id = _roster_id AND state = 'in_progress' INTO _roster FOR UPDATE;
@@ -132,14 +133,19 @@ BEGIN
 		DELETE FROM rosters_players using locked_out 
 		WHERE rosters_players.id = locked_out.id;
 
+  _buy_in_ratio = 1;
+	IF _roster.takes_tokens THEN
+    _buy_in_ratio = 0.01;
+  END IF;
+
 	-- increment bets for all market players in roster by buy_in amount
-	UPDATE market_players SET bets = bets + _roster.buy_in 
+	UPDATE market_players SET bets = bets + _roster.buy_in * _buy_in_ratio 
 		WHERE market_id = _roster.market_id AND player_id IN
 			(SELECT player_id from rosters_players where roster_id = _roster_id); 
 
 	-- increment total_bets by buy_in times number of players bought
 	update markets set total_bets = total_bets + 
-		_roster.buy_in * (select count(*) from rosters_players where roster_id  = _roster.id)
+		_roster.buy_in * _buy_in_ratio * (select count(*) from rosters_players where roster_id  = _roster.id)
 		where id = _roster.market_id;
 
 	-- update rosters_players with current sell prices of players
@@ -168,6 +174,7 @@ DROP FUNCTION cancel_roster(integer);
 CREATE OR REPLACE FUNCTION cancel_roster(_roster_id integer) RETURNS VOID AS $$
 DECLARE
 	_roster rosters;
+	_buy_in_ratio numeric;
 BEGIN
 	--make sure the roster is in progress
 	SELECT * from rosters where id = _roster_id INTO _roster FOR UPDATE;
@@ -181,14 +188,19 @@ BEGIN
 		RAISE EXCEPTION 'market % is unavailable, roster may not be canceled', _roster.market_id;
 	END IF;
 
+  _buy_in_ratio = 1;
+	IF _roster.takes_tokens THEN
+    _buy_in_ratio = 0.01;
+  END IF;
+
 	-- decrement bets for all market players in roster by buy_in amount
-	UPDATE market_players SET bets = bets - _roster.buy_in 
+	UPDATE market_players SET bets = bets - _roster.buy_in * _buy_in_ratio 
 		WHERE market_id = _roster.market_id AND player_id IN
 		(SELECT player_id from rosters_players where roster_id = _roster_id); 
 
 	-- decrement total_bets by buy_in times number of players bought
 	update markets set total_bets = total_bets -
-		_roster.buy_in * (select count(*) from rosters_players where roster_id  = _roster.id)
+		_roster.buy_in * _buy_in_ratio * (select count(*) from rosters_players where roster_id  = _roster.id)
 		where id = _roster.market_id;
 
 	-- delete rosters_players, market_orders, and finally the roster
@@ -208,6 +220,7 @@ DECLARE
 	_roster rosters;
 	_market_player market_players;
 	_market markets;
+	_buy_in_ratio numeric;
 BEGIN
 	SELECT * FROM rosters WHERE id = _roster_id INTO _roster FOR UPDATE;
 	IF NOT FOUND THEN
@@ -242,10 +255,15 @@ BEGIN
 	INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id) 
 		VALUES (_player_id, _roster_id, _price, _market_player.player_stats_id, _market.id);
 
+  _buy_in_ratio = 1;
+	IF _roster.takes_tokens THEN
+    _buy_in_ratio = 0.01;
+  END IF;
+
 	IF _roster.state = 'submitted' THEN
 		--perform the updates.
-		UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
-		UPDATE market_players SET bets = bets + _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
+		UPDATE markets SET total_bets = total_bets + _roster.buy_in * _buy_in_ratio WHERE id = _roster.market_id;
+		UPDATE market_players SET bets = bets + _roster.buy_in  * _buy_in_ratio WHERE market_id = _roster.market_id and player_id = _player_id;
 		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 			   VALUES (_roster.market_id, _roster_id, 'buy', _player_id, _price);
 	END IF;
@@ -261,6 +279,7 @@ DECLARE
 	_roster rosters;
 	_bets numeric;
 	_market markets;
+	_buy_in_ratio numeric;
 BEGIN
 	SELECT * from rosters WHERE id = _roster_id INTO _roster FOR UPDATE;
 	IF NOT FOUND THEN
@@ -298,10 +317,15 @@ BEGIN
 	--if in progress, simply remove from roster and exit stage left
 	DELETE FROM rosters_players where roster_id = _roster_id AND player_id = _player_id;
 
+  _buy_in_ratio = 1;
+	IF _roster.takes_tokens THEN
+    _buy_in_ratio = 0.01;
+  END IF;
+
 	IF _roster.state = 'submitted' THEN
 		--perform the updates.
-		UPDATE markets SET total_bets = total_bets - _roster.buy_in WHERE id = _roster.market_id;
-		UPDATE market_players SET bets = bets - _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
+		UPDATE markets SET total_bets = total_bets - _roster.buy_in  * _buy_in_ratio WHERE id = _roster.market_id;
+		UPDATE market_players SET bets = bets - _roster.buy_in  * _buy_in_ratio WHERE market_id = _roster.market_id and player_id = _player_id;
     IF _roster.remaining_salary + _price < -5000 THEN
 		  RAISE EXCEPTION 'You can not afford this roster!';
     END IF;
