@@ -28,6 +28,7 @@ class UsersController < ApplicationController
     current_user.customer_object.set_default_card(params[:card_id])
     if current_user.customer_object.charge(params[:amount])
       Invitation.redeem_paid(current_user)
+      Eventing.report(current_user, 'add_funds', :amount => params[:amount])
       render_api_response current_user
     end
   end
@@ -44,6 +45,7 @@ class UsersController < ApplicationController
         current_user.token_balance += User::TOKEN_SKUS[data[:product_id]][:tokens]
         current_user.save!
         TransactionRecord.create!(:user => current_user, :event => 'token_buy_ios', :amount => User::TOKEN_SKUS[data[:product_id]], :ios_transaction_id => data[:transaction_id], :transaction_data => data.to_json)
+        Eventing.report(current_user, 'buy_tokens', :amount => User::TOKEN_SKUS[data[:product_id]])
       else
         current_user.customer_object.set_default_card(params[:card_id]) if params[:card_id]
         sku = User::TOKEN_SKUS[params[:product_id]]
@@ -51,6 +53,7 @@ class UsersController < ApplicationController
           current_user.token_balance += sku[:tokens]
           current_user.save!
           TransactionRecord.create!(:user => current_user, :event => 'token_buy', :amount => sku[:cost], :transaction_data => sku.to_json)
+          Eventing.report(current_user, 'buy_tokens', :amount => sku[:cost])
         end
       end
     end

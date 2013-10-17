@@ -19,6 +19,7 @@ class RostersController < ApplicationController
     contest_type = ContestType.find(params[:contest_type_id])
     existing_roster = Roster.find(params[:copy_roster_id]) if params[:copy_roster_id]
     roster = Roster.generate(current_user, contest_type)
+    Eventing.report(current_user, 'created_roster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
     roster.build_from_existing(existing_roster) if existing_roster
     render_api_response roster
   end
@@ -27,12 +28,14 @@ class RostersController < ApplicationController
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
     player = Player.find(params[:player_id])
     price = roster.add_player(player)
+    Eventing.report(current_user, 'add_player_to_roster')
     render_api_response({:price => price})
   end
 
   def remove_player
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
     player = Player.find(params[:player_id])
+    Eventing.report(current_user, 'remove_player_from_roster')
     price = roster.remove_player(player)
     render_api_response({:price => price})
   end
@@ -45,6 +48,7 @@ class RostersController < ApplicationController
   def submit
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
     roster.submit!
+    Eventing.report(current_user, 'submit_roster', :contest_type => roster.contest_type.name, :buy_in => roster.contest_type.buy_in)
     render_api_response roster
   end
 
