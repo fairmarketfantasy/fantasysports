@@ -54,7 +54,16 @@
 </head>
 
 <body ng-controller="ApplicationController">
-  
+  <div flash-alert active-class="alert in" class="fixed-flash fade">
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <strong class="alert-heading"></strong>
+          <span class="alert-message">{{flash.message}}</span>
+        </div>
+      </div>
+    </div>
+  </div>  
   <!-- This is where you work your magic, do your best! -->
   <header class="full">
     <div class="container">
@@ -120,10 +129,6 @@
         <div class="span9 page-content">
           <div class="padded-content">
             <div class="content">
-              <div flash-alert active-class="alert in" class="flash fade" >
-                <strong class="alert-heading"></strong>
-                <span class="alert-message">{{flash.message}}</span>
-              </div>
               <div id="content" ng-view>
               </div>
             </div>
