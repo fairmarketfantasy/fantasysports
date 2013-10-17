@@ -58,6 +58,31 @@ footer {
   background-color: @gray;
   border-top: 3px solid @grayLight;
   .box-shadow(0 0 3px rgba(0,0,0,.6));
+  color: @grayLight;
+  font-size: 14px;
+  a {
+    color: mix(@white, rgba(0,0,0,0), 70%);
+    text-decoration: underline;
+  }
+  a:hover {
+    background-color: mix(@info, rgba(255,255,255,0), 70%);
+  }
+  p {
+    font-size: 14px;
+  }
+  .logo-font {
+    font-size: 30px;
+  }
+}
+.tos-padding {
+  padding-top: 24px;
+  p {
+    font-weight: 100;
+    margin-bottom: 8px;
+  }
+  a {
+    color: @grayLight;
+  }
 }
 .modal {
   width: 748px;
