@@ -1,6 +1,8 @@
 ActiveAdmin.register Market do
   filter :state
   filter :closed_at
+  config.sort_order = "closed_at_asc"
+
   index do
     column :id
 =begin
