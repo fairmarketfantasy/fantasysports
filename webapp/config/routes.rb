@@ -17,6 +17,7 @@ Fantasysports::Application.routes.draw do
   end
   devise_scope :user do
     get "users", :to => "users#index", :as => "users_index"
+    post "users/uploads", :to => "users/registrations#update"
   end
 
   # You can have the root of your site routed with "root"

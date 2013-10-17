@@ -23,6 +23,13 @@ angular.module('app.services')
         d.open();
       },
 
+      settingsModal: function(){
+        dialogOpts.templateUrl = '/settings_dialog.html';
+        dialogOpts.controller  = 'SettingsController';
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+       },
+
       withdrawFundsModal: function(){
         dialogOpts.templateUrl = '/withdraw_funds_dialog.html',
         dialogOpts.controller  = 'WithdrawFundsDialogController'
