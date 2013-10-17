@@ -1,31 +1,31 @@
 angular.module('app.services')
   .factory('currentUserService', ['$dialog', function($dialog) {
+    var dialogOpts = {
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          dialogClass: 'modal',
+    }
+
     return {
       currentUser: window.App.currentUser,
       addFundsModal: function(){
-        var dialogOpts = {
-              backdrop: true,
-              keyboard: true,
-              backdropClick: true,
-              dialogClass: 'modal',
-              templateUrl: '/add_funds_dialog.html',
-              controller: 'AddFundsDialogController'
-            };
+        dialogOpts.templateUrl = '/add_funds_dialog.html',
+        dialogOpts.controller  = 'AddFundsDialogController'
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+      },
 
+      addFanFreesModal: function(){
+        dialogOpts.templateUrl = '/add_fan_frees_dialog.html',
+        dialogOpts.controller  = 'AddFanFreesDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
       },
 
       withdrawFundsModal: function(){
-        var dialogOpts = {
-              backdrop: true,
-              keyboard: true,
-              backdropClick: true,
-              dialogClass: 'modal',
-              templateUrl: '/withdraw_funds_dialog.html',
-              controller: 'WithdrawFundsDialogController'
-            };
-
+        dialogOpts.templateUrl = '/withdraw_funds_dialog.html',
+        dialogOpts.controller  = 'WithdrawFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
       }
@@ -90,6 +90,9 @@ angular.module('app.services')
         },
         addMoney: function(amount, card){
           return $http({method: 'POST', url: '/users/add_money', data: {amount: amount, card_id: card} });
+        },
+        addTokens: function(token_ct){
+          return $http({method: 'POST', url: '/users/add_tokens', data: {product_id: token_ct}})
         },
         withdrawMoney: function(amount){
           return $http({method: 'POST', url: '/users/withdraw_money', data: {amount: amount} })
