@@ -89,6 +89,9 @@ footer {
   padding: 0;
   margin: 0;
 }
+.relative-parent {
+  position: relative;
+}
 
 /* Landing Page Styles
   --------------------------------------------------------------------------- */
@@ -702,11 +705,22 @@ input, textarea, .uneditable-input {
   background-color: @white;
   padding: 0 5px 5px;
   .border-radius(5px);
+  position: relative;
 }
 .player-overflow {
   max-height: 400px;
   overflow: scroll;
   overflow-x: none;
+}
+.fixed-table-header {
+  position: absolute;
+  bottom: -32px;
+  left: 0;
+  z-index: 10; 
+  background-color: @white;
+  height: 34px;
+  padding: 0 5px;
+  .border-radius(6px 6px 0 0);
 }
 .players-table, .roster-table {
   font-size: 12px;
@@ -725,7 +739,15 @@ input, textarea, .uneditable-input {
       width: 10%;
       text-align: center;
     }
+    &.tiny-btn {
+      width: 54px;
+    }
   }
+}
+.btn.btn-small.btn-invisible {
+  background-color: @white;
+  color: @white;
+  cursor: default;
 }
 .player-heading {
   color: @white;
