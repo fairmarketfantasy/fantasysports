@@ -233,7 +233,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
         [self performSegueWithIdentifier:@"GotoEmail" sender:nil];
     }
     else if (indexPath.section == 4) {
-        if (indexPath.row == 2) {
+        if (indexPath.row == 1) {
             [self.session logout];
         }
     }
