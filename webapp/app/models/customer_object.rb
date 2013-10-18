@@ -3,9 +3,8 @@ class CustomerObject < ActiveRecord::Base
   attr_protected
 
   belongs_to :user
+  belongs_to :default_card
   has_many :credit_cards
-
-  before_validation :set_stripe_id, on: :create
 
   #override reload to nil out memoized stripe object
   def reload
@@ -13,35 +12,13 @@ class CustomerObject < ActiveRecord::Base
     super
   end
 
-  def set_stripe_id
-    unless Rails.env == 'test' && self.stripe_id
-      resp = Stripe::Customer.create({
-                                      description: "Customer for #{user.email}"
-                                    })
-      self.stripe_id = resp.id
-    end
-  end
-
-  def cards
-    stripe_object.cards
-  end
-
-  def default_card_id
-    stripe_object.default_card
-  end
-
   def delete_card(card_id)
-    stripe_object.cards.retrieve(card_id).delete()
-    credit_card = CreditCard.find_by(card_id: card_id)
-    credit_card.deleted = true
-    credit_card.save!
-  end
-
-  ##Talk to Stripe API
-  def self.find_by_charge_id(id)
-    charge          = Stripe::Charge.retrieve(id)
-    customer        = charge.card.customer
-    self.find_by(stripe_id: customer)
+    credit_card = CreditCard.find(card_id)
+    paypal_credit_card = Paypal::SDK::REST::CreditCard.find(card_id)
+    if paypal_credit_card.delete
+      credit_card.deleted = true
+      credit_card.save
+    end
   end
 
   def charge(amount_in_cents)

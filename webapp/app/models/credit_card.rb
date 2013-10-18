@@ -1,12 +1,53 @@
 class CreditCard < ActiveRecord::Base
 
-  #this class doesn't actually store and access the credit cards on stripe.
-  #the purpose of this class is to store MD5 Hashes of CCs to prevent the same CC from
+  # Enforce generator usage
+  private
+
+  def self.create
+    super
+  end
+  def self.create!
+    super
+  end
+  def self.save
+    super
+  end
+  def self.save!
+    super
+  end
+
+  public
+
+  def self.generate(type, name, number, cvc, exp_month, exp_year)
+    resp = PayPal::SDK::REST::CreditCard.new({
+      :type => type,
+      :number => number,
+      :expire_month => Integer(exp_month),
+      :expire_year => exp_year.to_s.length == 2 ? Integer("20" + exp_year.to_s) : exp_year,
+      :first_name => name.split(' ')[0],
+      :last_name => name.split(' ')[1],
+    }).create
+    if resp["state"] == "ok"
+      CreditCard.create!(
+        :paypal_card_id => resp["id"],
+        :type => resp["type"],
+        :obscured_number => resp["number"],
+        :expire_month => resp["expire_month"],
+        :expire_year => resp["expire_year"],
+        :first_name => resp["first_name"],
+        :last_name => resp["last_name"],
+      )
+    else
+      raise "Paypal Card State not ok, was: " + resp["state"] + '. Response: ' + resp.to_json
+    end
+  end
+
+  #this class is to store MD5 Hashes of CCs to prevent the same CC from
   #being used on multiple acccounts.
 
   #if you want to get information about a users cards, you would do that with CustomerObject#cards
 
-  attr_accessible :customer_object_id, :card_number_hash, :deleted, :card_number, :token
+  attr_accessible :customer_object_id, :card_number_hash, :deleted, :card_number, :token, :obscured_number, :first_name, :last_name, :type, :expires
   attr_accessor :card_number, :token
 
   belongs_to :customer_object

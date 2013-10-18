@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131018075956) do
+ActiveRecord::Schema.define(version: 20131018095752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,16 +74,23 @@ ActiveRecord::Schema.define(version: 20131018075956) do
     t.string  "card_number_hash",                   null: false
     t.boolean "deleted",            default: false, null: false
     t.string  "card_id",                            null: false
+    t.string  "obscured_number"
+    t.string  "first_name"
+    t.string  "last_name"
+    t.string  "type"
+    t.date    "expires"
+    t.string  "paypal_card_id"
   end
 
   create_table "customer_objects", force: true do |t|
-    t.string   "stripe_id",                     null: false
-    t.integer  "user_id",                       null: false
+    t.string   "stripe_id",                       null: false
+    t.integer  "user_id",                         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "balance",       default: 0
-    t.boolean  "locked",        default: false, null: false
+    t.integer  "balance",         default: 0
+    t.boolean  "locked",          default: false, null: false
     t.text     "locked_reason"
+    t.integer  "default_card_id"
   end
 
   create_table "game_events", force: true do |t|
