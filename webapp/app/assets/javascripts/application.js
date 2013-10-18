@@ -16,11 +16,11 @@
 //= require jquery-2.0.3.min.js
 //= require underscore-min.js
 //= require jsonh
-//= require init-stripe
 //= require angular-1.0.7.min.js
 //= require angular-ui-bootstrap-tpls-0.4.0.min.js
 //= require angular-flash.min.js
 //= require moment.min.js
+//= require skeuocard
 
 // Our angular app
 //= require angular_deps.js
