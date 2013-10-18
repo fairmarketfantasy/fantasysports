@@ -92,6 +92,9 @@ angular.module('app.services')
         return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
       },
       user: {
+        refresh: function(){
+          return $http({method: 'GET', url: '/users'})
+        },
         create: function(user_attrs){
           return $http({method: 'POST', url: '/users', data: {user: user_attrs}});
         },

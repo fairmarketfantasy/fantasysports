@@ -2,10 +2,6 @@
   <h3 class='inline-block'>Account Settings</h3>
 </div>
 <div class='modal-body'>
-  <div flash-alert active-class="alert in" class="flash fade" >
-    <strong class="alert-heading"></strong>
-    <span class="alert-message">{{flash.message}}</span>
-  </div>
   <div class='clearfix'>
     <img ng-src="{{currentUser.image_url}}" class='user-avatar'/> <a href="javascript://" ng-hide='showUpload' ng-click="showUpload = true">Upload a new photo</a>
     <form ng-upload action="/users/uploads" ng-show='showUpload'>

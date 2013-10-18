@@ -10,8 +10,8 @@
 -- /* The buy in ratio for a roster affecting market prices */
 DROP FUNCTION buy_in_ratio(boolean);
 
-CREATE OR REPLACE FUNCTION buy_in_ratio(boolean) RETURNS numeric AS $$
-  SELECT CASE($1) WHEN false THEN 1 ELSE 0.01 END;
+CREATE OR REPLACE FUNCTION buy_in_ratio(_takes_tokens boolean) RETURNS numeric AS $$
+  SELECT CASE WHEN $1=false THEN 1 ELSE 0.01 END;
 $$ LANGUAGE SQL IMMUTABLE;
 
 -- /* The pricing function. Right now, it's a straight linear shot and assumes a 100k salary cap with a 1k minimum price */

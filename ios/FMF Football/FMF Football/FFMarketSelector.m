@@ -92,35 +92,38 @@
 {
     _markets = markets;
     [self.collectionView reloadData];
-    
-    // try to carry over the selected network...
-    if (_selectedMarket) {
-        // if it exists...
-        if ([_markets containsObject:_selectedMarket]) {
-            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:
-                                                          [_markets indexOfObject:_selectedMarket] inSection:0]
-                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-                                                animated:YES];
-        } else if (_markets.count) {
-            // otherwise select the first one
-            _selectedMarket = _markets[0];
-            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
-                [self.delegate didUpdateToNewMarket:_selectedMarket];
-            }
-        } else {
-            // or if there are no markets at all set it to nil
-            _selectedMarket = nil;
-            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
-                [self.delegate didUpdateToNewMarket:_selectedMarket];
-            }
-        }
-    } else if (_markets.count) {
-        // if nothing was selected just select the first
-        self.selectedMarket = _markets[0];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
-            [self.delegate didUpdateToNewMarket:_selectedMarket];
-        }
+    self.selectedMarket = _markets[0];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+        [self.delegate didUpdateToNewMarket:self.selectedMarket];
     }
+    // try to carry over the selected network...
+//    if (_selectedMarket) {
+//        // if it exists...
+//        if ([_markets containsObject:_selectedMarket]) {
+//            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:
+//                                                          [_markets indexOfObject:_selectedMarket] inSection:0]
+//                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+//                                                animated:YES];
+//        } else if (_markets.count) {
+//            // otherwise select the first one
+//            _selectedMarket = _markets[0];
+//            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+//                [self.delegate didUpdateToNewMarket:_selectedMarket];
+//            }
+//        } else {
+//            // or if there are no markets at all set it to nil
+//            _selectedMarket = nil;
+//            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+//                [self.delegate didUpdateToNewMarket:_selectedMarket];
+//            }
+//        }
+//    } else if (_markets.count) {
+//        // if nothing was selected just select the first
+//        self.selectedMarket = _markets[0];
+//        if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+//            [self.delegate didUpdateToNewMarket:_selectedMarket];
+//        }
+//    }
 }
 
 - (void)setSelectedMarket:(FFMarket *)selectedMarket
@@ -160,10 +163,9 @@
     
     FFMarket *market = self.markets[indexPath.item];
     
-    UILabel *marketLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width/3.0f,
-                                                                     cell.contentView.frame.size.height)];
+    UILabel *marketLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 30)];
     marketLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    marketLabel.font = [FFStyle regularFont:16];
+    marketLabel.font = [FFStyle boldFont:17];
     marketLabel.textColor = [FFStyle darkGreyTextColor];
     marketLabel.backgroundColor = [UIColor clearColor];
     marketLabel.textAlignment = NSTextAlignmentCenter;
@@ -177,9 +179,9 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"E d @ h:mm a"];
     
-    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width/3.0f, 0, cell.contentView.frame.size.width/3.0f*2.0f, cell.contentView.frame.size.height)];
+    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, cell.contentView.frame.size.width, 25)];
     timeLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
-    timeLabel.font = [FFStyle mediumFont:16];
+    timeLabel.font = [FFStyle regularFont:16];
     timeLabel.textColor = [FFStyle black];
     timeLabel.textAlignment = NSTextAlignmentCenter;
     timeLabel.backgroundColor = [UIColor clearColor];
