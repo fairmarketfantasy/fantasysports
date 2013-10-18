@@ -9,6 +9,10 @@
 #import "FFSession.h"
 #import <AFNetworking/AFHTTPClient.h>
 #import "FFUser.h"
+#import "FFMarket.h"
+#import "FFGame.h"
+#import "FFContestType.h"
+#import "FFRoster.h"
 
 
 @implementation FFSession
@@ -91,6 +95,17 @@
          //
          err(error);
      }];
+}
+
+- (void)logout
+{
+    // delete everything!
+    [[SBSessionData meta] removeAll];
+    [[FFMarket meta] removeAll];
+    [[FFContestType meta] removeAll];
+    [[FFUser meta] removeAll];
+    [[FFRoster meta] removeAll];
+    [super logout];
 }
 
 @end

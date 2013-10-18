@@ -9,10 +9,6 @@
 </div>
 <div class='modal-body' ng-hide='showSpinner'>
   <form>
-    <div flash-alert active-class="alert in" class="flash fade" >
-      <strong class="alert-heading"></strong>
-      <span class="alert-message">{{flash.message}}</span>
-    </div>
     <div class='clearfix'>
       <a href="javascript://" ng-click='triggerAddFunds()' ng-show='mustAddCard'>Add A Card</a>
       <div class='panel' ng-click="addTokens('1000')">

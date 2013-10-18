@@ -236,7 +236,6 @@
     un.autocapitalizationType = UITextAutocapitalizationTypeNone;
     un.autocorrectionType = UITextAutocorrectionTypeNo;
     un.keyboardType = UIKeyboardTypeEmailAddress;
-//    un.text = //@"sam@mustw.in"; // TOOD: remove
     [container addSubview:un];
     self.usernameSignupField = un;
     
@@ -248,7 +247,6 @@
     pw.frame = CGRectMake(15, 260, 290, 44);
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
-//    pw.text = @"omgnowai"; // TODO: remove
     pw.returnKeyType = UIReturnKeyGo;
     [container addSubview:pw];
     self.passwordSignupField = pw;
@@ -334,7 +332,6 @@
     un.autocapitalizationType = UITextAutocapitalizationTypeNone;
     un.autocorrectionType = UITextAutocorrectionTypeNo;
     un.keyboardType = UIKeyboardTypeEmailAddress;
-//    un.text = @"sam@mustw.in"; // TODO: remove
     [container addSubview:un];
     self.usernameSigninField = un;
     
@@ -347,7 +344,6 @@
     pw.secureTextEntry = YES;
     pw.placeholder = NSLocalizedString(@"password", nil);
     pw.returnKeyType = UIReturnKeyGo;
-//    pw.text = @"omgnowai"; // TODO: remove
     [container addSubview:pw];
     self.passwordSigninField = pw;
     

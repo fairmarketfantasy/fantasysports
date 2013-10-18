@@ -47,20 +47,21 @@
 
 + (NSArray *)filteredMarkets:(NSArray *)markets
 {
-    NSMutableArray *ret = [NSMutableArray arrayWithCapacity:2];
-    for (FFMarket *m in markets) {
-        if ([m.marketDuration isEqualToString:@"week"]) {
-            [ret addObject:m];
-            break;
-        }
-    }
-    for (FFMarket *m in markets) {
-        if ([m.marketDuration isEqualToString:@"day"]) {
-            [ret addObject:m];
-            break;
-        }
-    }
-    return [ret copy];
+//    NSMutableArray *ret = [NSMutableArray arrayWithCapacity:2];
+//    for (FFMarket *m in markets) {
+//        if ([m.marketDuration isEqualToString:@"week"]) {
+//            [ret addObject:m];
+//            break;
+//        }
+//    }
+//    for (FFMarket *m in markets) {
+//        if ([m.marketDuration isEqualToString:@"day"]) {
+//            [ret addObject:m];
+//            break;
+//        }
+//    }
+//    return [ret copy];
+    return markets;
 }
 
 @end

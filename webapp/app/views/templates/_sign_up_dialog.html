@@ -6,10 +6,6 @@
   <div class='modal-body clearfix'>
     <form>
       <p >{{message}}</p>
-      <div flash-alert active-class="alert in" class="flash fade" >
-        <strong class="alert-heading"></strong>
-        <span class="alert-message">{{flash.message}}</span>
-      </div>
       <div class='modal-form-container'>
         <input type='text' placeholder='Username' ng-hide='signInForm' ng-model="user.username" class='mvm' /><br />
         <input type='text' placeholder='Real Name' ng-hide='signInForm' ng-model="user.name" class='mvm' /><br />
