@@ -111,7 +111,7 @@ FFCreateGameViewControllerDelegate>
     [_tableView registerClass:[Fart class] forCellReuseIdentifier:@"UserBitCell"];
     [_tableView registerClass:[FFContest2UpTabelViewCell class] forCellReuseIdentifier:@"ContestCell"];
     
-    _marketSelector = [[FFMarketSelector alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    _marketSelector = [[FFMarketSelector alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     _marketSelector.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _marketSelector.delegate = self;
     
@@ -373,7 +373,7 @@ FFCreateGameViewControllerDelegate>
         } else if (indexPath.row == 2) {
             return 58;
         }
-        return 44;
+        return 60;
     }
     return 145;
 }
