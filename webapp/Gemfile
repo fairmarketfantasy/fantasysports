@@ -48,7 +48,8 @@ gem 'aws-sdk'
 gem 'kaminari'
 
 #payments
-gem 'stripe'
+gem 'skeuocard-rails'
+gem 'paypal-sdk-rest'
 gem 'venice' # iOS receipt verification
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -67,7 +68,7 @@ group :test do
   gem "factory_girl_rails", "~> 4.0"
   # gem 'mustwin-stripe-ruby-mock', '>= 1.8.5.00'
   # gem 'mustwin-stripe-ruby-mock', path: '/Users/dylan/code/stripe-ruby-mock'
-  gem 'mustwin-stripe-ruby-mock', git: 'git://github.com/MustWin/stripe-ruby-mock', ref: '6d5815f953e4168df5af4a78cb48b2f13f008365'
+  #gem 'mustwin-stripe-ruby-mock', git: 'git://github.com/MustWin/stripe-ruby-mock', ref: '6d5815f953e4168df5af4a78cb48b2f13f008365'
 end
 
 group :development do
