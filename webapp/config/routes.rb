@@ -28,6 +28,11 @@ Fantasysports::Application.routes.draw do
   get '/about' => 'pages#about'
   get '/sign_up' => 'pages#sign_up'
 
+  get '/pages/mobile/forgot_password' => 'mobile_pages#forgot_password'
+  get '/pages/mobile/support' => 'mobile_pages#support'
+  get '/pages/mobile/terms' => 'mobile_pages#terms'
+  get '/pages/mobile/rules' => 'mobile_pages#rules'
+
   get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
 
   #for /users/:id
