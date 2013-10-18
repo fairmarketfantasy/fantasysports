@@ -341,6 +341,7 @@ static NSMutableDictionary *_sessionByEmailAddress = nil;
 
 - (void)logout
 {
+    [AFOAuthCredential deleteCredentialWithIdentifier:self.identifier];
     [[self class] setLastUsedSession:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SBLogoutNotification object:nil];
 }
