@@ -129,11 +129,11 @@ angular.module('app.services')
         }
       },
       cards: {
+        create: function(type, number, cvc, name, exp_month, exp_year) {
+          return $http({method: 'POST', url: '/cards', data: {type: type, number: number, cvc: cvc, name: name, exp_month: exp_month, exp_year: exp_year}});
+        },
         list: function(){
           return $http({method: 'GET', url: '/cards'});
-        },
-        create: function(token, card_number){
-          return $http({method: 'POST', url: '/cards', data: {token: token, card_number: card_number}});
         },
         destroy: function(cardId){
           return $http({method: 'DELETE', url: '/cards/' + cardId});
