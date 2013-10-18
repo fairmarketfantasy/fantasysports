@@ -48,8 +48,14 @@ angular.module("app.controllers")
 
   $scope.saveCard = function(){
     $scope.saveCardSpinner = true;
-    debugger // PICK UP HERE, cardInfo Isn't getting filled in. This js thing must overwrite it or something?
-    fs.cards.create($scope.cardInfo.type, $scope.cardInfo.number, $scope.cardInfo.cvc, $scope.cardInfo.name, $scope.cardInfo.exp_month, $scope.cardInfo.exp_year).then(function() {
+    fs.cards.create(
+        $scope.card._getUnderlyingValue('type'),
+        $scope.card._getUnderlyingValue('number'),
+        $scope.card._getUnderlyingValue('cvc'),
+        $scope.card._getUnderlyingValue('name'),
+        $scope.card._getUnderlyingValue('expMonth'),
+        $scope.card._getUnderlyingValue('expYear')
+    ).then(function() {
         $scope.saveCardSpinner = false;
         if(resp.error){
           flash.error = resp.error;
