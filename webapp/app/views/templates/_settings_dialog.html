@@ -1,0 +1,39 @@
+<div class='modal-header'>
+  <h3 class='inline-block'>Account Settings</h3>
+</div>
+<div class='modal-body'>
+  <div class='clearfix'>
+    <img ng-src="{{currentUser.image_url}}" class='user-avatar'/> <a href="javascript://" ng-hide='showUpload' ng-click="showUpload = true">Upload a new photo</a>
+    <form ng-upload action="/users/uploads" ng-show='showUpload'>
+      <input name="user[avatar]" type='file' />
+      <a href="javascript://" class="btn btn-primary btn-mini" upload-submit="results(contents, completed)" >Upload Photo</a>
+      <a href="javascript://" class="btn btn-mini" ng-click='showUpload = false'>Cancel</a>
+    </form>
+  </div>
+  <span class='user-info-label'>Email:</span>{{ currentUser.email }} &nbsp<span ng-show='currentUser.confirmed'><span class='fui-check txt-green'></span> Confirmed</span><a href="javascript://" ng-hide='currentUser.confirmed' ng-click="resendConfirmation()">Resend confirmation Email</a><br />
+  <div class='mtm' ng-hide='isAuthedWithFacebook'>
+    <div ng-hide='showUserForm'>
+      <span class='user-info-label'>Name:</span>{{ currentUser.name }}<br />
+      <span class='user-info-label'>Username:</span>{{ currentUser.username }}<br />
+      <span class='user-info-label'>Password:</span> <span class='bold'>*****</span><br />
+      <a href='javascript://' ng-click='showUserForm = true'>Edit</a>
+    </div>
+    <form ng-show='showUserForm'>
+      <span class='user-info-label'>Email:</span><input type='text'  class='user-info-input' ng-model='userInfo.email' placeholder='Email' /><br />
+      <span class='user-info-label'>Name:</span><input type='text'  class='user-info-input' ng-model='userInfo.name' placeholder='Name' /><br />
+      <span class='user-info-label'>Username:</span><input type='text'  class='user-info-input' ng-model='userInfo.username' placeholder='Username' /><br />
+      <a href='javascript://' ng-hide='showPasswordForm' ng-click='showPasswordForm = true'>Change My Password</a>
+      <a href='javascript://' ng-show='showPasswordForm' ng-click='showPasswordForm = false'>cancel</a><br />
+      <div ng-show='showPasswordForm'>
+        <span class='user-info-label'>Current Password:</span><input type='password' class='user-info-input' ng-model='userInfo.current_password' placeholder='Current Password'/><br />
+        <span class='user-info-label'>New Password:</span><input type='password' class='user-info-input' ng-model='userInfo.password' placeholder='New Password'/><br />
+        <span class='user-info-label'>Confirmation:</span><input type='password' class='user-info-input' ng-model='userInfo.password_confirmation' placeholder='Confirm' /><br />
+      </div>
+      <a href='javascript://' ng-click='updateUser()' class='btn btn-primary btn-mini'>Save</a>
+      <a href='javascript://' ng-click='showUserForm = false' class='btn btn-mini'>cancel</a>
+    </form>
+  </div>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn" ng-click="close()">close</a>
+</div>

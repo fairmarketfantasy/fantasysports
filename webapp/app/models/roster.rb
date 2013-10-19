@@ -46,6 +46,7 @@ class Roster < ActiveRecord::Base
       :owner_id => user.id,
       :market_id => contest_type.market_id,
       :contest_type_id => contest_type.id,
+      :takes_tokens => contest_type.takes_tokens,
       :buy_in => contest_type.buy_in,
       :remaining_salary => contest_type.salary_cap,
       :state => 'in_progress',

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131010231143) do
+ActiveRecord::Schema.define(version: 20131018075956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -298,6 +298,7 @@ ActiveRecord::Schema.define(version: 20131010231143) do
     t.boolean  "cancelled",        default: false
     t.integer  "wins"
     t.integer  "losses"
+    t.boolean  "takes_tokens"
   end
 
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
@@ -401,6 +402,7 @@ ActiveRecord::Schema.define(version: 20131010231143) do
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
+    t.string   "avatar"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

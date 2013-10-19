@@ -23,6 +23,13 @@ angular.module('app.services')
         d.open();
       },
 
+      settingsModal: function(){
+        dialogOpts.templateUrl = '/settings_dialog.html';
+        dialogOpts.controller  = 'SettingsController';
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+       },
+
       withdrawFundsModal: function(){
         dialogOpts.templateUrl = '/withdraw_funds_dialog.html',
         dialogOpts.controller  = 'WithdrawFundsDialogController'
@@ -85,6 +92,9 @@ angular.module('app.services')
         return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
       },
       user: {
+        refresh: function(){
+          return $http({method: 'GET', url: '/users'})
+        },
         create: function(user_attrs){
           return $http({method: 'POST', url: '/users', data: {user: user_attrs}});
         },
