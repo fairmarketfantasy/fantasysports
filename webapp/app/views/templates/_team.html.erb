@@ -27,7 +27,9 @@
                   </span>
                   <span ng-show="market.state != 'published' && roster.state != 'in_progress'">
                     (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">
-                    {{player.sell_price - player.purchase_price | number:2}}%
+                      <span ng-show="player.sell_price - player.purchase_price >= 0">+</span>
+                      <span ng-show="player.sell_price - player.purchase_price < 0">-</span>
+                      ${{Math.abs(player.sell_price - player.purchase_price) | number:0}}
                     </span>)
                   </span>
                 </span>
