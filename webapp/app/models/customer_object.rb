@@ -3,7 +3,7 @@ class CustomerObject < ActiveRecord::Base
   attr_protected
 
   belongs_to :user
-  belongs_to :default_card
+  belongs_to :default_card, :class_name => 'CreditCard'
   has_many :credit_cards
 
   #override reload to nil out memoized stripe object
@@ -13,11 +13,11 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def delete_card(card_id)
-    credit_card = CreditCard.find(card_id)
-    paypal_credit_card = Paypal::SDK::REST::CreditCard.find(card_id)
+    card = credit_cards.find(card_id)
+    paypal_credit_card = PayPal::SDK::REST::CreditCard.find(card.paypal_card_id)
     if paypal_credit_card.delete
-      credit_card.deleted = true
-      credit_card.save
+      card.deleted = true
+      card.save
     end
   end
 

@@ -23,6 +23,7 @@ angular.module("app.controllers")
       $scope.selectedCardId = _.find($scope.cards, function(card){
           return card.default;
       }).id;
+      $scope.showCardForm = false;
     }
   };
 
@@ -55,7 +56,7 @@ angular.module("app.controllers")
         $scope.card._getUnderlyingValue('name'),
         $scope.card._getUnderlyingValue('expMonth'),
         $scope.card._getUnderlyingValue('expYear')
-    ).then(function() {
+    ).then(function(resp) {
         $scope.saveCardSpinner = false;
         if(resp.error){
           flash.error = resp.error;

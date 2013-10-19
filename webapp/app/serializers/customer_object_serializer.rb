@@ -6,10 +6,10 @@ class CustomerObjectSerializer < ActiveModel::Serializer
       { id:          card.id,
         first_name:  card.first_name,
         last_name:   card.last_name,
-        type:        card.type,
+        type:        card.card_type,
         exp_month:   card.expires.month,
         exp_year:    card.expires.year,
-        address_zip: card.address_zip,
+        #address_zip: card.address_zip,
         obscured_number: card.obscured_number,
         default:     card.id == object.default_card_id
       }
