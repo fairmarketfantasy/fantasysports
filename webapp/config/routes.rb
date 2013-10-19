@@ -17,6 +17,7 @@ Fantasysports::Application.routes.draw do
   end
   devise_scope :user do
     get "users", :to => "users#index", :as => "users_index"
+    post "users/uploads", :to => "users/registrations#update"
   end
 
   # You can have the root of your site routed with "root"
@@ -26,6 +27,11 @@ Fantasysports::Application.routes.draw do
   get '/landing' => 'pages#landing'
   get '/about' => 'pages#about'
   get '/sign_up' => 'pages#sign_up'
+
+  get '/pages/mobile/forgot_password' => 'mobile_pages#forgot_password'
+  get '/pages/mobile/support' => 'mobile_pages#support'
+  get '/pages/mobile/terms' => 'mobile_pages#terms'
+  get '/pages/mobile/rules' => 'mobile_pages#rules'
 
   get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
 

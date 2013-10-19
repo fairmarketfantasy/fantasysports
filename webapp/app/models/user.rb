@@ -1,4 +1,7 @@
 class User < ActiveRecord::Base
+
+  mount_uploader :avatar, AvatarUploader
+
   TOKEN_SKUS = {
     '1000'  => { :tokens => 1000,  :cost => 500},
     '2000'  => { :tokens => 2000,  :cost => 1000},
@@ -17,9 +20,10 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   devise :omniauthable, :omniauth_providers => [:facebook, :facebook_access_token]
 
+  attr_accessor :current_password
   attr_accessible :name, :username, :provider, :uid, :fb_token, :unconfirmed_email, :image_url, :takes_tokens,
-      :email, :password, :password_confirmation, :remember_me, :first_name,
-      :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync, :inviter_id
+      :email, :current_password, :password, :password_confirmation, :remember_me, :first_name,
+      :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync, :inviter_id, :avatar, :avatar_cache, :remove_avatar
 
   has_many :rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner_id
@@ -61,7 +65,12 @@ class User < ActiveRecord::Base
   end
 
   def image_url
-    if self[:image_url]
+    #avatar    (from upload: AvatarUploader)
+    #image_url (from facebook)
+    #gravatar  (last resort)
+    if self.avatar.presence
+      self.avatar.url
+    elsif self[:image_url].presence
       self[:image_url]
     else
       gravatar_id = Digest::MD5.hexdigest(email.downcase)

@@ -87,7 +87,7 @@
           <img ng-src="{{currentUser.image_url}}" class='user-avatar'/>
           <div class="user-info">
             <span class="user-name">{{ currentUser.username || currentUser.name }}</span>
-            <a href="javascript://" class='txt-white txt-red-hover'>settings</a><br />
+            <a href="javascript://" class='txt-white txt-red-hover' ng-click="settingsModal()">settings</a><br />
             <%= link_to 'sign out', destroy_user_session_path, class: 'user-logout txt-red-hover' %>
           </div>
         </div>
