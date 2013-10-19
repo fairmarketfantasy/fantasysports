@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131018095752) do
+ActiveRecord::Schema.define(version: 20131019224734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,11 +73,10 @@ ActiveRecord::Schema.define(version: 20131018095752) do
     t.integer "customer_object_id",                 null: false
     t.string  "card_number_hash",                   null: false
     t.boolean "deleted",            default: false, null: false
-    t.string  "card_id",                            null: false
     t.string  "obscured_number"
     t.string  "first_name"
     t.string  "last_name"
-    t.string  "type"
+    t.string  "card_type"
     t.date    "expires"
     t.string  "paypal_card_id"
   end

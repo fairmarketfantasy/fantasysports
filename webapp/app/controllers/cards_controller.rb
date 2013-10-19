@@ -13,7 +13,7 @@ class CardsController < ApplicationController
       unless customer_object = current_user.customer_object
         customer_object = CustomerObject.create!(user: current_user)
       end
-      CreditCard.generate(params[:type], params[:name], params[:cvc], params[:number], params[:exp_month], params[:exp_year])
+      CreditCard.generate(customer_object, params[:type], params[:name], params[:number], params[:cvc], params[:exp_month], params[:exp_year])
       Eventing.report(current_user, 'addCreditCard')
       render_api_response customer_object.reload
     rescue => e
