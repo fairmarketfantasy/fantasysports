@@ -23,24 +23,46 @@ class CustomerObject < ActiveRecord::Base
 
   def charge(amount_in_cents)
     #strip api require charging at least 50 cents
+    raise "Customer has no default cards" unless default_card
     amount = amount_in_cents.to_i
-    # begin
-    resp = Stripe::Charge.create({
-      amount:   amount,
-      currency: "usd",
-      customer: stripe_id,
+    payment = PayPal::SDK::REST::Payment.new({
+      intent: "sale",
+      payer: {
+        payment_method: "credit_card",
+        funding_instruments: [
+          {
+            credit_card_token: {
+              credit_card_id: self.default_card.paypal_card_id,
+            }
+          }
+        ],
+      },
+      transactions: [
+        {
+          amount: {
+            total: amount / 100,
+            currency: "USD",
+          },
+          description: "Purchase on FairMarketFantasy.com"
+        }
+      ]
     })
-    increase_balance(resp.amount, 'deposit') # Don't change this without changing them elsewhere
-    resp
-    # rescue Stripe::CardError => e
-    #   #card has been declined, handle this exception and log it somewhere
-    #   raise e
-    # end
+    begin
+      r = payment.create
+    rescue => e
+      debugger
+      e
+    end
+    # TODO Save paypal transaction id
+    if r && payment.state == 'approved'
+      increase_balance(payment.amount, 'deposit') # Don't change this without changing them elsewhere
+    end
+    payment
   end
 
   def set_default_card(card_id)
-    stripe_object.default_card = card_id
-    stripe_object.save
+    self.default_card = self.credit_cards.select{|c| c.id == card_id}.first
+    self.save!
   end
 
   def balance_in_dollars
@@ -64,11 +86,6 @@ class CustomerObject < ActiveRecord::Base
       TransactionRecord.create!(:user => self.user, :event => event, :amount => -amount, :roster_id => roster_id, :contest_id => contest_id, :invitation_id => invitation_id, :referred_id => referred_id)
       self.save!
     end
-  end
-
-  def stripe_object
-    #memoize stripe object
-    @strip_object ||= Stripe::Customer.retrieve(stripe_id)
   end
 
 end
