@@ -48,7 +48,7 @@ angular.module("app.controllers")
   };
 
   $scope.saveCard = function() {
-    if (!$scope.card.isValid()) { return; }
+    if (!$scope.card.isValid() && $scope.card._getUnderlyingValue('type') != 'amex') { return; }
     $scope.saveCardSpinner = true;
     fs.cards.create(
         $scope.card._getUnderlyingValue('type'),

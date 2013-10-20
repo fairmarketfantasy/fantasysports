@@ -53,9 +53,10 @@ class CustomerObject < ActiveRecord::Base
       debugger
       e
     end
-    # TODO Save paypal transaction id
+      debugger
+    # TODO Save paypal transaction id # payment.id
     if r && payment.state == 'approved'
-      increase_balance(payment.amount, 'deposit') # Don't change this without changing them elsewhere
+      increase_balance(payment.transactions.first.amount.total.to_i * 100, 'deposit')
     end
     payment
   end
