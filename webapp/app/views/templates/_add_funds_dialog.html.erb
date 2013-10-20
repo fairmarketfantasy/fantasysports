@@ -75,7 +75,7 @@
       <input type="text" class='mtm card-year'   placeholder="exp yr" ng-class="{error: expError}" ng-model="cardInfo.exp_year"/><br />
       <input type="text" class='mtm mrm card-zip'    placeholder="zip"         ng-model="cardInfo.address_zip"/>-->
       <a href="javascript://" ng-click="showCardForm = false" class='mtm btn btn-info'>cancel</a>
-      <a href="javascript://" ng-click="saveCard()" class='mtm btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
+      <a href="javascript://" ng-click="saveCard()" ng-disabled="!card.isValid()" class='mtm btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
       <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
     </div>
     <div ng-show="showingAddFunds()" class="add-funds-container">

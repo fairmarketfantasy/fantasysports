@@ -47,7 +47,8 @@ angular.module("app.controllers")
     dialog.close();
   };
 
-  $scope.saveCard = function(){
+  $scope.saveCard = function() {
+    if (!$scope.card.isValid()) { return; }
     $scope.saveCardSpinner = true;
     fs.cards.create(
         $scope.card._getUnderlyingValue('type'),
