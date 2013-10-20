@@ -28,3 +28,6 @@ production:
   <<: *default
   client_id: AakBYhDA_snCU2434TT4sVNX8FIYlF8DkafbybNXoUirxnzTJ0mih_p6hXqs
   client_secret: EPxXSRCVIPxJIQfSwWCZ9Y1NbN8G9ORUEvh8ng5NyYhhv3BMyB_s_6u3yNUz
+
+  mode: live
+  app_id: APP-5TW068719E839182L
