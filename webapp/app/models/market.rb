@@ -313,18 +313,19 @@ class Market < ActiveRecord::Base
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
+      #debugger
         next if data[:name].match(/\d+k/) && self.closed_at - self.started_at < 1.day
-      ContestType.create!(
-        market_id: self.id,
-        name: data[:name],
-        description: data[:description],
-        max_entries: data[:max_entries],
-        buy_in: data[:buy_in],
-        rake: data[:rake],
-        payout_structure: data[:payout_structure],
-        salary_cap: 100000,
-        payout_description: data[:payout_description],
-        takes_tokens: data[:takes_tokens]
+        ContestType.create!(
+          market_id: self.id,
+          name: data[:name],
+          description: data[:description],
+          max_entries: data[:max_entries],
+          buy_in: data[:buy_in],
+          rake: data[:rake],
+          payout_structure: data[:payout_structure],
+          salary_cap: 100000,
+          payout_description: data[:payout_description],
+          takes_tokens: data[:takes_tokens]
         )
       end
     end
