@@ -92,9 +92,13 @@
 {
     _markets = markets;
     [self.collectionView reloadData];
-    self.selectedMarket = _markets[0];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
-        [self.delegate didUpdateToNewMarket:self.selectedMarket];
+    if (_markets.count) {
+        self.selectedMarket = _markets[0];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+            [self.delegate didUpdateToNewMarket:self.selectedMarket];
+        }
+    } else {
+        self.selectedMarket = nil;
     }
     // try to carry over the selected network...
 //    if (_selectedMarket) {
