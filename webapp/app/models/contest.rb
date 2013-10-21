@@ -23,6 +23,7 @@ class Contest < ActiveRecord::Base
       rake = 0.03
 
       contest_type = ContestType.create!(
+        :takes_tokens => opts[:takes_tokens] || false,
         :market_id => market.id,
         :name => 'h2h',
         :description => 'custom h2h contest',
