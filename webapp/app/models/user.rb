@@ -46,8 +46,9 @@ class User < ActiveRecord::Base
   def customer_object_with_create
     co = customer_object_without_create
     if co.nil?
-      CustomerObject.create!(:user_id => self.id)
+      co = CustomerObject.create!(:user_id => self.id)
     end
+    co
   end
   alias_method_chain :customer_object, :create
 
