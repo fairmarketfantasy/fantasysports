@@ -33,6 +33,7 @@ class Recipient < ActiveRecord::Base
       :currencyCode => "USD",
       :feesPayer => "PRIMARYRECEIVER", #"SENDER",
       :ipnNotificationUrl => "#{ SITE }/samples/adaptive_payments/ipn_notify",
+      :memo => "Withdrawal from FairMarketFantasy.com",
       :receiverList => {
         :receiver => [{
           :amount => 1.0,
