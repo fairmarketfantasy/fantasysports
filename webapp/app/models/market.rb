@@ -40,7 +40,7 @@ class Market < ActiveRecord::Base
         begin
           market.send(method)
         rescue Exception => e
-          puts "Exception raised for method #{method} on market #{market.id}: #{e}"
+          puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
         end
       end
     end
