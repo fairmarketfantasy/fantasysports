@@ -24,7 +24,7 @@ end
 God.watch do |w|
   pid_file = PID_PATH + "/markettender.pid"
   w.name = "markettender"
-  w.start = "bundle exec rake market:tend"
+  w.start = "bundle exec rake market:tend --trace"
   w.dir = BASE_DIR + '/current/webapp'
   w.log = BASE_DIR + '/shared/log/markettender.log'
   w.env = {"RAILS_ENV" => ENV['RAILS_ENV'],
