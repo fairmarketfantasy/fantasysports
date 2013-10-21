@@ -32,4 +32,25 @@ class InvitationTest < ActiveSupport::TestCase
     end
     assert_equal Invitation::PAID_USER_REFERRAL_PAYOUT, user2.customer_object.balance
   end
+
+  test "Unsubscribe stops emails from sending" do
+    setup_simple_market
+    u1 = create(:user)
+    contest = Contest.create_private_contest(
+      :market_id => @market.id,
+      :type => 'h2h',
+      :buy_in => 100,
+      :user_id => u1.id,
+    )
+    inv = nil
+    email = 'bob@there.com'
+    EmailUnsubscribe.create(:email => email, :email_type => 'all')
+    assert_email_not_sent do
+      assert_difference 'Invitation.count', 1 do
+        inv = Invitation.for_contest(u1, 'bob@there.com', contest, 'HI BOB')
+        assert inv
+      end
+    end
+
+  end
 end

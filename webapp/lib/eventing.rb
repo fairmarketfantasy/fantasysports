@@ -20,7 +20,7 @@ curl -X PUT -H "Content-Type: application/json" –data '{
     params = default_params(user).merge({
       eventName: event,
     }).merge(data)
-    Typhoeus.post(CLYNG_EVENT_API, headers: headers, body: params.to_json)
+    no_user_facing_issues { Typhoeus.post(CLYNG_EVENT_API, headers: headers, body: params.to_json) }
   end
 
 =begin
@@ -34,7 +34,7 @@ curl -X PUT -H "Content-Type: application/json" –data '{
   def self.update_user(user, data)
     return if Rails.env == 'test'
     params = default_params(user).merge(data)
-    Typhoeus.post(CLYNG_USER_API, headers: headers, body: params.to_json)
+    no_user_facing_issues { Typhoeus.post(CLYNG_USER_API, headers: headers, body: params.to_json) }
   end
 
   private
@@ -52,6 +52,15 @@ curl -X PUT -H "Content-Type: application/json" –data '{
       environment: Rails.env,
       apiKey: CLYNG_SECRET
     }
+  end
+
+  # TODO: This should have a threadpool, a queue, drop messages that are enqueued for too long, and http timeouts for connection and data
+  def self.no_user_facing_issues(&block)
+    begin
+      yield
+    rescue Exception => e
+      Rails.logger.error("Error reporting event to Clyng: " + e)
+    end
   end
 
 end
