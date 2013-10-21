@@ -43,6 +43,13 @@ class User < ActiveRecord::Base
     self.token_balance = 1000
   end
 
+  def customer_object_with_create
+    co = customer_object_without_create
+    if co.nil?
+      CustomerObject.create!(:user_id => self.id)
+    end
+  end
+  alias_method_chain :customer_object, :create
 
   def self.find_for_facebook_oauth(auth)
     Rails.logger.debug(auth.pretty_inspect)
@@ -117,9 +124,6 @@ class User < ActiveRecord::Base
         self.save
       end
     else
-      if self.customer_object.nil?
-        CustomerObject.create!(:user_id => self.id)
-      end
       self.reload.customer_object.increase_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id], opts[:referred_id])
     end
   end
