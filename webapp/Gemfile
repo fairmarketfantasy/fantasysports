@@ -50,6 +50,7 @@ gem 'kaminari'
 #payments
 gem 'skeuocard-rails'
 gem 'paypal-sdk-rest'
+gem 'paypal-sdk-adaptivepayments'
 gem 'venice' # iOS receipt verification
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
