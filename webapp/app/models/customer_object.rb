@@ -50,8 +50,8 @@ class CustomerObject < ActiveRecord::Base
     begin
       r = payment.create
     rescue => e
-      debugger
-      e
+      Rails.logger.error(e)
+      raise e
     end
       debugger
     # TODO Save paypal transaction id # payment.id

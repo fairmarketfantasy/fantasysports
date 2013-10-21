@@ -1,38 +1,54 @@
 class Recipient < ActiveRecord::Base
-  attr_accessor :token, :name
+  attr_accessor :paypal_email_confirmation, :name
   attr_protected
 
   belongs_to :user
   has_one    :customer_object, through: :user
 
   validate  :user_must_be_confirmed
-  validates :stripe_id, :user_id, presence: true
+  validates :paypal_email, :user_id, presence: true
 
-  before_validation :set_stripe_id, on: :create
+  before_validation :confirm_email, on: :create
 
   def reload
     @stripe_object = nil
     super
   end
 
+  def confirm_email
+    errors.add(:email, "must match confirmation_email.") unless self.paypal_email == self.paypal_email_confirmation
+  end
+
   def user_must_be_confirmed
     errors.add(:user, "must be confirmed.") unless user.confirmed?
   end
 
-  def set_stripe_id
-    unless token
-      raise ArgumentError, "Must supply a bank account token from stripe.js"
-    end
-    resp = Stripe::Recipient.create({
-                                      name: name,
-                                      type:  "individual",
-                                      email: user.email,
-                                      bank_account: token
-                                    })
-    self.stripe_id = resp.id
-  end
-
   def transfer(amount)
+    @api = PayPal::SDK::AdaptivePayments.new
+
+    # Build request object
+    @pay = @api.build_pay({
+      :actionType => "PAY",
+      #:cancelUrl => "http://localhost:3000/samples/adaptive_payments/pay",
+      :currencyCode => "USD",
+      :feesPayer => "PRIMARYRECEIVER", #"SENDER",
+      :ipnNotificationUrl => "#{ SITE }/samples/adaptive_payments/ipn_notify",
+      :receiverList => {
+        :receiver => [{
+          :amount => 1.0,
+          :email => "platfo_1255612361_per@gmail.com" }] },
+      :returnUrl => "#{ SITE }/samples/adaptive_payments/pay" })
+    
+    # Make API call & get response
+    @response = @api.pay(@pay)
+    
+    # Access response
+    if @response.success?
+      @response.payKey
+      @api.payment_url(@response)  # Url to complete payment
+    else
+      @response.error[0].message
+    end
     resp = Stripe::Transfer.create({
               amount:   amount,
               currency: 'usd',
