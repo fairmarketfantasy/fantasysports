@@ -7,3 +7,7 @@
 <a href="<%= SITE %>/contests/join?contest_code=<%= @contest.invitation_code %>&referral_code=<%= @invitation && @invitation.code %>">Click here to join the game!</a>
 
 <%= @message %>
+
+
+----------
+Click here to <a href="<%= SITE %>/users/unsubscribe?email=<%= CGI::escape(@email) %>&type=all">unsubscribe</a> from our emails
