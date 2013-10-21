@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_filter :verify_authenticity_token, :only => [:create, :update]
+  skip_before_filter :verify_authenticity_token, :only => [:create, :update, :unsubscribe]
 
   def index
     render_api_response current_user
@@ -8,6 +8,14 @@ class UsersController < ApplicationController
   def show
     user = User.find(params[:id])
     render_api_response user
+  end
+
+  def unsubscribe
+    user = User.where(:email => params[:email]).first
+    raise HttpException(403, "You must be logged in as the unsubscribing user to do that") if user && user != current_user
+    @type = params[:type] || 'all'
+    EmailUnsubscribe.create(:email => params[:email], :email_type => @type)
+    render :layout => false
   end
 
   def name_taken

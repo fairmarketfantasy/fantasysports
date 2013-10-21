@@ -12,7 +12,7 @@
             <li class="mr-item clearfix" ng-repeat="player in roster.players">
             <div ng-show="player.id && player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': 'url(' + player.headshot_url +')'}"></div>
               <div ng-hide="player.id" class="mr-player-image"></div>
-              <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled"></div>
+              <div ng-show="player.position == 'DEF' && player.id" class="mr-player-image defense filled"></div>
               
               <div class="mr-player-info">
                 <h3 class="mr-player-name" ng-show="player.id">{{player.name}}</h3>
@@ -27,7 +27,7 @@
                   </span>
                   <span ng-show="market.state != 'published' && roster.state != 'in_progress'">
                     (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">
-                    {{((player.sell_price - player.purchase_price) / player.purchase_price) * 100 | number:2}}%
+                    {{player.sell_price - player.purchase_price | number:2}}%
                     </span>)
                   </span>
                 </span>
