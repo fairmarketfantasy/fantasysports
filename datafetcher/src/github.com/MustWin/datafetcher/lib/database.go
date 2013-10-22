@@ -25,8 +25,8 @@ func init() {
 	orm = &bdb
 
 	beedb.OnDebug = true
-	beedb.OnDebug = false
-	beedb.PluralizeTableNames = true
+	//beedb.OnDebug = false
+	//beedb.PluralizeTableNames = true
 }
 
 // This is the public interface to get a DB handle
