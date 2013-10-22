@@ -491,7 +491,7 @@ BEGIN
 	--else, ensure that the total number of shadow bets removed from the initial
 	--pool of shadow bets is proportial to the number of bets cast, where the coefficient
 	--is the shadow_bet_rate
-	_real_bets = _market.total_bets - _market.shadow_bets;
+	_real_bets = _market.total_bets - _market.shadow_bets; -- TODO: Floor this at 0
 	_new_shadow_bets = GREATEST(0, _market.initial_shadow_bets - _real_bets * _market.shadow_bet_rate);
 
 	--if no change, then return
@@ -516,6 +516,7 @@ DROP FUNCTION lock_players(integer);
 --removes locked players from the market and updates the price multiplier
 CREATE OR REPLACE FUNCTION lock_players(_market_id integer) RETURNS VOID AS $$
 DECLARE
+	_locked_shadow_bets numeric := 0;
 	_locked_bets numeric := 0;
 	_now timestamp;
 BEGIN
@@ -528,9 +529,9 @@ BEGIN
 	--for each locked player that has not been removed: lock the player and sum the bets
 	select CURRENT_TIMESTAMP INTO _now;
 
-	select sum(bets) from market_players
-		WHERE market_id = _market_id and locked_at < _now and locked = false 
-		INTO _locked_bets;
+	select INTO _locked_bets, _locked_shadow_bets
+    sum(bets), sum(shadow_bets) FROM market_players
+		WHERE market_id = _market_id and locked_at < _now and locked = false;
 
 	update market_players set locked = true
 		WHERE market_id = _market_id and locked_at < _now and locked = false;
@@ -538,7 +539,8 @@ BEGIN
 	IF _locked_bets > 0 THEN
 		--update the price multiplier
 		update markets set 
-			total_bets = total_bets - _locked_bets, 
+			total_bets = total_bets - _locked_bets,
+			shadow_bets = shadow_bets - _locked_shadow_bets,
 			price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
 			WHERE id = _market_id;
 	END IF;

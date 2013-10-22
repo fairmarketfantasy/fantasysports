@@ -33,7 +33,7 @@
   </div>
 
   <p class="alert alert-info" ng-show="market.state == 'published'">
-    This market's bell hasn't rung yet (it will open on or before {{dayBefore(market.started_at) | shortFormTime}}). <br/>That means all prices are indicative. This helps keep our market fair. <a class="" href="/#rules">Learn More</a>.
+    This market's bell hasn't rung yet (it will open on or before {{dayBefore(market.opened_at) | shortFormTime}}). <br/>That means all prices are indicative. This helps keep our market fair. <a class="" href="/#rules">Learn More</a>.
   </p>
 
   <div ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && inThePast(market.started_at)">
