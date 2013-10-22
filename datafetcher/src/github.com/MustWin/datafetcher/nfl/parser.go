@@ -98,6 +98,8 @@ func buildPlayer(element *xml.StartElement) *models.Player {
 	player.Position = parsers.FindAttrByName(element.Attr, "position")
 	if contains(defensivePositions, player.Position) {
 		player.Position = "DEF"
+	} else if player.Position == "FB" {
+		player.Position = "RB"
 	}
 	player.JerseyNumber, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "jersey_number"))
 	player.College = parsers.FindAttrByName(element.Attr, "college")
