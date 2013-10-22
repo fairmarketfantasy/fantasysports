@@ -2,10 +2,7 @@
   <ul class="clearfix market-list">
     <li class="market-li" ng-repeat="market in marketService.upcoming">
       <a href="#/market/{{market.id}}" class="market-link" ng-class="{ highlightMkt: isCurrent(market) }">
-        <strong>{{market.name}}</strong><br /> 
-        <span ng-show="showDateDesc(market)">{{market.started_at | shortFormDate}} - {{market.closed_at | shortFormDate}}</span>
-        <span ng-show="showDayDesc(market)">All games on {{market.started_at | shortFormDate}}</span>
-        <span ng-show="showGameDesc(market)">{{market.games[0].away_team}} at {{market.games[0].home_team}} on {{market.games[0].network}}</span>
+        <strong>{{market.name}}</strong><br /> {{market | niceMarketDesc}}
       </a>
     </li>
   </ul>

@@ -1,5 +1,5 @@
 class MobilePagesController < ApplicationController
-  layout false
+  layout 'mobile_pages'
   skip_before_filter :authenticate_user!
 
   def forgot_password
