@@ -23,7 +23,7 @@ class Recipient < ActiveRecord::Base
     api = PayPal::SDK::AdaptivePayments.new
     pay = api.build_pay({
       :actionType => "PAY",
-      #:cancelUrl => "http://localhost:3000/samples/adaptive_payments/pay",
+      :cancelUrl => "#{SITE}/samples/adaptive_payments/pay",
       :currencyCode => "USD",
       :feesPayer => "PRIMARYRECEIVER", #"SENDER",
       :ipnNotificationUrl => "#{ SITE }/samples/adaptive_payments/ipn_notify",
@@ -31,9 +31,8 @@ class Recipient < ActiveRecord::Base
       :receiverList => {
         :receiver => [{
           :amount => amount.to_i/100.0, # TODO: validate this
-          :email => self.paypal_email,
-      :returnUrl => "#{SITE }/samples/adaptive_payments/pay" }]
-      }
+          :email => self.paypal_email}],
+      :returnUrl => "#{SITE }/samples/adaptive_payments/pay" }
     })
     
     # Make API call & get response
