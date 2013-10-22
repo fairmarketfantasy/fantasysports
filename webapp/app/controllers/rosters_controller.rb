@@ -2,7 +2,7 @@ class RostersController < ApplicationController
   def mine
     if params[:historical]
       page = params[:page] || 1
-      render_api_response current_user.rosters.finished.page(page)
+      render_api_response current_user.rosters.over.page(page)
     else
       # Don't paginate active rosters
       render_api_response current_user.rosters.active

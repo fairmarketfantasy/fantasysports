@@ -6,7 +6,7 @@ class MarketSerializer < ActiveModel::Serializer
     if object.name.blank?
       (object.closed_at - 6.hours).strftime "%A Night Football"
     else
-      object.name
+      "All of " + object.name
     end
   end
 
