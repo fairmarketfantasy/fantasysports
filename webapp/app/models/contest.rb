@@ -8,22 +8,21 @@ class Contest < ActiveRecord::Base
   belongs_to :owner, class_name: "User"
   belongs_to :contest_type
 
-  before_save :set_invitation_code, on: :create
+  before_create :set_invitation_code
 
   validates :owner_id, :contest_type_id, :buy_in, :market_id, presence: true
 
   #creates a roster for the owner and creates an invitation code
   def self.create_private_contest(opts)
     market = Market.where(:id => opts[:market_id], state: ['published', 'opened']).first
-    raise "Market must be active to create a contest" unless market
-    raise "It's too close to market close to create a contest" if Time.new + 5.minutes > market.closed_at
+    raise HttpException.new(409, "Sorry, that market couldn't be found or is no longer active. Try a later one.") unless market
+    raise HttpException.new(409, "Sorry, it's too close to market close to create a contest. Try a later one.") if Time.new + 5.minutes > market.closed_at
     # H2H don't have to be an existing contst type, and in fact are always new ones so that if your challenged person doesn't accept, the roster is cancelled
     if opts[:type] == 'h2h'
       buy_in       = opts[:buy_in]
       rake = 0.03
 
       contest_type = ContestType.create!(
-        :takes_tokens => opts[:takes_tokens] || false,
         :market_id => market.id,
         :name => 'h2h',
         :description => 'custom h2h contest',
@@ -111,7 +110,7 @@ class Contest < ActiveRecord::Base
   private
 
     def set_invitation_code
-      self.invitation_code = SecureRandom.urlsafe_base64
+      self.invitation_code ||= SecureRandom.urlsafe_base64
     end
 
 end
