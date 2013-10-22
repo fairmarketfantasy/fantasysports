@@ -56,7 +56,7 @@ class CustomerObject < ActiveRecord::Base
       debugger
     # TODO Save paypal transaction id # payment.id
     if r && payment.state == 'approved'
-      increase_balance(payment.transactions.first.amount.total.to_i * 100, 'deposit')
+      increase_balance(payment.transactions.first.amount.total.to_i * 100, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
     end
     payment
   end
@@ -71,20 +71,20 @@ class CustomerObject < ActiveRecord::Base
   end
 
   # TODO: refactor this argument nonsense
-  def increase_balance(amount, event, roster_id = nil, contest_id = nil, invitation_id = nil, referred_id = nil)
+  def increase_balance(amount, event, opts = {})
     ActiveRecord::Base.transaction do
       self.balance += amount
-      TransactionRecord.create!(:user => self.user, :event => event, :amount => amount, :roster_id => roster_id, :contest_id => contest_id, :invitation_id => invitation_id, :referred_id => referred_id)
+      TransactionRecord.create!({:user => self.user, :event => event, :amount => amount}.merge(opts))
       self.save!
     end
   end
 
-  def decrease_balance(amount, event, roster_id = nil, contest_id = nil, invitation_id = nil, referred_id = nil)
+  def decrease_balance(amount, event, opts = {})
     ActiveRecord::Base.transaction do
       self.reload
       raise HttpException.new(409, "You're trying to transfer more than you have.") if self.balance - amount < 0 && self.user != SYSTEM_USER
       self.balance -= amount
-      TransactionRecord.create!(:user => self.user, :event => event, :amount => -amount, :roster_id => roster_id, :contest_id => contest_id, :invitation_id => invitation_id, :referred_id => referred_id)
+      TransactionRecord.create!({:user => self.user, :event => event, :amount => -amount}.merge(opts))
       self.save!
     end
   end

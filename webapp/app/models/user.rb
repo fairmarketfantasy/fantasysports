@@ -43,7 +43,6 @@ class User < ActiveRecord::Base
     self.token_balance = 1000
   end
 
-
   def self.find_for_facebook_oauth(auth)
     Rails.logger.debug(auth.pretty_inspect)
     user = User.find_by(email: auth.info.email) || User.where(uid: auth.uid, provider: auth.provider, fb_token: auth.credentials.token).first_or_create
@@ -93,7 +92,7 @@ class User < ActiveRecord::Base
     return true
   end
 
-  def charge(amount, use_tokens, opts = {})
+  def charge(amount, use_tokens, opts = {}) # roster_id, contest_id, invitation_id, referred_id
     if use_tokens
       ActiveRecord::Base.transaction do
         self.reload
@@ -103,7 +102,7 @@ class User < ActiveRecord::Base
         self.save
       end
     else
-      self.customer_object.decrease_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id], opts[:referred_id])
+      self.customer_object.decrease_balance(amount, opts[:event], opts)
     end
   end
 
@@ -120,7 +119,7 @@ class User < ActiveRecord::Base
       if self.customer_object.nil?
         CustomerObject.create!(:user_id => self.id)
       end
-      self.reload.customer_object.increase_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id], opts[:referred_id])
+      self.reload.customer_object.increase_balance(amount, opts[:event], opts)
     end
   end
 end
