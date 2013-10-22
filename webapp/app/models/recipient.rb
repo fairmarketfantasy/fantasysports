@@ -25,16 +25,18 @@ class Recipient < ActiveRecord::Base
       :actionType => "PAY",
       :cancelUrl => "#{SITE}/samples/adaptive_payments/pay",
       :currencyCode => "USD",
-      :feesPayer => "PRIMARYRECEIVER", #"SENDER",
+      :senderEmail => PAYPAL_OWNER,
+      :feesPayer => "EACHRECEIVER", #"SENDER",
       :ipnNotificationUrl => "#{ SITE }/samples/adaptive_payments/ipn_notify",
       :memo => "Withdrawal from FairMarketFantasy.com",
       :receiverList => {
         :receiver => [{
           :amount => amount.to_i/100.0, # TODO: validate this
           :email => self.paypal_email}],
-      :returnUrl => "#{SITE }/samples/adaptive_payments/pay" }
+      },
+      :returnUrl => "#{SITE }/samples/adaptive_payments/pay"
     })
-    
+
     # Make API call & get response
     response = api.pay(pay)
     debugger
@@ -43,10 +45,9 @@ class Recipient < ActiveRecord::Base
       response.payKey
       api.payment_url(response)  # Url to complete payment
     else
-      response.error[0].message
+      raise HttpResponse.new 409, response.error[0].message
     end
-    amount = response.amount
-    customer_object.decrease_balance(amount, "withdrawal")
+    customer_object.decrease_balance(amount.to_i, "withdrawal", :transaction_data => {:paypal_transaction_id => response.payKey}.to_json)
   end
 
 end

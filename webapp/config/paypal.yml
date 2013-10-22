@@ -1,5 +1,4 @@
 test: &default
-
   # Credentials for REST APIs
   client_id: ASYjhRAYJC03x6xFBRxNtcKzEFInbcY5s3ckd8jR0sukBEf8ghuM_2BNpAeQ
   client_secret: EGxtJBDJUKKVl8HJcV1sjAgZGO-nTpr1fxOXh9i0zaskdAbagqjmB3sCXCtx
@@ -9,12 +8,12 @@ test: &default
 
   # Credentials for Classic APIs
   app_id: APP-80W284485P519543T
-  username: jb-us-seller_api1.paypal.com
-  password: WX4WTU3S8MY44S7F
-  signature: AFcWxV21C7fd0v3bYYYRCpSSRl31A7yDhhsPUU2XhtMoZXsWHFxu-RWy
+  username: bpilch-facilitator_api1.hotmail.com
+  password: 1382278375
+  signature: AiPC9BjkCyDFQXbSkoZcgqH3hpacAlB-UNWt9X1qnkIsadAo74Hh0vXU
   # # With Certificate
   # cert_path: "config/cert_key.pem"
-  sandbox_email_address: Platform.sdk.seller@gmail.com
+  sandbox_email_address: bpilch-facilitator@hotmail.com
 
   # # IP Address
   # ip_address: 127.0.0.1
