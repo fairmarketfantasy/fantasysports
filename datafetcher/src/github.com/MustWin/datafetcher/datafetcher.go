@@ -45,7 +45,6 @@ var fetch = flag.String("fetch", "", `What data to fetch:
 `)
 
 func defaultYear() int {
-	return 2012
 	now := time.Now()
 	defaultNflYear := now.Year()
 	if now.Month() < time.July {

@@ -82,6 +82,22 @@ angular.module('app.filters')
       return input+(s[(v-20)%10]||s[v]||s[0]);
     };
   })
+  .filter('niceMarketDesc', ['$filter', function($filter) {
+    return function(market) {
+      // Day Desc
+      if (market.games.length > 1 && new Date(market.closed_at) - new Date(market.started_at) < 24 * 60 * 60 * 1000) {
+        return "All games on " + $filter('shortFormDate')(market.started_at )
+      }
+      // Game Desc
+      if (market.games.length == 1) {
+        return market.games[0].away_team + " at " + market.games[0].home_team + " on " + market.games[0].network;
+      }
+      // Date Desc
+      if (new Date(market.closed_at) - new Date(market.started_at) > 24 * 60 * 60 * 1000) {
+        return $filter('shortFormDate')(market.started_at ) + " - " + $filter('shortFormDate')(market.closed_at);
+      }
+    };
+  }])
   .filter('unlimitedIfZero', function() {
     return function(input) {
       if (input === 0) {

@@ -16,7 +16,7 @@ class Roster < ActiveRecord::Base
 
   before_destroy :pre_destroy
 
-  scope :finished, -> { where(state: ['finished'])}
+  scope :over, -> { where(state: ['cancelled', 'finished'])}
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
   scope :submitted, -> { where(state: ['submitted'])}
 
@@ -36,7 +36,7 @@ class Roster < ActiveRecord::Base
     MarketPlayer.where(:market_id => self.market_id, :player_stats_id => self.rosters_players.map(&:player_stats_id))
   end
 
-  #create a roster. does not deduct funds until roster is submitted.
+  # create a roster. does not deduct funds until roster is submitted.
   def self.generate(user, contest_type)
 
     raise HttpException.new(409, "You may only have one roster in progress at a time.") if user.in_progress_roster
