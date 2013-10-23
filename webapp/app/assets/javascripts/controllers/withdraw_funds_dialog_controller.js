@@ -30,31 +30,16 @@ angular.module("app.controllers")
   $scope.newRecipient = $scope.newRecipient || {};
   $scope.newAccount   = $scope.newAccount   || {};
 
-  var saveAccountCallback = function(st, stripeResp){
-    if(st === 200){
-      $scope.newRecipient.token = stripeResp['id'];
-      fs.recipients.create($scope.newRecipient).then(function(resp){
-        $scope.saveAcctSpinner = false;
-        $scope.focusAmount = true;
-        flash.success = "Success, your bank account has been added.";
-        $scope.recipient = resp;
-      });
-    } else {
-      $scope.saveAcctSpinner = false;
-      flash.error = stripeResp.error.message;
-    }
-  };
-
   $scope.createRecipient = function(){
     $scope.saveAcctSpinner = true;
-    $scope.newAccount.country = 'US';
-    //have to dup this object otherwise, the values get niled out and the form
-    //goes blank. maybe internally in createToken Stripe.js is deleting keys?
-    var _newAcct = JSON.parse(JSON.stringify($scope.newAccount));
-    Stripe.bankAccount.createToken(_newAcct, function(st, stripeResp){
-      $scope.$apply(function(){
-        saveAccountCallback(st, stripeResp);
-      });
+    fs.recipients.create($scope.newAccount).then(function(resp){
+      $scope.saveAcctSpinner = false;
+      $scope.focusAmount = true;
+      flash.success = "Success, your PayPal has been added.";
+      $scope.recipient = resp;
+    }, function(resp) {
+      $scope.saveAcctSpinner = false;
+      flash.error = resp.error;
     });
   };
 

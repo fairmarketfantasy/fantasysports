@@ -33,7 +33,7 @@ class RecipientsController < ApplicationController
   private
 
     def recipient_params
-      params.require(:recipient).permit(:name, :token)
+      params.require(:recipient).permit(:paypal_email, :paypal_email_confirmation)
     end
 
 end

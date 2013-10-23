@@ -1,5 +1,6 @@
 angular.module("app.controllers")
-.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', function($scope, dialog, fs, flash, currentUserService) {
+.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', '$timeout', function($scope, dialog, fs, flash, currentUserService, $timeout) {
+  $timeout(function() { $scope.card = new Skeuocard($("#credit-card-form")); }, 0);
 
   $scope.currentUser = currentUserService.currentUser;
   $scope.cardInfo    = $scope.cardInfo     || {};
@@ -22,6 +23,7 @@ angular.module("app.controllers")
       $scope.selectedCardId = _.find($scope.cards, function(card){
           return card.default;
       }).id;
+      $scope.showCardForm = false;
     }
   };
 
@@ -45,13 +47,17 @@ angular.module("app.controllers")
     dialog.close();
   };
 
-
-  var saveCardCallback = function(st, stripeResp){
-    if(st === 200){
-      var token = stripeResp['id'];
-      var cardNumber = $scope.cardInfo.number;
-
-      fs.cards.create(token, cardNumber).then(function(resp){
+  $scope.saveCard = function() {
+    if (!$scope.card.isValid() && $scope.card._getUnderlyingValue('type') != 'amex') { return; }
+    $scope.saveCardSpinner = true;
+    fs.cards.create(
+        $scope.card._getUnderlyingValue('type'),
+        $scope.card._getUnderlyingValue('number'),
+        $scope.card._getUnderlyingValue('cvc'),
+        $scope.card._getUnderlyingValue('name'),
+        $scope.card._getUnderlyingValue('expMonth'),
+        $scope.card._getUnderlyingValue('expYear')
+    ).then(function(resp) {
         $scope.saveCardSpinner = false;
         if(resp.error){
           flash.error = resp.error;
@@ -63,73 +69,12 @@ angular.module("app.controllers")
           $scope.focusAmount = true;
           flash.success = "Success, your card was saved.";
         }
-      }, function(resp){
+    }, function(resp){
         //failure
         $scope.saveCardSpinner = false;
-      });
-    } else {
-      $scope.saveCardSpinner = false;
-      flash.error = stripeResp.error.message;
-    }
-  };
-
-  var localChecks = function(cardInfo){
-    if(!Stripe.card.validateCardNumber(cardInfo.number)){
-      $scope.cardNumError = true;
-      flash.error = "This card number looks invalid";
-      return false;
-    }else if(!Stripe.card.validateCVC(cardInfo.cvc)){
-      $scope.cvcError = true;
-      flash.error = "CVC code doesn't look right";
-      return false;
-    } else if(cardInfo.address_zip && cardInfo.address_zip.length !== 5){
-      flash.error = "Zip code doesn't look right";
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  $scope.saveCard = function(){
-    $scope.saveCardSpinner = true;
-    if(!localChecks($scope.cardInfo)){
-      $scope.saveCardSpinner = false;
-      return;
-    } else {
-      Stripe.card.createToken($scope.cardInfo, function(st, stripeResp){
-        $scope.$apply(function(){
-          saveCardCallback(st, stripeResp);
-        });
-      });
-    }
-  };
-
-  $scope.$watch('cardInfo.number', function(){
-    if(!$scope.cardInfo.number){
-      return;
-    } else {
-      var cardNum = $scope.cardInfo.number.replace(/\D/g, '');
-      var cardType = Stripe.cardType(cardNum);
-      var match;
-
-      if (cardType == "American Express") {
-        match = cardNum.match(/^(\d{1,4})(\d{0,6})(\d{0,5})$/);
-        if(match){
-          match = _.without(match, "");
-          $scope.cardInfo.number = match.slice(1).join("-");
-        }
-      } else if ( cardType == "Diner's Club") {
-        match = cardNum.match(/^(\d{1,4})(\d{0,4})(\d{0,4})(\d{0,2})$/);
-        if(match){
-          match = _.without(match, "");
-          $scope.cardInfo.number = match.slice(1).join("-");
-        }
-      } else {
-        match = cardNum.match(/\d{4}(?=\d{2,3})|\d+/g);
-        $scope.cardInfo.number = match.join("-");
       }
-    }
-  });
+    );
+  };
 
   $scope.addFunds = function(){
     var amt = ($scope.chargeAmt * 100); //dollars to cents

@@ -1,3 +1,3 @@
 class RecipientSerializer < ActiveModel::Serializer
-  attributes :id, :legal_name, :last4, :bank_name
+  attributes :id, :paypal_email
 end
