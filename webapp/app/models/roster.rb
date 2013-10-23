@@ -258,7 +258,7 @@ class Roster < ActiveRecord::Base
   def cancel!(reason)
     self.with_lock do
       if self.state == 'submitted'
-        self.owner.customer_object.increase_balance(self.buy_in, 'cancelled_roster', self.id, self.contest_id)
+        self.owner.customer_object.increase_balance(self.buy_in, 'cancelled_roster', :roster_id => self.id, :contest_id => self.contest_id)
         self.contest_id = nil
         self.state = 'cancelled'
         self.cancelled = true

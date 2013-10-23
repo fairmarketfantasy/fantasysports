@@ -1,68 +1,53 @@
 class Recipient < ActiveRecord::Base
-  attr_accessor :token, :name
-  attr_protected
+  attr_accessor :paypal_email_confirmation
+  attr_accessible :paypal_email, :paypal_email_confirmation, :user
 
   belongs_to :user
   has_one    :customer_object, through: :user
 
   validate  :user_must_be_confirmed
-  validates :stripe_id, :user_id, presence: true
+  validates :paypal_email, :user_id, presence: true
 
-  before_validation :set_stripe_id, on: :create
+  before_validation :confirm_email, on: :create
 
-  def reload
-    @stripe_object = nil
-    super
+  def confirm_email
+    errors.add(:email, "must match confirmation_email.") unless self.paypal_email == self.paypal_email_confirmation
   end
 
   def user_must_be_confirmed
     errors.add(:user, "must be confirmed.") unless user.confirmed?
   end
 
-  def set_stripe_id
-    unless token
-      raise ArgumentError, "Must supply a bank account token from stripe.js"
-    end
-    resp = Stripe::Recipient.create({
-                                      name: name,
-                                      type:  "individual",
-                                      email: user.email,
-                                      bank_account: token
-                                    })
-    self.stripe_id = resp.id
-  end
-
   def transfer(amount)
-    resp = Stripe::Transfer.create({
-              amount:   amount,
-              currency: 'usd',
-              recipient: stripe_id,
-              description: "Transfer for #{self.user.email}" #this shows up on the users bank statement after the SITE's url
-            })
-    amount = resp.amount
-    customer_object.decrease_balance(amount, "withdrawal")
+    # Build request object
+    api = PayPal::SDK::AdaptivePayments.new
+    pay = api.build_pay({
+      :actionType => "PAY",
+      :cancelUrl => "#{SITE}/samples/adaptive_payments/pay",
+      :currencyCode => "USD",
+      :senderEmail => PAYPAL_OWNER,
+      :feesPayer => "EACHRECEIVER", #"SENDER",
+      :ipnNotificationUrl => "#{ SITE }/samples/adaptive_payments/ipn_notify",
+      :memo => "Withdrawal from FairMarketFantasy.com",
+      :receiverList => {
+        :receiver => [{
+          :amount => amount.to_i/100.0, # TODO: validate this
+          :email => self.paypal_email}],
+      },
+      :returnUrl => "#{SITE }/samples/adaptive_payments/pay"
+    })
+
+    # Make API call & get response
+    response = api.pay(pay)
+    debugger
+    # Access response
+    if response.success?
+      response.payKey
+      api.payment_url(response)  # Url to complete payment
+    else
+      raise HttpResponse.new 409, response.error[0].message
+    end
+    customer_object.decrease_balance(amount.to_i, "withdrawal", :transaction_data => {:paypal_transaction_id => response.payKey}.to_json)
   end
 
-  #attributes from STRIPE API
-  def bank_name
-    stripe_object.active_account.bank_name
-  end
-
-  def legal_name
-    stripe_object.name
-  end
-
-  def last4
-    stripe_object.active_account.last4
-  end
-
-  def stripe_object
-    #memoize the retrieving of the stripe object...
-    @stripe_object ||= Stripe::Recipient.retrieve(stripe_id)
-  end
-
-  # # go fetch it again
-  # def stripe_object!
-  #   @so = Stripe::Recipient.retrieve(stripe_id)
-  # end
 end

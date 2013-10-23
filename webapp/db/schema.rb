@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131020191432) do
+ActiveRecord::Schema.define(version: 20131021190602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -286,8 +286,8 @@ ActiveRecord::Schema.define(version: 20131020191432) do
   end
 
   create_table "recipients", force: true do |t|
-    t.string  "stripe_id", null: false
-    t.integer "user_id",   null: false
+    t.integer "user_id",      null: false
+    t.string  "paypal_email", null: false
   end
 
   create_table "rosters", force: true do |t|
