@@ -5,9 +5,16 @@ class LeaderboardController < ApplicationController
   protected
 
   def most_dollars
+    # select max(owner_id), sum(amount_paid) from rosters group by owner_id order by sum(amount_paid) desc;
+    fetch_users(
+      Roster.select('MAX(owner_id) owner_id, SUM(amount_paid) amount').group('owner_id').order('SUM(amount_paid) desc').where('NOT takes_tokens')
+    )
   end
 
   def most_fan_frees
+    fetch_users(
+      Roster.select('MAX(owner_id) owner_id, SUM(amount_paid) amount').group('owner_id').order('SUM(amount_paid) desc').where('takes_tokens')
+    )
   end
   def best_h2h
   end
@@ -32,5 +39,15 @@ class LeaderboardController < ApplicationController
     when 'all':
       scope
     end
+  end
+
+  def fetch_users(scope)
+    user_amounts = {}
+    scope.add_timeframe.limit(10).each do |row|
+      user_amounts[row.owner_id] = row[:amount]
+    end
+    users = User.where(:id => user_amounts.keys)
+    users.each{|u| u.leaderboard_amount = user_amounts[u.id] }
+    users
   end
 end
