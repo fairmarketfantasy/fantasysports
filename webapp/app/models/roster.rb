@@ -2,7 +2,7 @@
 class Roster < ActiveRecord::Base
   attr_protected
 
-  has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players', foreign_key: "roster_id"
+  has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players'
   has_many :rosters_players
   belongs_to :market
   belongs_to :contest
@@ -146,7 +146,12 @@ class Roster < ActiveRecord::Base
 
   def add_player(player)
     begin
+      raise HttpException(409, "There is no room for another #{player.position} in your roster") unless remaining_positions.include?(player.position)
       exec_price("SELECT * from buy(#{self.id}, #{player.id})")
+      self.class.uncached do
+        self.players.reload
+        # TODO: may need to reload roster players too
+      end
     rescue StandardError => e
       if e.message =~ /already in roster/
         raise HttpException.new(409, "That player is already in your roster")
@@ -204,9 +209,46 @@ class Roster < ActiveRecord::Base
       player = players.sample
       next if player.nil?
       players.delete(player)
-      self.add_player(player)
+      add_player(player)
     end
     self.reload 
+  end
+
+  def fill_pseudo_randomly
+    ActiveRecord::Base.transaction do
+      @candidate_players = {}
+      indexes = {}
+      position_array.each { |pos| @candidate_players[pos] = []; indexes[pos] = 0}
+      self.purchasable_players.each do |p| 
+        @candidate_players[p.position] << p if @candidate_players.include?(p.position)
+        indexes[p.position] += 1 if p.buy_price > 1100
+      end
+      @candidate_players.each do |pos,players|
+        @candidate_players[pos] = players.sort_by{|player| -player.buy_price }
+      end
+
+      begin
+        position = remaining_positions.sample # One level of randomization
+        player = (indexes[position] > 0 ? @candidate_players[position].slice(0, indexes[position]) : @candidate_players[position]).sample
+        add_player(player)
+        @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
+      end while(remaining_positions.length > 0)
+    end
+    self.reload 
+  end
+
+  def position_array
+    @position_list ||= self.positions.split(',')
+  end
+
+  def remaining_positions
+    positions = position_array.dup
+    pos_taken = self.players.map(&:position)
+    pos_taken.each do |pos|
+      i = positions.index(pos)
+      positions.delete_at(i) if not i.nil?
+    end
+    positions
   end
   
   def pre_destroy
@@ -227,48 +269,4 @@ class Roster < ActiveRecord::Base
     end
   end
 
-end
-
-module PlayerSelection
-  def fill_pseudo_randomly
-    @candidate_players = {:indexes => {}}
-    position_array.each { |pos| @candidate_players[pos] = []; @candidate_players[:indexes][pos] = 0}
-    self.purchasable_players.each do |p| 
-      @candidate_players[p.position] << p if @candidate_players.include?(player.position)
-      @candidate_players[:indexes][pos] += 1 if player.buy_price > 1100
-    end
-    @candidate_players.each do |pos,players|
-      @candidate_players[pos] = @candidate_players[pos].sort_by{|p| -p.buy_price }
-    end
-
-    begin
-      position = remaining_positions.sample # One level of randomization
-      player = (@candidate_players[:indexes] > 0 ? @candidate_players.slice(0, @candidate_players[:indexes][position]) : @candidate_players).sample
-    end while(remaining_positions.length > 0)
-
-    #pick players that fill those positions
-    #organize players by position
-    positions.each do |pos|
-      players = for_sale_by_pos[pos]
-      player = players.sample
-      next if player.nil?
-      players.delete(player)
-      self.add_player(player)
-    end
-    self.reload 
-  end
-
-  def position_array
-    @position_list ||= self.positions.split(',') #TODO- could cache this
-  end
-
-  def remaining_positions
-    positions = position_array.dup
-    pos_taken = self.players.collect(&:position)
-    pos_taken.each do |pos|
-      i = positions.index(pos)
-      positions.delete_at(i) if not i.nil?
-    end
-    positions
-  end
 end

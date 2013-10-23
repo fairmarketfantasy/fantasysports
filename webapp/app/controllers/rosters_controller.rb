@@ -71,5 +71,11 @@ class RostersController < ApplicationController
       losses: stats[:losses] || 0,
     })
   end
+
+  def autofill
+    roster = current_user.rosters.where(:id => params[:id]).first
+    roster.fill_pseudo_randomly
+    render_api_response roster
+  end
 end
 

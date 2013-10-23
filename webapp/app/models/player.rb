@@ -13,7 +13,8 @@ class Player < ActiveRecord::Base
   # Some positions are never used in NFL
   default_scope { where("position NOT IN('OLB', 'OL')") }
 
-  has_and_belongs_to_many :rosters, join_table: 'rosters_players', association_foreign_key: "contest_roster_id"
+  has_many :rosters_players
+  has_and_belongs_to_many :rosters, join_table: 'rosters_players'
 
   scope :autocomplete, ->(str)        { where("name ilike '%#{str}%'") }
   scope :on_team,      ->(team)       { where(team: team)}

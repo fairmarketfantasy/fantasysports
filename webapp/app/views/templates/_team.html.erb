@@ -2,6 +2,7 @@
       <div class="roster-area">
         <div class="clearfix">
           <h4 class="team-heading inline-heading">Roster</h4>
+          <a class="btn btn-small btn-info pull-right" href="javascript://" ng-show="roster.owner_id == currentUser.id && roster.state == 'in_progress'" ng-click="rosters.autoFill()">AutoFill</a>
           <div class="salary-cap score" ng-show="inThePast(market.started_at)" highlight-changes="roster.score">Team Score: {{roster.score | zeroIfEmpty}}
           </div>
         </div>
