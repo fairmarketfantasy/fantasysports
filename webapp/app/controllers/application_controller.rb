@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   rescue_from 'HttpException', :with => :http_exception_handler
 
   before_filter :configure_permitted_parameters, if: :devise_controller?
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => :healthcheck
 
   def healthcheck
     User.uncached do
