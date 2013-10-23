@@ -73,6 +73,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       if e.message =~ /username.*already exists/
         raise HttpException.new(422, "That username is taken. Choose another one")
       end
+        raise HttpException.new(422, e.message)
     end
   end
 

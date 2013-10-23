@@ -54,6 +54,16 @@
 </head>
 
 <body ng-controller="ApplicationController" class="landing-body">
+  <div flash-alert active-class="alert in" class="fixed-flash fade">
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <strong class="alert-heading"></strong>
+          <span class="alert-message">{{flash.message}}</span>
+        </div>
+      </div>
+    </div>
+  </div>  
   <div class="fixed-header">
     <div class="container clearfix">
       <div class="span6 nav-span">
