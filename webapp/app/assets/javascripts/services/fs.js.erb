@@ -206,6 +206,9 @@ angular.module('app.services')
         cancel: function(roster_id) {
           return $http({method: 'DELETE', url: '/rosters/' + roster_id});
         },
+        autoFill: function(roster_id) {
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/autofill'});
+        },
       },
     }
   }])

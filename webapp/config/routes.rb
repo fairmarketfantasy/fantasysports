@@ -62,7 +62,9 @@ Fantasysports::Application.routes.draw do
       get 'past_stats', :action => 'past_stats'
       get 'in_contest/:contest_id', :action => 'in_contest'
     end
-    member do post 'submit', :action => 'submit'
+    member do 
+      post 'submit', :action => 'submit'
+      post 'autofill', :action => 'autofill'
       post 'add_player/:player_id', :action => 'add_player'
       post 'remove_player/:player_id', :action => 'remove_player'
     end
