@@ -53,7 +53,6 @@ class CustomerObject < ActiveRecord::Base
       Rails.logger.error(e)
       raise e
     end
-      debugger
     # TODO Save paypal transaction id # payment.id
     if r && payment.state == 'approved'
       increase_balance(payment.transactions.first.amount.total.to_i * 100, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
