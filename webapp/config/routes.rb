@@ -21,6 +21,7 @@ Fantasysports::Application.routes.draw do
   end
 
   # You can have the root of your site routed with "root"
+  get '/healthcheck' => 'application#healthcheck'
   post '/support' => 'pages#support'
   get '/terms' => 'pages#terms'
   get '/guide' => 'pages#guide'
