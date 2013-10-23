@@ -23,6 +23,9 @@ test: &default
 development:
   <<: *default
 
+staging:
+  <<: *default
+
 production:
   <<: *default
   client_id: AakBYhDA_snCU2434TT4sVNX8FIYlF8DkafbybNXoUirxnzTJ0mih_p6hXqs
