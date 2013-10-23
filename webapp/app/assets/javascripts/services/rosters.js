@@ -197,6 +197,12 @@ angular.module('app.data')
         });
       };
 
+      this.autoFill = function() {
+        fs.rosters.autoFill(this.currentRoster.id).then(function(roster) {
+          this.currentRoster = rosterData[this.currentRoster.id] = roster;
+        });
+      };
+
       this.openInviteFriends = function(roster) {
         var dialogOpts = {
               backdrop: true,
