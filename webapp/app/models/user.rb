@@ -101,7 +101,7 @@ class User < ActiveRecord::Base
     return true
   end
 
-  def charge(amount, use_tokens, opts = {})
+  def charge(amount, use_tokens, opts = {}) # roster_id, contest_id, invitation_id, referred_id
     if use_tokens
       ActiveRecord::Base.transaction do
         self.reload
@@ -111,7 +111,7 @@ class User < ActiveRecord::Base
         self.save
       end
     else
-      self.customer_object.decrease_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id], opts[:referred_id])
+      self.customer_object.decrease_balance(amount, opts[:event], opts)
     end
   end
 
@@ -125,7 +125,7 @@ class User < ActiveRecord::Base
         self.save
       end
     else
-      self.reload.customer_object.increase_balance(amount, opts[:event], opts[:roster_id], opts[:contest_id], opts[:invitation_id], opts[:referred_id])
+      self.reload.customer_object.increase_balance(amount, opts[:event], opts)
     end
   end
 end

@@ -16,25 +16,17 @@ class RecipientTest < ActiveSupport::TestCase
           user.stubs(:confirmed?).returns(false)
         end
         it "should populate user errors if user is unconfirmed" do
-          recipient = Recipient.create({name: user.name, user: user, token: valid_account_token})
+          recipient = Recipient.create({user: user, paypal_email: user.email, paypal_email_confirmation: user.email})
           recipient.errors[:user].wont_be_nil
         end
       end
 
-      describe "no token param" do
-        it "should raise arg error for no token" do
-          lambda {
-            Recipient.create({name: user.name, user: user})
-          }.must_raise ArgumentError
-        end
-      end
     end
 
     describe "valid create" do
-      it "should assign a stripe id" do
-        r = Recipient.create({user: user, name: user.name, token: valid_account_token})
+      it "should be created" do
+        r = Recipient.create({user: user, paypal_email: user.email, paypal_email_confirmation: user.email })
         r.id.wont_be_nil #record got saved
-        r.stripe_id.wont_be_nil
       end
     end
   end

@@ -1,12 +1,21 @@
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
+  force_ssl :except => :healthcheck if ['staging', 'production'].include?(Rails.env)
+
   protect_from_forgery
 
   rescue_from 'HttpException', :with => :http_exception_handler
 
   before_filter :configure_permitted_parameters, if: :devise_controller?
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => :healthcheck
+
+  def healthcheck
+    User.uncached do
+      User.first # Test DB
+    end
+    render :text => "HealthCheck: OK", :status => :ok
+  end
 
   protected
 

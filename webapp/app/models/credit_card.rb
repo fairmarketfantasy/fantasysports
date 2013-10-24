@@ -1,17 +1,63 @@
 class CreditCard < ActiveRecord::Base
+  attr_protected
+  # Enforce generator usage
+  private
 
-  #this class doesn't actually store and access the credit cards on stripe.
-  #the purpose of this class is to store MD5 Hashes of CCs to prevent the same CC from
+  def self.create(opts)
+    super
+  end
+  def self.create!(opts)
+    super
+  end
+  def self.save(opts)
+    super
+  end
+  def self.save!(opts)
+    super
+  end
+
+  public
+
+  def self.generate(customer_object, type, name, number, cvc, exp_month, exp_year)
+    resp = PayPal::SDK::REST::CreditCard.new({
+      :type => type,
+      :number => number,
+      :expire_month => Integer(exp_month),
+      :expire_year => exp_year.to_s.length == 2 ? Integer("20" + exp_year.to_s) : exp_year,
+      :first_name => name.split(' ')[0],
+      :last_name => name.split(' ')[1],
+    })
+    resp.create
+    if resp.state == "ok"
+      c = CreditCard.new(
+        :customer_object_id => customer_object.id,
+        :paypal_card_id => resp.id,
+        :card_type => resp.type,
+        :obscured_number => resp.number,
+        :expires => Time.new(resp.expire_year, resp.expire_month),
+        :first_name => resp.first_name,
+        :last_name => resp.last_name,
+      )
+      c.card_number = number
+      c.save!
+      customer_object.default_card = c
+      customer_object.save!
+    else
+      raise "Paypal Card State not ok, was: " + resp["state"] + '. Response: ' + resp.to_json
+    end
+  end
+
+  #this class is to store MD5 Hashes of CCs to prevent the same CC from
   #being used on multiple acccounts.
 
   #if you want to get information about a users cards, you would do that with CustomerObject#cards
 
-  attr_accessible :customer_object_id, :card_number_hash, :deleted, :card_number, :token
+  #attr_accessible :customer_object_id, :card_number_hash, :deleted, :card_number, :token, :obscured_number, :first_name, :last_name, :type, :expires
   attr_accessor :card_number, :token
 
   belongs_to :customer_object
 
-  before_validation :hash_card_number, :set_card_id, on: :create
+  before_validation :hash_card_number, on: :create
 
   validates :customer_object_id, :card_number_hash, presence: true
   validate  :number_is_not_used
@@ -36,11 +82,6 @@ class CreditCard < ActiveRecord::Base
 
   def is_a_stripe_test_number
     STRIPE_TEST_NUMBERS.include?(self.card_number.to_s)
-  end
-
-  def set_card_id
-    stripe_card = customer_object.stripe_object.cards.create({card: token})
-    self.card_id = stripe_card.id
   end
 
 end
