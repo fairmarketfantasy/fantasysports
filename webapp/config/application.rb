@@ -40,6 +40,7 @@ module Fantasysports
     config.autoload_paths += Dir["#{Rails.root}/lib/**/"]
 
     config.assets.enabled = true
+    config.assets.precompile += %w(*.png *.jpg *.jpeg *.gif) #vender doesn't include images, doh
 
     config.app_generators.stylesheet_engine :less
 
