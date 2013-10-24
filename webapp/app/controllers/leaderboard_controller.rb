@@ -24,6 +24,7 @@ class LeaderboardController < ApplicationController
   end
 
   def add_timeframe(scope)
+=begin
     case params[:timeframe]
     when 'week':
       scope.where('submitted_at > ?', Time.new.beginning_of_day - 7.days)
@@ -39,6 +40,7 @@ class LeaderboardController < ApplicationController
     when 'all':
       scope
     end
+=end
   end
 
   def fetch_users(scope)
