@@ -2,6 +2,10 @@
 @import "mixins";
 @import "variables";
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 /* Overrides and base styles
   --------------------------------------------------------------------------- */
 select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
@@ -417,6 +421,10 @@ footer {
 .card-list {
   margin-bottom: 20px;
 }
+.card-type {
+  float: right;
+  margin-top: -10px;
+}
 .add-funds-input {
   width: 80px;
   margin: 0 10px;
@@ -477,6 +485,10 @@ input, textarea, .uneditable-input {
   .border-radius(4px);
   display: inline-block;
   border: 2px solid mix(@firm, @alert-border, 5%);
+}
+.recipient-type {
+  float: left;
+  font-weight: bold;
 }
 .withdraw-amount {
   width: 50px;

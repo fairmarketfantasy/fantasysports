@@ -178,6 +178,7 @@ angular.module('app.data')
             currentUserService.currentUser.balance -= roster.buy_in;
           }
           self.reset();
+          flash.success = "Roster submitted successfully!";
           //self.justSubmittedRoster = roster;
         });
       };

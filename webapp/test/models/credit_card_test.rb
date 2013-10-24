@@ -7,7 +7,6 @@ class CreditCardTest < ActiveSupport::TestCase
     let(:card_number) { "1234-5678-7899-9122" }
     let(:user)        { create(:paid_user) }
     let(:new_credit_card) { build(:credit_card, card_number: card_number,
-                                                token: valid_card_token,
                                                 customer_object: user.customer_object) }
 
     describe "on create hash the card_number" do
@@ -29,7 +28,6 @@ class CreditCardTest < ActiveSupport::TestCase
       before(:all) do
         create( :credit_card,
                 card_number: card_number,
-                token: valid_card_token,
                 customer_object: user.customer_object)
       end
 
@@ -46,11 +44,10 @@ class CreditCardTest < ActiveSupport::TestCase
       before(:all) do
         create( :credit_card,
                 card_number: stripe_number,
-                token: valid_card_token,
                 customer_object: user.customer_object)
       end
 
-      subject { build(:credit_card, customer_object: user.customer_object, token: valid_card_token, card_number: stripe_number) }
+      subject { build(:credit_card, customer_object: user.customer_object, card_number: stripe_number) }
 
       it "should be able to save another card with a stripe test number" do
         subject.save!.must_equal true
@@ -61,7 +58,6 @@ class CreditCardTest < ActiveSupport::TestCase
           3.times do
             create( :credit_card,
                     card_number: stripe_number,
-                    token: valid_card_token,
                     customer_object: user.customer_object)
           end
         end

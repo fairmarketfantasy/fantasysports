@@ -3,9 +3,8 @@ class CustomerObject < ActiveRecord::Base
   attr_protected
 
   belongs_to :user
+  belongs_to :default_card, :class_name => 'CreditCard'
   has_many :credit_cards
-
-  before_validation :set_stripe_id, on: :create
 
   #override reload to nil out memoized stripe object
   def reload
@@ -13,57 +12,57 @@ class CustomerObject < ActiveRecord::Base
     super
   end
 
-  def set_stripe_id
-    unless Rails.env == 'test' && self.stripe_id
-      resp = Stripe::Customer.create({
-                                      description: "Customer for #{user.email}"
-                                    })
-      self.stripe_id = resp.id
-    end
-  end
-
-  def cards
-    stripe_object.cards
-  end
-
-  def default_card_id
-    stripe_object.default_card
-  end
-
   def delete_card(card_id)
-    stripe_object.cards.retrieve(card_id).delete()
-    credit_card = CreditCard.find_by(card_id: card_id)
-    credit_card.deleted = true
-    credit_card.save!
-  end
-
-  ##Talk to Stripe API
-  def self.find_by_charge_id(id)
-    charge          = Stripe::Charge.retrieve(id)
-    customer        = charge.card.customer
-    self.find_by(stripe_id: customer)
+    card = credit_cards.find(card_id)
+    paypal_credit_card = PayPal::SDK::REST::CreditCard.find(card.paypal_card_id)
+    if paypal_credit_card.delete
+      card.deleted = true
+      card.save
+    end
   end
 
   def charge(amount_in_cents)
     #strip api require charging at least 50 cents
+    raise "Customer has no default cards" unless default_card
     amount = amount_in_cents.to_i
-    # begin
-    resp = Stripe::Charge.create({
-      amount:   amount,
-      currency: "usd",
-      customer: stripe_id,
+    payment = PayPal::SDK::REST::Payment.new({
+      intent: "sale",
+      payer: {
+        payment_method: "credit_card",
+        funding_instruments: [
+          {
+            credit_card_token: {
+              credit_card_id: self.default_card.paypal_card_id,
+            }
+          }
+        ],
+      },
+      transactions: [
+        {
+          amount: {
+            total: amount / 100,
+            currency: "USD",
+          },
+          description: "Purchase on FairMarketFantasy.com"
+        }
+      ]
     })
-    increase_balance(resp.amount, 'deposit') # Don't change this without changing them elsewhere
-    resp
-    # rescue Stripe::CardError => e
-    #   #card has been declined, handle this exception and log it somewhere
-    #   raise e
-    # end
+    begin
+      r = payment.create
+    rescue => e
+      Rails.logger.error(e)
+      raise e
+    end
+    # TODO Save paypal transaction id # payment.id
+    if r && payment.state == 'approved'
+      increase_balance(payment.transactions.first.amount.total.to_i * 100, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
+    end
+    payment
   end
 
   def set_default_card(card_id)
-    stripe_object.default_card = card_id
-    stripe_object.save
+    self.default_card = self.credit_cards.select{|c| c.id == card_id}.first
+    self.save!
   end
 
   def balance_in_dollars
@@ -71,27 +70,22 @@ class CustomerObject < ActiveRecord::Base
   end
 
   # TODO: refactor this argument nonsense
-  def increase_balance(amount, event, roster_id = nil, contest_id = nil, invitation_id = nil, referred_id = nil)
+  def increase_balance(amount, event, opts = {})
     ActiveRecord::Base.transaction do
       self.balance += amount
-      TransactionRecord.create!(:user => self.user, :event => event, :amount => amount, :roster_id => roster_id, :contest_id => contest_id, :invitation_id => invitation_id, :referred_id => referred_id)
+      TransactionRecord.create!({:user => self.user, :event => event, :amount => amount}.merge(opts))
       self.save!
     end
   end
 
-  def decrease_balance(amount, event, roster_id = nil, contest_id = nil, invitation_id = nil, referred_id = nil)
+  def decrease_balance(amount, event, opts = {})
     ActiveRecord::Base.transaction do
       self.reload
       raise HttpException.new(409, "You're trying to transfer more than you have.") if self.balance - amount < 0 && self.user != SYSTEM_USER
       self.balance -= amount
-      TransactionRecord.create!(:user => self.user, :event => event, :amount => -amount, :roster_id => roster_id, :contest_id => contest_id, :invitation_id => invitation_id, :referred_id => referred_id)
+      TransactionRecord.create!({:user => self.user, :event => event, :amount => -amount}.merge(opts))
       self.save!
     end
-  end
-
-  def stripe_object
-    #memoize stripe object
-    @strip_object ||= Stripe::Customer.retrieve(stripe_id)
   end
 
 end
