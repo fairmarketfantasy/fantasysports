@@ -15,7 +15,6 @@ co = CustomerObject.where(:user_id => SYSTEM_USER.id).first
 if co.nil?
   begin
     co = CustomerObject.new(:user_id => SYSTEM_USER.id, :balance => 0)
-    co.stripe_id = "blah" if Rails.env == 'test'
     co.save!
   rescue => e
     puts "ERROR CREATING SYSTEM USER CUSTOMER OBJECT. NO MONEY WILL BE COLLECTED: #{e.message}"

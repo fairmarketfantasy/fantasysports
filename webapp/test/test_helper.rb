@@ -1,5 +1,4 @@
 ENV["RAILS_ENV"] ||= "test"
-require 'stripe_mock'
 require File.expand_path('../../config/environment', __FILE__)
 require File.expand_path('../../db/seeds', __FILE__)
 require 'rails/test_help'
@@ -17,8 +16,8 @@ class ActiveSupport::TestCase
   ActiveRecord::Migration.check_pending!
   include ActionDispatch::TestProcess
 
-  setup { StripeMock.start }
-  teardown { StripeMock.stop }
+  setup {  }
+  teardown { }
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   #
@@ -59,6 +58,14 @@ class ActiveSupport::TestCase
     resp
   end
 
+  def create_team1
+    @team1 ||= create(:team1)
+  end
+  def create_team2
+    @team2 ||= create(:team2)
+  end
+
+
   #creates one market with 2 games, 4 teams, and 36 players. market is not published.
   def setup_multi_day_market
     @teams = [create(:team1, :abbrev => "AA"),
@@ -80,16 +87,18 @@ class ActiveSupport::TestCase
 
   #creates a published market with one game, two teams, and 18 players
   def setup_simple_market
-    @team1 = create :team1
-    @team2 = create :team2
+    @team1 = create_team1
+    @team2 = create_team2
     @game = create :game
     @players = []
+    other_players = []
     Positions.default_NFL.split(',').each do |position|
       player = create :player, :team => @team1, :position => position
       @players << player
       player = create :player, :team => @team2, :position => position
-      @players << player
+      other_players << player
     end
+    @players = @players.concat(other_players)
     @market = create :new_market
     GamesMarket.create(market_id: @market.id, game_stats_id: @game.stats_id)
     @market.publish
@@ -98,19 +107,6 @@ class ActiveSupport::TestCase
   end
 
   #returns hash with routing and account_num
-  def valid_account_token
-    StripeMock.generate_card_token(
-      :bank_account => {
-        :country => "US",
-        :routing_number => "110000000",
-        :account_number => "000123456789",
-      }
-    )
-  end
-
-  def valid_card_token
-    StripeMock.generate_card_token(last4: "4242", exp_year: 2017)
-  end
 end
 
 
@@ -136,8 +132,9 @@ FactoryGirl.define do
 
     factory :paid_user do
       after(:create) do |user|
+        user.confirm!
         user.customer_object = create(:customer_object, user: user)
-        user.recipient       = create(:recipient, user: user)
+        user.recipient       = create(:recipient, user: user, paypal_email: user.email, paypal_email_confirmation: user.email)
         user.token_balance = 2000
         user.save!
       end
@@ -148,17 +145,20 @@ FactoryGirl.define do
     balance 20000
     token { generate(:random_string) }
     after(:create) do |customer_object|
-      create(:credit_card, token: StripeMock.generate_card_token(last4: "4242", exp_year: 2017), customer_object: customer_object)
+      c = create(:credit_card, customer_object: customer_object)
+      customer_object.default_card = c
+      customer_object.save!
     end
   end
 
   factory :credit_card do
-    card_id { generate(:random_string) }
+    paypal_card_id { generate(:random_string) }
     card_number '4242424242424242'
+    expires Time.new(2019, 12)
   end
 
   factory :recipient do
-    token { generate(:random_string) }
+    paypal_email { generate(:email) }
   end
 
   factory :team1, class: Team do

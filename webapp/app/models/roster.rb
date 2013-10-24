@@ -146,7 +146,7 @@ class Roster < ActiveRecord::Base
 
   def add_player(player)
     begin
-      raise HttpException(409, "There is no room for another #{player.position} in your roster") unless remaining_positions.include?(player.position)
+      raise HttpException.new(409, "There is no room for another #{player.position} in your roster") unless remaining_positions.include?(player.position)
       exec_price("SELECT * from buy(#{self.id}, #{player.id})")
       self.class.uncached do
         self.players.reload
@@ -162,6 +162,10 @@ class Roster < ActiveRecord::Base
 
   def remove_player(player)
     exec_price("SELECT * from sell(#{self.id}, #{player.id})")
+    self.class.uncached do
+      self.players.reload
+      # TODO: may need to reload roster players too
+    end
   end
 
   def exec_price(sql)

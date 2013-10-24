@@ -7,7 +7,7 @@ class CardsControllerTest < ActionController::TestCase
     sign_in(user)
     assert_difference("CustomerObject.count", 1) do
       assert_difference("CreditCard.count", 1) do
-        xhr :post, :create, {token: valid_card_token, card_number: '4242-4242-4242-4242'}
+        xhr :post, :create, {type: 'visa', name: 'bob hendrickson', number: '4242424242424242', cvc: '1234', exp_month: 12, exp_year: 15}
       end
     end
   end
@@ -17,7 +17,7 @@ class CardsControllerTest < ActionController::TestCase
     sign_in(user)
     assert_no_difference("CustomerObject.count") do
       assert_difference("CreditCard.count", 1) do
-        xhr :post, :create, {token: valid_card_token, card_number: '4242-4242-4242-4242' }
+        xhr :post, :create, {type: 'visa', name: 'bob hendrickson', number: '4242424242424242', cvc: '1234', exp_month: 12, exp_year: 15}
       end
     end
   end

@@ -6,7 +6,8 @@ class UsersControllerTest < ActionController::TestCase
     @user = create(:paid_user)
     sign_in @user
     @customer_object = @user.customer_object
-    @controller.current_user.stubs(:customer_object).returns(@customer_object)
+    CreditCard.generate(@customer_object, 'visa', 'fan boy', '4242424242424242', '4321', 12, 19)
+    @user.customer_object.default_card
     @amount = 5000
   end
 
@@ -16,7 +17,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "add_money" do
-    assert_difference('@customer_object.balance', @amount) do
+    assert_difference('@customer_object.reload.balance', @amount) do
       xhr :post, :add_money, {amount: @amount}
     end
     assert_response :success

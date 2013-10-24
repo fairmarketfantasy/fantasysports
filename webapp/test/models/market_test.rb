@@ -221,6 +221,7 @@ class MarketTest < ActiveSupport::TestCase
     rosters = []
     users.each_with_index do |user, i|
       roster = Roster.generate(user, ct2)
+      i = 8 if i >= 8
       @players[0..i].each{|player| roster.add_player(player) }
       roster.submit!
       rosters << roster
@@ -237,8 +238,8 @@ class MarketTest < ActiveSupport::TestCase
     rosters.each{|r| r.update_attribute(:remaining_salary, 100)} # Fake out the score compensator
     Market.tend
     rosters.each_with_index do |r, i|
-      assert_equal i+1, r.reload.score
-      assert_equal 10-i, r.contest_rank
+      assert_equal i >= 8 ? 9 : i+1, r.reload.score
+      assert_equal i >= 8 ? 1 : 10-i, r.contest_rank
     end
   end
 
@@ -256,6 +257,7 @@ class MarketTest < ActiveSupport::TestCase
       ct3 => []
     }
     users.each_with_index do |user, i|
+      i = 8 if i >= 8
       [ct1, ct2, ct3].each do |ct|
         roster = Roster.generate(user, ct)
         @players[0..i].each{|player| roster.add_player(player) }
@@ -313,12 +315,13 @@ class MarketTest < ActiveSupport::TestCase
     @rosters.each do |ct, rosters|
       score = 0
       rank = 12 # just a number higher than the lowest rank
-      rosters.each do |roster|
+      rosters.each_with_index do |roster, index|
         roster.reload
         next if roster.cancelled?
+
         if roster.contest_type != ct1
-          assert roster.score > score
-          assert roster.contest_rank < rank
+          assert roster.score > score || score == 9 && index >= 8
+          assert roster.contest_rank < rank || rank == 1 && index >= 8
         end
         score = roster.score
         rank = roster.contest_rank
@@ -335,12 +338,14 @@ class MarketTest < ActiveSupport::TestCase
         if roster.cancelled?
           assert_equal nil, roster.amount_paid
         else
-          assert_equal ct.payout_for_rank(roster.contest_rank) || 0, roster.amount_paid.to_f
+          assert_equal ct.payout_for_rank(roster.contest_rank) || 0, roster.amount_paid.to_f unless roster.contest_rank == 1
         end
       end
     end
 
-    assert_equal 31, Roster.finished.count
+    assert_equal 31, Roster.where("state = 'finished'").count
+    assert_equal 2, Roster.where("state = 'cancelled'").count
+    assert_equal 33, Roster.over.count
 
     Contest.all.each{|c| TransactionRecord.validate_contest(c) }
   end
