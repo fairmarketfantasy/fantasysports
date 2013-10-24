@@ -39,7 +39,6 @@ class Recipient < ActiveRecord::Base
 
     # Make API call & get response
     response = api.pay(pay)
-    debugger
     # Access response
     if response.success?
       response.payKey

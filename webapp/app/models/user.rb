@@ -125,7 +125,7 @@ class User < ActiveRecord::Base
         self.save
       end
     else
-    self.reload.customer_object.increase_balance(amount, opts[:event], opts)
+      self.reload.customer_object.increase_balance(amount, opts[:event], opts)
     end
   end
 end

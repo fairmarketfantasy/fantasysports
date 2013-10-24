@@ -64,6 +64,7 @@ class ContestTest < ActiveSupport::TestCase
     users = (1..10).map{ create(:paid_user) }
     @rosters = []
     users.each_with_index do |user, i|
+      i = 8 if i >= 8
       roster = Roster.generate(user, ct)
       @players[0..i].each{|player| roster.add_player(player) }
       roster.submit!
@@ -108,6 +109,7 @@ class ContestTest < ActiveSupport::TestCase
     play_single_contest(ct)
     @rosters.each_with_index do |r, i|
       r.reload
+      i = 9 if i >= 8
       assert_equal 9-i, r.losses
       assert_equal i, r.wins
     end
