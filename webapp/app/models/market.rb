@@ -21,6 +21,7 @@ class Market < ActiveRecord::Base
 
     # THIS IS A UTILITY FUNCTION, DO NOT CALL IT FROM THE APPLICATION
     def load_sql_functions
+      self.load_sql_file File.join(Rails.root, '..', 'market', 'session_variables.sql')
       self.load_sql_file File.join(Rails.root, '..', 'market', 'market.sql')
     end
 
@@ -115,30 +116,49 @@ class Market < ActiveRecord::Base
   # - allocate rosters from private contests to public ones
   # - cancel contests/rosters that are not full
   def close
-    self.with_lock do
-      raise "cannot close if state is not open" if state != 'opened' 
+    self.class.override_market_close do
+      self.with_lock do
+        raise "cannot close if state is not open" if state != 'opened' 
 
-      #cancel all un-submitted rosters
-      self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
+        #cancel all un-submitted rosters
+        self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
 
-      #re-allocate rosters in under-subscribed private contests to public contests
-      self.contests.where("private AND num_rosters < user_cap").find_each do |contest|
-        contest.rosters.find_each do |roster|
-          roster.contest_id, roster.cancelled_cause, roster.state = nil, 'private contest under-subscribed', 'in_progress'
-          roster.save!
-          roster.submit!(false)
+        # Iterate through unfilled private contests
+        # Move rosters from unfilled public contests of the same type into these contests while able
+        self.contests.where("private AND num_rosters < user_cap").find_each do |contest|
+          contest_entrants = contest.rosters.map(&:owner_id)
+          Roster.select('rosters.*').where("rosters.contest_type_id = #{contest.contest_type_id} AND rosters.owner_id NOT IN(#{contest_entrants.join(', ')})"
+               ).joins('JOIN contests c ON rosters.contest_id = c.id AND num_rosters < user_cap').limit(contest.user_cap - contest.num_rosters).each do |roster|
+            next if contest_entrants.include?(roster.owner_id)
+            contest_entrants.push(roster.owner_id)
+            old_contest = roster.contest
+            old_contest.num_rosters -= 1
+            old_contest.save!
+            roster.contest_id, roster.cancelled_cause, roster.state  = contest.id, 'moved to under capacity private contest', 'in_progress'
+            roster.contest.save!
+            roster.save!
+            roster.submit!(false)
+          end
         end
-        contest.destroy!
-      end
+        # Then iterate through /all/ unfilled contests and generate rosters to fill them up
+        self.contests.where("num_rosters < user_cap").find_each do |contest|
+          if contest.num_rosters == 0
+            contest.destroy
+            next
+          end
+          (contest.user_cap - contest.num_rosters).times do
+            roster = Roster.generate(SYSTEM_USER, contest.contest_type)
+            roster.contest_id = contest.id
+            roster.is_generated = true
+            roster.save!
+            roster.fill_pseudo_randomly
+            roster.submit!
+          end
+        end
 
-      #cancel rosters in contests that are not full
-      self.contests.where("num_rosters < user_cap").find_each do |contest|
-        contest.rosters.each{|r| r.cancel!('contest under-subscribed') }
-        contest.destroy!
+        self.state, self.closed_at = 'closed', Time.now
+        save!
       end
-
-      self.state, self.closed_at = 'closed', Time.now
-      save!
     end
     return self
   end
@@ -398,6 +418,12 @@ class Market < ActiveRecord::Base
     puts "using price multiplier: #{self.price_multiplier}"
     self.save!
 
+  end
+
+  def self.override_market_close(&block)
+    Market.find_by_sql("SELECT set_session_variable('override_market_close', 'true')")
+    yield
+    Market.find_by_sql("SELECT set_session_variable('override_market_close', null)")
   end
 
 end
