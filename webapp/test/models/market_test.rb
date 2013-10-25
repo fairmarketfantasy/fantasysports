@@ -129,7 +129,7 @@ class MarketTest < ActiveSupport::TestCase
     assert_equal 4, @market.contests.where("invitation_code is not null").length
     assert_equal 2, @market.contests.where("private").length
 
-    #close market, should move the one roster in the private contest to the public contest
+    #close market, should move the one roster in the public contest to the private contest
     @market.shadow_bets, @market.initial_shadow_bets = 0, 0
     @market.save!
     @market.open
@@ -139,7 +139,7 @@ class MarketTest < ActiveSupport::TestCase
     #should be 3 contests: two public, one private
     assert_equal 'closed', @market.state
     assert_equal 3, @market.contests.length, "#{@market.contests.each {|c| c.inspect + '\n'}}"
-    assert_equal 2, @market.contests.where("NOT private").length
+    assert_equal 1, @market.contests.where("NOT private").length # 1 public roster was moved into a private contest
     assert_equal 0, @market.rosters.where("cancelled = true").length
     assert_equal 2, private_contest.reload.rosters.length
   end
@@ -291,10 +291,10 @@ class MarketTest < ActiveSupport::TestCase
     @market.update_attribute(:closed_at, Time.new - 1.minute)
     @market.market_players.each{|mp| mp.update_attribute(:locked_at, Time.new - 1.minute) }
     Market.tend
-    assert_equal 7, Contest.count
+    assert_equal 9, Contest.count
     assert_equal 'closed', @market.reload.state
-    assert_equal 2, Roster.where(:state => 'cancelled').count
-    assert_equal 2, Roster.where(:cancelled => true).count
+    assert_equal 10, Roster.where('is_generated').count
+    assert_equal 0, Roster.where(:cancelled => true).count
     assert Player.purchasable_for_roster(@rosters[ct1][0]).empty? # spot check
 
     # Add some scores
@@ -343,9 +343,10 @@ class MarketTest < ActiveSupport::TestCase
       end
     end
 
-    assert_equal 31, Roster.where("state = 'finished'").count
-    assert_equal 2, Roster.where("state = 'cancelled'").count
-    assert_equal 33, Roster.over.count
+    assert_equal 43, Roster.where("state = 'finished'").count
+    assert_equal 0, Roster.where("state = 'cancelled'").count
+    assert_equal 10, Roster.where("is_generated").count
+    assert_equal 43, Roster.over.count
 
     Contest.all.each{|c| TransactionRecord.validate_contest(c) }
   end

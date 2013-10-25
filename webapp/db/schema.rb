@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131023214323) do
+ActiveRecord::Schema.define(version: 20131024233041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -311,6 +311,7 @@ ActiveRecord::Schema.define(version: 20131023214323) do
     t.integer  "wins"
     t.integer  "losses"
     t.boolean  "takes_tokens"
+    t.boolean  "is_generated",     default: false
   end
 
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
