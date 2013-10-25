@@ -23,20 +23,4 @@ angular.module('app', [
       when('/support', {templateUrl: '/support.html', controller: 'SupportController'}).
     //...
       otherwise({redirectTo: '/'});
-  }])
-.run(['$rootScope', '$location', 'rosters', 'flash', function($rootScope, $location, rosters, flash) {
-    // register listener to watch route changes
-    $rootScope.$on( "$routeChangeSuccess", function(event, next, current) {
-      var roster = rosters.inProgressRoster;
-      if (roster) {
-        var path = '/market/' + roster.market_id + '/roster/' + roster.id;
-        var whiteList = ['/rules', '/legal', '/support'];
-        if (path != $location.path() && !_.contains(whiteList, $location.path())) {
-          flash.success = "You've already got a roster in progress, so let's get you entered into this contest.  You must finish entering or cancel it to proceed.";
-          $location.path(path).replace();
-          rosters.selectRoster(roster);
-        }
-      }
-      return true;
-    });
- }]);
+  }]);
