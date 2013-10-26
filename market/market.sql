@@ -53,7 +53,7 @@ RETURNS TABLE (
 	weight integer, college character varying(255), "position" character varying(255), 
 	jersey_number integer, status character varying(255), total_games integer, total_points integer, 
 	created_at timestamp without time zone, updated_at timestamp without time zone, 
-	team character varying(255)
+	team character varying(255), benched_games integer
 )
 AS $$
 DECLARE
@@ -511,6 +511,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+---------------------------------- track benched games ---------------------------------
+
+DROP FUNCTION track_benched_players(integer);
+
+--removes locked players from the market and updates the price multiplier
+CREATE OR REPLACE FUNCTION track_benched_players(_market_id integer) RETURNS VOID AS $$
+DECLARE
+BEGIN
+	// PICK UP HERE
+END;
+$$ LANGUAGE plpgsql;
 ---------------------------------- lock players ---------------------------------
 
 DROP FUNCTION lock_players(integer);
