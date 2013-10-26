@@ -38,9 +38,9 @@ class Roster < ActiveRecord::Base
 
   # create a roster. does not deduct funds until roster is submitted.
   def self.generate(user, contest_type)
-
-    raise HttpException.new(409, "You may only have one roster in progress at a time.") if user.in_progress_roster
+    
     raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
+    user.in_progress_roster.destroy if user.in_progress_roster
 
     Roster.create!(
       :owner_id => user.id,
@@ -92,7 +92,6 @@ class Roster < ActiveRecord::Base
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!(charge = true)
     #buy all the players on the roster. This sql function handles all of that.
-    #// PICK UP HERE, add switch in can_charge for token type, add weighting to bets for free players in market
     raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
     self.transaction do
 
@@ -262,7 +261,7 @@ class Roster < ActiveRecord::Base
   def cancel!(reason)
     self.with_lock do
       if self.state == 'submitted'
-        self.owner.customer_object.increase_balance(self.buy_in, 'cancelled_roster', :roster_id => self.id, :contest_id => self.contest_id)
+        self.owner.payout(self.buy_in, self.contest_type.takes_tokens?, :event => 'cancelled_roster', :roster_id => self.id, :contest_id => self.contest_id)
         self.contest_id = nil
         self.state = 'cancelled'
         self.cancelled = true
