@@ -228,6 +228,11 @@ FactoryGirl.define do
     state 'in_progress'
     positions Positions.default_NFL
     association :contest_type
+    after(:create) do |roster|
+      roster.buy_in = roster.contest_type.buy_in
+      roster.takes_tokens = roster.contest_type.takes_tokens
+      roster.save!
+    end
   end
 
   factory :contest do

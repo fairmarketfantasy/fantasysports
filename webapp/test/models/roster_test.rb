@@ -199,4 +199,22 @@ class RosterTest < ActiveSupport::TestCase
     assert_equal market.reload.total_bets, total_bets, "destroying roster decreases total bets"
   end
 
+  test "cancelling roster pays out properly" do
+    roster = create(:roster, :market => @market, :contest_type => @market.contest_types.where('takes_tokens').first)
+    roster2 = create(:roster, :market => @market, :contest_type => @market.contest_types.where('NOT takes_tokens').first)
+    roster.submit!
+    roster2.submit!
+
+    assert_difference 'TransactionRecord.count', 1 do
+      assert_difference 'roster.owner.reload.token_balance', roster.contest.buy_in do
+        roster.cancel!('reason')
+      end
+    end
+    assert_difference 'TransactionRecord.count', 1 do
+      assert_difference 'roster2.owner.customer_object.reload.balance', roster2.contest.buy_in do
+        roster2.cancel!('reason')
+      end
+    end
+  end
+
 end
