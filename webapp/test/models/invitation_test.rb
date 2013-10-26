@@ -18,7 +18,9 @@ class InvitationTest < ActiveSupport::TestCase
       end
     end
     u2 = create(:user)
-    Invitation.redeem(u2, inv.code)
+    assert_difference "TransactionRecord.count", 1 do
+      Invitation.redeem(u2, inv.code)
+    end
     assert u1.customer_object
     assert u1.customer_object.balance = Invitation::FREE_USER_REFERRAL_PAYOUT
   end
@@ -26,9 +28,11 @@ class InvitationTest < ActiveSupport::TestCase
   test "paid user redemptions" do
     user = create(:paid_user)
     user2 = create(:user, :inviter => user)
-    assert_difference "user.customer_object.reload.balance", Invitation::PAID_USER_REFERRAL_PAYOUT do
-      Invitation.redeem_paid(user2)
-      Invitation.redeem_paid(user2)
+    assert_difference "TransactionRecord.count", 1 do
+      assert_difference "user.customer_object.reload.balance", Invitation::PAID_USER_REFERRAL_PAYOUT do
+        Invitation.redeem_paid(user2)
+        Invitation.redeem_paid(user2)
+      end
     end
     assert_equal Invitation::PAID_USER_REFERRAL_PAYOUT, user2.reload.customer_object.balance
   end

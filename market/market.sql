@@ -53,7 +53,7 @@ RETURNS TABLE (
 	weight integer, college character varying(255), "position" character varying(255), 
 	jersey_number integer, status character varying(255), total_games integer, total_points integer, 
 	created_at timestamp without time zone, updated_at timestamp without time zone, 
-	team character varying(255)
+	team character varying(255), benched_games integer
 )
 AS $$
 DECLARE
@@ -83,7 +83,7 @@ RETURNS TABLE(player_id integer, buy_price numeric) AS $$
 		r.id = $1 AND
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
-		NOT (mp.locked_at < NOW() OR mp.locked) AND
+		(is_session_variable_set('override_market_close') OR NOT (mp.locked_at < NOW() OR mp.locked)) AND
 		mp.player_id NOT IN (SELECT rosters_players.player_id 
 			FROM rosters_players WHERE roster_id = $1);
 $$ LANGUAGE SQL;
@@ -124,20 +124,22 @@ BEGIN
 
 	--make sure that the market is available
 	PERFORM id from markets WHERE id = _roster.market_id and state in ('published', 'opened') FOR UPDATE;
-	IF NOT FOUND THEN
+	IF NOT FOUND AND NOT is_session_variable_set('override_market_close') THEN
 		RAISE EXCEPTION 'market % is unavailable', _roster.market_id;
 	END IF;
 
 	--remove players that are now locked (edge case)
-	WITH locked_out AS (
-		SELECT rp.id from rosters_players rp, market_players mp
-		WHERE 
-			rp.roster_id = _roster_id AND
-			mp.market_id = _roster.market_id AND
-			mp.player_id = rp.player_id AND
-			mp.locked_at < CURRENT_TIMESTAMP)
-		DELETE FROM rosters_players using locked_out 
-		WHERE rosters_players.id = locked_out.id;
+  IF NOT is_session_variable_set('override_market_close') THEN
+	  WITH locked_out AS (
+	  	SELECT rp.id from rosters_players rp, market_players mp
+	  	WHERE 
+	  		rp.roster_id = _roster_id AND
+	  		mp.market_id = _roster.market_id AND
+	  		mp.player_id = rp.player_id AND
+	  		mp.locked_at < CURRENT_TIMESTAMP)
+	  	DELETE FROM rosters_players using locked_out 
+	  	WHERE rosters_players.id = locked_out.id;
+  END IF;
 
 	-- increment bets for all market players in roster by buy_in amount
 	UPDATE market_players SET bets = bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
@@ -222,7 +224,7 @@ BEGIN
 	END IF;
 
 	SELECT * FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
-			(locked_at is null or locked_at > CURRENT_TIMESTAMP) INTO _market_player;
+			(is_session_variable_set('override_market_close') OR locked_at IS NULL OR locked_at > CURRENT_TIMESTAMP) INTO _market_player;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'player % is locked or nonexistent', _player_id;
 	END IF;
@@ -509,6 +511,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+---------------------------------- track benched games ---------------------------------
+
+DROP FUNCTION track_benched_players(integer);
+
+--removes locked players from the market and updates the price multiplier
+CREATE OR REPLACE FUNCTION track_benched_players(_market_id integer) RETURNS VOID AS $$
+DECLARE
+BEGIN
+	// PICK UP HERE
+END;
+$$ LANGUAGE plpgsql;
 ---------------------------------- lock players ---------------------------------
 
 DROP FUNCTION lock_players(integer);

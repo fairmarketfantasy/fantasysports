@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131023214323) do
+ActiveRecord::Schema.define(version: 20131026031844) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -174,8 +174,11 @@ ActiveRecord::Schema.define(version: 20131023214323) do
     t.boolean  "locked",              default: false
     t.integer  "score",               default: 0,     null: false
     t.string   "player_stats_id"
+    t.boolean  "bench_counted"
+    t.datetime "bench_counted_at"
   end
 
+  add_index "market_players", ["bench_counted_at"], name: "index_market_players_on_bench_counted_at", using: :btree
   add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
 
   create_table "markets", force: true do |t|
@@ -269,8 +272,10 @@ ActiveRecord::Schema.define(version: 20131023214323) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "team"
+    t.integer  "benched_games", default: 0
   end
 
+  add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
   add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
   add_index "players", ["team"], name: "index_players_on_team", using: :btree
 
@@ -311,6 +316,7 @@ ActiveRecord::Schema.define(version: 20131023214323) do
     t.integer  "wins"
     t.integer  "losses"
     t.boolean  "takes_tokens"
+    t.boolean  "is_generated",     default: false
   end
 
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
@@ -370,16 +376,18 @@ ActiveRecord::Schema.define(version: 20131023214323) do
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
 
   create_table "transaction_records", force: true do |t|
-    t.string  "event",                              null: false
-    t.integer "user_id"
-    t.integer "roster_id"
-    t.integer "amount"
-    t.integer "contest_id"
-    t.boolean "is_tokens",          default: false
-    t.string  "ios_transaction_id"
-    t.text    "transaction_data"
-    t.integer "invitation_id"
-    t.integer "referred_id"
+    t.string   "event",                              null: false
+    t.integer  "user_id"
+    t.integer  "roster_id"
+    t.integer  "amount"
+    t.integer  "contest_id"
+    t.boolean  "is_tokens",          default: false
+    t.string   "ios_transaction_id"
+    t.text     "transaction_data"
+    t.integer  "invitation_id"
+    t.integer  "referred_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "transaction_records", ["roster_id"], name: "index_transaction_records_on_roster_id", using: :btree
