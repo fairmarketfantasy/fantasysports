@@ -124,10 +124,6 @@ class Market < ActiveRecord::Base
   end
 
   # close a market. allocates remaining rosters in this manner:
-  # - cancel rosters that have not yet been submitted
-  # - delete private contests that are not full
-  # - allocate rosters from private contests to public ones
-  # - cancel contests/rosters that are not full
   def close
     self.class.override_market_close do
       self.with_lock do
@@ -168,6 +164,8 @@ class Market < ActiveRecord::Base
             roster.submit!
           end
         end
+
+        # EPIC TODO: FILL LOLLAPALOOZAAAA
 
         self.state, self.closed_at = 'closed', Time.now
         save!
