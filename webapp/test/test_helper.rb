@@ -83,6 +83,17 @@ class ActiveSupport::TestCase
     @games.each do |game|
       GamesMarket.create(market_id: @market.id, game_stats_id: game.stats_id)
     end
+    @market.publish
+  end
+
+  def setup_multi_day_market2
+    @games = [create(:game, :home_team => @teams[0], :away_team => @teams[1], :game_time => Time.now.tomorrow + 10.minutes),
+              create(:game, :home_team => @teams[2], :away_team => @teams[3], :game_time => Time.now.tomorrow  + 10.minutes, :game_day => Time.now.tomorrow.tomorrow.beginning_of_day)]
+    @market = create :new_market
+    @games.each do |game|
+      GamesMarket.create(market_id: @market.id, game_stats_id: game.stats_id)
+    end
+    @market.publish
   end
 
   #creates a published market with one game, two teams, and 18 players

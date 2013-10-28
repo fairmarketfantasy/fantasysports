@@ -57,5 +57,59 @@ class PlayerTest < ActiveSupport::TestCase
       end
 
     end
+
+    describe "tracking benched games" do
+      it "should work" do
+        setup_multi_day_market
+        Market.open # open it
+        game1 = @games.first
+        # Pick a few players and add stat events
+        players = game1.players.sort_by{|p| p.id }.slice(0, 6)
+        players.each do |player|
+          StatEvent.create!(
+            :game_stats_id => game1.stats_id,
+            :player_stats_id => player.stats_id,
+            :point_value => 1,
+            :activity => 'rushing',
+            :data => '')
+        end
+        game1.update_attribute(:bench_counted_at, Time.now - 1.minute)
+        Market.tend # mark some players as benched
+        # Assert that benched games are allocated properly
+        game1.players.each do |p|
+          if players.include?(p)
+            assert_equal 0, p.benched_games
+          else
+            assert_equal 1, p.benched_games
+          end
+        end
+
+        setup_multi_day_market2
+        Market.tend # open it
+
+        game1 = @games.first
+        # Pick a few players and add stat events
+        players2 = game1.players.sort_by{|p| p.id }.slice(0, 6)
+        players2.each do |player|
+          next if player.id % 2 == 0
+          StatEvent.create!(
+            :game_stats_id => game1.stats_id,
+            :player_stats_id => player.stats_id,
+            :point_value => 1,
+            :activity => 'rushing',
+            :data => '')
+        end
+        game1.update_attribute(:bench_counted_at, Time.now)
+        Market.tend # mark some players as benched
+
+        game1.players.each do |p|
+          if players2.include?(p)
+            assert_equal p.id % 2 == 0 ? 1 : 0, p.benched_games
+          else
+            assert_equal 2, p.benched_games
+          end
+        end
+      end
+    end
   end
 end
