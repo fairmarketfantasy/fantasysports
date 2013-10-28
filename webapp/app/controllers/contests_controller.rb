@@ -43,7 +43,10 @@ class ContestsController < ApplicationController
     contest = Contest.find(params[:id])
     raise "You must post an invitation_code for private contests" if contest.private? && params[:invitation_code] != contest.invitation_code
     send_invitations(contest, params[:message])
-    render :nothing => true, :status => 201
+    respond_to do |format|
+      format.json  { render :json => {success: true}}
+      format.html { render :nothing => true, :status => 201 }
+    end
   end
 
   private
