@@ -224,7 +224,7 @@ class Roster < ActiveRecord::Base
       position_array.each { |pos| @candidate_players[pos] = []; indexes[pos] = 0}
       self.purchasable_players.each do |p| 
         @candidate_players[p.position] << p if @candidate_players.include?(p.position)
-        indexes[p.position] += 1 if p.buy_price > 1100
+        indexes[p.position] += 1 if p.buy_price > 2000
       end
       @candidate_players.each do |pos,players|
         @candidate_players[pos] = players.sort_by{|player| -player.buy_price }
@@ -237,7 +237,7 @@ class Roster < ActiveRecord::Base
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
-    self.reload 
+    self.reload
   end
 
   def position_array
