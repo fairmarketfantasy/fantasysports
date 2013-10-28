@@ -18,7 +18,8 @@ class PlayerSerializer < ActiveModel::Serializer
       :sell_price,
       :score,
       :locked,
-      :headshot_url
+      :headshot_url,
+      :benched_games
 
   def team
     object[:team]

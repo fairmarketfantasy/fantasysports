@@ -30,6 +30,7 @@ class Market < ActiveRecord::Base
       open
       remove_shadow_bets
       lock_players
+      track_benched_players
       close
       tabulate_scores
       complete
@@ -58,6 +59,10 @@ class Market < ActiveRecord::Base
       apply :remove_shadow_bets, "state in ('published', 'opened') and shadow_bets > 0"
     end
   
+    def track_benched_players
+      apply :track_benched_players, "state IN('opened', 'published')"
+    end
+
     def lock_players
       apply :lock_players, "state = 'opened'"
     end
@@ -97,6 +102,14 @@ class Market < ActiveRecord::Base
 
   def remove_shadow_bets
     Market.find_by_sql("select * from remove_shadow_bets(#{self.id})")
+    reload
+  end
+
+  def track_benched_players
+    self.games.where('bench_counted_at <= ? AND (NOT bench_counted OR bench_counted IS NULL)', Time.new).each do |game|
+      puts "#{Time.now} -- track game #{game.id}"
+      Market.find_by_sql("SELECT * from track_benched_players('#{game.stats_id}')")
+    end
     reload
   end
 
