@@ -199,8 +199,9 @@ angular.module('app.data')
       };
 
       this.autoFill = function() {
+        var self = this;
         fs.rosters.autoFill(this.currentRoster.id).then(function(roster) {
-          this.currentRoster = rosterData[this.currentRoster.id] = roster;
+          self.currentRoster = rosterData[self.currentRoster.id] = roster;
         });
       };
 
