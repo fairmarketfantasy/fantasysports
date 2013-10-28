@@ -56,6 +56,13 @@ namespace :seed do
     end
   end
 
+  # Run data fetcher, then do this
+  task :setup_bench_players => :environment do
+    Market.where('closed_at < ?', Time.new).order('closed_at asc').each do |m|
+      m.track_benched_players
+    end
+  end
+
   task :push_headshots_to_s3 => :environment do
     # Fetch the headshot
     headshot_manifest = "http://api.sportsdatallc.org/nfl-images-p1/manifests/headshot/all_assets.xml?api_key=yq9uk9qu774eygre2vg2jafe"

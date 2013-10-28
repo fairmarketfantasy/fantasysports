@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131026031844) do
+ActiveRecord::Schema.define(version: 20131026180924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,20 +116,23 @@ ActiveRecord::Schema.define(version: 20131026031844) do
   add_index "game_events", ["sequence_number"], name: "index_game_events_on_sequence_number", using: :btree
 
   create_table "games", force: true do |t|
-    t.string   "stats_id",    null: false
-    t.string   "status",      null: false
-    t.date     "game_day",    null: false
-    t.datetime "game_time",   null: false
+    t.string   "stats_id",         null: false
+    t.string   "status",           null: false
+    t.date     "game_day",         null: false
+    t.datetime "game_time",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "home_team",   null: false
-    t.string   "away_team",   null: false
+    t.string   "home_team",        null: false
+    t.string   "away_team",        null: false
     t.string   "season_type"
     t.integer  "season_week"
     t.integer  "season_year"
     t.string   "network"
+    t.boolean  "bench_counted"
+    t.datetime "bench_counted_at"
   end
 
+  add_index "games", ["bench_counted_at"], name: "index_games_on_bench_counted_at", using: :btree
   add_index "games", ["game_day"], name: "index_games_on_game_day", using: :btree
   add_index "games", ["game_time"], name: "index_games_on_game_time", using: :btree
   add_index "games", ["stats_id"], name: "index_games_on_stats_id", unique: true, using: :btree
@@ -174,11 +177,8 @@ ActiveRecord::Schema.define(version: 20131026031844) do
     t.boolean  "locked",              default: false
     t.integer  "score",               default: 0,     null: false
     t.string   "player_stats_id"
-    t.boolean  "bench_counted"
-    t.datetime "bench_counted_at"
   end
 
-  add_index "market_players", ["bench_counted_at"], name: "index_market_players_on_bench_counted_at", using: :btree
   add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
 
   create_table "markets", force: true do |t|

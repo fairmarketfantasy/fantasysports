@@ -128,6 +128,7 @@ func buildGame(element *xml.StartElement) *models.Game {
 	game.StatsId = parsers.FindAttrByName(element.Attr, "id")
 	game.GameTime, _ = time.Parse(timeFormat, parsers.FindAttrByName(element.Attr, "scheduled"))
 	game.GameDay = game.GameTime.Add(-6 * time.Hour).Truncate(time.Hour * 24) // All football games are in the USA, correct GMT times for night games
+	game.BenchCountedAt = game.GameTime.Add(5 * time.Hour)
 	game.HomeTeam = parsers.FindAttrByName(element.Attr, "home")
 	game.AwayTeam = parsers.FindAttrByName(element.Attr, "away")
 	game.Status = parsers.FindAttrByName(element.Attr, "status")
