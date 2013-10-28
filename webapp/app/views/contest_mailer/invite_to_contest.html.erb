@@ -3,11 +3,15 @@
 <% else %>
   <%= @inviter.name %> challenged you on FairMarketFantasy.com
 <% end %>
-
+<br/>
+<br/>
 <a href="<%= SITE %>/contests/join?contest_code=<%= @contest.invitation_code %>&referral_code=<%= @invitation && @invitation.code %>">Click here to join the game!</a>
 
 <%= @message %>
 
+<br/>
+<br/>
+<br/>
 
 ----------
 Click here to <a href="<%= SITE %>/users/unsubscribe?email=<%= CGI::escape(@email) %>&type=all">unsubscribe</a> from our emails
