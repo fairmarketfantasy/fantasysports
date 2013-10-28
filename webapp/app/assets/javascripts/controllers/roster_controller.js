@@ -23,7 +23,7 @@ angular.module("app.controllers")
     if (!rosters.currentRoster) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
       if (filterOpts.removeLow && players.length > 2) {
-        players = _.select(players, function(player) { return player.ppg > 1; });
+        players = _.select(players, function(player) { return player.benched_games < 3; });
       }
       $scope.players = players;
     });
