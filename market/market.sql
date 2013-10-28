@@ -513,13 +513,28 @@ $$ LANGUAGE plpgsql;
 
 ---------------------------------- track benched games ---------------------------------
 
-DROP FUNCTION track_benched_players(integer);
+DROP FUNCTION track_benched_players(character varying(255));
 
 --removes locked players from the market and updates the price multiplier
-CREATE OR REPLACE FUNCTION track_benched_players(_market_id integer) RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION track_benched_players(_game_stats_id character varying(255)) RETURNS VOID AS $$
 DECLARE
+	_game games;
 BEGIN
-	// PICK UP HERE
+  SELECT * FROM games WHERE stats_id = _game_stats_id
+    --AND bench_counted_at <= NOW() -- FOR SOME REASON THIS FAILS
+    AND (NOT bench_counted OR bench_counted IS NULL) FOR UPDATE into _game;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'game % not found or already counted', _game_stats_id;
+  END IF;
+
+  UPDATE players SET benched_games = 0 WHERE stats_id IN(
+    SELECT player_stats_id FROM stat_events WHERE game_stats_id = _game.stats_id GROUP BY player_stats_id);
+  UPDATE players SET benched_games = benched_games + 1 WHERE stats_id 
+    NOT IN(SELECT player_stats_id FROM stat_events WHERE game_stats_id = _game.stats_id GROUP BY player_stats_id)
+    AND players.team IN(_game.home_team, _game.away_team);
+
+  UPDATE games SET bench_counted = true WHERE games.bench_counted_at < CURRENT_TIMESTAMP AND stats_id=_game_stats_id;
+
 END;
 $$ LANGUAGE plpgsql;
 ---------------------------------- lock players ---------------------------------

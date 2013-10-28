@@ -96,24 +96,31 @@ func valueToString(val reflect.Value) string {
 		return string(val.String())
 	case reflect.UnsafePointer:
 		return string(val.UnsafeAddr())
-	/*case Array:
-	    return string(val)
-	  case Chan:
-	    return string(val)
-	  case Func:
-	    return string(val)
-	  case Interface:
-	    return string(val)
-	  case Map:
-	    return string(val)
-	  case Struct:
-	    return string(val)
-	  case reflect.Complex64:
-	    return strconv.FormatFloat(val.Float(), "f", 8, 32)
-	    return string(val.Complex())
-	  case reflect.Complex128:
-	    return string(val.Complex())
-	*/
+		/*case Array:
+		    return string(val)
+		  case Chan:
+		    return string(val)
+		  case Func:
+		    return string(val)
+		  case Interface:
+		    return string(val)
+		  case Map:
+		    return string(val)
+		*/
+	case reflect.Struct:
+		if val.FieldByName("sec").IsValid() && val.FieldByName("loc").IsValid() {
+			realValue := val.Interface().(time.Time)
+			return realValue.Format("Mon Jan 2 15:04:05 -0700 MST 2006")
+		} else {
+			log.Panicf("Unable to convert value to string %s", val.Interface())
+		}
+		/*
+		   case reflect.Complex64:
+		     return strconv.FormatFloat(val.Float(), "f", 8, 32)
+		     return string(val.Complex())
+		   case reflect.Complex128:
+		     return string(val.Complex())
+		*/
 	default:
 		log.Panicf("Unable to convert value to string %s", val.Interface())
 	}
@@ -165,7 +172,7 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
 	// Set non-zero fields
 	for i := 0; i < valType.NumField(); i++ {
 		field := valType.Field(i)
-		if field.Type.Kind().String() == "struct" {
+		if field.Type.Kind().String() == "struct" && !val.FieldByName(field.Name).FieldByName("sec").IsValid() {
 			continue
 		}
 		newFieldVal := val.FieldByName(field.Name)
@@ -177,6 +184,14 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
 			val.FieldByName(field.Name).Set(existingVal.FieldByName(field.Name))
 		}
 
+		if field.Name == "BenchCountedAt" {
+			log.Println(valueToString(newFieldVal))
+			log.Println(valueToString(reflect.Zero(field.Type)))
+			log.Println(valueToString(newFieldVal) != valueToString(reflect.Zero(field.Type)))
+			log.Println(valueToString(newFieldVal))
+			log.Println(valueToString(existingVal.FieldByName(field.Name)))
+			log.Println(valueToString(newFieldVal) != valueToString(existingVal.FieldByName(field.Name)))
+		}
 		// Set fields that are different on the existing object, save it for update
 		if valueToString(newFieldVal) != valueToString(reflect.Zero(field.Type)) && valueToString(newFieldVal) != valueToString(existingVal.FieldByName(field.Name)) {
 			existingVal.FieldByName(field.Name).Set(newFieldVal)
@@ -246,6 +261,7 @@ type Game struct {
 	Network        string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
+	BenchCountedAt time.Time
 }
 
 type PlayerStatus struct {
@@ -273,8 +289,9 @@ type Player struct {
 	PlayerStatus PlayerStatus
 	TotalGames   int
 	TotalPoints  int
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	//BenchedGames int
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type StatEvent struct {
