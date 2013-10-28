@@ -1,5 +1,7 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :name, :admin, :username, :email, :balance, :image_url, :win_percentile, :total_points, :total_wins, :joined_at, :token_balance, :provider
+  attributes :id, :name, :admin, :username, :email, :balance, :image_url, :win_percentile, :total_points, :joined_at, :token_balance, :provider,
+    :amount, :bets, :winnings, :total_wins, :total_losses # Leaderboard keys
+
 
   has_one :in_progress_roster
 
@@ -12,4 +14,5 @@ class UserSerializer < ActiveModel::Serializer
   def joined_at
     object.created_at
   end
+
 end
