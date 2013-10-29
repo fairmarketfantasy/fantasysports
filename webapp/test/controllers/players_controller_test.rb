@@ -24,6 +24,8 @@ class PlayersControllerTest < ActionController::TestCase
     setup_multi_day_market
     @market.started_at = Time.new
     @market.closed_at = Time.new + 2.days
+    @market.state = nil
+    @market.published_at = Time.new.yesterday
     @market.save
     @market.publish
     get :public
