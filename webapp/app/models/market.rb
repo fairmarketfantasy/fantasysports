@@ -135,6 +135,10 @@ class Market < ActiveRecord::Base
         # Iterate through unfilled private contests
         # Move rosters from unfilled public contests of the same type into these contests while able
         self.contests.where("private AND num_rosters < user_cap").find_each do |contest|
+          if contest.num_rosters == 0
+            contest.destroy
+            next
+          end
           contest_entrants = contest.rosters.map(&:owner_id)
           Roster.select('rosters.*').where("rosters.contest_type_id = #{contest.contest_type_id} AND rosters.owner_id NOT IN(#{contest_entrants.join(', ')})"
                ).joins('JOIN contests c ON rosters.contest_id = c.id AND num_rosters < user_cap').limit(contest.user_cap - contest.num_rosters).each do |roster|
