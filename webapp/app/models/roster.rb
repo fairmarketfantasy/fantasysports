@@ -267,7 +267,13 @@ class Roster < ActiveRecord::Base
         self.cancelled = true
         self.cancelled_at = Time.new
         self.cancelled_cause = reason
-        self.save!
+        Roster.transaction do
+          self.save!
+          if self.contest
+            self.contest.num_rosters -= 1
+            self.contest.save!
+          end
+        end
       end
     end
   end

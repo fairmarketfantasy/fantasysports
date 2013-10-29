@@ -246,6 +246,7 @@ BEGIN
 	END IF;
 
 	SELECT price(_market_player.bets, _market.total_bets, _roster.buy_in, _market.price_multiplier) INTO _price;
+	RAISE NOTICE 'price = %', _price;
 
 	--if the roster is in progress, we can just add the player to the roster without locking on the market
 	INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id) 
@@ -255,6 +256,7 @@ BEGIN
 		--perform the updates.
 		UPDATE markets SET total_bets = total_bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens) WHERE id = _roster.market_id;
 		UPDATE market_players SET bets = bets + _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE market_id = _roster.market_id and player_id = _player_id;
+    UPDATE rosters SET remaining_salary = remaining_salary - _price WHERE id = _roster_id;
 		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 			   VALUES (_roster.market_id, _roster_id, 'buy', _player_id, _price);
 	END IF;
@@ -425,7 +427,7 @@ BEGIN
 		JOIN games_markets gm on g.stats_id = gm.game_stats_id 
 		WHERE gm.market_id = _market_id
 	) UPDATE markets SET opened_at = min_time, closed_at = max_time,
-		state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = _price_multiplier
+		state = 'published', price_multiplier = _price_multiplier
 		FROM game_times
 		WHERE id = _market_id;
 
@@ -564,7 +566,7 @@ BEGIN
 	update market_players set locked = true
 		WHERE market_id = _market_id and locked_at < _now and locked = false;
 
-	IF _locked_bets > 0 THEN
+	IF _locked_bets > 0 OR _locked_shadow_bets > 0 THEN
 		--update the price multiplier
 		update markets set 
 			total_bets = total_bets - _locked_bets,

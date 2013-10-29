@@ -40,7 +40,6 @@ class MarketTest < ActiveSupport::TestCase
   #publish: 
   test "can only be published if state is empty or null" do
     setup_multi_day_market
-    @market.publish
     begin
       @market.publish
       flunk "already published"
@@ -61,7 +60,6 @@ class MarketTest < ActiveSupport::TestCase
 
   test "publish sets opened and closed times" do
     setup_multi_day_market
-    @market.publish
     assert @market.opened_at - @games[0].game_time < 10
     assert @market.closed_at - @games[1].game_time < 10
   end
@@ -72,7 +70,8 @@ class MarketTest < ActiveSupport::TestCase
       game.game_day = game.game_time = Time.now.yesterday
       game.save!
     end
-
+    @market.state = nil
+    @market.save!
     @market.publish
     #because both games are over, should be closed
     assert_equal 'closed', @market.state
@@ -80,6 +79,9 @@ class MarketTest < ActiveSupport::TestCase
 
   test "players are locked when their game starts" do
     setup_multi_day_market
+    @market.state = nil
+    @market.published_at = Time.now.yesterday
+    @market.save
 
     #set half the games tomorrow and half for the day after
     tomorrow, day_after = Time.now + 24*60*60, Time.now + 24*60*60*2
@@ -151,7 +153,6 @@ class MarketTest < ActiveSupport::TestCase
 
     #setup a market and open it
     setup_multi_day_market
-    @market.publish
     @market.opened_at = Time.now - 60
     @market.save!
     @market.open
@@ -163,19 +164,23 @@ class MarketTest < ActiveSupport::TestCase
     end
 
     #print out the current prices
-    roster = create(:roster, :market => @market, :contest_type => contest_type)
-    prices1 = roster.purchasable_players
+    pricing_roster = create(:roster, :market => @market, :contest_type => contest_type)
+    prices1 = pricing_roster.purchasable_players
 
     #now make a game happen by setting the locked_at to the past for the first 18 players
     @market.market_players.first(18).each do |mp|
       mp.locked_at = Time.now - 1000
       mp.save!
     end
+    pre_total_bets = @market.reload.total_bets
+    pre_shadow_bets = @market.reload.shadow_bets
     @market = @market.lock_players
+    assert @market.reload.shadow_bets < pre_shadow_bets
+    assert @market.reload.total_bets < pre_total_bets
 
     #ensure that there are only 18 available players
-    prices2 = roster.purchasable_players
-    assert prices2.length == 18, "expected 18 for sale, found #{roster.purchasable_players.length}"
+    prices2 = pricing_roster.purchasable_players.order('id asc')
+    assert prices2.length == 18, "expected 18 for sale, found #{pricing_roster.purchasable_players.length}"
 
     #ensure that the prices for those 18 haven't changed
     p1 = Hash[prices1.map { |p| [p.id, p.buy_price] }]
@@ -184,17 +189,21 @@ class MarketTest < ActiveSupport::TestCase
       assert (p1[p.id] - p.buy_price).abs < 1, "price equality? player #{p.id}: #{p1[p.id]} -> #{p.buy_price}"
     end
 
+    existing_roster = create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
     #buy more players randomly
-    20.times {
-      create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
+    10.times {
+      roster = create(:roster, :market => @market, :contest_type => contest_type)
+      roster.build_from_existing(existing_roster)
+      roster.submit!
     }
 
-    prices3 = roster.purchasable_players
+    prices3 = pricing_roster.purchasable_players
     #see how much the mean price has changed
-    avg2 = prices2.collect(&:buy_price).reduce(:+)/18
-    avg3 = prices3.collect(&:buy_price).reduce(:+)/18
-    puts "average price moved from #{avg2.round(2)} to #{avg3.round(2)}"
-    assert (avg2-avg3).abs < 1000
+    avg_all = prices3.collect(&:buy_price).reduce(:+)/18
+    bought_players = existing_roster.players.map(&:id)
+    avg_bought = prices3.select{|p| bought_players.include?(p.id) }.collect(&:buy_price).reduce(:+)/9
+    puts "average price moved from #{avg_all.round(2)} to #{avg_bought.round(2)}"
+    assert avg_bought > avg_all
   end
 
   test "lock_players_all" do
@@ -204,12 +213,15 @@ class MarketTest < ActiveSupport::TestCase
     over_game.game_day = Time.now.yesterday.beginning_of_day
     over_game.game_time = Time.now.yesterday
     over_game.save!
+    @market.state = nil
+    @market.published_at = Time.now.yesterday
+    @market.save
     Market.tend
     over_game.teams.each do |team|
-      assert MarketPlayer.where(:player_stats_id => team.players.map(&:stats_id)).all?{|mp| mp.locked? }
+      assert MarketPlayer.where(:market_id => @market.id, :player_stats_id => team.players.map(&:stats_id)).all?{|mp| mp.locked? }
     end
     future_game.teams.each do |team|
-      assert MarketPlayer.where(:player_stats_id => team.players.map(&:stats_id)).all?{|mp| !mp.locked? }
+      assert MarketPlayer.where(:market_id => @market.id, :player_stats_id => team.players.map(&:stats_id)).all?{|mp| !mp.locked? }
     end
   end
 
