@@ -96,7 +96,6 @@ class RosterTest < ActiveSupport::TestCase
 
   test "fill randomly" do
     setup_multi_day_market
-    @market.publish
 
     #find a $10 contest_type in the market's contest types
     contest_type = create(:contest_type, :market => @market)
@@ -113,6 +112,7 @@ class RosterTest < ActiveSupport::TestCase
 
   test "adding or removing players from roster affects salary" do
     @roster.submit!
+    @market.open
     player = @roster.purchasable_players.first
     initial_cap = @roster.remaining_salary
     assert_difference('@roster.reload.remaining_salary.to_f', -player.buy_price) do
