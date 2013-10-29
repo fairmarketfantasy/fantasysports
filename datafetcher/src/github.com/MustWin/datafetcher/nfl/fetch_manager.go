@@ -29,7 +29,6 @@ func (mgr *FetchManager) Daily() error {
 		mgr.Fetcher.NflSeason = seasonType
 		games = append(games, mgr.refreshGames()...)
 	}
-	return nil
 	//lib.PrintPtrs(games)
 
 	// Set the fetcher to the correct dates / seasons, etc
