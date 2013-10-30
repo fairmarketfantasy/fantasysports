@@ -753,7 +753,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         }
         [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
         
-        double delayInSeconds = 2.0;
+        double delayInSeconds = 10.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             // only poll if we're viewing this screen
@@ -849,7 +849,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          
          __strong FFContestViewController *strongSelf = self;
          
-         double delayInSeconds = 2.0;
+         double delayInSeconds = 10.0;
          dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
          dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
              NSString *lastPos = ((strongSelf->_currentPickPlayer
