@@ -29,7 +29,6 @@ class User < ActiveRecord::Base
 
   has_many :rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner_id
-  has_many :pending_payments
   has_many :push_devices
   has_many :transaction_records
   has_one  :customer_object
