@@ -34,7 +34,18 @@ class UsersController < ApplicationController
     payment = PayPal::SDK::REST::Payment.find(cookies[:pending_payment])
     payment.execute(payer_id: payer_id)
     @amount_in_cents = payment.transactions.first.amount.total.to_i * 100
-    current_user.customer_object.increase_balance(@amount_in_cents, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
+    @type = params[:type]
+    if @type == 'money'
+      current_user.customer_object.increase_balance(@amount_in_cents, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
+      Invitation.redeem_paid(current_user)
+      Eventing.report(current_user, 'addFunds', :amount => @amount_in_cents)
+    elsif @type == 'token'
+      @tokens, opts = User::TOKEN_SKUS.find{|tokens, opts| opts[:cost] == @amount_in_cents}
+      current_user.token_balance += @tokens.to_i
+      current_user.save!
+      TransactionRecord.create!(:user => current_user, :event => 'token_buy', :amount => @amount_in_cents, :transaction_data => opts.to_json)
+      Eventing.report(current_user, 'buyTokens', :amount => @amount_in_cents)
+    end
     cookies.delete :pending_payment
     render '/users/paypal_return', layout: false
   end
@@ -43,24 +54,18 @@ class UsersController < ApplicationController
     render '/users/paypal_cancel', layout: false
   end
 
-  def add_money
-    unless params[:amount]
-      render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
-    end
-
-    amount = params[:amount]
-
+  def generate_paypal_payment(type, amount)
     payment = PayPal::SDK::REST::Payment.new({  :intent => "sale",
                                                 :payer => {
                                                   :payment_method => "paypal" },
                                                 :redirect_urls => {
-                                                  :return_url => "#{SITE}/users/paypal_return",
+                                                  :return_url => "#{SITE}/users/paypal_return/#{type}",
                                                   :cancel_url => "#{SITE}/users/paypal_cancel" },
                                                 :transactions => [ {
                                                 :amount => {
-                                                  :total => amount,
+                                                  :total => amount / 100,
                                                   :currency => "USD" },
-                                                :description => "Deposit funds to your Fair Market Fantasy account!" } ] } )
+                                                :description => (type == 'money' ? "Deposit funds" : "Purchase FanFrees") + " for your Fair Market Fantasy account!" } ] } )
     if payment.create
       #second link is the approval url, obviously...
       approval_url = payment.links.second.href
@@ -70,11 +75,13 @@ class UsersController < ApplicationController
       render json: {error: payment.error.message}, status: :unprocessable_entity
     end
 
-    # if current_user.customer_object.charge(params[:amount])
-    #   Invitation.redeem_paid(current_user)
-    #   Eventing.report(current_user, 'addFunds', :amount => params[:amount])
-    #   render_api_response current_user
-    # end
+  end
+
+  def add_money
+    unless params[:amount]
+      render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
+    end
+    generate_paypal_payment('money', params[:amount])
   end
 
   def token_plans
@@ -90,18 +97,12 @@ class UsersController < ApplicationController
         current_user.save!
         TransactionRecord.create!(:user => current_user, :event => 'token_buy_ios', :amount => User::TOKEN_SKUS[data[:product_id]], :ios_transaction_id => data[:transaction_id], :transaction_data => data.to_json)
         Eventing.report(current_user, 'buyTokens', :amount => User::TOKEN_SKUS[data[:product_id]])
+        render_api_response current_user
       else
-        current_user.customer_object.set_default_card(params[:card_id]) if params[:card_id]
         sku = User::TOKEN_SKUS[params[:product_id]]
-        if current_user.customer_object.charge(sku[:cost])
-          current_user.token_balance += sku[:tokens]
-          current_user.save!
-          TransactionRecord.create!(:user => current_user, :event => 'token_buy', :amount => sku[:cost], :transaction_data => sku.to_json)
-          Eventing.report(current_user, 'buyTokens', :amount => sku[:cost])
-        end
+        generate_paypal_payment('token', sku[:cost])
       end
     end
-    render_api_response current_user
   end
 
   def withdraw_money

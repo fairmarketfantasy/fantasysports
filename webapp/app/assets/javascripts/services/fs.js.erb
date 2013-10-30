@@ -16,7 +16,7 @@ angular.module('app.services')
         d.open();
         $rootScope.$on('user-changed', function () {
           d.close();
-          flash.success = "Paypal payment processed successfully!";
+          flash.success = "Paypal payment deposited successfully!";
         });
       },
 
@@ -25,6 +25,10 @@ angular.module('app.services')
         dialogOpts.controller  = 'AddFanFreesDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $rootScope.$on('user-changed', function () {
+          d.close();
+          flash.success = "FanFrees purchased successfully!";
+        });
       },
 
       settingsModal: function() {
