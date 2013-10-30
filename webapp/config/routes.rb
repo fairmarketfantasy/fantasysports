@@ -28,6 +28,7 @@ Fantasysports::Application.routes.draw do
   get '/landing' => 'pages#landing'
   get '/about' => 'pages#about'
   get '/sign_up' => 'pages#sign_up'
+  get '/leaderboard' => 'leaderboard#index'
 
   get '/pages/mobile/forgot_password' => 'mobile_pages#forgot_password'
   get '/pages/mobile/support' => 'mobile_pages#support'
@@ -44,6 +45,8 @@ Fantasysports::Application.routes.draw do
       get 'token_plans',     action: :token_plans
       post 'set_username',   action: :set_username
       post 'add_money',      action: :add_money
+      get  'paypal_return/:type',  action: :paypal_return
+      get  'paypal_cancel',  action: :paypal_cancel
       post 'add_tokens',     action: :add_tokens
       post 'withdraw_money', action: :withdraw_money
     end
@@ -70,6 +73,8 @@ Fantasysports::Application.routes.draw do
       post 'remove_player/:player_id', :action => 'remove_player'
     end
   end
+
+  get "/transactions" => 'transaction_record#index'
 
   resources :contests, only: [:create] do
     collection do

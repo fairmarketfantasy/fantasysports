@@ -1,5 +1,5 @@
 angular.module('app.services')
-  .factory('currentUserService', ['$dialog', function($dialog) {
+  .factory('currentUserService', ['$dialog', '$rootScope', 'flash', function($dialog, $rootScope, flash) {
     var dialogOpts = {
           backdrop: true,
           keyboard: true,
@@ -14,23 +14,31 @@ angular.module('app.services')
         dialogOpts.controller  = 'AddFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $rootScope.$on('user-changed', function () {
+          d.close();
+          flash.success = "Paypal payment deposited successfully!";
+        });
       },
 
-      addFanFreesModal: function(){
+      addFanFreesModal: function() {
         dialogOpts.templateUrl = '/add_fan_frees_dialog.html',
         dialogOpts.controller  = 'AddFanFreesDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $rootScope.$on('user-changed', function () {
+          d.close();
+          flash.success = "FanFrees purchased successfully!";
+        });
       },
 
-      settingsModal: function(){
+      settingsModal: function() {
         dialogOpts.templateUrl = '/settings_dialog.html';
         dialogOpts.controller  = 'SettingsController';
         var d = $dialog.dialog(dialogOpts);
         d.open();
        },
 
-      withdrawFundsModal: function(){
+      withdrawFundsModal: function() {
         dialogOpts.templateUrl = '/withdraw_funds_dialog.html',
         dialogOpts.controller  = 'WithdrawFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
@@ -101,8 +109,8 @@ angular.module('app.services')
         login: function(user_attrs){
           return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});
         },
-        addMoney: function(amount, card){
-          return $http({method: 'POST', url: '/users/add_money', data: {amount: amount, card_id: card} });
+        addMoney: function(amount){
+          return $http({method: 'POST', url: '/users/add_money', data: {amount: amount} });
         },
         addTokens: function(token_ct){
           return $http({method: 'POST', url: '/users/add_tokens', data: {product_id: token_ct}})
@@ -178,6 +186,16 @@ angular.module('app.services')
       events: {
         for_players: function(market_id, players) {
           return $http({method: 'GET', url: '/events/for_players', params: {player_ids: _.map(players, function(elt) { return elt.stats_id}).join(','), market_id: market_id} });
+        },
+      },
+      leaderboard: {
+        fetch: function(timeframe) {
+          return $http({method: 'GET', url: '/leaderboard', params: {timeframe: timeframe}});
+        },
+      },
+      transactions: {
+        list: function(page) {
+          return $http({method: 'GET', url: '/transactions', params: {page: page}});
         },
       },
       rosters: {
