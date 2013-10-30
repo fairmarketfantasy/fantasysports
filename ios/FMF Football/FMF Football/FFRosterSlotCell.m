@@ -148,6 +148,8 @@
         
         _name.text = player[@"name"];
         NSString *ppg = [player[@"ppg"] isEqual:[NSNull null]] ? @"0" : player[@"ppg"];
+        ppg = [NSString stringWithFormat:@"%.2f", [ppg floatValue]];
+        
         _team.text = [NSString stringWithFormat:@"%@ %@ %@ PPG", player[@"position"], player[@"team"], ppg];
         
         if ([player[@"headshot_url"] isKindOfClass:[NSString class]]) {
