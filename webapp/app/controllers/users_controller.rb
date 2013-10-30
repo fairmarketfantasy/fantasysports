@@ -31,11 +31,11 @@ class UsersController < ApplicationController
 
   def paypal_return
     payer_id = params[:PayerID]
-    payment = PayPal::SDK::REST::Payment.find(session[:pending_payment])
+    payment = PayPal::SDK::REST::Payment.find(cookies[:pending_payment])
     payment.execute(payer_id: payer_id)
-    amount_in_cents = payment.transactions.first.amount.total.to_i * 100
-    current_user.customer_object.increase_balance(amount_in_cents, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
-    session[:pending_payment] = nil
+    @amount_in_cents = payment.transactions.first.amount.total.to_i * 100
+    current_user.customer_object.increase_balance(@amount_in_cents, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
+    cookies.delete :pending_payment
     render '/users/paypal_return', layout: false
   end
 
@@ -64,7 +64,7 @@ class UsersController < ApplicationController
     if payment.create
       #second link is the approval url, obviously...
       approval_url = payment.links.second.href
-      session[:pending_payment] = payment.id
+      cookies[:pending_payment] = payment.id
       render json: {approval_url:  approval_url}
     else
       render json: {error: payment.error.message}, status: :unprocessable_entity

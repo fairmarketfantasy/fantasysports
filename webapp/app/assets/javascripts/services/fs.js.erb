@@ -1,5 +1,5 @@
 angular.module('app.services')
-  .factory('currentUserService', ['$dialog', function($dialog) {
+  .factory('currentUserService', ['$dialog', '$rootScope', 'flash', function($dialog, $rootScope, flash) {
     var dialogOpts = {
           backdrop: true,
           keyboard: true,
@@ -14,23 +14,27 @@ angular.module('app.services')
         dialogOpts.controller  = 'AddFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $rootScope.$on('user-changed', function () {
+          d.close();
+          flash.success = "Paypal payment processed successfully!";
+        });
       },
 
-      addFanFreesModal: function(){
+      addFanFreesModal: function() {
         dialogOpts.templateUrl = '/add_fan_frees_dialog.html',
         dialogOpts.controller  = 'AddFanFreesDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
       },
 
-      settingsModal: function(){
+      settingsModal: function() {
         dialogOpts.templateUrl = '/settings_dialog.html';
         dialogOpts.controller  = 'SettingsController';
         var d = $dialog.dialog(dialogOpts);
         d.open();
        },
 
-      withdrawFundsModal: function(){
+      withdrawFundsModal: function() {
         dialogOpts.templateUrl = '/withdraw_funds_dialog.html',
         dialogOpts.controller  = 'WithdrawFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
