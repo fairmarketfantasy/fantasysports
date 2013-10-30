@@ -17,8 +17,9 @@ angular.module("app.controllers")
 
   $scope.addTokens = function(token_count){
     $scope.showSpinner = true;
+    var w = window.open('/users/paypal_waiting');
     fs.user.addTokens(token_count).then(function(resp){
-      window.open(resp.approval_url);
+      w.location.href = resp.approval_url;
     });
   };
 

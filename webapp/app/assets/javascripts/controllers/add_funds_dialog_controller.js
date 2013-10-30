@@ -6,12 +6,13 @@ angular.module("app.controllers")
   $scope.addFunds = function(){
     var amt = $scope.chargeAmt;
     $scope.addMoneySpinner = true;
+    var w = window.open('/users/paypal_waiting');
     fs.user.addMoney(amt).then(function(resp){
       // window.App.currentUser.balance = resp.balance;
       // $scope.close();
-      // flash.success = "Success, $" + $scope.chargeAmt + " added your your account.";
+       //flash.success = "Success, $" + $scope.chargeAmt + " added your your account.";
       $scope.chargeAmt = null;
-      window.open(resp.approval_url);
+      w.location.href = resp.approval_url;
       $scope.addMoneySpinner = false;
     }, function(resp){
       //failure
