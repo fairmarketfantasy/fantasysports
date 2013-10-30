@@ -63,7 +63,7 @@ class UsersController < ApplicationController
                                                   :cancel_url => "#{SITE}/users/paypal_cancel" },
                                                 :transactions => [ {
                                                 :amount => {
-                                                  :total => amount / 100,
+                                                  :total => amount.to_f / 100,
                                                   :currency => "USD" },
                                                 :description => (type == 'money' ? "Deposit funds" : "Purchase FanFrees") + " for your Fair Market Fantasy account!" } ] } )
     if payment.create
