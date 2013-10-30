@@ -101,8 +101,8 @@ angular.module('app.services')
         login: function(user_attrs){
           return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});
         },
-        addMoney: function(amount, card){
-          return $http({method: 'POST', url: '/users/add_money', data: {amount: amount, card_id: card} });
+        addMoney: function(amount){
+          return $http({method: 'POST', url: '/users/add_money', data: {amount: amount} });
         },
         addTokens: function(token_ct){
           return $http({method: 'POST', url: '/users/add_tokens', data: {product_id: token_ct}})
