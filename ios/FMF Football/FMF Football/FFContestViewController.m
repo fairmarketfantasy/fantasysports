@@ -283,7 +283,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                  NSLocalizedString(@"Enter", nil),
                                  _contest.name,
                                  [_contest.buyIn description],
-                                 NSLocalizedString(@"Tokens", nil)];
+                                 NSLocalizedString(@"FanFrees", nil)];
                 }
                 butt = [FFStyle coloredButtonWithText:txt
                                                 color:[FFStyle brightOrange]

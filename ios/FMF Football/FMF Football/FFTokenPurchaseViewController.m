@@ -177,7 +177,7 @@
     lab.backgroundColor = [UIColor clearColor];
     lab.font = [FFStyle lightFont:26];
     lab.textColor = [FFStyle tableViewSectionHeaderColor];
-    lab.text = NSLocalizedString(@"Purchase Tokens", nil);
+    lab.text = NSLocalizedString(@"Purchase FanFrees", nil);
     [header addSubview:lab];
     return header;
 }

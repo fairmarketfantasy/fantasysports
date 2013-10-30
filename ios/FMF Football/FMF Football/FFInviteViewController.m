@@ -217,7 +217,8 @@
     for (NSArray *contact in _bubblePicker.items) {
         [emails addObject:contact[1]];
     }
-    NSDictionary *params = @{@"invitees": emails, @"invitation_code": _roster.contest[@"invitation_code"]};
+    NSDictionary *params = @{@"invitees": [emails componentsJoinedByString:@", "],
+                             @"invitation_code": _roster.contest[@"invitation_code"]};
     [self.session authorizedJSONRequestWithMethod:@"POST" path:path paramters:params success:
      ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
          [alert hide];
