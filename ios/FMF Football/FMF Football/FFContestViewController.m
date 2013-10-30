@@ -807,8 +807,12 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                   NSLocalizedString(@"Contest Entrants", nil)];
     }
     
-    if (numMissing == 0 && _state == ShowRoster) {
-        [self showSubmitRosterBanner];
+    if (numMissing < slots.count && _state == ShowRoster) { // show banner if at least one player is selected
+        NSString *text = NSLocalizedString(@"All Slots are Filled!", nil);
+        if (numMissing != 0) {
+            text = NSLocalizedString(@"Enter now and finish later.", nil);
+        }
+        [self showSubmitRosterBanner:text];
     } else {
         [self hideSubmitRosterBanner];
     }
@@ -938,7 +942,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     }
 }
 
-- (void)showSubmitRosterBanner
+- (void)showSubmitRosterBanner:(NSString *)text
 {
     if (_state != ShowRoster) {
         return;
@@ -954,7 +958,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         lab.font = [FFStyle regularFont:14];
         lab.textColor = [UIColor colorWithWhite:.95 alpha:1];
         lab.textAlignment = NSTextAlignmentCenter;
-        lab.text = NSLocalizedString(@"All slots are filled!", nil);
+        lab.text = text; //NSLocalizedString(@"All slots are filled!", nil);
         [view addSubview:lab];
         
         UIButton *butt = [FFStyle coloredButtonWithText:NSLocalizedString(@"Submit Roster!", nil)
