@@ -561,7 +561,7 @@ validate_error:
             goto validate_error;
         }
     }
-    if (!(self.passwordSignupField.text.length > 6)) {
+    if (!(self.passwordSignupField.text.length > 5)) {
         error = NSLocalizedString(@"Please provide a password at least 6 characters long", nil);
         goto validate_error;
     }
