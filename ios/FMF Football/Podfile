@@ -8,4 +8,3 @@ pod 'FormatterKit', '~> 1.2.1'
 pod 'RHAddressBook', '~> 1.0.2'
 pod 'IAPManager', '~> 0.2.2'
 
-pod 'SparkInspector'
