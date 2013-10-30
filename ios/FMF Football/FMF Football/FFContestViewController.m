@@ -683,7 +683,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             break;
         case PickPlayer:
             _currentPickPlayer = ctx;
-            [self showPlayersForPosition:[ctx isKindOfClass:[NSString class]] ? ctx : ctx[@"position"]];
+            [self showPlayersForPosition:[ctx isKindOfClass:[NSString class]] ? ctx : ctx[@"position"] poll:YES];
             [self showPlayerFilterBanner];
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
@@ -818,7 +818,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     }
 }
 
-- (void)showPlayersForPosition:(NSString *)pos
+- (void)showPlayersForPosition:(NSString *)pos poll:(BOOL)shouldContinuePolling
 {
     if (_state != PickPlayer) {
         NSLog(@"attempting to show players but in the wrong state");
@@ -840,7 +840,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          
          if (_filterBenchPlayers && sorted.count > 3) {
              [sorted filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-                 if ([evaluatedObject[@"ppg"] isKindOfClass:[NSNumber class]] && [evaluatedObject[@"ppg"] integerValue] < 2) {
+                 if (evaluatedObject[@"benched_games"] && [evaluatedObject[@"benched_games"] integerValue] > 2) {
                      return NO;
                  }
                  return YES;
@@ -850,6 +850,10 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          _availablePlayers = sorted;
          [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                        withRowAnimation:UITableViewRowAnimationNone];
+         
+         if (!shouldContinuePolling) { // we're done if there is no more polling to do
+             return;
+         }
          
          __strong FFContestViewController *strongSelf = self;
          
@@ -862,7 +866,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                   : strongSelf->_currentPickPlayer);
              // only poll again if we are still picking a player and picking the correct one
              if (strongSelf->_state == PickPlayer && [pos isEqualToString:lastPos]) {
-                 [strongSelf showPlayersForPosition:lastPos];
+                 [strongSelf showPlayersForPosition:lastPos poll:YES];
              }
          });
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
@@ -924,6 +928,11 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 - (void)benchSwitch:(UISwitch *)swit
 {
     _filterBenchPlayers = swit.isOn;
+    NSString *lastPos = ((_currentPickPlayer
+                          && [_currentPickPlayer isKindOfClass:[NSDictionary class]])
+                         ? _currentPickPlayer[@"position"]
+                         : _currentPickPlayer);
+    [self showPlayersForPosition:lastPos poll:NO]; // immediately refresh
 }
 
 - (void)hidePlayerFilterBanner
