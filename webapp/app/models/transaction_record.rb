@@ -13,7 +13,7 @@ class TransactionRecord < ActiveRecord::Base
   attr_protected
   CONTEST_TYPES = %w( buy_in cancelled_roster payout rake )
   validates_presence_of :user
-  validates :event, inclusion: { in: CONTEST_TYPES + %w( deposit withdrawal buy_in cancelled_roster payout rake token_buy token_buy_ios free_referral_payout paid_referral_payout referred_join_payout ) }
+  validates :event, inclusion: { in: CONTEST_TYPES + %w( deposit withdrawal buy_in cancelled_roster payout rake joined_grant token_buy token_buy_ios free_referral_payout paid_referral_payout referred_join_payout ) }
   validates_with TransactionRecordValidator
 
   belongs_to :user
