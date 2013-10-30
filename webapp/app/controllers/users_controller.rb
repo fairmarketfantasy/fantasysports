@@ -50,6 +50,10 @@ class UsersController < ApplicationController
     render '/users/paypal_return', layout: false
   end
 
+  def paypal_waiting
+    render '/users/paypal_waiting', layout: false
+  end
+
   def paypal_cancel
     render '/users/paypal_cancel', layout: false
   end
@@ -63,7 +67,7 @@ class UsersController < ApplicationController
                                                   :cancel_url => "#{SITE}/users/paypal_cancel" },
                                                 :transactions => [ {
                                                 :amount => {
-                                                  :total => amount.to_f / 100,
+                                                  :total => sprintf("%0.02f", amount.to_f / 100),
                                                   :currency => "USD" },
                                                 :description => (type == 'money' ? "Deposit funds" : "Purchase FanFrees") + " for your Fair Market Fantasy account!" } ] } )
     if payment.create
@@ -81,7 +85,7 @@ class UsersController < ApplicationController
     unless params[:amount]
       render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
     end
-    generate_paypal_payment('money', params[:amount])
+    generate_paypal_payment('money', params[:amount].to_i * 100)
   end
 
   def token_plans

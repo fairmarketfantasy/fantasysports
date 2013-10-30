@@ -46,6 +46,7 @@ Fantasysports::Application.routes.draw do
       post 'set_username',   action: :set_username
       post 'add_money',      action: :add_money
       get  'paypal_return/:type',  action: :paypal_return
+      get  'paypal_waiting',  action: :paypal_waiting
       get  'paypal_cancel',  action: :paypal_cancel
       post 'add_tokens',     action: :add_tokens
       post 'withdraw_money', action: :withdraw_money
