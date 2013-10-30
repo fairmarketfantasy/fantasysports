@@ -849,17 +849,28 @@ validate_error:
                                                             object:nil
                                                           userInfo:@{FFUserKey: user}];
         
-        double delayInSeconds = 2.0;
+        double delayInSeconds = 10.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [self pollUser];
         });
     } failure:^(NSError *error) {
-        double delayInSeconds = 2.0;
+        double delayInSeconds = 10.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [self pollUser];
         });
+    }];
+}
+
+- (void)updateUserNow
+{
+    [self.session syncUserSuccess:^(id successObj) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:FFSessionDidUpdateUserNotification
+                                                            object:nil
+                                                          userInfo:@{FFUserKey: successObj}];
+    } failure:^(NSError *error) {
+        NSLog(@"failed to get user");
     }];
 }
 
