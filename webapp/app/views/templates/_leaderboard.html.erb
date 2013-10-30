@@ -1,0 +1,32 @@
+
+<ul>
+  <li><a href="javascript://" ng-class="{selected: timeframe == 'all'}" ng-click="timeframe = 'all'">All Time</a></li>
+  <li><a href="javascript://" ng-class="{selected: timeframe == 'season'}" ng-click="timeframe = 'season'">This Season</a></li>
+  <li><a href="javascript://" ng-class="{selected: timeframe == 'week'}" ng-click="timeframe = 'week'">This Week</a></li>
+</ul>
+
+<img ng-hide="leaderboards" src='/assets/ajax-loader-big.gif'/>
+
+<ul>
+  <li ng-repeat="(name, users) in leaderboards">
+  <h3>{{name}}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>User</th>
+        <th ng-show="users[0].amount">Amount</th>
+        <th ng-hide="users[0].amount">Ratio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in users">
+        <td>{{ $index }}</td>
+        <td>{{ user.username }}</td>
+        <td ng-show="user.amount">{{ user.amount }}</td>
+        <td ng-show="user.bets">{{ user.bets / user.winnings }}</td>
+        <td ng-show="user.total_wins">{{ user.total_wins }} / {{ user.total_losses }}</td>
+      </tr>
+    </tbody>
+  </li>
+</ul>

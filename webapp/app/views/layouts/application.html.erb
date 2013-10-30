@@ -120,6 +120,7 @@
             <li class="nav-item"><a href="/#/">Home</a></li>
             <li class="nav-item"><a href="/#/rosters">My Contests</a></li>
             <li class="nav-item"><a href="/#/history">History</a></li>
+            <li class="nav-item"><a href="/#/leaderboard">Leaderboards</a></li>
             <li class="nav-item"><a href="/#/rules" >Rules and Scoring</a></li>
             <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
             <li class="nav-item end"><a href="/#/support">Support</a></li>
@@ -165,6 +166,14 @@
   };
   window.setCurrentUser = function(user) {
     window.App.currentUser = user;
+  };
+  window.addToBalance = function(amount) {
+    window.App.currentUser.balance = window.App.currentUser.balance + amount;
+    $('body').scope().$emit('user-changed');
+  };
+  window.addToTokenBalance = function(amount) {
+    window.App.currentUser.token_balance = window.App.currentUser.token_balance + amount;
+    $('body').scope().$emit('user-changed');
   };
 </script>
 

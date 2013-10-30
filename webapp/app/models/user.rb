@@ -21,6 +21,8 @@ class User < ActiveRecord::Base
   devise :omniauthable, :omniauth_providers => [:facebook, :facebook_access_token]
 
   attr_accessor :current_password
+  attr_accessor :amount, :bets, :winnings, :total_wins, :total_losses # Leaderboard keys
+
   attr_accessible :name, :username, :provider, :uid, :fb_token, :unconfirmed_email, :image_url, :takes_tokens,
       :email, :current_password, :password, :password_confirmation, :remember_me, :first_name,
       :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync, :inviter_id, :avatar, :avatar_cache, :remove_avatar
@@ -28,19 +30,20 @@ class User < ActiveRecord::Base
   has_many :rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner_id
   has_many :push_devices
+  has_many :transaction_records
   has_one  :customer_object
   has_one  :recipient
   belongs_to :inviter, :class_name => 'User'
 
   before_create :set_blank_name
-  before_create :award_tokens
+  after_create :award_tokens
 
   def set_blank_name
     self.name ||= ''
   end
 
   def award_tokens
-    self.token_balance = 1000
+    self.payout(1000, true, :event => 'joined_grant')
   end
 
   def customer_object_with_create

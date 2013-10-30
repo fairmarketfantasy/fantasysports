@@ -36,6 +36,8 @@ Fantasysports::Application.configure do
     location: Rails.root.join('log/mail')
   }
 
+  config.cache_store = :file_store, File.join(Rails.root, 'tmp', 'cache')
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
