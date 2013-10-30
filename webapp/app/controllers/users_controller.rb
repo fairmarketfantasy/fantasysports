@@ -29,16 +29,52 @@ class UsersController < ApplicationController
     render_api_response({"result" => !!current_user})
   end
 
+  def paypal_return
+    payer_id = params[:PayerID]
+    payment = PayPal::SDK::REST::Payment.find(session[:pending_payment])
+    payment.execute(payer_id: payer_id)
+    amount_in_cents = payment.transactions.first.amount.total.to_i * 100
+    current_user.customer_object.increase_balance(amount_in_cents, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
+    session[:pending_payment] = nil
+    render '/users/paypal_return', layout: false
+  end
+
+  def paypal_cancel
+    render '/users/paypal_cancel', layout: false
+  end
+
   def add_money
     unless params[:amount]
       render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
     end
-    current_user.customer_object.set_default_card(params[:card_id]) if params[:card_id]
-    if current_user.customer_object.charge(params[:amount])
-      Invitation.redeem_paid(current_user)
-      Eventing.report(current_user, 'addFunds', :amount => params[:amount])
-      render_api_response current_user
+
+    amount = params[:amount]
+
+    payment = PayPal::SDK::REST::Payment.new({  :intent => "sale",
+                                                :payer => {
+                                                  :payment_method => "paypal" },
+                                                :redirect_urls => {
+                                                  :return_url => "#{SITE}/users/paypal_return",
+                                                  :cancel_url => "#{SITE}/users/paypal_cancel" },
+                                                :transactions => [ {
+                                                :amount => {
+                                                  :total => amount,
+                                                  :currency => "USD" },
+                                                :description => "Deposit funds to your Fair Market Fantasy account!" } ] } )
+    if payment.create
+      #second link is the approval url, obviously...
+      approval_url = payment.links.second.href
+      session[:pending_payment] = payment.id
+      render json: {approval_url:  approval_url}
+    else
+      render json: {error: payment.error.message}, status: :unprocessable_entity
     end
+
+    # if current_user.customer_object.charge(params[:amount])
+    #   Invitation.redeem_paid(current_user)
+    #   Eventing.report(current_user, 'addFunds', :amount => params[:amount])
+    #   render_api_response current_user
+    # end
   end
 
   def token_plans
