@@ -74,6 +74,8 @@ Fantasysports::Application.routes.draw do
     end
   end
 
+  get "/transactions" => 'transaction_record#index'
+
   resources :contests, only: [:create] do
     collection do
       get 'for_market/:id', :action => 'for_market'

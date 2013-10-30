@@ -72,7 +72,11 @@ angular.module('app.filters')
   })
   .filter('centsToDollars', function() {
     return function(input) {
-      return '$' + (input / 100);
+      var retVal = '';
+      if (input < 0) {
+        retVal += '-'
+      }
+      return retVal + '$' + (Math.abs(input) / 100);
     };
   })
   .filter('ordinal', function() {
