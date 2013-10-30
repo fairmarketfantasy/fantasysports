@@ -10,7 +10,7 @@
 <body>
   <script type="text/javascript">
     if(window.opener) {
-      window.opener.location.reload(true);
+      window.opener.addToBalance(<%= @amount_in_cents %>);
       window.close();
     }
   </script>
