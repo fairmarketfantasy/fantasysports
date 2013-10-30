@@ -15,8 +15,10 @@ angular.module('app.services')
         var d = $dialog.dialog(dialogOpts);
         d.open();
         $rootScope.$on('user-changed', function () {
-          d.close();
-          flash.success = "Paypal payment deposited successfully!";
+          $rootScope.$apply(function() {
+            d.close();
+            flash.success = "Paypal payment deposited successfully!";
+          });
         });
       },
 
@@ -26,8 +28,10 @@ angular.module('app.services')
         var d = $dialog.dialog(dialogOpts);
         d.open();
         $rootScope.$on('user-changed', function () {
-          d.close();
-          flash.success = "FanFrees purchased successfully!";
+          $rootScope.$apply(function() {
+            d.close();
+            flash.success = "FanFrees purchased successfully!";
+          });
         });
       },
 
