@@ -95,6 +95,21 @@ class Contest < ActiveRecord::Base
     end
   end
 
+  def revert_payday!
+    self.with_lock do
+      raise if self.paid_at.nil?
+      self.paid_at = nil
+      TransactionRecord.validate_contest(self)
+      TransactionRecord.where(:contest_id => self.id).each do |tr|
+        next if tr.reverted? || tr.event == 'buy_in'#TransactionRecord::CONTEST_TYPES.include?(tr.event)
+        tr.revert!
+      end
+      TransactionRecord.validate_contest(self)
+      self.save!
+      self.market.tabulate_scores
+    end
+  end
+
   def self._rosters_by_rank(rosters)
     by_rank = {}
     rosters.each do |roster|
