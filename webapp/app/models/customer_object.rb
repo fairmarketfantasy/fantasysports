@@ -69,7 +69,6 @@ class CustomerObject < ActiveRecord::Base
     sprintf( '%.2f', (balance/100) )
   end
 
-  # TODO: refactor this argument nonsense
   def increase_balance(amount, event, opts = {})
     ActiveRecord::Base.transaction do
       self.balance += amount

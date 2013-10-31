@@ -187,10 +187,10 @@ class Roster < ActiveRecord::Base
   end
 
 
-  #buys random players to fill up the roster (all empty positions)
-  #how randomly? well, that may change, but for now it's pretty random.
+  # THIS IS ONLY USED FOR TESTING
   def fill_randomly
     #find which positions to fill
+    self.players.each{|p| self.remove_player(p) }
     positions = self.positions.split(',') #TODO- could cache this
     pos_taken = self.players.collect(&:position)
     pos_taken.each do |pos|
