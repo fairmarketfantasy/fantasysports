@@ -146,11 +146,12 @@ class Roster < ActiveRecord::Base
   def add_player(player)
     begin
       raise HttpException.new(409, "There is no room for another #{player.position} in your roster") unless remaining_positions.include?(player.position)
-      exec_price("SELECT * from buy(#{self.id}, #{player.id})")
+      order = exec_price("SELECT * from buy(#{self.id}, #{player.id})")
       self.class.uncached do
         self.players.reload
         # TODO: may need to reload roster players too
       end
+      order
     rescue StandardError => e
       if e.message =~ /already in roster/
         raise HttpException.new(409, "That player is already in your roster")
@@ -160,11 +161,12 @@ class Roster < ActiveRecord::Base
   end
 
   def remove_player(player)
-    exec_price("SELECT * from sell(#{self.id}, #{player.id})")
+    order = exec_price("SELECT * from sell(#{self.id}, #{player.id})")
     self.class.uncached do
       self.players.reload
       # TODO: may need to reload roster players too
     end
+    order
   end
 
   def exec_price(sql)
