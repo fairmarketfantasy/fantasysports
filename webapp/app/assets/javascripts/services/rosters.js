@@ -127,7 +127,7 @@ angular.module('app.data')
         var index = indexForPlayerInRoster(this.currentRoster, player)
         if (index >= 0) {
           return fs.rosters.add_player(this.currentRoster.id, player.id).then(function(market_order) {
-            self.currentRoster.remaining_salary -= market_order.price;
+            self.currentRoster.remaining_salary -= parseInt(market_order.price);
             player.purchase_price = market_order.price;
             player.sell_price = market_order.price;
             self.currentRoster.players[index] = player;
