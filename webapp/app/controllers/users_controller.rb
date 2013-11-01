@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   end
 
   def name_taken
-    user = User.where(:username => params[:name]).first
+    user = User.where(:username => params[:name]).first || params[:name]
     render_api_response({"result" => !user})
   end
 
