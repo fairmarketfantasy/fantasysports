@@ -49,7 +49,6 @@ class Contest < ActiveRecord::Base
       contest_type: contest_type,
       private: true
     )
-
   end
 
   def rake_amount
