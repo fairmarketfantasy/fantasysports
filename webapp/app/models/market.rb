@@ -147,6 +147,9 @@ class Market < ActiveRecord::Base
             old_contest = roster.contest
             old_contest.num_rosters -= 1
             old_contest.save!
+            TransactionRecord.where(
+              :contest_id => old_contest.id, :roster_id => roster.id
+            ).first.update_attribute(:contest_id, contest.id)
             roster.contest_id, roster.cancelled_cause, roster.state  = contest.id, 'moved to under capacity private contest', 'in_progress'
             roster.contest.save!
             roster.save!
