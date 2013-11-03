@@ -5,6 +5,7 @@ Fantasysports::Application.routes.draw do
 
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks",
                                        :sessions => 'users/sessions',
+                                       :passwords => 'users/passwords',
                                        :registrations => "users/registrations",
                                        :confirmations => "users/confirmations" }
   # The priority is based upon order of creation: first created -> highest priority.
@@ -48,6 +49,7 @@ Fantasysports::Application.routes.draw do
       get  'paypal_return/:type',  action: :paypal_return
       get  'paypal_waiting',  action: :paypal_waiting
       get  'paypal_cancel',  action: :paypal_cancel
+      post  'reset_password', action: :reset_password
       post 'add_tokens',     action: :add_tokens
       post 'withdraw_money', action: :withdraw_money
     end

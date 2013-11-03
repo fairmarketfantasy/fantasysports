@@ -125,6 +125,9 @@ angular.module('app.services')
         resendConfirmation: function(){
           return $http({method: 'POST', url: '/users/confirmation'})
         },
+        resetPassword: function(email){
+          return $http({method: 'POST', url: '/users/reset_password', data: {email: email}})
+        },
         setUsername: function(name) {
           return $http({method: 'POST', url: '/users/set_username', params: {name: name}})
         },
