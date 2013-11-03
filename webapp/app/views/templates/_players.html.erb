@@ -82,7 +82,7 @@
 
             <div class="cta-container clearfix">
     <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
-    <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.reset('/market/' + rosters.currentRoster.market_id)" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
+    <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.reset('/market/' + rosters.currentRoster.market.id)" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
     <a class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'" ng-click="enterAgain()">Enter Again</a>
   </div>
         </div>

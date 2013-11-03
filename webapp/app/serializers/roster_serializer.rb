@@ -2,7 +2,6 @@ class RosterSerializer < ActiveModel::Serializer
   attributes :id, 
       :owner_id, 
       :owner_name, # include whole object?
-      :market_id, 
       :state, 
       :contest_id, 
       :buy_in, 
@@ -22,6 +21,7 @@ class RosterSerializer < ActiveModel::Serializer
   has_one :contest
   has_one :contest_type
   has_many :players
+  has_one :market
 
   def players
     @players ||= object.players_with_prices

@@ -186,9 +186,9 @@ BEGIN
 
 	--make sure that the market is available
 	PERFORM id from markets WHERE id = _roster.market_id and state in ('published', 'opened') FOR UPDATE;
-	IF NOT FOUND THEN
-		RAISE EXCEPTION 'market % is unavailable, roster may not be canceled', _roster.market_id;
-	END IF;
+	--IF NOT FOUND THEN
+		--RAISE EXCEPTION 'market % is unavailable, roster may not be canceled', _roster.market_id;
+	--END IF;
 
 	-- decrement bets for all market players in roster by buy_in amount
 	UPDATE market_players SET bets = bets - _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
@@ -239,7 +239,7 @@ BEGIN
 
 	-- TODO: test positional requirements here
 	-- Get price, test salary cap
-	SELECT * from markets WHERE id = _roster.market_id and state in ('published', 'opened') 
+	SELECT * from markets WHERE id = _roster.market_id and (state in ('published', 'opened') OR is_session_variable_set('override_market_close'))
 		INTO _market FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % is unavailable', _roster.market_id;

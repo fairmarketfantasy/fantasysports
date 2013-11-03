@@ -36,14 +36,17 @@
   <div ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && inThePast(market.started_at)">
     <table class="table table-striped">
       <thead>
-        <th>Rank</th>
+        <th ng-show="rosters.contest_type.name == 'h2h rr'">Record</th>
+        <th ng-hide="rosters.contest_type.name == 'h2h rr'">Rank</th>
         <th>User</th>
         <th>Payout</th>
+        <th>Record</th>
         <th>Points</th>
       </thead>
       <tbody>
         <tr ng-repeat="roster in leaderboard">
-          <td>{{roster.contest_rank}}</td>
+          <td ng-show="roster.contest_type.name == 'h2h rr'">{{record(leaderboard, roster)}}</td>
+          <td ng-hide="roster.contest_type.name == 'h2h rr'">{{roster.contest_rank}}</td>
           <td>{{roster.owner_name}}</td>
           <td>{{roster.contest_rank_payout}}</td>
           <td>{{roster.score}}</td>
