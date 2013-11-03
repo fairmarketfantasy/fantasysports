@@ -49,7 +49,20 @@ class UsersControllerTest < ActionController::TestCase
     assert_difference('@user.reload.token_balance', sku[:tokens]) do
       xhr :post, :add_tokens, {product_id: sku_id}
     end
+  end
 
+  test "reset_password good email" do
+    sign_out @user
+    User.any_instance.expects(:send_reset_password_instructions)
+    xhr :post, :reset_password, {email: @user.email}
+    assert_response :success
+  end
+
+  test "reset_password bad email" do
+    sign_out @user
+    User.any_instance.expects(:send_reset_password_instructions).never
+    xhr :post, :reset_password, {email: "somerandomefakenonexistantemail"}
+    assert_response :unprocessable_entity
   end
 
 end

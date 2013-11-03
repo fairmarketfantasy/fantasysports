@@ -1,13 +1,12 @@
 angular.module("app.controllers")
 .controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', 'message', function($scope, dialog, flash, fs, message) {
   $scope.user = $scope.user || {};
-  console.log(message);
   $scope.message = message;
   if (message == 'signin') {
-    $scope.signInForm = true;    
+    $scope.signInForm = true;
     $scope.message = '';
   } else {
-    $scope.signInForm = false;    
+    $scope.signInForm = false;
   }
 
   $scope.signUp = function() {
@@ -15,6 +14,19 @@ angular.module("app.controllers")
       //only fires on success, errors are intercepted by fsAPIInterceptor
       window.location.reload(true);
     });
+  };
+
+  $scope.forgotPass = false;
+
+  $scope.resetPassword = function(){
+    fs.user.resetPassword($scope.user.email).then(function(resp){
+      flash.success = resp.message;
+      $scope.close();
+    });
+  };
+
+  $scope.showForgotPass = function(){
+    $scope.forgotPass = true;
   };
 
   $scope.toggleSignInForm = function(){

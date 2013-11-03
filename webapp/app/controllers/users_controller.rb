@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:create, :update, :unsubscribe]
+  skip_before_filter :authenticate_user!, :only => [:reset_password]
 
   def index
     render_api_response current_user
@@ -27,6 +28,15 @@ class UsersController < ApplicationController
     current_user.username = params[:name]
     current_user.save!
     render_api_response({"result" => !!current_user})
+  end
+
+  def reset_password
+    if user = User.find_by(email: params[:email])
+      user.send_reset_password_instructions
+      render_api_response({message: "Password reset instructions send to #{user.email}"})
+    else
+      render :json => {error: "No user with that email #{params[:email]}" }, status: :unprocessable_entity
+    end
   end
 
   def paypal_return
