@@ -58,10 +58,11 @@ class Contest < ActiveRecord::Base
   #pays owners of rosters according to their place in the contest
   def payday!
     self.with_lock do
+      return if self.paid_at && Market.override_close
       raise if self.paid_at
       rosters = self.rosters.order("contest_rank ASC")
       ranks = rosters.collect(&:contest_rank)
-      
+
       #figure out how much each rank gets -- tricky only because of ties
       rank_payment = contest_type.rank_payment(ranks)
 
@@ -120,6 +121,19 @@ class Contest < ActiveRecord::Base
       rs << roster
     end
     return by_rank
+  end
+
+  def fill_with_rosters
+    Market.override_market_close do
+      (self.user_cap - self.num_rosters).times do
+        roster = Roster.generate(SYSTEM_USER, self.contest_type)
+        roster.contest_id = self.id
+        roster.is_generated = true
+        roster.save!
+        roster.fill_pseudo_randomly
+        roster.submit!
+      end
+    end
   end
 
   private

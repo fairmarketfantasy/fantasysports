@@ -33,6 +33,10 @@
       <a href='javascript://' ng-click='showUserForm = false' class='btn btn-mini'>cancel</a>
     </form>
   </div>
+
+  <div ng-controller="TransactionHistoryController">
+    <div ng-include="'/transactions.html'"></div>
+  </div>
 </div>
 <div class='modal-footer'>
   <a href="javascript://" class="btn" ng-click="close()">close</a>

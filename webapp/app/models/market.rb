@@ -82,7 +82,7 @@ class Market < ActiveRecord::Base
   end
 
   def accepting_rosters?
-    ['published', 'opened'].include?(self.state)
+    ['published', 'opened'].include?(self.state) || Market.override_close
   end
 
   #publish the market. returns the published market.
@@ -162,14 +162,7 @@ class Market < ActiveRecord::Base
             contest.destroy
             next
           end
-          (contest.user_cap - contest.num_rosters).times do
-            roster = Roster.generate(SYSTEM_USER, contest.contest_type)
-            roster.contest_id = contest.id
-            roster.is_generated = true
-            roster.save!
-            roster.fill_pseudo_randomly
-            roster.submit!
-          end
+          contest.fill_with_rosters
         end
 
         # EPIC TODO: FILL LOLLAPALOOZAAAA
@@ -316,12 +309,12 @@ class Market < ActiveRecord::Base
     },
     {
       name: 'h2h rr',
-      description: '10 team, h2h round-robin contest, 900FF entry fee, 9 games for 194 per win',
+      description: '10 team, h2h round-robin contest, 900FF entry fee, 9 games for 194FF per win',
       max_entries: 10,
       buy_in: 900,
       rake: 0.03,
       payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194]',
-      payout_description: "9 h2h games each pay out 194",
+      payout_description: "9 h2h games each pay out 194FF",
       takes_tokens: true,
     },
     {
@@ -438,10 +431,17 @@ class Market < ActiveRecord::Base
 
   end
 
+  class << self
+    attr_accessor :override_close
+  end
+
   def self.override_market_close(&block)
+    self.override_close = true
     Market.find_by_sql("SELECT set_session_variable('override_market_close', 'true')")
-    yield
+    result = yield
+    self.override_close = false
     Market.find_by_sql("SELECT set_session_variable('override_market_close', null)")
+    result
   end
 
 end

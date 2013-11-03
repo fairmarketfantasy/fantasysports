@@ -54,6 +54,14 @@ angular.module('app.filters')
       return input;
     };
   })
+  .filter('longFormDate', function() {
+    return function(input, scope) {
+      if (!input) {
+        return '';
+      }
+      return moment(input).format("ddd MMM DD");
+    };
+  })
   .filter('shortFormDate', function() {
     return function(input, scope) {
       if (!input) {
@@ -86,6 +94,11 @@ angular.module('app.filters')
       return input+(s[(v-20)%10]||s[v]||s[0]);
     };
   })
+  .filter('allCaps', ['$filter', function($filter) {
+    return function(input) {
+      return input.toUpperCase();
+    };
+  }])
   .filter('niceMarketDesc', ['$filter', function($filter) {
     return function(market) {
       // Day Desc

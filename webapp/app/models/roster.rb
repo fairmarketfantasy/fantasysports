@@ -38,7 +38,6 @@ class Roster < ActiveRecord::Base
 
   # create a roster. does not deduct funds until roster is submitted.
   def self.generate(user, contest_type)
-    
     raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
     user.in_progress_roster.destroy if user.in_progress_roster
 
