@@ -101,7 +101,7 @@
     [cell.contentView addSubview:nam];
     
     NSString *ppgValue = [NSString stringWithFormat:@"%@ PPG", (![player[@"ppg"] isEqual:[NSNull null]]
-                                                                ? player[@"ppg"]
+                                                                ? [NSString stringWithFormat:@"%.2f", [player[@"ppg"] floatValue]]
                                                                 : @"0")];
     UILabel *ppg = [[UILabel alloc] initWithFrame:CGRectMake(56, 23, 60, 15)];
     ppg.textColor = [FFStyle white];

@@ -37,6 +37,19 @@ class ContestType < ActiveRecord::Base
     super
   end
 
+  def duplicate_into_market(market)
+    existing = market.contest_types.where(
+      :name => self.name,
+      :buy_in => self.buy_in,
+      :salary_cap => self.salary_cap,
+    ).first
+    return existing if existing
+    attributes = self.attributes.dup
+    [:id, :created_at ].each{|attr| attributes.delete(attr) }
+    attributes[:market_id] = market.id
+    ContestType.create!(attributes)
+  end
+
   # USE RANK_PAYMENT INSTEAD, IT HANDLES EDGE CASES
   def payout_for_rank(rank)
     get_payout_structure[rank-1]

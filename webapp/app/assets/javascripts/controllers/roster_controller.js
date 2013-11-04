@@ -23,7 +23,7 @@ angular.module("app.controllers")
     if (!rosters.currentRoster) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
       if (filterOpts.removeLow && players.length > 2) {
-        players = _.select(players, function(player) { return player.benched_games < 3; });
+        players = _.select(players, function(player) { return player.benched_games < 3 && player.status == 'ACT'; });
       }
       $scope.players = players;
     });
@@ -158,12 +158,27 @@ angular.module("app.controllers")
       if (position) {
         $scope.filterPlayers({position: position}, true);
       }
-    })
+    });
   };
 
   $scope.removePlayer = function(player) {
     rosters.removePlayer(player);
     $scope.filterPlayers({position: player.position}, true);
+  };
+
+  $scope.record = function(rosters, roster) {
+    var wins, losses, ties, i;
+    wins = losses = ties = 0;
+    while((i= wins + losses + ties) < rosters.length) {
+      if (roster.contest_rank > rosters[i].contest_rank) {
+        losses += 1;
+      } else if (roster.contest_rank < rosters[i].contest_rank ) {
+        wins+= 1;
+      } else {
+        ties += 1;
+      }
+    }
+    return wins + '-' + losses + '-' + ties;
   };
 
 }]);

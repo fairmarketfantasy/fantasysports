@@ -2,7 +2,6 @@ class RosterSerializer < ActiveModel::Serializer
   attributes :id, 
       :owner_id, 
       :owner_name, # include whole object?
-      :market_id, 
       :state, 
       :contest_id, 
       :buy_in, 
@@ -19,9 +18,15 @@ class RosterSerializer < ActiveModel::Serializer
       :next_game_time,
       :live
 
+  has_one :league
   has_one :contest
   has_one :contest_type
   has_many :players
+  has_one :market
+
+  def league
+    object.contest && object.contest.league
+  end
 
   def players
     @players ||= object.players_with_prices
@@ -33,7 +38,7 @@ class RosterSerializer < ActiveModel::Serializer
 
   def owner_name
     if object.is_generated?
-      @@system_usernames[object.id % @@system_usernames.length]
+      User::SYSTEM_USERNAMES[object.id % User::SYSTEM_USERNAMES.length]
     else
       object.owner.username
     end
@@ -47,105 +52,4 @@ class RosterSerializer < ActiveModel::Serializer
     end
   end
 
-  @@system_usernames = %w(
-teetriceps
-basegear
-dartboardmoorhen
-sticknumerous
-bocceon
-matspoiled
-hoopsponge
-unicyclistchinese
-javelinchangeable
-playingthumb
-polesnot
-surfingwashing
-targetllama
-billiardshandy
-surfertight
-paddleballwabbit
-waterskielastic
-judopickled
-somersaultbacon
-basketballbank
-cyclehippopotamus
-hurdlego
-volleyburning
-canoeingpebbly
-iceskatesrow
-throwingremuda
-swimpoised
-boulesvroom
-pitchoakwood
-battinglancashire
-goalgrit
-swimmingtree
-helmetpopper
-relaytasty
-fieldcyandye
-skiingcapricious
-wetsuitweary
-bowlingbrakes
-guardbullocks
-highjumpfemur
-slalomquizzical
-olympicsneedle
-fencingsnap
-skierindian
-frisbeezip
-fielderchicken
-vaultingmoldovan
-malletangry
-leagueberserk
-squadhandball
-woodcockpentathlon
-campfireunicyclist
-panswaterpolo
-chickenspitcher
-hootenannyfielding
-rafflekarate
-ischampion
-hazardollie
-bugswinning
-packride
-sweetcornboomerang
-coordinatorhardball
-stringkickball
-lyricalmouthguard
-forkdiver
-ibistennis
-capillariescycle
-tighthitter
-curtainsoutfielder
-expertswimming
-instinctivegoal
-driftuniform
-roomywicket
-deadepee
-veinicerink
-somersaultrink
-itchmallet
-furnacelose
-cuttinggoldmedal
-disgustedaerobics
-mildpool
-poofmat
-blastquarter
-tonicshotput
-namibianpaddle
-thighpaintball
-uncoveredbobsleigh
-vitreousjumper
-tentlacrosse
-ligamentcanoeing
-memorygymnastics
-licketysplittarget
-majorvaulting
-diamondswim
-scornfulteammate
-secondhandracing
-barkingathletics
-drumskate
-puddingquiver
-  )
 end

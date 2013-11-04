@@ -6,7 +6,15 @@
       <a href="#/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster">Back to Contests</a>
       <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name}}.png" class="contest-info-image" />
       <div class="contest-info-description">
-        <h2 class="contest-title">{{markets.currentMarket.name}}<span ng-show="markets.currentMarket.name == ''">Daily</span> {{rosters.currentRoster.contest_type.name}}<span ng-show="rosters.currentRoster.contest_type.name == '194' || rosters.currentRoster.contest_type.name == '970'">% League</span> <span ng-show="rosters.currentRoster.contest_type.name == '100k' || rosters.currentRoster.contest_type.name == 'h2h'">Contest</span></h2>
+        <h2 ng-show="rosters.currentRoster.league" class="contest-title">{{rosters.currentRoster.league.name}} League Game</h2>
+        <h2 class="contest-title">{{markets.currentMarket.name}}
+          <span ng-show="markets.currentMarket.name == ''">Daily</span> 
+          {{rosters.currentRoster.contest_type.name}}
+          <span ng-show="rosters.currentRoster.contest_type.name == '194' || rosters.currentRoster.contest_type.name == '970'">%
+            League</span> 
+          <span ng-show="rosters.currentRoster.contest_type.name == '100k' || rosters.currentRoster.contest_type.name == 'h2h'">
+            Contest</span>
+        </h2>
         <p class="contest-description-text">
           <span ng-show="rosters.currentRoster.contest_type.name == '100k'">THE LOLLAPALOOZA. First prize is $50k, that's a lot of cheddar for a $10 entry!</span>
           <span ng-show="rosters.currentRoster.contest_type.name == '194'">Top half nearly doubles their money. You're better than average, right? Go get 'em!</span>
@@ -39,14 +47,17 @@
   <div ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && inThePast(market.started_at)">
     <table class="table table-striped">
       <thead>
-        <th>Rank</th>
+        <th ng-show="rosters.contest_type.name == 'h2h rr'">Record</th>
+        <th ng-hide="rosters.contest_type.name == 'h2h rr'">Rank</th>
         <th>User</th>
         <th>Payout</th>
+        <th>Record</th>
         <th>Points</th>
       </thead>
       <tbody>
         <tr ng-repeat="roster in leaderboard">
-          <td>{{roster.contest_rank}}</td>
+          <td ng-show="roster.contest_type.name == 'h2h rr'">{{record(leaderboard, roster)}}</td>
+          <td ng-hide="roster.contest_type.name == 'h2h rr'">{{roster.contest_rank}}</td>
           <td>{{roster.owner_name}}</td>
           <td>{{roster.contest_rank_payout}}</td>
           <td>{{roster.score}}</td>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131026180924) do
+ActiveRecord::Schema.define(version: 20131104073034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20131026180924) do
     t.integer  "num_rosters",     default: 0
     t.datetime "paid_at"
     t.boolean  "private",         default: false
+    t.integer  "league_id"
   end
 
   add_index "contests", ["market_id"], name: "index_contests_on_market_id", using: :btree
@@ -153,6 +154,25 @@ ActiveRecord::Schema.define(version: 20131026180924) do
     t.boolean  "redeemed",           default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "league_memberships", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "league_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "leagues", force: true do |t|
+    t.string   "name"
+    t.integer  "buy_in"
+    t.integer  "max_entries"
+    t.integer  "salary_cap"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "takes_tokens"
+    t.integer  "start_day"
+    t.string   "duration"
   end
 
   create_table "market_orders", force: true do |t|
@@ -376,18 +396,19 @@ ActiveRecord::Schema.define(version: 20131026180924) do
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
 
   create_table "transaction_records", force: true do |t|
-    t.string   "event",                              null: false
+    t.string   "event",                                   null: false
     t.integer  "user_id"
     t.integer  "roster_id"
     t.integer  "amount"
     t.integer  "contest_id"
-    t.boolean  "is_tokens",          default: false
+    t.boolean  "is_tokens",               default: false
     t.string   "ios_transaction_id"
     t.text     "transaction_data"
     t.integer  "invitation_id"
     t.integer  "referred_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "reverted_transaction_id"
   end
 
   add_index "transaction_records", ["roster_id"], name: "index_transaction_records_on_roster_id", using: :btree

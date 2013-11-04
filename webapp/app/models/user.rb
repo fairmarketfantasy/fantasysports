@@ -31,6 +31,8 @@ class User < ActiveRecord::Base
   has_many :contests, foreign_key: :owner_id
   has_many :push_devices
   has_many :transaction_records
+  has_many :league_memberships
+  has_many :leagues, :through => :league_memberships
   has_one  :customer_object
   has_one  :recipient
   belongs_to :inviter, :class_name => 'User'
@@ -131,4 +133,106 @@ class User < ActiveRecord::Base
       self.reload.customer_object.increase_balance(amount, opts[:event], opts)
     end
   end
+
+  SYSTEM_USERNAMES = %w(
+teetriceps
+basegear
+dartboardmoorhen
+sticknumerous
+bocceon
+matspoiled
+hoopsponge
+unicyclistchinese
+javelinchangeable
+playingthumb
+polesnot
+surfingwashing
+targetllama
+billiardshandy
+surfertight
+paddleballwabbit
+waterskielastic
+judopickled
+somersaultbacon
+basketballbank
+cyclehippopotamus
+hurdlego
+volleyburning
+canoeingpebbly
+iceskatesrow
+throwingremuda
+swimpoised
+boulesvroom
+pitchoakwood
+battinglancashire
+goalgrit
+swimmingtree
+helmetpopper
+relaytasty
+fieldcyandye
+skiingcapricious
+wetsuitweary
+bowlingbrakes
+guardbullocks
+highjumpfemur
+slalomquizzical
+olympicsneedle
+fencingsnap
+skierindian
+frisbeezip
+fielderchicken
+vaultingmoldovan
+malletangry
+leagueberserk
+squadhandball
+woodcockpentathlon
+campfireunicyclist
+panswaterpolo
+chickenspitcher
+hootenannyfielding
+rafflekarate
+ischampion
+hazardollie
+bugswinning
+packride
+sweetcornboomerang
+coordinatorhardball
+stringkickball
+lyricalmouthguard
+forkdiver
+ibistennis
+capillariescycle
+tighthitter
+curtainsoutfielder
+expertswimming
+instinctivegoal
+driftuniform
+roomywicket
+deadepee
+veinicerink
+somersaultrink
+itchmallet
+furnacelose
+cuttinggoldmedal
+disgustedaerobics
+mildpool
+poofmat
+blastquarter
+tonicshotput
+namibianpaddle
+thighpaintball
+uncoveredbobsleigh
+vitreousjumper
+tentlacrosse
+ligamentcanoeing
+memorygymnastics
+licketysplittarget
+majorvaulting
+diamondswim
+scornfulteammate
+secondhandracing
+barkingathletics
+drumskate
+puddingquiver
+  )
 end

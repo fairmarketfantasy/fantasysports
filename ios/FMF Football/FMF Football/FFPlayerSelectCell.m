@@ -95,6 +95,7 @@
 {
     _player = player;
     NSString *ppg = [player[@"ppg"] isEqual:[NSNull null]] ? @"0" : player[@"ppg"];
+    ppg = [NSString stringWithFormat:@"%.2f", [ppg floatValue]];
     
     _name.text = player[@"name"];
     _team.text = [NSString stringWithFormat:@"Team: %@ PPG: %@", player[@"team"], ppg];

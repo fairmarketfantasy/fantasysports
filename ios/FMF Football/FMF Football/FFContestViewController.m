@@ -283,7 +283,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                  NSLocalizedString(@"Enter", nil),
                                  _contest.name,
                                  [_contest.buyIn description],
-                                 NSLocalizedString(@"Tokens", nil)];
+                                 NSLocalizedString(@"FanFrees", nil)];
                 }
                 butt = [FFStyle coloredButtonWithText:txt
                                                 color:[FFStyle brightOrange]
@@ -683,7 +683,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             break;
         case PickPlayer:
             _currentPickPlayer = ctx;
-            [self showPlayersForPosition:[ctx isKindOfClass:[NSString class]] ? ctx : ctx[@"position"]];
+            [self showPlayersForPosition:[ctx isKindOfClass:[NSString class]] ? ctx : ctx[@"position"] poll:YES];
             [self showPlayerFilterBanner];
             [self.tableView beginUpdates];
             [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
@@ -753,7 +753,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         }
         [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
         
-        double delayInSeconds = 2.0;
+        double delayInSeconds = 10.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             // only poll if we're viewing this screen
@@ -807,14 +807,18 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                   NSLocalizedString(@"Contest Entrants", nil)];
     }
     
-    if (numMissing == 0 && _state == ShowRoster) {
-        [self showSubmitRosterBanner];
+    if (numMissing < slots.count && _state == ShowRoster) { // show banner if at least one player is selected
+        NSString *text = NSLocalizedString(@"All Slots are Filled!", nil);
+        if (numMissing != 0) {
+            text = NSLocalizedString(@"Enter now and finish later.", nil);
+        }
+        [self showSubmitRosterBanner:text];
     } else {
         [self hideSubmitRosterBanner];
     }
 }
 
-- (void)showPlayersForPosition:(NSString *)pos
+- (void)showPlayersForPosition:(NSString *)pos poll:(BOOL)shouldContinuePolling
 {
     if (_state != PickPlayer) {
         NSLog(@"attempting to show players but in the wrong state");
@@ -836,7 +840,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          
          if (_filterBenchPlayers && sorted.count > 3) {
              [sorted filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-                 if ([evaluatedObject[@"ppg"] isKindOfClass:[NSNumber class]] && [evaluatedObject[@"ppg"] integerValue] < 2) {
+                 if (evaluatedObject[@"benched_games"] && [evaluatedObject[@"benched_games"] integerValue] > 2) {
                      return NO;
                  }
                  return YES;
@@ -847,9 +851,13 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
          [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                        withRowAnimation:UITableViewRowAnimationNone];
          
+         if (!shouldContinuePolling) { // we're done if there is no more polling to do
+             return;
+         }
+         
          __strong FFContestViewController *strongSelf = self;
          
-         double delayInSeconds = 2.0;
+         double delayInSeconds = 10.0;
          dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
          dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
              NSString *lastPos = ((strongSelf->_currentPickPlayer
@@ -858,7 +866,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                   : strongSelf->_currentPickPlayer);
              // only poll again if we are still picking a player and picking the correct one
              if (strongSelf->_state == PickPlayer && [pos isEqualToString:lastPos]) {
-                 [strongSelf showPlayersForPosition:lastPos];
+                 [strongSelf showPlayersForPosition:lastPos poll:YES];
              }
          });
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
@@ -920,6 +928,11 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 - (void)benchSwitch:(UISwitch *)swit
 {
     _filterBenchPlayers = swit.isOn;
+    NSString *lastPos = ((_currentPickPlayer
+                          && [_currentPickPlayer isKindOfClass:[NSDictionary class]])
+                         ? _currentPickPlayer[@"position"]
+                         : _currentPickPlayer);
+    [self showPlayersForPosition:lastPos poll:NO]; // immediately refresh
 }
 
 - (void)hidePlayerFilterBanner
@@ -938,7 +951,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     }
 }
 
-- (void)showSubmitRosterBanner
+- (void)showSubmitRosterBanner:(NSString *)text
 {
     if (_state != ShowRoster) {
         return;
@@ -954,7 +967,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
         lab.font = [FFStyle regularFont:14];
         lab.textColor = [UIColor colorWithWhite:.95 alpha:1];
         lab.textAlignment = NSTextAlignmentCenter;
-        lab.text = NSLocalizedString(@"All slots are filled!", nil);
+        lab.text = text; //NSLocalizedString(@"All slots are filled!", nil);
         [view addSubview:lab];
         
         UIButton *butt = [FFStyle coloredButtonWithText:NSLocalizedString(@"Submit Roster!", nil)
