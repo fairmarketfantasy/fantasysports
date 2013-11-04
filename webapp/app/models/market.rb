@@ -431,6 +431,16 @@ class Market < ActiveRecord::Base
 
   end
 
+  def market_duration
+    if self.closed_at && self.started_at
+      if (self.closed_at > self.started_at + 1.day)
+        'week'
+      else
+        'day'
+      end
+    end
+  end
+
   class << self
     attr_accessor :override_close
   end

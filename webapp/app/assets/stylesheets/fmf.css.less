@@ -562,6 +562,15 @@ input, textarea, .uneditable-input {
 .market-title {
   color: @white;
 }
+.market-title h3 {
+  float: left;
+}
+.league-selector {
+  float: right;
+  select{
+    margin: 5px 10px 0 5px;
+  }
+}
 .roster-title {
   background-color: #e9e9e9;
   margin-bottom: 10px;
@@ -639,7 +648,21 @@ input, textarea, .uneditable-input {
   float: left;
   &.realfull {
     width: 97%;
-  }  
+  }
+}
+.contest-name input {
+  float: left;
+  margin-right: 1.5%;
+}
+.contest-name .tiny {
+  font-size: 0.8em;
+  vertical-align: top;
+  line-height: 0;
+  margin-top: -0.3em;
+}
+.contest-name {
+  padding-left: 1.5%;
+  margin: 0 1.5% 1.5% 0;
 }
 .modal-body .full-row {
   min-height: 110px;
@@ -1081,6 +1104,13 @@ input[type="text"].players-search {
   right: 10px;
   top: 60px;
   z-index: 100;
+}
+.invite-link {
+  font-size: 0.75em;
+  background: #ebedef;
+  padding: 4px;
+  margin: 3px;
+  border-radius: 5px;
 }
 .btn-contest-cta {
   position: absolute;

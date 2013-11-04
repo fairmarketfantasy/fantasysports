@@ -7,7 +7,14 @@ angular.module("app.controllers")
   $scope.message = '';
 
   $scope.createContest = function() {
-    $scope.close({contest_type: $scope.contest_type, buy_in: $scope.buy_in, takes_tokens: $scope.isFree || $scope.takes_tokens, invitees: $scope.invitees, message: $scope.message});
+    $scope.close({
+      contest_type: $scope.contest_type,
+      buy_in: $scope.buy_in,
+      takes_tokens: $scope.isFree || $scope.takes_tokens,
+      invitees: $scope.invitees,
+      message: $scope.message,
+      league_name: $scope.league_name,
+    });
   };
 
   $scope.close = function(result) {

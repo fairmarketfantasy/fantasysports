@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131031193824) do
+ActiveRecord::Schema.define(version: 20131104073034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20131031193824) do
     t.integer  "num_rosters",     default: 0
     t.datetime "paid_at"
     t.boolean  "private",         default: false
+    t.integer  "league_id"
   end
 
   add_index "contests", ["market_id"], name: "index_contests_on_market_id", using: :btree
@@ -153,6 +154,25 @@ ActiveRecord::Schema.define(version: 20131031193824) do
     t.boolean  "redeemed",           default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "league_memberships", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "league_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "leagues", force: true do |t|
+    t.string   "name"
+    t.integer  "buy_in"
+    t.integer  "max_entries"
+    t.integer  "salary_cap"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "takes_tokens"
+    t.integer  "start_day"
+    t.string   "duration"
   end
 
   create_table "market_orders", force: true do |t|

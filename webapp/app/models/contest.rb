@@ -7,6 +7,7 @@ class Contest < ActiveRecord::Base
   has_many :transaction_records
   belongs_to :owner, class_name: "User"
   belongs_to :contest_type
+  belongs_to :league
 
   before_create :set_invitation_code
 
@@ -41,13 +42,22 @@ class Contest < ActiveRecord::Base
       raise HttpException.new(404, "No such contest type found") unless contest_type
     end
 
+    if opts[:league_id] || opts[:league_name]
+      opts[:max_entries] = contest_type.max_entries
+      opts[:takes_tokens] = contest_type.takes_tokens
+      opts[:user] = User.find(opts[:user_id])
+      opts[:market] = market
+      league = League.find_or_create_from_opts(opts)
+    end
+
     contest = Contest.create!(
       market: market,
       owner_id: opts[:user_id],
       user_cap: contest_type.max_entries,
       buy_in: contest_type.buy_in,
       contest_type: contest_type,
-      private: true
+      private: true,
+      league_id: league && league.id,
     )
   end
 

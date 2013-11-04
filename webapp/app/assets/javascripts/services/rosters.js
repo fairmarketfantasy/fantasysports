@@ -171,7 +171,7 @@ angular.module('app.data')
       this.submit = function() {
         var self = this;
         fs.rosters.submit(this.currentRoster.id).then(function(roster) {
-          $location.path('/market/' + self.currentRoster.market_id);
+          $location.path('/market/' + self.currentRoster.market.id);
           if (roster.contest_type.takes_tokens) {
             currentUserService.currentUser.token_balance -= roster.buy_in;
           } else {
@@ -194,7 +194,7 @@ angular.module('app.data')
         fs.rosters.cancel(currentRoster.id).then(function(data) {
           delete rosterData[currentRoster.id];
           self.reset();
-          $location.path('/market/' + currentRoster.market_id);
+          $location.path('/market/' + currentRoster.market.id);
         });
       };
 
@@ -212,7 +212,7 @@ angular.module('app.data')
               backdropClick: true,
               dialogClass: 'modal',
               templateUrl: '/invite.html',
-              controller: 'InviteController'
+              controller: 'InviteController',
             };
 
         var d = $dialog.dialog(dialogOpts);
