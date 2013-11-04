@@ -5,6 +5,10 @@ angular.module("app.controllers")
 
   $scope.currentUser = currentUserService.currentUser;
 
+  $scope.resetPasswordModal = function(token){
+    currentUserService.resetPasswordModal(token);
+  };
+
   $scope.addFundsModal = function(){
     currentUserService.addFundsModal();
   };
