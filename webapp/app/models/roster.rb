@@ -215,15 +215,15 @@ class Roster < ActiveRecord::Base
       players.delete(player)
       add_player(player)
     end
-    self.reload 
+    self.reload
   end
 
   def fill_pseudo_randomly
     ActiveRecord::Base.transaction do
       @candidate_players = {}
       indexes = {}
-      position_array.each { |pos| @candidate_players[pos] = []; indexes[pos] = 0}
-      self.purchasable_players.each do |p| 
+      position_array.each { |pos| @candidate_players[pos] = []; indexes[pos] = 0 }
+      self.purchasable_players.each do |p|
         @candidate_players[p.position] << p if @candidate_players.include?(p.position)
         indexes[p.position] += 1 if p.buy_price > 2000
       end
@@ -233,12 +233,24 @@ class Roster < ActiveRecord::Base
 
       begin
         position = remaining_positions.sample # One level of randomization
-        player = (indexes[position] > 0 ? @candidate_players[position].slice(0, indexes[position]) : @candidate_players[position]).sample
+        player = weighted_sample(indexes[position] > 0 ? @candidate_players[position].slice(0, indexes[position]) : @candidate_players[position])
         add_player(player)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
     self.reload
+  end
+
+  def weighted_sample(players)
+    total = players.reduce(0){|sum, p| sum += p.buy_price }
+    value = rand
+    sum = 0.0
+    players.each do |p|
+      sum += p.buy_price
+      if sum / total > value
+        return p
+      end
+    end
   end
 
   def position_array
