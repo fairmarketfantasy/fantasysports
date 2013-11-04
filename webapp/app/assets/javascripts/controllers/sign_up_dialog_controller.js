@@ -16,7 +16,7 @@ angular.module("app.controllers")
 
     if(state === 'forgotPass'){
       $scope.title = "Forgot Password";
-      $scope.message = 'Enter your email address for instructions';
+      $scope.message = 'Enter your email address for instructions.';
     } else if(state === 'signUpForm') {
       $scope.title = "Sign Up";
       $scope.message = '';
