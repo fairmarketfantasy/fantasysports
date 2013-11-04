@@ -9,6 +9,20 @@ angular.module('app.services')
 
     return {
       currentUser: window.App.currentUser,
+      resetPasswordModal: function(token){
+        dialogOpts.templateUrl = '/reset_password_dialog.html';
+        dialogOpts.controller  = 'ResetPasswordDialogController';
+        dialogOpts.resolve     = {token: function(){ return token; }};
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+        $rootScope.$on('user-changed', function(){
+          $rootScope.$apply(function() {
+            d.close();
+            flash.success = "Successfully reset password.";
+          });
+        });
+      },
+
       addFundsModal: function(){
         dialogOpts.templateUrl = '/add_funds_dialog.html',
         dialogOpts.controller  = 'AddFundsDialogController'
@@ -127,6 +141,10 @@ angular.module('app.services')
         },
         resetPassword: function(email){
           return $http({method: 'POST', url: '/users/reset_password', data: {email: email}})
+        },
+        updatePassword: function(user_attrs){
+          //expects user_attrs: {password: '123', password_confirmation: '123' , reset_password_token: 'abcd'}
+          return $http({method: 'PUT', url: '/users/password', data: {user: user_attrs}})
         },
         setUsername: function(name) {
           return $http({method: 'POST', url: '/users/set_username', params: {name: name}})
