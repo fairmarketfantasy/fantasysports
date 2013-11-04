@@ -20,4 +20,8 @@ angular.module("app.controllers")
     });
   };
 
+  $scope.close = function(){
+      dialog.close();
+  };
+
 }]);

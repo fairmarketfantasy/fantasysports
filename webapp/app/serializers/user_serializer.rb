@@ -4,6 +4,7 @@ class UserSerializer < ActiveModel::Serializer
 
 
   has_one :in_progress_roster
+  has_many :leagues
 
   attribute :confirmed?, key: :confirmed
 

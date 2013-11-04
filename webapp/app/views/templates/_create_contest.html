@@ -2,6 +2,11 @@
   <h1>Create a Contest {{markets.currentMarket.started_at | shortFormTime }}</h1>
 </div>
 <div class='modal-body'>
+  <div class="clearfix contest-name">
+    <input type="text" ng-model="league_name" placeholder="Name the league"/>
+    <p>and we'll invite everybody again next week</p>
+    <p class="tiny">or just leave it blank for a one time contest</p>
+  </div>
   <div class="clearfix">
     <div class="full-row">
       <h3>Contest Type</h3>

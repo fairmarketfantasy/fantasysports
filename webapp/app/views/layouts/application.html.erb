@@ -169,11 +169,13 @@
   };
   window.addToBalance = function(amount) {
     window.App.currentUser.balance = window.App.currentUser.balance + amount;
-    $('body').scope().$emit('user-changed');
+    var $scope = $('body').scope();
+    $scope.$apply(function(){ $emit('user-changed'); });
   };
   window.addToTokenBalance = function(amount) {
     window.App.currentUser.token_balance = window.App.currentUser.token_balance + amount;
-    $('body').scope().$emit('user-changed');
+    var $scope = $('body').scope();
+    $scope.$apply(function(){ $emit('user-changed'); });
   };
 </script>
 

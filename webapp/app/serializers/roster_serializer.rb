@@ -18,10 +18,15 @@ class RosterSerializer < ActiveModel::Serializer
       :next_game_time,
       :live
 
+  has_one :league
   has_one :contest
   has_one :contest_type
   has_many :players
   has_one :market
+
+  def league
+    object.contest && object.contest.league
+  end
 
   def players
     @players ||= object.players_with_prices

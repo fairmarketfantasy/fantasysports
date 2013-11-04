@@ -31,6 +31,8 @@ class User < ActiveRecord::Base
   has_many :contests, foreign_key: :owner_id
   has_many :push_devices
   has_many :transaction_records
+  has_many :league_memberships
+  has_many :leagues, :through => :league_memberships
   has_one  :customer_object
   has_one  :recipient
   belongs_to :inviter, :class_name => 'User'
