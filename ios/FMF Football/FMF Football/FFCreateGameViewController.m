@@ -160,7 +160,8 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
                              @"message": @"",
                              @"type": [_selectedContestType lowercaseString],
                              @"buy_in": buyIn,
-                             @"salary_cap": @(100000)};
+                             @"salary_cap": @(100000),
+                             @"takes_tokens": [NSNumber numberWithBool:YES]};
     
     FFAlertView *alert = [[FFAlertView alloc] initWithTitle:@"Creating Contest"
                                                    messsage:nil
@@ -369,10 +370,10 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         lab.textColor = [FFStyle darkGreyTextColor];
         
         if ([contestType[ENTRYFEE][_selectedEntryFee] isEqual:ENTRYFEE_UNDEFINED]) {
-            lab.text = [NSString stringWithFormat:@"%d %@", _chosenEntryFee, NSLocalizedString(@"Tokens", nil)];
+            lab.text = [NSString stringWithFormat:@"%d %@", _chosenEntryFee, NSLocalizedString(@"FanFrees", nil)];
         } else {
             lab.text = [NSString stringWithFormat:@"%@ %@",
-                        contestType[ENTRYFEE][_selectedEntryFee], NSLocalizedString(@"Tokens", nil)];
+                        contestType[ENTRYFEE][_selectedEntryFee], NSLocalizedString(@"FanFrees", nil)];
         }
         [cell.contentView addSubview:lab];
         
@@ -468,7 +469,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         FFOptionSelectController *c = segue.destinationViewController;
         NSMutableArray *opts = [NSMutableArray array];
         for (NSNumber *n in _contestTypeDesc[_selectedContestType][ENTRYFEE]) {
-            [opts addObject:[NSString stringWithFormat:@"%@ %@", n, NSLocalizedString(@"Tokens", nil)]];
+            [opts addObject:[NSString stringWithFormat:@"%@ %@", n, NSLocalizedString(@"FanFrees", nil)]];
         }
         c.options = opts;
         c.selectedOption = _selectedEntryFee;

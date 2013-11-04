@@ -217,4 +217,62 @@ class RosterTest < ActiveSupport::TestCase
     end
   end
 
+  test "re-scoring a roster" do
+    contest_type = @market.contest_types.where(:name => 'h2h', :buy_in => 100, :takes_tokens => false).first
+    roster1 = create(:roster, :market => @market, :contest_type => contest_type)
+    roster2 = create(:roster, :market => @market, :contest_type => contest_type)
+    user1 = roster1.owner
+    user2 = roster2.owner
+    contest = nil
+    pre_count = nil
+    assert_difference 'user1.customer_object.reload.balance', -100 do
+      assert_difference 'user1.customer_object.reload.balance', 94 do
+        roster1.fill_randomly.submit!
+        begin
+          roster2.fill_randomly.submit!
+        end while roster1.players.map(&:id) == roster2.players.map(&:id) # just make sure the rosters aren't identical
+
+        roster1.players.limit(5).each do |p|
+          StatEvent.create!(
+            :game_stats_id => @game.stats_id,
+            :player_stats_id => p.stats_id,
+            :point_value => 1,
+            :activity => 'rushing',
+            :data => ''
+          )
+        end
+        @market.closed_at = Time.new
+        @game.status = 'closed'
+        @game.save!
+        @market.save!
+        contest = roster1.contest
+        assert_equal contest, roster2.contest
+        Market.tend
+        pre_count = roster1.contest.transaction_records.count
+      end
+
+      StatEvent.delete_all
+
+      roster2.players.limit(5).each do |p|
+        StatEvent.create!(
+          :game_stats_id => @game.stats_id,
+          :player_stats_id => p.stats_id,
+          :point_value => 1,
+          :activity => 'rushing',
+          :data => ''
+        )
+      end
+
+      contest.revert_payday!
+      assert_equal 2*pre_count-2, contest.transaction_records.reload.count
+    end
+
+
+    assert_difference 'user1.customer_object.reload.balance', 0 do
+      assert_difference 'user2.customer_object.reload.balance', 194 do
+        contest.payday!
+      end
+    end
+  end
+
 end

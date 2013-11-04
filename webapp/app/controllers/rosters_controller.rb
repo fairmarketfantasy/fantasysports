@@ -24,6 +24,25 @@ class RostersController < ApplicationController
     render_api_response roster
   end
 
+  def create_league_entry
+    league = League.find(params[:league_id])
+    raise HttpException(404, "League not found or you are not a member") unless league.users.include?(current_user)
+    existing = Roster.where(:contest_id => league.current_contest.id, :owner_id => current_user.id).first
+    if existing
+      render_api_response(existing)
+    else
+      roster = Roster.generate(current_user, league.current_contest.contest_type)
+      roster.contest_id = league.current_contest.id
+      roster.save!
+      unless league.users.where(:id => current_user.id).first
+        league.users << current_user
+        league.save!
+      end
+      render_api_response(roster)
+    end
+    Eventing.report(current_user, 'createRoster', :league => league.id, :contest_type => league.current_contest.contest_type.name, :buy_in => league.current_contest.contest_type.buy_in)
+  end
+
   def add_player
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
     player = Player.find(params[:player_id])

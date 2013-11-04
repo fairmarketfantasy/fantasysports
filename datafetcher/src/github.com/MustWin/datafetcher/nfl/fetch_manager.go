@@ -111,10 +111,11 @@ func (mgr *FetchManager) createMarkets(games []*models.Game) {
 		appendForKey(weekKey, weekMarkets, games[i])
 	}
 	for _, daysGames := range dayMarkets {
-		mgr.createMarket("", []*models.Game{daysGames[len(daysGames)-1]})
+		game := daysGames[len(daysGames)-1]
+		mgr.createMarket(game.GameTime.Add(-6*time.Hour).Format("Monday")+" Night Football", []*models.Game{game})
 	}
 	for _, weekGames := range weekMarkets {
-		mgr.createMarket("Week "+strconv.Itoa(weekGames[0].SeasonWeek), weekGames)
+		mgr.createMarket("All of Week "+strconv.Itoa(weekGames[0].SeasonWeek), weekGames)
 	}
 }
 

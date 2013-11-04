@@ -38,7 +38,6 @@ class Roster < ActiveRecord::Base
 
   # create a roster. does not deduct funds until roster is submitted.
   def self.generate(user, contest_type)
-    
     raise HttpException.new(403, "This market is closed") unless contest_type.market.accepting_rosters?
     user.in_progress_roster.destroy if user.in_progress_roster
 
@@ -146,11 +145,12 @@ class Roster < ActiveRecord::Base
   def add_player(player)
     begin
       raise HttpException.new(409, "There is no room for another #{player.position} in your roster") unless remaining_positions.include?(player.position)
-      exec_price("SELECT * from buy(#{self.id}, #{player.id})")
+      order = exec_price("SELECT * from buy(#{self.id}, #{player.id})")
       self.class.uncached do
         self.players.reload
         # TODO: may need to reload roster players too
       end
+      order
     rescue StandardError => e
       if e.message =~ /already in roster/
         raise HttpException.new(409, "That player is already in your roster")
@@ -160,11 +160,12 @@ class Roster < ActiveRecord::Base
   end
 
   def remove_player(player)
-    exec_price("SELECT * from sell(#{self.id}, #{player.id})")
+    order = exec_price("SELECT * from sell(#{self.id}, #{player.id})")
     self.class.uncached do
       self.players.reload
       # TODO: may need to reload roster players too
     end
+    order
   end
 
   def exec_price(sql)
@@ -187,10 +188,10 @@ class Roster < ActiveRecord::Base
   end
 
 
-  #buys random players to fill up the roster (all empty positions)
-  #how randomly? well, that may change, but for now it's pretty random.
+  # THIS IS ONLY USED FOR TESTING
   def fill_randomly
     #find which positions to fill
+    self.players.each{|p| self.remove_player(p) }
     positions = self.positions.split(',') #TODO- could cache this
     pos_taken = self.players.collect(&:position)
     pos_taken.each do |pos|
@@ -214,15 +215,15 @@ class Roster < ActiveRecord::Base
       players.delete(player)
       add_player(player)
     end
-    self.reload 
+    self.reload
   end
 
   def fill_pseudo_randomly
     ActiveRecord::Base.transaction do
       @candidate_players = {}
       indexes = {}
-      position_array.each { |pos| @candidate_players[pos] = []; indexes[pos] = 0}
-      self.purchasable_players.each do |p| 
+      position_array.each { |pos| @candidate_players[pos] = []; indexes[pos] = 0 }
+      self.purchasable_players.each do |p|
         @candidate_players[p.position] << p if @candidate_players.include?(p.position)
         indexes[p.position] += 1 if p.buy_price > 2000
       end
@@ -232,12 +233,24 @@ class Roster < ActiveRecord::Base
 
       begin
         position = remaining_positions.sample # One level of randomization
-        player = (indexes[position] > 0 ? @candidate_players[position].slice(0, indexes[position]) : @candidate_players[position]).sample
+        player = weighted_sample(indexes[position] > 0 ? @candidate_players[position].slice(0, indexes[position]) : @candidate_players[position])
         add_player(player)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
     self.reload
+  end
+
+  def weighted_sample(players)
+    total = players.reduce(0){|sum, p| sum += p.buy_price }
+    value = rand
+    sum = 0.0
+    players.each do |p|
+      sum += p.buy_price
+      if sum / total > value
+        return p
+      end
+    end
   end
 
   def position_array

@@ -177,7 +177,7 @@
     lab.backgroundColor = [UIColor clearColor];
     lab.font = [FFStyle lightFont:26];
     lab.textColor = [FFStyle tableViewSectionHeaderColor];
-    lab.text = NSLocalizedString(@"Purchase Tokens", nil);
+    lab.text = NSLocalizedString(@"Purchase FanFrees", nil);
     [header addSubview:lab];
     return header;
 }
@@ -309,6 +309,7 @@
     FFAlertView *ealert = [[FFAlertView alloc] initWithError:err title:nil cancelButtonTitle:nil
                                              okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
     [ealert showInView:self.view];
+    [self.sessionController updateUserNow];
 }
 
 - (void)addTokens:(SKPaymentTransaction *)transaction
@@ -322,6 +323,7 @@
      ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON) {
          
          [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+         [self.sessionController updateUserNow];
          
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error, id JSON) {
          NSLog(@"error verifying transaction %@", error);
