@@ -73,7 +73,7 @@ footer {
     color: @white;
   }
   p {
-    font-size: 14px;
+    font-size: 13px;
   }
   .logo-font {
     font-size: 30px;
@@ -109,6 +109,9 @@ footer {
   border-bottom: 2px solid @white;
   padding: 8px 0;
   .border-radius(0);
+}
+.alert-success {
+  background-color: @green;
 }
 
 
@@ -1147,6 +1150,16 @@ textarea[class*="span"] {
 
 /* Media Queries: 980-1199px
   ------------------------------------------------------ */
+@media (min-width: 1400px) {
+  .landing-container {
+    background-size: auto;
+    height: 900px;
+    width: 100%;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-color: @grayDark;
+  }
+}
 @media (min-width: 980px) and (max-width: 1199px) {
   .contest-copy .contest-image {
     width: 98%;

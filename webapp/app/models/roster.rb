@@ -225,8 +225,8 @@ class Roster < ActiveRecord::Base
         expected = self.reload.remaining_salary / remaining_positions.length
         position = remaining_positions.sample # One level of randomization
         player = weighted_expected_sample(
-          indexes[position] > 0 ? 
-            @candidate_players[position].slice(0, indexes[position]) 
+          indexes[position] > 0 ?
+            @candidate_players[position].slice(0, indexes[position])
             : @candidate_players[position],
            expected)
         add_player(player)
@@ -237,7 +237,7 @@ class Roster < ActiveRecord::Base
   end
 
   def weighted_expected_sample(players, expected_salary)
-    weighted_sample(players.map do |p| 
+    weighted_sample(players.map do |p|
       p.buy_price = p.buy_price / (p.buy_price - expected_salary).abs
       p
     end)
