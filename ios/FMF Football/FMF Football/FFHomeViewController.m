@@ -323,6 +323,9 @@ FFCreateGameViewControllerDelegate>
 
 - (void)didUpdateToNewMarket:(FFMarket *)market
 {
+    if (!self.session) {
+        return;
+    }
     if (_contests) {
         _contests.delegate = nil;
         _contests = nil;
