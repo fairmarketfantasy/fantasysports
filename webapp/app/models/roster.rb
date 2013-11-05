@@ -218,19 +218,48 @@ class Roster < ActiveRecord::Base
     self.reload
   end
 
-  def fill_pseudo_randomly
+  def fill_pseudo_randomly2
+    @candidate_players, indexes = fill_candidate_players
     ActiveRecord::Base.transaction do
-      @candidate_players = {}
+      begin
+        expected = self.reload.remaining_salary / remaining_positions.length
+        position = remaining_positions.sample # One level of randomization
+        player = weighted_expected_sample(
+          indexes[position] > 0 ? 
+            @candidate_players[position].slice(0, indexes[position]) 
+            : @candidate_players[position],
+           expected)
+        add_player(player)
+        @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
+      end while(remaining_positions.length > 0)
+    end
+    self.reload
+  end
+
+  def weighted_expected_sample(players, expected_salary)
+    weighted_sample(players.map do |p| 
+      p.buy_price = p.buy_price / (p.buy_price - expected_salary).abs
+      p
+    end)
+  end
+
+  def fill_candidate_players
+      candidate_players = {}
       indexes = {}
-      position_array.each { |pos| @candidate_players[pos] = []; indexes[pos] = 0 }
-      self.purchasable_players.each do |p|
-        @candidate_players[p.position] << p if @candidate_players.include?(p.position)
+      position_array.each { |pos| candidate_players[pos] = []; indexes[pos] = 0 }
+      self.purchasable_players.select{|p| p.status == 'ACT'}.each do |p|
+        candidate_players[p.position] << p if candidate_players.include?(p.position)
         indexes[p.position] += 1 if p.buy_price > 2000
       end
-      @candidate_players.each do |pos,players|
-        @candidate_players[pos] = players.sort_by{|player| -player.buy_price }
+      candidate_players.each do |pos,players|
+        candidate_players[pos] = players.sort_by{|player| -player.buy_price }
       end
+      [candidate_players, indexes]
+  end
 
+  def fill_pseudo_randomly
+    @candidate_players, indexes = fill_candidate_players
+    ActiveRecord::Base.transaction do
       begin
         position = remaining_positions.sample # One level of randomization
         player = weighted_sample(indexes[position] > 0 ? @candidate_players[position].slice(0, indexes[position]) : @candidate_players[position])
