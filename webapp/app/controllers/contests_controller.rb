@@ -52,7 +52,7 @@ class ContestsController < ApplicationController
   private
 
   def send_invitations(contest, message)
-    params['invitees'].split(/[,\n]/).each do |email|
+    params['invitees'].split(/[,\n;]/).each do |email|
       Invitation.for_contest(current_user, email, contest, message)
     end
   end
