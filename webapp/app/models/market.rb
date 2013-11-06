@@ -157,6 +157,10 @@ class Market < ActiveRecord::Base
           end
         end
         # Then iterate through /all/ unfilled contests and generate rosters to fill them up
+        self.contests.where("user_cap = 0").find_each do |contest|
+          contest.fill_with_rosters
+        end
+
         self.contests.where("num_rosters < user_cap").find_each do |contest|
           if contest.num_rosters == 0
             contest.destroy
@@ -345,7 +349,7 @@ class Market < ActiveRecord::Base
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
       #debugger
-        next if data[:name].match(/\d+k/) && self.closed_at - self.started_at < 1.day
+        next if data[:name].match(/\d+k/) && (self.closed_at - self.started_at < 1.day || Rails.env == 'test')
         ContestType.create!(
           market_id: self.id,
           name: data[:name],

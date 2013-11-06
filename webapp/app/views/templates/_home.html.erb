@@ -73,7 +73,10 @@
 <div class="market-container">
   <div class="market-title clearfix">
     <h3>When would you like to play?</h3>
-    <div class="league-selector">
+    <div class="league-selector" ng-show="currentUser.leagues.length == 0">
+      <p>You aren't in any leagues yet. <br/>Create one below.</p>
+    </div>
+    <div class="league-selector" ng-show="currentUser.leagues.length > 0">
       <p>Or
       <select ng-model="league" name="league" ng-options="l as l.name for l in currentUser.leagues" ng-change="showNextLeagueRoster(league)">
         <option value="">Select a League</option>
