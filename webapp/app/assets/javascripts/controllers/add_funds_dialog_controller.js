@@ -19,7 +19,7 @@ angular.module("app.controllers")
       $scope.addMoneySpinner = false;
     });
   };
-
+  $scope.currentUser = currentUserService.currentUser;
   $scope.close = function(){
       dialog.close();
   };

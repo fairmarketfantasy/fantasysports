@@ -170,12 +170,12 @@
   window.addToBalance = function(amount) {
     window.App.currentUser.balance = window.App.currentUser.balance + amount;
     var $scope = $('body').scope();
-    $scope.$apply(function(){ $emit('user-changed'); });
+    $scope.$emit('user-changed');
   };
   window.addToTokenBalance = function(amount) {
     window.App.currentUser.token_balance = window.App.currentUser.token_balance + amount;
     var $scope = $('body').scope();
-    $scope.$apply(function(){ $emit('user-changed'); });
+    $scope.$emit('user-changed');
   };
 </script>
 
