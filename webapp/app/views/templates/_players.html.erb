@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="clearfix relative-parent">
-          <label class="checkbox light-check" for="removeLowFilter" ng-click="toggleChecked('checked1')" ng-class="{'checked': checked1}">
+          <label class="checkbox light-check" for="removeLowFilter" ng-click="toggleChecked('removeLow')" ng-class="{'checked': removeLow}">
             <span class="icons">
               <span class="first-icon fui-checkbox-unchecked"></span>
               <span class="second-icon fui-checkbox-checked"></span>
@@ -32,8 +32,8 @@
           <input id="removeLowFilter" class="hide" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" />
 
           <ul ng-show="filter == 'positions'" class="positions-list clearfix">
-            <li class="position-item" ng-repeat="position in rosters.uniqPositionList">
-              <a class="position-link" ng-click="filterPlayers({position: position}, true)" href="javascript://">{{position}}</a>
+            <li class="position-item" ng-repeat="position in rosters.uniqPositionList" >
+              <a class="position-link" ng-click="filterPlayers({position: position}, true)" ng-class="{selected: filterPosition == position}" href="javascript://">{{position}}</a>
             </li>
           </ul> 
           
@@ -42,8 +42,9 @@
               <thead>
                 <tr>
                   <th class="larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
-                  <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
+                  <th class="tiny" ng-hide="getFilterOpts().position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
                   <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
+                  <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
                   <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
                   <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
                   <th class="tiny-btn"><a class="btn btn-small btn-invisible" href="">Add</a></th>
@@ -57,8 +58,9 @@
               <thead>
                 <tr>
                   <th class="larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
-                  <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
+                  <th class="tiny" ng-hide="getFilterOpts.position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
                   <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
+                  <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
                   <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
                   <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
                   <th class="tiny-btn"></th>
@@ -70,8 +72,9 @@
                     <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
                     <i ng-show="player.status != 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
                   </td>
-                  <td class="tiny">{{player.position | dashIfDEF}}</td>
+                  <td class="tiny" ng-hide="getFilterOpts().position">{{player.position | dashIfDEF}}</td>
                   <td class="tiny">{{player.team}}</td>
+                  <td class="tiny" ng-show="getFilterOpts().position">{{opponentFor(player)}}</td>
                   <td class="tiny">{{player.ppg | number:0 |zeroIfEmpty}}</td>
                   <td>${{player.buy_price | number:0}}</td>
                   <td class="tiny-btn"><a class="btn btn-small btn-success" href="javascript://" ng-click="addPlayer(player)">Add</a></td>
