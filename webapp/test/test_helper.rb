@@ -190,6 +190,10 @@ FactoryGirl.define do
     paypal_email { generate(:email) }
   end
 
+  factory :league do
+    name "blah"
+  end
+
   factory :team1, class: Team do
     sport_id 1
     abbrev 'GB'
@@ -270,7 +274,8 @@ FactoryGirl.define do
     association :market, factory: :open_market
     invitation_code { generate(:random_string) }
     buy_in 1000
-
+    num_rosters 0
+    user_cap 10
   end
 
   factory :contest_type do

@@ -115,6 +115,19 @@ class ContestTest < ActiveSupport::TestCase
     end
   end
 
+  test 'league join' do
+    setup_simple_market
+      # :start_day => (opts[:market].started_at - 6.hours).strftime("%w").to_i + 1,
+    ct = @market.contest_types.first
+    roster = Roster.generate(create(:paid_user), ct)
+    league = create(:league)
+    contest = create(:contest, market: @market, league_id: league.id, contest_type_id: ct.id)
+    roster.contest = contest
+    roster.save!
+    roster.submit!
+    assert roster.owner.leagues.include?(contest.league)
+  end
+
   describe Contest do
 
     before(:all) do
