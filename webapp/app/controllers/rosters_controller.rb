@@ -93,7 +93,7 @@ class RostersController < ApplicationController
 
   def autofill
     roster = current_user.rosters.where(:id => params[:id]).first
-    roster.fill_pseudo_randomly2
+    roster.fill_pseudo_randomly3
     render_api_response roster
   end
 end
