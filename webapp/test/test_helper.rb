@@ -117,6 +117,24 @@ class ActiveSupport::TestCase
     @market.reload
   end
 
+  def add_lollapalooza(market)
+    ContestType.create!(
+      market_id: market.id,
+      name: '0.1k',
+      description: '$100',
+      max_entries: 0,
+      buy_in: 1000,
+      rake: 0.03,
+      payout_structure: '[50, 25, 12.5, 9.5]',
+      salary_cap: 100000,
+      payout_description: '[50, 25, 12.5, 9.5]',
+      takes_tokens: false
+    )
+    market.contest_types.reload
+    market
+  end
+
+
   #returns hash with routing and account_num
 end
 

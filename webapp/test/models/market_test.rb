@@ -258,6 +258,7 @@ class MarketTest < ActiveSupport::TestCase
   test "game play" do
     # Make a published market
     setup_simple_market
+    add_lollapalooza(@market)
     ct1 = @market.contest_types.where("buy_in = 1000 and max_entries = 2").first
     ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 10").first
     ct3 = @market.contest_types.where("buy_in = 1000 and max_entries = 0").first
@@ -361,6 +362,21 @@ class MarketTest < ActiveSupport::TestCase
     assert_equal 43, Roster.over.count
 
     Contest.all.each{|c| TransactionRecord.validate_contest(c) }
+  end
+
+  def test_lollapalooza_fill
+    setup_simple_market
+    add_lollapalooza(@market)
+    ct = @market.contest_types.where("name like '%k'").first
+    r1 = Roster.generate(create(:paid_user), ct).fill_pseudo_randomly3.submit!
+    r2 = Roster.generate(create(:paid_user), ct).fill_pseudo_randomly3.submit!
+    contest = r1.contest
+    assert_equal r1.contest, r2.contest
+    @market.open
+    @game.update_attribute(:status, 'closed')
+    @market.update_attribute(:closed_at, Time.new - 1.minute)
+    Market.tend
+    assert contest.rosters.count * contest.buy_in, JSON.parse(contest.contest_type.payout_structure).sum
   end
 
   describe Market do
