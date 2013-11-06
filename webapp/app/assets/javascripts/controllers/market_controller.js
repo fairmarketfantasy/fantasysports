@@ -104,7 +104,7 @@ angular.module("app.controllers")
   };
 
   $scope.isBigContest = function(contestClass) {
-    return contestClass.match(/\d+k/);
+    return !!contestClass.match(/\d+k/);
   };
 
 }]);
