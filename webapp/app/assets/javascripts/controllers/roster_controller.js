@@ -17,8 +17,13 @@ angular.module("app.controllers")
     });
   });
 
-  var filterOpts = {position: 'QB'};
+  $scope.removeLow = true;
+  var filterOpts = {position: 'QB', removeLow: true, sort: 'buy_price', dir: 'desc'};
+  $scope.getFilterOpts = function() {
+    return angular.extend({}, filterOpts);
+  };
   var fetchPlayers = function() {
+    $scope.filterPosition = filterOpts.position;
     if (!rosters.currentRoster) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
       if (filterOpts.removeLow && players.length > 2) {
@@ -111,6 +116,11 @@ angular.module("app.controllers")
 
   $scope.teams  = function() {
     return _.map(teamsToGames, function(game, team) { return team; });
+  };
+
+  $scope.opponentFor = function(player) {
+    var game = teamsToGames[player.team];
+    return _.find([game.home_team, game.away_team], function(team) { return team != player.team; });
   };
 
   $scope.notStartedGames = function() {
