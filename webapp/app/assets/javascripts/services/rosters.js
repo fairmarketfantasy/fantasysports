@@ -201,7 +201,7 @@ angular.module('app.data')
       this.autoFill = function() {
         var self = this;
         fs.rosters.autoFill(this.currentRoster.id).then(function(roster) {
-          self.currentRoster = rosterData[self.currentRoster.id] = roster;
+          self.selectRoster(roster);
         });
       };
 
