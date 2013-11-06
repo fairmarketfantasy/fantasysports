@@ -202,10 +202,11 @@ class Market < ActiveRecord::Base
     {
       name: '5k',
       description: '5k Lollapalooza! $2500 for 1st prize!',
-      max_entries: 0,
+      max_entries: 515,
       buy_in: 1000,
       rake: 0.03,
-      payout_structure: '[250000, 100000, 50000, 25000, 15000, 10000, 5000, 5000, 5000, 5000, 2500, 2500,  2500, 2500, 2500, 2500]',
+# 4995.5
+      payout_structure: '[250000, 100000, 50000, 25000, 15000, 10000, 10000, 5000, 5000, 5000, 5000, 5000, 2500, 2500,  2500, 2500, 2500, 2050]',
       payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $500, 4th: $250, 5th: $150, 6th: $100, 7th-10th: $50, 10th-16th: $25",
       takes_tokens: false,
     },
