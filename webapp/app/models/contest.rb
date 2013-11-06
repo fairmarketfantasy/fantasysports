@@ -135,7 +135,9 @@ class Contest < ActiveRecord::Base
 
   def fill_with_rosters
     Market.override_market_close do
-      (self.user_cap - self.num_rosters).times do
+      lollapalooza_cap = JSON.parse(self.contest_type.payout_structure).sum / self.buy_in
+      rosters = [(self.user_cap == 0 ? lollapalooza_cap : self.user_cap) - self.num_rosters, 0].max
+      rosters.times do
         roster = Roster.generate(SYSTEM_USER, self.contest_type)
         roster.contest_id = self.id
         roster.is_generated = true
