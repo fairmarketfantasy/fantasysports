@@ -26,6 +26,9 @@ class Invitation < ActiveRecord::Base
         contest_type_id: contest.private? ? nil : contest.contest_type_id,
         code: SecureRandom.hex(16)
       )
+      if contest.league? && (invited = User.where(:email => email).first)
+       LeagueMembership.where(:league_id => contest.league.id, :user_id => invited.id).find_or_create
+      end
     end
     ContestMailer.invite_to_contest(invitation, inviter, contest, email, message).deliver!
     invitation
