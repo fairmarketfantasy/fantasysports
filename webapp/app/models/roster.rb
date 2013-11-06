@@ -21,11 +21,15 @@ class Roster < ActiveRecord::Base
   scope :submitted, -> { where(state: ['submitted'])}
 
   def players_with_prices
-    Player.find_by_sql("select * from roster_prices(#{self.id})")
+    self.class.uncached do
+      Player.find_by_sql("select * from roster_prices(#{self.id})")
+    end
   end
 
   def purchasable_players
-    Player.purchasable_for_roster(self)
+    self.class.uncached do
+      Player.purchasable_for_roster(self)
+    end
   end
 
   def sellable_players
@@ -148,7 +152,7 @@ class Roster < ActiveRecord::Base
       order = exec_price("SELECT * from buy(#{self.id}, #{player.id})")
       self.class.uncached do
         self.players.reload
-        # TODO: may need to reload roster players too
+        self.rosters_players.reload
       end
       order
     rescue StandardError => e
@@ -162,8 +166,8 @@ class Roster < ActiveRecord::Base
   def remove_player(player)
     order = exec_price("SELECT * from sell(#{self.id}, #{player.id})")
     self.class.uncached do
-      self.players.reload
-      # TODO: may need to reload roster players too
+        self.players.reload
+        self.rosters_players.reload
     end
     order
   end
@@ -219,6 +223,7 @@ class Roster < ActiveRecord::Base
   end
 
   def fill_pseudo_randomly2
+    return false unless @candidate_players
     @candidate_players, indexes = fill_candidate_players
     ActiveRecord::Base.transaction do
       begin
@@ -236,6 +241,43 @@ class Roster < ActiveRecord::Base
     self.reload
   end
 
+  def fill_pseudo_randomly3
+    return false unless @candidate_players
+    @candidate_players, indexes = fill_candidate_players
+    ActiveRecord::Base.transaction do
+      next if players.empty
+      begin
+        expected = self.reload.remaining_salary / remaining_positions.length
+        position = remaining_positions.sample # One level of randomization
+        players = @candidate_players[position]
+        if self.reload.remaining_salary < expected * remaining_positions.length
+          slice_start = [players.index{|p| p.buy_price < expected * 0.8}, 0].max
+          slice_end = [indexes[position], 3].max
+        else
+          slice_start = 0
+          slice_end = [[players.index{|p| p.buy_price < expected * 0.8}, indexes[position]].min, 3].max
+        end
+        player = players.slice(slice_start, slice_end - slice_start).sample
+        add_player(player)
+        @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
+      end while(remaining_positions.length > 0)
+    end
+    self.reload
+  end
+
+=begin
+  all players not benched
+  low end - high end
+  1st pick is random
+
+  all highest priced players for each position
+
+  remaining picks * lowest prices
+  
+  3rd highest of all positions, determine if we have to pick from that group by establishing minimum price per players
+
+=end
+
   def weighted_expected_sample(players, expected_salary)
     weighted_sample(players.map do |p|
       p.buy_price = p.buy_price / (p.buy_price - expected_salary).abs
@@ -247,18 +289,20 @@ class Roster < ActiveRecord::Base
       candidate_players = {}
       indexes = {}
       position_array.each { |pos| candidate_players[pos] = []; indexes[pos] = 0 }
-      self.purchasable_players.select{|p| p.status == 'ACT'}.each do |p|
+      self.purchasable_players.select{|p| p.status == 'ACT' && p.benched_games < 3}.each do |p|
         candidate_players[p.position] << p if candidate_players.include?(p.position)
         indexes[p.position] += 1 if p.buy_price > 2000
       end
       candidate_players.each do |pos,players|
         candidate_players[pos] = players.sort_by{|player| -player.buy_price }
       end
+      return false if candidate_players.map{|pos, players| players.length}.sum <= 9
       [candidate_players, indexes]
   end
 
   def fill_pseudo_randomly
     @candidate_players, indexes = fill_candidate_players
+    return false unless @candidate_players
     ActiveRecord::Base.transaction do
       begin
         position = remaining_positions.sample # One level of randomization
@@ -288,14 +332,14 @@ class Roster < ActiveRecord::Base
 
   def remaining_positions
     positions = position_array.dup
-    pos_taken = self.players.map(&:position)
+    pos_taken = self.class.uncached{ self.players.reload }.map(&:position)
     pos_taken.each do |pos|
       i = positions.index(pos)
       positions.delete_at(i) if not i.nil?
     end
     positions
   end
-  
+
   def pre_destroy
     Roster.find_by_sql("select * from cancel_roster(#{self.id})")
   end
