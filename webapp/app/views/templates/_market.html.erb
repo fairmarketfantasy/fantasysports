@@ -30,7 +30,7 @@
         <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
           <div ng-class="{'contest-copy': isBigContest(contestClass)}" >
             <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
-            <h2>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
+            <h2><span ng-show="isBigContest(contestClass)">$</span>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
           </div>
           <div ng-class="{'contest-copy contest-long': isBigContest(contestClass)}" >
             <p class="small-p">{{contestClasses[contestClass][0].contest_class_desc}}</p>
