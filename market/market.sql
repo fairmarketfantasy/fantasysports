@@ -599,7 +599,7 @@ begin
     FROM contest_info WHERE rosters.id=contest_info.id;
 
 	WITH ranks as
-		(SELECT rosters.id, rank() OVER (PARTITION BY contest_id ORDER BY score DESC) FROM rosters WHERE rosters.market_id = $1)
+		(SELECT rosters.id, rank() OVER (PARTITION BY contest_id ORDER BY score IS NOT NULL DESC, score desc) FROM rosters WHERE rosters.market_id = $1)
 		UPDATE rosters set contest_rank = rank FROM ranks where rosters.id = ranks.id;
 end
 $$ LANGUAGE plpgsql;--SQL;
