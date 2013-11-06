@@ -97,7 +97,6 @@ class Roster < ActiveRecord::Base
     #buy all the players on the roster. This sql function handles all of that.
     raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
     self.transaction do
-
       #purchase all the players and update roster state to submitted
       Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
       reload
@@ -129,6 +128,9 @@ class Roster < ActiveRecord::Base
         end
       else #contest not nil. enter private contest
         contest.with_lock do
+          if contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => contest.league_id).first.nil?
+            LeagueMembership.create!(:league_id => contest.league_id, :user_id => self.owner_id)
+          end
           raise "contest #{contest.id} is full" if contest.num_rosters > contest.user_cap && contest.user_cap != 0
           self.contest = contest
           contest.num_rosters += 1
