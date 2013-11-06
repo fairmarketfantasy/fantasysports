@@ -242,10 +242,9 @@ class Roster < ActiveRecord::Base
   end
 
   def fill_pseudo_randomly3
-    return false unless @candidate_players
     @candidate_players, indexes = fill_candidate_players
+    return false unless @candidate_players
     ActiveRecord::Base.transaction do
-      next if players.empty
       begin
         expected = self.reload.remaining_salary / remaining_positions.length
         position = remaining_positions.sample # One level of randomization
@@ -296,7 +295,7 @@ class Roster < ActiveRecord::Base
       candidate_players.each do |pos,players|
         candidate_players[pos] = players.sort_by{|player| -player.buy_price }
       end
-      return false if candidate_players.map{|pos, players| players.length}.sum <= 9
+      return false if candidate_players.map{|pos, players| players.length }.sum <= 9
       [candidate_players, indexes]
   end
 
