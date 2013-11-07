@@ -2,7 +2,9 @@
   <div class="contest-info">
     <div class="relative clearfix">
       <a href="javascript://" class="btn btn-danger btn-cancel-entry" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
-      <a href="javascript://" class="btn btn-orange btn-invite-friends" ng-click="rosters.openInviteFriends(rosters.currentRoster)" ng-show="(market.state == 'published' || market.state == 'opened') && rosters.currentRoster.state != 'in_progress'">Invite Friends</a>
+      <a href="javascript://" class="btn btn-orange btn-invite-friends" ng-click="rosters.openInviteFriends(rosters.currentRoster)" 
+        ng-show="(market.state == 'published' || market.state == 'opened') && rosters.currentRoster.contest">
+        Invite Friends</a>
       <a href="#/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster">Back to Contests</a>
       <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name}}.png" class="contest-info-image" />
       <div class="contest-info-description">
@@ -39,7 +41,7 @@
     This market's bell hasn't rung yet (it will open on or before {{dayBefore(market.opened_at) | shortFormTime}}). <br/>That means all prices are indicative. This helps keep our market fair. <a class="" href="/#rules">Learn More</a>.
   </p>
 
-  <div ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && inThePast(market.started_at)">
+  <div ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && (inThePast(market.started_at) || rosters.currentRoster.contest.league)">
     <table class="table table-striped">
       <thead>
         <th ng-show="rosters.contest_type.name == 'h2h rr'">Record</th>
