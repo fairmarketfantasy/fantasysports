@@ -37,7 +37,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     resp = {}
     if session[:referral_code]
       Invitation.redeem(current_user, session[:referral_code])
-      session[:referral_code] = nil
+      session(:referral_code)
     end
     if session[:contest_code]
       contest = Contest.where(:invitation_code => session[:contest_code]).first
@@ -48,7 +48,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       else
         roster = Roster.generate(current_user, contest.contest_type)
       end
-      session[:contest_code] = nil
+      session.delete(:contest_code)
       resp.merge! redirect: "/market/#{contest.market_id}/roster/#{roster.id}"
     end
     resp
