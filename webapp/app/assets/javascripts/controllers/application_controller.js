@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'rosters', '$location', 'flash', '$dialog', function($scope, fs, currentUserService, rosters, $location, flash, $dialog) {
+.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'rosters', '$location', 'flash', '$dialog', '$timeout', function($scope, fs, currentUserService, rosters, $location, flash, $dialog, $timeout) {
 
   $scope.fs = fs;
 
@@ -57,6 +57,9 @@ angular.module("app.controllers")
 
      var d = $dialog.dialog(dialogOpts);
      d.open();
+     $timeout(function() {
+        $.placeholder.shim();
+     });
   };
 
   if ($location.search().autologin) {

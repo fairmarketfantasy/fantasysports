@@ -15,6 +15,7 @@
 
 //= require polyfill.js
 //= require vendor/jquery-1.10.2.min
+//= require vendor/jquery.html5-placeholder-shim.js
 //= require vendor/underscore-min.js
 //= require vendor/jsonh
 //= require vendor/angular-1.0.8.min.js
