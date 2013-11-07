@@ -15,6 +15,9 @@ angular.module('app.services')
         dialogOpts.resolve     = {token: function(){ return token; }};
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
         $rootScope.$on('user-changed', function(){
           $rootScope.$apply(function() {
             d.close();
@@ -28,6 +31,9 @@ angular.module('app.services')
         dialogOpts.controller  = 'AddFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
         $rootScope.$on('user-changed', function () {
           $rootScope.$apply(function() {
             d.close();
@@ -41,6 +47,9 @@ angular.module('app.services')
         dialogOpts.controller  = 'AddFanFreesDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
         $rootScope.$on('user-changed', function () {
           $rootScope.$apply(function() {
             d.close();
@@ -54,6 +63,9 @@ angular.module('app.services')
         dialogOpts.controller  = 'SettingsController';
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
       },
 
       refreshUser: function() {
@@ -70,6 +82,9 @@ angular.module('app.services')
         dialogOpts.controller  = 'WithdrawFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
       }
     };
   }])
