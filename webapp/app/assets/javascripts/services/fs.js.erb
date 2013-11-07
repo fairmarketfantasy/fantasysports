@@ -69,8 +69,9 @@ angular.module('app.services')
     return function(promise) {
       var success = function(resp) {
         if (resp.headers()['content-type']  === "application/json; charset=utf-8") {
-          if (resp.data.redirect) {
-            $location.path(resp.data.redirect);
+          var redirect = resp.data.redirect || resp.headers()['x-client-redirect'];
+          if (redirect) {
+            $location.path(redirect);
           }
           if (resp.data.data) {
             return JSONH.unpack(resp.data.data);
