@@ -44,7 +44,7 @@ angular.module("app.controllers")
 
   $scope.resetPassword = function(){
     fs.user.resetPassword($scope.user.email).then(function(resp){
-      flash.success = resp.message;
+      flash.success(resp.message);
       $scope.close();
     });
   };
