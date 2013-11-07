@@ -179,6 +179,7 @@ angular.module('app.data')
           }
           self.reset();
           flash.success = "Roster submitted successfully!";
+          currentUserService.refreshUser();
           //self.justSubmittedRoster = roster;
         });
       };
