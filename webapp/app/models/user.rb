@@ -82,14 +82,12 @@ class User < ActiveRecord::Base
   def image_url
     #avatar    (from upload: AvatarUploader)
     #image_url (from facebook)
-    #gravatar  (last resort)
     if self.avatar.presence
       self.avatar.url
     elsif self[:image_url].presence
       self[:image_url]
     else
-      gravatar_id = Digest::MD5.hexdigest(email.downcase)
-      "https://www.gravatar.com/avatar/#{gravatar_id}"
+      ActionController::Base.helpers.image_path('default-user.png')
     end
   end
 
