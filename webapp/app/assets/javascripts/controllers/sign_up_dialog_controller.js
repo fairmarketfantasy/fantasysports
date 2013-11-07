@@ -4,7 +4,7 @@ angular.module("app.controllers")
   $scope.message = message;
 
   // ['forgotPass', 'signUpForm', 'signInForm']
-  $scope.changeState = function(state){
+  $scope.changeState = function(state, message){
 
     //set all states to false
     states =['forgotPass', 'signUpForm', 'signInForm'];
@@ -19,17 +19,17 @@ angular.module("app.controllers")
       $scope.message = 'Enter your email address for instructions.';
     } else if(state === 'signUpForm') {
       $scope.title = "Sign Up";
-      $scope.message = '';
+      $scope.message = message;
     } else if(state === 'signInForm') {
       $scope.title = "Sign In";
-      $scope.message = '';
+      $scope.message = message;
     }
   };
 
   if (message == 'signin') {
     $scope.changeState('signInForm');
   } else {
-    $scope.changeState('signUpForm');
+    $scope.changeState('signUpForm', message || '');
   }
 
   $scope.signUp = function() {
