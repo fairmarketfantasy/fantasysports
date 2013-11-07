@@ -3,7 +3,9 @@ angular.module("app.controllers")
 
   $scope.fs = fs;
 
+  $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;
+  $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;});
 
   $scope.resetPasswordModal = function(token){
     currentUserService.resetPasswordModal(token);
