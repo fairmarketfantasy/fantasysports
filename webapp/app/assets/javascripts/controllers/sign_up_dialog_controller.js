@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', 'message', function($scope, dialog, flash, fs, message) {
+.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', 'message', '$timeout', function($scope, dialog, flash, fs, message, $timeout) {
   $scope.user = $scope.user || {};
   $scope.message = message;
 
@@ -35,7 +35,8 @@ angular.module("app.controllers")
   $scope.signUp = function() {
     fs.user.create($scope.user).then(function(resp){
       //only fires on success, errors are intercepted by fsAPIInterceptor
-      window.location.href = '/';
+      debugger
+      $timeout(function() {window.location.reload(true);});
     });
   };
 
