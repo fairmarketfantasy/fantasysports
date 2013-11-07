@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', 'flash', '$templateCache', function($scope, rosters, markets, $routeParams, $location, flash, $templateCache) {
+.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', 'flash', '$templateCache', function($scope, rosters, markets, $routeParams, $location, $dialog, flash, $templateCache) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
@@ -151,11 +151,25 @@ angular.module("app.controllers")
     return moment(time).subtract('days', 1);
   };
 
+  $scope.createContestFromRosterModal = function(){
+    var dialogOpts = {
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          dialogClass: 'modal',
+          templateUrl: '/create_contest_from_roster_dialog.html',
+          controller: 'CreateContestFromRosterDialogController'
+    }
+    var d = $dialog.dialog(dialogOpts);
+    d.open();
+  };
+
   $scope.enterAgain = function() {
     $scope.fs.contests.join(rosters.currentRoster.contest_type.id, rosters.currentRoster.id).then(function(data) {
       rosters.selectRoster(data);
-      flash.success = "Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!";
-      $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
+      //flash.success = "Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!";
+      //$location.path('/market/' + $scope.market.id + '/roster/' + data.id);
+      $scope.createContestFromRosterModal();
     });
   };
 
