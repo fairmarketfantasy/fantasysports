@@ -133,7 +133,7 @@ angular.module('app.data')
             self.currentRoster.players[index] = player;
           });
         } else {
-          flash.error = "No room for another " + player.position + " in your roster.";
+          flash.error("No room for another " + player.position + " in your roster.");
         }
       };
 
@@ -178,7 +178,7 @@ angular.module('app.data')
             currentUserService.currentUser.balance -= roster.buy_in;
           }
           self.reset();
-          flash.success = "Roster submitted successfully!";
+          flash.success("Roster submitted successfully!");
           currentUserService.refreshUser();
           //self.justSubmittedRoster = roster;
         });
@@ -187,7 +187,7 @@ angular.module('app.data')
       this.cancel = function() {
         var self = this;
         if (this.currentRoster.state != 'in_progress') {
-          flash.error = "You can only cancel rosters that are in progress";
+          flash.error("You can only cancel rosters that are in progress");
           return;
         }
         var currentRoster = this.currentRoster;
@@ -220,7 +220,7 @@ angular.module('app.data')
         d.open().then(function(result) {
           if (!result) { return; }
           fs.contests.invite(roster.contest_id, result.invitees, result.message, roster.contest.invitation_code).then(function() {
-            flash.success = "Invitations sent successfully";
+            flash.success("Invitations sent successfully");
           });
         });
       };
