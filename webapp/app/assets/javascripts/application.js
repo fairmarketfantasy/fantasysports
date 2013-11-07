@@ -14,13 +14,13 @@
 // Angular libraries and dependencies
 
 //= require polyfill.js
-//= require jquery-1.10.2.min
-//= require underscore-min.js
-//= require jsonh
-//= require angular-1.0.8.min.js
-//= require angular-ui-bootstrap-tpls-0.4.0.min.js
-//= require angular-flash.js
-//= require moment.min.js
+//= require vendor/jquery-1.10.2.min
+//= require vendor/underscore-min.js
+//= require vendor/jsonh
+//= require vendor/angular-1.0.8.min.js
+//= require vendor/angular-ui-bootstrap-tpls-0.4.0.min.js
+//= require vendor/angular-flash.js
+//= require vendor/moment.min.js
 //= require skeuocard
 
 // Our angular app
