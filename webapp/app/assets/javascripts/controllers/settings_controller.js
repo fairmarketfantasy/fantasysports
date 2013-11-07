@@ -7,7 +7,7 @@
   var flashForConfirm = function(){
     if(!$scope.currentUser.confirmed){
       $timeout(function(){
-        flash.error = "You haven't confirmed your email address yet.";
+        flash.error("You haven't confirmed your email address yet.");
       }, 100);
     }
   };
@@ -35,16 +35,14 @@
 
   $scope.resendConfirmation = function(){
     fs.user.resendConfirmation().then(function(resp){
-      flash.error = null;
-      flash.success = null;
       $scope.close();
-      flash.success = resp.message;
+      flash.success(resp.message);
     });
   };
 
   $scope.updateUser = function(){
     fs.user.update($scope.userInfo).then(function(resp){
-      flash.success = "Success, user info saved";
+      flash.success("Success, user info saved");
       flashForConfirm();
       $scope.currentUser = resp;
       $scope.userInfo = {};
