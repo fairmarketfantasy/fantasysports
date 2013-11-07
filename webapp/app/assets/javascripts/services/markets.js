@@ -1,5 +1,5 @@
 angular.module('app.data')
-  .factory('markets', ['fs', '$q', 'flash', function(fs, $q, flash) {
+  .factory('markets', ['fs', '$q', function(fs, $q) {
     var marketData = {};
     var gameData = {};
     return new function() {

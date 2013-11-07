@@ -10,10 +10,8 @@ angular.module("app.controllers")
 
   $scope.resendConfirmation = function(){
     fs.user.resendConfirmation().then(function(resp){
-      flash.error = null;
-      flash.success = null;
       $scope.close();
-      flash.success = resp.message;
+      flash.success(resp.message);
     });
   };
 
@@ -35,17 +33,17 @@ angular.module("app.controllers")
     fs.recipients.create($scope.newAccount).then(function(resp){
       $scope.saveAcctSpinner = false;
       $scope.focusAmount = true;
-      flash.success = "Success, your PayPal has been added.";
+      flash.success("Success, your PayPal has been added.");
       $scope.recipient = resp;
     }, function(resp) {
       $scope.saveAcctSpinner = false;
-      flash.error = resp.error;
+      flash.error(resp.error);
     });
   };
 
   $scope.deleteRecipient = function(){
-    fs.recipients.delete().then(function(resp){
-      flash.success = "Success, your bank account has been deleted. Add a new one:";
+    fs.recipients.remove().then(function(resp){
+      flash.success("Success, your bank account has been deleted. Add a new one:");
       $scope.recipient = null;
     })
   };
@@ -57,7 +55,7 @@ angular.module("app.controllers")
     fs.user.withdrawMoney(amount).then(function(resp){
       $scope.deleteRecipientSpinner = false;
       $scope.close();
-      flash.success = "Success, transfer of $" +  $scope.withdrawAmount + " has been initiated.";
+      flash.success("Success, transfer of $" +  $scope.withdrawAmount + " has been initiated.");
       $scope.startTransferSpinner = false;
       window.App.currentUser.balance = resp.balance;
       $scope.withdrawAmount = null;
