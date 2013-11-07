@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog) {
+.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, currentUserService) {
   $scope.marketService = marketService;
 
   marketService.fetchUpcoming($routeParams.market_id);
@@ -87,6 +87,7 @@ angular.module("app.controllers")
         flash.success = "Awesome, your contest is all setup. Now lets create your entry into the contest."
         rosters.selectRoster(roster);
         $location.path('/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
+        currentUserService.refreshUser();
       });
     });
   };

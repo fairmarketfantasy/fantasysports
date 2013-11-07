@@ -1,11 +1,11 @@
 angular.module('app.services')
-  .factory('currentUserService', ['$dialog', '$rootScope', 'flash', function($dialog, $rootScope, flash) {
+  .factory('currentUserService', ['$dialog', '$rootScope', 'flash', '$timeout', 'fs', function($dialog, $rootScope, flash, $timeout, fs) {
     var dialogOpts = {
           backdrop: true,
           keyboard: true,
           backdropClick: true,
           dialogClass: 'modal',
-    }
+    };
 
     return {
       currentUser: window.App.currentUser,
@@ -54,7 +54,16 @@ angular.module('app.services')
         dialogOpts.controller  = 'SettingsController';
         var d = $dialog.dialog(dialogOpts);
         d.open();
-       },
+      },
+
+      refreshUser: function() {
+        var self = this;
+        fs.user.refresh().then(function(user) {
+          $timeout(function() {
+            self.currentUser = window.App.currentUser = user;
+          });
+        });
+      },
 
       withdrawFundsModal: function() {
         dialogOpts.templateUrl = '/withdraw_funds_dialog.html',
