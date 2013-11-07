@@ -229,7 +229,7 @@ class Market < ActiveRecord::Base
       buy_in: 100,
       rake: 0.03,
       payout_structure: '[970]',
-      payout_description: "970ff prize purse, winner takes all",
+      payout_description: "970FF prize purse, winner takes all",
       takes_tokens: true,
     },
     {
@@ -289,7 +289,7 @@ class Market < ActiveRecord::Base
       buy_in: 100,
       rake: 0.03,
       payout_structure: '[194]',
-      payout_description: "194ff prize purse, winner takes all",
+      payout_description: "194FF prize purse, winner takes all",
       takes_tokens: true,
     },
     {
