@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog) {
+.controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, currentUserService) {
   $scope.marketService = marketService;
 
   marketService.fetchUpcoming($routeParams.market_id);
@@ -9,7 +9,7 @@ angular.module("app.controllers")
   $scope.isCurrent = function(market){
     if (!market) { return; }
     if (!marketService.currentMarket) {
-      flash.error = "Oops, we couldn't find that market, pick a different one.";
+      flash.error("Oops, we couldn't find that market, pick a different one.");
       $location.path('/');
       return;
     }
@@ -58,7 +58,7 @@ angular.module("app.controllers")
   $scope.clearJustSubmittedRoster = function() {
     $scope.justSubmittedRoster = null;
     $location.path('/');
-    flash.success = "Awesome, You're IN. Good luck!";
+    flash.success("Awesome, You're IN. Good luck!");
   };
 
   $scope.openCreateDialog = function() {
@@ -84,9 +84,10 @@ angular.module("app.controllers")
           league_name: result.league_name,
           salary_cap: 100000}
       ).then(function(roster) {
-        flash.success = "Awesome, your contest is all setup. Now lets create your entry into the contest."
+        flash.success("Awesome, your contest is all setup. Now lets create your entry into the contest.");
         rosters.selectRoster(roster);
         $location.path('/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
+        currentUserService.refreshUser();
       });
     });
   };
