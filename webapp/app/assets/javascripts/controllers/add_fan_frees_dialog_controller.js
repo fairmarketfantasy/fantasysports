@@ -7,7 +7,7 @@ angular.module("app.controllers")
     var cards = resp.cards;
     if(!cards.length){
       $scope.mustAddCard = true;
-      flash.error = "You need to add a credit card first.";
+      flash.error("You need to add a credit card first.");
     }
   });
 */

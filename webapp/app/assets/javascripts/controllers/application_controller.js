@@ -1,9 +1,11 @@
 angular.module("app.controllers")
-.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'rosters', '$location', 'flash', '$dialog', function($scope, fs, currentUserService, rosters, $location, flash, $dialog) {
+.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'rosters', '$location', 'flash', '$dialog', '$timeout', function($scope, fs, currentUserService, rosters, $location, flash, $dialog, $timeout) {
 
   $scope.fs = fs;
 
+  $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;
+  $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;});
 
   $scope.resetPasswordModal = function(token){
     currentUserService.resetPasswordModal(token);
@@ -55,6 +57,9 @@ angular.module("app.controllers")
 
      var d = $dialog.dialog(dialogOpts);
      d.open();
+     $timeout(function() {
+        $.placeholder.shim();
+     });
   };
 
   if ($location.search().autologin) {

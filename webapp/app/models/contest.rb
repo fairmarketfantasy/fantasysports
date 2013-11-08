@@ -35,7 +35,8 @@ class Contest < ActiveRecord::Base
         :user_id => opts[:user_id],
         :private => true,
         :salary_cap => opts[:salary_cap] || 100000,
-        :payout_description => "Winner take all"
+        :payout_description => "Winner take all",
+        :takes_tokens => opts[:takes_tokens] || false,
       )
     else
       contest_type = existing_contest_type

@@ -1,11 +1,11 @@
 angular.module('app.services')
-  .factory('currentUserService', ['$dialog', '$rootScope', 'flash', function($dialog, $rootScope, flash) {
+  .factory('currentUserService', ['$dialog', '$rootScope', 'flash', '$timeout', 'fs', function($dialog, $rootScope, flash, $timeout, fs) {
     var dialogOpts = {
           backdrop: true,
           keyboard: true,
           backdropClick: true,
           dialogClass: 'modal',
-    }
+    };
 
     return {
       currentUser: window.App.currentUser,
@@ -15,10 +15,13 @@ angular.module('app.services')
         dialogOpts.resolve     = {token: function(){ return token; }};
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
         $rootScope.$on('user-changed', function(){
           $rootScope.$apply(function() {
             d.close();
-            flash.success = "Successfully reset password.";
+            flash.success("Successfully reset password.");
           });
         });
       },
@@ -28,10 +31,13 @@ angular.module('app.services')
         dialogOpts.controller  = 'AddFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
         $rootScope.$on('user-changed', function () {
           $rootScope.$apply(function() {
             d.close();
-            flash.success = "Paypal payment deposited successfully!";
+            flash.success("Paypal payment deposited successfully!");
           });
         });
       },
@@ -41,10 +47,13 @@ angular.module('app.services')
         dialogOpts.controller  = 'AddFanFreesDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
         $rootScope.$on('user-changed', function () {
           $rootScope.$apply(function() {
             d.close();
-            flash.success = "FanFrees purchased successfully!";
+            flash.success("FanFrees purchased successfully!");
           });
         });
       },
@@ -54,13 +63,28 @@ angular.module('app.services')
         dialogOpts.controller  = 'SettingsController';
         var d = $dialog.dialog(dialogOpts);
         d.open();
-       },
+        $timeout(function() {
+           $.placeholder.shim();
+        });
+      },
+
+      refreshUser: function() {
+        var self = this;
+        fs.user.refresh().then(function(user) {
+          $timeout(function() {
+            self.currentUser = window.App.currentUser = user;
+          });
+        });
+      },
 
       withdrawFundsModal: function() {
         dialogOpts.templateUrl = '/withdraw_funds_dialog.html',
         dialogOpts.controller  = 'WithdrawFundsDialogController'
         var d = $dialog.dialog(dialogOpts);
         d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
       }
     };
   }])
@@ -101,9 +125,9 @@ angular.module('app.services')
           };
           openLoginModal();*/
         } else if (resp.data.error) {
-          flash.error = resp.data.error;
+          flash.error(resp.data.error);
         } else {
-          flash.error = "Oops, something went wrong, try again later";
+          flash.error("Oops, something went wrong, try again later");
         }
         console && console.log('API Error: ');
         console.log(resp);
@@ -161,7 +185,7 @@ angular.module('app.services')
         create: function(recipient_attrs){
           return $http({method: 'POST', url: '/recipients', data: {recipient: recipient_attrs}});
         },
-        delete: function(){
+        remove: function(){
           return $http({method: 'DELETE', url: '/recipients' })
         }
       },

@@ -23,7 +23,8 @@
         </p>
         <ul>
           <li>Starts: {{markets.currentMarket.started_at | shortFormTime }}</li>
-          <li>Buy-in: {{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</li>
+          <li ng-show="rosters.currentRoster.contest_type.takes_tokens">Buy-in: {{rosters.currentRoster.contest_type.buy_in }}FF</li>
+          <li ng-hide="rosters.currentRoster.contest_type.takes_tokens">Buy-in: {{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</li>
           <li>Entries: {{rosters.currentRoster.contest_type.max_entries | unlimitedIfZero}}</li>
           <li>Payout: {{rosters.currentRoster.contest_type.payout_description}}</li>
           <li ng-show="rosters.currentRoster.contest_rank && rosters.currentRoster.state != 'in_progress'">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
@@ -41,7 +42,7 @@
     This market's bell hasn't rung yet (it will open on or before {{dayBefore(market.opened_at) | shortFormTime}}). <br/>That means all prices are indicative. This helps keep our market fair. <a class="" href="/#rules">Learn More</a>.
   </p>
 
-  <div ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && (inThePast(market.started_at) || rosters.currentRoster.contest.league)">
+  <div ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && (inThePast(market.started_at) || rosters.currentRoster.league)">
     <table class="table table-striped">
       <thead>
         <th ng-show="rosters.contest_type.name == 'h2h rr'">Record</th>

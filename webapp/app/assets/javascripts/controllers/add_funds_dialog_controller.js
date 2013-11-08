@@ -10,7 +10,7 @@ angular.module("app.controllers")
     fs.user.addMoney(amt).then(function(resp){
       // window.App.currentUser.balance = resp.balance;
       // $scope.close();
-       //flash.success = "Success, $" + $scope.chargeAmt + " added your your account.";
+       //flash.success("Success, $" + $scope.chargeAmt + " added your your account.");
       $scope.chargeAmt = null;
       w.location.href = resp.approval_url;
       $scope.addMoneySpinner = false;
