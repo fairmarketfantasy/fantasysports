@@ -72,42 +72,42 @@
             _success = message;
             _type = 'success';
             _notify(_type, message);
-        }
+        };
 
         this.info = function (message) {
             if (!message) { return message; }
             _info = message;
             _type = 'info';
             _notify(_type, message);
-        }
+        };
 
         this.warn = function (message) {
             if (!message) { return message; }
             _warn = message;
             _type = 'warn';
             _notify(_type, message);
-        }
+        };
 
         this.error = function (message) {
             if (!message) { return message; }
             _error = message;
             _type = 'error';
             _notify(_type, message);
-        }
+        };
 
         this.type =  function () {
           return _type;
-        }
+        };
 
         this.getMessage = function () {
           return _type ? _self[_type] : null;
-        }
+        };
 
         this.classnames = _options.classnames;
 
         this.id = function () {
           return _options.id;
-        }
+        };
     };
     angular.module('angular-flash.service', [])
         .provider('flash', function () {

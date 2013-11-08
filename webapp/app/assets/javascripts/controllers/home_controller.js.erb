@@ -3,7 +3,7 @@ angular.module("app.controllers")
   $scope.rosters = rosters;
   rosters.fetchMine();
   rosters.fetchPastStats();
-  rosters.setPoller(function() { rosters.fetchMine(); }, 10000);
+  rosters.setPoller(function() { rosters.fetchMine(); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
 
   // Force them to set a user!
   if (_.isEmpty($scope.currentUser.username)) {
