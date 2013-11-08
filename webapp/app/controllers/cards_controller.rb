@@ -8,6 +8,20 @@ class CardsController < ApplicationController
     end
   end
 
+  def add_url
+    url = NetworkMerchants.add_customer_form
+    session[:jsonp_cards] = url.split('/').last
+    render_api_response({url: url})
+  end
+
+  def token_redirect_url
+    #headers['Access-Control-Allow-Origin'] = SITE
+    #headers['Access-Control-Request-Method'] = '*'
+    card = NetworkMerchants.add_customer_finalize(current_user.customer_object, params['token-id'])
+    callback = session.delete(:jsonp_cards)
+    render_api_response current_user.customer_object, :callback => callback
+  end
+
   def create
     begin
       unless customer_object = current_user.customer_object

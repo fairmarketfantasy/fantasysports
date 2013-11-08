@@ -124,7 +124,7 @@ angular.module('app.services')
             d.open();
           };
           openLoginModal();*/
-        } else if (resp.data.error) {
+        } else if (resp.data && resp.data.error) {
           flash.error(resp.data.error);
         } else {
           flash.error("Oops, something went wrong, try again later");
@@ -137,7 +137,14 @@ angular.module('app.services')
       return promise.then(success, failure);
     };
   }])
- .factory('fs', ['$http', function($http) {
+  .factory('fs', ['$http', function($http) {
+    /*var makeCrossOriginRequest = function(httpArgs) {
+      var xsrf = $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
+      delete $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
+      var result = $http(httpArgs);
+      $httpProvider.defaults.headers.common['X-XSRF-TOKEN'] = xsrf;
+      return result;
+    };*/
     return {
       sendSupportRequest: function(title, email, message) {
         return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
@@ -190,8 +197,18 @@ angular.module('app.services')
         }
       },
       cards: {
-        create: function(type, number, cvc, name, exp_month, exp_year) {
-          return $http({method: 'POST', url: '/cards', data: {type: type, number: number, cvc: cvc, name: name, exp_month: exp_month, exp_year: exp_year}});
+        add_url: function() {
+          return $http({method: 'GET', url: '/cards/add_url'});
+        },
+        create: function(url, type, number, cvc, name, exp_month, exp_year) {
+          // make this step 2 of card creation
+          name = name.split(' ');
+          return $http.jsonp(url + '?' + $.param({
+            'billing-cc-number': number,
+            'billing-cvv': cvc,
+            'billing-first-name': name[0],
+            'billing-last-name': name.slice(1).join(' '),
+            'billing-cc-exp': exp_month + exp_year}));
         },
         list: function(){
           return $http({method: 'GET', url: '/cards'});

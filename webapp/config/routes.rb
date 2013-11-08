@@ -61,7 +61,12 @@ Fantasysports::Application.routes.draw do
     end
   end
 
-  resources :cards, only: [:index, :create, :destroy]
+  resources :cards, only: [:index, :create, :destroy] do
+    collection do
+      get 'add_url', :action => 'add_url'
+      get 'token_redirect_url', :action => 'token_redirect_url'
+    end
+  end
 
   resources :rosters, only: [:create, :show, :destroy] do
     collection do

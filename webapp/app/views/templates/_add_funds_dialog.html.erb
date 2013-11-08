@@ -8,17 +8,85 @@
   <img src='/assets/ajax-loader-big.gif'>
 </div>
 <div class='modal-body'>
-  <form>
+  <ul class="nav nav-pills modal-pills">
+    <li ng-class="{active: payment_type == 'credit-card'}">
+      <a href="javascript://" ng-click="payment_type = 'credit-card'">Pay with Credit Card</a>
+    </li>
+    <li ng-class="{active: payment_type == 'paypal'}">
+      <a href="javascript://" ng-click="payment_type = 'paypal'">Pay with PayPal</a>
+    </li>
+  </ul>
+  <div ng-show="payment_type == 'credit-card'">
     <div class='clearfix'>
       <div class="add-funds-container">
-        <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
-        <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Pay with PayPal</a>
-        <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
-        </p>
-        <span class='muted tilt'>*At least $5.</span>
+        <ul class='unstlyed card-list no-no'>
+          <li class='inline-block clickable card' ng-repeat="card in cards" ng-class="{default: isSelectedCard(card) }" ng-click="setSel">
+            <div class='card-token'>
+              <div class='relative pull-right delete-card'>
+                <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
+                <div ng-show="showConfirm(card.id)" class='card-confirm-delete popover right'>
+                  <div class='arrow'>
+                  </div>
+                  <h3 class='popover-title'>Are you sure?</h3>
+                  <div class='popover-content'>
+                    <a class='btn btn-mini btn-danger mtm' ng-hide='deleteCardSpinner' ng-click='deleteCard(card.id)'>Yes, delete</a>
+                    <img src='/assets/ajax-loader-micro.gif' ng-show='deleteCardSpinner'/>
+                    <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
+                  </div>
+                </div>
+              </div>
+              <div class='overflow-hide'>
+                {{ card.first_name }} {{card.last_name}}<br />
+              </div>
+              <div class="card-type">{{card.type}}</div>
+              <div class='ptm'>
+                {{ card.obscured_number}}
+              </div>
+            </div>
+          </li>
+          <li class='add-card bold inline-block phm' ng-show="showAddCardButton()" ng-click="showCardForm = true">
+            <a href="javascript://" class='btn btn-info btn-mini'>Add a Card</a>
+          </li>
+        </ul>
       </div>
     </div>
-  </form>
+    <div ng-show="showCardForm" class='credit-card mal'>
+      <form>
+        <h6>Add a New Card</h6>
+        <div id="credit-card-form" class="credit-card-input no-js">
+          <p class="no-support-warning">Either you have Javascript disabled, or you're using an unsupported browser, amigo.</p>
+          <label for="cc_type">Card Type</label>
+          <select name="cc_type" ng-model="cardInfo.type">
+            <option selected value="">...</option>
+            <option value="visa">Visa</option>
+            <option value="discover">Discover</option>
+            <option value="mastercard">MasterCard</option>
+            <option value="amex">American Express</option>
+          </select>
+          <label for="cc_number">Card Number</label>
+          <input type="text" name="cc_number" id="cc_number" ng-model="cardInfo.number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+          <label for="cc_exp_month">Expiration Month</label>
+          <input type="text" name="cc_exp_month" id="cc_exp_month" ng-model="cardInfo.exp_month" placeholder="00">
+          <label for="cc_exp_year">Expiration Year</label>
+          <input type="text" name="cc_exp_year" id="cc_exp_year" ng-model="cardInfo.exp_year" placeholder="00">
+          <label for="cc_name">Cardholder's Name</label>
+          <input type="text" name="cc_name" id="cc_name" ng-model="cardInfo.name" placeholder="John Doe">
+          <label for="cc_cvc">Card Validation Code</label>
+          <input type="text" name="cc_cvc" id="cc_cvc" ng-model="cardInfo.cvc" placeholder="123" maxlength="3" size="3">
+        </div>
+      </form>
+    <a href="javascript://" ng-click="showCardForm = false" class='mtm btn btn-info'>cancel</a>
+    <a href="javascript://" ng-click="saveCard()" ng-disabled="!card.isValid()" class='mtm btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
+    <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
+    </div>
+  </div>
+  <div ng-show="payment_type == 'paypal'">
+    <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
+    <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Pay with PayPal</a>
+    <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
+    </p>
+    <span class='muted tilt'>*At least $5.</span>
+  </div>
 </div>
 <div class='modal-footer'>
   <a href="javascript://" class="btn" ng-click="close()">close</a>
