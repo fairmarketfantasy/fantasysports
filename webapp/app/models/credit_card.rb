@@ -1,5 +1,8 @@
 class CreditCard < ActiveRecord::Base
   attr_protected
+
+  scope :active, ->{ where("NOT deleted") }
+
   def self.generate(customer_object, type, name, number, cvc, exp_month, exp_year)
     resp = PayPal::SDK::REST::CreditCard.new({
       :type => type,

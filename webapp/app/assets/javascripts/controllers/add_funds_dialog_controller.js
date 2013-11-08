@@ -27,7 +27,8 @@ angular.module("app.controllers")
   $scope.payment_type = 'credit-card';
   var cardFormFuture ;
   var setupCardForm = function() {
-    cardFormFuture = fs.cards.add_url().then(function(data) {
+    $scope.callbackName = Math.random().toString(36).substring(7);
+    cardFormFuture = fs.cards.add_url($scope.callbackName).then(function(data) {
       $scope.action_url = data.url;
     });
   };
@@ -83,7 +84,7 @@ angular.module("app.controllers")
     if (!$scope.card.isValid() && $scope.card._getUnderlyingValue('type') != 'amex') { return; }
     $scope.saveCardSpinner = true;
     cardFormFuture.then(function(data) {
-      fs.cards.create($scope.action_url,
+      fs.cards.create($scope.action_url, $scope.callbackName,
         $scope.card._getUnderlyingValue('type'),
         $scope.card._getUnderlyingValue('number'),
         $scope.card._getUnderlyingValue('cvc'),
