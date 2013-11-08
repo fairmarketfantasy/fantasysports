@@ -40,11 +40,11 @@ class NetworkMerchants
   TEST_API_KEY = '2F822Rw39fx762MaV7Yy86jXGTC7sCDy'
   API_ENDPOINT = 'https://secure.nmi.com/api/v2/three-step'
   
-  def self.add_customer_form
+  def self.add_customer_form(callbackName)
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.send("add-customer") {
         xml.send("api-key", Rails.env == 'production' ? API_KEY : TEST_API_KEY)
-        xml.send("redirect-url", SITE + "/cards/token_redirect_url")
+        xml.send("redirect-url", SITE + "/cards/token_redirect_url?callback=#{callbackName}")
       }
     end
     resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
@@ -65,8 +65,7 @@ class NetworkMerchants
     xml = StupidXmlObject.new(resp.body)
     raise "Card not approved" if xml['result-text'] != 'OK'
 # [ "result",  "result-text",  "action-type",  "result-code",  "amount",  "customer-id",  "customer-vault-id",  "billing",  "shipping", "text"]
-debugger
-    CreditCard.create!(
+    card = CreditCard.create!(
       :customer_object_id => customer_object.id,
       :obscured_number => xml['cc-number'],
       :expires => Time.new( 2000 + xml['cc-exp'][2..3].to_i, xml['cc-exp'][0..1].to_i),
@@ -74,6 +73,8 @@ debugger
       :last_name => (xml['last-name'] rescue ''),
       :network_merchant_id => xml['customer-vault-id'],
     )
+      customer_object.default_card = card
+      customer_object.save!
   end
 
   def self.finalize_customer(token_id)

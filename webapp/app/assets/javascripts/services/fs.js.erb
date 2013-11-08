@@ -137,7 +137,7 @@ angular.module('app.services')
       return promise.then(success, failure);
     };
   }])
-  .factory('fs', ['$http', function($http) {
+  .factory('fs', ['$http', '$q', function($http, $q) {
     /*var makeCrossOriginRequest = function(httpArgs) {
       var xsrf = $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
       delete $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
@@ -145,6 +145,24 @@ angular.module('app.services')
       $httpProvider.defaults.headers.common['X-XSRF-TOKEN'] = xsrf;
       return result;
     };*/
+
+    var customJsonPFunc = function(url, responseFunc, timeout) {
+      // setup the magic
+      var deferred = $q.defer();
+      window['jsonp_' + responseFunc] = function(data) {
+        deferred.resolve(data);
+      };
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.addEventListener('error', function(err) { deferred.reject(err); }, true);
+      var timeout = setTimeout(function() {
+        deferred.reject("request timed out.");
+      }, timeout || 20000)
+      script.addEventListener('load', function(err) { clearTimeout(timeout); }, true);
+      script.src = url;
+      document.body.appendChild(script);
+      return deferred.promise;
+    }
     return {
       sendSupportRequest: function(title, email, message) {
         return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
@@ -197,18 +215,18 @@ angular.module('app.services')
         }
       },
       cards: {
-        add_url: function() {
-          return $http({method: 'GET', url: '/cards/add_url'});
+        add_url: function(callbackName) {
+          return $http({method: 'GET', url: '/cards/add_url?callback=' + callbackName});
         },
-        create: function(url, type, number, cvc, name, exp_month, exp_year) {
+        create: function(url, respCallback, type, number, cvc, name, exp_month, exp_year) {
           // make this step 2 of card creation
           name = name.split(' ');
-          return $http.jsonp(url + '?' + $.param({
+          return customJsonPFunc(url + '?' + $.param({
             'billing-cc-number': number,
             'billing-cvv': cvc,
             'billing-first-name': name[0],
             'billing-last-name': name.slice(1).join(' '),
-            'billing-cc-exp': exp_month + exp_year}));
+            'billing-cc-exp': exp_month + exp_year}), respCallback);
         },
         list: function(){
           return $http({method: 'GET', url: '/cards'});
