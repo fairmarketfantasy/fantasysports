@@ -20,7 +20,7 @@
     <div class='clearfix'>
       <div class="add-funds-container">
         <ul class='unstlyed card-list no-no' ng-hide="showCardForm">
-          <li class='inline-block clickable card' ng-repeat="card in cards" ng-class="{default: isSelectedCard(card) }" ng-click="setSel">
+          <li class='inline-block clickable card' ng-repeat="card in cards" ng-class="{default: isSelectedCard(card) }" ng-click="setSelectedCard(card)">
             <div class='card-token'>
               <div class='relative pull-right delete-card'>
                 <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
@@ -79,21 +79,26 @@
       <a href="javascript://" ng-click="saveCard()" ng-disabled="!card.isValid()" class='mtm btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
       <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
     </div>
-    <div ng-hide="showCardForm" class="add-funds-container">
+    <!--<div ng-hide="showCardForm" class="add-funds-container">
       <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
       <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Add Money</a>
       <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
       </p>
       <span class='muted tilt'>*At least $5.</span>
-    </div>
+    </div>-->
   </div>
   <div ng-show="payment_type == 'paypal'">
+  </div>
+</div>
+<div>
     <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
-    <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Pay with PayPal</a>
-    <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
+    <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>
+      <span ng-show="payment_type == 'paypal'">Pay with PayPal</span>
+      <span ng-show="payment_type == 'credit-card'">Add Money</span>
+    </a>
+    <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
     </p>
     <span class='muted tilt'>*At least $5.</span>
-  </div>
 </div>
 <div class='modal-footer'>
   <a href="javascript://" class="btn" ng-click="close()">close</a>

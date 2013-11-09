@@ -65,6 +65,8 @@ Fantasysports::Application.routes.draw do
     collection do
       get 'add_url', :action => 'add_url'
       get 'token_redirect_url', :action => 'token_redirect_url'
+      get 'charge_url', :action => 'charge_url'
+      get 'charge_redirect_url', :action => 'charge_redirect_url'
     end
   end
 

@@ -55,14 +55,7 @@ class NetworkMerchants
   end
 
   def self.add_customer_finalize(customer_object, token_id)
-    builder = Nokogiri::XML::Builder.new do |xml|
-      xml.send("complete-action") {
-        xml.send("api-key", Rails.env == 'production' ? API_KEY : TEST_API_KEY)
-        xml.send("token-id", token_id)
-      }
-    end
-    resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
-    xml = StupidXmlObject.new(resp.body)
+    xml = send_confirm(token_id)
     raise "Card not approved" if xml['result-text'] != 'OK'
 # [ "result",  "result-text",  "action-type",  "result-code",  "amount",  "customer-id",  "customer-vault-id",  "billing",  "shipping", "text"]
     card = CreditCard.create!(
@@ -77,7 +70,39 @@ class NetworkMerchants
       customer_object.save!
   end
 
-  def self.finalize_customer(token_id)
+  def self.charge_form(opts)
+
+    builder = Nokogiri::XML::Builder.new do |xml|
+      xml.send("sale") {
+        xml.send("api-key", Rails.env == 'production' ? API_KEY : TEST_API_KEY)
+        xml.send("redirect-url", SITE + "/cards/charge_redirect_url?callback=#{opts[:callback]}")
+        xml.send("amount", opts[:amount]) # Should be a string like '23.87'
+        xml.send("customer-vault-id", opts[:card].network_merchant_id)
+      }
+    end
+    resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
+    resp = StupidXmlObject.new(resp.body)
+    begin
+      resp['form-url']
+    rescue StandardError
+      raise HttpException.new(422, resp['result-text'])
+    end
+  end
+
+  def self.charge_finalize(customer_object, token_id)
+    xml = send_confirm(token_id)
+    raise "Charge failed with #{xml['result-text']}" if xml['result-text'] != 'SUCCESS'
+    customer_object.increase_balance((xml['amount'].to_f * 100).round(2), 'deposit', :transaction_data => {:network_merchants_transaction_id => xml['transaction-id']}.to_json)
+    xml
+  end
+
+  def self.headers
+    {'Content-type' => 'text/xml'}
+  end
+
+  private
+
+  def self.send_confirm(token_id)
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.send("complete-action") {
         xml.send("api-key", Rails.env == 'production' ? API_KEY : TEST_API_KEY)
@@ -85,10 +110,6 @@ class NetworkMerchants
       }
     end
     resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
-    Nokogiri::XML(resp.body)
-  end
-
-  def self.headers
-    {'Content-type' => 'text/xml'}
+    StupidXmlObject.new(resp.body)
   end
 end

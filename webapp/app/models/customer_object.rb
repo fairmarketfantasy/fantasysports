@@ -24,7 +24,6 @@ class CustomerObject < ActiveRecord::Base
       card.deleted = true
       card.save
     end
-debugger
     if self.default_card.id == card.id
       set_default_card(self.credit_cards.active.first)
     end

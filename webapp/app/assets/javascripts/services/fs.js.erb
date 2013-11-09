@@ -228,6 +228,16 @@ angular.module('app.services')
             'billing-last-name': name.slice(1).join(' '),
             'billing-cc-exp': exp_month + exp_year}), respCallback);
         },
+        charge_url: function(amount, cardId, callbackName) {
+          return $http({method: 'GET', url: '/cards/charge_url', params: {
+            callback: callbackName,
+            amount: amount,
+            card_id: cardId,
+          }});
+        },
+        charge: function(url, respCallback) {
+          return customJsonPFunc(url + '?' + $.param({}), respCallback, 60000);
+        },
         list: function(){
           return $http({method: 'GET', url: '/cards'});
         },

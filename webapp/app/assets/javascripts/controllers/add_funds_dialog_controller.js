@@ -2,43 +2,16 @@ angular.module("app.controllers")
 .controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', '$timeout', function($scope, dialog, fs, flash, currentUserService, $timeout) {
 
   $scope.showSpinner = false;
+   $scope.currentUser = currentUserService.currentUser;
+   $scope.cardInfo    = $scope.cardInfo     || {};
+   $scope.cards       = $scope.cards        || [];
+  $scope.payment_type = 'credit-card';
 
-  $scope.addFunds = function(){
-    var amt = $scope.chargeAmt;
-    $scope.addMoneySpinner = true;
-    var w = window.open('/users/paypal_waiting');
-    fs.user.addMoney(amt).then(function(resp){
-      // window.App.currentUser.balance = resp.balance;
-      // $scope.close();
-       //flash.success("Success, $" + $scope.chargeAmt + " added your your account.");
-      $scope.chargeAmt = null;
-      w.location.href = resp.approval_url;
-      $scope.addMoneySpinner = false;
-    }, function(resp){
-      //failure
-      $scope.addMoneySpinner = false;
-    });
-  };
-  $scope.currentUser = currentUserService.currentUser;
   $scope.close = function(){
     dialog.close();
   };
 
-  $scope.payment_type = 'credit-card';
-  var cardFormFuture ;
-  var setupCardForm = function() {
-    $scope.callbackName = Math.random().toString(36).substring(7);
-    cardFormFuture = fs.cards.add_url($scope.callbackName).then(function(data) {
-      $scope.action_url = data.url;
-    });
-  };
-  setupCardForm();
-
   $timeout(function() { $scope.card = new Skeuocard($("#credit-card-form")); }, 0);
-
-   $scope.currentUser = currentUserService.currentUser;
-   $scope.cardInfo    = $scope.cardInfo     || {};
-   $scope.cards       = $scope.cards        || [];
 
    fs.cards.list().then(function(resp){
      $scope.cards = resp.cards || [];
@@ -83,8 +56,9 @@ angular.module("app.controllers")
   $scope.saveCard = function() {
     if (!$scope.card.isValid() && $scope.card._getUnderlyingValue('type') != 'amex') { return; }
     $scope.saveCardSpinner = true;
-    cardFormFuture.then(function(data) {
-      fs.cards.create($scope.action_url, $scope.callbackName,
+    var callbackName = Math.random().toString(36).substring(7);
+    fs.cards.add_url(callbackName).then(function(data) { return data.url; }).then(function(url) {
+      fs.cards.create(url, callbackName,
         $scope.card._getUnderlyingValue('type'),
         $scope.card._getUnderlyingValue('number'),
         $scope.card._getUnderlyingValue('cvc'),
@@ -103,14 +77,55 @@ angular.module("app.controllers")
           $scope.focusAmount = true;
           flash.success = "Success, your card was saved.";
         }
-        setupCardForm();
       }
       , function(resp) {
         //failure
         $scope.saveCardSpinner = false;
-        setupCardForm();
       });
     });
+  };
+
+  $scope.addPaypalFunds = function(){
+    var amt = $scope.chargeAmt;
+    $scope.addMoneySpinner = true;
+    var w = window.open('/users/paypal_waiting');
+    fs.user.addMoney(amt).then(function(resp){
+      // window.App.currentUser.balance = resp.balance;
+      // $scope.close();
+       //flash.success("Success, $" + $scope.chargeAmt + " added your your account.");
+      $scope.chargeAmt = null;
+      w.location.href = resp.approval_url;
+      $scope.addMoneySpinner = false;
+    }, function(resp){
+      //failure
+      $scope.addMoneySpinner = false;
+    });
+  };
+
+  $scope.addCreditCardFunds = function() {
+    var callbackName = Math.random().toString(36).substring(7);
+    $scope.addMoneySpinner = true;
+    fs.cards.charge_url($scope.chargeAmt, $scope.selectedCardId, callbackName).then(function(data) { return data.url; }).then(function(url) {
+      fs.cards.charge(url, callbackName).then(function(user) {
+        $timeout(function() {
+          $scope.currentUser = currentUserService.currentUser = window.App.currentUser = user;
+        });
+        $scope.chargeAmt = null;
+        $scope.addMoneySpinner = false;
+      }, function(err) {
+        console && console.log(err);
+        flash.error(err);
+        $scope.addMoneySpinner = false;
+      });
+    });
+  };
+
+  $scope.addFunds = function() {
+    if ($scope.payment_type == 'paypal') {
+      $scope.addPaypalFunds();
+    } else if ($scope.payment_type == 'credit-card') {
+      $scope.addCreditCardFunds();
+    }
   };
 
   //$scope.confirm keeps track of what confirm tooltip is showing...
