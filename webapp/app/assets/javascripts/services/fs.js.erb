@@ -226,7 +226,7 @@ angular.module('app.services')
             'billing-cvv': cvc,
             'billing-first-name': name[0],
             'billing-last-name': name.slice(1).join(' '),
-            'billing-cc-exp': exp_month + exp_year}), respCallback);
+            'billing-cc-exp': exp_month + exp_year}), respCallback, 60000);
         },
         charge_url: function(amount, cardId, callbackName) {
           return $http({method: 'GET', url: '/cards/charge_url', params: {

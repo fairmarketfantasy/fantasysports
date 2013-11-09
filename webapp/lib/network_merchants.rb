@@ -39,7 +39,7 @@ class NetworkMerchants
   API_KEY = 'YHegj6R6JVK3Z897VxC6dc5GRN5N478c'
   TEST_API_KEY = '2F822Rw39fx762MaV7Yy86jXGTC7sCDy'
   API_ENDPOINT = 'https://secure.nmi.com/api/v2/three-step'
-  
+
   def self.add_customer_form(callbackName)
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.send("add-customer") {
@@ -47,7 +47,11 @@ class NetworkMerchants
         xml.send("redirect-url", SITE + "/cards/token_redirect_url?callback=#{callbackName}")
       }
     end
+    Rails.logger.info(API_ENDPOINT)
+    Rails.logger.info(headers)
+    Rails.logger.info(builder.to_xml)
     resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
+    Rails.logger.info(resp.body)
     StupidXmlObject.new(resp.body)['form-url']
 # form-url
 # result-code
