@@ -90,7 +90,7 @@
   <div ng-show="payment_type == 'paypal'">
   </div>
 </div>
-<div>
+<div ng-hide="showCardForm">
     <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
     <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>
       <span ng-show="payment_type == 'paypal'">Pay with PayPal</span>
