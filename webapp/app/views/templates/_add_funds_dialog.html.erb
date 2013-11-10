@@ -19,6 +19,7 @@
   <div ng-show="payment_type == 'credit-card'">
     <div class='clearfix'>
       <div class="add-funds-container">
+        <h5>Select a Card</h5>
         <ul class='unstlyed card-list no-no' ng-hide="showCardForm">
           <li class='inline-block clickable card' ng-repeat="card in cards" ng-class="{default: isSelectedCard(card) }" ng-click="setSelectedCard(card)">
             <div class='card-token'>
@@ -87,18 +88,28 @@
       <span class='muted tilt'>*At least $5.</span>
     </div>-->
   </div>
-  <div ng-show="payment_type == 'paypal'">
+  <div class="payment-container" ng-hide="showCardForm">
+    <div ng-show="payment_type == 'paypal'">
+      <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
+      <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>
+        <span ng-show="payment_type == 'paypal'">Pay with PayPal</span>
+        <span ng-show="payment_type == 'credit-card'">Add Money</span>
+      </a>
+      <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
+      </p>
+      <span class='muted tilt'>*At least $5.</span>
+    </div>
+    <div ng-show="payment_type == 'credit-card'">
+      <h5>Select an Amount</h5>
+      <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
+      <div ng-hide='addMoneySpinner'>
+        <a href="javascript://" class='btn btn-info' ng-click="chargeAmt = 10" ng-class="{'btn-selected': chargeAmt == 10}">$10</a>
+        <a href="javascript://" class='btn btn-info' ng-click="chargeAmt = 25" ng-class="{'btn-selected': chargeAmt == 25}">$25</a>
+        <a href="javascript://" class='btn btn-info' ng-click="chargeAmt = 50" ng-class="{'btn-selected': chargeAmt == 50}">$50</a>
+        <div><a href="javascript://" class="btn btn-primary" ng-click="addFunds()">Submit</a></div>
+      </div>
+    </div>
   </div>
-</div>
-<div ng-hide="showCardForm">
-    <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
-    <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>
-      <span ng-show="payment_type == 'paypal'">Pay with PayPal</span>
-      <span ng-show="payment_type == 'credit-card'">Add Money</span>
-    </a>
-    <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
-    </p>
-    <span class='muted tilt'>*At least $5.</span>
 </div>
 <div class='modal-footer'>
   <a href="javascript://" class="btn" ng-click="close()">close</a>
