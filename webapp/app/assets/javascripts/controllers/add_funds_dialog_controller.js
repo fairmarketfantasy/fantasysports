@@ -112,12 +112,14 @@ angular.module("app.controllers")
         });
         $scope.chargeAmt = null;
         $scope.addMoneySpinner = false;
+        flash.success("Funds deposited successfully");
+        $scope.close();
       }, function(err) {
         console && console.log(err);
         flash.error(err);
         $scope.addMoneySpinner = false;
       });
-    });
+    }, function() { $scope.addMoneySpinner = false; });
   };
 
   $scope.addFunds = function() {

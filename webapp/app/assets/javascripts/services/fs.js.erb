@@ -132,7 +132,6 @@ angular.module('app.services')
         console && console.log('API Error: ');
         console.log(resp);
         return $q.reject(resp);
-        return null; // TODO: this doesn't signal failure...figure out how to do that
       }
       return promise.then(success, failure);
     };
@@ -162,7 +161,7 @@ angular.module('app.services')
       script.src = url;
       document.body.appendChild(script);
       return deferred.promise;
-    }
+    };
     return {
       sendSupportRequest: function(title, email, message) {
         return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
