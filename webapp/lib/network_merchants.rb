@@ -81,7 +81,9 @@ class NetworkMerchants
       }
     end
     resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
+    Rails.logger.info("="* 50)
     Rails.logger.info(resp.body)
+    Rails.logger.info("="* 50)
     resp = StupidXmlObject.new(resp.body)
     begin
       resp['form-url']
