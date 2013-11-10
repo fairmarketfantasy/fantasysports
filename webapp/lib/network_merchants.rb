@@ -47,11 +47,7 @@ class NetworkMerchants
         xml.send("redirect-url", SITE + "/cards/token_redirect_url?callback=#{callbackName}")
       }
     end
-    Rails.logger.info(API_ENDPOINT)
-    Rails.logger.info(headers)
-    Rails.logger.info(builder.to_xml)
     resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
-    Rails.logger.info(resp.body)
     StupidXmlObject.new(resp.body)['form-url']
 # form-url
 # result-code
@@ -75,7 +71,6 @@ class NetworkMerchants
   end
 
   def self.charge_form(opts)
-
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.send("sale") {
         xml.send("api-key", Rails.env == 'production' ? API_KEY : TEST_API_KEY)
@@ -85,6 +80,7 @@ class NetworkMerchants
       }
     end
     resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
+    Rails.logger.info(resp.body)
     resp = StupidXmlObject.new(resp.body)
     begin
       resp['form-url']
