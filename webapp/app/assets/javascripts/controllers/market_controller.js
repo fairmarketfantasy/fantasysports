@@ -30,7 +30,7 @@ angular.module("app.controllers")
         $scope.contestClasses[type.name].push(type);
       });
     });
-  }
+  };
   $scope.$watch('marketService.currentMarket', reloadMarket);
 
   $scope.day = function(timeStr) {

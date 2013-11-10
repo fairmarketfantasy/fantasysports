@@ -8,7 +8,7 @@ angular.module('app', [
       'angular-flash.service',
       'angular-flash.flash-alert-directive',
       'ui.bootstrap'])
-.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider.
       when('/', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
@@ -24,4 +24,7 @@ angular.module('app', [
       when('/support', {templateUrl: '/support.html', controller: 'SupportController'}).
     //...
       otherwise({redirectTo: '/'});
+
+    $httpProvider.defaults.useXDomain = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
   }]);
