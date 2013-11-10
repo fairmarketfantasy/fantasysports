@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131105204400) do
+ActiveRecord::Schema.define(version: 20131108100353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,15 +71,15 @@ ActiveRecord::Schema.define(version: 20131105204400) do
   add_index "contests", ["market_id"], name: "index_contests_on_market_id", using: :btree
 
   create_table "credit_cards", force: true do |t|
-    t.integer "customer_object_id",                 null: false
-    t.string  "card_number_hash",                   null: false
-    t.boolean "deleted",            default: false, null: false
+    t.integer "customer_object_id",                  null: false
+    t.boolean "deleted",             default: false, null: false
     t.string  "obscured_number"
     t.string  "first_name"
     t.string  "last_name"
     t.string  "card_type"
     t.date    "expires"
     t.string  "paypal_card_id"
+    t.string  "network_merchant_id"
   end
 
   create_table "customer_objects", force: true do |t|
