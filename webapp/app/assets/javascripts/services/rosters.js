@@ -32,11 +32,14 @@ angular.module('app.data')
           }
         });
         stats.avg = stats.total_score / stats.count;
-        return stats
-      }
+        return stats;
+      };
 
       this.top = function(limit) {
-        var top = _.sortBy(this.mine(), function(r) { return -r.score; });
+        var top = _.sortBy(
+          _.filter(this.mine(), function(roster) { return roster.state == 'submitted'; }),
+          function(r) { return -(new Date(r.started_at)).valueOf(); }
+        );
         if (limit) {
           top = top.slice(0, limit);
         }
