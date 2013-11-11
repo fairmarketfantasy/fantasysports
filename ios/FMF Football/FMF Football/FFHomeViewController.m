@@ -268,6 +268,7 @@ FFCreateGameViewControllerDelegate>
                 [alert hide];
                 [super performSegueWithIdentifier:identifier sender:sender context:context];
             } failure:^(NSError *error) {
+                [alert hide];
                 FFAlertView *ealert = [[FFAlertView alloc] initWithError:error
                                                                    title:nil
                                                        cancelButtonTitle:nil
