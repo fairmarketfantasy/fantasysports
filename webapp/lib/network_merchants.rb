@@ -113,7 +113,7 @@ class NetworkMerchants
   def self.post_with_retry(body, &block)
     count = 0
     begin
-      resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: body, timeout: 20)
+      resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: body, timeout: 30, connecttimeout: 10)
       Rails.logger.info("="* 50)
       Rails.logger.info(body)
       Rails.logger.info(resp.headers.pretty_inspect)
@@ -121,6 +121,7 @@ class NetworkMerchants
       Rails.logger.info(resp.body.blank?)
       Rails.logger.info(resp.body)
       Rails.logger.info("="* 50)
+      raise StandardError.new("Timeout") if resp.timed_out?
       raise StandardError.new("Empty body") if resp.body.blank?
       if block_given?
         yield StupidXmlObject.new(resp.body)
