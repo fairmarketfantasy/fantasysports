@@ -285,6 +285,7 @@
             [alert hide];
             [self performSegueWithIdentifier:@"GotoContest" sender:nil context:roster];
         } failure:^(NSError *error) {
+            [alert hide];
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error 
                                                                title:nil
                                                    cancelButtonTitle:nil
