@@ -15,9 +15,9 @@ namespace :db do
 
     task :upload => :environment do
       now = Time.new
-      file = "/backup/#{now.year}/#{now.month}-#{now.day}@#{now.hour}:#{now.min}:#{now.sec}.sql.gz"
+      file = "backup/#{now.year}/#{now.month}-#{now.day}@#{now.hour}:#{now.min}:#{now.sec}.sql.gz"
       bucket = AWS::S3.new.buckets[S3_BUCKET]
-      bucket.objects[file].write(BACKUP_NAME)
+      bucket.objects[file].write(open(BACKUP_NAME))
     end
 
     task :cleanup do
