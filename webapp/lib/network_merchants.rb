@@ -43,7 +43,7 @@ class NetworkMerchants
   def self.add_customer_form(callbackName)
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.send("add-customer") {
-        xml.send("api-key", Rails.env == 'production' ? API_KEY : TEST_API_KEY)
+        xml.send("api-key", ['production', 'staging'].include?(Rails.env) ? API_KEY : TEST_API_KEY)
         xml.send("redirect-url", SITE + "/cards/token_redirect_url?callback=#{callbackName}")
       }
     end

@@ -78,10 +78,11 @@ angular.module("app.controllers")
           flash.success = "Success, your card was saved.";
         }
       }
-      , function(resp) {
-        //failure
+      , function(resp) { //failure
         $scope.saveCardSpinner = false;
       });
+    }, function(resp) { //failure
+      $scope.saveCardSpinner = false;
     });
   };
 
