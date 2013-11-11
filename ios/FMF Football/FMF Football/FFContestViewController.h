@@ -18,7 +18,8 @@ typedef enum {
     ShowRoster,
     PickPlayer,
     ContestEntered,
-    ShowFriendRoster
+    ShowFriendRoster,
+    ContestCompleted
 } FFContestViewControllerState;
 
 
