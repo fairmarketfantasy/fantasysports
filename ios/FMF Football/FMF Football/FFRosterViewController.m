@@ -273,7 +273,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FFRoster *roster = [_rosters objectAtIndex:indexPath.row];
+    FFRoster *roster;
+    if (indexPath.section == 0) {
+        roster = [_rosters objectAtIndex:indexPath.row];
+    } else if (indexPath.section == 1) {
+        roster = [_historicalRosters objectAtIndex:indexPath.row];
+    }
+
     if (!roster.market) {
         FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
                                                        messsage:nil
