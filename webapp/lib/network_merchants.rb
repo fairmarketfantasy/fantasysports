@@ -117,6 +117,7 @@ class NetworkMerchants
       Rails.logger.info("="* 50)
       Rails.logger.info(body)
       Rails.logger.info(resp.headers.pretty_inspect)
+      Rails.logger.info(resp.code)
       Rails.logger.info(resp.body.blank?)
       Rails.logger.info(resp.body)
       Rails.logger.info("="* 50)
