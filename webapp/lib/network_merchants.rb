@@ -43,7 +43,7 @@ class NetworkMerchants
   def self.add_customer_form(callbackName)
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.send("add-customer") {
-        xml.send("api-key", ['production', 'staging'].include?(Rails.env) ? API_KEY : TEST_API_KEY)
+        xml.send("api-key", ['production'].include?(Rails.env) ? API_KEY : TEST_API_KEY)
         xml.send("redirect-url", SITE + "/cards/token_redirect_url?callback=#{callbackName}")
       }
     end
@@ -56,7 +56,7 @@ class NetworkMerchants
 
   def self.add_customer_finalize(customer_object, token_id)
     xml = send_confirm(token_id)
-    raise "Card not approved" if xml['result-text'] != 'OK'
+    raise HttpException.new(401, "Card not approved #{xml['result-text']}") if xml['result-text'] != 'OK'
 # [ "result",  "result-text",  "action-type",  "result-code",  "amount",  "customer-id",  "customer-vault-id",  "billing",  "shipping", "text"]
     card = CreditCard.create!(
       :customer_object_id => customer_object.id,
