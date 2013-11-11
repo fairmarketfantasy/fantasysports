@@ -120,6 +120,7 @@ class NetworkMerchants
       Rails.logger.info(resp.body.blank?)
       Rails.logger.info(resp.body)
       Rails.logger.info("="* 50)
+      raise StandardError.new("Empty body") if resp.body.blank?
       if block_given?
         yield StupidXmlObject.new(resp.body)
       else
