@@ -131,7 +131,7 @@ class Roster < ActiveRecord::Base
           if contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => contest.league_id).first.nil?
             LeagueMembership.create!(:league_id => contest.league_id, :user_id => self.owner_id)
           end
-          raise "contest #{contest.id} is full" if contest.num_rosters > contest.user_cap && contest.user_cap != 0
+          raise "contest #{contest.id} is full" if contest.num_rosters >= contest.user_cap && contest.user_cap != 0
           self.contest = contest
           contest.num_rosters += 1
           contest.save!
