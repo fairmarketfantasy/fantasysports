@@ -75,7 +75,7 @@ angular.module("app.controllers")
           $scope.cardInfo = {};
           $scope.showCardForm = false;
           $scope.focusAmount = true;
-          flash.success = "Success, your card was saved.";
+          flash.success("Success, your card was saved.");
         }
       }
       , function(resp) { //failure
