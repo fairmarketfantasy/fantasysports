@@ -47,11 +47,8 @@ class NetworkMerchants
         xml.send("redirect-url", SITE + "/cards/token_redirect_url?callback=#{callbackName}")
       }
     end
-    resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
-    Rails.logger.info("="* 50)
-    Rails.logger.info(resp.body)
-    Rails.logger.info("="* 50)
-    StupidXmlObject.new(resp.body)['form-url']
+    resp = post_with_retry(builder.to_xml)
+    resp['form-url']
 # form-url
 # result-code
 # result-text
@@ -82,11 +79,7 @@ class NetworkMerchants
         xml.send("customer-vault-id", opts[:card].network_merchant_id)
       }
     end
-    resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
-    Rails.logger.info("="* 50)
-    Rails.logger.info(resp.body)
-    Rails.logger.info("="* 50)
-    resp = StupidXmlObject.new(resp.body)
+    resp = post_with_retry(builder.to_xml)
     begin
       resp['form-url']
     rescue StandardError
@@ -114,10 +107,29 @@ class NetworkMerchants
         xml.send("token-id", token_id)
       }
     end
-    resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
-    Rails.logger.info("="* 50)
-    Rails.logger.info(resp.body)
-    Rails.logger.info("="* 50)
-    StupidXmlObject.new(resp.body)
+    post_with_retry(builder.to_xml)
+  end
+
+  def self.post_with_retry(body, &block)
+    count = 0
+    begin
+      resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: body, timeout: 20)
+      Rails.logger.info("="* 50)
+      Rails.logger.info(resp.headers.pretty_inspect)
+      Rails.logger.info(resp.body.blank?)
+      Rails.logger.info(resp.body)
+      Rails.logger.info("="* 50)
+      if block_given?
+        yield StupidXmlObject.new(resp.body)
+      else
+        StupidXmlObject.new(resp.body)
+      end
+    rescue StandardError => e
+      if count < 1
+        count += 1
+        retry
+      end
+      raise e
+    end
   end
 end
