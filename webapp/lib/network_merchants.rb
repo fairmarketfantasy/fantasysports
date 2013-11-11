@@ -115,6 +115,7 @@ class NetworkMerchants
     begin
       resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: body, timeout: 20)
       Rails.logger.info("="* 50)
+      Rails.logger.info(body)
       Rails.logger.info(resp.headers.pretty_inspect)
       Rails.logger.info(resp.body.blank?)
       Rails.logger.info(resp.body)
