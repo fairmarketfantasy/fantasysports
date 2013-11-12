@@ -140,16 +140,18 @@ class Market < ActiveRecord::Base
             contest.destroy
             next
           end
-          Roster.select('rosters.*').where("rosters.contest_type_id = #{contest.contest_type_id} AND rosters.owner_id NOT IN(#{contest_entrants.join(', ')})"
+          Roster.select('rosters.*').where("rosters.contest_type_id = #{contest.contest_type_id} AND state = 'submitted' AND rosters.owner_id NOT IN(#{contest_entrants.join(', ')})"
                ).joins('JOIN contests c ON rosters.contest_id = c.id AND num_rosters < user_cap').limit(contest.user_cap - contest.num_rosters).each do |roster|
             next if contest_entrants.include?(roster.owner_id)
             contest_entrants.push(roster.owner_id)
             old_contest = roster.contest
             old_contest.num_rosters -= 1
             old_contest.save!
-            TransactionRecord.where(
+            tr = TransactionRecord.where(
               :contest_id => old_contest.id, :roster_id => roster.id
-            ).first.update_attribute(:contest_id, contest.id)
+            ).first
+            debugger if tr.nil?
+            tr.update_attribute(:contest_id, contest.id)
             roster.contest_id, roster.cancelled_cause, roster.state  = contest.id, 'moved to under capacity private contest', 'in_progress'
             roster.contest.save!
             roster.save!
