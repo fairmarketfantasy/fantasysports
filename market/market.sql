@@ -162,7 +162,7 @@ BEGIN
 	   FROM rosters_players where roster_id = _roster_id;
 
 	--update roster's remaining salary and state
-	update rosters set remaining_salary = 100000 - 
+	update rosters set remaining_salary = 100000 -
 		GREATEST(0, (select sum(purchase_price) from rosters_players where roster_id = _roster.id)),
 		state = 'submitted', updated_at = CURRENT_TIMESTAMP
 		where id = _roster_id;

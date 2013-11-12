@@ -403,7 +403,8 @@ class Market < ActiveRecord::Base
 
     count = 0
     total_bets = 0
-    CSV.parse(data) do |row|
+    opts = {:col_sep => data.lines[1].split(';').length > 1 ? ';' : ','}
+    CSV.parse(data, opts) do |row|
       count += 1
       next if count <= 2
       player_stats_id, shadow_bets = row[0], row[4]
