@@ -1,17 +1,19 @@
 class RostersController < ApplicationController
   def mine
-    if params[:historical]
+    rosters = current_user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').order('closed_at desc')
+    rosters = if params[:historical]
       page = params[:page] || 1
-      render_api_response current_user.rosters.over.page(page)
+      rosters.over.page(page)
     else
       # Don't paginate active rosters
-      render_api_response current_user.rosters.active
+      rosters.active
     end
+    render_api_response rosters
   end
 
   def in_contest
     contest = Contest.find(params[:contest_id])
-    render_api_response contest.rosters.order('contest_rank asc').limit(10)
+    render_api_response contest.rosters.submitted.order('contest_rank asc').limit(10)
   end
 
   # Create a roster for a contest type

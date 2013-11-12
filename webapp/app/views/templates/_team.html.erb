@@ -35,7 +35,7 @@
               </div>
               
               <div class="mr-player-cta">
-                <p class="mr-player-score" ng-show="roster.state != 'in_progress' && inThePast(market.started_at)"><a href="javascript://" tooltip-trigger="mouseenter" ng-mouseover="fetchPlayerStats(player)" tooltip-html-unsafe="{{statsContent()}}">{{player.score}}</a></p>
+                <p class="mr-player-score" ng-show="roster.state != 'in_progress' && inThePast(market.started_at)"><a href="javascript://" tooltip-trigger="mouseenter" ng-mouseover="fetchPlayerStats(player)" tooltip-html-unsafe="{{statsContent()}}">{{player.score | number:1}}</a></p>
                 <a class="btn btn-small btn-orange" ng-show="roster.owner_id == currentUser.id && player.id && (market.state == 'published' || market.state == 'opened' && !player.locked)" href="javascript://" ng-click="removePlayer(player)">Trade</a>
                 <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
               </div>

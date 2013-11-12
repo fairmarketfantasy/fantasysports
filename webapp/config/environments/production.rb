@@ -6,6 +6,7 @@ Fantasysports::Application.configure do
   FACEBOOK_APP_SECRET = "b5f7da9efda8f522a5af6d37c9f68454"
   AWS_ACCESS_KEY="AKIAJXV4UPD3IV4JK6DA"
   AWS_SECRET_KEY="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"
+  S3_BUCKET = 'fairmarketfantasy-prod'
 
   STRIPE_SECRET = "sk_live_XN3VQhSv18rZFFJcpFbm1J4b"
   STRIPE_KEY = "pk_live_RGRjUDHr47AlUX24PS2S6U22"
