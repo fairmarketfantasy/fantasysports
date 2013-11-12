@@ -163,7 +163,7 @@
 - (void)setRoster:(FFRoster *)roster
 {
     _roster = roster;
-    if (_roster && [_roster.live integerValue]) {
+    if (_roster && ([_roster.live integerValue] || [_market.state isEqualToString:@"complete"])) {
         // show the shit
         _curPayout.hidden = _curPayoutLabel.hidden = NO;
         _curScore.hidden = _curScoreLabel.hidden = NO;

@@ -131,7 +131,7 @@ class Roster < ActiveRecord::Base
           if contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => contest.league_id).first.nil?
             LeagueMembership.create!(:league_id => contest.league_id, :user_id => self.owner_id)
           end
-          raise "contest #{contest.id} is full" if contest.num_rosters > contest.user_cap && contest.user_cap != 0
+          raise "contest #{contest.id} is full" if contest.num_rosters >= contest.user_cap && contest.user_cap != 0
           self.contest = contest
           contest.num_rosters += 1
           contest.save!
@@ -252,11 +252,11 @@ class Roster < ActiveRecord::Base
         position = remaining_positions.sample # One level of randomization
         players = @candidate_players[position]
         if self.reload.remaining_salary < expected * remaining_positions.length
-          slice_start = [players.index{|p| p.buy_price < expected * 0.8}, 0].max
+          slice_start = [players.index{|p| p.buy_price < expected * 0.8}, 0].compact.max
           slice_end = [indexes[position], 3].max
         else
           slice_start = 0
-          slice_end = [[players.index{|p| p.buy_price < expected * 0.8}, indexes[position]].min, 3].max
+          slice_end = [[players.index{|p| p.buy_price < expected * 0.8}, indexes[position]].compact.min, 3].max
         end
         player = players.slice(slice_start, slice_end - slice_start).sample
         add_player(player)

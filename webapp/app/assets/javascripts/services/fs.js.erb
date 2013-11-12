@@ -149,7 +149,9 @@ angular.module('app.services')
       // setup the magic
       var deferred = $q.defer();
       window['jsonp_' + responseFunc] = function(data) {
-        deferred.resolve(data);
+        angular.element('body').scope().$apply(function() {
+          deferred.resolve(data);
+        });
       };
       var script = document.createElement("script");
       script.type = "text/javascript";

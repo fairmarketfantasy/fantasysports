@@ -523,7 +523,7 @@ validate_error:
     if ([segue.identifier isEqualToString:@"GotoForgotPassword"]) {
         NSString *baseUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:SBApiBaseURLKey];
         FFWebViewController *vc = [segue.destinationViewController viewControllers][0];
-        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/forgot-password"]];
+        vc.URL = [NSURL URLWithString:[baseUrl stringByAppendingString:@"/pages/mobile/forgot_password"]];
     }
 }
 

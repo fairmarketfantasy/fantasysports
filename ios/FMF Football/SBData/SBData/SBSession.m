@@ -341,6 +341,8 @@ static NSMutableDictionary *_sessionByEmailAddress = nil;
 
 - (void)logout
 {
+    self.apiCredential = nil;
+    _authorizedHttpClient = nil;
     [AFOAuthCredential deleteCredentialWithIdentifier:self.identifier];
     [[self class] setLastUsedSession:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SBLogoutNotification object:nil];
@@ -396,7 +398,16 @@ static NSMutableDictionary *_sessionByEmailAddress = nil;
         } failure:failure];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"register failed to post user operation=%@ error=%@", operation, error);
-        failure(error);
+        NSHTTPURLResponse *resp = operation.response;
+        NSMutableDictionary *errDict = [NSMutableDictionary dictionaryWithDictionary:@{NSUnderlyingErrorKey: error}];
+        if (resp.statusCode == 422) {
+            errDict[NSLocalizedDescriptionKey] = NSLocalizedString(@"A user with those credentials is already registered.", nil);
+        } else if (resp.statusCode == 400) {
+            errDict[NSLocalizedDescriptionKey] = NSLocalizedString(@"The input is invalid. Please check the input values and try again.", nil);
+        } else {
+            errDict[NSLocalizedDescriptionKey] = NSLocalizedString(@"An unknown error occurred.", nil);
+        }
+        failure([NSError errorWithDomain:@"" code:420 userInfo:errDict]);
     }];
     [self.anonymousHttpClient enqueueHTTPRequestOperation:op];
 }

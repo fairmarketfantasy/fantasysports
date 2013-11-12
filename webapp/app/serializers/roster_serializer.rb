@@ -15,6 +15,7 @@ class RosterSerializer < ActiveModel::Serializer
       :cancelled_at, 
       :positions,
       :started_at,
+      :market_id, # ios Dependency
       :next_game_time,
       :live
 

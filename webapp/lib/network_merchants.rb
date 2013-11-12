@@ -43,16 +43,12 @@ class NetworkMerchants
   def self.add_customer_form(callbackName)
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.send("add-customer") {
-        xml.send("api-key", Rails.env == 'production' ? API_KEY : TEST_API_KEY)
+        xml.send("api-key", ['production'].include?(Rails.env) ? API_KEY : TEST_API_KEY)
         xml.send("redirect-url", SITE + "/cards/token_redirect_url?callback=#{callbackName}")
       }
     end
-    Rails.logger.info(API_ENDPOINT)
-    Rails.logger.info(headers)
-    Rails.logger.info(builder.to_xml)
-    resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
-    Rails.logger.info(resp.body)
-    StupidXmlObject.new(resp.body)['form-url']
+    resp = post_with_retry(builder.to_xml)
+    resp['form-url']
 # form-url
 # result-code
 # result-text
@@ -60,7 +56,7 @@ class NetworkMerchants
 
   def self.add_customer_finalize(customer_object, token_id)
     xml = send_confirm(token_id)
-    raise "Card not approved" if xml['result-text'] != 'OK'
+    raise HttpException.new(401, "Card not approved #{xml['result-text']}") if xml['result-text'] != 'OK'
 # [ "result",  "result-text",  "action-type",  "result-code",  "amount",  "customer-id",  "customer-vault-id",  "billing",  "shipping", "text"]
     card = CreditCard.create!(
       :customer_object_id => customer_object.id,
@@ -75,7 +71,6 @@ class NetworkMerchants
   end
 
   def self.charge_form(opts)
-
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.send("sale") {
         xml.send("api-key", Rails.env == 'production' ? API_KEY : TEST_API_KEY)
@@ -84,8 +79,7 @@ class NetworkMerchants
         xml.send("customer-vault-id", opts[:card].network_merchant_id)
       }
     end
-    resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
-    resp = StupidXmlObject.new(resp.body)
+    resp = post_with_retry(builder.to_xml)
     begin
       resp['form-url']
     rescue StandardError
@@ -113,7 +107,33 @@ class NetworkMerchants
         xml.send("token-id", token_id)
       }
     end
-    resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: builder.to_xml)
-    StupidXmlObject.new(resp.body)
+    post_with_retry(builder.to_xml)
+  end
+
+  def self.post_with_retry(body, &block)
+    count = 0
+    begin
+      resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: body, timeout: 30, connecttimeout: 10)
+      Rails.logger.info("="* 50)
+      Rails.logger.info(body)
+      Rails.logger.info(resp.headers.pretty_inspect)
+      Rails.logger.info(resp.code)
+      Rails.logger.info(resp.body.blank?)
+      Rails.logger.info(resp.body)
+      Rails.logger.info("="* 50)
+      raise StandardError.new("Timeout") if resp.timed_out?
+      raise StandardError.new("Empty body") if resp.body.blank?
+      if block_given?
+        yield StupidXmlObject.new(resp.body)
+      else
+        StupidXmlObject.new(resp.body)
+      end
+    rescue StandardError => e
+      if count < 1
+        count += 1
+        retry
+      end
+      raise e
+    end
   end
 end
