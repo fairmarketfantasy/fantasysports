@@ -439,7 +439,7 @@ class Market < ActiveRecord::Base
           next
         end
         puts "betting $#{shadow_bets} on #{p.name}"
-        shadow_bets = Integer(shadow_bets) #* 100
+        shadow_bets = Integer(shadow_bets) * 100
       else
         shadow_bets = 0
       end
