@@ -426,7 +426,7 @@ BEGIN
 		FROM games g 
 		JOIN games_markets gm on g.stats_id = gm.game_stats_id 
 		WHERE gm.market_id = _market_id
-	) UPDATE markets SET opened_at = min_time, closed_at = max_time,
+	) UPDATE markets SET opened_at = COALESCE(_market.opened_at, min_time), closed_at = max_time,
 		state = 'published', price_multiplier = _price_multiplier
 		FROM game_times
 		WHERE id = _market_id;
