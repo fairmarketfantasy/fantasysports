@@ -151,7 +151,7 @@ angular.module("app.controllers")
     return moment(time).subtract('days', 1);
   };
 
-  $scope.createContestFromRosterModal = function(){
+  $scope.createContestFromRosterModal = function(currentRoster){
     var dialogOpts = {
           backdrop: true,
           keyboard: true,
@@ -161,16 +161,19 @@ angular.module("app.controllers")
           controller: 'CreateContestFromRosterDialogController'
     }
     var d = $dialog.dialog(dialogOpts);
-    d.open();
+    d.open().then(function(result) {
+      if (!result) { return; }
+      $scope.fs.contests.join(rosters.currentRoster.contest_type.id, rosters.currentRoster.id).then(function(data) {
+        rosters.selectRoster(data);
+        flash.success("Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!");
+        $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
+        $scope.createContestFromRosterModal();
+      });
+    });
   };
 
   $scope.enterAgain = function() {
-    $scope.fs.contests.join(rosters.currentRoster.contest_type.id, rosters.currentRoster.id).then(function(data) {
-      rosters.selectRoster(data);
-      //flash.success("Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!");
-      //$location.path('/market/' + $scope.market.id + '/roster/' + data.id);
-      $scope.createContestFromRosterModal();
-    });
+    $scope.createContestFromRosterModal(rosters.currentRoster);
   };
 
   $scope.addPlayer = function(player) {

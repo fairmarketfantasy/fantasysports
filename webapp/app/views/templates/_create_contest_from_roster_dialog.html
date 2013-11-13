@@ -5,7 +5,30 @@
   </p>
 </div>
 <div class='modal-body'>
-  <p>Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!</p>
+  <p>Select a contest and we'll create it using this roster!</p>
+
+  <div>
+    <ul class="clearfix no-no" ng-cloak>
+      <li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass) && marketService.currentMarket.market_duration == 'day'}" ng-show="contestClasses[contestClass].length">
+      <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
+        <div ng-class="{'contest-copy': isBigContest(contestClass)}" >
+          <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
+          <h2><span ng-show="isBigContest(contestClass)">$</span>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
+        </div>
+        <div ng-class="{'contest-copy contest-long': isBigContest(contestClass)}" >
+          <p class="small-p">{{contestClasses[contestClass][0].contest_class_desc}}</p>
+          <ul class="contests no-no">
+            <li class="enter-contest" ng-repeat="contestType in contestClasses[contestClass]">
+              <a class="btn btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens, 'btn-small': !isBigContest(contestClass), 'btn-primary': isBigContest(contestClass)}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">
+                <span ng-show="contestType.takes_tokens">Enter for {{ contestType.buy_in }} FanFrees</span>
+                <span ng-hide="contestType.takes_tokens">Enter for {{ contestType.buy_in | centsToDollars }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
   <form>
     <div class='clearfix'>
     </div>
