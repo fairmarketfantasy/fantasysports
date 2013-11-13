@@ -119,6 +119,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             [self transitionToState:ShowRoster withContext:nil];
         } else if ([_roster.state isEqualToString:@"submitted"]) {
             [self transitionToState:ContestEntered withContext:nil];
+        } else if ([_roster.market.state isEqualToString:@"complete"]) { // NOTE: switch on market state vs roster state
+            [self transitionToState:ContestCompleted withContext:nil];
         }
     } else {
         [self transitionToState:ViewContest withContext:nil];
@@ -175,6 +177,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             case ShowRoster:
             case ContestEntered:
             case ShowFriendRoster:
+            case ContestCompleted:
                 return _rosterPlayers != nil ? _rosterPlayers.count : 0;
             case PickPlayer:
                 return _availablePlayers != nil ? _availablePlayers.count : 0;
@@ -189,7 +192,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             return 35;
-        } else if (indexPath.row == 1 && [_roster.live integerValue]) {
+        } else if (indexPath.row == 1 && ([_roster.live integerValue]
+                                          || [_roster.market.state isEqualToString:@"complete"])) {
             return 195;
         } else if (indexPath.row == 1) {
             return 150;
@@ -242,8 +246,13 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
                                                 NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit
                                                                                fromDate:_market.startedAt];
                 
+                NSString *startsOrStarted = NSLocalizedString(@"Game starts", nil);
+                if ([_market.startedAt compare:[NSDate date]] == NSOrderedAscending) {
+                    startsOrStarted = NSLocalizedString(@"Game started", nil);
+                }
+                
                 NSString *str = [NSString stringWithFormat:@"%@ %@ %@ at %@",
-                                 NSLocalizedString(@"Game starts", nil),
+                                 startsOrStarted,
                                  [mformatter stringFromDate:_market.startedAt],
                                  [ordinalNumberFormatter stringFromNumber:@(components.day)],
                                  [tformatter stringFromDate:_market.startedAt]];
@@ -330,7 +339,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             [cell.contentView addSubview:sep];
         }
     } else if (indexPath.section == 1) {
-        if (_state == ShowRoster || _state == ContestEntered || _state == ShowFriendRoster) {
+        if (_state == ShowRoster || _state == ContestEntered || _state == ShowFriendRoster
+                || _state == ContestCompleted) {
             id player = [_rosterPlayers objectAtIndex:indexPath.row];
             cell = [tableView dequeueReusableCellWithIdentifier:@"RosterPlayer" forIndexPath:indexPath];
             FFRosterSlotCell *r_cell = (FFRosterSlotCell *)cell;
@@ -339,7 +349,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 //            r_cell.roster = _roster;
             [r_cell setPlayer:player andRoster:_roster andMarket:_market];
             r_cell.delegate = self;
-            if (_state == ShowFriendRoster) {
+            if (_state == ShowFriendRoster || _state == ContestCompleted) {
                 r_cell.showButtons = NO;
             } else {
                 r_cell.showButtons = YES;
@@ -426,7 +436,7 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             lab.textColor = [UIColor colorWithWhite:.15 alpha:1];
             lab.text = names[pos];
             [header addSubview:lab];
-        } else if (_state == ContestEntered) {
+        } else if (_state == ContestEntered || _state == ContestCompleted) {
             UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, 40)];
             lab.font = [FFStyle lightFont:26];
             lab.backgroundColor = [UIColor clearColor];
@@ -725,6 +735,10 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
             [self showRosterPlayers];
             [self.tableView reloadData];
             break;
+        case ContestCompleted:
+            [self showRosterPlayers];
+            [self.tableView reloadData];
+            break;
         default:
             break;
     }
@@ -732,7 +746,8 @@ FFRosterSlotCellDelegate, FFPlayerSelectCellDelegate>
 
 - (void)showRosterPlayers
 {
-    if (!(_state == ShowRoster || _state == ContestEntered || _state == ShowFriendRoster)) {
+    if (!(_state == ShowRoster || _state == ContestEntered || _state == ShowFriendRoster
+          || _state == ContestCompleted)) {
         NSLog(@"attempting to show roster players, but in the wrong state");
         return;
     }

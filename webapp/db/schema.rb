@@ -73,15 +73,15 @@ ActiveRecord::Schema.define(version: 20131113033116) do
   add_index "contests", ["market_id"], name: "index_contests_on_market_id", using: :btree
 
   create_table "credit_cards", force: true do |t|
-    t.integer "customer_object_id",                 null: false
-    t.string  "card_number_hash",                   null: false
-    t.boolean "deleted",            default: false, null: false
+    t.integer "customer_object_id",                  null: false
+    t.boolean "deleted",             default: false, null: false
     t.string  "obscured_number"
     t.string  "first_name"
     t.string  "last_name"
     t.string  "card_type"
     t.date    "expires"
     t.string  "paypal_card_id"
+    t.string  "network_merchant_id"
   end
 
   create_table "customer_objects", force: true do |t|
@@ -444,10 +444,10 @@ ActiveRecord::Schema.define(version: 20131113033116) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
-    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
+    t.string   "avatar"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

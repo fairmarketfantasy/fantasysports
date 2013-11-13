@@ -149,29 +149,27 @@ class Contest < ActiveRecord::Base
   end
 
   def fill_with_rosters(percentage = 1.0)
-    Market.override_market_close do
-      contest_cap = if self.user_cap == 0
-          JSON.parse(self.contest_type.payout_structure).sum  * self.contest_type.rake / self.buy_in
-        else
-          self.user_cap
-        end
-      fill_number = contest_cap * percentage
-      rosters = [fill_number - self.num_rosters, 0].max.to_i
-      rosters.times do
-        roster = Roster.generate(SYSTEM_USER, self.contest_type)
-        roster.contest_id = self.id
-        roster.is_generated = true
-        roster.save!
-        roster.fill_pseudo_randomly3
-        roster.submit!
+    contest_cap = if self.user_cap == 0
+        JSON.parse(self.contest_type.payout_structure).sum  * self.contest_type.rake / self.buy_in
+      else
+        self.user_cap
       end
+    fill_number = contest_cap * percentage
+    rosters = [fill_number - self.num_rosters, 0].max.to_i
+    rosters.times do
+      roster = Roster.generate(SYSTEM_USER, self.contest_type)
+      roster.contest_id = self.id
+      roster.is_generated = true
+      roster.save!
+      roster.fill_pseudo_randomly3
+      roster.submit!
     end
   end
 
   private
 
-    def set_invitation_code
-      self.invitation_code ||= SecureRandom.urlsafe_base64
-    end
+  def set_invitation_code
+    self.invitation_code ||= SecureRandom.urlsafe_base64
+  end
 
 end
