@@ -134,15 +134,18 @@ class MarketTest < ActiveSupport::TestCase
     #close market, should move the one roster in the public contest to the private contest
     @market.shadow_bets, @market.initial_shadow_bets = 0, 0
     @market.save!
+    @market.update_attribute(:opened_at, Time.new-1.minute)
     @market.open
     assert_equal 'opened', @market.state
     @market.close
 
     #should be 3 contests: two public, one private
     assert_equal 'closed', @market.state
-    assert_equal 3, @market.contests.length, "#{@market.contests.each {|c| c.inspect + '\n'}}"
-    assert_equal 1, @market.contests.where("NOT private").length # 1 public roster was moved into a private contest
-    assert_equal 0, @market.rosters.where("cancelled = true").length
+    assert_equal 4, @market.contests.length, "#{@market.contests.each {|c| c.inspect + '\n'}}"
+    assert_equal 2, @market.contests.where('cancelled_at IS NULL').length, "#{@market.contests.each {|c| c.inspect + '\n'}}"
+    assert_equal 2, @market.contests.where("cancelled_at IS NOT NULL").length
+    assert_equal 2, @market.contests.where("NOT private").length
+    assert_equal 2, @market.rosters.where("cancelled = true").length
     assert_equal 2, private_contest.reload.rosters.length
   end
 
@@ -213,9 +216,9 @@ class MarketTest < ActiveSupport::TestCase
     over_game.game_day = Time.now.yesterday.beginning_of_day
     over_game.game_time = Time.now.yesterday
     over_game.save!
-    @market.state = nil
-    @market.published_at = Time.now.yesterday
-    @market.save
+    @market.update_attribute(:state, nil)
+    @market.publish
+    @market.update_attribute(:opened_at, Time.new-1.minute)
     Market.tend
     over_game.teams.each do |team|
       assert MarketPlayer.where(:market_id => @market.id, :player_stats_id => team.players.map(&:stats_id)).all?{|mp| mp.locked? }
@@ -225,8 +228,29 @@ class MarketTest < ActiveSupport::TestCase
     end
   end
 
+  test "fill rosters" do
+    setup_simple_market
+    @market.fill_roster_times = [[Time.new - 1.minute, 0.5], [ Time.new - 1.minute, 1.0]].to_json
+    @market.save!
+    @market.update_attribute(:opened_at, Time.new-1.minute)
+    @market.open
+    contest_types = [@market.contest_types.where("buy_in = 100 and takes_tokens = true").first,
+        @market.contest_types.where("buy_in = 100 and takes_tokens = false").first,
+        @market.contest_types.where("buy_in = 1000").first]
+    user = create(:paid_user)
+    rosters = contest_types.map{|ct| Roster.generate(user, ct).submit! }
+    @market.fill_rosters
+    assert JSON.parse(@market.fill_roster_times).length, 1
+    rosters.each{|r| assert_equal r.contest.user_cap * 0.5, r.contest.reload.num_rosters  }
+    @market.fill_rosters
+    assert JSON.parse(@market.fill_roster_times).length, 0
+    rosters.each{|r| assert_equal r.contest.user_cap, r.contest.reload.num_rosters  }
+    @market.fill_rosters
+  end
+
   test "tabulate scores" do
     setup_simple_market
+    @market.update_attribute(:opened_at, Time.new-1.minute)
     @market.open
     ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 10").first
     users = (1..10).map{ create(:paid_user) }
@@ -278,7 +302,7 @@ class MarketTest < ActiveSupport::TestCase
         @rosters[roster.contest_type] << roster
       end
     end
-    assert_equal 9, Contest.count
+    assert_equal 9, Contest.count # 6 h2h, 2 10 man, 1 lolla
     # Open the market
     @market.opened_at = Time.now - 2.minutes
     @market.save!
@@ -306,8 +330,8 @@ class MarketTest < ActiveSupport::TestCase
     Market.tend
     assert_equal 9, Contest.count
     assert_equal 'closed', @market.reload.state
-    assert_equal 10, Roster.where('is_generated').count
-    assert_equal 0, Roster.where(:cancelled => true).count
+    assert_equal 9, Roster.where('is_generated').count # We only autofill the 10 man, not the remaining h2h
+    assert_equal 1, Roster.where(:cancelled => true).count # Cancelled the h2h
     assert Player.purchasable_for_roster(@rosters[ct1][0]).empty? # spot check
 
     # Add some scores
@@ -356,10 +380,10 @@ class MarketTest < ActiveSupport::TestCase
       end
     end
 
-    assert_equal 43, Roster.where("state = 'finished'").count
-    assert_equal 0, Roster.where("state = 'cancelled'").count
-    assert_equal 10, Roster.where("is_generated").count
-    assert_equal 43, Roster.over.count
+    assert_equal 41, Roster.where("state = 'finished'").count
+    assert_equal 1, Roster.where("state = 'cancelled'").count
+    assert_equal 9, Roster.where("is_generated").count
+    assert_equal 42, Roster.over.count
 
     Contest.all.each{|c| TransactionRecord.validate_contest(c) }
   end
@@ -372,6 +396,7 @@ class MarketTest < ActiveSupport::TestCase
     r2 = Roster.generate(create(:paid_user), ct).fill_pseudo_randomly3.submit!
     contest = r1.contest
     assert_equal r1.contest, r2.contest
+    @market.update_attribute(:opened_at, Time.new-1.minute)
     @market.open
     @game.update_attribute(:status, 'closed')
     @market.update_attribute(:closed_at, Time.new - 1.minute)

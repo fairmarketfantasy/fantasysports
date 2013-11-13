@@ -162,7 +162,7 @@ BEGIN
 	   FROM rosters_players where roster_id = _roster_id;
 
 	--update roster's remaining salary and state
-	update rosters set remaining_salary = 100000 - 
+	update rosters set remaining_salary = 100000 -
 		GREATEST(0, (select sum(purchase_price) from rosters_players where roster_id = _roster.id)),
 		state = 'submitted', updated_at = CURRENT_TIMESTAMP
 		where id = _roster_id;
@@ -426,7 +426,7 @@ BEGIN
 		FROM games g 
 		JOIN games_markets gm on g.stats_id = gm.game_stats_id 
 		WHERE gm.market_id = _market_id
-	) UPDATE markets SET opened_at = min_time, closed_at = max_time,
+	) UPDATE markets SET opened_at = COALESCE(_market.opened_at, min_time), closed_at = max_time,
 		state = 'published', price_multiplier = _price_multiplier
 		FROM game_times
 		WHERE id = _market_id;

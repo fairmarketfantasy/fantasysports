@@ -86,9 +86,14 @@ class Roster < ActiveRecord::Base
   end
 
   def set_records!
-    rk = RecordKeeper.for_roster(self)
-    self.wins = rk.wins
-    self.losses = rk.losses
+    if self.cancelled?
+      self.wins = 0
+      self.losses = 0
+    else
+      rk = RecordKeeper.for_roster(self)
+      self.wins = rk.wins
+      self.losses = rk.losses
+    end
   end
 
   #set the state to 'submitted'. If it's in a private contest, increment the number of 
@@ -101,42 +106,38 @@ class Roster < ActiveRecord::Base
       Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
       reload
 
+      set_contest = contest
       #enter contest
-      if self.contest.nil?
-        #enter roster into public contest
-        contest_type.with_lock do #prevents creation of contests of the same type at the same time
-          contest = Contest.where("contest_type_id = ?
+      contest_type.with_lock do #prevents creation of contests of the same type at the same time
+        if set_contest.nil?
+          #enter roster into public contest
+          set_contest = Contest.where("contest_type_id = ?
             AND (user_cap = 0
-                OR (num_rosters < user_cap 
+                OR (num_rosters - num_generated < user_cap
                     AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
             AND NOT private", contest_type.id).order('id asc').first
-          if contest.nil?
-            contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
-              market_id: self.market_id, contest_type_id: contest_type.id, num_rosters: 1)
-          else
-            #handle special case: cannot play h2h with yourself (anti-masturbation rule)
-            if contest.user_cap == 2 && contest.rosters.first.owner.id == self.owner.id
-              contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
-                market_id: self.market_id, contest_type_id: contest_type.id, num_rosters: 1)
-            else
-              contest.num_rosters += 1
-              contest.save!
-            end
+          if set_contest.nil?
+            set_contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
+              market_id: self.market_id, contest_type_id: contest_type.id)
           end
-          self.contest = contest
-          self.save!
-        end
-      else #contest not nil. enter private contest
-        contest.with_lock do
-          if contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => contest.league_id).first.nil?
-            LeagueMembership.create!(:league_id => contest.league_id, :user_id => self.owner_id)
+        else #contest not nil. enter private contest
+          if set_contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => set_contest.league_id).first.nil?
+            LeagueMembership.create!(:league_id => set_contest.league_id, :user_id => self.owner_id)
           end
-          raise "contest #{contest.id} is full" if contest.num_rosters >= contest.user_cap && contest.user_cap != 0
-          self.contest = contest
-          contest.num_rosters += 1
-          contest.save!
-          self.save!
         end
+        set_contest.num_generated += 1 if self.is_generated?
+        set_contest.num_rosters += 1
+        set_contest.save!
+        if set_contest.num_rosters > set_contest.user_cap && set_contest.user_cap != 0
+          removed_roster = set_contest.rosters.where('is_generated = true AND NOT cancelled').first
+          raise "contest #{set_contest.id} is full" if removed_roster.nil?
+          removed_roster.cancel!("Removed for a real player")
+          set_contest.num_rosters -= 1
+          set_contest.num_generated -= 1
+          set_contest.save!
+        end
+        self.contest = set_contest
+        self.save!
       end
 
       #charge account
@@ -348,13 +349,12 @@ class Roster < ActiveRecord::Base
   def cancel!(reason)
     self.with_lock do
       if self.state == 'submitted'
-        self.owner.payout(self.buy_in, self.contest_type.takes_tokens?, :event => 'cancelled_roster', :roster_id => self.id, :contest_id => self.contest_id)
-        self.contest_id = nil
-        self.state = 'cancelled'
-        self.cancelled = true
-        self.cancelled_at = Time.new
-        self.cancelled_cause = reason
         Roster.transaction do
+          self.owner.payout(self.buy_in, self.contest_type.takes_tokens?, :event => 'cancelled_roster', :roster_id => self.id, :contest_id => self.contest_id)
+          self.state = 'cancelled'
+          self.cancelled = true
+          self.cancelled_at = Time.new
+          self.cancelled_cause = reason
           self.save!
           if self.contest
             self.contest.num_rosters -= 1

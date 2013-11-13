@@ -90,7 +90,10 @@ class NetworkMerchants
   def self.charge_finalize(customer_object, token_id)
     xml = send_confirm(token_id)
     raise "Charge failed with #{xml['result-text']}" if xml['result-text'] != 'SUCCESS'
-    customer_object.increase_balance((xml['amount'].to_f * 100).round(2), 'deposit', :transaction_data => {:network_merchants_transaction_id => xml['transaction-id']}.to_json)
+    amount = xml['amount'].to_f.round(2) * 100
+    customer_object.increase_balance(amount 'deposit', :transaction_data => {:network_merchants_transaction_id => xml['transaction-id']}.to_json)
+    Invitation.redeem_paid(customer_object.user)
+    Eventing.report(customer_object.user, 'addFunds', :amount => amount)
     xml
   end
 

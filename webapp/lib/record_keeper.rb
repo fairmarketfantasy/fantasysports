@@ -16,7 +16,7 @@ end
 class RecordKeeperBase
   def initialize(roster)
     @roster = roster
-    @n_winners = @roster.contest_type.num_winners
+    @n_winners = @roster.contest.num_winners
   end
 
   def wins
@@ -42,7 +42,7 @@ class RoundRobinRecordKeeper < RecordKeeperBase
   end
 
   def ties
-    @ties ||= @roster.contest.rosters.map(&:contest_rank).select{|r| r == @roster.contest_rank }.count -1
+    @ties ||= @roster.contest.rosters.map(&:contest_rank).select{|r| r == @roster.contest_rank }.count - 1
   end
 
   def losses
@@ -50,6 +50,6 @@ class RoundRobinRecordKeeper < RecordKeeperBase
   end
 
   def total_games
-    9
+   @roster.contest.num_rosters
   end
 end
