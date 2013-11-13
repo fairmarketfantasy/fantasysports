@@ -151,14 +151,14 @@ angular.module("app.controllers")
     return moment(time).subtract('days', 1);
   };
 
-  $scope.createContestFromRosterModal = function(currentRoster){
+  $scope.joinContestModal = function(currentRoster){
     var dialogOpts = {
       backdrop: true,
       keyboard: true,
       backdropClick: true,
       dialogClass: 'modal',
-      templateUrl: '/create_contest_from_roster_dialog.html',
-      controller: 'CreateContestFromRosterDialogController',
+      templateUrl: '/join_contest_dialog.html',
+      controller: 'JoinContestDialogController',
       resolve: {
         // from MarketController's reloadMarket
         // TODO: roll both into marketService
@@ -190,13 +190,12 @@ angular.module("app.controllers")
         rosters.selectRoster(data);
         flash.success("Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!");
         $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
-        $scope.createContestFromRosterModal();
       });
     });
   };
 
   $scope.enterAgain = function() {
-    $scope.createContestFromRosterModal(rosters.currentRoster);
+    $scope.joinContestModal(rosters.currentRoster);
   };
 
   $scope.addPlayer = function(player) {

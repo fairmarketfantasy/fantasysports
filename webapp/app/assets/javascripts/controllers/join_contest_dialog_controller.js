@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('CreateContestFromRosterDialogController', ['$scope', 'dialog', 'fs', 'flash', 'markets', 'currentUserService', '$timeout', 'contestClasses', function($scope, dialog, fs, flash, marketService, currentUserService, $timeout, contestClasses) {
+.controller('JoinContestDialogController', ['$scope', 'dialog', 'fs', 'flash', 'markets', 'currentUserService', '$timeout', 'contestClasses', function($scope, dialog, fs, flash, marketService, currentUserService, $timeout, contestClasses) {
 
   // [start] from MarketController.
   // TODO: roll into marketService
