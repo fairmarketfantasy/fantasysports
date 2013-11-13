@@ -59,6 +59,10 @@ class Market < ActiveRecord::Base
       apply :remove_shadow_bets, "state in ('published', 'opened') and shadow_bets > 0"
     end
   
+    def fill_rosters
+      apply :fill_rosters, "state IN('opened')"
+    end
+  
     def track_benched_players
       apply :track_benched_players, "state IN('opened', 'published')"
     end
@@ -105,6 +109,28 @@ class Market < ActiveRecord::Base
     reload
   end
 
+  def fill_rosters
+=begin
+  This is formatted as a json array of arrays like so:
+  [[<unix-timestamp, <percent-fill>], ...]
+=end
+    fill_times = JSON.parse(self.fill_roster_times)
+    next_fill = fill_times.shift
+    if next_fill && next_fill[0].to_i < Time.new.to_i
+      self.fill_rosters_to_percent(next_fill[1])
+      self.fill_roster_times = fill_times.to_json
+      self.save!
+    end
+  end
+
+  def fill_rosters_to_percent(percent)
+      # iterate through /all/ non h2h unfilled contests and generate rosters to fill them up
+      h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).map(&:id)
+      self.contests.where("contest_type_id NOT IN(#{h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0)").find_each do |contest|
+        contest.fill_with_rosters(percent)
+      end
+  end
+
   def track_benched_players
     self.games.where('bench_counted_at <= ? AND (NOT bench_counted OR bench_counted IS NULL)', Time.new).each do |game|
       puts "#{Time.now} -- track game #{game.id}"
@@ -125,58 +151,56 @@ class Market < ActiveRecord::Base
 
   # close a market. allocates remaining rosters in this manner:
   def close
-    self.class.override_market_close do
-      self.with_lock do
-        raise "cannot close if state is not open" if state != 'opened' 
+    raise "cannot close if state is not open" if state != 'opened' 
 
-        #cancel all un-submitted rosters
-        self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
+    #cancel all un-submitted rosters
+    self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
+    self.contests.where(
+        :contest_type_id => self.contest_types.where(:name => ['h2h', 'h2h rr']).map(&:id)
+        ).where(:num_rosters => 1).each do |contest|
+      contest.cancel!
+    end
 
-        # Iterate through unfilled private contests
-        # Move rosters from unfilled public contests of the same type into these contests while able
-        self.contests.where("private AND num_rosters < user_cap").find_each do |contest|
-          contest_entrants = contest.rosters.map(&:owner_id)
-          if contest.num_rosters == 0 or contest_entrants.length == 0 # there was a bug where we weren't decrementing num_rosters, this second clause can probably be removed after 11/2013
-            contest.destroy
-            next
-          end
-          Roster.select('rosters.*').where("rosters.contest_type_id = #{contest.contest_type_id} AND state = 'submitted' AND rosters.owner_id NOT IN(#{contest_entrants.join(', ')})"
-               ).joins('JOIN contests c ON rosters.contest_id = c.id AND num_rosters < user_cap').limit(contest.user_cap - contest.num_rosters).each do |roster|
-            next if contest_entrants.include?(roster.owner_id)
-            contest_entrants.push(roster.owner_id)
-            old_contest = roster.contest
-            old_contest.num_rosters -= 1
-            old_contest.save!
-            tr = TransactionRecord.where(
-              :contest_id => old_contest.id, :roster_id => roster.id
-            ).first
-            debugger if tr.nil?
-            tr.update_attribute(:contest_id, contest.id)
-            roster.contest_id, roster.cancelled_cause, roster.state  = contest.id, 'moved to under capacity private contest', 'in_progress'
-            roster.contest.save!
-            roster.save!
-            roster.submit!(false)
-          end
-        end
-        # Then iterate through /all/ unfilled contests and generate rosters to fill them up
-        self.contests.where("user_cap = 0").find_each do |contest|
-          contest.fill_with_rosters
-        end
-
-        self.contests.where("num_rosters < user_cap").find_each do |contest|
-          if contest.num_rosters == 0
-            contest.destroy
-            next
-          end
-          contest.fill_with_rosters
-        end
-
-        # EPIC TODO: FILL LOLLAPALOOZAAAA
-
-        self.state, self.closed_at = 'closed', Time.now
-        save!
+=begin
+    self.contests.where("private AND num_rosters < user_cap").find_each do |contest|
+      real_contest_entrants = contest.rosters.where(:is_generated => false).first
+      if real_contest_entrants.length
+        contest.rosters.each{|r| r.cancel!("No real entrants in contest")}
+        contest.paid_at# there was a bug where we weren't decrementing num_rosters, this second clause can probably be removed after 11/2013
+        next
       end
     end
+#=begin
+      # Iterate through unfilled private contests
+      # Move rosters from unfilled public contests of the same type into these contests while able
+      self.contests.where("private AND num_rosters < user_cap").find_each do |contest|
+        contest_entrants = contest.rosters.map(&:owner_id)
+        if contest.num_rosters == 0 or contest_entrants.length == 0 # there was a bug where we weren't decrementing num_rosters, this second clause can probably be removed after 11/2013
+          contest.destroy
+          next
+        end
+        Roster.select('rosters.*').where("rosters.contest_type_id = #{contest.contest_type_id} AND state = 'submitted' AND rosters.owner_id NOT IN(#{contest_entrants.join(', ')})"
+             ).joins('JOIN contests c ON rosters.contest_id = c.id AND num_rosters < user_cap').limit(contest.user_cap - contest.num_rosters).each do |roster|
+          next if contest_entrants.include?(roster.owner_id)
+          contest_entrants.push(roster.owner_id)
+          old_contest = roster.contest
+          old_contest.num_rosters -= 1
+          old_contest.save!
+          tr = TransactionRecord.where(
+            :contest_id => old_contest.id, :roster_id => roster.id
+          ).first
+          tr.update_attribute(:contest_id, contest.id)
+          roster.contest_id, roster.cancelled_cause, roster.state  = contest.id, 'moved to under capacity private contest', 'in_progress'
+          roster.contest.save!
+          roster.save!
+          roster.submit!(false)
+        end
+      end
+=end
+    self.fill_rosters_to_percent(1.0)
+
+    self.state, self.closed_at = 'closed', Time.now
+    save!
     return self
   end
 
@@ -191,7 +215,7 @@ class Market < ActiveRecord::Base
 
       self.tabulate_scores
       #for each contest, allocate funds by rank
-      self.contests.find_each do |contest|
+      self.contests.where('cancelled_at IS NULL').find_each do |contest|
         contest.payday!
       end
       self.state = 'complete'

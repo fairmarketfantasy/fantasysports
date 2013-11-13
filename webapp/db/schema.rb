@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131105204400) do
+ActiveRecord::Schema.define(version: 20131113033116) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,8 @@ ActiveRecord::Schema.define(version: 20131105204400) do
     t.datetime "paid_at"
     t.boolean  "private",         default: false
     t.integer  "league_id"
+    t.integer  "num_generated",   default: 0
+    t.datetime "cancelled_at"
   end
 
   add_index "contests", ["market_id"], name: "index_contests_on_market_id", using: :btree
@@ -217,6 +219,7 @@ ActiveRecord::Schema.define(version: 20131105204400) do
     t.decimal  "initial_shadow_bets"
     t.decimal  "price_multiplier",    default: 1.0
     t.datetime "started_at"
+    t.text     "fill_roster_times"
   end
 
   add_index "markets", ["closed_at", "started_at", "sport_id"], name: "index_markets_on_closed_at_and_started_at_and_sport_id", unique: true, using: :btree
