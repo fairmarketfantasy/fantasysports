@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', 'flash', '$templateCache', function($scope, rosters, markets, $routeParams, $location, $dialog, flash, $templateCache) {
+.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', 'flash', '$templateCache', 'markets', function($scope, rosters, markets, $routeParams, $location, $dialog, flash, $templateCache, marketService) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
@@ -153,13 +153,36 @@ angular.module("app.controllers")
 
   $scope.createContestFromRosterModal = function(currentRoster){
     var dialogOpts = {
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          dialogClass: 'modal',
-          templateUrl: '/create_contest_from_roster_dialog.html',
-          controller: 'CreateContestFromRosterDialogController'
-    }
+      backdrop: true,
+      keyboard: true,
+      backdropClick: true,
+      dialogClass: 'modal',
+      templateUrl: '/create_contest_from_roster_dialog.html',
+      controller: 'CreateContestFromRosterDialogController',
+      resolve: {
+        // from MarketController's reloadMarket
+        // TODO: roll both into marketService
+        contestClasses: function($q) {
+          var deferred = $q.defer();
+          if (!marketService.currentMarket) {
+            return [];
+          }
+          $scope.fs.contests.for_market(marketService.currentMarket.id).then(function(contestTypes) {
+            var contestClasses = {};
+            _.each(contestTypes, function(type) {
+              if (!contestClasses[type.name]) {
+                contestClasses[type.name] = [];
+              }
+              contestClasses[type.name].push(type);
+            });
+            deferred.resolve(contestClasses);
+          });
+
+          return deferred.promise;
+        }
+      }
+    };
+
     var d = $dialog.dialog(dialogOpts);
     d.open().then(function(result) {
       if (!result) { return; }
