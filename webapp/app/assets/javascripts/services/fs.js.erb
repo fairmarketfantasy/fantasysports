@@ -124,7 +124,7 @@ angular.module('app.services')
             d.open();
           };
           openLoginModal();*/
-        } else if (resp.data.error) {
+        } else if (resp.data && resp.data.error) {
           flash.error(resp.data.error);
         } else {
           flash.error("Oops, something went wrong, try again later");
@@ -132,12 +132,38 @@ angular.module('app.services')
         console && console.log('API Error: ');
         console.log(resp);
         return $q.reject(resp);
-        return null; // TODO: this doesn't signal failure...figure out how to do that
       }
       return promise.then(success, failure);
     };
   }])
- .factory('fs', ['$http', function($http) {
+  .factory('fs', ['$http', '$q', function($http, $q) {
+    /*var makeCrossOriginRequest = function(httpArgs) {
+      var xsrf = $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
+      delete $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
+      var result = $http(httpArgs);
+      $httpProvider.defaults.headers.common['X-XSRF-TOKEN'] = xsrf;
+      return result;
+    };*/
+
+    var customJsonPFunc = function(url, responseFunc, timeout) {
+      // setup the magic
+      var deferred = $q.defer();
+      window['jsonp_' + responseFunc] = function(data) {
+        angular.element('body').scope().$apply(function() {
+          deferred.resolve(data);
+        });
+      };
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.addEventListener('error', function(err) { deferred.reject(err); }, true);
+      var timeout = setTimeout(function() {
+        deferred.reject("request timed out.");
+      }, timeout || 20000)
+      script.addEventListener('load', function(err) { clearTimeout(timeout); }, true);
+      script.src = url;
+      document.body.appendChild(script);
+      return deferred.promise;
+    };
     return {
       sendSupportRequest: function(title, email, message) {
         return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
@@ -190,8 +216,28 @@ angular.module('app.services')
         }
       },
       cards: {
-        create: function(type, number, cvc, name, exp_month, exp_year) {
-          return $http({method: 'POST', url: '/cards', data: {type: type, number: number, cvc: cvc, name: name, exp_month: exp_month, exp_year: exp_year}});
+        add_url: function(callbackName) {
+          return $http({method: 'GET', url: '/cards/add_url?callback=' + callbackName});
+        },
+        create: function(url, respCallback, type, number, cvc, name, exp_month, exp_year) {
+          // make this step 2 of card creation
+          name = name.split(' ');
+          return customJsonPFunc(url + '?' + $.param({
+            'billing-cc-number': number,
+            'billing-cvv': cvc,
+            'billing-first-name': name[0],
+            'billing-last-name': name.slice(1).join(' '),
+            'billing-cc-exp': exp_month + exp_year}), respCallback, 60000);
+        },
+        charge_url: function(amount, cardId, callbackName) {
+          return $http({method: 'GET', url: '/cards/charge_url', params: {
+            callback: callbackName,
+            amount: amount,
+            card_id: cardId,
+          }});
+        },
+        charge: function(url, respCallback) {
+          return customJsonPFunc(url + '?' + $.param({}), respCallback, 60000);
         },
         list: function(){
           return $http({method: 'GET', url: '/cards'});

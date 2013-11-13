@@ -67,7 +67,7 @@
             @"contestRankPayout":   @"contest_rank_payout",
 //            @"contestType":         @"contest_type",
             @"live":                @"live",
-            @"marketId":            @"market_id",
+//            @"marketId":            @"market_id",
             @"nextGameTime":        @"next_game_time",
             @"ownerId":             @"owner_id",
             @"ownerName":           @"owner_name",
@@ -162,13 +162,17 @@
     self.contestType = [FFContestType fromNetworkRepresentation:keyedValues[@"contest_type"]
                                                         session:self.session
                                                            save:YES];
-    
-    FFMarket *market = [[FFMarket unsafeMeta] findOne:@{@"objId": self.marketId}];
-    if (!market) {
-        NSLog(@"we should really have a market here...");
-    } else {
-        self.market = market;
-    }
+    self.marketId = keyedValues[@"market"][@"id"];
+    self.market = [FFMarket fromNetworkRepresentation:keyedValues[@"market"] session:self.session save:YES];
+//    self.marketId = self.market.objId;
+//    if ([self.marketId description]) {
+//        FFMarket *market = [[FFMarket unsafeMeta] findOne:@{@"objId": [self.marketId description]}];
+//        if (!market) {
+//            NSLog(@"we should really have a market here...");
+//        } else {
+//            self.market = market;
+//        }
+//    }
 }
 
 - (FFContestType *)contestType

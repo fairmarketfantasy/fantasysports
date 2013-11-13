@@ -14,10 +14,18 @@ class CustomerObject < ActiveRecord::Base
 
   def delete_card(card_id)
     card = credit_cards.find(card_id)
-    paypal_credit_card = PayPal::SDK::REST::CreditCard.find(card.paypal_card_id)
-    if paypal_credit_card.delete
+    if card.paypal_card_id
+      paypal_credit_card = PayPal::SDK::REST::CreditCard.find(card.paypal_card_id)
+      if paypal_credit_card.delete
+        card.deleted = true
+        card.save
+      end
+    else
       card.deleted = true
       card.save
+    end
+    if self.default_card.nil? || self.default_card.id == card.id
+      set_default_card(self.credit_cards.active.first)
     end
   end
 
