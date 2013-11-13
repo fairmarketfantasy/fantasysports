@@ -101,7 +101,7 @@ class Roster < ActiveRecord::Base
   def submit!(charge = true)
     #buy all the players on the roster. This sql function handles all of that.
     raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
-    self.transaction do
+    #self.transaction do
       #purchase all the players and update roster state to submitted
       Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
       reload
@@ -145,7 +145,7 @@ class Roster < ActiveRecord::Base
         self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
       end
 
-    end
+    #end
     return self
   end
 
@@ -254,7 +254,7 @@ class Roster < ActiveRecord::Base
         players = @candidate_players[position]
         if self.reload.remaining_salary < expected * remaining_positions.length
           slice_start = [players.index{|p| p.buy_price < expected * 0.8}, 0].compact.max
-          slice_end = [indexes[position], 3].max
+          slice_end = [indexes[position], slice_start + 3].max
         else
           slice_start = 0
           slice_end = [[players.index{|p| p.buy_price < expected * 0.8}, indexes[position]].compact.min, 3].max
