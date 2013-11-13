@@ -23,19 +23,20 @@ type NflModel struct {
 // Todo: move these to lib.types once we refactor the "unique model" functionality
 type Market struct {
 	NflModel
-	Id            int
-	Name          string
-	SportId       int `model:"key"`
-	TotalBets     float64
-	ShadowBets    float64
-	ShadowBetRate float64
-	PublishedAt   time.Time
-	State         string
-	StartedAt     time.Time `model:"key"`
-	OpenedAt      time.Time
-	ClosedAt      time.Time `model:"key"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	Id              int
+	Name            string
+	SportId         int `model:"key"`
+	TotalBets       float64
+	ShadowBets      float64
+	ShadowBetRate   float64
+	PublishedAt     time.Time
+	State           string
+	StartedAt       time.Time `model:"key"`
+	FillRosterTimes string
+	OpenedAt        time.Time
+	ClosedAt        time.Time `model:"key"`
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }
 
 type MarketPlayer struct {

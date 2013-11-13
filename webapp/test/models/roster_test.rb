@@ -75,7 +75,7 @@ class RosterTest < ActiveSupport::TestCase
     assert_equal 2, @market.contests.length
 
     #private contests
-    contest = create(:contest, :user_cap => 2, :market => @market, :contest_type => h2h_type, :invitation_code => "asdfasdfasdf")
+    contest = create(:contest, :user_cap => 2, :market => @market, :contest_type => h2h_type, :invitation_code => "asdfasdfasdf", :private => true)
     roster = create(:roster, :contest => contest, :market => @market, :contest_type => h2h_type)
     roster.submit!
     assert_equal contest, roster.contest
@@ -112,6 +112,7 @@ class RosterTest < ActiveSupport::TestCase
 
   test "adding or removing players from roster affects salary" do
     @roster.submit!
+    @market.update_attribute(:opened_at, Time.new-1.minute)
     @market.open
     player = @roster.purchasable_players.first
     initial_cap = @roster.remaining_salary
@@ -128,24 +129,24 @@ class RosterTest < ActiveSupport::TestCase
   #purchasing a player causes the price to go up
   test "purchasing a player affects prices" do
     player = @roster.purchasable_players.first
-    @other_roster = create(:roster, :market => @market)
+    @other_roster = create(:roster, :market => @market, :contest_type => @market.contest_types.first)
     initial_price = player.buy_price
     @roster.add_player player
 
     #because the first roster has not been submitted, the price should not have changed
     player = @other_roster.purchasable_players.where(:id => player.id).first
-    assert_equal initial_price, player.buy_price
+    assert_equal initial_price.to_i, player.buy_price.to_i
 
     @roster.submit!
     assert_equal 'submitted', @roster.state
     assert_equal 1, @roster.players.length
-    assert_equal 1000, @roster.buy_in
+    assert_equal 100, @roster.buy_in
     @market.reload
     market_player = @market.market_players.where("player_id = #{player.id}").first
 
     #now the price of the player should be higher
     player = @other_roster.purchasable_players.where(:id => player.id).first
-    assert player.buy_price > initial_price, "buy price: #{player.buy_price}, initial price: #{initial_price}"
+    assert player.buy_price > initial_price, "buy price: #{player.buy_price.to_i}, initial price: #{initial_price.to_i}"
 
     @roster.remove_player player
     
@@ -199,6 +200,24 @@ class RosterTest < ActiveSupport::TestCase
     assert_equal market.reload.total_bets, total_bets, "destroying roster decreases total bets"
   end
 
+  test "adding a real user to a contest bumps generated rosters" do
+    contest_type = @market.contest_types.where('takes_tokens AND max_entries = 10').first
+    roster = create(:roster, :market => @market, :contest_type => contest_type)
+    roster.submit!
+    roster.contest.fill_with_rosters(1.0)
+    contest = roster.contest
+    contest.num_generated
+    (1..9).each do |i|
+      assert_equal 10-i, contest.reload.num_generated
+      create(:roster, :market => @market, :contest_type => contest_type).submit!
+      assert_equal 10, contest.reload.num_rosters
+    end
+    assert_equal 0, contest.reload.num_generated
+    assert_equal 1, Contest.count
+    create(:roster, :market => @market, :contest_type => contest_type).submit!
+    assert_equal 2, Contest.count
+  end
+
   test "cancelling roster pays out properly" do
     roster = create(:roster, :market => @market, :contest_type => @market.contest_types.where('takes_tokens').first)
     roster2 = create(:roster, :market => @market, :contest_type => @market.contest_types.where('NOT takes_tokens').first)
@@ -218,6 +237,8 @@ class RosterTest < ActiveSupport::TestCase
   end
 
   test "re-scoring a roster" do
+    @market.update_attribute(:opened_at, Time.new - 1.minute)
+    @market.open
     contest_type = @market.contest_types.where(:name => 'h2h', :buy_in => 100, :takes_tokens => false).first
     roster1 = create(:roster, :market => @market, :contest_type => contest_type)
     roster2 = create(:roster, :market => @market, :contest_type => contest_type)
@@ -266,7 +287,6 @@ class RosterTest < ActiveSupport::TestCase
       contest.revert_payday!
       assert_equal 2*pre_count-2, contest.transaction_records.reload.count
     end
-
 
     assert_difference 'user1.customer_object.reload.balance', 0 do
       assert_difference 'user2.customer_object.reload.balance', 194 do
