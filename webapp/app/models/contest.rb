@@ -62,6 +62,10 @@ class Contest < ActiveRecord::Base
     )
   end
 
+  def num_winners
+    self.contest_type.get_payout_structure.length
+  end
+
   def rake_amount
     self.num_rosters * self.contest_type.buy_in * contest_type.rake
   end
@@ -70,8 +74,9 @@ class Contest < ActiveRecord::Base
   def payday!
     self.with_lock do
       return if self.paid_at && Market.override_close
-      raise if self.paid_at
+      raise if self.paid_at || self.cancelled_at
       rosters = self.rosters.order("contest_rank ASC")
+
       ranks = rosters.collect(&:contest_rank)
 
       #figure out how much each rank gets -- tricky only because of ties
@@ -101,6 +106,7 @@ class Contest < ActiveRecord::Base
       end
       SYSTEM_USER.payout(self.rake_amount, self.contest_type.takes_tokens?, :event => 'rake', :roster_id => nil, :contest_id => self.id)
       self.paid_at = Time.new
+
       self.save!
       TransactionRecord.validate_contest(self)
     end
@@ -121,6 +127,14 @@ class Contest < ActiveRecord::Base
     end
   end
 
+  def cancel! # Only used for unfilled h2h contests
+    raise "Not a h2h or h2h has players, can't cancel" unless contest_type.name =~ /h2h/ && num_rosters == 1
+    self.rosters.each{|r| r.cancel!("No opponent found for H2H") }
+    self.cancelled_at = Time.new
+    self.save!
+    TransactionRecord.validate_contest(self)
+  end
+
   def self._rosters_by_rank(rosters)
     by_rank = {}
     rosters.each do |roster|
@@ -134,10 +148,15 @@ class Contest < ActiveRecord::Base
     return by_rank
   end
 
-  def fill_with_rosters
+  def fill_with_rosters(percentage = 1.0)
     Market.override_market_close do
-      lollapalooza_cap = JSON.parse(self.contest_type.payout_structure).sum / self.buy_in
-      rosters = [(self.user_cap == 0 ? lollapalooza_cap : self.user_cap) - self.num_rosters, 0].max
+      contest_cap = if self.user_cap == 0
+          JSON.parse(self.contest_type.payout_structure).sum  * self.contest_type.rake / self.buy_in
+        else
+          self.user_cap
+        end
+      fill_number = contest_cap * percentage
+      rosters = [fill_number - self.num_rosters, 0].max.to_i
       rosters.times do
         roster = Roster.generate(SYSTEM_USER, self.contest_type)
         roster.contest_id = self.id
