@@ -149,7 +149,6 @@ class Contest < ActiveRecord::Base
   end
 
   def fill_with_rosters(percentage = 1.0)
-    Market.override_market_close do
       contest_cap = if self.user_cap == 0
           JSON.parse(self.contest_type.payout_structure).sum  * self.contest_type.rake / self.buy_in
         else
@@ -165,7 +164,6 @@ class Contest < ActiveRecord::Base
         roster.fill_pseudo_randomly3
         roster.submit!
       end
-    end
   end
 
   private
