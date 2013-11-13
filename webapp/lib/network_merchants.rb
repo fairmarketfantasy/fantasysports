@@ -17,6 +17,8 @@ puts builder.to_xml
 
 =end
 
+Typhoeus::Config.memoize = false
+
 class StupidXmlObject
   def initialize(body)
     @xml = Nokogiri::XML(body)
@@ -116,7 +118,14 @@ class NetworkMerchants
   def self.post_with_retry(body, &block)
     count = 0
     begin
-      resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: body, timeout: 30, connecttimeout: 10)
+      resp = Typhoeus.post(
+          API_ENDPOINT + "?#{SecureRandom.hex}",
+          headers: headers,
+          body: body,
+          timeout: 30,
+          connecttimeout: 10,
+          followlocation: true,
+          verbose: true)
       Rails.logger.info("="* 50)
       Rails.logger.info(body)
       Rails.logger.info(resp.headers.pretty_inspect)
