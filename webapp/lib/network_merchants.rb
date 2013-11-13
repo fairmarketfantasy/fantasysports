@@ -122,10 +122,10 @@ class NetworkMerchants
           API_ENDPOINT + "?#{SecureRandom.hex}",
           headers: headers,
           body: body,
-          timeout: 30,
-          connecttimeout: 10,
+          timeout: 30000,
+          connecttimeout: 9000,
           followlocation: true,
-          verbose: true)
+          sslversion: :sslv3)
       Rails.logger.info("="* 50)
       Rails.logger.info(body)
       Rails.logger.info(resp.headers.pretty_inspect)
