@@ -134,105 +134,351 @@ class User < ActiveRecord::Base
     end
   end
 
-  SYSTEM_USERNAMES = %w(
-teetriceps
-basegear
-dartboardmoorhen
-sticknumerous
-bocceon
-matspoiled
-hoopsponge
-unicyclistchinese
-javelinchangeable
-playingthumb
-polesnot
-surfingwashing
-targetllama
-billiardshandy
-surfertight
-paddleballwabbit
-waterskielastic
-judopickled
-somersaultbacon
-basketballbank
-cyclehippopotamus
-hurdlego
-volleyburning
-canoeingpebbly
-iceskatesrow
-throwingremuda
-swimpoised
-boulesvroom
-pitchoakwood
-battinglancashire
-goalgrit
-swimmingtree
-helmetpopper
-relaytasty
-fieldcyandye
-skiingcapricious
-wetsuitweary
-bowlingbrakes
-guardbullocks
-highjumpfemur
-slalomquizzical
-olympicsneedle
-fencingsnap
-skierindian
-frisbeezip
-fielderchicken
-vaultingmoldovan
-malletangry
-leagueberserk
-squadhandball
-woodcockpentathlon
-campfireunicyclist
-panswaterpolo
-chickenspitcher
-hootenannyfielding
-rafflekarate
-ischampion
-hazardollie
-bugswinning
-packride
-sweetcornboomerang
-coordinatorhardball
-stringkickball
-lyricalmouthguard
-forkdiver
-ibistennis
-capillariescycle
-tighthitter
-curtainsoutfielder
-expertswimming
-instinctivegoal
-driftuniform
-roomywicket
-deadepee
-veinicerink
-somersaultrink
-itchmallet
-furnacelose
-cuttinggoldmedal
-disgustedaerobics
-mildpool
-poofmat
-blastquarter
-tonicshotput
-namibianpaddle
-thighpaintball
-uncoveredbobsleigh
-vitreousjumper
-tentlacrosse
-ligamentcanoeing
-memorygymnastics
-licketysplittarget
-majorvaulting
-diamondswim
-scornfulteammate
-secondhandracing
-barkingathletics
-drumskate
-puddingquiver
-  )
+  SYSTEM_USERNAMES = [
+"teetriceps",
+"basegear",
+"dartboardmoorhen",
+"sticknumerous",
+"bocceon",
+"matspoiled",
+"hoopsponge",
+"unicyclistchinese",
+"javelinchange",
+"playingthumb",
+"polesnot",
+"surfingwashing",
+"targetllama",
+"billiardshandy",
+"surfertight",
+"paddleballwabbit",
+"waterskielastic",
+"judopickled",
+"somersaultbacon",
+"basketballbank",
+"cyclehippo",
+"hurdlego",
+"volleyburning",
+"canoeingpebbly",
+"iceskatesrow",
+"throwingremuda",
+"swimpoised",
+"boulesvroom",
+"pitchoakwood",
+"battingblancas",
+"goalgrit",
+"swimmingtree",
+"helmetpopper",
+"relaytasty",
+"fieldcyandye",
+"skiingcapricious",
+"wetsuitweary",
+"bowlingbrakes",
+"guardbullocks",
+"highjumpfemur",
+"slalomquizzical",
+"olympicsneedle",
+"fencingsnap",
+"skierindian",
+"frisbeezip",
+"fielderchicken",
+"vaultingmoldovan",
+"malletangry",
+"leagueberserk",
+"squadhandball",
+"woodcockpentathlon",
+"campfireunicyclist",
+"panswaterpolo",
+"chickenspitcher",
+"hootenannyfielding",
+"rafflekarate",
+"ischampion",
+"hazardollie",
+"bugswinning",
+"packride",
+"sweetboomerang",
+"coordinatorhardball",
+"stringkickball",
+"lyricalmouthguard",
+"forkdiver",
+"ibistennis",
+"capillariescycle",
+"tighthitter",
+"curtainsoutfielder",
+"expertswimming",
+"instinctivegoal",
+"driftuniform",
+"roomywicket",
+"deadepee",
+"veinicerink",
+"somersaultrink",
+"itchmallet",
+"furnacelose",
+"cuttinggoldmedal",
+"disgustedaerobics",
+"mildpool",
+"poofmat",
+"blastquarter",
+"tonicshotput",
+"namibianpaddle",
+"thighpaintball",
+"uncoveredbobsleigh",
+"vitreousjumper",
+"tentlacrosse",
+"ligamentcanoeing",
+"memorygymnastics",
+"licketysplittarget",
+"majorvaulting",
+"diamondswim",
+"scornfulteammate",
+"secondhandracing",
+"barkingathletics",
+"drumskate",
+"puddingquiver",
+"oysterswordfish",
+"mutationparrot",
+"complexsheep",
+"chatteringpartridge",
+"swiftcommittee",
+"pandemoniumpup",
+"cacheswan",
+"paradewoodpecker",
+"corpsbuffalo",
+"hosthart",
+"movementinsect",
+"intrigueperegrine",
+"optimismgull",
+"implausibilebacteria",
+"gagglehorse",
+"thoughtpeacock",
+"picketcoot",
+"talentponie",
+"twinklefalcon",
+"erstbittern",
+"hedgegoshawk",
+"rangaleauk",
+"hatchcrane",
+"classpoultry",
+"herdostrich",
+"pitchicken",
+"roperhinoceros",
+"flicksnake",
+"dogfishness",
+"descentgiraffe",
+"bindiguana",
+"fraidape",
+"auditfox",
+"libraryroach",
+"quivervole",
+"boardjackrabbit",
+"doutdunbird",
+"quarrelgreyhound",
+"stubbornnessclam",
+"worshipmoorhen",
+"crewstork",
+"grovewaterfowl",
+"rabbleredwings",
+"wrackmoose",
+"subtletyruffs",
+"bavinhog",
+"amberelk",
+"jonquilflamingo",
+"prussianblues",
+"jadebadger",
+"champagnepolarbear",
+"whitehinds",
+"silverturtle",
+"azurevulture",
+"raspberrygnat",
+"apricotdunbird",
+"lemonfinch",
+"maroonbloodhound",
+"copperconie",
+"ceruleanzebra",
+"springbudgrouse",
+"turquoisemallard",
+"periwinkleplover",
+"redvioletgerbil",
+"crimsonpup",
+"thrattlesnake",
+"tanmonkey",
+"cerisevole",
+"electricblueibexe",
+"burgundystoat",
+"redshrimp",
+"salmonpenguin",
+"limemole",
+"blueviper",
+"turtledove",
+"taupewidgeon",
+"peachgrasshopper",
+"lilacotter",
+"babyblue",
+"sapphiretarmigan",
+"olivebass",
+"springgreen",
+"roseteal",
+"orchidflygraybat",
+"pearinsect",
+"yellowbarracuda",
+"harlequinangelfish",
+"plumrainbow",
+"cyanbittern",
+"beigemare",
+"byzantiumracehorse",
+"orangecaribou",
+"downlutz",
+"lazyuniform",
+"euphoricmoves",
+"pickleball",
+"discouraged",
+"insecurediamond",
+"needybaseball",
+"humiliatedbiathlon",
+"madsurfer",
+"sexyboomerang",
+"passionatebob",
+"arenaobsessed",
+"crazyfreethrow",
+"hatefulhalftime",
+"jadedwalk",
+"wincollector",
+"emptykingfu",
+"iratesledding",
+"cruelplayer",
+"grouchyrink",
+"satisfiedollie",
+"angrydugout",
+"homesickscull",
+"frazzledloser",
+"confusedtarget",
+"ecstaticgymnast",
+"excitedhighjump",
+"hopelessfield",
+"abandonedrower",
+"grudgingrelay",
+"enragedkneepads",
+"lustfulinfield",
+"mercifulwaterskier",
+"disheartenedhomerun",
+"contemptuousgame",
+"distressedfitness",
+"hurtcricket",
+"goofyaerobics",
+"bluetennis",
+"warmbilliards",
+"joyfulkayaker",
+"ardentshotput",
+"possessivejog",
+"thrilledcue",
+"sensualboxer",
+"panickysoccer",
+"vengefularcher",
+"delightedbat",
+"expectantbow",
+"A-1 Benchmen Bricks",
+"Their Potatoes",
+"Milwaukee Dodgers",
+"Robert Whales",
+"Wonder Ufoed",
+"Crawlers",
+"Pierced Horns",
+"Twisters Caps",
+"Simpletons",
+"Cool Garage",
+"Tender Counts",
+"Virginia David",
+"Fab E-Lemon-Ators",
+"Ba-Da-Bing Now",
+"Twelve Trucks",
+"Lighting Teamwork",
+"Antti's Usuals Wigglers",
+"Civil Touch",
+"Village Dusters",
+"Sweat Wheel Hawks",
+"Horsemen Bears",
+"Sticky Stunts",
+"Boilers",
+"Fighting The Zone",
+"Brock Babes",
+"Weak Furry",
+"Freak Brothers",
+"Pierced Hop",
+"GuyLayers",
+"Femmes",
+"Clear Atomic",
+"Karma Chimps",
+"Simpletons",
+"Best Sand Wigglers",
+"Monte Crawdads Bears",
+"Beavis Foxtrot",
+"Presidents",
+"Riff Answer",
+"Equator Saturns",
+"Doctors Rags",
+"Not Elite",
+"Jerry's Mountain",
+"Slutty Barbarians",
+"Satellite Boys",
+"Nuff Cheetahs",
+"Son Slice",
+"Net Whip",
+"Solar Reality",
+"Catch Alls",
+"Les Senators",
+"Case Usa",
+"Bud World",
+"Ripley's Labyrinth",
+"Cutting Stealheads",
+"Yellow Encores",
+"Onion Creation",
+"Snow Chimps",
+"Mass Your Knees",
+"Wicked City",
+"Lawn Cavalry",
+"Delayed Momentum",
+"Leznerf Pistons",
+"Deadly Awe",
+"Rocket Valkyries",
+"Oh! Walkers",
+"Hard Champs",
+"Post Hoosiers",
+"5 Dancers",
+"Phantom Plus One",
+"Sizzle And Miss",
+"Kule Projectiles",
+"She Skelter",
+"Free Saturn",
+"10 Moon Bears",
+"Labatt's Dreams",
+"Triangle Aggies",
+"Passing Earth ",
+"Federation Dudes",
+"East Egrets",
+"Hideous Browns",
+"2k Snakes",
+"151 Party",
+"Blockbusters",
+"Pocahontas",
+"Troglodytes",
+"Boys Nuts",
+"Akron Outbreak",
+"Illegal Browns",
+"Snow Kelts",
+"Rockers",
+"Old Crash",
+"Caught Ocean",
+"Some Stallions",
+"Strike Hornettes",
+"Roadrunner",
+"Eliminators",
+"Wet Eventually",
+"Ramona's Explosion",
+"Paul's Freaks",
+"Miracle Sharp",
+"Hoop Quakers",
+"Hang Lemons",
+"Fly for Pedro",
+"Forest Geeks",
+"Breakfast Muskies",
+]
 end
