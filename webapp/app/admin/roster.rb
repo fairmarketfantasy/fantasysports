@@ -1,6 +1,7 @@
 ActiveAdmin.register Roster do
   filter :submitted_at
   filter :market_id
+  filter :contest_id
   filter :state
 
   index do
@@ -38,8 +39,11 @@ ActiveAdmin.register Roster do
     column :state
     column :buy_in
     column :takes_tokens
+    column :score
+    column :contest_rank
     column :amount_paid
     column :paid_at
+    column :cancelled_at
     column :submitted_at
     default_actions
   end
