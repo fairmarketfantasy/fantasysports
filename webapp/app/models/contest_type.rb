@@ -28,10 +28,6 @@ class ContestType < ActiveRecord::Base
     @payout_structure ||= JSON.load(self.payout_structure)
   end
 
-  def num_winners
-    get_payout_structure.length
-  end
-
   def payout_structure=(json)
     @payout_structure = nil
     super

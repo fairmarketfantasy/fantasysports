@@ -91,6 +91,20 @@ func (mgr *FetchManager) createMarket(name string, games Games) {
 			i = 7
 		}
 	}
+	if len(games) > 1 {
+		t := market.OpenedAt.Add(5 * 24 * time.Hour) // Approx sunday 9pm PST
+		sunday10am := time.Date(t.Year(), t.Month(), t.Day(), 17, 0, 0, 0, time.UTC)
+		sunday10amUnix := strconv.Itoa(int(sunday10am.Unix())) // 10am PST
+		sunday1pmUnix := strconv.Itoa(int(sunday10am.Add(3 * time.Hour).Unix()))
+		sundayEveningUnix := strconv.Itoa(int(sunday10am.Add(6 * time.Hour).Unix()))
+		closedAtUnix := strconv.Itoa(int(market.ClosedAt.Unix()))
+		market.FillRosterTimes = "[[" + sunday10amUnix + ", 0.9], [" + sunday1pmUnix + ", 0.95], [" + sundayEveningUnix + ", 0.95], [" + closedAtUnix + ", 1.0]]"
+	} else {
+		dayBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-24 * time.Hour).Unix()))
+		twoHoursBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-2 * time.Hour).Unix()))
+		closedAtUnix := strconv.Itoa(int(market.ClosedAt.Unix()))
+		market.FillRosterTimes = "[[" + dayBeforeUnix + ", 0.5], [" + twoHoursBeforeUnix + ", 0.8], [" + closedAtUnix + ", 1.0]]"
+	}
 	log.Printf("Creating market %s starting at %s and closing on %s with %d games", market.Name, market.StartedAt, market.ClosedAt, len(games))
 	mgr.Orm.Save(&market)
 	for _, game := range games {
