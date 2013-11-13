@@ -17,6 +17,8 @@ puts builder.to_xml
 
 =end
 
+Typhoeus::Config.memoize = false
+
 class StupidXmlObject
   def initialize(body)
     @xml = Nokogiri::XML(body)
@@ -91,7 +93,7 @@ class NetworkMerchants
     xml = send_confirm(token_id)
     raise "Charge failed with #{xml['result-text']}" if xml['result-text'] != 'SUCCESS'
     amount = xml['amount'].to_f.round(2) * 100
-    customer_object.increase_balance(amount 'deposit', :transaction_data => {:network_merchants_transaction_id => xml['transaction-id']}.to_json)
+    customer_object.increase_balance(amount,'deposit', :transaction_data => {:network_merchants_transaction_id => xml['transaction-id']}.to_json)
     Invitation.redeem_paid(customer_object.user)
     Eventing.report(customer_object.user, 'addFunds', :amount => amount)
     xml
@@ -116,7 +118,14 @@ class NetworkMerchants
   def self.post_with_retry(body, &block)
     count = 0
     begin
-      resp = Typhoeus.post(API_ENDPOINT, headers: headers, body: body, timeout: 30, connecttimeout: 10)
+      resp = Typhoeus.post(
+          API_ENDPOINT + "?#{SecureRandom.hex}",
+          headers: headers,
+          body: body,
+          timeout: 30000,
+          connecttimeout: 9000,
+          followlocation: true,
+          sslversion: :sslv3)
       Rails.logger.info("="* 50)
       Rails.logger.info(body)
       Rails.logger.info(resp.headers.pretty_inspect)
