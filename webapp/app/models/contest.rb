@@ -67,7 +67,12 @@ class Contest < ActiveRecord::Base
   end
 
   def rake_amount
-    self.num_rosters * self.contest_type.buy_in * contest_type.rake
+    rake = self.num_rosters * self.contest_type.buy_in * contest_type.rake
+    if contest_type.name == 'h2h rr'
+      per_game_buy_in = self.contest_type.buy_in / (self.contest_type.max_entries - 1)
+      rake = (self.num_rosters-1) * per_game_buy_in * num_rosters * contest_type.rake
+    end
+    rake
   end
 
   #pays owners of rosters according to their place in the contest

@@ -60,15 +60,15 @@ class ContestTest < ActiveSupport::TestCase
     assert_equal by_rank[2].length, 2
   end
 
-  def play_single_contest(ct)
-    users = (1..10).map{ create(:paid_user) }
+  def play_single_contest(ct, num_rosters = 10)
+    users = (1..num_rosters).map{ create(:paid_user) }
     @rosters = []
     users.each_with_index do |user, i|
-      i = 8 if i >= 8
       roster = Roster.generate(user, ct)
-      @players[0..i].each{|player| roster.add_player(player) }
-      roster.submit!
       @rosters << roster
+      roster.submit!
+      next if i == 0
+      @players[1..i].each{|player| roster.add_player(player) }
     end
     @market.update_attribute(:closed_at, Time.new - 1.minute)
     @players.each do |p| 
@@ -103,13 +103,24 @@ class ContestTest < ActiveSupport::TestCase
     end
   end
 
+  test 'unfilled h2h rr record keeping' do
+    setup_simple_market
+    ct = @market.contest_types.where("name='h2h rr' AND buy_in = 900 AND max_entries = 10").first
+    play_single_contest(ct, 3)
+    @rosters.each_with_index do |r, i|
+      r.reload
+      assert_equal 2-i, r.losses
+      assert_equal i, r.wins
+      assert_equal 7 * 100 + i * 194, r.amount_paid.to_i
+    end
+  end
+
   test 'h2h rr record keeping' do
     setup_simple_market
     ct = @market.contest_types.where("name='h2h rr' AND buy_in = 900 AND max_entries = 10").first
     play_single_contest(ct)
     @rosters.each_with_index do |r, i|
       r.reload
-      i = 9 if i >= 8
       assert_equal 9-i, r.losses
       assert_equal i, r.wins
     end
