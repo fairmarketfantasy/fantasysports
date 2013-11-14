@@ -82,7 +82,7 @@ class Contest < ActiveRecord::Base
       raise if self.paid_at || self.cancelled_at
       puts "Payday! for contest #{self.id}"
       Rails.logger.debug("Payday! for contest #{self.id}")
-      rosters = self.rosters.order("contest_rank ASC")
+      rosters = self.rosters.submitted.order("contest_rank ASC")
 
       ranks = rosters.collect(&:contest_rank)
 
@@ -180,6 +180,16 @@ class Contest < ActiveRecord::Base
   def set_invitation_code
     self.invitation_code ||= SecureRandom.urlsafe_base64
   end
+
+    def rounded_payouts(payout_per, number)
+      total = (payout_per * number).to_i
+      payouts = Array.new(number, payout_per.floor)
+      sum = payouts.reduce(&:+)
+      (0..(total - sum-1)).each do |i|
+        payouts[i] += 1
+      end
+      payouts
+    end
 
     def rounded_payouts(payout_per, number)
       total = (payout_per * number).to_i
