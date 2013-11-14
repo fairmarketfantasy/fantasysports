@@ -164,17 +164,12 @@ angular.module("app.controllers")
         // TODO: roll both into markets
         contestClasses: function($q) {
           var deferred = $q.defer();
-          if (!markets.currentMarket) {
-            return [];
+
+          if (! markets.currentMarket) {
+            deferred.resolve([]);
           }
-          $scope.fs.contests.for_market(markets.currentMarket.id).then(function(contestTypes) {
-            var contestClasses = {};
-            _.each(contestTypes, function(type) {
-              if (!contestClasses[type.name]) {
-                contestClasses[type.name] = [];
-              }
-              contestClasses[type.name].push(type);
-            });
+
+          markets.contestClassesFor(markets.currentMarket.id).then(function(contestClasses) {
             deferred.resolve(contestClasses);
           });
 
