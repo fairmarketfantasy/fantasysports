@@ -387,7 +387,7 @@ class MarketTest < ActiveSupport::TestCase
     assert_equal 40, Roster.where("state = 'finished'").count
     assert_equal 1, Roster.where("state = 'cancelled'").count
     assert_equal 9, Roster.where("is_generated").count
-    assert_equal 42, Roster.over.count
+    assert_equal 41, Roster.over.count
 
     Contest.all.each{|c| TransactionRecord.validate_contest(c) }
   end
