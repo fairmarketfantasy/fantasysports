@@ -19,6 +19,7 @@ class Roster < ActiveRecord::Base
   scope :over, -> { where(state: ['cancelled', 'finished'])}
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
   scope :submitted, -> { where(state: ['submitted'])}
+  scope :finished, -> { where(state: ['finished'])}
 
   def players_with_prices
     self.class.uncached do
