@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', 'flash', '$templateCache', 'markets', function($scope, rosters, markets, $routeParams, $location, $dialog, flash, $templateCache, marketService) {
+.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', 'flash', '$templateCache', 'markets', function($scope, rosters, markets, $routeParams, $location, $dialog, flash, $templateCache) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
@@ -161,13 +161,13 @@ angular.module("app.controllers")
       controller: 'JoinContestDialogController',
       resolve: {
         // from MarketController's reloadMarket
-        // TODO: roll both into marketService
+        // TODO: roll both into markets
         contestClasses: function($q) {
           var deferred = $q.defer();
-          if (!marketService.currentMarket) {
+          if (!markets.currentMarket) {
             return [];
           }
-          $scope.fs.contests.for_market(marketService.currentMarket.id).then(function(contestTypes) {
+          $scope.fs.contests.for_market(markets.currentMarket.id).then(function(contestTypes) {
             var contestClasses = {};
             _.each(contestTypes, function(type) {
               if (!contestClasses[type.name]) {
