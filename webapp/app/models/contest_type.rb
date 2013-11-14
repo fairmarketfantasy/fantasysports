@@ -54,7 +54,14 @@ class ContestType < ActiveRecord::Base
   #figure out how much each rank gets -- tricky only because of ties
   def rank_payment(ranks)
     rank_payment = Hash.new(0)
-    get_payout_structure.each_with_index do |payment, i|
+    payments_per_rank = if self.name == 'h2h rr'
+          # Handle unfilled h2h rr. Ranks.length is number of entrants
+          unplayed_games = self.max_entries - ranks.length
+          get_payout_structure.slice(get_payout_structure.length-ranks.length, ranks.length).map{|amt| amt + unplayed_games * self.buy_in / (self.max_entries-1) }
+        else
+          get_payout_structure
+        end
+    payments_per_rank.each_with_index do |payment, i|
       rank_payment[ranks[i]] += payment
     end
     return rank_payment

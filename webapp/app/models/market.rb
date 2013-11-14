@@ -43,6 +43,7 @@ class Market < ActiveRecord::Base
           market.send(method)
         rescue Exception => e
           puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
+          Rails.logger.error "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
         end
       end
     end
@@ -344,7 +345,7 @@ class Market < ActiveRecord::Base
       max_entries: 10,
       buy_in: 900,
       rake: 0.03,
-      payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194]',
+      payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194, 0]',
       payout_description: "9 h2h games each pay out 194FF",
       takes_tokens: true,
     },
@@ -354,7 +355,7 @@ class Market < ActiveRecord::Base
       max_entries: 10,
       buy_in: 900,
       rake: 0.03,
-      payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194]',
+      payout_structure: '[1746, 1552, 1358, 1164, 970, 776, 582, 388, 194, 0]',
       payout_description: "9 h2h games each pay out $1.94",
       takes_tokens: false,
     },
@@ -364,7 +365,7 @@ class Market < ActiveRecord::Base
       max_entries: 10,
       buy_in: 9000,
       rake: 0.03,
-      payout_structure: '[17460, 15520, 13580, 11640, 9700, 7760, 5820, 3880, 1940]',
+      payout_structure: '[17460, 15520, 13580, 11640, 9700, 7760, 5820, 3880, 1940, 0]',
       payout_description: "9 h2h games each pay out $19.40",
       takes_tokens: false,
     }
