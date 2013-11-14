@@ -82,7 +82,7 @@ class Contest < ActiveRecord::Base
       raise if self.paid_at || self.cancelled_at
       puts "Payday! for contest #{self.id}"
       Rails.logger.debug("Payday! for contest #{self.id}")
-      rosters = self.rosters.order("contest_rank ASC")
+      rosters = self.rosters.submitted.order("contest_rank ASC")
 
       ranks = rosters.collect(&:contest_rank)
 
