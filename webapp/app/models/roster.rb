@@ -117,8 +117,12 @@ class Roster < ActiveRecord::Base
                     AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
             AND NOT private", contest_type.id).order('id asc').first
           if set_contest.nil?
-            set_contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
-              market_id: self.market_id, contest_type_id: contest_type.id)
+            if contest_type.limit.nil? || Contest.where(contest_type_id: contest_type.id).count < contest_type.limit
+              set_contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
+                  market_id: self.market_id, contest_type_id: contest_type.id)
+            else
+              raise HttpException.new(403, "Contest is full")
+            end
           end
         else #contest not nil. enter private contest
           if set_contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => set_contest.league_id).first.nil?
@@ -130,7 +134,7 @@ class Roster < ActiveRecord::Base
         set_contest.save!
         if set_contest.num_rosters > set_contest.user_cap && set_contest.user_cap != 0
           removed_roster = set_contest.rosters.where('is_generated = true AND NOT cancelled').first
-          raise "contest #{set_contest.id} is full" if removed_roster.nil?
+          raise HttpException.new(403, "Contest #{set_contest.id} is full") if removed_roster.nil?
           removed_roster.cancel!("Removed for a real player")
           set_contest.num_rosters -= 1
           set_contest.num_generated -= 1
