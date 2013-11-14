@@ -33,9 +33,9 @@ angular.module("app.controllers")
   }
 
   $scope.signUp = function() {
+    if (!$scope.isValid()) { return; }
     fs.user.create($scope.user).then(function(resp){
       //only fires on success, errors are intercepted by fsAPIInterceptor
-      debugger
       $timeout(function() {window.location.reload(true);});
     });
   };
@@ -50,11 +50,19 @@ angular.module("app.controllers")
   };
 
   $scope.isValid = function(){
-    var required       = ($scope.user.name && $scope.user.email && $scope.user.password && $scope.user.password_confirmation);
-    var passLength     = ($scope.user.password && $scope.user.password.length >= 8);
+    var required       = ($scope.user.username && $scope.user.name && $scope.user.email && $scope.user.password && $scope.user.password_confirmation);
+    var passLength     = ($scope.user.password && $scope.user.password.length >= 6);
     var matchingPass   = ($scope.user.password === $scope.user.password_confirmation);
 
-    return required && passLength && matchingPass;
+    $scope.errorMsg = null;
+    if (!required) {
+      $scope.errorMsg = "All fields are required";
+    } else if (!passLength) {
+      $scope.errorMsg = "Password must be >= 6 chars";
+    } else if (!matchingPass) {
+      $scope.errorMsg = "Password and confirmation must match";
+    }
+    return !$scope.errorMsg;
   };
 
   $scope.close = function(){
