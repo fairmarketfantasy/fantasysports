@@ -50,6 +50,6 @@ class RoundRobinRecordKeeper < RecordKeeperBase
   end
 
   def total_games
-   @roster.contest.num_rosters
+   @roster.contest.num_rosters-1
   end
 end
