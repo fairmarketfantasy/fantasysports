@@ -32,6 +32,7 @@ class Market < ActiveRecord::Base
       track_benched_players
       close
       lock_players
+      fill_rosters
       tabulate_scores
       complete
     end
