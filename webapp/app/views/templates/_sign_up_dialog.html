@@ -4,6 +4,7 @@
   </div>
   <div class='modal-body clearfix'>
     <form>
+      <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
       <p >{{message}}</p>
       <div class='modal-form-container'>
         <input type='text' placeholder='Username' ng-show='signUpForm' ng-model="user.username" class='mvm' /><br />
