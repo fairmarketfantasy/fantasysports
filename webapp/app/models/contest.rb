@@ -124,6 +124,7 @@ class Contest < ActiveRecord::Base
     self.with_lock do
       raise if self.paid_at.nil?
       self.paid_at = nil
+      self.rosters.finished.update_all(:state => 'submitted')
       TransactionRecord.validate_contest(self)
       TransactionRecord.where(:contest_id => self.id).each do |tr|
         next if tr.reverted? || tr.event == 'buy_in'#TransactionRecord::CONTEST_TYPES.include?(tr.event)
