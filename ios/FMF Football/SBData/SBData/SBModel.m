@@ -767,6 +767,7 @@ static dispatch_queue_t _sharedQueue;
     [self _loadIfFirst];
     NSParameterAssert(pageNum < _pages.count);
     NSArray *pg = [[self query] fetchOffset:pageNum*_pageSize count:_pageSize];
+    if (!pg) return; // errrgh
     _pages[pageNum] = @[ pg, [NSNumber numberWithBool:YES] ];
 }
 
