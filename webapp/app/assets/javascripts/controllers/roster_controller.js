@@ -3,6 +3,7 @@ angular.module("app.controllers")
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
+  $scope.Math = window.Math;
 
   var teamsToGames = {};
   markets.fetch($routeParams.market_id).then(function(market) {
