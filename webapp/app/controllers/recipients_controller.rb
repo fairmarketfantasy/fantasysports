@@ -21,12 +21,10 @@ class RecipientsController < ApplicationController
   end
 
   def destroy
-    stripe_object = current_user.recipient.stripe_object
-    if stripe_object.delete
-      current_user.recipient.delete
+    if current_user.recipient.delete
       render_api_response current_user.reload
     else
-      render json: {error: ["There was a problem deleting that bank account, refresh and try again."]}
+      render json: {error: ["There was a problem deleting that payout location, refresh and try again."]}
     end
   end
 
