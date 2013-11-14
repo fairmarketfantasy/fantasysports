@@ -125,9 +125,9 @@ class ActiveSupport::TestCase
       max_entries: 0,
       buy_in: 1000,
       rake: 0.03,
-      payout_structure: '[50, 25, 12.5, 9.5]',
+      payout_structure: '[50, 25, 13, 9]',
       salary_cap: 100000,
-      payout_description: '[50, 25, 12.5, 9.5]',
+      payout_description: '[50, 25, 13, 9]',
       takes_tokens: false
     )
     market.contest_types.reload

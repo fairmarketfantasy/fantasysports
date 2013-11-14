@@ -30,7 +30,8 @@ class TransactionRecord < ActiveRecord::Base
     return if contest.contest_type.max_entries == 0
     sum = contest.transaction_records.reduce(0){|total, tr| total += tr.amount}
     if sum != 0
-      raise "Contest sums to #{sum}. Should Zero. Fucking check yo-self."
+      debugger
+      raise "Contest #{contest.id} sums to #{sum}. Should Zero. Fucking check yo-self."
     end
   end
 
