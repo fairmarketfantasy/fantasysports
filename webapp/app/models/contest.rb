@@ -80,21 +80,24 @@ class Contest < ActiveRecord::Base
     self.with_lock do
       return if self.paid_at && Market.override_close
       raise if self.paid_at || self.cancelled_at
+      puts "Payday! for contest #{self.id}"
+      Rails.logger.debug("Payday! for contest #{self.id}")
       rosters = self.rosters.order("contest_rank ASC")
 
       ranks = rosters.collect(&:contest_rank)
 
       #figure out how much each rank gets -- tricky only because of ties
       rank_payment = contest_type.rank_payment(ranks)
-
       #organize rosters by rank
       rosters_by_rank = Contest._rosters_by_rank(rosters)
 
       #for each rank, make payments
-      rosters_by_rank.each_pair do |rank, rosters|
+      rosters_by_rank.each_pair do |rank, ranked_rosters|
         payment = rank_payment[rank]
-        payment_per_roster = Float(payment) / rosters.length
-        rosters.each do |roster|
+        payment_per_roster = Float(payment) / ranked_rosters.length
+        payments_for_rosters = rounded_payouts(payment_per_roster, ranked_rosters.length)
+
+        ranked_rosters.each_with_index do |roster, i|
           roster.set_records!
           roster.paid_at = Time.new
           roster.state = 'finished'
@@ -104,8 +107,8 @@ class Contest < ActiveRecord::Base
             next
           end
           # puts "roster #{roster.id} won #{payment_per_roster}!"
-          roster.owner.payout(payment_per_roster, self.contest_type.takes_tokens?, :event => 'payout', :roster_id => roster.id, :contest_id => self.id)
-          roster.amount_paid = payment_per_roster
+          roster.owner.payout(payments_for_rosters[i], self.contest_type.takes_tokens?, :event => 'payout', :roster_id => roster.id, :contest_id => self.id)
+          roster.amount_paid = payments_for_rosters[i]
           roster.save!
         end
       end
@@ -175,6 +178,16 @@ class Contest < ActiveRecord::Base
 
     def set_invitation_code
       self.invitation_code ||= SecureRandom.urlsafe_base64
+    end
+
+    def rounded_payouts(payout_per, number)
+      total = (payout_per * number).to_i
+      payouts = Array.new(number, payout_per.floor)
+      sum = payouts.reduce(&:+)
+      (0..(total - sum-1)).each do |i|
+        payouts[i] += 1
+      end
+      payouts
     end
 
 end
