@@ -230,9 +230,9 @@ class MarketTest < ActiveSupport::TestCase
 
   test "fill rosters" do
     setup_simple_market
-    @market.fill_roster_times = [[Time.new - 1.minute, 0.5], [ Time.new - 1.minute, 1.0]].to_json
+    @market.fill_roster_times = [[(Time.new - 1.minute).to_i, 0.5], [ (Time.new + 1.minute).to_i, 1.0]].to_json
+    @market.opened_at = Time.new - 1.minute
     @market.save!
-    @market.update_attribute(:opened_at, Time.new-1.minute)
     @market.open
     contest_types = [@market.contest_types.where("buy_in = 100 and takes_tokens = true").first,
         @market.contest_types.where("buy_in = 100 and takes_tokens = false").first,
@@ -240,10 +240,10 @@ class MarketTest < ActiveSupport::TestCase
     user = create(:paid_user)
     rosters = contest_types.map{|ct| Roster.generate(user, ct).submit! }
     @market.fill_rosters
-    assert JSON.parse(@market.fill_roster_times).length, 1
+    assert JSON.parse(@market.fill_roster_times).length, 2
     rosters.each{|r| assert_equal r.contest.user_cap * 0.5, r.contest.reload.num_rosters  }
+    @market.update_attribute(:fill_roster_times, [[Time.new - 1.minute, 0.5], [ Time.new + 1.minute, 1.0]].to_json)
     @market.fill_rosters
-    assert JSON.parse(@market.fill_roster_times).length, 0
     rosters.each{|r| assert_equal r.contest.user_cap, r.contest.reload.num_rosters  }
     @market.fill_rosters
   end
@@ -285,7 +285,7 @@ class MarketTest < ActiveSupport::TestCase
     add_lollapalooza(@market)
     ct1 = @market.contest_types.where("buy_in = 1000 and max_entries = 2").first
     ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 10").first
-    ct3 = @market.contest_types.where("buy_in = 1000 and max_entries = 0").first
+    ct3 = @market.contest_types.where("buy_in = 1000 and name LIKE '%k'").first
     # Fill 3 contest types with 11 users each.  H2H will create 6 contests. ct2 will have 2 contests, ct3 -> 100k
     users = (1..11).map{ create(:paid_user) }
     @rosters = {
@@ -298,7 +298,12 @@ class MarketTest < ActiveSupport::TestCase
       [ct1, ct2, ct3].each do |ct|
         roster = Roster.generate(user, ct)
         @players[0..i].each{|player| roster.add_player(player) }
-        roster.submit!
+        begin
+          roster.submit!
+        rescue => e
+          # This only happens once, the 11th roster into the lolla
+          raise e unless e.message =~ /full/i && @rosters[roster.contest_type].length == 10 && ct.name =~ /k/ # now we limit lollas
+        end
         @rosters[roster.contest_type] << roster
       end
     end
@@ -315,7 +320,6 @@ class MarketTest < ActiveSupport::TestCase
     Market.tend
     assert new_market_player.reload.locked
     assert market_player.reload.locked
-
 
     @rosters.each do |ct, rosters|
       # Available players shouldn't include locked players
@@ -380,7 +384,7 @@ class MarketTest < ActiveSupport::TestCase
       end
     end
 
-    assert_equal 41, Roster.where("state = 'finished'").count
+    assert_equal 40, Roster.where("state = 'finished'").count
     assert_equal 1, Roster.where("state = 'cancelled'").count
     assert_equal 9, Roster.where("is_generated").count
     assert_equal 42, Roster.over.count
