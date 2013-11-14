@@ -3,7 +3,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def sign_up_from_html
     build_resource(sign_up_params)
-
     if resource.save
       if resource.active_for_authentication?
         sign_up(resource_name, resource)
