@@ -8,7 +8,7 @@
   <img src='/assets/ajax-loader-big.gif'>
 </div>
 <div class='modal-body'>
-  <ul class="nav nav-pills modal-pills">
+  <ul class="nav hide nav-pills modal-pills">
     <li ng-class="{active: payment_type == 'credit-card'}">
       <a href="javascript://" ng-click="payment_type = 'credit-card'">Pay with Credit Card</a>
     </li>
@@ -16,7 +16,7 @@
       <a href="javascript://" ng-click="payment_type = 'paypal'; showCardForm = false">Pay with PayPal</a>
     </li>
   </ul>
-  <div ng-show="payment_type == 'credit-card'">
+  <div hide ng-show="payment_type == 'credit-card'">
     <div class='clearfix'>
       <div class="add-funds-container">
         <h5>Select a Card</h5>
