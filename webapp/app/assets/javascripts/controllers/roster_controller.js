@@ -182,7 +182,7 @@ angular.module("app.controllers")
     var d = $dialog.dialog(dialogOpts);
     d.open().then(function(result) {
       if (!result) { return; }
-      $scope.fs.contests.join(rosters.currentRoster.contest_type.id, rosters.currentRoster.id).then(function(data) {
+      $scope.fs.contests.join(result.contestType.id, currentRoster.id).then(function(data) {
         rosters.selectRoster(data);
         flash.success("Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!");
         $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
