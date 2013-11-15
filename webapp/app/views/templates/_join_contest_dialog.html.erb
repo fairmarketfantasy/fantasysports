@@ -1,12 +1,10 @@
 <div class='modal-header'>
-  <h3 class='inline-block'>Create Contest</h3>
+  <h3 class='inline-block'>Enter Another Contest</h3>
   <p class='inline-block pull-right'>
     Enter a contest with this roster
   </p>
 </div>
 <div class='modal-body'>
-  <p>Select a contest to enter it using this roster!</p>
-
   <div>
     <ul class="clearfix no-no" ng-cloak>
       <li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass) && marketService.currentMarket.market_duration == 'day'}" ng-show="contestClasses[contestClass].length">
