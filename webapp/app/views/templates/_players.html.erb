@@ -83,10 +83,15 @@
             </table>
           </div>
 
-            <div class="cta-container clearfix">
-    <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
-    <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.reset('/market/' + rosters.currentRoster.market.id)" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">Finish</a>
-    <a class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'" ng-click="enterAgain()">Enter Again</a>
-  </div>
+          <div class="cta-container clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">
+            <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.reset('/market/' + rosters.currentRoster.market.id)" href="javascript://" >Finish</a>
+            <a class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-click="enterAgain()">Enter Again</a>
+          </div>
+
+          <div class="alert alert-success roster-alert" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
+            <p class="roster-cap-text">Your team&rsquo;s current salary is {{((100000 - rosters.currentRoster.remaining_salary)/100000)*100 | number:0}}% of the allowed $100k. You can exceed the salary cap by up to 3%. If you do we&rsquo;ll simply reduce the fantasy stats your team produces by the percent you exceeded the salary cap.</p>
+
+            <a class="btn btn-large btn-success" ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
+          </div>
         </div>
       </div>
