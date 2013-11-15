@@ -1,7 +1,7 @@
-//= require jquery-2.0.3.min.js
-//= require underscore-min.js
-//= require angular-1.0.7.min.js
-//= require angular-ui-bootstrap-tpls-0.4.0.min.js
+//= require vendor/jquery-1.10.2.min
+//= require vendor/underscore-min.js
+//= require vendor/angular-1.0.8.min.js
+//= require vendor/angular-ui-bootstrap-tpls-0.4.0.min.js
 //= require_self
 
 angular.module('guide', ['guide.controllers', 'ui.bootstrap']);

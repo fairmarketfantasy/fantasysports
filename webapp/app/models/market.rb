@@ -29,9 +29,10 @@ class Market < ActiveRecord::Base
       publish
       open
       remove_shadow_bets
-      lock_players
       track_benched_players
       close
+      lock_players
+      fill_rosters
       tabulate_scores
       complete
     end
@@ -116,11 +117,12 @@ class Market < ActiveRecord::Base
   [[<unix-timestamp, <percent-fill>], ...]
 =end
     fill_times = JSON.parse(self.fill_roster_times)
-    next_fill = fill_times.shift
-    if next_fill && next_fill[0].to_i < Time.new.to_i
-      self.fill_rosters_to_percent(next_fill[1])
-      self.fill_roster_times = fill_times.to_json
-      self.save!
+    percent = nil
+    fill_times.each do |ft| 
+      percent = ft[1] if ft[0].to_i < Time.new.to_i
+    end
+    if percent
+      self.fill_rosters_to_percent(percent)
     end
   end
 
@@ -236,6 +238,7 @@ class Market < ActiveRecord::Base
       payout_structure: '[250000, 100000, 50000, 25000, 15000, 10000, 10000, 5000, 5000, 5000, 5000, 5000, 2500, 2500,  2500, 2500, 2500, 2050]',
       payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $500, 4th: $250, 5th: $150, 6th: $100, 7th-10th: $50, 10th-16th: $25",
       takes_tokens: false,
+      limit: 1
     },
 =begin
     {
@@ -247,6 +250,7 @@ class Market < ActiveRecord::Base
       payout_structure: '[500000, 200000, 100000, 50000, 30000, 20000, 10000, 10000, 10000, 10000, 5000, 5000,  5000, 5000, 5000, 5000]',
       payout_description: "1st: $5k, 2nd: 2k, 3rd: 1k, 4th: $500, 5th: $300, 6th: $200, 7th-10th: $100, 10th-16th: $50",
       takes_tokens: false,
+      limit: 1
     },
 =end
     {
@@ -388,7 +392,8 @@ class Market < ActiveRecord::Base
           payout_structure: data[:payout_structure],
           salary_cap: 100000,
           payout_description: data[:payout_description],
-          takes_tokens: data[:takes_tokens]
+          takes_tokens: data[:takes_tokens],
+          limit: data[:limit]
         )
       end
     end

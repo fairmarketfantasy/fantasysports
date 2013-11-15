@@ -122,13 +122,14 @@ class ActiveSupport::TestCase
       market_id: market.id,
       name: '0.1k',
       description: '$100',
-      max_entries: 0,
+      max_entries: 10,
       buy_in: 1000,
       rake: 0.03,
-      payout_structure: '[50, 25, 13, 9]',
+      payout_structure: '[5000, 2500, 1300, 900]',
       salary_cap: 100000,
-      payout_description: '[50, 25, 13, 9]',
-      takes_tokens: false
+      payout_description: '[5000, 2500, 1300, 900]',
+      takes_tokens: false,
+      limit: 1
     )
     market.contest_types.reload
     market

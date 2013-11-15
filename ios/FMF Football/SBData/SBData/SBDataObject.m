@@ -8,7 +8,7 @@
 
 #import "SBDataObject.h"
 #import <objc/runtime.h>
-#import <JSONKit/JSONKit.h>
+#import "JSONKit.h"
 #import "SBUser.h"
 #import "NSDictionaryOfParametersFromURL.h"
 #import "NSObject+ClassProperties.h"

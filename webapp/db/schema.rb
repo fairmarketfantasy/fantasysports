@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131113033116) do
+ActiveRecord::Schema.define(version: 20131114083602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20131113033116) do
     t.integer "salary_cap"
     t.string  "payout_description", default: "",    null: false
     t.boolean "takes_tokens",       default: false
+    t.integer "limit"
   end
 
   add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
@@ -444,10 +445,10 @@ ActiveRecord::Schema.define(version: 20131113033116) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
+    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
-    t.string   "avatar"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
