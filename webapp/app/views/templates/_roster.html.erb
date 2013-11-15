@@ -8,8 +8,8 @@
       <a href="#/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster">Back to Contests</a>
       <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name}}.png" class="contest-info-image" />
       <div class="contest-info-description">
-        <h2 ng-show="rosters.currentRoster.league" class="contest-title">{{rosters.currentRoster.league.name}} League Game</h2>
-        <h2 class="contest-title">{{markets.currentMarket.name}}
+        <h2 ng-show="rosters.currentRoster.league" class="contest-title">{{rosters.currentRoster.contest_type.name}} {{rosters.currentRoster.league.name}} League Game</h2>
+        <h2 ng-hide="rosters.currentRoster.league" class="contest-title">{{markets.currentMarket.name}}
           <span ng-show="markets.currentMarket.name == ''">Daily</span> 
           {{rosters.currentRoster.contest_type.name}}
           <span ng-show="rosters.currentRoster.contest_type.name == '194' || rosters.currentRoster.contest_type.name == '970'">% </span> 
@@ -23,8 +23,10 @@
         </p>
         <ul>
           <li>Starts: {{markets.currentMarket.started_at | shortFormTime }}</li>
-          <li ng-show="rosters.currentRoster.contest_type.takes_tokens">Buy-in: {{rosters.currentRoster.contest_type.buy_in }}FF</li>
-          <li ng-hide="rosters.currentRoster.contest_type.takes_tokens">Buy-in: {{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</li>
+          <li>Buy-in: 
+            <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.contest_type.buy_in }} FanFrees</span>
+            <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</span>
+          </li>
           <li>Entries: {{rosters.currentRoster.contest_type.max_entries | unlimitedIfZero}}</li>
           <li>Payout: {{rosters.currentRoster.contest_type.payout_description}}</li>
           <li ng-show="rosters.currentRoster.contest_rank && rosters.currentRoster.state != 'in_progress' && inThePast(market.started_at)">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
@@ -49,13 +51,19 @@
         <th ng-hide="rosters.contest_type.name == 'h2h rr'">Rank</th>
         <th>User</th>
         <th>Payout</th>
-        <th>Record</th>
         <th>Points</th>
+        <th>Roster</th>
       </thead>
       <tbody>
         <tr ng-repeat="roster in leaderboard">
-          <td ng-show="roster.contest_type.name == 'h2h rr'">{{record(leaderboard, roster)}}</td>
-          <td ng-hide="roster.contest_type.name == 'h2h rr'">{{roster.contest_rank}}</td>
+          <td ng-show="roster.contest_type.name == 'h2h rr'">
+            <span ng-show="inThePast(market.started_at)">{{record(leaderboard, roster)}}</span>
+            <span ng-hide="inThePast(market.started_at)">Not Started</span>
+          </td>
+          <td ng-hide="roster.contest_type.name == 'h2h rr'">
+            <span ng-show="inThePast(market.started_at)">{{roster.contest_rank}}</span>
+            <span ng-hide="inThePast(market.started_at)">Not Started</span>
+          </td>
           <td>{{roster.owner_name}}</td>
           <td>{{roster.contest_rank_payout}}</td>
           <td>{{roster.score | number:2}}</td>
@@ -73,7 +81,7 @@
     <div class="roster-title my-roster-title clearfix">  
       <h3 class="inline-heading"><span ng-show="rosters.currentRoster.owner_id == currentUser.id">Your Team</span><span ng-show="rosters.currentRoster.owner_id != currentUser.id">{{rosters.currentRoster.owner_name}}'s Team</span></h3>
 
-      <h3 class="inline-heading opponent" ng-show="rosters.opponentRoster">{{rosters.opponentRoster.owner_name}}</h3>
+      <h3 class="inline-heading opponent" ng-show="rosters.opponentRoster">{{rosters.opponentRoster.owner_name | truncate:10}}</h3>
 
       <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}" ng-hide="rosters.opponentRoster">
         Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}

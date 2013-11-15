@@ -325,6 +325,10 @@ got_msg:
 
 - (void)showInView:(UIView *)view
 {
+    if (!view) {
+        NSLog(@"attempting to present alert on a nil view. booo");
+        return;
+    }
     self.alpha = 0;
     if (self.autoHideKeyboard && self.previousFirstResponder == nil) {
         UIView *firstResponder = [view findFirstResponder];

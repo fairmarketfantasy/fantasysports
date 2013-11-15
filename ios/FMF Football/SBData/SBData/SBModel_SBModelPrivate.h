@@ -9,7 +9,7 @@
 #import "SBModel.h"
 #import <FMDB/FMDatabase.h>
 #import "sqlite3.h"
-#import <JSONKit/JSONKit.h>
+#import "JSONKit.h"
 #import <objc/runtime.h>
 #import "NSObject+ClassProperties.h"
 
