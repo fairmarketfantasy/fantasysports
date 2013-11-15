@@ -81,7 +81,7 @@
     <div class="roster-title my-roster-title clearfix">  
       <h3 class="inline-heading"><span ng-show="rosters.currentRoster.owner_id == currentUser.id">Your Team</span><span ng-show="rosters.currentRoster.owner_id != currentUser.id">{{rosters.currentRoster.owner_name}}'s Team</span></h3>
 
-      <h3 class="inline-heading opponent" ng-show="rosters.opponentRoster">{{rosters.opponentRoster.owner_name||truncate:10}}</h3>
+      <h3 class="inline-heading opponent" ng-show="rosters.opponentRoster">{{rosters.opponentRoster.owner_name | truncate:10}}</h3>
 
       <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}" ng-hide="rosters.opponentRoster">
         Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
