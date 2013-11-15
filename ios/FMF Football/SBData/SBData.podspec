@@ -101,11 +101,17 @@ Pod::Spec.new do |s|
   # Finally, specify any Pods that this Pod depends on.
   #
   s.dependency 'sqlite3', '~> 3.8.0.2'
-  s.dependency 'JSONKit', '~> 1.5pre'
+  #s.dependency 'JSONKit', '~> 1.5pre'
   s.dependency 'FMDB', '~> 2.1'
   s.dependency 'AFNetworking', '~> 1.3.2' 
   s.dependency 'AFOAuth2Client', '~> 0.1.1'
   s.dependency 'ISO8601DateFormatter', '~> 0.6'
   s.dependency 'SecureUDID', '~> 1.1'
   s.dependency 'AFHTTPRequestOperationLogger', '~> 1.0.0'
+  #s.dependency 'GCJSONKit', :external_source => 'https://github.com/gamechanger/JSONKit.git'
+
+  s.subspec 'JSONKit' do |jk|
+    jk.requires_arc = false 
+    jk.source_files = 'JSONKit', 'JSONKit/**/*.{h,m}'
+  end
 end

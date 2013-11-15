@@ -994,7 +994,7 @@
 				INFOPLIST_FILE = "FMF Football/FMF Football-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/samuelsutch/dev/shadowart/clients/fmf-local/fantasysports/ios/FMF\\ Football/FMF\\ Football/Flurry",
+					"$(SOURCE_ROOT)/FMF\\ Football/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1018,7 +1018,7 @@
 				INFOPLIST_FILE = "FMF Football/FMF Football-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/samuelsutch/dev/shadowart/clients/fmf-local/fantasysports/ios/FMF\\ Football/FMF\\ Football/Flurry",
+					"$(SOURCE_ROOT)/FMF\\ Football/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
