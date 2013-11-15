@@ -13,6 +13,7 @@
 #import "FFGame.h"
 #import "FFContestType.h"
 #import "FFRoster.h"
+#import "Flurry.h"
 
 
 @implementation FFSession
@@ -95,6 +96,32 @@
          //
          err(error);
      }];
+}
+
+- (void)authorizedJSONRequestWithRequestBlock:(NSURLRequest *(^)(void))requestBlock
+                                      success:(void (^)(NSURLRequest *, NSHTTPURLResponse *, id))success
+                                      failure:(void (^)(NSURLRequest *, NSHTTPURLResponse *, NSError *, id))failure
+{
+    // wrap all authorized requests so we can log the error to flurry.
+    [super authorizedJSONRequestWithRequestBlock:requestBlock success:success failure:
+     ^void (NSURLRequest *req, NSHTTPURLResponse *resp, NSError *err, id res) {
+         [Flurry logError:@"AuthorizedRequestError" message:nil error:err];
+         failure(req, resp, err, res);
+    }];
+}
+
+- (void)anonymousJSONRequestWithMethod:(NSString *)method
+                                  path:(NSString *)path
+                            parameters:(NSDictionary *)params
+                               success:(void (^)(NSURLRequest *, NSHTTPURLResponse *, id))success
+                               failure:(void (^)(NSURLRequest *, NSHTTPURLResponse *, NSError *, id))failure
+{
+    // wrap all anonymous requests so we can log the error to flurry.
+    [super anonymousJSONRequestWithMethod:method path:path parameters:params success:success failure:
+     ^void (NSURLRequest *req, NSHTTPURLResponse *resp, NSError *err, id ret) {
+         [Flurry logError:@"AnonymousRequestError" message:nil error:err];
+         failure(req, resp, err, ret);
+    }];
 }
 
 - (void)logout

@@ -114,7 +114,7 @@ footer {
   padding: 8px 0;
   .border-radius(0);
 }
-.alert-success {
+.fixed-flash.alert-success {
   background-color: @green;
 }
 
@@ -411,6 +411,37 @@ footer {
   width: 94%;
   padding: 3%;
 }
+
+/* FanFrees Modal */
+
+.fanfree-item {
+  float: left;
+  text-align: center;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+  width: 31%;
+}
+
+.icon-cicrcle {
+  width: 130px;
+  height: 130px;
+  padding: 10px;
+  border: solid 7px @gray;
+  margin: 0 auto 14px;
+  display: block;
+  .border-radius(80px);
+  background-color: @offWhite;
+}
+.fanfree-item:hover {
+  cursor: pointer;
+  .icon-cicrcle {
+    background-color: @green;
+    border: solid 7px @greenDark;
+  }
+}
+
 
 /* Add Funds Modal */
 .card {
@@ -1085,6 +1116,17 @@ input[type="text"].players-search {
   border-left: none;
   margin-bottom: 0;
 }
+.nav-pills {
+  padding: 0;
+
+}
+.roster-alert {
+  margin-top: 14px;
+}
+.alert .roster-cap-text {
+  font-size: 14px;
+}
+
 
 /* Button Overrides -- there are many 
    TODO - remove the .btn.btn- specificity in flat-ui -- GROSS
@@ -1170,7 +1212,7 @@ input[type="text"].players-search {
   margin-top: 22px;    
 }
 .table th, .table td {
-  font-size: 13px;
+  font-size: 12px;
 }
 textarea[class*="span"] {
   width: 94% !important;
@@ -1230,6 +1272,9 @@ textarea[class*="span"] {
   .landing-container {
     height: 725px;
   }
+  .table th, .table td {
+    font-size: 11px;
+  }
 }
 @media (min-width: 980px) and (max-width: 1100px) {
   .landing-container {
@@ -1237,6 +1282,9 @@ textarea[class*="span"] {
   }
   .sign-up-content {
     padding-top: 10%;
+  }
+  .table th, .table td {
+    font-size: 11px;
   }
 }
 @media (min-width: 890px) and (max-width: 979px) {
@@ -1255,6 +1303,9 @@ textarea[class*="span"] {
   .difference {
     font-size: 20px;
     margin-bottom: 16px;
+  }
+  .table th, .table td {
+    font-size: 10px;
   }
 }
 @media (max-width: 889px) {
