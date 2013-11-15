@@ -114,7 +114,7 @@ footer {
   padding: 8px 0;
   .border-radius(0);
 }
-.alert-success {
+.fixed-flash.alert-success {
   background-color: @green;
 }
 
@@ -411,6 +411,36 @@ footer {
   width: 94%;
   padding: 3%;
 }
+
+/* FanFrees Modal */
+
+.fanfree-item {
+  float: left;
+  text-align: center;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+  width: 31%;
+}
+
+.icon-cicrcle {
+  width: 130px;
+  height: 130px;
+  padding: 10px;
+  border: solid 7px @gray;
+  margin: 0 auto 14px;
+  display: block;
+  .border-radius(80px);
+  background-color: @offWhite;
+}
+.fanfree-item:hover {
+  cursor: pointer;
+  .icon-cicrcle {
+    background-color: @green;
+  }
+}
+
 
 /* Add Funds Modal */
 .card {
