@@ -194,6 +194,10 @@ angular.module("app.controllers")
     $scope.joinContestModal(rosters.currentRoster);
   };
 
+  $scope.finish = function() {
+    rosters.reset('/market/' + rosters.currentRoster.market.id)
+  }
+
   $scope.addPlayer = function(player) {
     var promise = rosters.addPlayer(player);
     promise && promise.then(function() {
