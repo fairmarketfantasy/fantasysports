@@ -172,19 +172,22 @@ angular.module('app.data')
       };
 
       this.submit = function() {
+        var deferred = $q.defer();
+
         var self = this;
         fs.rosters.submit(this.currentRoster.id).then(function(roster) {
-          $location.path('/market/' + self.currentRoster.market.id);
           if (roster.contest_type.takes_tokens) {
             currentUserService.currentUser.token_balance -= roster.buy_in;
           } else {
             currentUserService.currentUser.balance -= roster.buy_in;
           }
           self.reset();
-          flash.success("Roster submitted successfully!");
           currentUserService.refreshUser();
+          deferred.resolve(roster);
           //self.justSubmittedRoster = roster;
         });
+
+        return deferred.promise;
       };
 
       this.cancel = function() {

@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', 'flash', '$templateCache', 'markets', function($scope, rosters, markets, $routeParams, $location, $dialog, flash, $templateCache) {
+.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', '$timeout', 'flash', '$templateCache', 'markets', function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
@@ -152,7 +152,8 @@ angular.module("app.controllers")
     return moment(time).subtract('days', 1);
   };
 
-  $scope.joinContestModal = function(buttonAction){
+  // doesn't depend on $scope because it's used after navigating away from this controller
+  function joinContestModal(buttonAction){
     var dialogOpts = {
       backdrop: true,
       keyboard: true,
@@ -181,30 +182,39 @@ angular.module("app.controllers")
     return $dialog.dialog(dialogOpts).open();
   };
 
-  $scope.joinContest = function(contestType) {
-    $scope.fs.contests.join(contestType.id, rosters.currentRoster.id).then(function(data) {
+  // doesn't depend on $scope because it's used after navigating away from this controller
+  function joinContest(fs, contestType, roster) {
+    fs.contests.join(contestType.id, roster.id).then(function(data) {
       rosters.selectRoster(data);
-      flash.success("Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!");
+      flash.success("Awesome, we've started a new roster with all the players from your last roster. Go ahead and customize then enter again!");
       $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
     });
   };
 
+  $scope.submitRoster = function() {
+    rosters.submit().then(function(roster) {
+      flash.success("Roster submitted successfully!");
+      $location.path('/market/' + roster.market.id);
+      $timeout(function() {
+        joinContestModal('submitRoster').then(function(result) {
+          if (result && result.contestType) {
+            joinContest($scope.fs, result.contestType, roster);
+          }
+        });
+      }, 500);
+    });
+  };
+
   $scope.enterAgain = function() {
-    $scope.joinContestModal('enterAgain').then(function(result) {
+    joinContestModal('enterAgain').then(function(result) {
       if (result && result.contestType) {
-        $scope.joinContest(result.contestType);
+        joinContest($scope.fs, result.contestType, rosters.currentRoster);
       }
     });
   };
 
   $scope.finish = function() {
-    $scope.joinContestModal('finish').then(function(result) {
-      if (result && result.contestType) {
-        $scope.joinContest(result.contestType);
-      } else {
-        rosters.reset('/market/' + rosters.currentRoster.market.id)
-      }
-    });
+    rosters.reset('/market/' + rosters.currentRoster.market.id)
   };
 
   $scope.addPlayer = function(player) {
