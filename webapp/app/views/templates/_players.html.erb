@@ -84,7 +84,7 @@
           </div>
 
           <div class="cta-container clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">
-            <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.reset('/market/' + rosters.currentRoster.market.id)" href="javascript://" >Finish</a>
+            <a class="btn btn-large btn-contest-cta btn-success" ng-click="finish()" href="javascript://" >Finish</a>
             <a class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-click="enterAgain()">Enter Again</a>
           </div>
 
