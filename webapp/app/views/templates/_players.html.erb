@@ -91,7 +91,7 @@
           <div class="alert alert-success roster-alert" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
             <p class="roster-cap-text">Your team&rsquo;s current salary is {{((100000 - rosters.currentRoster.remaining_salary)/100000)*100 | number:0}}% of the allowed $100k. You can exceed the salary cap by up to 3%. If you do we&rsquo;ll simply reduce the fantasy stats your team produces by the percent you exceeded the salary cap.</p>
 
-            <a class="btn btn-large btn-success" ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
+            <a class="btn btn-large btn-success" ng-click="submitRoster()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
           </div>
         </div>
       </div>
