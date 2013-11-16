@@ -7,7 +7,7 @@ angular.module('app.filters')
       if (end === undefined) {
           end = "...";
       }
-      if (text.length <= length || text.length - end.length <= length) {
+      if (typeof text == 'undefined' || text == null || text.length <= length || text.length - end.length <= length) {
           return text;
       } else {
           return String(text).substring(0, length-end.length) + end;
