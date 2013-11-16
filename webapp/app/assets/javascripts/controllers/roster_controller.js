@@ -152,7 +152,7 @@ angular.module("app.controllers")
     return moment(time).subtract('days', 1);
   };
 
-  $scope.joinContestModal = function(currentRoster){
+  $scope.joinContestModal = function(buttonAction){
     var dialogOpts = {
       backdrop: true,
       keyboard: true,
@@ -161,8 +161,7 @@ angular.module("app.controllers")
       templateUrl: '/join_contest_dialog.html',
       controller: 'JoinContestDialogController',
       resolve: {
-        // from MarketController's reloadMarket
-        // TODO: roll both into markets
+        buttonAction: function() { return buttonAction; },
         contestClasses: function($q) {
           var deferred = $q.defer();
 
@@ -179,24 +178,34 @@ angular.module("app.controllers")
       }
     };
 
-    var d = $dialog.dialog(dialogOpts);
-    d.open().then(function(result) {
-      if (!result) { return; }
-      $scope.fs.contests.join(result.contestType.id, currentRoster.id).then(function(data) {
-        rosters.selectRoster(data);
-        flash.success("Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!");
-        $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
-      });
+    return $dialog.dialog(dialogOpts).open();
+  };
+
+  $scope.joinContest = function(contestType) {
+    $scope.fs.contests.join(contestType.id, rosters.currentRoster.id).then(function(data) {
+      rosters.selectRoster(data);
+      flash.success("Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!");
+      $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
     });
   };
 
   $scope.enterAgain = function() {
-    $scope.joinContestModal(rosters.currentRoster);
+    $scope.joinContestModal('enterAgain').then(function(result) {
+      if (result && result.contestType) {
+        $scope.joinContest(result.contestType);
+      }
+    });
   };
 
   $scope.finish = function() {
-    rosters.reset('/market/' + rosters.currentRoster.market.id)
-  }
+    $scope.joinContestModal('finish').then(function(result) {
+      if (result && result.contestType) {
+        $scope.joinContest(result.contestType);
+      } else {
+        rosters.reset('/market/' + rosters.currentRoster.market.id)
+      }
+    });
+  };
 
   $scope.addPlayer = function(player) {
     var promise = rosters.addPlayer(player);

@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('JoinContestDialogController', ['$scope', 'dialog', 'fs', 'flash', 'markets', 'currentUserService', '$timeout', 'contestClasses', function($scope, dialog, fs, flash, marketService, currentUserService, $timeout, contestClasses) {
+.controller('JoinContestDialogController', ['$scope', 'dialog', 'fs', 'flash', 'markets', 'currentUserService', '$timeout', 'buttonAction', 'contestClasses', function($scope, dialog, fs, flash, marketService, currentUserService, $timeout, buttonAction, contestClasses) {
 
   // Don't include 100k, 10k, 5k contests from MarketController since these are periodic (weekly)
   // and unlikely to be signed up for immediately after submitting a roster.
@@ -9,6 +9,7 @@ angular.module("app.controllers")
     return !!contestClass.match(/\d+k/);
   };
 
+  $scope.buttonAction = buttonAction;
   $scope.contestClasses = contestClasses;
 
   $scope.joinContest = function(contestType) {
