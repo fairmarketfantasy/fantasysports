@@ -201,7 +201,7 @@ angular.module("app.controllers")
             joinContest($scope.fs, result.contestType, roster);
           }
         });
-      }, 500);
+      }, 100);
     });
   };
 
