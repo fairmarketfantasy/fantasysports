@@ -92,13 +92,14 @@ func (mgr *FetchManager) createMarket(name string, games Games) {
 		}
 	}
 	if len(games) > 1 {
+		beforeStart := strconv.Itoa(int(market.StartedAt.Add(-12 * time.Hour).Unix()))
 		t := market.OpenedAt.Add(5 * 24 * time.Hour) // Approx sunday 9pm PST
 		sunday10am := time.Date(t.Year(), t.Month(), t.Day(), 17, 0, 0, 0, time.UTC)
 		sunday10amUnix := strconv.Itoa(int(sunday10am.Unix())) // 10am PST
 		sunday1pmUnix := strconv.Itoa(int(sunday10am.Add(3 * time.Hour).Unix()))
 		sundayEveningUnix := strconv.Itoa(int(sunday10am.Add(6 * time.Hour).Unix()))
 		closedAtUnix := strconv.Itoa(int(market.ClosedAt.Unix()))
-		market.FillRosterTimes = "[[" + sunday10amUnix + ", 0.9], [" + sunday1pmUnix + ", 0.95], [" + sundayEveningUnix + ", 0.95], [" + closedAtUnix + ", 1.0]]"
+		market.FillRosterTimes = "[[" + beforeStart + ", 0.1], [" + sunday10amUnix + ", 0.9], [" + sunday1pmUnix + ", 0.95], [" + sundayEveningUnix + ", 0.95], [" + closedAtUnix + ", 1.0]]"
 	} else {
 		dayBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-24 * time.Hour).Unix()))
 		twoHoursBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-2 * time.Hour).Unix()))
