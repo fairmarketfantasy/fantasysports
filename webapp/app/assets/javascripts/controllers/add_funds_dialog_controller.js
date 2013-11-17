@@ -27,10 +27,11 @@ angular.module("app.controllers")
 
    var setSelectedCardId = function(){
      if($scope.cards.length){
-       $scope.selectedCardId = _.find($scope.cards, function(card){
+      var selectedCard = (_.find($scope.cards, function(card){
            return card.default;
-       }).id;
-       $scope.showCardForm = false;
+       }) || $scope.cards[0]);
+       $scope.selectedCardId = selectedCard && selectedCard.id;
+         $scope.showCardForm = false;
      }
    };
 
