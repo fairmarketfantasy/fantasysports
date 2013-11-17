@@ -136,7 +136,7 @@ angular.module('app.services')
       return promise.then(success, failure);
     };
   }])
-  .factory('fs', ['$http', '$q', function($http, $q) {
+  .factory('fs', ['$http', '$q', 'flash', function($http, $q, flash) {
     /*var makeCrossOriginRequest = function(httpArgs) {
       var xsrf = $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
       delete $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
@@ -149,7 +149,14 @@ angular.module('app.services')
       // setup the magic
       var deferred = $q.defer();
       window['jsonp_' + responseFunc] = function(data) {
+          debugger
         angular.element('body').scope().$apply(function() {
+          debugger
+          if (data.error) {
+            flash.error(data.error);
+            deferred.reject(data);
+            return;
+          }
           deferred.resolve(data);
         });
       };
@@ -159,7 +166,9 @@ angular.module('app.services')
       var timeout = setTimeout(function() {
         deferred.reject("request timed out.");
       }, timeout || 20000)
-      script.addEventListener('load', function(err) { clearTimeout(timeout); }, true);
+      script.addEventListener('load', function(data) {
+        clearTimeout(timeout);
+      }, true);
       script.src = url;
       document.body.appendChild(script);
       return deferred.promise;
