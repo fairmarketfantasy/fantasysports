@@ -145,7 +145,7 @@ class NetworkMerchants
         count += 1
         retry
       end
-      raise e
+      raise HttpException.new(400, e.message)
     end
   end
 end
