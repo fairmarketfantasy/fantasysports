@@ -37,6 +37,7 @@ Fantasysports::Application.configure do
   config.serve_static_assets = true #false # EPIC TODO: CHANGE THIS BACK ONCE WE FIGURE OUT HOW TO CACHE NICELY WITH OUR ELB
 
   # Compress JavaScripts and CSS.
+  config.assets.compres = false
   config.assets.js_compressor = :uglifier
   # config.assets.css_compressor = :sass
 
