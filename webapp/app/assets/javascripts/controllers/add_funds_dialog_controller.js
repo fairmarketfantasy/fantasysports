@@ -5,8 +5,7 @@ angular.module("app.controllers")
    $scope.currentUser = currentUserService.currentUser;
    $scope.cardInfo    = $scope.cardInfo     || {};
    $scope.cards       = $scope.cards        || [];
-  $scope.payment_type = 'paypal';
-  $scope.showCardForm = false;
+  $scope.payment_type = 'credit-card';
 
   $scope.close = function(){
     dialog.close();
@@ -17,11 +16,11 @@ angular.module("app.controllers")
    fs.cards.list().then(function(resp){
      $scope.cards = resp.cards || [];
      if(!$scope.cards.length){
-       //flash.error("You don't have any cards, add one.");
+       flash.error("You don't have any cards, add one.");
      } else {
        $scope.focusAmount = true;
      }
-     $scope.showCardForm = false;//!$scope.cards.length;
+     $scope.showCardForm = !$scope.cards.length;
      $scope.loaded = true;
      setSelectedCardId();
    });
