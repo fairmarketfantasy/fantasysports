@@ -15,3 +15,9 @@
 // For example, to change the default status-tag color:
 //
 //   .status_tag { background: #6090DB; }
+
+// Extra specificity required
+.action_item .custom-text-input {
+  width: 150px;
+  margin: 1em;
+}
