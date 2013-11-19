@@ -91,7 +91,7 @@ class NetworkMerchants
 
   def self.charge_finalize(customer_object, token_id)
     xml = send_confirm(token_id)
-    raise HttpExcpetion.new(403, "Charge failed with #{xml['result-text']}") if xml['result-text'] != 'SUCCESS'
+    raise HttpException.new(403, "Charge failed with #{xml['result-text']}") if xml['result'] != '1'
     amount = xml['amount'].to_f.round(2) * 100
     customer_object.increase_balance(amount,'deposit', :transaction_data => {:network_merchants_transaction_id => xml['transaction-id']}.to_json)
     Invitation.redeem_paid(customer_object.user)
@@ -145,7 +145,7 @@ class NetworkMerchants
         count += 1
         retry
       end
-      raise e
+      raise HttpException.new(400, e.message)
     end
   end
 end

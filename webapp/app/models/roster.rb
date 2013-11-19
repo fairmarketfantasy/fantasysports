@@ -154,15 +154,22 @@ class Roster < ActiveRecord::Base
     return self
   end
 
-  def add_player(player)
+  def add_player(player, place_bets = true)
     begin
       raise HttpException.new(409, "There is no room for another #{player.position} in your roster") unless remaining_positions.include?(player.position)
-      order = exec_price("SELECT * from buy(#{self.id}, #{player.id})")
-      self.class.uncached do
-        self.players.reload
-        self.rosters_players.reload
+      if place_bets
+        order = exec_price("SELECT * from buy(#{self.id}, #{player.id})")
+        self.class.uncached do
+          self.players.reload
+          self.rosters_players.reload
+        end
+        order
+      else
+        self.rosters_players << RostersPlayer.new(:player_id => player.id, :roster_id => self.id, :market_id => self.market_id, :purchase_price => player.buy_price)
+        raise "Players passed into add_player without placing bets must have buy_price" if player.buy_price.nil?
+        self.remaining_salary -= player.buy_price
+        self.save!
       end
-      order
     rescue StandardError => e
       if e.message =~ /already in roster/
         raise HttpException.new(409, "That player is already in your roster")
@@ -225,7 +232,7 @@ class Roster < ActiveRecord::Base
       player = players.sample
       next if player.nil?
       players.delete(player)
-      add_player(player)
+      add_player(player, false)
     end
     self.reload
   end
@@ -242,7 +249,7 @@ class Roster < ActiveRecord::Base
             @candidate_players[position].slice(0, indexes[position])
             : @candidate_players[position],
            expected)
-        add_player(player)
+        add_player(player, false)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
@@ -265,7 +272,7 @@ class Roster < ActiveRecord::Base
           slice_end = [[players.index{|p| p.buy_price < expected * 0.8}, indexes[position]].compact.min, 3].max
         end
         player = players.slice(slice_start, slice_end - slice_start).sample
-        add_player(player)
+        add_player(player, false)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
@@ -314,7 +321,7 @@ class Roster < ActiveRecord::Base
       begin
         position = remaining_positions.sample # One level of randomization
         player = weighted_sample(indexes[position] > 0 ? @candidate_players[position].slice(0, indexes[position]) : @candidate_players[position])
-        add_player(player)
+        add_player(player, false)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
