@@ -148,6 +148,15 @@ angular.module("app.controllers")
     return $scope.market.state != 'published' && roster.state != 'in_progress';
   };
 
+  $scope.showPlayer = function(roster, player) {
+    if (
+      (roster.owner_id == $scope.currentUser.id && player.id) ||
+      ($scope.inThePast(player.next_game_at))) {
+      return true;
+    }
+    return false;
+  };
+
   $scope.dayBefore = function(time) {
     return moment(time).subtract('days', 1);
   };
