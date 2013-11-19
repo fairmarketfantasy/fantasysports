@@ -1,7 +1,7 @@
 <div ng-show="rosters.currentRoster">
   <div class="contest-info">
     <div class="relative clearfix">
-      <a href="javascript://" class="btn btn-danger btn-cancel-entry" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
+      <a href="javascript://" class="btn btn-danger btn-cancel-entry" ng-show="rosters.currentRoster.state == 'in_progress'" ng-click="rosters.cancel()">Cancel entry</a>
       <a href="javascript://" class="btn btn-orange btn-invite-friends" ng-click="rosters.openInviteFriends(rosters.currentRoster)" 
         ng-show="(market.state == 'published' || market.state == 'opened') && rosters.currentRoster.contest">
         Invite Friends</a>
@@ -65,7 +65,7 @@
             <span ng-hide="inThePast(market.started_at)">Not Started</span>
           </td>
           <td>{{roster.owner_name}}</td>
-          <td>{{roster.contest_rank_payout}}</td>
+          <td>{{roster.contest_rank_payout | centsToDollars}}</td>
           <td>{{roster.score | number:2}}</td>
           <td>
             <span ng-show="roster.id == rosters.currentRoster.id">This roster</span>
