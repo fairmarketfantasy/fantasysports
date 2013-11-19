@@ -325,6 +325,25 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+--------------------------------------- PUBLISH CLEAN MARKET --------------------------------------
+DROP FUNCTION publish_clean_market(integer);
+CREATE OR REPLACE FUNCTION publish_clean_market(_market_id integer, OUT _market markets) RETURNS markets AS $$
+BEGIN
+	--ensure that there are no associated market_players, market_orders, or rosters.
+	--TODO: this is nice for dev and testing but may be a little dangerous in production
+	--ensure that the market exists and may be published
+	SELECT * FROM markets WHERE id = _market_id AND published_at < CURRENT_TIMESTAMP AND
+			(state is null OR state = '') FOR UPDATE into _market;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'market % is not publishable', _market_id;
+	END IF;
+	DELETE FROM market_orders WHERE market_id = _market_id;
+	DELETE FROM rosters_players WHERE market_id = _market_id;
+	DELETE FROM rosters WHERE market_id = _market_id;
+  SELECT * FROM publish_market(_market_id) INTO _market;
+END;
+$$ LANGUAGE plpgsql;
+
 --------------------------------------- PUBLISH MARKET --------------------------------------
 
 DROP FUNCTION publish_market(integer);
@@ -378,13 +397,6 @@ BEGIN
 		return;
 	END IF;
 
-	--ensure that there are no associated market_players, market_orders, or rosters.
-	--TODO: this is nice for dev and testing but may be a little dangerous in production
-	DELETE FROM market_players WHERE market_id = _market_id;
-	DELETE FROM market_orders WHERE market_id = _market_id;
-	DELETE FROM rosters_players WHERE market_id = _market_id;
-	DELETE FROM rosters WHERE market_id = _market_id;
-
 	--get the total ppg. use ghetto lagrangian filtering
 	SELECT sum((total_points + .01) / (total_games + .1))
 		FROM players WHERE team in (
@@ -394,6 +406,7 @@ BEGIN
 		) INTO _total_ppg;
 
 	-- insert players into market. use the first game time for which the player is participating and calculate shadow bets.
+	DELETE FROM market_players WHERE market_id = _market_id;
 	INSERT INTO market_players (market_id, player_id, shadow_bets, locked_at, player_stats_id)
 		SELECT
 			_market_id, p.id,

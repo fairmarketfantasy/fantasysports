@@ -6,7 +6,7 @@ class SupportMailer < ActionMailer::Base
     @email = email
     @message = message
     envelope = {
-      to: 'fantasysports@mustw.in',
+      to: 'support@fairmarketfantasy.com',
       subject: "New FMF Support Request: #{@title}"
     }
     mail(envelope)

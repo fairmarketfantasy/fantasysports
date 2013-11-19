@@ -421,7 +421,7 @@ class Market < ActiveRecord::Base
       csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us"]
       csv << ["Canonical Id", "Name", "Team", "Position", "Desired Shadow Bets"]
       self.players.each do |player|
-        csv << [player.stats_id, player.name, player.team.abbrev, player.position]
+        csv << [player.stats_id, player.name.gsub(/'/, ''), player.team.abbrev, player.position]
       end
     end
   end
@@ -445,7 +445,7 @@ class Market < ActiveRecord::Base
           next
         end
         puts "betting $#{shadow_bets} on #{p.name}"
-        shadow_bets = Integer(shadow_bets) * 100
+        shadow_bets = shadow_bets.to_i * 100
       else
         shadow_bets = 0
       end
