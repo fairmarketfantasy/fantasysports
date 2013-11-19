@@ -13,7 +13,7 @@ class RostersController < ApplicationController
 
   def in_contest
     contest = Contest.find(params[:contest_id])
-    render_api_response contest.rosters.submitted.order('contest_rank asc').limit(10)
+    render_api_response contest.rosters.where(:state => ['submitted', 'finished']).order('contest_rank asc').limit(10)
   end
 
   # Create a roster for a contest type
