@@ -23,9 +23,10 @@ id              | integer                     | not null default nextval('contes
  private         | boolean                     | default false
 =end
     column(:owner) {|c| c.owner && c.owner.email }
-    column :start_time
-    column :end_time
+    #column :start_time
+    #column :end_time
     column(:contest_type){|c| c.contest_type.name}
+    column(:league){|c| c.league && c.league.name }
     column :buy_in
     column :user_cap
     column :invitation_code
