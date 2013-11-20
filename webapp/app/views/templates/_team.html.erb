@@ -36,7 +36,7 @@
               </span>
             </span>
           </div>
-          
+
           <div class="mr-player-cta">
             <p class="mr-player-score" ng-show="roster.state != 'in_progress' && inThePast(market.started_at)"><a href="javascript://" tooltip-trigger="mouseenter" ng-mouseover="fetchPlayerStats(player)" tooltip-html-unsafe="{{statsContent()}}">{{player.score | number:1}}</a></p>
             <span ng-show="roster.owner_id == currentUser.id">
