@@ -256,7 +256,7 @@ class Roster < ActiveRecord::Base
     self.reload
   end
 
-  def fill_pseudo_randomly3
+  def fill_pseudo_randomly3(extend_ratio = 0.8)
     @candidate_players, indexes = fill_candidate_players
     return self unless @candidate_players
     ActiveRecord::Base.transaction do
@@ -265,11 +265,11 @@ class Roster < ActiveRecord::Base
         position = remaining_positions.sample # One level of randomization
         players = @candidate_players[position]
         if self.reload.remaining_salary < expected * remaining_positions.length
-          slice_start = [players.index{|p| p.buy_price < expected * 0.8}, 0].compact.max
+          slice_start = [players.index{|p| p.buy_price < expected * extend_ratio}, 0].compact.max
           slice_end = [indexes[position], slice_start + 3].max
         else
           slice_start = 0
-          slice_end = [[players.index{|p| p.buy_price < expected * 0.8}, indexes[position]].compact.min, 3].max
+          slice_end = [[players.index{|p| p.buy_price < expected * extend_ratio}, indexes[position]].compact.min, 3].max
         end
         player = players.slice(slice_start, slice_end - slice_start).sample
         add_player(player, false)
@@ -277,6 +277,40 @@ class Roster < ActiveRecord::Base
       end while(remaining_positions.length > 0)
     end
     self.reload
+  end
+
+  def fill_pseudo_randomly4
+    @candidate_players, indexes = fill_candidate_players
+    return self unless @candidate_players
+    ActiveRecord::Base.transaction do
+      begin
+        expected = self.reload.remaining_salary / remaining_positions.length
+        min = 2000
+        max = @candidate_players.inject(0) {|sum, pos_players| sum += pos_players[1][[3, pos_players[1].length - 1].min].buy_price } - min * (remaining_positions.length - 1)
+        position = remaining_positions.sample # One level of randomization
+        players = @candidate_players[position]
+        if self.reload.remaining_salary < expected * remaining_positions.length
+            slice_start = [players.index{|p| p.buy_price < max}, 0].compact.max
+            slice_end = [indexes[position], slice_start + 3].max
+        else
+          if max > self.contest_type.salary_cap - self.remaining_salary
+            player = players.first
+          else
+            slice_start = 0
+            slice_end = [[players.index{|p| p.buy_price < expected}, indexes[position]].compact.min, 3].max
+          end
+        end
+        player = player || players.slice(slice_start, slice_end - slice_start).sample
+        add_player(player, false)
+        @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
+        player = nil
+      end while(remaining_positions.length > 0)
+    end
+    self.reload
+  end
+
+  def fill_pseudo_randomly5
+    fill_pseudo_randomly3(1.0)
   end
 
 =begin
