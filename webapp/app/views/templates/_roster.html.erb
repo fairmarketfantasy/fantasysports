@@ -65,7 +65,10 @@
             <span ng-hide="inThePast(market.started_at)">Not Started</span>
           </td>
           <td>{{roster.owner_name}}</td>
-          <td>{{roster.contest_rank_payout | centsToDollars}}</td>
+          <td>
+            <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{roster.contest_rank_payout || 0}} FanFrees</span>
+            <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{(roster.contest_rank_payout || 0) | centsToDollars}}</span>
+          </td>
           <td>{{roster.score | number:2}}</td>
           <td>
             <span ng-show="roster.id == rosters.currentRoster.id">This roster</span>
