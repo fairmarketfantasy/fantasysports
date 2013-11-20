@@ -128,8 +128,17 @@ class Market < ActiveRecord::Base
 
   def fill_rosters_to_percent(percent)
       # iterate through /all/ non h2h unfilled contests and generate rosters to fill them up
-      h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).map(&:id)
-      self.contests.where("contest_type_id NOT IN(#{h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0)").find_each do |contest|
+      bad_h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).select do |ct| 
+        if (ct.name == 'h2h' && [100, 1000].include?(ct.buy_in))# ||  # Fill H2H games of normal amounts
+            #(ct.name == 'h2h rr' && [900, 9000].include?(ct.buy_in))
+          false
+        else
+          true
+        end
+      end
+      bad_h2h_types = bad_h2h_types.map(&:id)
+      contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0")
+      contests.find_each do |contest|
         contest.fill_with_rosters(percent)
       end
   end
