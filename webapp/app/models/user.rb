@@ -96,7 +96,7 @@ class User < ActiveRecord::Base
   end
 
   def can_charge?(amount, charge_tokens = false)
-    return true if amount == 0 || self == SYSTEM_USER
+    return true if amount == 0 || self.id == SYSTEM_USER.id
     if charge_tokens
       return false if amount > self.token_balance
     else
