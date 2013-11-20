@@ -178,13 +178,21 @@ class Roster < ActiveRecord::Base
     end
   end
 
-  def remove_player(player)
-    order = exec_price("SELECT * from sell(#{self.id}, #{player.id})")
-    self.class.uncached do
-        self.players.reload
-        self.rosters_players.reload
+  def remove_player(player, place_bets = true)
+    if place_bets
+      order = exec_price("SELECT * from sell(#{self.id}, #{player.id})")
+      self.class.uncached do
+          self.players.reload
+          self.rosters_players.reload
+      end
+      order
+    else
+      # This is okay because it's only used for autogen and doesn't affect the market
+      rp = RostersPlayer.where(:player_id => player.id, :roster_id => self.id, :market_id => self.market_id).first
+      self.remaining_salary += rp.purchase_price
+      rp.destroy!
+      self.save!
     end
-    order
   end
 
   def exec_price(sql)
@@ -237,31 +245,12 @@ class Roster < ActiveRecord::Base
     self.reload
   end
 
-  def fill_pseudo_randomly2
-    return false unless @candidate_players
-    @candidate_players, indexes = fill_candidate_players
-    ActiveRecord::Base.transaction do
-      begin
-        expected = self.reload.remaining_salary / remaining_positions.length
-        position = remaining_positions.sample # One level of randomization
-        player = weighted_expected_sample(
-          indexes[position] > 0 ?
-            @candidate_players[position].slice(0, indexes[position])
-            : @candidate_players[position],
-           expected)
-        add_player(player, false)
-        @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
-      end while(remaining_positions.length > 0)
-    end
-    self.reload
-  end
-
   def fill_pseudo_randomly3(extend_ratio = 0.8)
     @candidate_players, indexes = fill_candidate_players
     return self unless @candidate_players
     ActiveRecord::Base.transaction do
+      expected = 1.0 * self.reload.remaining_salary / remaining_positions.length
       begin
-        expected = self.reload.remaining_salary / remaining_positions.length
         position = remaining_positions.sample # One level of randomization
         players = @candidate_players[position]
         if self.reload.remaining_salary < expected * remaining_positions.length
@@ -284,7 +273,7 @@ class Roster < ActiveRecord::Base
     return self unless @candidate_players
     ActiveRecord::Base.transaction do
       begin
-        expected = self.reload.remaining_salary / remaining_positions.length
+        expected = 1.0 * self.reload.remaining_salary / remaining_positions.length
         min = 2000
         max = @candidate_players.inject(0) {|sum, pos_players| sum += pos_players[1][[3, pos_players[1].length - 1].min].buy_price } - min * (remaining_positions.length - 1)
         position = remaining_positions.sample # One level of randomization
@@ -311,6 +300,20 @@ class Roster < ActiveRecord::Base
 
   def fill_pseudo_randomly5
     fill_pseudo_randomly3(1.0)
+    max_diff = 4000
+    if self.reload.remaining_salary.abs > max_diff
+      tries = 3
+      begin
+        players = self.rosters_players.sort{|rp| -rp.purchase_price }
+        if self.remaining_salary > max_diff
+          players.slice(6, 3).each{|rp| remove_player(rp.player, false) }
+        else
+          players.slice(0, 3).each{|rp| remove_player(rp.player, false) }
+        end
+        fill_pseudo_randomly3(1.0)
+        tries -= 1
+      end while(self.reload.remaining_salary.abs > max_diff && tries > 0)
+    end
   end
 
 =begin
