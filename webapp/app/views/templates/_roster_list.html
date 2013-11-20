@@ -38,7 +38,11 @@
       </td>
       <td ng-show="history">
         <span ng-show="roster.state == 'cancelled'">Refunded on {{roster.cancelled_at | longFormDate}}</span>
-        <span ng-show="roster.state == 'finished'">{{roster.amount_paid | centsToDollars }} on {{roster.paid_at | longFormDate}}</span>
+        <span ng-show="roster.state == 'finished'">
+          <span ng-show="roster.contest_type.takes_tokens">{{roster.amount_paid | number:0}} FanFrees</span>
+          <span ng-hide="roster.contest_type.takes_tokens">{{roster.amount_paid | centsToDollars }} </span>
+            on {{roster.paid_at | longFormDate}}
+        </span>
       </td>
       <td ng-hide="history">
         <span ng-show="inThePast(roster.started_at) && roster.state == 'finished'">{{roster.contest_rank_payout || 0}}</span>
