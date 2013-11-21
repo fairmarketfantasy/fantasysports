@@ -297,7 +297,7 @@ class Roster < ActiveRecord::Base
     @candidate_players, indexes = fill_candidate_players
     return self unless @candidate_players
     ActiveRecord::Base.transaction do
-      expected = 1.0 * self.reload.remaining_salary / remaining_positions.length
+      expected = 1.0 * self.contest_type.salary_cap / position_array.length
       begin
         position = remaining_positions.sample # One level of randomization
         players = @candidate_players[position]
@@ -354,7 +354,7 @@ class Roster < ActiveRecord::Base
       begin
         players = self.rosters_players.reload.sort{|rp| -rp.purchase_price }
         if self.remaining_salary > max_diff
-          players.slice(6, 3).each{|rp| remove_player(rp.player, false) }
+          players.slice(5, 3).each{|rp| remove_player(rp.player, false) }
         else
           players.slice(0, 3).each{|rp| remove_player(rp.player, false) }
         end
