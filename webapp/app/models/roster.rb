@@ -152,14 +152,13 @@ class Roster < ActiveRecord::Base
   def submit!(charge = true)
     #buy all the players on the roster. This sql function handles all of that.
     raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
-    self.transaction do
       #purchase all the players and update roster state to submitted
-      Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
-      reload
 
       set_contest = contest
       #enter contest
       contest_type.with_lock do #prevents creation of contests of the same type at the same time
+        Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
+        reload
         if set_contest.nil?
           #enter roster into public contest
           set_contest = Contest.where("contest_type_id = ?
@@ -193,14 +192,13 @@ class Roster < ActiveRecord::Base
         end
         self.contest = set_contest
         self.save!
+
+        #charge account
+        if contest_type.buy_in > 0 && charge
+          self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
+        end
       end
 
-      #charge account
-      if contest_type.buy_in > 0 && charge
-        self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
-      end
-
-    end
     return self
   end
 
@@ -295,7 +293,7 @@ class Roster < ActiveRecord::Base
     self.reload
   end
 
-  def fill_pseudo_randomly3(extend_ratio = 0.8)
+  def fill_pseudo_randomly3(place_bets = true)
     @candidate_players, indexes = fill_candidate_players
     return self unless @candidate_players
     ActiveRecord::Base.transaction do
@@ -304,14 +302,14 @@ class Roster < ActiveRecord::Base
         position = remaining_positions.sample # One level of randomization
         players = @candidate_players[position]
         if self.reload.remaining_salary < expected * remaining_positions.length
-          slice_start = [players.index{|p| p.buy_price < expected * extend_ratio}, 0].compact.max
+          slice_start = [players.index{|p| p.buy_price < expected}, 0].compact.max
           slice_end = [indexes[position], slice_start + 3].max
         else
           slice_start = 0
-          slice_end = [[players.index{|p| p.buy_price < expected * extend_ratio}, indexes[position]].compact.min, 3].max
+          slice_end = [[players.index{|p| p.buy_price < expected}, indexes[position]].compact.min, 3].max
         end
         player = players.slice(slice_start, slice_end - slice_start).sample
-        add_player(player, false)
+        add_player(player, place_bets)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
@@ -348,8 +346,8 @@ class Roster < ActiveRecord::Base
     self.reload
   end
 
-  def fill_pseudo_randomly5
-    fill_pseudo_randomly3(1.0)
+  def fill_pseudo_randomly5(place_bets = true)
+    fill_pseudo_randomly3(place_bets)
     max_diff = 4000
     if self.reload.remaining_salary.abs > max_diff
       tries = 3
@@ -360,10 +358,11 @@ class Roster < ActiveRecord::Base
         else
           players.slice(0, 3).each{|rp| remove_player(rp.player, false) }
         end
-        fill_pseudo_randomly3(1.0)
+        fill_pseudo_randomly3(place_bets)
         tries -= 1
       end while(self.reload.remaining_salary.abs > max_diff && tries > 0)
     end
+    self
   end
 
 =begin
