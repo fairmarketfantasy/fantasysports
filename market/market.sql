@@ -83,7 +83,7 @@ RETURNS TABLE(player_id integer, buy_price numeric) AS $$
 		r.id = $1 AND
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
-		(is_session_variable_set('override_market_close') OR NOT (mp.locked_at < NOW() OR mp.locked)) AND
+		(is_session_variable_set('override_market_close') OR NOT (mp.locked)) AND
 		mp.player_id NOT IN (SELECT rosters_players.player_id 
 			FROM rosters_players WHERE roster_id = $1);
 $$ LANGUAGE SQL;
