@@ -141,25 +141,27 @@ BEGIN
 	  	WHERE rosters_players.id = locked_out.id;
   END IF;
 
-	-- increment bets for all market players in roster by buy_in amount
-	UPDATE market_players SET bets = bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
-		WHERE market_id = _roster.market_id AND player_id IN
-			(SELECT player_id from rosters_players where roster_id = _roster_id); 
+  IF NOT _roster.is_generated THEN
+	  -- increment bets for all market players in roster by buy_in amount
+	  UPDATE market_players SET bets = bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
+	  	WHERE market_id = _roster.market_id AND player_id IN
+	  		(SELECT player_id from rosters_players where roster_id = _roster_id); 
 
-	-- increment total_bets by buy_in times number of players bought
-	update markets set total_bets = total_bets + 
-		_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
-		where id = _roster.market_id;
+	  -- increment total_bets by buy_in times number of players bought
+	  update markets set total_bets = total_bets + 
+	  	_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
+	  	where id = _roster.market_id;
 
-	-- update rosters_players with current sell prices of players
-	WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id)) 
-		UPDATE rosters_players set purchase_price = prices.sell_price FROM prices 
-		WHERE id = prices.roster_player_id;
+	  -- update rosters_players with current sell prices of players
+	  WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id)) 
+	  	UPDATE rosters_players set purchase_price = prices.sell_price FROM prices 
+	  	WHERE id = prices.roster_player_id;
 
-	-- insert into market_orders
-	INSERT INTO market_orders (market_id, roster_id, action, player_id, price, created_at, updated_at)
-	   SELECT _roster.market_id, _roster_id, 'buy', player_id, purchase_price, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-	   FROM rosters_players where roster_id = _roster_id;
+	  -- insert into market_orders
+	  INSERT INTO market_orders (market_id, roster_id, action, player_id, price, created_at, updated_at)
+	     SELECT _roster.market_id, _roster_id, 'buy', player_id, purchase_price, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+	     FROM rosters_players where roster_id = _roster_id;
+  END IF;
 
 	--update roster's remaining salary and state
 	update rosters set remaining_salary = 100000 -
