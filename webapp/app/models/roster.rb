@@ -102,7 +102,7 @@ class Roster < ActiveRecord::Base
   def submit!(charge = true)
     #buy all the players on the roster. This sql function handles all of that.
     raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
-    #self.transaction do
+    self.transaction do
       #purchase all the players and update roster state to submitted
       Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
       reload
@@ -113,7 +113,7 @@ class Roster < ActiveRecord::Base
         if set_contest.nil?
           #enter roster into public contest
           set_contest = Contest.where("contest_type_id = ?
-            AND (user_cap = 0
+            AND (user_cap = 0 OR user_cap > 10
                 OR (num_rosters - num_generated < user_cap
                     AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
             AND NOT private", contest_type.id).order('id asc').first
@@ -150,7 +150,7 @@ class Roster < ActiveRecord::Base
         self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
       end
 
-    #end
+    end
     return self
   end
 

@@ -120,14 +120,14 @@ class ActiveSupport::TestCase
   def add_lollapalooza(market)
     ContestType.create!(
       market_id: market.id,
-      name: '0.1k',
-      description: '$100',
-      max_entries: 10,
+      name: '0.11k',
+      description: '$110',
+      max_entries: 11,
       buy_in: 1000,
       rake: 0.03,
-      payout_structure: '[5000, 2500, 1300, 900]',
+      payout_structure: '[5000, 2500, 2500, 670]',
       salary_cap: 100000,
-      payout_description: '[5000, 2500, 1300, 900]',
+      payout_description: '[5000, 2500, 2500, 670]',
       takes_tokens: false,
       limit: 1
     )
