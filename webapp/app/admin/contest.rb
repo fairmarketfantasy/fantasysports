@@ -34,6 +34,9 @@ id              | integer                     | not null default nextval('contes
     column :num_rosters
     column :num_generated
     column :private
+    column :rosters do |contest|
+      link_to "Rosters", :controller => "rosters", :action => "index", 'q[contest_id_eq]' => "#{contest.id}".html_safe
+    end
     default_actions
 
   end
