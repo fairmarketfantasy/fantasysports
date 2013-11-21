@@ -220,6 +220,7 @@ FactoryGirl.define do
   factory :player do
     stats_id { generate(:random_string) }
     sport_id 1
+    status "ACT"
     name "Spock"
   end
 

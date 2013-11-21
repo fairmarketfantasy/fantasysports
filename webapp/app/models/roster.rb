@@ -165,7 +165,7 @@ class Roster < ActiveRecord::Base
         end
         order
       else
-        self.rosters_players << RostersPlayer.new(:player_id => player.id, :roster_id => self.id, :market_id => self.market_id, :purchase_price => player.buy_price)
+        self.rosters_players << RostersPlayer.new(:player_id => player.id, :roster_id => self.id, :market_id => self.market_id, :purchase_price => player.buy_price, :player_stats_id => player.stats_id)
         raise "Players passed into add_player without placing bets must have buy_price" if player.buy_price.nil?
         self.remaining_salary -= player.buy_price
         self.save!
@@ -304,7 +304,7 @@ class Roster < ActiveRecord::Base
     if self.reload.remaining_salary.abs > max_diff
       tries = 3
       begin
-        players = self.rosters_players.sort{|rp| -rp.purchase_price }
+        players = self.rosters_players.reload.sort{|rp| -rp.purchase_price }
         if self.remaining_salary > max_diff
           players.slice(6, 3).each{|rp| remove_player(rp.player, false) }
         else
