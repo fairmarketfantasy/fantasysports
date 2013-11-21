@@ -163,6 +163,7 @@ angular.module("app.controllers")
 
   // doesn't depend on $scope because it's used after navigating away from this controller
   function joinContestModal(buttonAction){
+    var contest = rosters.currentRoster.contest;
     var dialogOpts = {
       backdrop: true,
       keyboard: true,
@@ -184,7 +185,9 @@ angular.module("app.controllers")
           });
 
           return deferred.promise;
-        }
+        },
+        market: function() { return $scope.market },
+        contest: function() { return contest; }
       }
     };
 
