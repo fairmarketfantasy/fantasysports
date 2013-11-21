@@ -11,6 +11,26 @@ class UsersController < ApplicationController
     render_api_response user
   end
 
+  # PUT /users/:id
+  def update
+    if params[:id] == current_user.id
+      current_user.username = params[:username]
+      current_user.password = params[:password]
+      current_user.password_confirmation = params[:password_confirmation]
+      current_user.email = params[:email]
+      if current_user.save
+        render json: { result: current_user.as_json }
+      else
+        render json: { result: current_user.as_json,
+                       error: 'Cannot save user',
+                       errors: current_user.errors },
+               status: :unprocessable_entity
+      end
+    else
+      render json: { error: "id doesn't match the current user" }, status: :unprocessable_entity
+    end
+  end
+
   def unsubscribe
     user = User.where(:email => params[:email]).first
     raise HttpException(403, "You must be logged in as the unsubscribing user to do that") if user && user != current_user
