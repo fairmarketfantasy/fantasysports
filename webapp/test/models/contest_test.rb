@@ -143,7 +143,7 @@ class ContestTest < ActiveSupport::TestCase
     setup_simple_market
     add_lollapalooza(@market)
     ct = @market.contest_types.where("name LIKE '%k%'").first
-    10.times{ Roster.generate(create(:paid_user), ct).submit! }
+    11.times{ Roster.generate(create(:paid_user), ct).submit! }
     assert_raises HttpException do
       Roster.generate(create(:paid_user), ct).submit!
     end

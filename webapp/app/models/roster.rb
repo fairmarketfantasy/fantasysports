@@ -147,8 +147,6 @@ class Roster < ActiveRecord::Base
     return self
   end
 
-  end
-
   #set the state to 'submitted'. If it's in a private contest, increment the number of 
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!(charge = true)
