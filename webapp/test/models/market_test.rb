@@ -384,7 +384,7 @@ class MarketTest < ActiveSupport::TestCase
       end
     end
 
-    assert_equal 40, Roster.where("state = 'finished'").count
+    assert_equal 41, Roster.where("state = 'finished'").count
     assert_equal 1, Roster.where("state = 'cancelled'").count
     assert_equal 9, Roster.where("is_generated").count
     assert_equal 41, Roster.over.count
