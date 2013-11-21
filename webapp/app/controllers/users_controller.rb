@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:create, :update, :unsubscribe]
   skip_before_filter :authenticate_user!, :only => [:reset_password]
+  filter_parameter_logging :password, :password_confirmation, :current_password
 
   def index
     render_api_response current_user
@@ -13,21 +14,26 @@ class UsersController < ApplicationController
 
   # PUT /users/:id
   def update
-    if params[:id] == current_user.id
-      current_user.username = params[:username]
+    if params[:id] != current_user.id
+      render json: { error: "id doesn't match the current user" }, status: :unprocessable_entity
+      return
+    end
+
+    if params[:password]
+      unless current_user.valid_password? params[:current_password]
+        render json: { error: "invalid password" }, status: :unprocessable_entity
+        return
+      end
       current_user.password = params[:password]
       current_user.password_confirmation = params[:password_confirmation]
-      current_user.email = params[:email]
-      if current_user.save
-        render json: { result: current_user.as_json }
-      else
-        render json: { result: current_user.as_json,
-                       error: 'Cannot save user',
-                       errors: current_user.errors },
-               status: :unprocessable_entity
-      end
+    end
+
+    current_user.username = params[:username]
+    current_user.email = params[:email]
+    if current_user.save
+      render json: { result: current_user.as_json }
     else
-      render json: { error: "id doesn't match the current user" }, status: :unprocessable_entity
+      render json: { error: 'Cannot save user', errors: current_user.errors }, status: :unprocessable_entity
     end
   end
 
