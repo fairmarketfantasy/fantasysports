@@ -150,7 +150,7 @@ angular.module("app.controllers")
 
   $scope.showPlayer = function(roster, player) {
     if (
-      (roster.owner_id == $scope.currentUser.id && player.id) ||
+      (player.id && ($scope.currentUser.admin || roster.owner_id == $scope.currentUser.id )) ||
       ($scope.inThePast(player.next_game_at))) {
       return true;
     }
@@ -223,7 +223,7 @@ angular.module("app.controllers")
   };
 
   $scope.finish = function() {
-    rosters.reset('/market/' + rosters.currentRoster.market.id)
+    rosters.reset('/market/' + rosters.currentRoster.market.id);
   };
 
   $scope.addPlayer = function(player) {
@@ -258,6 +258,4 @@ angular.module("app.controllers")
   };
 
 }]);
-
-
 
