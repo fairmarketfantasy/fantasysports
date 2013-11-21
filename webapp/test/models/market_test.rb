@@ -149,6 +149,56 @@ class MarketTest < ActiveSupport::TestCase
     assert_equal 2, private_contest.reload.rosters.length
   end
 
+  test "prices dont change when autofilling" do
+    setup_simple_market
+    @market.update_attribute(:state, 'opened')
+    add_lollapalooza(@market)
+    Market.tend
+    ct = @market.contest_types.where("name LIKE '%k%'").first
+    roster1 = Roster.generate(create(:paid_user), ct).fill_pseudo_randomly5.submit!
+    prices = {}
+    market_player_bets = {}
+    roster2 = Roster.generate(create(:paid_user), ct)
+    roster1.rosters_players.each do |rp|
+      market_player_bets[rp.player_id] = @market.market_players.where(:player_id => rp.player_id).first.bets
+      prices[rp.player_id] = rp.purchase_price.to_i
+      roster2.add_player(rp.player)
+    end
+    roster2.submit!
+    roster2.rosters_players.each do|rp|
+      if prices[rp.player_id]
+        mp_bets = @market.market_players.where(:player_id => rp.player_id).first.bets
+        assert rp.purchase_price.to_i > prices[rp.player_id].to_i
+        assert mp_bets > market_player_bets[rp.player_id]
+        prices[rp.player_id] = rp.purchase_price.to_i
+        market_player_bets[rp.player_id] = mp_bets
+      end
+    end
+    market_bets = @market.reload.total_bets
+    (0..3).each do |i|
+      roster = Roster.generate(create(:paid_user), ct)
+      roster.is_generated = true
+      roster.save!
+      if i != 0
+        roster.fill_pseudo_randomly5(false)
+      else
+        roster1.players_with_prices.each do |p|
+          roster.add_player(p, false)
+        end
+        roster.rosters_players.each do |rp|
+          market_player_bets[rp.player_id] = @market.market_players.where(:player_id => rp.player_id).first.bets
+          prices[rp.player_id] = rp.purchase_price.to_i
+        end
+      end
+      roster.submit!
+      roster.rosters_players.each do |rp|
+        if prices[rp.player_id]
+          assert_equal market_player_bets[rp.player_id], @market.market_players.where(:player_id => rp.player_id).first.bets
+          assert_equal prices[rp.player_id].to_i, rp.purchase_price.to_i
+        end
+      end
+    end
+  end
 
   # lock_players removes players from the pool without affecting prices
   # it does so by updating the price multiplier
@@ -387,7 +437,7 @@ class MarketTest < ActiveSupport::TestCase
     assert_equal 41, Roster.where("state = 'finished'").count
     assert_equal 1, Roster.where("state = 'cancelled'").count
     assert_equal 9, Roster.where("is_generated").count
-    assert_equal 41, Roster.over.count
+    assert_equal 42, Roster.over.count
 
     Contest.all.each{|c| TransactionRecord.validate_contest(c) }
   end
