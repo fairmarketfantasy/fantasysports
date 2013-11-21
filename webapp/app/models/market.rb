@@ -30,9 +30,9 @@ class Market < ActiveRecord::Base
       open
       remove_shadow_bets
       track_benched_players
+      fill_rosters
       close
       lock_players
-      fill_rosters
       tabulate_scores
       complete
     end
@@ -127,20 +127,20 @@ class Market < ActiveRecord::Base
   end
 
   def fill_rosters_to_percent(percent)
-      # iterate through /all/ non h2h unfilled contests and generate rosters to fill them up
-      bad_h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).select do |ct| 
-        if (ct.name == 'h2h' && [100, 1000].include?(ct.buy_in))# ||  # Fill H2H games of normal amounts
-            #(ct.name == 'h2h rr' && [900, 9000].include?(ct.buy_in))
-          false
-        else
-          true
-        end
+    # iterate through /all/ non h2h unfilled contests and generate rosters to fill them up
+    bad_h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).select do |ct| 
+      if (ct.name == 'h2h' && [100, 1000].include?(ct.buy_in))# ||  # Fill H2H games of normal amounts
+          #(ct.name == 'h2h rr' && [900, 9000].include?(ct.buy_in))
+        false
+      else
+        true
       end
-      bad_h2h_types = bad_h2h_types.map(&:id)
-      contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0")
-      contests.find_each do |contest|
-        contest.fill_with_rosters(percent)
-      end
+    end
+    bad_h2h_types = bad_h2h_types.map(&:id)
+    contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0")
+    contests.find_each do |contest|
+      contest.fill_with_rosters(percent)
+    end
   end
 
   def track_benched_players
@@ -164,7 +164,6 @@ class Market < ActiveRecord::Base
   # close a market. allocates remaining rosters in this manner:
   def close
     raise "cannot close if state is not open" if state != 'opened' 
-
     #cancel all un-submitted rosters
     self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
     self.contests.where(
@@ -210,7 +209,7 @@ class Market < ActiveRecord::Base
       end
 =end
     self.fill_rosters_to_percent(1.0)
-
+    self.lock_players
     self.state, self.closed_at = 'closed', Time.now
     save!
     return self
@@ -389,7 +388,6 @@ class Market < ActiveRecord::Base
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
-      #debugger
         next if data[:name].match(/\d+k/) && (self.closed_at - self.started_at < 1.day || Rails.env == 'test')
         ContestType.create!(
           market_id: self.id,
