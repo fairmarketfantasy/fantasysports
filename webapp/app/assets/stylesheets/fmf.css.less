@@ -99,6 +99,7 @@ footer {
 }
 .modal-body {
   width: 702px;
+  max-height: 450px;
 }
 .fixed-flash {
   background-color: @red;
@@ -1167,6 +1168,24 @@ input[type="text"].players-search {
   font-size: 14px;
 }
 
+.bonus-header {
+  float: left;
+}
+.total-bonus-points {
+  float: right;
+  font-size: 2em;
+  color: @red;
+}
+.bonus-points {
+  text-align: center;
+  float: left;
+  width: 50%;
+  margin: 5px 0 15px 0;
+  .success {
+    color: @green;
+  }
+}
+
 
 /* Button Overrides -- there are many 
    TODO - remove the .btn.btn- specificity in flat-ui -- GROSS
@@ -1231,7 +1250,7 @@ input[type="text"].players-search {
 }
 .btn-reenter-cta {
   position: absolute;
-  right: 90px;
+  right: 165px;
 }
 .btn-orange {
   background-color: @orangeDark;

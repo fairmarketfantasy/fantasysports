@@ -566,7 +566,7 @@ DECLARE
 	_now timestamp;
 BEGIN
 	--ensure that the market exists and may be closed
-	PERFORM id FROM markets WHERE id = _market_id AND state = 'opened' FOR UPDATE;
+	PERFORM id FROM markets WHERE id = _market_id AND state IN('opened', 'closed')  FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % not found', _market_id;
 	END IF;
@@ -609,8 +609,8 @@ begin
 
   WITH contest_info as
     (SELECT rosters.id, contest_types.salary_cap FROM rosters JOIN contest_types ON rosters.contest_type_id=contest_types.id WHERE rosters.market_id=$1)
-	  UPDATE rosters set score = LEAST(1.03, 1 + remaining_salary / salary_cap) * (select sum(score) from market_players where player_stats_id IN(
-        SELECT player_stats_id FROM rosters_players WHERE roster_id = rosters.id) AND market_id = $1)
+	  UPDATE rosters set score = coalesce(bonus_points, 0) + LEAST(1.03, 1 + remaining_salary / salary_cap) * coalesce((select sum(score) from market_players where player_stats_id IN(
+        SELECT player_stats_id FROM rosters_players WHERE roster_id = rosters.id) AND market_id = $1), 0)
     FROM contest_info WHERE rosters.id=contest_info.id;
 
 	WITH ranks as
