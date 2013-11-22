@@ -70,7 +70,7 @@ class Market < ActiveRecord::Base
     end
 
     def lock_players
-      apply :lock_players, "state = 'opened'"
+      apply :lock_players, "state IN('opened', 'closed')"
     end
     
     def tabulate_scores
