@@ -39,7 +39,7 @@ Fantasysports::Application.routes.draw do
   get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
 
   #for /users/:id
-  resources :users, only: [:show, :update] do
+  resources :users, only: [:show] do
     collection do
       get 'unsubscribe',     action: :unsubscribe
       get 'name_taken',      action: :name_taken
