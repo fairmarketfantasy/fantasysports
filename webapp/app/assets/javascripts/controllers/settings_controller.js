@@ -14,7 +14,7 @@
 
   flashForConfirm();
 
-  $scope.userInfo = $scope.userInfo || {name: $scope.currentUser.name, email: $scope.currentUser.email};
+  $scope.userInfo = $scope.userInfo || {id: $scope.currentUser.id, name: $scope.currentUser.name, email: $scope.currentUser.email};
 
   $scope.isAuthedWithFacebook = !!$scope.currentUser.provider;
 
