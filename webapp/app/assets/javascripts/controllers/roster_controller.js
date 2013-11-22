@@ -152,7 +152,7 @@ angular.module("app.controllers")
     if (
       (player.id && ($scope.currentUser.admin || roster.owner_id == $scope.currentUser.id )) ||
       player.locked ||
-      inThePast(player.next_game_at)) {
+      $scope.inThePast(player.next_game_at)) {
       return true;
     }
     return false;

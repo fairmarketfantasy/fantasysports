@@ -52,4 +52,8 @@ class Player < ActiveRecord::Base
     Market.find(self.market_id).games.select{|g| [g.home_team, g.away_team].include?(self.team)}.game_time - 5.minutes
   end
 
+  def benched_games
+    self.removed? ? 100 : super
+  end
+
 end

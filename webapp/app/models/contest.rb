@@ -170,7 +170,7 @@ class Contest < ActiveRecord::Base
       roster.contest_id = self.id
       roster.is_generated = true
       roster.save!
-      roster.fill_pseudo_randomly5
+      roster.fill_pseudo_randomly5(false)
       roster.submit!
     end
   end
