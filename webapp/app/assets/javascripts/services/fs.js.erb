@@ -72,9 +72,13 @@ angular.module('app.services')
         var self = this;
         fs.user.refresh().then(function(user) {
           $timeout(function() {
-            self.currentUser = window.App.currentUser = user;
+            self.setUser(user);
           });
         });
+      },
+
+      setUser: function(user) {
+        this.currentUser = window.App.currentUser = user;
       },
 
       withdrawFundsModal: function() {
@@ -185,7 +189,7 @@ angular.module('app.services')
           return $http({method: 'POST', url: '/users.json', data: {user: user_attrs}});
         },
         update: function(user_attrs) {
-          return $http({method: 'PUT', url: '/users/' + user_attrs.id + '.json', data: {user: user_attrs}});
+          return $http({method: 'PUT', url: '/users.json', data: {user: user_attrs}});
         },
         login: function(user_attrs){
           return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});
