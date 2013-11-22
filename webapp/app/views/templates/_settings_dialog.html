@@ -10,13 +10,13 @@
       <a href="javascript://" class="btn btn-mini" ng-click='showUpload = false'>Cancel</a>
     </form>
   </div>
-  <span class='user-info-label'>Email:</span>{{ currentUser.email }} &nbsp<span ng-show='currentUser.confirmed'><span class='fui-check txt-green'></span> Confirmed</span><a href="javascript://" ng-hide='currentUser.confirmed' ng-click="resendConfirmation()">Resend confirmation Email</a><br />
-  <div class='mtm' ng-hide='isAuthedWithFacebook'>
-    <div ng-hide='showUserForm'>
+  <div class='mtm mtm-email' ng-hide='isAuthedWithFacebook'>
+    <div ng-hide='showUserForm || showPasswordForm'>
+      <span class='user-info-label'>Email:</span>{{ currentUser.email }} &nbsp<span ng-show='currentUser.confirmed'><span class='fui-check txt-green'></span> Confirmed</span><a href="javascript://" ng-hide='currentUser.confirmed' ng-click="resendConfirmation()">Resend confirmation Email</a><br />
       <span class='user-info-label'>Name:</span>{{ currentUser.name }}<br />
       <span class='user-info-label'>Username:</span>{{ currentUser.username }}<br />
       <span class='user-info-label'>Password:</span> <span class='bold'>*****</span><br />
-      <a href='javascript://' ng-click='showUserForm = true'>Edit</a> <a href='javascript://' ng-click='showPasswordForm = true'>Change My Password</a>
+      <a href='javascript://' ng-click='showUserForm = true' class='btn btn-mini'>Edit</a> <a href='javascript://' ng-click='showPasswordForm = true' class='btn btn-mini'>Change My Password</a>
     </div>
     <form ng-show='showUserForm'>
       <span class='user-info-label'>Email:</span><input type='text'  class='user-info-input' ng-model='userInfo.email' placeholder='Email' /><br />
@@ -32,6 +32,9 @@
       <a href='javascript://' ng-click='updateUser()' class='btn btn-primary btn-mini'>Save</a>
       <a href='javascript://' ng-click='showPasswordForm = false' class='btn btn-mini'>Cancel</a>
     </form>
+  </div>
+  <div class="mtm mtm-facebook" ng-show="isAuthedWithFacebook">
+    <span class='user-info-label'>Email:</span>{{ currentUser.email }} &nbsp<span ng-show='currentUser.confirmed'><span class='fui-check txt-green'></span> Confirmed</span><a href="javascript://" ng-hide='currentUser.confirmed' ng-click="resendConfirmation()">Resend confirmation Email</a><br />
   </div>
 
   <div ng-controller="TransactionHistoryController">
