@@ -163,7 +163,7 @@ angular.module("app.controllers")
   };
 
   // doesn't depend on $scope because it's used after navigating away from this controller
-  function joinContestModal(buttonAction){
+  function joinContestModal(buttonAction, roster) {
     var dialogOpts = {
       backdrop: true,
       keyboard: true,
@@ -187,7 +187,7 @@ angular.module("app.controllers")
           return deferred.promise;
         },
         roster: function() {
-          return $scope.rosters.currentRoster;
+          return roster;
         },
         market: function() {
           return $scope.market;
@@ -212,7 +212,7 @@ angular.module("app.controllers")
       flash.success("Roster submitted successfully!");
       $location.path('/market/' + roster.market.id);
       $timeout(function() {
-        joinContestModal('submitRoster').then(function(result) {
+        joinContestModal('submitRoster', roster).then(function(result) {
           if (result && result.contestType) {
             joinContest($scope.fs, result.contestType, roster);
           }
@@ -222,7 +222,7 @@ angular.module("app.controllers")
   };
 
   $scope.enterAgain = function() {
-    joinContestModal('enterAgain').then(function(result) {
+    joinContestModal('enterAgain', rosters.currentRoster).then(function(result) {
       if (result && result.contestType) {
         joinContest($scope.fs, result.contestType, rosters.currentRoster);
       }
