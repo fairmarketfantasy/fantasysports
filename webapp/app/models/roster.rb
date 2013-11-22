@@ -355,12 +355,15 @@ class Roster < ActiveRecord::Base
     if self.reload.remaining_salary.abs > max_diff
       tries = 3
       begin
-        players = self.rosters_players.reload.sort{|rp| -rp.purchase_price }
+        players = self.rosters_players.reload#.sort{|rp| -rp.purchase_price }
+        players.sample(4).each{|rp| remove_player(rp.player, false) }
+=begin
         if self.remaining_salary > max_diff
           players.slice(5, 3).each{|rp| remove_player(rp.player, false) }
         else
           players.slice(0, 3).each{|rp| remove_player(rp.player, false) }
         end
+=end
         fill_pseudo_randomly3(place_bets)
         tries -= 1
       end while(self.reload.remaining_salary.abs > max_diff && tries > 0)
