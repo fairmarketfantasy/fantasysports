@@ -1,5 +1,7 @@
 
 class Roster < ActiveRecord::Base
+  BONUSES = { 'twitter_share' => 2, 'twitter_follow' =>  2 }
+
   attr_protected
 
   has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players'
@@ -460,6 +462,17 @@ class Roster < ActiveRecord::Base
           end
         end
       end
+    end
+  end
+
+  def add_bonus(type)
+    applied_bonuses = JSON.parse(self.bonuses || '{}')
+    if applied_bonuses[type].nil?
+      applied_bonuses[type] = BONUSES[type]
+      self.bonuses = applied_bonuses.to_json
+      self.bonus_points ||= 0
+      self.bonus_points += BONUSES[type]
+      self.save!
     end
   end
 

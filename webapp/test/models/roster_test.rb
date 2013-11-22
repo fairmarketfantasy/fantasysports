@@ -307,4 +307,14 @@ class RosterTest < ActiveSupport::TestCase
     end
   end
 
+  test "adding same bonus twice" do
+    @roster.submit!
+    @roster.add_bonus('twitter_share')
+    @roster.add_bonus('twitter_share')
+    assert_equal Roster::BONUSES['twitter_share'], @roster.bonus_points
+    @market.update_attribute(:opened_at, Time.new - 1.minute)
+    Market.tend
+    assert_equal @roster.bonus_points, @roster.reload.score
+  end
+
 end

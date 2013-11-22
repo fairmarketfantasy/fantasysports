@@ -185,6 +185,12 @@ angular.module("app.controllers")
           });
 
           return deferred.promise;
+        },
+        roster: function() {
+          return $scope.rosters.currentRoster;
+        },
+        market: function() {
+          return $scope.market;
         }
       }
     };
