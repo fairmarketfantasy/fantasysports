@@ -5,7 +5,15 @@
 
   $scope.setUserInfo = function() {
     $scope.currentUser = currentUserService.currentUser;
-    $scope.userInfo = $scope.userInfo || {id: $scope.currentUser.id, name: $scope.currentUser.name, username: $scope.currentUser.username, email: $scope.currentUser.email};
+    $scope.userInfo = {
+      id: $scope.currentUser.id,
+      name: $scope.currentUser.name,
+      username: $scope.currentUser.username,
+      email: $scope.currentUser.email,
+      current_password: '',
+      password: '',
+      password_confirmation: ''
+    };
   }
 
   $scope.setUserInfo();
@@ -54,8 +62,11 @@
 
   $scope.updateUser = function(){
     fs.user.update($scope.userInfo).then(function(data){
-      flash.success("Success, user info saved");
-      flashForConfirm();
+      if (data.email != $scope.userInfo.email) {
+        flash.success("Your user info has been saved. We've sent a confirmation email to your new email address. Please click the link in the email to finish updating your email address.");
+      } else {
+        flash.success("Success, user info saved");
+      }
       currentUserService.setUser(data);
       $scope.setUserInfo();
       $scope.showUserForm = false;
