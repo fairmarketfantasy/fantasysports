@@ -32,6 +32,15 @@ angular.module("app.controllers")
           size: 'large'
         }
       );
+
+      twttr.events.bind('follow', function (event) {
+        $('.twitter-follow').parent().find('h3').addClass('success');
+        $scope.addBonus('twitter_follow');
+      });
+      twttr.events.bind('tweet', function (event) {
+        $('.twitter-share').parent().find('h3').addClass('success');
+        $scope.addBonus('twitter_share');
+      });
     });
   });
 }]);
