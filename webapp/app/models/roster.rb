@@ -1,5 +1,7 @@
 
 class Roster < ActiveRecord::Base
+  BONUSES = { 'twitter_share' => 2, 'twitter_follow' =>  2 }
+
   attr_protected
 
   has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players'
@@ -97,23 +99,16 @@ class Roster < ActiveRecord::Base
     end
   end
 
-  #set the state to 'submitted'. If it's in a private contest, increment the number of 
-  #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
-  def submit!(charge = true)
-    #buy all the players on the roster. This sql function handles all of that.
+  def submit_without_sql_func
     raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
-    #self.transaction do
-      #purchase all the players and update roster state to submitted
-      Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
-      reload
-
+    self.transaction do
       set_contest = contest
       #enter contest
       contest_type.with_lock do #prevents creation of contests of the same type at the same time
         if set_contest.nil?
           #enter roster into public contest
           set_contest = Contest.where("contest_type_id = ?
-            AND (user_cap = 0
+            AND (user_cap = 0 OR user_cap > 10
                 OR (num_rosters - num_generated < user_cap
                     AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
             AND NOT private", contest_type.id).order('id asc').first
@@ -150,7 +145,62 @@ class Roster < ActiveRecord::Base
         self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
       end
 
-    #end
+    end
+    return self
+  end
+
+  #set the state to 'submitted'. If it's in a private contest, increment the number of 
+  #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
+  def submit!(charge = true)
+    #buy all the players on the roster. This sql function handles all of that.
+    raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
+      #purchase all the players and update roster state to submitted
+
+      set_contest = contest
+      #enter contest
+      contest_type.with_lock do #prevents creation of contests of the same type at the same time
+        Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
+        reload
+        if set_contest.nil?
+          #enter roster into public contest
+          set_contest = Contest.where("contest_type_id = ?
+            AND (user_cap = 0 OR user_cap > 10
+                OR (num_rosters - num_generated < user_cap
+                    AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
+            AND NOT private", contest_type.id).order('id asc').first
+          if set_contest.nil?
+            if contest_type.limit.nil? || Contest.where(contest_type_id: contest_type.id).count < contest_type.limit
+              set_contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
+                  market_id: self.market_id, contest_type_id: contest_type.id)
+            else
+              raise HttpException.new(403, "Contest is full")
+            end
+          end
+        else #contest not nil. enter private contest
+          if set_contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => set_contest.league_id).first.nil?
+            LeagueMembership.create!(:league_id => set_contest.league_id, :user_id => self.owner_id)
+          end
+        end
+        set_contest.num_generated += 1 if self.is_generated?
+        set_contest.num_rosters += 1
+        set_contest.save!
+        if set_contest.num_rosters > set_contest.user_cap && set_contest.user_cap != 0
+          removed_roster = set_contest.rosters.where('is_generated = true AND NOT cancelled').first
+          raise HttpException.new(403, "Contest #{set_contest.id} is full") if removed_roster.nil?
+          removed_roster.cancel!("Removed for a real player")
+          set_contest.num_rosters -= 1
+          set_contest.num_generated -= 1
+          set_contest.save!
+        end
+        self.contest = set_contest
+        self.save!
+
+        #charge account
+        if contest_type.buy_in > 0 && charge
+          self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
+        end
+      end
+
     return self
   end
 
@@ -245,23 +295,23 @@ class Roster < ActiveRecord::Base
     self.reload
   end
 
-  def fill_pseudo_randomly3(extend_ratio = 0.8)
+  def fill_pseudo_randomly3(place_bets = true)
     @candidate_players, indexes = fill_candidate_players
     return self unless @candidate_players
     ActiveRecord::Base.transaction do
-      expected = 1.0 * self.reload.remaining_salary / remaining_positions.length
+      expected = 1.0 * self.contest_type.salary_cap / position_array.length
       begin
         position = remaining_positions.sample # One level of randomization
         players = @candidate_players[position]
         if self.reload.remaining_salary < expected * remaining_positions.length
-          slice_start = [players.index{|p| p.buy_price < expected * extend_ratio}, 0].compact.max
+          slice_start = [players.index{|p| p.buy_price < expected}, 0].compact.max
           slice_end = [indexes[position], slice_start + 3].max
         else
           slice_start = 0
-          slice_end = [[players.index{|p| p.buy_price < expected * extend_ratio}, indexes[position]].compact.min, 3].max
+          slice_end = [[players.index{|p| p.buy_price < expected}, indexes[position]].compact.min, 3].max
         end
         player = players.slice(slice_start, slice_end - slice_start).sample
-        add_player(player, false)
+        add_player(player, place_bets)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
@@ -298,22 +348,23 @@ class Roster < ActiveRecord::Base
     self.reload
   end
 
-  def fill_pseudo_randomly5
-    fill_pseudo_randomly3(1.0)
+  def fill_pseudo_randomly5(place_bets = true)
+    fill_pseudo_randomly3(place_bets)
     max_diff = 4000
     if self.reload.remaining_salary.abs > max_diff
       tries = 3
       begin
         players = self.rosters_players.reload.sort{|rp| -rp.purchase_price }
         if self.remaining_salary > max_diff
-          players.slice(6, 3).each{|rp| remove_player(rp.player, false) }
+          players.slice(5, 3).each{|rp| remove_player(rp.player, false) }
         else
           players.slice(0, 3).each{|rp| remove_player(rp.player, false) }
         end
-        fill_pseudo_randomly3(1.0)
+        fill_pseudo_randomly3(place_bets)
         tries -= 1
       end while(self.reload.remaining_salary.abs > max_diff && tries > 0)
     end
+    self
   end
 
 =begin
@@ -411,6 +462,17 @@ class Roster < ActiveRecord::Base
           end
         end
       end
+    end
+  end
+
+  def add_bonus(type)
+    applied_bonuses = JSON.parse(self.bonuses || '{}')
+    if applied_bonuses[type].nil?
+      applied_bonuses[type] = BONUSES[type]
+      self.bonuses = applied_bonuses.to_json
+      self.bonus_points ||= 0
+      self.bonus_points += BONUSES[type]
+      self.save!
     end
   end
 

@@ -53,7 +53,7 @@ RETURNS TABLE (
 	weight integer, college character varying(255), "position" character varying(255), 
 	jersey_number integer, status character varying(255), total_games integer, total_points integer, 
 	created_at timestamp without time zone, updated_at timestamp without time zone, 
-	team character varying(255), benched_games integer
+	team character varying(255), benched_games integer, removed boolean
 )
 AS $$
 DECLARE
@@ -141,25 +141,27 @@ BEGIN
 	  	WHERE rosters_players.id = locked_out.id;
   END IF;
 
-	-- increment bets for all market players in roster by buy_in amount
-	UPDATE market_players SET bets = bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
-		WHERE market_id = _roster.market_id AND player_id IN
-			(SELECT player_id from rosters_players where roster_id = _roster_id); 
+  IF NOT _roster.is_generated THEN
+	  -- increment bets for all market players in roster by buy_in amount
+	  UPDATE market_players SET bets = bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
+	  	WHERE market_id = _roster.market_id AND player_id IN
+	  		(SELECT player_id from rosters_players where roster_id = _roster_id); 
 
-	-- increment total_bets by buy_in times number of players bought
-	update markets set total_bets = total_bets + 
-		_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
-		where id = _roster.market_id;
+	  -- increment total_bets by buy_in times number of players bought
+	  update markets set total_bets = total_bets + 
+	  	_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
+	  	where id = _roster.market_id;
 
-	-- update rosters_players with current sell prices of players
-	WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id)) 
-		UPDATE rosters_players set purchase_price = prices.sell_price FROM prices 
-		WHERE id = prices.roster_player_id;
+	  -- update rosters_players with current sell prices of players
+	  WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id)) 
+	  	UPDATE rosters_players set purchase_price = prices.sell_price FROM prices 
+	  	WHERE id = prices.roster_player_id;
 
-	-- insert into market_orders
-	INSERT INTO market_orders (market_id, roster_id, action, player_id, price, created_at, updated_at)
-	   SELECT _roster.market_id, _roster_id, 'buy', player_id, purchase_price, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-	   FROM rosters_players where roster_id = _roster_id;
+	  -- insert into market_orders
+	  INSERT INTO market_orders (market_id, roster_id, action, player_id, price, created_at, updated_at)
+	     SELECT _roster.market_id, _roster_id, 'buy', player_id, purchase_price, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+	     FROM rosters_players where roster_id = _roster_id;
+  END IF;
 
 	--update roster's remaining salary and state
 	update rosters set remaining_salary = 100000 -
@@ -564,7 +566,7 @@ DECLARE
 	_now timestamp;
 BEGIN
 	--ensure that the market exists and may be closed
-	PERFORM id FROM markets WHERE id = _market_id AND state = 'opened' FOR UPDATE;
+	PERFORM id FROM markets WHERE id = _market_id AND state IN('opened', 'closed')  FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % not found', _market_id;
 	END IF;
@@ -607,8 +609,8 @@ begin
 
   WITH contest_info as
     (SELECT rosters.id, contest_types.salary_cap FROM rosters JOIN contest_types ON rosters.contest_type_id=contest_types.id WHERE rosters.market_id=$1)
-	  UPDATE rosters set score = LEAST(1.03, 1 + remaining_salary / salary_cap) * (select sum(score) from market_players where player_stats_id IN(
-        SELECT player_stats_id FROM rosters_players WHERE roster_id = rosters.id) AND market_id = $1)
+	  UPDATE rosters set score = coalesce(bonus_points, 0) + LEAST(1.03, 1 + remaining_salary / salary_cap) * coalesce((select sum(score) from market_players where player_stats_id IN(
+        SELECT player_stats_id FROM rosters_players WHERE roster_id = rosters.id) AND market_id = $1), 0)
     FROM contest_info WHERE rosters.id=contest_info.id;
 
 	WITH ranks as

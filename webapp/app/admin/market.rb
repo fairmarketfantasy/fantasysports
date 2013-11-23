@@ -1,4 +1,5 @@
 ActiveAdmin.register Market do
+  filter :id
   filter :state
   filter :closed_at
   config.sort_order = "closed_at_asc"
@@ -30,6 +31,9 @@ ActiveAdmin.register Market do
     column :total_bets
     column :shadow_bets
     column :price_multiplier
+    column :contests do |market|
+      link_to "Contests", :controller => "contests", :action => "index", 'q[market_id_eq]' => "#{market.id}".html_safe
+    end
     default_actions
 
   end

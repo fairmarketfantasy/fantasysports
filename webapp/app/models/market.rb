@@ -70,7 +70,7 @@ class Market < ActiveRecord::Base
     end
 
     def lock_players
-      apply :lock_players, "state = 'opened'"
+      apply :lock_players, "state IN('opened', 'closed')"
     end
     
     def tabulate_scores
@@ -243,8 +243,10 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
 # 4995.5
-      payout_structure: '[250000, 100000, 50000, 25000, 15000, 10000, 10000, 5000, 5000, 5000, 5000, 5000, 2500, 2500,  2500, 2500, 2500, 2050]',
-      payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $500, 4th: $250, 5th: $150, 6th: $100, 7th-10th: $50, 10th-16th: $25",
+      payout_structure: '[250000, 100000, 50000, 25000, 10000, 10000, 10000,
+                          5000, 5000, 5000, 2500, 2500, 2500, 2500,  2500,
+                          2500, 2500, 2050, 1250, 1250, 1250, 1250, 1250, 1250, 1250, 1250]',
+      payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $500, 4th: $250, 5th-7th: $100, 8th-10th: $50, 11th-17th: $25, 18th: $20.50, 19th-25th: $12.5",
       takes_tokens: false,
       limit: 1
     },
