@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:create, :update, :unsubscribe]
   skip_before_filter :authenticate_user!, :only => [:reset_password]
-  filter_parameter_logging :password, :password_confirmation, :current_password
 
   def index
     render_api_response current_user

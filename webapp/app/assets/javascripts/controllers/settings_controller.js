@@ -47,7 +47,6 @@
       });
     else
     {
-      flash.error("Error saving avatar");
       // 1. ignore content and adjust your model to show/hide UI snippets; or
       // 2. show content as an _operation progress_ information
     }
