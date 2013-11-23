@@ -45,13 +45,14 @@
   </p>
 
   <div ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && (inThePast(market.started_at) || rosters.currentRoster.league)">
+    }
     <table class="table table-striped">
       <thead>
         <th ng-show="rosters.contest_type.name == 'h2h rr'">Record</th>
         <th ng-hide="rosters.contest_type.name == 'h2h rr'">Rank</th>
         <th>User</th>
         <th>Payout</th>
-        <th>Points</th>
+        <th>Points&nbsp;&nbsp;of: {{leaderboard[0].perfect_score | number:1}}</th>
         <th>Roster</th>
       </thead>
       <tbody>
