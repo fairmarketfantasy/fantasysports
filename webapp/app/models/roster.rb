@@ -99,7 +99,7 @@ class Roster < ActiveRecord::Base
     end
   end
 
-  def submit_without_sql_func
+  def submit_without_sql_func(charge = true)
     raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
     self.transaction do
       set_contest = contest
