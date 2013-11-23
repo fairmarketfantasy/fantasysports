@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131122081001) do
+ActiveRecord::Schema.define(version: 20131123214328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20131122081001) do
     t.string  "payout_description", default: "",    null: false
     t.boolean "takes_tokens",       default: false
     t.integer "limit"
+    t.string  "positions"
   end
 
   add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
@@ -335,7 +336,6 @@ ActiveRecord::Schema.define(version: 20131122081001) do
     t.string   "cancelled_cause"
     t.datetime "cancelled_at"
     t.string   "state",                            null: false
-    t.string   "positions"
     t.datetime "submitted_at"
     t.integer  "contest_type_id",  default: 0,     null: false
     t.boolean  "cancelled",        default: false

@@ -262,7 +262,6 @@ FactoryGirl.define do
     buy_in 1000
     remaining_salary 100000
     state 'in_progress'
-    positions Positions.default_NFL
     association :contest_type
     after(:create) do |roster|
       roster.buy_in = roster.contest_type.buy_in
@@ -290,6 +289,7 @@ FactoryGirl.define do
     rake 0.05
     payout_structure '[95000]'
     payout_description 'some payout description'
+    positions Positions.default_NFL
   end
 end
 
