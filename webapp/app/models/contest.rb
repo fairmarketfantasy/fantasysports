@@ -66,6 +66,26 @@ class Contest < ActiveRecord::Base
     self.contest_type.get_payout_structure.length
   end
 
+  def perfect_score
+    position_hash = {}
+    total = 0
+    contest_type.position_array.each do |p|
+      position_hash[p] ||= 0
+      position_hash[p] += 1
+      total += 1
+    end
+    score = 0
+    market.market_players.order('score desc').each do |mp|
+      if position_hash[p] && position_hash[p] > 0
+        total  -= 1
+        position_hash[p] -= 1
+        score += mp.score
+        return score if total == 0
+      end
+    end
+    score
+  end
+
   def rake_amount
     rake = self.num_rosters * self.contest_type.buy_in * contest_type.rake
     if contest_type.name == 'h2h rr'

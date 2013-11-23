@@ -3,6 +3,7 @@ class Roster < ActiveRecord::Base
   BONUSES = { 'twitter_share' => 2, 'twitter_follow' =>  2 }
 
   attr_protected
+  def perfect_score; self[:perfect_score]; end
 
   has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players'
   has_many :rosters_players
@@ -22,6 +23,7 @@ class Roster < ActiveRecord::Base
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
   scope :submitted, -> { where(state: ['submitted'])}
   scope :finished, -> { where(state: ['finished'])}
+  scope :with_perfect_score, ->(score) { select("rosters.*, #{score.to_f} as perfect_score") }
 
   def players_with_prices
     self.class.uncached do
@@ -56,7 +58,6 @@ class Roster < ActiveRecord::Base
       :buy_in => contest_type.buy_in,
       :remaining_salary => contest_type.salary_cap,
       :state => 'in_progress',
-      :positions => Positions.for_sport_id(contest_type.market.sport_id),
     )
   end
 
@@ -432,7 +433,7 @@ class Roster < ActiveRecord::Base
   end
 
   def position_array
-    @position_list ||= self.positions.split(',')
+    @position_list ||= self.contest_type.positions.split(',')
   end
 
   def remaining_positions
