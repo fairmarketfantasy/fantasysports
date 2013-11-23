@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131114083602) do
+ActiveRecord::Schema.define(version: 20131122081001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -292,12 +292,13 @@ ActiveRecord::Schema.define(version: 20131114083602) do
     t.string   "position"
     t.integer  "jersey_number"
     t.string   "status"
-    t.integer  "total_games",   default: 0, null: false
-    t.integer  "total_points",  default: 0, null: false
+    t.integer  "total_games",   default: 0,     null: false
+    t.integer  "total_points",  default: 0,     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "team"
     t.integer  "benched_games", default: 0
+    t.boolean  "removed",       default: false
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
@@ -342,6 +343,8 @@ ActiveRecord::Schema.define(version: 20131114083602) do
     t.integer  "losses"
     t.boolean  "takes_tokens"
     t.boolean  "is_generated",     default: false
+    t.integer  "bonus_points",     default: 0
+    t.text     "bonuses"
   end
 
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
@@ -445,10 +448,10 @@ ActiveRecord::Schema.define(version: 20131114083602) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
-    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
+    t.string   "avatar"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

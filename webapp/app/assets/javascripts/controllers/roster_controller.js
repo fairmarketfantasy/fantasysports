@@ -150,8 +150,9 @@ angular.module("app.controllers")
 
   $scope.showPlayer = function(roster, player) {
     if (
-      (roster.owner_id == $scope.currentUser.id && player.id) ||
-      ($scope.inThePast(player.next_game_at))) {
+      (player.id && ($scope.currentUser.admin || roster.owner_id == $scope.currentUser.id )) ||
+      player.locked ||
+      $scope.inThePast(player.next_game_at)) {
       return true;
     }
     return false;
@@ -184,6 +185,12 @@ angular.module("app.controllers")
           });
 
           return deferred.promise;
+        },
+        roster: function() {
+          return $scope.rosters.currentRoster;
+        },
+        market: function() {
+          return $scope.market;
         }
       }
     };
@@ -223,7 +230,7 @@ angular.module("app.controllers")
   };
 
   $scope.finish = function() {
-    rosters.reset('/market/' + rosters.currentRoster.market.id)
+    rosters.reset('/market/' + rosters.currentRoster.market.id);
   };
 
   $scope.addPlayer = function(player) {
@@ -258,6 +265,4 @@ angular.module("app.controllers")
   };
 
 }]);
-
-
 

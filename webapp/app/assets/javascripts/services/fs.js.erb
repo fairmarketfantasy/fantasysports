@@ -153,9 +153,7 @@ angular.module('app.services')
       // setup the magic
       var deferred = $q.defer();
       window['jsonp_' + responseFunc] = function(data) {
-          debugger
         angular.element('body').scope().$apply(function() {
-          debugger
           if (data.error) {
             flash.error(data.error);
             deferred.reject(data);
@@ -341,6 +339,9 @@ angular.module('app.services')
         },
         autoFill: function(roster_id) {
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/autofill'});
+        },
+        socialBonus: function(type, roster_id) {
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/share?' + $.param({event: type})})
         },
       },
     }

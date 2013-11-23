@@ -236,6 +236,18 @@ class RosterTest < ActiveSupport::TestCase
     end
   end
 
+  test "entering lolla twice" do
+    add_lollapalooza @market
+    lolla = @market.contest_types.where(:name => '0.11k').first
+    user1 = create(:paid_user)
+    assert_difference 'user1.customer_object.reload.balance', -2000 do
+      assert_difference 'user1.customer_object.reload.balance', -1000 do
+        Roster.generate(user1, lolla).submit!
+      end
+      Roster.generate(user1, lolla).submit!
+    end
+  end
+
   test "re-scoring a roster" do
     @market.update_attribute(:opened_at, Time.new - 1.minute)
     @market.open
@@ -293,6 +305,16 @@ class RosterTest < ActiveSupport::TestCase
         contest.payday!
       end
     end
+  end
+
+  test "adding same bonus twice" do
+    @roster.submit!
+    @roster.add_bonus('twitter_share')
+    @roster.add_bonus('twitter_share')
+    assert_equal Roster::BONUSES['twitter_share'], @roster.bonus_points
+    @market.update_attribute(:opened_at, Time.new - 1.minute)
+    Market.tend
+    assert_equal @roster.bonus_points, @roster.reload.score
   end
 
 end

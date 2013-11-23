@@ -82,6 +82,7 @@ Fantasysports::Application.routes.draw do
       post 'autofill', :action => 'autofill'
       post 'add_player/:player_id', :action => 'add_player'
       post 'remove_player/:player_id', :action => 'remove_player'
+      post 'share', :action => 'share'
     end
   end
 
