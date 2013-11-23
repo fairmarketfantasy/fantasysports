@@ -18,7 +18,8 @@ class RosterSerializer < ActiveModel::Serializer
       :market_id, # ios Dependency
       :next_game_time,
       :live,
-      :bonus_points
+      :bonus_points,
+      :perfect_score
 
   has_one :league
   has_one :contest
@@ -32,6 +33,10 @@ class RosterSerializer < ActiveModel::Serializer
 
   def players
     @players ||= object.players_with_prices
+  end
+
+  def positions
+    object.contest_type.positions
   end
 
   def live
