@@ -2,7 +2,21 @@
 .controller('SettingsController', ['$scope', '$timeout', 'dialog', 'fs', 'flash', 'currentUserService', function($scope, $timeout, dialog, fs, flash, currentUserService) {
 
   $scope.currentUserService = currentUserService;
-  $scope.currentUser = currentUserService.currentUser;
+
+  $scope.setUserInfo = function() {
+    $scope.currentUser = currentUserService.currentUser;
+    $scope.userInfo = {
+      id: $scope.currentUser.id,
+      name: $scope.currentUser.name,
+      username: $scope.currentUser.username,
+      email: $scope.currentUser.email,
+      current_password: '',
+      password: '',
+      password_confirmation: ''
+    };
+  }
+
+  $scope.setUserInfo();
 
   var flashForConfirm = function(){
     if(!$scope.currentUser.confirmed){
@@ -14,16 +28,21 @@
 
   flashForConfirm();
 
-  $scope.userInfo = $scope.userInfo || {name: $scope.currentUser.name, email: $scope.currentUser.email};
+  $scope.editUser = function() {
+    $scope.setUserInfo();
+    $scope.showUserForm = true;
+  }
 
   $scope.isAuthedWithFacebook = !!$scope.currentUser.provider;
 
-//fires after multipart upload for picture has completed
+  //fires after multipart upload for picture has completed
   $scope.results = function(content, completed) {
     if (completed)
-      fs.user.refresh().then(function(resp){
-        $scope.currentUser = resp;
-        window.App.currentUser = resp;
+      // the response includes the updated user, but it's simpler to get it straight from $http rather than ng-upload
+      fs.user.refresh().then(function(data){
+        flash.success("Success, avatar saved");
+        currentUserService.setUser(data);
+        $scope.setUserInfo();
         $scope.showUpload  = false;
       });
     else
@@ -41,11 +60,18 @@
   };
 
   $scope.updateUser = function(){
-    fs.user.update($scope.userInfo).then(function(resp){
-      flash.success("Success, user info saved");
-      flashForConfirm();
-      $scope.currentUser = resp;
-      $scope.userInfo = {};
+    fs.user.update($scope.userInfo).then(function(data){
+      if (data.email != $scope.userInfo.email) {
+        flash.success("Your user info has been saved. We've sent a confirmation email to your new email address. Please click the link in the email to finish updating your email address.");
+      } else {
+        flash.success("Success, user info saved");
+      }
+      currentUserService.setUser(data);
+      $scope.setUserInfo();
+      $scope.showUserForm = false;
+      $scope.showPasswordForm = false;
+    }, function() {
+      flash.error("Error saving user info");
     });
   };
 
