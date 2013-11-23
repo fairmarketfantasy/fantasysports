@@ -432,10 +432,6 @@ class Roster < ActiveRecord::Base
     end
   end
 
-  def positions
-    self.contest_type.positions
-  end
-
   def position_array
     @position_list ||= self.contest_type.positions.split(',')
   end
