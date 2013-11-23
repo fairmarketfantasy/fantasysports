@@ -56,7 +56,6 @@ class Roster < ActiveRecord::Base
       :buy_in => contest_type.buy_in,
       :remaining_salary => contest_type.salary_cap,
       :state => 'in_progress',
-      :positions => Positions.for_sport_id(contest_type.market.sport_id),
     )
   end
 
@@ -426,6 +425,10 @@ class Roster < ActiveRecord::Base
         return p
       end
     end
+  end
+
+  def positions
+    self.contest_type.positions
   end
 
   def position_array

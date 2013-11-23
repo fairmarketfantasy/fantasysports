@@ -33,6 +33,10 @@ class ContestType < ActiveRecord::Base
     super
   end
 
+  def positions # Temporary, can be removed after 12/01
+    Positions.for_sport_id(market.sport_id)
+  end
+
   def duplicate_into_market(market)
     existing = market.contest_types.where(
       :name => self.name,

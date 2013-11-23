@@ -402,7 +402,8 @@ class Market < ActiveRecord::Base
           salary_cap: 100000,
           payout_description: data[:payout_description],
           takes_tokens: data[:takes_tokens],
-          limit: data[:limit]
+          limit: data[:limit],
+          positions: Positions.for_sport_id(self.sport_id),
         )
       end
     end
