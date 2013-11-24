@@ -270,7 +270,7 @@ class Roster < ActiveRecord::Base
   def fill_randomly
     #find which positions to fill
     self.players.each{|p| self.remove_player(p) }
-    positions = self.positions.split(',') #TODO- could cache this
+    positions = self.position_array
     pos_taken = self.players.collect(&:position)
     pos_taken.each do |pos|
       i = positions.index(pos)
