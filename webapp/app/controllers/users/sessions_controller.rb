@@ -1,8 +1,8 @@
 class Users::SessionsController < Devise::SessionsController
 
   def create
-    self.resource = warden.authenticate!(auth_options)
-    sign_in(resource_name, resource)
+    self.resource = warden.authenticate! scope: resource_name, recall: "#{controller_path}#sign_in_failure"
+    sign_in resource_name, resource
     render json: UserSerializer.new(current_user, scope: current_user)
   end
 
@@ -13,5 +13,9 @@ class Users::SessionsController < Devise::SessionsController
 
   def sign_in_params
     devise_parameter_sanitizer.sanitize(:sign_in)
+  end
+
+  def sign_in_failure
+    render json: { error: 'login failed' }, status: :unauthorized
   end
 end
