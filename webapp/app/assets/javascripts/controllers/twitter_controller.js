@@ -17,7 +17,7 @@ angular.module("app.controllers")
         },
         {
           count: 'none',
-          text: 'I just built a great roster on FairMarketFantasy. Join my league!',
+          text: 'I just built a great roster on FairMarketFantasy. Join my league! #fantasyfootball #dfs',
           size: 'large'
         }
       );
