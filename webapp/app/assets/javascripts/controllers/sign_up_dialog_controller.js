@@ -1,51 +1,12 @@
 angular.module("app.controllers")
-.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', 'message', '$timeout', function($scope, dialog, flash, fs, message, $timeout) {
+.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', '$timeout', 'registrationService', function($scope, dialog, flash, fs, $timeout, registrationService) {
   $scope.user = $scope.user || {};
-  $scope.message = message;
-
-  // ['forgotPass', 'signUpForm', 'signInForm']
-  $scope.changeState = function(state, message){
-
-    //set all states to false
-    states =['forgotPass', 'signUpForm', 'signInForm'];
-    _.each(states, function(st){
-      $scope[st] = false;
-    });
-
-    $scope[state] = true;
-
-    if(state === 'forgotPass'){
-      $scope.title = "Forgot Password";
-      $scope.message = 'Enter your email address for instructions.';
-    } else if(state === 'signUpForm') {
-      $scope.title = "Sign Up";
-      $scope.message = message;
-    } else if(state === 'signInForm') {
-      $scope.title = "Sign In";
-      $scope.message = message;
-    }
-  };
-
-  if (message == 'signin') {
-    $scope.changeState('signInForm');
-  } else {
-    $scope.changeState('signUpForm', message || '');
-  }
 
   $scope.signUp = function() {
     if (!$scope.isValid()) { return; }
     fs.user.create($scope.user).then(function(resp){
       //only fires on success, errors are intercepted by fsAPIInterceptor
       $timeout(function() {window.location.reload(true);});
-    });
-  };
-
-  $scope.forgotPass = false;
-
-  $scope.resetPassword = function(){
-    fs.user.resetPassword($scope.user.email).then(function(resp){
-      flash.success(resp.message);
-      $scope.close();
     });
   };
 
@@ -65,8 +26,11 @@ angular.module("app.controllers")
     return !$scope.errorMsg;
   };
 
-  $scope.close = function(){
+  $scope.close = function(nextModal){
     dialog.close();
+    if (typeof nextModal !== 'undefined') {
+      registrationService.showModal(nextModal);
+    }
   };
 
 }]);
