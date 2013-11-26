@@ -69,6 +69,7 @@ class RostersController < ApplicationController
     else
       Roster.where(:id => params[:id], :view_code => params[:view_code]).first
     end
+    raise HttpException.new(404, "Roster not found or code not included") unless roster
     render_api_response roster
   end
 
