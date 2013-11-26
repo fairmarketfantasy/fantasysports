@@ -3,13 +3,13 @@
     <h3>Sign In</h3>
   </div>
   <div class='modal-body clearfix'>
-    <form>
+    <form ng-submit="login('email')">
       <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
       <div class='modal-form-container'>
         <input type='text' placeholder='Email' ng-model="user.email" class='mvm' /><br />
         <input type='password' placeholder='Password' ng-model="user.password" class='mvm' tooltip="Must be at least 6 characters" tooltip-placement='right' tooltip-trigger='focus' /><br />
         <div class='mvm'>
-          Not a member?&nbsp<a href="javascript://" ng-click="close('signUp')">Sign Up</a>
+          Not a member?&nbsp;<a href="javascript://" ng-click="close('signUp')">Sign Up</a>
         </div>
         <div class='mvm'>
           <a href="javascript://" ng-click="close('forgotPassword')">Forgot Your Password?</a>
@@ -21,8 +21,8 @@
       </div>
     </div>
     <div class='modal-footer'>
-      <a href="javascript://" class="btn btn-primary" ng-click="login('email')">Sign In</a>
-      <a href="javascript://" class="btn" ng-click="close()">close</a>
+      <input type="submit" class="btn btn-primary" value="Sign In">
+      <a href="javascript://" class="btn">close</a>
     </div>
   </form>
 </div>

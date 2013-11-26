@@ -16,6 +16,6 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def sign_in_failure
-    render json: { error: 'login failed' }, status: :unauthorized
+    render json: { error: 'login failed: invalid username or password' }, status: :unauthorized
   end
 end
