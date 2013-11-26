@@ -24,6 +24,7 @@ Fantasysports::Application.routes.draw do
   # You can have the root of your site routed with "root"
   get '/healthcheck' => 'application#healthcheck'
   post '/support' => 'pages#support'
+  get '/public' => 'pages#public'
   get '/terms' => 'pages#terms'
   get '/guide' => 'pages#guide'
   get '/landing' => 'pages#landing'
@@ -76,8 +77,9 @@ Fantasysports::Application.routes.draw do
       get 'mine', :action => 'mine'
       get 'past_stats', :action => 'past_stats'
       get 'in_contest/:contest_id', :action => 'in_contest'
+      get 'public/:view_code', :action => 'public_roster'
     end
-    member do 
+    member do
       post 'submit', :action => 'submit'
       post 'autofill', :action => 'autofill'
       post 'add_player/:player_id', :action => 'add_player'

@@ -1,5 +1,6 @@
 angular.module("app.controllers")
-.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', '$timeout', 'flash', '$templateCache', 'markets', function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache) {
+.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', '$timeout', 'flash', '$templateCache', 'markets',
+            function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
@@ -25,7 +26,7 @@ angular.module("app.controllers")
   };
   var fetchPlayers = function() {
     $scope.filterPosition = filterOpts.position;
-    if (!rosters.currentRoster) { return; }
+    if (!rosters.currentRoster || !$scope.currentUser) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
       if (filterOpts.removeLow && players.length > 2) {
         players = _.select(players, function(player) { return player.benched_games < 3 && player.status == 'ACT'; });
@@ -35,7 +36,7 @@ angular.module("app.controllers")
   };
 
   $scope.$watch('$routeParams.roster_id', function() {
-    rosters.fetch($routeParams.roster_id).then(function(roster) {
+    rosters.fetch($routeParams.roster_id, $routeParams.view_code).then(function(roster) {
       rosters.selectRoster(roster);
       fetchPlayers();
       fetchContest();
@@ -53,7 +54,7 @@ angular.module("app.controllers")
 
   var fetchRosters = function() {
     if (rosters.currentRoster) {
-      $scope.fs.rosters.show(rosters.currentRoster.id).then(function(roster){
+      $scope.fs.rosters.show(rosters.currentRoster.id, $routeParams.view_code).then(function(roster){
         rosters.selectRoster(roster);
       });
     }
@@ -69,7 +70,7 @@ angular.module("app.controllers")
   };
 
   var fetchContest = function() {
-    if (!rosters.currentRoster.contest_id) { return; }
+    if (!rosters.currentRoster.contest_id || !$scope.currentUser) { return; }
     rosters.fetchContest(rosters.currentRoster.contest_id).then(function(rosters) {
       $scope.leaderboard = rosters;
     });
@@ -150,7 +151,8 @@ angular.module("app.controllers")
 
   $scope.showPlayer = function(roster, player) {
     if (
-      (player.id && ($scope.currentUser.admin || roster.owner_id == $scope.currentUser.id )) ||
+      (player.id && $scope.currentUser && ($scope.currentUser.admin || roster.owner_id == $scope.currentUser.id )) ||
+      $routeParams.view_code || // Totes not secure
       player.locked ||
       $scope.inThePast(player.next_game_at)) {
       return true;

@@ -58,8 +58,8 @@ angular.module('app.data')
         }
       };
 
-      this.fetch = function(id) {
-        return promiseWrapper(rosterData[id], fs.rosters.show(id).then(function(roster) {
+      this.fetch = function(id, view_code) {
+        return promiseWrapper(rosterData[id], fs.rosters.show(id, view_code).then(function(roster) {
             rosterData[roster.id] = roster;
             return roster;
           }));
