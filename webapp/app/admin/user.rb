@@ -43,6 +43,12 @@ ActiveAdmin.register User do
     column :email
     column :token_balance
     column(:balance) {|u| u.customer_object.balance }
+    column :rosters do |user|
+      link_to "Rosters", :controller => "rosters", :action => "index", 'q[owner_id_eq]' => "#{user.id}".html_safe
+    end
+    column :transaction_records do |user|
+      link_to "Transactions", :controller => "transaction_records", :action => "index", 'q[user_id_eq]' => "#{user.id}".html_safe
+    end
     default_actions
 
   end
