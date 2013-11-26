@@ -119,6 +119,71 @@ footer {
   background-color: @green;
 }
 
+/* Form validation
+  --------------------------------------------------------------------------- */
+
+/* let forms be the top-level element beneath div.modal */
+.modal > form {
+  margin: 0;
+  padding: 0;
+}
+
+/* overrides toolkit/twitter/bootstrap/forms.less */
+
+// HTML5 invalid states
+// Shares styles with the .control-group.error above
+.annotate-blur {
+
+  /* normalize focused invalid */
+  input:invalid,
+  textarea:invalid,
+  select:invalid {
+    color: #34495E;
+    border-color: #BDC3C7;
+  }
+
+  input:focus:invalid,
+  textarea:focus:invalid,
+  select:focus:invalid {
+    color: #34495E;
+    border-color: #1ABC9C;
+    &:focus {
+      border-color: #1ABC9C;
+      .box-shadow(none);
+    }
+  }
+
+  /* adding extras to be sure it's overridden. TODO: find out which are needed */
+  input.ng-dirty.blurred.ng-invalid,
+  textarea.ng-dirty.blurred.ng-invalid,
+  select.ng-dirty.blurred.ng-invalid,
+  input.ng-dirty.blurred.ng-invalid:focus,
+  textarea.ng-dirty.blurred.ng-invalid:focus,
+  select.ng-dirty.blurred.ng-invalid:focus,
+  input.ng-dirty.blurred.ng-invalid:invalid,
+  textarea.ng-dirty.blurred.ng-invalid:invalid,
+  select.ng-dirty.blurred.ng-invalid:invalid,
+  input.ng-dirty.blurred.ng-invalid:focus:invalid,
+  textarea.ng-dirty.blurred.ng-invalid:focus:invalid,
+  select.ng-dirty.blurred.ng-invalid:focus:invalid {
+    color: #b94a48;
+    border-color: #ee5f5b;
+    &:focus {
+      border-color: darken(#ee5f5b, 10%);
+      .box-shadow(none);
+    }
+  }
+}
+
+// disable invalid shadow to be more consistent with flat ui
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+  &:focus {
+    border-color: darken(#ee5f5b, 10%);
+    .box-shadow(none);
+  }
+}
 
 /* Small reusables
   --------------------------------------------------------------------------- */

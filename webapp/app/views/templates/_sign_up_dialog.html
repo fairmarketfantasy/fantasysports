@@ -1,31 +1,29 @@
-<div ng-controller="LoginController">
+<form name="signUpForm" ng-submit="submit()" novalidate data-annotate-blur class="annotate-blur">
   <div class='modal-header'>
     <h3>Sign Up</h3>
   </div>
   <div class='modal-body clearfix'>
-    <form ng-submit="signUp()">
-      <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
-      <div class='modal-form-container'>
-        <input type='text' placeholder='Username' ng-model="user.username" class='mvm' /><br />
-        <input type='text' placeholder='Real Name' ng-model="user.name" class='mvm' /><br />
-        <input type='text' placeholder='Email' ng-model="user.email" class='mvm' /><br />
-        <input type='password' placeholder='Password' ng-model="user.password" class='mvm'><br />
-        <input type='password' placeholder='Confirm' ng-model="user.password_confirmation" class='mvm'/><br />
-        <div class='mvm'>
-          Have an account?&nbsp;<a href="javascript://" ng-click="close('login')">Sign In</a>
-        </div>
-        <div class='mvm'>
-          <a href="javascript://" ng-click="close('forgotPassword')">Forgot Your Password?</a>
-        </div>
+    <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
+    <div class='modal-form-container'>
+      <input type='text' name="username" required placeholder='Username' ng-model="user.username" class='mvm' focus-me="signUpForm.username.$error.required" /><br />
+      <input type='text' name="name" required placeholder='Real Name' ng-model="user.name" class='mvm' /><br />
+      <input type='email' name="email" required placeholder='Email' ng-model="user.email" class='mvm' /><br />
+      <input type='password' ng-minlength="6" name="password" required placeholder='Password' ng-model="user.password" class='mvm'><br />
+      <input type='password' name="password_confirmation" required placeholder='Confirm' ng-model="user.password_confirmation" class='mvm'/><br />
+      <div class='mvm'>
+        Have an account?&nbsp;<a href="javascript://" ng-click="close('login')">Sign In</a>
       </div>
-      <div class='modal-form-container secondary'>
-        <div class='mtl mbl inline-block'>Or, sign up with facebook</div><br />
-        <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
+      <div class='mvm'>
+        <a href="javascript://" ng-click="close('forgotPassword')">Forgot Your Password?</a>
       </div>
     </div>
-    <div class='modal-footer'>
-      <input type="submit" class="btn btn-primary" value="Sign Up">
-      <a href="javascript://" class="btn" ng-click="close()">close</a>
+    <div class='modal-form-container secondary'>
+      <div class='mtl mbl inline-block'>Or, sign up with facebook</div><br />
+      <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
     </div>
-  </form>
-</div>
+  </div>
+  <div class='modal-footer'>
+    <input type="submit" ng-click="" class="btn btn-primary" value="Sign Up">
+    <a href="javascript://" class="btn" ng-click="close()">close</a>
+  </div>
+</form>
