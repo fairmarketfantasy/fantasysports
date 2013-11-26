@@ -1,22 +1,24 @@
 angular.module("app.controllers")
 .controller('HomeController', ['$scope', 'rosters', '$dialog', '$location', function($scope, rosters, $dialog, $location) {
   $scope.rosters = rosters;
-  rosters.fetchMine();
-  rosters.fetchPastStats();
-  rosters.setPoller(function() { rosters.fetchMine(); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
+  if ($scope.currentUser) {
+    rosters.fetchMine();
+    rosters.fetchPastStats();
+    rosters.setPoller(function() { rosters.fetchMine(); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
 
-  // Force them to set a user!
-  if (_.isEmpty($scope.currentUser.username)) {
-    var dialogOpts = {
-          backdrop: true,
-          keyboard: false,
-          backdropClick: false,
-          dialogClass: 'modal',
-          templateUrl: '/add_username_modal.html',
-          controller: 'UserNameController'
-        };
-    var d = $dialog.dialog(dialogOpts);
-    d.open();
+    // Force them to set a user!
+    if (_.isEmpty($scope.currentUser.username)) {
+      var dialogOpts = {
+            backdrop: true,
+            keyboard: false,
+            backdropClick: false,
+            dialogClass: 'modal',
+            templateUrl: '/add_username_modal.html',
+            controller: 'UserNameController'
+          };
+      var d = $dialog.dialog(dialogOpts);
+      d.open();
+    }
   }
 
   $scope.showNextLeagueRoster = function(league) {

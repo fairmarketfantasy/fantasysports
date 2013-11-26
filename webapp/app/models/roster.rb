@@ -17,6 +17,7 @@ class Roster < ActiveRecord::Base
 
   validates :owner_id, :market_id, :buy_in, :remaining_salary, :contest_type_id, :state, presence: true
 
+  before_create :set_view_code
   before_destroy :pre_destroy
 
   scope :over, -> { where(state: ['cancelled', 'finished'])}
@@ -30,6 +31,7 @@ class Roster < ActiveRecord::Base
       Player.find_by_sql("select * from roster_prices(#{self.id})")
     end
   end
+
 
   def purchasable_players
     self.class.uncached do
@@ -59,6 +61,10 @@ class Roster < ActiveRecord::Base
       :remaining_salary => contest_type.salary_cap,
       :state => 'in_progress',
     )
+  end
+
+  def set_view_code
+    self.view_code = SecureRandom.urlsafe_base64
   end
 
   def build_from_existing(roster)

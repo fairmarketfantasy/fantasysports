@@ -1,4 +1,6 @@
 class RostersController < ApplicationController
+  skip_before_filter :authenticate_user!, :only => [:show]
+
   def mine
     rosters = current_user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').order('closed_at desc')
     rosters = if params[:historical]
@@ -62,8 +64,17 @@ class RostersController < ApplicationController
   end
 
   def show
-    roster = Roster.find(params[:id])
+    roster = if current_user
+      Roster.find(params[:id])
+    else
+      Roster.where(:id => params[:id], :view_code => params[:view_code]).first
+    end
     render_api_response roster
+  end
+
+  def public_roster
+    roster = Roster.find_by_view_code(params[:code])
+    redirect_to "/#/market/#{roster.market_id}/roster/#{roster.id}/?view_code=#{roster.view_code}"
   end
 
   def submit

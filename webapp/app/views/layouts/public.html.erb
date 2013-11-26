@@ -74,45 +74,20 @@
       </div>
       <div class="span3">
         <div class="links text-right">
-          <a class="sub-title txt-green-hover" href="/#/support">Support</a>
-          <a class="sub-title txt-green-hover" href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a>
+
+          <a class="sub-title txt-green-hover" href="javascript://">Sign Up</a>
+          <a class="sub-title txt-green-hover" href="javascript://">Sign In</a>
         </div>
       </div>
     </div>
   </div>
     <div class="container">
 
-    <div class="row header-bottom">
-      <div class="span3 user-container text-center" ng-cloak>
-        <div class="clearfix user-box">
-          <img ng-src="{{currentUser.image_url}}" class='user-avatar'/>
-          <div class="user-info">
-            <span class="user-name">{{ currentUser.username || currentUser.name }}</span>
-            <a href="javascript://" class='txt-white txt-red-hover' ng-click="settingsModal()">My Account</a><br />
-            <%= link_to 'sign out', destroy_user_session_path, class: 'user-logout txt-red-hover' %>
-          </div>
-        </div>
-        <div class="user-dash clearfix">
-          <div class="user-balance no-border">
-            <small>Cash:</small>&nbsp;&nbsp;{{ currentUser.balance | centsToDollars }}
-            <div class="user-dash no-border clearfix">
-              <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Deposit Funds</a>
-            </div>
-          </div>
-          <div class="user-balance no-border">
-            <small>FF:</small>&nbsp;&nbsp;{{ currentUser.token_balance }}
-            <div class="user-dash no-border clearfix">
-              <a class="btn btn-small btn-success" href="javascript://" ng-click="addFanFreesModal()">Add FanFrees</a>
-            </div>
-          </div>
-          <img class="fanfrees-info" src="<%= asset_path "info-icon.png" %>" width="20px"
-              popover-trigger="mouseenter" popover="FanFrees are like tokens that let you join contests to win more FanFrees instead of dollars. Think of it as free play!" popover-placement="right">
-       </div>
-
-
-
+    <div class="row header-bottom" ng-cloak>
+      <div class="span3 user-container text-center" ng-hide="currentUser">
+        <h3 class="public-user-cta">Join the Fun!</h3>
+        <div class="btn btn-success"><h3>Sign up!</h3></div>
       </div>
-    </div>
     </div>
   </header>
   
@@ -122,8 +97,6 @@
         <div class="span3 user-navigation">
           <ul class="nav">
             <li class="nav-item"><a href="/#/">Home</a></li>
-            <li class="nav-item"><a href="/#/rosters">My Contests</a></li>
-            <li class="nav-item"><a href="/#/history">History</a></li>
             <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
             <li class="nav-item"><a href="/#/rules" >Rules and Scoring</a></li>
             <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
