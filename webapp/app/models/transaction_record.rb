@@ -16,7 +16,8 @@ class TransactionRecord < ActiveRecord::Base
   validates :event, inclusion: { in: CONTEST_TYPES + %w( 
                                  deposit withdrawal buy_in cancelled_roster 
                                  payout rake joined_grant token_buy token_buy_ios 
-                                 free_referral_payout paid_referral_payout referred_join_payout revert_transaction) }
+                                 free_referral_payout paid_referral_payout referred_join_payout 
+                                 revert_transaction manual_payout) }
   validates_with TransactionRecordValidator
 
   belongs_to :user

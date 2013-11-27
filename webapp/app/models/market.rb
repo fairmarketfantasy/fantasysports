@@ -30,9 +30,9 @@ class Market < ActiveRecord::Base
       open
       remove_shadow_bets
       track_benched_players
+      fill_rosters
       close
       lock_players
-      fill_rosters
       tabulate_scores
       complete
     end
@@ -70,7 +70,7 @@ class Market < ActiveRecord::Base
     end
 
     def lock_players
-      apply :lock_players, "state = 'opened'"
+      apply :lock_players, "state IN('opened', 'closed')"
     end
     
     def tabulate_scores
@@ -127,11 +127,20 @@ class Market < ActiveRecord::Base
   end
 
   def fill_rosters_to_percent(percent)
-      # iterate through /all/ non h2h unfilled contests and generate rosters to fill them up
-      h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).map(&:id)
-      self.contests.where("contest_type_id NOT IN(#{h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0)").find_each do |contest|
-        contest.fill_with_rosters(percent)
+    # iterate through /all/ non h2h unfilled contests and generate rosters to fill them up
+    bad_h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).select do |ct| 
+      if (ct.name == 'h2h' && [100, 1000].include?(ct.buy_in))# ||  # Fill H2H games of normal amounts
+          #(ct.name == 'h2h rr' && [900, 9000].include?(ct.buy_in))
+        false
+      else
+        true
       end
+    end
+    bad_h2h_types = bad_h2h_types.map(&:id)
+    contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0")
+    contests.find_each do |contest|
+      contest.fill_with_rosters(percent)
+    end
   end
 
   def track_benched_players
@@ -155,7 +164,6 @@ class Market < ActiveRecord::Base
   # close a market. allocates remaining rosters in this manner:
   def close
     raise "cannot close if state is not open" if state != 'opened' 
-
     #cancel all un-submitted rosters
     self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
     self.contests.where(
@@ -201,7 +209,7 @@ class Market < ActiveRecord::Base
       end
 =end
     self.fill_rosters_to_percent(1.0)
-
+    self.lock_players
     self.state, self.closed_at = 'closed', Time.now
     save!
     return self
@@ -235,8 +243,10 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
 # 4995.5
-      payout_structure: '[250000, 100000, 50000, 25000, 15000, 10000, 10000, 5000, 5000, 5000, 5000, 5000, 2500, 2500,  2500, 2500, 2500, 2050]',
-      payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $500, 4th: $250, 5th: $150, 6th: $100, 7th-10th: $50, 10th-16th: $25",
+      payout_structure: '[250000, 100000, 50000, 25000, 10000, 10000, 10000,
+                          5000, 5000, 5000, 2500, 2500, 2500, 2500,  2500,
+                          2500, 2500, 2050, 1250, 1250, 1250, 1250, 1250, 1250, 1250, 1250]',
+      payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $500, 4th: $250, 5th-7th: $100, 8th-10th: $50, 11th-17th: $25, 18th: $20.50, 19th-25th: $12.5",
       takes_tokens: false,
       limit: 1
     },
@@ -380,7 +390,6 @@ class Market < ActiveRecord::Base
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
-      #debugger
         next if data[:name].match(/\d+k/) && (self.closed_at - self.started_at < 1.day || Rails.env == 'test')
         ContestType.create!(
           market_id: self.id,
@@ -393,7 +402,8 @@ class Market < ActiveRecord::Base
           salary_cap: 100000,
           payout_description: data[:payout_description],
           takes_tokens: data[:takes_tokens],
-          limit: data[:limit]
+          limit: data[:limit],
+          positions: Positions.for_sport_id(self.sport_id),
         )
       end
     end
@@ -421,7 +431,7 @@ class Market < ActiveRecord::Base
       csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us"]
       csv << ["Canonical Id", "Name", "Team", "Position", "Desired Shadow Bets"]
       self.players.each do |player|
-        csv << [player.stats_id, player.name, player.team.abbrev, player.position]
+        csv << [player.stats_id, player.name.gsub(/'/, ''), player.team.abbrev, player.position]
       end
     end
   end
@@ -445,7 +455,7 @@ class Market < ActiveRecord::Base
           next
         end
         puts "betting $#{shadow_bets} on #{p.name}"
-        shadow_bets = Integer(shadow_bets) * 100
+        shadow_bets = shadow_bets.to_i * 100
       else
         shadow_bets = 0
       end

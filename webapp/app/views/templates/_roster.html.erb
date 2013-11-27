@@ -1,7 +1,7 @@
 <div ng-show="rosters.currentRoster">
   <div class="contest-info">
     <div class="relative clearfix">
-      <a href="javascript://" class="btn btn-danger btn-cancel-entry" ng-show="rosters.inProgressRoster" ng-click="rosters.cancel()">Cancel entry</a>
+      <a href="javascript://" class="btn btn-danger btn-cancel-entry" ng-show="rosters.currentRoster.state == 'in_progress'" ng-click="rosters.cancel()">Cancel entry</a>
       <a href="javascript://" class="btn btn-orange btn-invite-friends" ng-click="rosters.openInviteFriends(rosters.currentRoster)" 
         ng-show="(market.state == 'published' || market.state == 'opened') && rosters.currentRoster.contest">
         Invite Friends</a>
@@ -45,13 +45,14 @@
   </p>
 
   <div ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && (inThePast(market.started_at) || rosters.currentRoster.league)">
+    }
     <table class="table table-striped">
       <thead>
         <th ng-show="rosters.contest_type.name == 'h2h rr'">Record</th>
         <th ng-hide="rosters.contest_type.name == 'h2h rr'">Rank</th>
         <th>User</th>
         <th>Payout</th>
-        <th>Points</th>
+        <th>Points&nbsp;&nbsp;of: {{leaderboard[0].perfect_score | number:1}}</th>
         <th>Roster</th>
       </thead>
       <tbody>
@@ -65,7 +66,10 @@
             <span ng-hide="inThePast(market.started_at)">Not Started</span>
           </td>
           <td>{{roster.owner_name}}</td>
-          <td>{{roster.contest_rank_payout}}</td>
+          <td>
+            <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{roster.contest_rank_payout || 0}} FanFrees</span>
+            <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{(roster.contest_rank_payout || 0) | centsToDollars}}</span>
+          </td>
           <td>{{roster.score | number:2}}</td>
           <td>
             <span ng-show="roster.id == rosters.currentRoster.id">This roster</span>
@@ -79,7 +83,10 @@
 
   <div class="entries-container">
     <div class="roster-title my-roster-title clearfix">  
-      <h3 class="inline-heading"><span ng-show="rosters.currentRoster.owner_id == currentUser.id">Your Team</span><span ng-show="rosters.currentRoster.owner_id != currentUser.id">{{rosters.currentRoster.owner_name}}'s Team</span></h3>
+      <h3 class="inline-heading">
+        <span ng-show="rosters.currentRoster.owner_id == currentUser.id">Your Team</span>
+        <span ng-show="rosters.currentRoster.owner_id != currentUser.id">{{rosters.currentRoster.owner_name}}'s Team</span>
+      </h3>
 
       <h3 class="inline-heading opponent" ng-show="rosters.opponentRoster">{{rosters.opponentRoster.owner_name | truncate:10}}</h3>
 

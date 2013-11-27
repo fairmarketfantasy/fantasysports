@@ -26,7 +26,7 @@ class PlayersController < ApplicationController
 
   def for_roster
     roster = Roster.find(params[:id])
-    players = roster.players.with_purchase_price.with_scores.order('name asc')
+    players = roster.players.with_purchase_price.with_scores.with_market(roster.market).order('name asc')
     render_api_response players
   end
 

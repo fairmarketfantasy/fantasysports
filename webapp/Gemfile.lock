@@ -102,6 +102,7 @@ GEM
       debugger-ruby_core_source (~> 1.2.3)
     debugger-linecache (1.2.0)
     debugger-ruby_core_source (1.2.3)
+    descriptive-statistics (2.1.0)
     devise (3.1.1)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -352,6 +353,7 @@ DEPENDENCIES
   carrierwave
   chef (~> 11.6.0)
   debugger
+  descriptive-statistics
   devise
   factory_girl
   factory_girl_rails (~> 4.0)

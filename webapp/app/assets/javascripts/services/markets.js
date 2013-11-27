@@ -53,6 +53,24 @@ angular.module('app.data')
         }
       };
 
+      this.contestClassesFor = function(marketId) {
+        var deferred = $q.defer();
+
+        fs.contests.for_market(marketId).then(function(contestTypes) {
+          var contestClasses = {};
+          _.each(contestTypes, function(type) {
+            if (!contestClasses[type.name]) {
+              contestClasses[type.name] = [];
+            }
+            contestClasses[type.name].push(type);
+          });
+          deferred.resolve(contestClasses);
+        }, function(reason) {
+          deferred.reject('Could not get contest classes from API: ' + reason);
+        });
+
+        return deferred.promise;
+      }
     }();
   }]);
 

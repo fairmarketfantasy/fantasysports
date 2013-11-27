@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', 'flash', '$templateCache', function($scope, rosters, markets, $routeParams, $location, flash, $templateCache) {
+.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', '$timeout', 'flash', '$templateCache', 'markets', function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
@@ -148,16 +148,89 @@ angular.module("app.controllers")
     return $scope.market.state != 'published' && roster.state != 'in_progress';
   };
 
+  $scope.showPlayer = function(roster, player) {
+    if (
+      (player.id && ($scope.currentUser.admin || roster.owner_id == $scope.currentUser.id )) ||
+      player.locked ||
+      $scope.inThePast(player.next_game_at)) {
+      return true;
+    }
+    return false;
+  };
+
   $scope.dayBefore = function(time) {
     return moment(time).subtract('days', 1);
   };
 
-  $scope.enterAgain = function() {
-    $scope.fs.contests.join(rosters.currentRoster.contest_type.id, rosters.currentRoster.id).then(function(data) {
+  // doesn't depend on $scope because it's used after navigating away from this controller
+  function joinContestModal(buttonAction){
+    var dialogOpts = {
+      backdrop: true,
+      keyboard: true,
+      backdropClick: true,
+      dialogClass: 'modal',
+      templateUrl: '/join_contest_dialog.html',
+      controller: 'JoinContestDialogController',
+      resolve: {
+        buttonAction: function() { return buttonAction; },
+        contestClasses: function($q) {
+          var deferred = $q.defer();
+
+          if (! markets.currentMarket) {
+            deferred.resolve([]);
+          }
+
+          markets.contestClassesFor(markets.currentMarket.id).then(function(contestClasses) {
+            deferred.resolve(contestClasses);
+          });
+
+          return deferred.promise;
+        },
+        roster: function() {
+          return $scope.rosters.currentRoster;
+        },
+        market: function() {
+          return $scope.market;
+        }
+      }
+    };
+
+    return $dialog.dialog(dialogOpts).open();
+  };
+
+  // doesn't depend on $scope because it's used after navigating away from this controller
+  function joinContest(fs, contestType, roster) {
+    fs.contests.join(contestType.id, roster.id).then(function(data) {
       rosters.selectRoster(data);
-      flash.success("Awesome, we've re-added all the players from your last roster. Go ahead and customize then enter again!");
+      flash.success("Awesome, we've started a new roster with all the players from your last roster. Go ahead and customize then enter again!");
       $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
     });
+  };
+
+  $scope.submitRoster = function() {
+    rosters.submit().then(function(roster) {
+      flash.success("Roster submitted successfully!");
+      $location.path('/market/' + roster.market.id);
+      $timeout(function() {
+        joinContestModal('submitRoster').then(function(result) {
+          if (result && result.contestType) {
+            joinContest($scope.fs, result.contestType, roster);
+          }
+        });
+      }, 100);
+    });
+  };
+
+  $scope.enterAgain = function() {
+    joinContestModal('enterAgain').then(function(result) {
+      if (result && result.contestType) {
+        joinContest($scope.fs, result.contestType, rosters.currentRoster);
+      }
+    });
+  };
+
+  $scope.finish = function() {
+    rosters.reset('/market/' + rosters.currentRoster.market.id);
   };
 
   $scope.addPlayer = function(player) {
@@ -192,6 +265,4 @@ angular.module("app.controllers")
   };
 
 }]);
-
-
 

@@ -39,7 +39,7 @@ Fantasysports::Application.routes.draw do
   get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
 
   #for /users/:id
-  resources :users, only: [:show] do
+  resources :users, only: [:index, :show] do
     collection do
       get 'unsubscribe',     action: :unsubscribe
       get 'name_taken',      action: :name_taken
@@ -82,6 +82,7 @@ Fantasysports::Application.routes.draw do
       post 'autofill', :action => 'autofill'
       post 'add_player/:player_id', :action => 'add_player'
       post 'remove_player/:player_id', :action => 'remove_player'
+      post 'share', :action => 'share'
     end
   end
 
