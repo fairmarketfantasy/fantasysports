@@ -3,6 +3,7 @@ angular.module('app.directives')
   return {
     //scope: true,   // optionally create a child scope
     link: function(scope, element, attrs) {
+      if (element.attr('placeholder') && !$.placeholder.browser_supported()) return;
       var model = $parse(attrs.focusMe);
       scope.$watch(model, function(value) {
         if(value === true) {

@@ -3,7 +3,6 @@ angular.module("app.controllers")
   $scope.user = $scope.user || {};
 
   $scope.submit = function() {
-    console.log('submit');
     if (!$scope.isValid()) { return; }
     fs.user.create($scope.user).then(function(resp){
       //only fires on success, errors are intercepted by fsAPIInterceptor
@@ -12,6 +11,7 @@ angular.module("app.controllers")
   };
 
   $scope.isValid = function(){
+    var prevErrorMsg = $scope.errorMsg;
     var fields = ['username', 'name', 'email', 'password', 'password_confirmation'], required = false;
     for (var i=0; i < fields.length; i++) {
       if ($scope.signUpForm[fields[i]].$error.required) {
@@ -31,6 +31,11 @@ angular.module("app.controllers")
       $scope.errorMsg = "Password must be at least 6 characters long";
     } else if (matchingPass) {
       $scope.errorMsg = "Password and confirmation must match";
+    }
+    if ($scope.errorMsg != prevErrorMsg) {
+      $timeout(function() {
+        $.placeholder.shim();
+      });
     }
     return !$scope.errorMsg;
   };
