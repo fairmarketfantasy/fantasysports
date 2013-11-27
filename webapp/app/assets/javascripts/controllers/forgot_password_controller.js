@@ -11,11 +11,17 @@ angular.module("app.controllers")
   }
 
   $scope.isValid = function(){
+    var prevErrorMsg = $scope.errorMsg;
     var required       = ($scope.user.email);
 
     $scope.errorMsg = null;
     if (!required) {
       $scope.errorMsg = "All fields are required";
+    }
+    if ($scope.errorMsg != prevErrorMsg) {
+      $timeout(function() {
+        $.placeholder.shim();
+      });
     }
     return !$scope.errorMsg;
   };
