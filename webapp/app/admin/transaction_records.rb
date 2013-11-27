@@ -28,6 +28,7 @@ ActiveAdmin.register TransactionRecord do
     column :transaction_data
     column :reverted_transaction
     column :invitation_id
+    column :created_at
     default_actions
   end
 

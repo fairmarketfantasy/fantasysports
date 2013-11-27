@@ -3,7 +3,7 @@
     <div class="relative clearfix">
       <a href="javascript://" class="btn btn-danger btn-cancel-entry" ng-show="rosters.currentRoster.state == 'in_progress'" ng-click="rosters.cancel()">Cancel entry</a>
       <a href="javascript://" class="btn btn-orange btn-invite-friends" ng-click="rosters.openInviteFriends(rosters.currentRoster)" 
-        ng-show="(market.state == 'published' || market.state == 'opened') && rosters.currentRoster.contest">
+        ng-show="currentUser && (market.state == 'published' || market.state == 'opened') && rosters.currentRoster.contest">
         Invite Friends</a>
       <a href="#/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster || !currentUser">Back to Contests</a>
       <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name}}.png" class="contest-info-image" />

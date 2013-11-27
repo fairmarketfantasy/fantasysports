@@ -75,8 +75,8 @@
       <div class="span3">
         <div class="links text-right">
 
-          <a class="sub-title txt-green-hover" href="javascript://">Sign Up</a>
-          <a class="sub-title txt-green-hover" href="javascript://">Sign In</a>
+          <a class="sub-title txt-green-hover" href="javascript://" ng-click="signUpModal()">Sign Up</a>
+          <a class="sub-title txt-green-hover" href="javascript://" ng-click="loginModal()">Sign In</a>
         </div>
       </div>
     </div>
@@ -86,7 +86,7 @@
     <div class="row header-bottom" ng-cloak>
       <div class="span3 user-container text-center" ng-hide="currentUser">
         <h3 class="public-user-cta">Join the Fun!</h3>
-        <div class="btn btn-success"><h3>Sign up!</h3></div>
+        <div class="btn btn-success"><h3><a href="javascript://" style="color: #fefefe" ng-click="signUpModal()">Sign up!</a></h3></div>
       </div>
     </div>
   </header>
