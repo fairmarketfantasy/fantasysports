@@ -17,18 +17,12 @@ angular.module("app.controllers")
   };
 
   var reloadMarket = function() {
-    if (!marketService.currentMarket) {
+    if (! marketService.currentMarket) {
       return;
     }
 
-    $scope.fs.contests.for_market(marketService.currentMarket.id).then(function(contestTypes) {
-      $scope.contestClasses = {};
-      _.each(contestTypes, function(type) {
-        if (!$scope.contestClasses[type.name]) {
-          $scope.contestClasses[type.name] = [];
-        }
-        $scope.contestClasses[type.name].push(type);
-      });
+    marketService.contestClassesFor(marketService.currentMarket.id).then(function(contestClasses) {
+      $scope.contestClasses = contestClasses;
     });
   };
   $scope.$watch('marketService.currentMarket', reloadMarket);

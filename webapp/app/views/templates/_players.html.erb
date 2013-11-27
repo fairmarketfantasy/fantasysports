@@ -84,14 +84,18 @@
           </div>
 
           <div class="cta-container clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">
-            <a class="btn btn-large btn-contest-cta btn-success" ng-click="rosters.reset('/market/' + rosters.currentRoster.market.id)" href="javascript://" >Finish</a>
+            <a class="btn btn-large btn-contest-cta btn-success" ng-click="finish()" href="javascript://" >Back to Contests</a>
             <a class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-click="enterAgain()">Enter Again</a>
           </div>
 
           <div class="alert alert-success roster-alert" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
-            <p class="roster-cap-text">Your team&rsquo;s current salary is {{((100000 - rosters.currentRoster.remaining_salary)/100000)*100 | number:0}}% of the allowed $100k. You can exceed the salary cap by up to 3%. If you do we&rsquo;ll simply reduce the fantasy stats your team produces by the percent you exceeded the salary cap.</p>
+            <p class="roster-cap-text">
+              Your team&rsquo;s current salary is {{((100000 - rosters.currentRoster.remaining_salary)/100000)*100 | number:0}}% of the $100k salary cap, 
+              but the cap is not fixed. If you are under the cap we'll increase your stats by the percentage you are under $100k up to 3%. 
+              You can also exceed the salary cap and we will reduce your stats by the amount you exceed $100k.
+            </p>
 
-            <a class="btn btn-large btn-success" ng-click="rosters.submit()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
+            <a class="btn btn-large btn-success" ng-click="submitRoster()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
           </div>
         </div>
       </div>

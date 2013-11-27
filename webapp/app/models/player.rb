@@ -9,6 +9,7 @@ class Player < ActiveRecord::Base
   def sell_price; self[:sell_price]; end
   def score; self[:score]; end
   def locked; self[:locked]; end
+  def market_id; self[:market_id]; end
 
   # Some positions are never used in NFL
   default_scope { where("position NOT IN('OLB', 'OL')") }
@@ -22,8 +23,9 @@ class Player < ActiveRecord::Base
   scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
   scope :in_position,  ->(position)   { where(position: position) }
   scope :normal_positions,      -> { where(:position => %w(QB RB WR TE K DEF)) }
-  scope :order_by_ppg,         ->(dir = 'desc') { order("(total_points / (total_games + .001)) #{dir}") }
+  scope :order_by_ppg,          ->(dir = 'desc') { order("(total_points / (total_games + .001)) #{dir}") }
   scope :with_purchase_price,   -> { select('players.*, rosters_players.purchase_price') } # Must also join rosters_players
+  scope :with_market,           ->(market) { select("#{market.id} as market_id") }
   scope :with_prices,           -> (market, buy_in) {
       select('players.*, market_prices.*').joins("JOIN market_prices(#{market.id}, #{buy_in}) ON players.id = market_prices.player_id")
   }
@@ -43,6 +45,15 @@ class Player < ActiveRecord::Base
 
   def headshot_url(size = 65) # or 195
     return "http://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/#{stats_id}/#{size}.jpg"
+  end
+
+  def next_game_at # Requires with_market scope
+    return nil unless self.market_id
+    Market.find(self.market_id).games.select{|g| [g.home_team, g.away_team].include?(self.team)}.game_time - 5.minutes
+  end
+
+  def benched_games
+    self.removed? ? 100 : super
   end
 
 end

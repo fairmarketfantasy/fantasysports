@@ -1,0 +1,46 @@
+<div class='modal-header'>
+  <h3 class='inline-block'>Epic Roster. Let's make it count!</h3>
+</div>
+<div class='modal-body'>
+  <div class="clearfix">
+    <h4 class="bonus-header">Share your entry and earn bonus fantasy points!</h4><span class="total-bonus-points">+{{roster.bonus_points}} total</span>
+    <div ng-controller="TwitterController">
+      <div class="bonus-points">Tweet your entry<h3>+2 points</h3>
+        <div class="twitter-share"></div>
+      </div>
+      <div class="bonus-points">Follow us on Twitter!<h3>+2 points</h3>
+        <div class="twitter-follow"></div>
+      </div>
+    </div>
+  </div>
+  <h4>Win more. Enter another contest?</h4>
+  <div>
+    <ul class="clearfix no-no" ng-cloak>
+      <li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass) && marketService.currentMarket.market_duration == 'day'}" ng-show="contestClasses[contestClass].length">
+      <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
+        <div ng-class="{'contest-copy': isBigContest(contestClass)}" >
+          <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
+          <h2><span ng-show="isBigContest(contestClass)">$</span>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
+        </div>
+        <div ng-class="{'contest-copy contest-long': isBigContest(contestClass)}" >
+          <ul class="contests no-no">
+            <li class="enter-contest" ng-repeat="contestType in contestClasses[contestClass]">
+              <a class="btn btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens, 'btn-small': !isBigContest(contestClass), 'btn-primary': isBigContest(contestClass)}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">
+                <span ng-show="contestType.takes_tokens">Enter for {{ contestType.buy_in }} FanFrees</span>
+                <span ng-hide="contestType.takes_tokens">Enter for {{ contestType.buy_in | centsToDollars }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <form>
+    <div class='clearfix'>
+    </div>
+  </form>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn" ng-show="buttonAction == 'enterAgain'" ng-click="close()">cancel</a>
+  <a href="javascript://" class="btn" ng-show="buttonAction == 'submitRoster'" ng-click="close()">no thanks</a>
+</div>

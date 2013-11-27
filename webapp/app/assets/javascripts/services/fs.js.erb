@@ -72,9 +72,13 @@ angular.module('app.services')
         var self = this;
         fs.user.refresh().then(function(user) {
           $timeout(function() {
-            self.currentUser = window.App.currentUser = user;
+            self.setUser(user);
           });
         });
+      },
+
+      setUser: function(user) {
+        this.currentUser = window.App.currentUser = user;
       },
 
       withdrawFundsModal: function() {
@@ -136,7 +140,7 @@ angular.module('app.services')
       return promise.then(success, failure);
     };
   }])
-  .factory('fs', ['$http', '$q', function($http, $q) {
+  .factory('fs', ['$http', '$q', 'flash', function($http, $q, flash) {
     /*var makeCrossOriginRequest = function(httpArgs) {
       var xsrf = $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
       delete $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
@@ -150,6 +154,11 @@ angular.module('app.services')
       var deferred = $q.defer();
       window['jsonp_' + responseFunc] = function(data) {
         angular.element('body').scope().$apply(function() {
+          if (data.error) {
+            flash.error(data.error);
+            deferred.reject(data);
+            return;
+          }
           deferred.resolve(data);
         });
       };
@@ -159,7 +168,9 @@ angular.module('app.services')
       var timeout = setTimeout(function() {
         deferred.reject("request timed out.");
       }, timeout || 20000)
-      script.addEventListener('load', function(err) { clearTimeout(timeout); }, true);
+      script.addEventListener('load', function(data) {
+        clearTimeout(timeout);
+      }, true);
       script.src = url;
       document.body.appendChild(script);
       return deferred.promise;
@@ -170,10 +181,13 @@ angular.module('app.services')
       },
       user: {
         refresh: function(){
-          return $http({method: 'GET', url: '/users'})
+          return $http({method: 'GET', url: '/users.json'});
         },
         create: function(user_attrs){
           return $http({method: 'POST', url: '/users.json', data: {user: user_attrs}});
+        },
+        update: function(user_attrs) {
+          return $http({method: 'PUT', url: '/users.json', data: {user: user_attrs}});
         },
         login: function(user_attrs){
           return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});
@@ -188,7 +202,7 @@ angular.module('app.services')
           return $http({method: 'POST', url: '/users/withdraw_money', data: {amount: amount} })
         },
         resendConfirmation: function(){
-          return $http({method: 'POST', url: '/users/confirmation'})
+          return $http({method: 'POST', url: '/users/confirmation'});
         },
         resetPassword: function(email){
           return $http({method: 'POST', url: '/users/reset_password', data: {email: email}})
@@ -325,6 +339,9 @@ angular.module('app.services')
         },
         autoFill: function(roster_id) {
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/autofill'});
+        },
+        socialBonus: function(type, roster_id) {
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/share?' + $.param({event: type})})
         },
       },
     }

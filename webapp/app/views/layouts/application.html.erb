@@ -15,6 +15,8 @@
 
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
 
+  <meta name="apple-itunes-app" content="app-id=719879920">
+
   <%
     title = @page_title || 'Fair Market Fantasy'
     description = @page_description || 'Fair Market Fantasy is the fairest fantasy sports gaming website out there'
@@ -103,6 +105,8 @@
               <a class="btn btn-small btn-success" href="javascript://" ng-click="addFanFreesModal()">Add FanFrees</a>
             </div>
           </div>
+          <img class="fanfrees-info" src="<%= asset_path "info-icon.png" %>" width="20px"
+              popover-trigger="mouseenter" popover="FanFrees are like tokens that let you join contests to win more FanFrees instead of dollars. Think of it as free play!" popover-placement="right">
        </div>
 
 
@@ -125,6 +129,9 @@
             <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
             <li class="nav-item end"><a href="/#/support">Support</a></li>
           </ul>
+          <div class="nav-mobile-app-links">
+            <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
+          </div>
         </div>
         <div class="span9 page-content">
           <div class="padded-content">
@@ -143,6 +150,7 @@
             <h4 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h4>
             <p>Copyright 2013, Fair Market Fantasy, LLC. All Rights Reserved.</p>
             <p>Designed and developed by <a href="http://mustw.in">Must Win</a></p>
+            <p>Based in San Francisco, CA</p>
           </div>
           <div class="span3 offset5 tos-padding">
             <p><a href="#/terms">Terms and Conditions</a></p>

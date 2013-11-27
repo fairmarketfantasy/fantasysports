@@ -120,14 +120,14 @@ class ActiveSupport::TestCase
   def add_lollapalooza(market)
     ContestType.create!(
       market_id: market.id,
-      name: '0.1k',
-      description: '$100',
-      max_entries: 10,
+      name: '0.11k',
+      description: '$110',
+      max_entries: 11,
       buy_in: 1000,
       rake: 0.03,
-      payout_structure: '[5000, 2500, 1300, 900]',
+      payout_structure: '[5000, 2500, 2500, 670]',
       salary_cap: 100000,
-      payout_description: '[5000, 2500, 1300, 900]',
+      payout_description: '[5000, 2500, 2500, 670]',
       takes_tokens: false,
       limit: 1
     )
@@ -220,6 +220,7 @@ FactoryGirl.define do
   factory :player do
     stats_id { generate(:random_string) }
     sport_id 1
+    status "ACT"
     name "Spock"
   end
 
@@ -250,6 +251,7 @@ FactoryGirl.define do
     started_at Time.now - 10.minute
     opened_at Time.now + 1.minute
     closed_at Time.now + 2.minute
+    fill_roster_times "[[" + (Time.new + 5.minute).to_i.to_s + ", 0.5]]"
     total_bets 0
     sport_id 1
   end
@@ -260,7 +262,6 @@ FactoryGirl.define do
     buy_in 1000
     remaining_salary 100000
     state 'in_progress'
-    positions Positions.default_NFL
     association :contest_type
     after(:create) do |roster|
       roster.buy_in = roster.contest_type.buy_in
@@ -288,6 +289,7 @@ FactoryGirl.define do
     rake 0.05
     payout_structure '[95000]'
     payout_description 'some payout description'
+    positions Positions.default_NFL
   end
 end
 

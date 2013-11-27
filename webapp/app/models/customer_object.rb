@@ -88,7 +88,7 @@ class CustomerObject < ActiveRecord::Base
   def decrease_balance(amount, event, opts = {})
     ActiveRecord::Base.transaction do
       self.reload
-      raise HttpException.new(409, "You're trying to transfer more than you have.") if self.balance - amount < 0 && self.user != SYSTEM_USER
+      raise HttpException.new(409, "You're trying to transfer more than you have.") if self.balance - amount < 0 && self.user.id != SYSTEM_USER.id
       self.balance -= amount
       TransactionRecord.create!({:user => self.user, :event => event, :amount => -amount}.merge(opts))
       self.save!

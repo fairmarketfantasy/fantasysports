@@ -13,7 +13,7 @@ class RostersController < ApplicationController
 
   def in_contest
     contest = Contest.find(params[:contest_id])
-    render_api_response contest.rosters.submitted.order('contest_rank asc').limit(10)
+    render_api_response contest.rosters.where(:state => ['submitted', 'finished']).order('contest_rank asc').limit(10).with_perfect_score(contest.perfect_score)
   end
 
   # Create a roster for a contest type
@@ -95,7 +95,19 @@ class RostersController < ApplicationController
 
   def autofill
     roster = current_user.rosters.where(:id => params[:id]).first
-    roster.fill_pseudo_randomly3
+    roster.fill_pseudo_randomly5
+    render_api_response roster
+  end
+
+  def share
+    roster = current_user.rosters.find(params[:id])
+    roster.add_bonus(params[:event])
+    case params[:event]
+      when 'twitter_follow'
+        Eventing.report(current_user, 'twitterFollow')
+      when 'twitter_share'
+        Eventing.report(current_user, 'twitterShare')
+    end
     render_api_response roster
   end
 end

@@ -11,5 +11,9 @@ class MarketPlayer < ActiveRecord::Base
   def self.players_live?(market_id, roster_players)
     self.where(:player_id => roster_players.map(&:player_id), :market_id => market_id).order('locked_at asc').any?{|p| p.locked_at > Time.now - 3.5.hours && p.locked_at < Time.now }
   end
+
+  def price_in_10_dollar_contest
+    MarketPlayer.find_by_sql(["select price(?, ?, ?, ?) as price", self.bets, self.market.total_bets, 1000, self.market.price_multiplier])[0][:price].to_i
+  end
 end
 

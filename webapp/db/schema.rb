@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131114083602) do
+ActiveRecord::Schema.define(version: 20131123214328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20131114083602) do
     t.string  "payout_description", default: "",    null: false
     t.boolean "takes_tokens",       default: false
     t.integer "limit"
+    t.string  "positions"
   end
 
   add_index "contest_types", ["market_id"], name: "index_contest_types_on_market_id", using: :btree
@@ -292,12 +293,13 @@ ActiveRecord::Schema.define(version: 20131114083602) do
     t.string   "position"
     t.integer  "jersey_number"
     t.string   "status"
-    t.integer  "total_games",   default: 0, null: false
-    t.integer  "total_points",  default: 0, null: false
+    t.integer  "total_games",   default: 0,     null: false
+    t.integer  "total_points",  default: 0,     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "team"
     t.integer  "benched_games", default: 0
+    t.boolean  "removed",       default: false
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
@@ -334,7 +336,6 @@ ActiveRecord::Schema.define(version: 20131114083602) do
     t.string   "cancelled_cause"
     t.datetime "cancelled_at"
     t.string   "state",                            null: false
-    t.string   "positions"
     t.datetime "submitted_at"
     t.integer  "contest_type_id",  default: 0,     null: false
     t.boolean  "cancelled",        default: false
@@ -342,6 +343,8 @@ ActiveRecord::Schema.define(version: 20131114083602) do
     t.integer  "losses"
     t.boolean  "takes_tokens"
     t.boolean  "is_generated",     default: false
+    t.integer  "bonus_points",     default: 0
+    t.text     "bonuses"
   end
 
   add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
