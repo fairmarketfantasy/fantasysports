@@ -15,11 +15,14 @@ h1, h2, h3, h4, h5 {
   font-family: @special;
   margin: 0;
 }
+h1 {
+  font-size: 46px;
+}
 h2 {
   font-size: 46px;
 }
 h3 {
-  font-size: 34px;
+  font-size: 32px;
 }
 h5 {
   font-size: 24px;
@@ -99,9 +102,11 @@ footer {
 }
 .modal-body {
   width: 702px;
+  p {
+    font-size: 12px;
+  }
 }
 .fixed-flash {
-  background-color: @red;
   color: @white;
   position: fixed;
   z-index: 9999;
@@ -113,9 +118,15 @@ footer {
   border-bottom: 2px solid @white;
   padding: 8px 0;
   .border-radius(0);
+  display: none;
 }
 .fixed-flash.alert-success {
   background-color: @green;
+  display: block;
+}
+.fixed-flash.alert-error {
+  background-color: @red;
+  display: block;
 }
 
 
@@ -156,9 +167,17 @@ footer {
   background-position: top right;
   background-repeat: no-repeat;
 }
+.ie8 .landing-container {
+  background-position: center top;
+  background-size: 100%;
+  height: 600px;
+}
 .sign-up-content {
   padding-top: 12%;
   text-align: center;
+}
+.ie8 .sign-up-content {
+  padding-top: 8%;
 }
 .login-buttons {
   width: 86%;
@@ -168,6 +187,11 @@ footer {
   color: black;
   .border-radius(6px);
   border: solid 2px rgba(0,0,0,0.3);
+}
+.ie8 .login-buttons {
+  background-color: @white;
+  border: solid 2px @grayDark;
+  padding-top: 0;
 }
 .sign-up-heading {
   font-size: 38px;
@@ -214,17 +238,23 @@ footer {
 .sign-up-nav {
   background-color: mix(@green, rgba(0,0,0,0), 30%);
 }
+.ie8 .sign-up-nav {
+  background-color: @green;
+}
 .sign-in-nav {
   background-color: mix(@info, rgba(0,0,0,0), 30%);
+}
+.ie8 .sign-in-nav {
+  background-color: @info;
 }
 .sign-in-nav:hover, .sign-up-nav:hover {
   color: @white;
 }
 .sign-up-nav:hover {
-  background-color: @green;
+  background-color: @greenDark;
 }
 .sign-in-nav:hover {
-  background-color: @info;
+  background-color: @blue;
 }
 .fixed-header {
   background-color: rgba(0,0,0,0.8);
@@ -234,6 +264,9 @@ footer {
   height: 50px;
   border-bottom: rgba(0,0,0,0.8) solid 1px;
   z-index: 1000;
+}
+.ie8 .fixed-header {
+  background-color: @black;
 }
 .about-section {
   padding: 30px 0 60px;
@@ -271,6 +304,9 @@ footer {
             -1px 1px 0 @offWhite, 3px 3px 5px @grayDark;
   display: inline-block;
 }
+.ie8 .logo-font {
+  font-size: 28px;  
+}
 .fixed-header .logo-font {
   line-height: 50px;
   font-size: 36px;
@@ -287,6 +323,9 @@ footer {
   margin-left: 8px;
   font-size: 13px;
 }
+.ie8 .sub-title {
+  font-size: 11px;
+}
 .links {
   padding-right: 50px;
 }
@@ -298,6 +337,9 @@ footer {
   background-color: rgba(29,29,29,0.5);
   border-left: 1px solid @white;
   border-top: 1px solid @white;
+}
+.ie8 .user-container {
+  background-color: @grayDark;
 }
 .user-box {
   width: 90%;
@@ -1216,6 +1258,11 @@ input[type="text"].players-search {
 }
 textarea[class*="span"] {
   width: 94% !important;
+}
+.ie8 .user-dash .btn.btn-small {
+  font-size: 9px;
+  font-family: Arial, sans-serif;
+  padding: 4px 6px;
 }
 
 /* Media Queries: 980-1199px

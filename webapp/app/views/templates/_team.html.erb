@@ -11,11 +11,17 @@
             
           <ul class="no-no" highlight-changes-in-list="roster.players" key-to-watch="score">
             <li class="mr-item clearfix" ng-repeat="player in roster.players">
-            <div ng-show="player.id && player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': 'url(' + player.headshot_url +')'}"></div>
+              <div ng-show="player.id && player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': 'url(' + player.headshot_url +')'}" ng-hide="player.locked != true && roster.owner_id != currentUser.id"></div>
+              <div ng-show="player.locked != true && roster.owner_id != currentUser.id" class="mr-player-image" ng-class="{filled: player.id}"></div>
               <div ng-hide="player.id" class="mr-player-image"></div>
-              <div ng-show="player.position == 'DEF' && player.id" class="mr-player-image defense filled"></div>
+              <div ng-show="player.position == 'DEF' && player.id" class="mr-player-image defense filled" ng-hide="player.locked != true && roster.owner_id != currentUser.id"></div>
+
+              <div class="mr-player-info" ng-show="player.locked != true && roster.owner_id != currentUser.id">
+                <p>Player has not started their game yet.</p>
+              </div>
+
               
-              <div class="mr-player-info">
+              <div class="mr-player-info" ng-hide="player.locked != true && roster.owner_id != currentUser.id">
                 <h3 class="mr-player-name" ng-show="player.id">{{player.name}}</h3>
                 <h3 class="mr-player-name not-selected" ng-hide="player.id">{{player.position}} Not Selected</h3>
                 <span class="mr-stats" ng-show="player.id">{{player.team}} {{player.position}} ({{player.ppg | number:2 | zeroIfEmpty}} PPG)</span>
