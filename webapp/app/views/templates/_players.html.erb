@@ -7,7 +7,7 @@
       </span>
       <span ng-hide="rosters.currentRoster.amount_paid > 0">didn't win this time.</span>
     </h3>
-    <a class="btn btn-info btn-large" href="javascript://" ng-show="!currentUser">Think you can do better?</a>
+    <a class="btn btn-info btn-large" href="javascript://" ng-show="!currentUser" ng-click="signUpModal()">Think you can do better?</a>
   </div>
   <div ng-show="market.state == 'closed' && rosters.currentRoster.owner_id == currentUser.id" class="players-area">
     This market is closed - no player sales are available.
@@ -22,42 +22,6 @@
           <ul class="dropdown-menu dropdown-inverse">
             <li ng-repeat="game in notStartedGames()" ng-model="game">
               <a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div ng-show="market.state == 'published' || market.state == 'opened'" class="players-area">
-        <div class="clearfix">
-          <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
-
-          
-
-          <div class="dropdown game-dropdown">
-            <div class="btn-group">
-              <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown">Games</button> 
-              <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown"><span class="caret"></span></button> 
-              <ul class="dropdown-menu dropdown-inverse">
-                <li ng-repeat="game in notStartedGames()" ng-model="game">
-                  <a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="clearfix relative-parent">
-          <label class="checkbox light-check" for="removeLowFilter" ng-click="toggleChecked('removeLow')" ng-class="{'checked': removeLow}">
-            <span class="icons">
-              <span class="first-icon fui-checkbox-unchecked"></span>
-              <span class="second-icon fui-checkbox-checked"></span>
-            </span>
-            Remove Back-ups
-          </label>
-        
-          <input id="removeLowFilter" class="hide" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" />
-
-          <ul ng-show="filter == 'positions'" class="positions-list clearfix">
-            <li class="position-item" ng-repeat="position in rosters.uniqPositionList" >
-              <a class="position-link" ng-click="filterPlayers({position: position}, true)" ng-class="{selected: filterPosition == position}" href="javascript://">{{position}}</a>
             </li>
           </ul>
         </div>
