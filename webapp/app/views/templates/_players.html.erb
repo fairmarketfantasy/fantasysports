@@ -1,98 +1,123 @@
+<!-- Lots of states here -->
 <div class="players">
-  <div ng-show="rosters.currentRoster.paid_at" class="result-area">
-    <h3>{{rosters.currentRoster.owner_name}} 
-      <span ng-show="rosters.currentRoster.amount_paid > 0"> took {{rosters.currentRoster.contest_rank | ordinal}} place <br/>and won 
-        <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | number:0}}FF</span>
-        <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | centsToDollars}}</span>
+  <!-- This is not my roster (or public) -->
+  <div ng-show="rosters.currentRoster.owner_id != currentUser.id" class="result-area">
+    <h3>{{rosters.currentRoster.owner_name}} is in {{rosters.currentRoster.contest_rank | ordinal}} place!
+      <span ng-show="rosters.currentRoster.paid_at">
+        <span ng-show="rosters.currentRoster.amount_paid > 0"><br/>and won
+          <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | number:0}}FF</span>
+          <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | centsToDollars}}</span>
+        </span>
+        <span ng-hide="rosters.currentRoster.amount_paid > 0">didn't win this time.</span>
       </span>
-      <span ng-hide="rosters.currentRoster.amount_paid > 0">didn't win this time.</span>
     </h3>
-    <a class="btn btn-info btn-large" href="javascript://" ng-show="!currentUser" ng-click="signUpModal()">Think you can do better?</a>
+    <div ng-show="!currentUser">
+      <a class="btn btn-info btn-large" href="javascript://" ng-show="!currentUser" ng-click="signUpModal()">Think you can do better?</a>
+    </div>
   </div>
-  <div ng-show="market.state == 'closed' && rosters.currentRoster.owner_id == currentUser.id" class="players-area">
-    This market is closed - no player sales are available.
-  </div>
-  <div ng-show="market.state == 'published' || market.state == 'opened'" class="players-area">
-    <div class="clearfix">
-      <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
-      <div class="dropdown game-dropdown">
-        <div class="btn-group">
-          <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown">Games</button> 
-          <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown"><span class="caret"></span></button> 
-          <ul class="dropdown-menu dropdown-inverse">
-            <li ng-repeat="game in notStartedGames()" ng-model="game">
-              <a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>
-            </li>
-          </ul>
-        </div>
+  <!-- This is my roster -->
+  <div ng-show="rosters.currentRoster.owner_id == currentUser.id">
+    <!-- The market is closed or complete -->
+    <div ng-show="market.state == 'closed'" class="result-area">
+      <p>This market is closed - no player sales are available.</p>
+    </div>
+    <div ng-show="market.state == 'closed' || market.state == 'complete'" class="result-area">
+      <div ng-init="noReport = true" ng-controller="TwitterController">
+        <h3>You <span ng-show="rosters.currentRoster.amount_paid">took</span><span ng-hide="rosters.currentRoster.amount_paid"> are in </span>{{rosters.currentRoster.contest_rank | ordinal}} place
+          <span ng-show="rosters.currentRoster.paid_at">
+            <span ng-show="rosters.currentRoster.amount_paid > 0"><br/>and won
+              <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | number:0}}FF</span>
+              <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | centsToDollars}}</span>
+            </span>
+            <span ng-hide="rosters.currentRoster.amount_paid > 0">didn't win this time.</span>
+          </span>
+        </h3>
+        <h4>Share your roster</h4>
+        <span class="twitter-share"></span>
       </div>
     </div>
-    <div class="clearfix relative-parent">
-      <label class="checkbox light-check" for="removeLowFilter" ng-click="toggleChecked('removeLow')" ng-class="{'checked': removeLow}">
-        <span class="icons">
-          <span class="first-icon fui-checkbox-unchecked"></span>
-          <span class="second-icon fui-checkbox-checked"></span>
-        </span>
-        Remove Back-ups
-      </label>
-    
-      <input id="removeLowFilter" class="hide" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" />
-
-      <ul ng-show="filter == 'positions'" class="positions-list clearfix">
-        <li class="position-item" ng-repeat="position in rosters.uniqPositionList" >
-          <a class="position-link" ng-click="filterPlayers({position: position}, true)" ng-class="{selected: filterPosition == position}" href="javascript://">{{position}}</a>
-        </li>
-      </ul> 
+    <!-- The market is published or open -->
+    <div ng-show="(market.state == 'published' || market.state == 'opened')" class="players-area">
+      <div class="clearfix">
+        <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
+        <div class="dropdown game-dropdown">
+          <div class="btn-group">
+            <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown">Games</button> 
+            <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown"><span class="caret"></span></button> 
+            <ul class="dropdown-menu dropdown-inverse">
+              <li ng-repeat="game in notStartedGames()" ng-model="game">
+                <a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix relative-parent">
+        <label class="checkbox light-check" for="removeLowFilter" ng-click="toggleChecked('removeLow')" ng-class="{'checked': removeLow}">
+          <span class="icons">
+            <span class="first-icon fui-checkbox-unchecked"></span>
+            <span class="second-icon fui-checkbox-checked"></span>
+          </span>
+          Remove Back-ups
+        </label>
       
-      <div class="fixed-table-header">
+        <input id="removeLowFilter" class="hide" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" />
+
+        <ul ng-show="filter == 'positions'" class="positions-list clearfix">
+          <li class="position-item" ng-repeat="position in rosters.uniqPositionList" >
+            <a class="position-link" ng-click="filterPlayers({position: position}, true)" ng-class="{selected: filterPosition == position}" href="javascript://">{{position}}</a>
+          </li>
+        </ul> 
+        
+        <div class="fixed-table-header">
+          <table class="players-table table table-striped">
+            <thead>
+              <tr>
+                <th class="less-larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
+                <th class="tiny" ng-hide="getFilterOpts().position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
+                <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
+                <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
+                <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
+                <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
+                <th class="tiny-btn"><a class="btn btn-small btn-invisible" href="">Add</a></th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+      <div class="player-overflow">
         <table class="players-table table table-striped">
           <thead>
             <tr>
-              <th class="less-larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
-              <th class="tiny" ng-hide="getFilterOpts().position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
+              <th class="larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
+              <th class="tiny" ng-hide="getFilterOpts.position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
               <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
               <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
               <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
               <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
-              <th class="tiny-btn"><a class="btn btn-small btn-invisible" href="">Add</a></th>
+              <th class="tiny-btn"></th>
             </tr>
           </thead>
+          <tbody>
+            <tr ng-repeat="player in players | filter:notInRoster">
+              <td class="larger">{{player.name_abbr}} 
+                <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
+                <i ng-show="player.status != 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
+              </td>
+              <td class="tiny" ng-hide="getFilterOpts().position">{{player.position | dashIfDEF}}</td>
+              <td class="tiny">{{player.team}}</td>
+              <td class="tiny" ng-show="getFilterOpts().position">{{opponentFor(player)}}</td>
+              <td class="tiny">{{player.ppg | number:0 |zeroIfEmpty}}</td>
+              <td>${{player.buy_price | number:0}}</td>
+              <td class="tiny-btn"><a class="btn btn-small btn-success" href="javascript://" ng-click="addPlayer(player)">Add</a></td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
-    <div class="player-overflow">
-      <table class="players-table table table-striped">
-        <thead>
-          <tr>
-            <th class="larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
-            <th class="tiny" ng-hide="getFilterOpts.position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
-            <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
-            <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
-            <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
-            <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
-            <th class="tiny-btn"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="player in players | filter:notInRoster">
-            <td class="larger">{{player.name_abbr}} 
-              <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
-              <i ng-show="player.status != 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
-            </td>
-            <td class="tiny" ng-hide="getFilterOpts().position">{{player.position | dashIfDEF}}</td>
-            <td class="tiny">{{player.team}}</td>
-            <td class="tiny" ng-show="getFilterOpts().position">{{opponentFor(player)}}</td>
-            <td class="tiny">{{player.ppg | number:0 |zeroIfEmpty}}</td>
-            <td>${{player.buy_price | number:0}}</td>
-            <td class="tiny-btn"><a class="btn btn-small btn-success" href="javascript://" ng-click="addPlayer(player)">Add</a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
     <div class="cta-container clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">
       <a class="btn btn-large btn-contest-cta btn-success" ng-click="finish()" href="javascript://" >Back to Contests</a>
-      <a class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-click="enterAgain()">Enter Again</a>
+      <a ng-show="market.state == 'published' || market.state == 'opened'" class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-click="enterAgain()">Enter Again</a>
     </div>
 
     <div class="alert alert-success roster-alert" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">

@@ -1,7 +1,9 @@
 angular.module("app.controllers")
-.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'registrationService', 'rosters', '$location', 'flash', '$dialog', '$timeout', function($scope, fs, currentUserService, registrationService, rosters, $location, flash, $dialog, $timeout) {
+.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'registrationService', 'rosters', '$location', 'flash', '$dialog', '$timeout', '$routeParams',
+            function($scope, fs, currentUserService, registrationService, rosters, $location, flash, $dialog, $timeout, $routeParams) {
 
   $scope.fs = fs;
+  $scope.$routeParams = $routeParams;
 
   $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;

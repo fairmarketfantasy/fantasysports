@@ -19,13 +19,14 @@ class RosterSerializer < ActiveModel::Serializer
       :next_game_time,
       :live,
       :bonus_points,
-      :perfect_score
+      :perfect_score,
+      :view_code
 
-  has_one :league
-  has_one :contest
-  has_one :contest_type
+  has_one  :league
+  has_one  :contest
+  has_one  :contest_type
   has_many :players
-  has_one :market
+  has_one  :market
 
   def league
     object.contest && object.contest.league
