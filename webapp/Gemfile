@@ -40,6 +40,10 @@ gem 'mustwin_devise_oauth2_providable', '1.1.6'#, :path => '/Users/mike/code/dev
 gem 'protected_attributes'
 gem 'activeadmin', github: 'gregbell/active_admin', branch: 'master'
 
+# work queue
+gem 'daemons'  # allows running delayed job as a daemon (useful for development as well as production)
+gem 'delayed_job_active_record'  # must appear after protected_attributes
+
 # data processing
 gem 'nokogiri'
 gem 'aws-sdk'
