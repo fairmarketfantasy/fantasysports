@@ -64,7 +64,7 @@ angular.module("app.controllers")
         $scope.card._getUnderlyingValue('number'),
         $scope.card._getUnderlyingValue('cvc'),
         $scope.card._getUnderlyingValue('name'),
-        $scope.card._getUnderlyingValue('expMonth'),
+        parseInt($scope.card._getUnderlyingValue('expMonth')) < 10 ? $scope.card._getUnderlyingValue('expMonth')  + '/' : $scope.card._getUnderlyingValue('expMonth'),
         $scope.card._getUnderlyingValue('expYear').slice(2)
       ).then(function(resp) {
         $scope.saveCardSpinner = false;
