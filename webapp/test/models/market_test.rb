@@ -212,8 +212,10 @@ class MarketTest < ActiveSupport::TestCase
 
     #buy some players randomly. plenty of bets
     contest_type = @market.contest_types.first
+    contest_type.update_attributes(:buy_in => 20000, :takes_tokens => false)
     10.times do
       create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
+      create(:roster, :market => @market, :contest_type => contest_type).fill_pseudo_randomly3(false).submit!
     end
 
     #print out the current prices
@@ -227,7 +229,7 @@ class MarketTest < ActiveSupport::TestCase
     end
     pre_total_bets = @market.reload.total_bets
     pre_shadow_bets = @market.reload.shadow_bets
-    @market = @market.lock_players
+    Market.tend
     assert @market.reload.shadow_bets < pre_shadow_bets
     assert @market.reload.total_bets < pre_total_bets
 
