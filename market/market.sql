@@ -584,9 +584,9 @@ BEGIN
 	IF _locked_bets > 0 OR _locked_shadow_bets > 0 THEN
 		--update the price multiplier
 		update markets set 
+			price_multiplier = price_multiplier * (1 - (_locked_bets / total_bets)),
 			total_bets = total_bets - _locked_bets,
-			shadow_bets = shadow_bets - _locked_shadow_bets,
-			price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
+			shadow_bets = shadow_bets - _locked_shadow_bets
 			WHERE id = _market_id;
 	END IF;
 	
