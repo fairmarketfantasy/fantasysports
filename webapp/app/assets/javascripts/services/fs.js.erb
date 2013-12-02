@@ -183,6 +183,9 @@ angular.module('app.services')
         refresh: function(){
           return $http({method: 'GET', url: '/users.json'});
         },
+        applyPromo: function(code) {
+          return $http({method: 'POST', url: '/promo', params: {code: code}});
+        },
         create: function(user_attrs){
           return $http({method: 'POST', url: '/users.json', data: {user: user_attrs}});
         },
