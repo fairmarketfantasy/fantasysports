@@ -19,7 +19,7 @@ DROP FUNCTION price(numeric, numeric, numeric, numeric);
 
 CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric) 
 	RETURNS numeric AS $$
-	SELECT CASE ($2 + $3) WHEN 0 THEN 1000 ELSE 
+	SELECT CASE ($2 + $3) WHEN 0 THEN 1000 ELSE
 		ROUND(LEAST(100000, GREATEST(1000, ($1 + $3) * 100000 * $4 / ($2 + $3))))
 	END;
 $$ LANGUAGE SQL IMMUTABLE;
