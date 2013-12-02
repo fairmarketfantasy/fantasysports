@@ -90,7 +90,7 @@ class MarketTest < ActiveSupport::TestCase
     @games.each {|g| g.save!; g.reload}
 
     #publish the market
-    @market.publish
+    @market.clean_publish
     assert @market.players.length == 36, "9*4=36"
     #make sure that half are locked tomorrow and half the day after
     locked_tomorrow = locked_day_after = 0
@@ -269,7 +269,7 @@ class MarketTest < ActiveSupport::TestCase
     over_game.game_time = Time.now.yesterday
     over_game.save!
     @market.update_attribute(:state, nil)
-    @market.publish
+    @market.clean_publish
     @market.update_attribute(:opened_at, Time.new-1.minute)
     Market.tend
     over_game.teams.each do |team|

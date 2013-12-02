@@ -340,6 +340,7 @@ BEGIN
 		RAISE EXCEPTION 'market % is not publishable', _market_id;
 	END IF;
 	DELETE FROM market_orders WHERE market_id = _market_id;
+	DELETE FROM market_players WHERE market_id = _market_id;
 	DELETE FROM rosters_players WHERE market_id = _market_id;
 	DELETE FROM rosters WHERE market_id = _market_id;
   SELECT * FROM publish_market(_market_id) INTO _market;
@@ -408,22 +409,23 @@ BEGIN
 		) INTO _total_ppg;
 
 	-- insert players into market. use the first game time for which the player is participating and calculate shadow bets.
-	DELETE FROM market_players WHERE market_id = _market_id;
-	INSERT INTO market_players (market_id, player_id, shadow_bets, locked_at, player_stats_id)
+	--DELETE FROM market_players WHERE market_id = _market_id;
+	INSERT INTO market_players (market_id, player_id, shadow_bets, bets, initial_shadow_bets, locked_at, player_stats_id)
 		SELECT
-			_market_id, p.id,
-			(((p.total_points + .01) / (p.total_games + .1)) / _total_ppg) * _market.shadow_bets,
+			_market_id, p.id, 0, 0, 0,
+			--(((p.total_points + .01) / (p.total_games + .1)) / _total_ppg) * _market.shadow_bets,
 			min(g.game_time), p.stats_id
 		FROM 
 			players p, games g, games_markets gm 
 		WHERE 
-			gm.market_id = _market_id AND
+			NOT EXISTS (select 1 from market_players where market_id=_market_id AND player_id=p.id) AND
+      gm.market_id = _market_id AND
 			g.stats_id = gm.game_stats_id AND
 			(p.team = g.home_team OR p.team = g.away_team)
 		GROUP BY p.id;
 
 	--set bets and initial_shadow_bets shadow bets for all those players we just added - avoids calculating it thrice per player
-	UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets WHERE market_id = _market_id;
+	--UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets WHERE market_id = _market_id;
 
   -- Get the total number of games in the market, calculate price multiplier
   SELECT count(id) FROM games_markets WHERE market_id = _market_id INTO _games;
@@ -576,10 +578,10 @@ BEGIN
 
 	select INTO _locked_bets, _locked_shadow_bets
     sum(bets), sum(shadow_bets) FROM market_players
-		WHERE market_id = _market_id and locked_at < _now and locked = false;
+		WHERE market_id = _market_id and locked_at < _now and not locked;
 
 	update market_players set locked = true
-		WHERE market_id = _market_id and locked_at < _now and locked = false;
+		WHERE market_id = _market_id and locked_at < _now and not locked;
 
 	IF _locked_bets > 0 OR _locked_shadow_bets > 0 THEN
 		--update the price multiplier
