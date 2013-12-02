@@ -7,6 +7,7 @@ angular.module("app.controllers")
   // and unlikely to be signed up for immediately after submitting a roster.
   $scope.contestTypeOrder = ['194', '970', 'h2h', 'h2h rr'];
 
+  $scope.currentUser = currentUserService.currentUser;
   $scope.market = market;
   $scope.roster = roster;
   $scope.contest = roster.contest;
