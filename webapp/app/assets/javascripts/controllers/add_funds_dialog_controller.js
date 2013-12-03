@@ -28,7 +28,7 @@ angular.module("app.controllers")
    var setSelectedCardId = function(){
      if($scope.cards.length){
       var selectedCard = (_.find($scope.cards, function(card){
-           return card.default;
+           return card['default'];
        }) || $scope.cards[0]);
        $scope.selectedCardId = selectedCard && selectedCard.id;
          $scope.showCardForm = false;
@@ -64,7 +64,7 @@ angular.module("app.controllers")
         $scope.card._getUnderlyingValue('number'),
         $scope.card._getUnderlyingValue('cvc'),
         $scope.card._getUnderlyingValue('name'),
-        $scope.card._getUnderlyingValue('expMonth'),
+        parseInt($scope.card._getUnderlyingValue('expMonth')) < 10 ? $scope.card._getUnderlyingValue('expMonth')  + '/' : $scope.card._getUnderlyingValue('expMonth'),
         $scope.card._getUnderlyingValue('expYear').slice(2)
       ).then(function(resp) {
         $scope.saveCardSpinner = false;

@@ -1,6 +1,6 @@
-
 class Roster < ActiveRecord::Base
-  BONUSES = { 'twitter_share' => 1, 'twitter_follow' =>  1}
+  USER_BONUSES = { 'twitter_follow' =>  1}
+  ROSTER_BONUSES = { 'twitter_share' => 1, 'facebook_share' => 1}
 
   attr_protected
   def perfect_score; self[:perfect_score]; end
@@ -476,13 +476,25 @@ class Roster < ActiveRecord::Base
   end
 
   def add_bonus(type)
-    applied_bonuses = JSON.parse(self.bonuses || '{}')
-    if applied_bonuses[type].nil?
-      applied_bonuses[type] = BONUSES[type]
-      self.bonuses = applied_bonuses.to_json
-      self.bonus_points ||= 0
-      self.bonus_points += BONUSES[type]
-      self.save!
+    bonuses = if USER_BONUSES[type]
+      bonuses = JSON.parse(self.owner.bonuses || '{}')
+      if bonuses[type].nil?
+        bonuses[type] = USER_BONUSES[type]
+        self.owner.bonuses = bonuses.to_json
+        self.bonus_points ||= 0
+        self.bonus_points += USER_BONUSES[type]
+        self.owner.save!
+        self.save!
+      end
+    elsif ROSTER_BONUSES[type]
+      bonuses = JSON.parse(self.bonuses || '{}')
+      if bonuses[type].nil?
+        bonuses[type] = ROSTER_BONUSES[type]
+        self.bonuses = bonuses.to_json
+        self.bonus_points ||= 0
+        self.bonus_points += ROSTER_BONUSES[type]
+        self.save!
+      end
     end
   end
 

@@ -1,6 +1,7 @@
 angular.module("app.controllers")
 .controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', '$timeout', 'registrationService', function($scope, dialog, flash, fs, $timeout, registrationService) {
   $scope.user = $scope.user || {};
+  $scope.noPromo = true;
 
   $scope.submit = function() {
     if (!$scope.isValid()) { return; }
@@ -47,6 +48,15 @@ angular.module("app.controllers")
     if (typeof nextModal !== 'undefined') {
       registrationService.showModal(nextModal);
     }
+  };
+
+  $scope.applyPromo = function() {
+    $scope.promoSpinner = true;
+    fs.user.applyPromo($scope.promo_code).then(function(){
+      $scope.promoSpinner = false;
+      $scope.noPromo = false;
+      flash.success("Promo applied!");
+    }, function() { $scope.promoSpinner = false; });
   };
 
 }]);

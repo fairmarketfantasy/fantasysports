@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131128092134) do
+ActiveRecord::Schema.define(version: 20131202204307) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -322,6 +322,27 @@ ActiveRecord::Schema.define(version: 20131128092134) do
   add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
   add_index "players", ["team"], name: "index_players_on_team", using: :btree
 
+  create_table "promo_redemptions", force: true do |t|
+    t.integer  "promo_id",   null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "promo_redemptions", ["user_id", "promo_id"], name: "index_promo_redemptions_on_user_id_and_promo_id", unique: true, using: :btree
+
+  create_table "promos", force: true do |t|
+    t.string   "code",                           null: false
+    t.datetime "valid_until"
+    t.integer  "cents",          default: 0,     null: false
+    t.integer  "tokens",         default: 0,     null: false
+    t.boolean  "only_new_users", default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "promos", ["code"], name: "index_promos_on_code", unique: true, using: :btree
+
   create_table "push_devices", force: true do |t|
     t.string   "device_id"
     t.string   "device_type"
@@ -434,6 +455,7 @@ ActiveRecord::Schema.define(version: 20131128092134) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "reverted_transaction_id"
+    t.integer  "promo_id"
   end
 
   add_index "transaction_records", ["roster_id"], name: "index_transaction_records_on_roster_id", using: :btree
@@ -469,6 +491,8 @@ ActiveRecord::Schema.define(version: 20131128092134) do
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
+    t.string   "avatar"
+    t.text     "bonuses"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

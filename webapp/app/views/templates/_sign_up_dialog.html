@@ -20,6 +20,13 @@
     <div class='modal-form-container secondary'>
       <div class='mtl mbl inline-block'>Or, sign up with facebook</div><br />
       <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
+
+      <div class="promo-code" ng-show="noPromo">
+        <h4>Promo code?</h4>
+        <input type="text" name="promo_code" ng-model="promo_code">
+        <a ng-hide="promoSpinner" ng-click="applyPromo()" class="btn btn-success">Apply!</a>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='promoSpinner'/>
+      </div>
     </div>
   </div>
   <div class='modal-footer'>

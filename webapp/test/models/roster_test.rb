@@ -4,6 +4,7 @@ class RosterTest < ActiveSupport::TestCase
 
   setup do
     setup_simple_market
+    initialize_player_bets(@market)
     @roster = create(:roster, :market => @market, :contest_type => @market.contest_types.first)
   end 
 
@@ -128,6 +129,7 @@ class RosterTest < ActiveSupport::TestCase
 
   #purchasing a player causes the price to go up
   test "purchasing a player affects prices" do
+    initialize_player_bets(@market)
     player = @roster.purchasable_players.first
     @other_roster = create(:roster, :market => @market, :contest_type => @market.contest_types.first)
     initial_price = player.buy_price
