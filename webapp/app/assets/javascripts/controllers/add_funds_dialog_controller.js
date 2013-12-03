@@ -28,7 +28,7 @@ angular.module("app.controllers")
    var setSelectedCardId = function(){
      if($scope.cards.length){
       var selectedCard = (_.find($scope.cards, function(card){
-           return card.default;
+           return card['default'];
        }) || $scope.cards[0]);
        $scope.selectedCardId = selectedCard && selectedCard.id;
          $scope.showCardForm = false;
