@@ -40,7 +40,8 @@ gem 'mustwin_devise_oauth2_providable', '1.1.6'#, :path => '/Users/mike/code/dev
 gem 'protected_attributes'
 gem 'activeadmin', github: 'gregbell/active_admin', branch: 'master'
 
-# work queue (changing to resque)
+# work queue
+gem "resque", "~> 1.25.1"
 
 # data processing
 gem 'nokogiri'
