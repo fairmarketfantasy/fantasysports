@@ -82,8 +82,9 @@ angular.module('app.data')
         }));
       };
 
-      this.fetchContest = function(contest_id) {
-        return fs.rosters.in_contest(contest_id).then(function(rosters) {
+      this.fetchContest = function(contest_id, upToPage) {
+        upToPage = upToPage || 1;
+        return fs.rosters.in_contest(contest_id, upToPage).then(function(rosters) {
           _.each(rosters, function(roster) {
             rosterData[roster.id] = roster;
           });

@@ -324,8 +324,9 @@ angular.module('app.services')
         show: function(id, view_code) {
           return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + view_code});
         },
-        in_contest: function(contest_id) {
-          return $http({method: 'GET', url: '/rosters/in_contest/' + contest_id});
+        in_contest: function(contest_id, page) {
+          page = page || 1;
+          return $http({method: 'GET', url: '/rosters/in_contest/' + contest_id + '?page=' + page});
         },
         past_stats: function() {
           return $http({method: 'GET', url: '/rosters/past_stats'});
