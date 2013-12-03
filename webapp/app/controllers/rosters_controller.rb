@@ -15,7 +15,7 @@ class RostersController < ApplicationController
 
   def in_contest
     contest = Contest.find(params[:contest_id])
-    render_api_response contest.rosters.where(:state => ['submitted', 'finished']).order('contest_rank asc').limit(10).with_perfect_score(contest.perfect_score)
+    render_api_response contest.rosters.where(:state => ['submitted', 'finished']).order('contest_rank asc').limit((params[:page] || 1).to_i * 10).with_perfect_score(contest.perfect_score)
   end
 
   # Create a roster for a contest type

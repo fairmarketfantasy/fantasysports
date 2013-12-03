@@ -17,7 +17,7 @@ class TransactionRecord < ActiveRecord::Base
                                  deposit withdrawal buy_in cancelled_roster 
                                  payout rake joined_grant token_buy token_buy_ios 
                                  free_referral_payout paid_referral_payout referred_join_payout 
-                                 revert_transaction manual_payout) }
+                                 revert_transaction manual_payout promo) }
   validates_with TransactionRecordValidator
 
   belongs_to :user
@@ -31,7 +31,6 @@ class TransactionRecord < ActiveRecord::Base
     return if contest.contest_type.max_entries == 0
     sum = contest.transaction_records.reduce(0){|total, tr| total += tr.amount}
     if sum != 0
-      debugger
       raise "Contest #{contest.id} sums to #{sum}. Should Zero. Fucking check yo-self."
     end
   end

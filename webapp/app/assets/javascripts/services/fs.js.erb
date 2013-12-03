@@ -92,85 +92,6 @@ angular.module('app.services')
       }
     };
   }])
-  .factory('registrationService', function($dialog, $timeout) {
-    return {
-      showModal: function(name) {
-        if (name == 'signUp') {
-          this.signUpModal();
-        } else if (name == 'login') {
-          this.loginModal();
-        } else if (name == 'forgotPassword') {
-          this.forgotPasswordModal();
-        }
-      },
-      signUpModal: function(){
-        var dialogOpts = {
-              backdrop: true,
-              keyboard: true,
-              backdropClick: true,
-              dialogClass: 'modal',
-              templateUrl: '/sign_up_dialog.html',
-              controller: 'SignUpDialogController'
-            };
-
-        var d = $dialog.dialog(dialogOpts);
-        d.open();
-        $timeout(function() {
-            $.placeholder.shim();
-        });
-      },
-      loginModal: function(message){
-        var dialogOpts = {
-              backdrop: true,
-              keyboard: true,
-              backdropClick: true,
-              dialogClass: 'modal',
-              templateUrl: '/login_dialog.html',
-              controller: 'LoginDialogController',
-              resolve: {message: function(){ return message; }},
-            };
-
-        var d = $dialog.dialog(dialogOpts);
-        d.open();
-        $timeout(function() {
-            $.placeholder.shim();
-        });
-      },
-      forgotPasswordModal: function(message){
-        var dialogOpts = {
-              backdrop: true,
-              keyboard: true,
-              backdropClick: true,
-              dialogClass: 'modal',
-              templateUrl: '/forgot_password_dialog.html',
-              controller: 'ForgotPasswordDialogController',
-              resolve: {message: function(){ return message; }},
-            };
-
-        var d = $dialog.dialog(dialogOpts);
-        d.open();
-        $timeout(function() {
-            $.placeholder.shim();
-        });
-      },
-      login: function(service) {
-        var serviceSizes = {
-          facebook: 'height=460,width=730',
-          /*  linkedin: 'height=260,width=630', // customize these
-            google: 'height=260,width=630'*/
-        };
-        if(service === 'email'){
-          fs.user.login($scope.user).then(function(resp){
-            // window.setCurrentUser(resp);
-            window.location.reload(true);
-          });
-        } else {
-          window.open('/users/auth/' + service, '', serviceSizes[service]);
-        }
-      }
-    };
-
-  })
   .factory('fsAPIInterceptor', ['$q', 'flash', '$injector', '$location', function($q, flash, $injector, $location) {
 // TODO: this is where jsonH stuff will go
     return function(promise) {
@@ -261,6 +182,9 @@ angular.module('app.services')
       user: {
         refresh: function(){
           return $http({method: 'GET', url: '/users.json'});
+        },
+        applyPromo: function(code) {
+          return $http({method: 'POST', url: '/promo', params: {code: code}});
         },
         create: function(user_attrs){
           return $http({method: 'POST', url: '/users.json', data: {user: user_attrs}});
@@ -398,10 +322,11 @@ angular.module('app.services')
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/remove_player/' + player_id});
         },
         show: function(id, view_code) {
-          return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + view_code});
+          return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + (view_code || '')});
         },
-        in_contest: function(contest_id) {
-          return $http({method: 'GET', url: '/rosters/in_contest/' + contest_id});
+        in_contest: function(contest_id, page) {
+          page = page || 1;
+          return $http({method: 'GET', url: '/rosters/in_contest/' + contest_id + '?page=' + page});
         },
         past_stats: function() {
           return $http({method: 'GET', url: '/rosters/past_stats'});

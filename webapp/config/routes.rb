@@ -90,6 +90,12 @@ Fantasysports::Application.routes.draw do
 
   get "/transactions" => 'transaction_record#index'
 
+  resources :promo, only: [:create] do
+    collection do
+      post 'redeem', :action => 'redeem'
+    end
+  end
+
   resources :contests, only: [:create] do
     collection do
       get 'for_market/:id', :action => 'for_market'

@@ -55,6 +55,30 @@
 </head>
 
 <body ng-controller="ApplicationController">
+<!-- FB SHIT -->
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+    // init the FB JS SDK
+    FB.init({
+      appId      : '<%= FACEBOOK_APP_ID %>',             // App ID from the app dashboard
+      status     : true,                                 // Check Facebook Login status
+      xfbml      : true                                  // Look for social plugins on the page
+    });
+
+    // Additional initialization code such as adding Event Listeners goes here
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
   <div flash-alert active-class="alert in" class="fixed-flash fade " ng-cloak>
     <div class="container">
       <div class="row">
@@ -170,7 +194,7 @@
   window.App = {
     site: "<%= SITE %>",
     currentUser: <%= (UserSerializer.new(current_user, scope: current_user).to_json.html_safe) || 'null' %>,
-    isUserAdmin: <%= current_user && current_user.admin? || false %>,
+    isUserAdmin: <%= current_user && current_user.admin? || false %>
   };
   window.setCurrentUser = function(user) {
     window.App.currentUser = user;

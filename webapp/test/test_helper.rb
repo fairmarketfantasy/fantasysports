@@ -135,7 +135,12 @@ class ActiveSupport::TestCase
     market
   end
 
-
+  def initialize_player_bets(market)
+    bets = market.market_players.count * 1000
+    market.market_players.update_all(:shadow_bets => 1000, :bets => 1000, :initial_shadow_bets => 1000)
+    market.update_attributes(:total_bets => bets, :shadow_bets => bets, :initial_shadow_bets => bets)
+    bets
+  end
   #returns hash with routing and account_num
 end
 

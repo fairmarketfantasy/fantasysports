@@ -34,6 +34,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def handle_referrals
     resp = {}
+    if session[:promo_code]
+      promo = Promo.where(['code = ? AND valid_until > ?', session[:promo_code], Time.new]).first
+      #raise HttpException(404, "No such promotion") unless promo
+      promo.redeem!(current_user) if promo
+    end
     if session[:referral_code]
       Invitation.redeem(current_user, session[:referral_code])
       session(:referral_code)

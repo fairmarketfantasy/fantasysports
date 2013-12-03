@@ -69,9 +69,17 @@ angular.module("app.controllers")
     $scope[checkedN] = !$scope[checkedN];
   };
 
-  var fetchContest = function() {
-    if (!rosters.currentRoster.contest_id || !$scope.currentUser) { return; }
-    rosters.fetchContest(rosters.currentRoster.contest_id).then(function(rosters) {
+  $scope.leaderboardPage = 1;
+  $scope.showMoreLeaders = function() {
+    $scope.leaderboardPage++;
+    fetchContest();
+  };
+
+  var counter = 0
+    , fetchContest = function() {
+    counter++; // Only fetch the contest ever other time.
+    if (counter % 2 == 0 && !rosters.currentRoster.contest_id || !$scope.currentUser) { return; }
+    rosters.fetchContest(rosters.currentRoster.contest_id, $scope.leaderboardPage).then(function(rosters) {
       $scope.leaderboard = rosters;
     });
   };
@@ -249,6 +257,11 @@ angular.module("app.controllers")
   $scope.removePlayer = function(player) {
     rosters.removePlayer(player);
     $scope.filterPlayers({position: player.position}, true);
+  };
+
+  $scope.totalSalary = function(roster) {
+    if (!roster) { return false; }
+    return _.reduce(roster.players, function(sum, player) { return sum + parseInt(player.buy_price); }, 0);
   };
 
   $scope.record = function(rosters, roster) {

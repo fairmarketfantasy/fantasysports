@@ -281,6 +281,12 @@ select:focus:invalid {
 .fui-facebook {
   margin-right: 2px;
 }
+.promo-code {
+  margin-top: 2em;
+  input[type="text"] {
+    width: 90px;
+  }
+}
 .header-bottom {
   position: relative;
   top: 5px;
@@ -783,6 +789,13 @@ input, textarea, .uneditable-input {
   background-color: #e9e9e9;
   margin-bottom: 10px;
 }
+.contest-leaderboard {
+  text-align: center;
+  margin-bottom: 10px;
+  table {
+    margin-bottom: 0;
+  }
+}
 .finished-time {
   float: right;
   font-size: 0.8em;
@@ -922,6 +935,10 @@ input, textarea, .uneditable-input {
 .currency {
   font-weight: bolder;
   font-size: 18px;
+}
+.tiny-p {
+  font-size: 10px;
+  line-height: 10px;
 }
 .small-p {
   display: block;
@@ -1310,7 +1327,7 @@ input[type="text"].players-search {
 .bonus-points {
   text-align: center;
   float: left;
-  width: 50%;
+  width: 32%;
   margin: 5px 0 15px 0;
   .success {
     color: @green;
@@ -1411,6 +1428,9 @@ textarea[class*="span"] {
   font-size: 9px;
   font-family: Arial, sans-serif;
   padding: 4px 6px;
+}
+.fb-share-btn {
+  width: 60px;
 }
 
 /* Media Queries: 980-1199px

@@ -30,7 +30,7 @@ class Market < ActiveRecord::Base
       open
       remove_shadow_bets
       track_benched_players
-      fill_rosters
+      #fill_rosters
       close
       lock_players
       tabulate_scores
@@ -91,6 +91,14 @@ class Market < ActiveRecord::Base
     ['published', 'opened'].include?(self.state) || Market.override_close
   end
 
+  def clean_publish
+    Market.find_by_sql("select * from publish_clean_market(#{self.id})")
+    reload
+    if self.state == 'published'
+      self.add_default_contests
+    end
+    self
+  end
   #publish the market. returns the published market.
   def publish
     Market.find_by_sql("select * from publish_market(#{self.id})")
@@ -243,10 +251,14 @@ class Market < ActiveRecord::Base
       buy_in: 1000,
       rake: 0.03,
 # 4995.5
-      payout_structure: '[250000, 100000, 50000, 25000, 10000, 10000, 10000,
-                          5000, 5000, 5000, 2500, 2500, 2500, 2500,  2500,
-                          2500, 2500, 2050, 1250, 1250, 1250, 1250, 1250, 1250, 1250, 1250]',
-      payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $500, 4th: $250, 5th-7th: $100, 8th-10th: $50, 11th-17th: $25, 18th: $20.50, 19th-25th: $12.5",
+      # 7-10 50, 11-20 20, 21-50 10
+      payout_structure: '[250000, 100000, 40000, 20000, 10000, 10000,' +  # 1st -6th
+                          '5000, 5000, 5000, 5000,' + # 7-10
+                          '2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000,' + # 11-20
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,
+                           1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,
+                           1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]', # 21-50
+      payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $400, 4th: $200, 5th-6th: $100, 7th-10th: $50, 11th-20th: $20, 21st-50th: $10",
       takes_tokens: false,
       limit: 1
     },
@@ -443,7 +455,8 @@ class Market < ActiveRecord::Base
 
     count = 0
     total_bets = 0
-    opts = {:col_sep => data.lines[1].split(';').length > 1 ? ';' : ','}
+    opts = {:col_sep => data.lines.to_a.split(';').length > 1 ? ';' : ','}
+    data.rewind
     CSV.parse(data, opts) do |row|
       count += 1
       next if count <= 2
@@ -464,19 +477,27 @@ class Market < ActiveRecord::Base
         puts "WARNING: No market player found with id #{player_stats_id}"
         next
       end
-      mp.shadow_bets = mp.initial_shadow_bets = mp.bets = shadow_bets
+      #debugger# if mp.bets > mp.initial_shadow_bets ## PICK UP HERE, THIS SHOULD STOP
+      mp.bets = (mp.bets || 0) - (mp.initial_shadow_bets || 0) + shadow_bets
+      mp.shadow_bets = mp.initial_shadow_bets = shadow_bets
       mp.save!
       total_bets += shadow_bets
     end
 
     #set the shadow bets to whatever they should be
     puts "\nTotal bets: $#{total_bets/100}"
-    self.shadow_bets = self.total_bets = self.initial_shadow_bets = total_bets
+    # Re-count all these things, because bets may already be placed
+    bets = {:bets => 0, :shadow_bets => 0}
+    market_players = self.market_players.reload.map do |mp|
+      bets[:bets] += mp.bets || 0
+      bets[:shadow_bets] += mp.shadow_bets || 0
+    end
+    self.shadow_bets = self.initial_shadow_bets = bets[:shadow_bets]
+    self.total_bets = bets[:bets]
     #TEMPORARY: artificially raise the price multiplier
     #self.price_multiplier = self.market_players.size / 50
     puts "using price multiplier: #{self.price_multiplier}"
     self.save!
-
   end
 
   def market_duration
