@@ -6,15 +6,42 @@ window.twttr = (function (d,s,id) {
 }(document, "script", "twitter-wjs"));
 
 angular.module("app.controllers")
+// TODO: change the name of this to ShareController, or split them up
 .controller('TwitterController', ['$scope', '$timeout', 'fs', function($scope, $timeout, fs) {
+  $scope.shareUrl = 'https://fairmarketfantasy.com/public/#/market/' +
+              (($scope.$routeParams && $scope.$routeParams.market_id) || $scope.roster.market_id)  + '/roster/' +
+              (($scope.$routeParams && $scope.$routeParams.roster_id) || $scope.roster.id) + '?view_code=' +
+              (($scope.$routeParams && $scope.$routeParams.view_code) || ($scope.roster && $scope.roster.view_code ));
+
+  // Facebook
+  $scope.fbShare = function() {
+    FB.ui(
+      {
+        method: 'feed',
+        name: 'My Roster on FairMarketFantasy.com',
+        link: $scope.shareUrl,
+        picture: '<%= SITE %>/assets/icon-h2h.png',
+        caption: 'Think you can do better?',
+        description: 'FairMarketFantasy has daily and weekly fantasy games with demand-based pricing and the highest payouts in the industry!'
+      },
+      function(response) {
+        if (response && response.post_id) {
+          $scope.addBonus('facebook_share');
+          $('.fb-share').parent().find('h3').addClass('success');
+          $scope.fbShared = true;
+        } else {
+          /* MT */
+        }
+      }
+    );
+  };
+
+  // Twitter
   twttr.ready(function(twttr) {
     $timeout(function() {
       $('.twitter-share').each(function(i, elt) {
         twttr.widgets.createShareButton(
-          'https://fairmarketfantasy.com/public/#/market/' +
-              (($scope.$routeParams && $scope.$routeParams.market_id) || $scope.roster.market_id)  + '/roster/' +
-              (($scope.$routeParams && $scope.$routeParams.roster_id) || $scope.roster.id) + '?view_code=' +
-              (($scope.$routeParams && $scope.$routeParams.view_code) || ($scope.roster && $scope.roster.view_code )),
+          $scope.shareUrl,
           elt,
           function (el) {
             console.log("Button created.")

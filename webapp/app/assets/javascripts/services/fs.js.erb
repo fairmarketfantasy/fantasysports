@@ -322,7 +322,7 @@ angular.module('app.services')
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/remove_player/' + player_id});
         },
         show: function(id, view_code) {
-          return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + view_code});
+          return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + (view_code || '')});
         },
         in_contest: function(contest_id, page) {
           page = page || 1;

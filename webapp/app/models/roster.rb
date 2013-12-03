@@ -1,6 +1,6 @@
 class Roster < ActiveRecord::Base
   USER_BONUSES = { 'twitter_follow' =>  1}
-  ROSTER_BONUSES = { 'twitter_share' => 1 }
+  ROSTER_BONUSES = { 'twitter_share' => 1, 'facebook_share' => 1}
 
   attr_protected
   def perfect_score; self[:perfect_score]; end
