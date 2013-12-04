@@ -456,7 +456,7 @@ class Market < ActiveRecord::Base
     count = 0
     total_bets = 0
     opts = {:col_sep => data.lines.to_a.split(';').length > 1 ? ';' : ','}
-    data.rewind
+    data.rewind if data.respond_to?(:rewind) # Handle files
     CSV.parse(data, opts) do |row|
       count += 1
       next if count <= 2
