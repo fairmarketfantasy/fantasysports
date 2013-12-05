@@ -79,6 +79,14 @@ class User < ActiveRecord::Base
     self[:email].blank? ? self.unconfirmed_email : self[:email]
   end
 
+  def referral_code
+    if self[:referral_code].nil?
+      self.referral_code = SecureRandom.hex(16)
+      self.save!
+    end
+    super
+  end
+
   def image_url
     #avatar    (from upload: AvatarUploader)
     #image_url (from facebook)

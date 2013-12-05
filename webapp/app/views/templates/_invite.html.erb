@@ -6,8 +6,10 @@
   <textarea ng-model="invitees" placeholder="Put your friend's email addresses in here"></textarea>
   <textarea ng-model="message" placeholder="If you want to send a custom message, put it here"></textarea>
   <p>Or send them this link:
-  <span class="invite-link">
-      <a href="<%= SITE %>/contests/join?contest_code={{ contest.invitation_code }}"><%= SITE %>/contests/join?contest_code={{ contest.invitation_code }}</a>
+    <span class="invite-link">
+      <a href="<%= SITE %>/contests/join?contest_code={{ contest.invitation_code }}&referral_code={{ currentUser.referral_code }}">
+        <%= SITE %>/contests/join?contest_code={{ contest.invitation_code }}&referral_code={{ currentUser.referral_code }}
+      </a>
     </span>
   </p>
 </div>

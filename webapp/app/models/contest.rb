@@ -75,7 +75,8 @@ class Contest < ActiveRecord::Base
       total += 1
     end
     score = 0
-    market.market_players.order('score desc').each do |mp|
+    self.market.market_players.order('score desc').each do |mp|
+      next unless mp.player # Hacky as shit, this should never happen
       pos = mp.player.position
       if position_hash[pos] && position_hash[pos] > 0
         total  -= 1
