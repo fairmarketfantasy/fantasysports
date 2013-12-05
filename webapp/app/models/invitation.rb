@@ -34,8 +34,17 @@ class Invitation < ActiveRecord::Base
     invitation
   end
 
-  def self.redeem(current_user, code)
+  def self.redeem(current_user, code, contest = nil)
     inv = Invitation.where(:code => code).first
+    if inv.nil? && user = User.where(:referral_code => code).first
+      inv = Invitation.create!(
+        email: current_user.email,
+        inviter_id: user.id,
+        private_contest_id: contest && contest.private? ? contest.id : nil,
+        contest_type_id: contest && !contest.private? ? contest.contest_type_id : nil,
+        code: SecureRandom.hex(16)
+      )
+    end
     raise HttpException.new(404, "No invitation found with that code") unless inv
     inv.transaction do
       if !inv.redeemed
