@@ -30,6 +30,10 @@ class Player < ActiveRecord::Base
       select('players.*, market_prices.*').joins("JOIN market_prices(#{market.id}, #{buy_in}) ON players.id = market_prices.player_id")
   }
 
+  scope :active, -> () {
+    where("status = 'ACT' AND benched_games < 3")
+  }
+
   scope :purchasable_for_roster, -> (roster) { 
     select(
       "players.*, buy_prices.buy_price as buy_price"
