@@ -52,12 +52,8 @@ class RosterSerializer < ActiveModel::Serializer
     end
   end
 
-  def contest_rank_payout
-    if object.contest_rank
-      object.contest_type.payout_for_rank(object.contest_rank)
-    else
-      nil
-    end
+  def contest_rank_payout # api compatible attr name
+    object.expected_payout
   end
 
 end
