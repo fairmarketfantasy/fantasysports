@@ -62,7 +62,8 @@ BEGIN
 	SELECT * FROM rosters WHERE rosters.id = _roster_id INTO _roster;
 	RETURN QUERY SELECT rp.purchase_price, mp.*, p.* from market_prices(_roster.market_id, _roster.buy_in) mp
 	join players p on p.id = mp.player_id
-	join rosters_players rp on rp.player_id = mp.player_id and rp.roster_id = _roster_id;
+	join rosters_players rp on rp.player_id = mp.player_id and rp.roster_id = _roster_id
+  order by id asc;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -584,11 +585,12 @@ BEGIN
 		WHERE market_id = _market_id and locked_at < _now and not locked;
 
 	IF _locked_bets > 0 OR _locked_shadow_bets > 0 THEN
+	  RAISE NOTICE 'LOCKING % bets', _locked_bets;
 		--update the price multiplier
 		update markets set 
 			price_multiplier = price_multiplier * (1 - (_locked_bets / total_bets)),
 			total_bets = total_bets - _locked_bets,
-			shadow_bets = shadow_bets - _locked_shadow_bets
+			shadow_bets = shadow_bets - _locked_shadow_bets,
 			initial_shadow_bets = initial_shadow_bets - _locked_shadow_bets
 			WHERE id = _market_id;
 	END IF;

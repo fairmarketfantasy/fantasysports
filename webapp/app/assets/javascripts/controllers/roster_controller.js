@@ -262,7 +262,7 @@ angular.module("app.controllers")
 
   $scope.totalSalary = function(roster) {
     if (!roster) { return false; }
-    return _.reduce(roster.players, function(sum, player) { return sum + parseInt(player.buy_price); }, 0);
+    return _.reduce(roster.players, function(sum, player) { return sum + parseInt(player.purchase_price); }, 0);
   };
 
   $scope.record = function(rosters, roster) {
