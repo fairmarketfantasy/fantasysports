@@ -34,6 +34,7 @@ class Market < ActiveRecord::Base
       close
       lock_players
       tabulate_scores
+      set_payouts # this is used for leaderboards
       complete
     end
 
@@ -75,6 +76,10 @@ class Market < ActiveRecord::Base
     
     def tabulate_scores
       apply :tabulate_scores, "state in ('published', 'opened', 'closed')"
+    end
+
+    def set_payouts
+      apply :set_payouts, "state in ('opened', 'closed')"
     end
 
     def close
@@ -166,6 +171,11 @@ class Market < ActiveRecord::Base
 
   def tabulate_scores
     Market.find_by_sql("SELECT * FROM tabulate_scores(#{self.id})")
+    reload
+  end
+
+  def set_payouts
+    self.contests.each{|c| c.set_payouts! }
     reload
   end
 

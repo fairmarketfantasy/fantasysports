@@ -263,8 +263,8 @@ FactoryGirl.define do
     shadow_bet_rate 0.5
     published_at Time.now - 1.day
     started_at Time.now - 10.minute
-    opened_at Time.now + 1.minute
-    closed_at Time.now + 2.minute
+    opened_at Time.now + 5.minute
+    closed_at Time.now + 10.minute
     fill_roster_times "[[" + (Time.new + 5.minute).to_i.to_s + ", 0.5]]"
     total_bets 0
     sport_id 1
