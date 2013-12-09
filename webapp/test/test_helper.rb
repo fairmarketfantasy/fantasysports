@@ -84,6 +84,15 @@ class ActiveSupport::TestCase
       GamesMarket.create(market_id: @market.id, game_stats_id: game.stats_id)
     end
     @market.publish
+    total_bets = 0
+    @market.market_players.each do |mp| 
+      bets = 100 * 1000 * rand(10)
+      mp.initial_shadow_bets = mp.shadow_bets = mp.bets = bets
+      mp.save!
+      total_bets += bets
+    end
+    @market.total_bets = @market.shadow_bets = @market.initial_shadow_bets = total_bets
+    @market.save!
   end
 
   def setup_multi_day_market2

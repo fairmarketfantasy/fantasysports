@@ -220,7 +220,8 @@ class MarketTest < ActiveSupport::TestCase
 
     #print out the current prices
     pricing_roster = create(:roster, :market => @market, :contest_type => contest_type)
-    prices1 = pricing_roster.purchasable_players
+    prices1 = pricing_roster.players_with_prices
+    other_prices1 = pricing_roster.purchasable_players
 
     #now make a game happen by setting the locked_at to the past for the first 18 players
     @market.market_players.first(18).each do |mp|
@@ -228,18 +229,24 @@ class MarketTest < ActiveSupport::TestCase
       mp.save!
     end
     pre_total_bets = @market.reload.total_bets
-    pre_shadow_bets = @market.reload.shadow_bets
+    pre_shadow_bets = @market.shadow_bets
+    pre_initial_shadow_bets = @market.initial_shadow_bets
     Market.tend
-    assert @market.reload.shadow_bets < pre_shadow_bets
-    assert @market.reload.total_bets < pre_total_bets
+    Market.tend # Double tend to check for bullshit (there was a bug where removing shadow bets was screwing up 
+    assert @market.reload.initial_shadow_bets < pre_initial_shadow_bets
+    assert @market.shadow_bets < pre_shadow_bets
+    assert @market.total_bets < pre_total_bets
 
     #ensure that there are only 18 available players
-    prices2 = pricing_roster.purchasable_players.order('id asc')
-    assert prices2.length == 18, "expected 18 for sale, found #{pricing_roster.purchasable_players.length}"
+    prices2 = pricing_roster.players_with_prices
+    other_prices2 = pricing_roster.purchasable_players.order('id asc')
+    assert other_prices2.length == 18, "expected 18 for sale, found #{pricing_roster.purchasable_players.length}"
 
+    #ensure that the prices for those in the roster
+    prices1.each_with_index{|p, i| assert_equal(prices1[i].buy_price, prices2[i].buy_price) }
     #ensure that the prices for those 18 haven't changed
-    p1 = Hash[prices1.map { |p| [p.id, p.buy_price] }]
-    prices2.each do |p|
+    p1 = Hash[other_prices1.map { |p| [p.id, p.buy_price] }]
+    other_prices2.each do |p|
       # puts "player #{p.id}: #{p1[p.id]} -> #{p.buy_price}"
       assert (p1[p.id] - p.buy_price).abs < 1, "price equality? player #{p.id}: #{p1[p.id]} -> #{p.buy_price}"
     end
