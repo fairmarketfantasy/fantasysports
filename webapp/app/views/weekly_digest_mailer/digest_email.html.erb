@@ -1,14 +1,28 @@
 <h1>Hello, <%= @user.name %>!</h1>
 
-<h2>Your Recent Contests</h2>
+<% if @rosters.present? %>
 <%# from when('/rosters', {templateUrl: '/roster_list.html', controller: 'RosterListController'})%>
+<h2>Your Recent Contests</h2>
+<ul>
+  <% @rosters.each do |roster| %>
+    <li><em><%= roster.market.name %></em><% if roster.league %> (<%= roster.league.name %> League Game)<% end %>: <%= market.nice_description %></li>
+  <% end %>
+</ul>
+<% end %>
 
-<h2>This Week's Contests</h2>
+<h2>This Week's Games</h2>
 
-<%# All Of Week (with number), Thursday, Sunday, Monday (with teams) %>
+<p>Don't miss the action! <a href="http://fairmarketfantasy.com/">Sign in to Fair Market Fantasy</a> to submit a roster for one of these exciting events.</p>
+
+<ul>
+  <% @markets.each do |market| %>
+    <li><em><%= market.name %></em>: <%= market.nice_description %></li>
+  <% end %>
+</ul>
 
 <% if @user.leagues.count > 0 %>
-  <h3>Your Leagues</h3>
+  <h2>Your Leagues</h2>
+  <p>These are your leagues. <a href="http://fairmarketfantasy.com/">Sign in to continue playing!</a></p>
   <ul>
   <% @user.leagues.each do |league| %>
     <li><%= league.name %></li>

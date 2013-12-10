@@ -523,4 +523,20 @@ class Market < ActiveRecord::Base
     result
   end
 
+  def nice_description
+    # from niceMarketDesc filter in app/assets/javascripts/filters/filters.js
+    # Day Desc
+    if games.length > 1 && (closed_at - started_at) < 1.day
+      return "All games on " + started_at.strftime('%a %d')
+    end
+    # Game Desc
+    if games.length == 1
+      return games[0].away_team + " at " + games[0].home_team + " on " + games[0].network
+    end
+    # Date Desc
+    if (closed_at - started_at) > 1.day
+      return started_at.strftime('%a %d') + " - " + closed_at.strftime('%a %d')
+    end
+  end
+
 end
