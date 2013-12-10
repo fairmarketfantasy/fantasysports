@@ -10,14 +10,15 @@ angular.module('app.services')
           this.forgotPasswordModal();
         }
       },
-      signUpModal: function(){
+      signUpModal: function(message){
         var dialogOpts = {
               backdrop: true,
               keyboard: true,
               backdropClick: true,
               dialogClass: 'modal',
               templateUrl: '/sign_up_dialog.html',
-              controller: 'SignUpDialogController'
+              controller: 'SignUpDialogController',
+              resolve: {message: function(){ return message; }},
             };
 
         var d = $dialog.dialog(dialogOpts);

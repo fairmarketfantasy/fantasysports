@@ -1,16 +1,19 @@
 angular.module("app.controllers")
-.controller('LoginDialogController', ['$scope', 'dialog', 'flash', 'fs', '$timeout', 'registrationService', function($scope, dialog, flash, fs, $timeout, registrationService) {
+.controller('LoginDialogController', ['$scope', 'dialog', 'flash', 'fs', '$timeout', 'registrationService', 'message', function($scope, dialog, flash, fs, $timeout, registrationService, message) {
+  $scope.message = message;
   $scope.user = $scope.user || {};
 
   $scope.forgotPass = false;
 
   // Uses login() method from LoginController
-  
+
   $scope.submit = function() {
     if (! $scope.isValid()) return;
     fs.user.login($scope.user).then(function(resp){
       // window.setCurrentUser(resp);
-      window.location.reload(true);
+      $timeout(function() {
+        window.location.reload(true);
+      }, 500);
     }, function() {
       $scope.errorMsg = 'There was an error signing you in. Please try again. Use the link below if you need to reset your password.';
     });
