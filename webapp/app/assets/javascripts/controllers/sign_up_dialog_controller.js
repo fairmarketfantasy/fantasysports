@@ -1,13 +1,14 @@
 angular.module("app.controllers")
-.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', '$timeout', 'registrationService', function($scope, dialog, flash, fs, $timeout, registrationService) {
+.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', '$timeout', 'registrationService', 'message', function($scope, dialog, flash, fs, $timeout, registrationService, message) {
   $scope.user = $scope.user || {};
+  $scope.message = message;
   $scope.noPromo = true;
 
   $scope.submit = function() {
     if (!$scope.isValid()) { return; }
     fs.user.create($scope.user).then(function(resp){
       //only fires on success, errors are intercepted by fsAPIInterceptor
-      $timeout(function() {window.location.reload(true);});
+      $timeout(function() {window.location.reload(true);}, 500);
     });
   };
 

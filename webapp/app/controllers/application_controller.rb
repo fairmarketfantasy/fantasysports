@@ -32,6 +32,9 @@ class ApplicationController < ActionController::Base
     if opts[:redirect]
       response.headers['X-CLIENT-REDIRECT'] = opts.delete(:redirect)
     end
+    if opts[:flash]
+      response.headers['X-CLIENT-FLASH'] = opts.delete(:flash)
+    end
     opts[:json] = data
     render opts
   end

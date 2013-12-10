@@ -101,6 +101,10 @@ angular.module('app.services')
           if (redirect) {
             $location.path(redirect);
           }
+          var flashMsg = resp.data.flash || resp.headers()['x-client-flash'];
+          if (flashMsg) {
+            flash.success(flashMsg);
+          }
           if (resp.data.data) {
             return JSONH.unpack(resp.data.data);
           }

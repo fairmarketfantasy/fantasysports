@@ -3,6 +3,7 @@
     <h3>Sign Up</h3>
   </div>
   <div class='modal-body clearfix'>
+    <p ng-show="message">{{message}}</p>
     <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
     <div class='modal-form-container'>
       <input type='text' name="username" required placeholder='Username' ng-model="user.username" class='mvm' focus-me="signUpForm.username.$error.required" /><br />
