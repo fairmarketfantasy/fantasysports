@@ -411,11 +411,11 @@ BEGIN
 
 	-- insert players into market. use the first game time for which the player is participating and calculate shadow bets.
 	--DELETE FROM market_players WHERE market_id = _market_id;
-	INSERT INTO market_players (market_id, player_id, shadow_bets, bets, initial_shadow_bets, locked_at, player_stats_id)
+	INSERT INTO market_players (market_id, player_id, shadow_bets, bets, initial_shadow_bets, locked_at, player_stats_id, created_at, updated_at)
 		SELECT
 			_market_id, p.id, 0, 0, 0,
 			--(((p.total_points + .01) / (p.total_games + .1)) / _total_ppg) * _market.shadow_bets,
-			min(g.game_time), p.stats_id
+			min(g.game_time), p.stats_id, NOW(), NOW()
 		FROM 
 			players p, games g, games_markets gm 
 		WHERE 

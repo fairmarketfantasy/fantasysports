@@ -10,10 +10,13 @@ class Market < ActiveRecord::Base
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
   validates :state, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
+  validates :game_type, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
 
   scope :published_after,   ->(time) { where('published_at > ?', time)}
   scope :opened_after,      ->(time) { where("opened_at > ?", time) }
   scope :closed_after,      ->(time) { where('closed_at > ?', time) }
+
+  before_save :set_game_type, inclusion: { in: %w( regular_season single_elimination )}
 
   paginates_per 25
 
@@ -35,6 +38,7 @@ class Market < ActiveRecord::Base
       lock_players
       tabulate_scores
       set_payouts # this is used for leaderboards
+      finish_games
       complete
     end
 
@@ -82,12 +86,20 @@ class Market < ActiveRecord::Base
       apply :set_payouts, "state in ('opened', 'closed')"
     end
 
+    def finish_games
+      apply :finish_games, "state in ('opened', 'closed')"
+    end
+
     def close
       apply :close, "state = 'opened' AND closed_at < ?", Time.now
     end
 
     def complete
-      apply :complete, "state = 'closed' and not exists (select 1 from games g join games_markets gm on gm.game_stats_id = g.stats_id where gm.market_id = markets.id and g.status != 'closed')"
+      apply :complete, <<-EOF
+          state = 'closed' AND NOT EXISTS (
+            SELECT 1 FROM games g JOIN games_markets gm ON gm.game_stats_id = g.stats_id 
+             WHERE gm.market_id = markets.id AND (g.status != 'closed' OR g.finished_at IS NULL))
+      EOF
     end
 
   end
@@ -177,6 +189,10 @@ class Market < ActiveRecord::Base
   def set_payouts
     self.contests.each{|c| c.set_payouts! }
     reload
+  end
+
+  def finish_games
+    self.market_games.where("state = 'closed' AND finished_at IS NULL").each{|gm| gm.finish! }
   end
 
   # close a market. allocates remaining rosters in this manner:
@@ -406,6 +422,13 @@ class Market < ActiveRecord::Base
       takes_tokens: false,
     }
   ];
+
+  def set_game_type
+    unless self.type
+      self.type = 'regular_season'
+      self.save!
+    end
+  end
 
   #TODO: is this safe if run concurrently?
   def add_default_contests
