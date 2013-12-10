@@ -184,7 +184,10 @@ func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
 		poll = func() {
 			mgr.refreshFetcher([]*models.Game{game})
 			dirty := false
-			gameEvents := mgr.Fetcher.GetPlayByPlay(game.AwayTeam, game.HomeTeam)
+			gameEvents, state := mgr.Fetcher.GetPlayByPlay(game.AwayTeam, game.HomeTeam)
+			game.HomeTeamStatus = state.HomeTeamStatus
+			game.AwayTeamStatus = state.AwayTeamStatus
+			mgr.Orm.Save(game)
 			for i, event := range gameEvents {
 				if event.SequenceNumber < currentSequenceNumber {
 					continue

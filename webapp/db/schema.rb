@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131209214747) do
+ActiveRecord::Schema.define(version: 20131210023818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -135,6 +135,8 @@ ActiveRecord::Schema.define(version: 20131209214747) do
     t.string   "network"
     t.boolean  "bench_counted"
     t.datetime "bench_counted_at"
+    t.text     "home_team_status"
+    t.text     "away_team_status"
   end
 
   add_index "games", ["bench_counted_at"], name: "index_games_on_bench_counted_at", using: :btree
@@ -143,8 +145,9 @@ ActiveRecord::Schema.define(version: 20131209214747) do
   add_index "games", ["stats_id"], name: "index_games_on_stats_id", unique: true, using: :btree
 
   create_table "games_markets", force: true do |t|
-    t.string  "game_stats_id", null: false
-    t.integer "market_id"
+    t.string   "game_stats_id", null: false
+    t.integer  "market_id"
+    t.datetime "finished_at"
   end
 
   add_index "games_markets", ["market_id", "game_stats_id"], name: "index_games_markets_on_market_id_and_game_stats_id", unique: true, using: :btree
@@ -202,6 +205,8 @@ ActiveRecord::Schema.define(version: 20131209214747) do
     t.boolean  "locked",              default: false
     t.integer  "score",               default: 0,     null: false
     t.string   "player_stats_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
@@ -222,6 +227,8 @@ ActiveRecord::Schema.define(version: 20131209214747) do
     t.decimal  "price_multiplier",    default: 1.0
     t.datetime "started_at"
     t.text     "fill_roster_times"
+    t.string   "game_type"
+    t.text     "salary_bonuses"
   end
 
   add_index "markets", ["closed_at", "started_at", "sport_id"], name: "index_markets_on_closed_at_and_started_at_and_sport_id", unique: true, using: :btree

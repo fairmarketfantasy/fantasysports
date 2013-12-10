@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/MustWin/datafetcher/lib"
 	"github.com/MustWin/datafetcher/lib/model"
@@ -51,6 +52,19 @@ type GamesMarket struct {
 	Id          int
 	MarketId    int    `model:"key"`
 	GameStatsId string `model:"key"`
+}
+
+func supportsJsonEncoding(val reflect.Value) bool {
+	// Find all key tags and build query to find unique object
+	valType := reflect.TypeOf(val).Elem()
+	for i := 0; i < valType.NumField(); i++ {
+		field := valType.Field(i)
+		tag := field.Tag
+		if tag.Get("json") != "" && tag.Get("json") != "-" {
+			return true
+		}
+	}
+	return false
 }
 
 func valueToString(val reflect.Value) string {
@@ -112,6 +126,8 @@ func valueToString(val reflect.Value) string {
 		if val.FieldByName("sec").IsValid() && val.FieldByName("loc").IsValid() {
 			realValue := val.Interface().(time.Time)
 			return realValue.Format("Mon Jan 2 15:04:05 -0700 MST 2006")
+		} else if string(supportsJsonEncoding(val)) {
+			return json.Marshal(val.Interface())
 		} else {
 			log.Panicf("Unable to convert value to string %s", val.Interface())
 		}
@@ -185,14 +201,6 @@ func (n *NflModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
 			val.FieldByName(field.Name).Set(existingVal.FieldByName(field.Name))
 		}
 
-		if field.Name == "BenchCountedAt" {
-			log.Println(valueToString(newFieldVal))
-			log.Println(valueToString(reflect.Zero(field.Type)))
-			log.Println(valueToString(newFieldVal) != valueToString(reflect.Zero(field.Type)))
-			log.Println(valueToString(newFieldVal))
-			log.Println(valueToString(existingVal.FieldByName(field.Name)))
-			log.Println(valueToString(newFieldVal) != valueToString(existingVal.FieldByName(field.Name)))
-		}
 		// Set fields that are different on the existing object, save it for update
 		if valueToString(newFieldVal) != valueToString(reflect.Zero(field.Type)) && valueToString(newFieldVal) != valueToString(existingVal.FieldByName(field.Name)) {
 			existingVal.FieldByName(field.Name).Set(newFieldVal)
@@ -239,9 +247,9 @@ type Venue struct {
 }
 
 type TeamStatus struct {
-	Points              int
-	RemainingTimeouts   int
-	RemainingChallenges int
+	Points              int `json:"points"`
+	RemainingTimeouts   int `json:"remainingTimeout"`
+	RemainingChallenges int `json:"remainingChallenges"`
 }
 
 type Game struct {
