@@ -3,8 +3,8 @@ package nfl
 import (
 	//  "io"
 	"encoding/xml"
+	"github.com/MustWin/datafetcher/lib/models"
 	"github.com/MustWin/datafetcher/lib/parsers"
-	"github.com/MustWin/datafetcher/nfl/models"
 	"log"
 	// "reflect"
 	"strconv"

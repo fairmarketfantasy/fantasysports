@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"github.com/MustWin/datafetcher/lib/models"
 	"github.com/robfig/cron"
 	"log"
 	"time"
@@ -11,6 +12,11 @@ type FetchManager interface {
 	Daily() error
 	Schedule(name string, t time.Time, f func())
 	ScheduleCron(s string, f func())
+	GetStandings() []*models.Team
+	GetGames() []*models.Game
+	GetRoster(team string) []*models.Player
+	GetPbp(*models.Game, int) ([]*models.GameEvent, int, bool)
+	GetStats(game *models.Game) []*models.StatEvent
 }
 
 type FetchManagerBase struct {
