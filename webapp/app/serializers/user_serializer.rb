@@ -1,6 +1,6 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :name, :admin, :username, :email, :balance, :image_url, :win_percentile, :total_points, :joined_at, :token_balance, :provider,
-    :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses # Leaderboard keys
+    :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses, :referral_code, :inviter_id # Leaderboard keys
 
 
   has_one :in_progress_roster
