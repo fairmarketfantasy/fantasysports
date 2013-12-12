@@ -24,7 +24,7 @@ class ContestsController < ApplicationController
       redirect_to "/#/market/#{roster.market_id}/roster/#{roster.id}"
     else
       flash[:success] = "You need to sign up or login to join this contest!"
-      session[:referral_code] = invitation.code if invitation
+      session[:referral_code] = (invitation && invitation.code) || params[:referral_code]
       session[:contest_code] = contest.invitation_code
       redirect_to "/#?autologin=You need to create an account to join that contest" #// Trigger sign up modal
     end

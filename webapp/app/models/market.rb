@@ -30,7 +30,7 @@ class Market < ActiveRecord::Base
       open
       remove_shadow_bets
       track_benched_players
-      #fill_rosters
+      fill_rosters
       close
       lock_players
       tabulate_scores

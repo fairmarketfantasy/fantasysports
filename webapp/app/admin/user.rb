@@ -1,6 +1,7 @@
 ActiveAdmin.register User do
   filter :email
   filter :username
+  filter :inviter_id
 
   index do
 =begin
@@ -49,6 +50,7 @@ ActiveAdmin.register User do
     column :transaction_records do |user|
       link_to "Transactions", :controller => "transaction_records", :action => "index", 'q[user_id_eq]' => "#{user.id}".html_safe
     end
+    column :inviter_id
     default_actions
 
   end

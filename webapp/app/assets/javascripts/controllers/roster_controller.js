@@ -77,6 +77,7 @@ angular.module("app.controllers")
 
   var counter = 0
     , fetchContest = function() {
+    if (!rosters.currentRoster.contest_id) { return null; }
     counter++; // Only fetch the contest ever other time.
     if (counter % 2 == 0 && !rosters.currentRoster.contest_id || !$scope.currentUser) { return; }
     rosters.fetchContest(rosters.currentRoster.contest_id, $scope.leaderboardPage).then(function(rosters) {
@@ -261,7 +262,7 @@ angular.module("app.controllers")
 
   $scope.totalSalary = function(roster) {
     if (!roster) { return false; }
-    return _.reduce(roster.players, function(sum, player) { return sum + parseInt(player.buy_price); }, 0);
+    return _.reduce(roster.players, function(sum, player) { return sum + parseInt(player.purchase_price); }, 0);
   };
 
   $scope.record = function(rosters, roster) {
