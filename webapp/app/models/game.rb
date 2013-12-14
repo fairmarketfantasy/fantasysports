@@ -19,4 +19,20 @@ class Game < ActiveRecord::Base
   def market_players_for_market(market_id)
     MarketPlayer.select('players.*').joins('JOIN players p ON p.id=market_players.player_id').where('markets.id = ?', market_id).where('team IN(?, ?)', self.home_team, self.away_team)
   end
+
+  def winning_team
+    home = JSON.parse(home_team_status || "{}")
+    away = JSON.parse(away_team_status || "{}")
+    if home['points'] > away['points']
+      home_team
+    elsif away['points'] > home['points']
+      away_team
+    else
+      nil
+    end
+  end
+
+  def losing_team
+    [self.home_team, self.away_team].find{|team| team != winning_team }
+  end
 end

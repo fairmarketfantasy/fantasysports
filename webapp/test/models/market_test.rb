@@ -21,8 +21,7 @@ class MarketTest < ActiveSupport::TestCase
     Market.tend
     assert_equal 'closed', @market.reload.state
     @games.each do |game|
-      game.status = 'closed'
-      game.save!
+      game.update_attributes(:home_team_status => '{"points": 14}', :away_team_status => '{"points": 7}', :status => 'closed')
     end
     Market.tend
     assert_equal 'complete', @market.reload.state
@@ -224,14 +223,20 @@ class MarketTest < ActiveSupport::TestCase
     other_prices1 = pricing_roster.purchasable_players
 
     #now make a game happen by setting the locked_at to the past for the first 18 players
-    @market.market_players.first(18).each do |mp|
+    @market.market_players.where(:player_id => @games.first.teams.map(&:players).flatten.map(&:id)).each do |mp|
       mp.locked_at = Time.now - 1000
       mp.save!
     end
+    Market.tend # just lock players, remove no bets
     pre_total_bets = @market.reload.total_bets
     pre_shadow_bets = @market.shadow_bets
     pre_initial_shadow_bets = @market.initial_shadow_bets
-    Market.tend
+    prices2 = pricing_roster.players_with_prices
+    other_prices2 = pricing_roster.purchasable_players.order('id asc')
+    assert other_prices2.length == 18, "expected 18 for sale, found #{pricing_roster.purchasable_players.length}"
+    prices1.each_with_index{|p, i| assert_equal(prices1[i].buy_price, prices2[i].buy_price) }
+    play_game(@games.first)
+    Market.tend # actually remove bets
     Market.tend # Double tend to check for bullshit (there was a bug where removing shadow bets was screwing up 
     assert @market.reload.initial_shadow_bets < pre_initial_shadow_bets
     assert @market.shadow_bets < pre_shadow_bets
@@ -428,7 +433,7 @@ class MarketTest < ActiveSupport::TestCase
         rank = roster.contest_rank
       end
     end
-    @game.update_attribute :status, 'closed'
+    @game.update_attributes(:home_team_status => '{"points": 14}', :away_team_status => '{"points": 7}', :status => 'closed')
     Market.tend
 
     # contests are paid out
@@ -462,10 +467,31 @@ class MarketTest < ActiveSupport::TestCase
     assert_equal r1.contest, r2.contest
     @market.update_attribute(:opened_at, Time.new-1.minute)
     @market.open
-    @game.update_attribute(:status, 'closed')
+    @game.update_attributes(:home_team_status => '{"points": 14}', :away_team_status => '{"points": 7}', :status => 'closed')
     @market.update_attribute(:closed_at, Time.new - 1.minute)
     Market.tend
     assert contest.rosters.count * contest.buy_in, JSON.parse(contest.contest_type.payout_structure).sum
+  end
+
+  test 'single_elimination_add_game' do
+    setup_single_elimination_market
+    initial_multiplier = @market.reload.price_multiplier
+    pricing_roster = create(:roster, :market => @market, :contest_type => @market.contest_types.first).fill_pseudo_randomly.submit!
+    price = pricing_roster.players_with_prices.reduce(0){|sum, p| sum += p.buy_price }
+    @market.update_attribute(:opened_at, Time.new - 1.minute)
+    @market.games.update_all(:game_time => Time.new)
+    @market.market_players.update_all(:locked_at => Time.new- 1.minute)
+    Market.tend
+    assert_equal 10, @market.reload.price_multiplier # all players locked
+    play_game(@game1_1)
+    play_game(@game1_2)
+    Market.tend
+    assert @market.reload.price_multiplier < 10 # all players locked
+    new_price = pricing_roster.players_with_prices.reduce(0){|sum, p| sum += p.buy_price }
+    assert price > new_price
+    next_game = Time.new.tomorrow
+    @market.add_single_elimination_game(create(:game, :home_team => @game1_1.winning_team, :away_team => @game1_2.winning_team, :game_time => next_game))
+    @market.market_players.where(:player_id => Player.where(:team => [@game1_2.winning_team, @game1_2.winning_team]).map(&:id)).reload.map{|mp| assert_equal next_game.to_i, mp.locked_at.to_i }
   end
 
   describe Market do

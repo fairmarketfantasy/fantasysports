@@ -10,13 +10,13 @@ class Market < ActiveRecord::Base
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
   validates :state, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
-  validates :game_type, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
+  validates :game_type, inclusion: { in: %w( regular_season single_elimination )}
 
   scope :published_after,   ->(time) { where('published_at > ?', time)}
   scope :opened_after,      ->(time) { where("opened_at > ?", time) }
   scope :closed_after,      ->(time) { where('closed_at > ?', time) }
 
-  before_save :set_game_type, inclusion: { in: %w( regular_season single_elimination )}
+  before_save :set_game_type
 
   paginates_per 25
 
@@ -98,7 +98,7 @@ class Market < ActiveRecord::Base
       apply :complete, <<-EOF
           state = 'closed' AND NOT EXISTS (
             SELECT 1 FROM games g JOIN games_markets gm ON gm.game_stats_id = g.stats_id 
-             WHERE gm.market_id = markets.id AND (g.status != 'closed' OR g.finished_at IS NULL))
+             WHERE gm.market_id = markets.id AND (g.status != 'closed' OR gm.finished_at IS NULL))
       EOF
     end
 
@@ -192,7 +192,10 @@ class Market < ActiveRecord::Base
   end
 
   def finish_games
-    self.market_games.where("state = 'closed' AND finished_at IS NULL").each{|gm| gm.finish! }
+    self.games_markets.select('games_markets.*').joins(
+        'JOIN games ON games_markets.game_stats_id=games.stats_id'
+    ).where("games.status = 'closed' AND games_markets.finished_at IS NULL").each{|gm| gm.finish! }
+    reload
   end
 
   # close a market. allocates remaining rosters in this manner:
@@ -265,6 +268,19 @@ class Market < ActiveRecord::Base
       end
       self.state = 'complete'
       self.save!
+    end
+  end
+
+  def next_game_time_for_team(team)
+    team = Team.find(team) if team.is_a?(String)
+    game = self.games.where(['game_time > NOW() AND (home_team = ? OR away_team = ?)', team, team]).order('game_time asc').first
+    game && game.game_time
+  end
+
+  def add_single_elimination_game(game)
+    GamesMarket.create!(:market_id => self.id, :game_stats_id => game.stats_id)
+    [game.home_team, game.away_team].each do |team|
+      market_players.where(:player_id => Player.where(:team => team).map(&:id)).update_all(:locked_at => next_game_time_for_team(team))
     end
   end
 
@@ -424,8 +440,8 @@ class Market < ActiveRecord::Base
   ];
 
   def set_game_type
-    unless self.type
-      self.type = 'regular_season'
+    unless self.game_type
+      self.game_type = 'regular_season'
       self.save!
     end
   end
