@@ -8,7 +8,7 @@ class WeeklyDigest
   end
 
   def rosters
-    rosters = user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').where('', ).order('closed_at desc')
+    rosters = user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').order('closed_at desc')
     rosters = rosters.over.page(1)
     rosters = rosters.select{|r| r.market.closed_at > 7.days.ago}
   end

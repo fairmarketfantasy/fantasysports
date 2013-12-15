@@ -2,7 +2,40 @@ Hello, <%= @user.name %>!
 
 Your Recent Contests
 ====================
+<% @rosters.each do |roster| -%>
+<% if roster.state == 'cancelled' -%>CANCELLED: <% end -%>
+<%= roster.market.name %> - <%= roster.market.nice_description %>
+<%= roster.contest_type.name.upcase %>, <%= roster.contest_type.takes_tokens ? (roster.contest_type.buy_in + ' FF') : number_to_currency(roster.contest_type.buy_in / 100) %>
+Rank <%= roster.contest_rank %> of <%= roster.contest_type.max_entries == 0 ? 'Unlimited' : roster.contest_type.max_entries %>, Points <%= roster.score %>
+<% if roster.amount_paid > 0 -%>
+WON <% if roster.contest_type.takes_tokens -%><%= roster.amount_paid -%> FF<% else -%><%= number_to_currency roster.amount_paid / 100 %><% end %>
+<% end -%>
+<% if roster.contest.league -%>
+(<%= roster.contest.league.name %> League Game)
+<% end -%>
+<% end %>
 
 This Week's Games
 =================
 
+Don't miss the action!
+
+Sign in to Fair Market Fantasy to submit a roster:
+http://fairmarketfantasy.com/
+
+<% @markets.each do |market| %>
+<%= market.name %>: <%= market.nice_description %>
+<% end %>
+
+<% if @user.leagues.count > 0 %>
+Your Leagues
+============
+
+These are your leagues.
+Sign in to continue playing:
+http://fairmarketfantasy.com/
+
+<% @user.leagues.each do |league| %>
+<%= league.name %>
+<% end %>
+<% end %>
