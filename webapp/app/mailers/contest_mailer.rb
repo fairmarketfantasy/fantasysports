@@ -1,5 +1,5 @@
 class BlockedEmail
-  def deliver # Noop
+  def deliver! # Noop
   end
 end
 class ContestMailer < ActionMailer::Base
