@@ -46,11 +46,17 @@ end
 
         #require './config/boot'
 #        require 'honeybadger/capistrano'
+namespace :honeybadger do
+  task :deploy do
+    # MT
+  end
+end
+
 namespace :deploy do
   desc "Notifies Honeybadger locally using curl"
   task :notify_honeybadger do
     require 'json'
-    require 'honeybadger'
+    #require 'honeybadger'
 
     begin
       require './config/initializers/honeybadger'
