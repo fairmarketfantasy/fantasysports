@@ -5,9 +5,10 @@ angular.module('app', [
       'app.filters',
       'app.controllers',
       'app.templates',
-      'angular-flash.service',
-      'angular-flash.flash-alert-directive',
-      'ui.bootstrap'])
+      'angular-flash.service', 'angular-flash.flash-alert-directive',
+      'ui.bootstrap',
+      'angulartics', 'angulartics.google.analytics'
+      ])
 .config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider.
       when('/', {templateUrl: '/home.html', controller: 'HomeController'}).
