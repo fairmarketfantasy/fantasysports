@@ -155,7 +155,7 @@ angular.module("app.controllers")
 
   $scope.isInPlay = function(roster) {
     if (!$scope.market) { return; }
-    return $scope.market.state != 'published' && roster.state != 'in_progress';
+    return $scope.market.state == 'opened' && roster.state != 'in_progress';
   };
 
   $scope.showPlayer = function(roster, player) {
