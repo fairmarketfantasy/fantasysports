@@ -508,6 +508,7 @@ class Market < ActiveRecord::Base
     #self.price_multiplier = self.market_players.size / 50
     puts "using price multiplier: #{self.price_multiplier}"
     self.save!
+    self
   end
 
   def market_duration
