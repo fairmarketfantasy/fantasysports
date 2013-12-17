@@ -6,6 +6,7 @@ require 'chef/search/query'
 
 set :user, "ubuntu"             # The server's user for deploys
 set :application, "fantasysports"
+set :repository, "fairmarketfantasy"
 #set :stages, %w(production staging)
 #require 'capistrano/ext/multistage'
 
@@ -43,5 +44,34 @@ namespace :deploy do
  end
 end
 
-        require './config/boot'
-        require 'honeybadger/capistrano'
+        #require './config/boot'
+#        require 'honeybadger/capistrano'
+namespace :deploy do
+  desc "Notifies Honeybadger locally using curl"
+  task :notify_honeybadger do
+    require 'json'
+    require 'honeybadger'
+
+    begin
+      require './config/initializers/honeybadger'
+    rescue LoadError
+      logger.info 'Honeybadger initializer not found'
+    else
+      honeybadger_api_key = Honeybadger.configuration.api_key
+      local_user          = ENV['USER'] || ENV['USERNAME']
+      honeybadger_env     = fetch(:rails_env, "production")
+      notify_command      = "curl -sd 'deploy[repository]=#{repository}&deploy[revision]=#{current_revision}&deploy[local_username]=#{local_user}&deploy[environment]=#{honeybadger_env}&api_key=#{honeybadger_api_key}' https://api.honeybadger.io/v1/deploys"
+      logger.info "Notifying Honeybadger of Deploy (`#{notify_command}`)"
+      result = JSON.parse `#{notify_command}` rescue nil
+      result ||= { 'error' => 'Invalid response' }
+      if result.include?('error')
+        logger.info "Honeybadger Notification Failed: #{result['error']}"
+      else
+        logger.info "Honeybadger Notification Complete."
+      end
+    end
+  end
+end
+
+after 'deploy', 'deploy:notify_honeybadger'
+after 'deploy:migrations', 'deploy:notify_honeybadger'
