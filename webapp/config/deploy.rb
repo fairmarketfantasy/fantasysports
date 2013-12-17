@@ -2,6 +2,7 @@ require 'pp'
 require 'chef'
 require 'chef/rest'
 require 'chef/search/query'
+require 'honeybadger'
 
 
 set :user, "ubuntu"             # The server's user for deploys
@@ -44,19 +45,13 @@ namespace :deploy do
  end
 end
 
-        #require './config/boot'
-#        require 'honeybadger/capistrano'
-namespace :honeybadger do
-  task :deploy do
-    # MT
-  end
-end
+require './config/boot'
+require 'honeybadger/capistrano'
 
 namespace :deploy do
   desc "Notifies Honeybadger locally using curl"
-  task :notify_honeybadger do
+  task :alert_honeybadger do
     require 'json'
-    #require 'honeybadger'
 
     begin
       require './config/initializers/honeybadger'
@@ -66,9 +61,10 @@ namespace :deploy do
       honeybadger_api_key = Honeybadger.configuration.api_key
       local_user          = ENV['USER'] || ENV['USERNAME']
       honeybadger_env     = fetch(:rails_env, "production")
-      notify_command      = "curl -sd 'deploy[repository]=#{repository}&deploy[revision]=#{current_revision}&deploy[local_username]=#{local_user}&deploy[environment]=#{honeybadger_env}&api_key=#{honeybadger_api_key}' https://api.honeybadger.io/v1/deploys"
+      revision = `git show production | head -n 1 | cut -c 8-`
+      notify_command      = "curl -sd 'deploy[repository]=#{repository}&deploy[revision]=#{revision}&deploy[local_username]=#{local_user}&deploy[environment]=#{honeybadger_env}&api_key=#{honeybadger_api_key}' https://api.honeybadger.io/v1/deploys"
       logger.info "Notifying Honeybadger of Deploy (`#{notify_command}`)"
-      result = JSON.parse `#{notify_command}` rescue nil
+      result = JSON.parse(run_locallsy(notify_command)) rescue nil
       result ||= { 'error' => 'Invalid response' }
       if result.include?('error')
         logger.info "Honeybadger Notification Failed: #{result['error']}"
@@ -79,5 +75,5 @@ namespace :deploy do
   end
 end
 
-after 'deploy', 'deploy:notify_honeybadger'
-after 'deploy:migrations', 'deploy:notify_honeybadger'
+after 'deploy', 'deploy:alert_honeybadger'
+#after 'deploy:migrations', 'deploy:alert_honeybadger'
