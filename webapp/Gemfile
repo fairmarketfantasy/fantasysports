@@ -47,6 +47,9 @@ gem 'aws-sdk'
 #pagination
 gem 'kaminari'
 
+# Third Party Integrations
+gem 'honeybadger'
+
 #payments
 gem 'skeuocard-rails'
 gem 'paypal-sdk-rest'
