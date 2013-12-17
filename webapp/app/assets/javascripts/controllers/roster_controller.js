@@ -153,6 +153,10 @@ angular.module("app.controllers")
     return angular.element('#player-stats-content')[0].innerHTML;
   };
 
+  $scope.isAwayTeam = function(team) {
+    return teamsToGames[team] && teamsToGames[team].away_team == team;
+  };
+
   $scope.isInPlay = function(roster) {
     if (!$scope.market) { return; }
     return $scope.market.state == 'opened' && roster.state != 'in_progress';
