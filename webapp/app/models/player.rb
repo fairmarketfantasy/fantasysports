@@ -14,6 +14,7 @@ class Player < ActiveRecord::Base
   # Some positions are never used in NFL
   default_scope { where("position NOT IN('OLB', 'OL')") }
 
+  has_many :market_players
   has_many :rosters_players
   has_and_belongs_to_many :rosters, join_table: 'rosters_players'
 
