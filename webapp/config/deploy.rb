@@ -42,3 +42,6 @@ namespace :deploy do
    task :precompile do ; end
  end
 end
+
+        require './config/boot'
+        require 'honeybadger/capistrano'
