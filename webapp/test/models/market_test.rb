@@ -263,7 +263,8 @@ class MarketTest < ActiveSupport::TestCase
     #see how much the mean price has changed
     avg_all = prices3.collect(&:buy_price).reduce(:+)/18
     bought_players = existing_roster.players.map(&:id)
-    avg_bought = prices3.select{|p| bought_players.include?(p.id) }.collect(&:buy_price).reduce(:+)/9
+    matched_bought_players = prices3.select{|p| bought_players.include?(p.id) }
+    avg_bought = matched_bought_players.collect(&:buy_price).reduce(:+) / matched_bought_players.length
     puts "average price moved from #{avg_all.round(2)} to #{avg_bought.round(2)}"
     assert avg_bought > avg_all
   end

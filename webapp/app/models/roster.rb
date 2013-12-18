@@ -476,7 +476,7 @@ class Roster < ActiveRecord::Base
       self.purchasable_players.active.each do |p|
         next unless candidate_players.include?(p.position)
         candidate_players[p.position] << p
-        indexes[p.position] += 1 if p.buy_price > 2000
+        indexes[p.position] += 1 if p.buy_price > 1500
       end
       candidate_players.each do |pos,players|
         candidate_players[pos] = players.sort_by{|player| -player.buy_price }

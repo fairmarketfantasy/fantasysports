@@ -9,8 +9,8 @@ angular.module("app.controllers")
   $scope.currentUser = currentUserService.currentUser;
   $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;}, true);
 
-  $scope.signUpModal = function() {
-    registrationService.signUpModal();
+  $scope.signUpModal = function(msg) {
+    registrationService.signUpModal(msg);
   }
 
   $scope.loginModal = function() {
@@ -61,6 +61,13 @@ angular.module("app.controllers")
     var message = $location.search().autologin;
     $location.search('autologin', null);
     $scope.signUpModal(message);
+  }
+  if ($location.search().flash) {
+    var msg = '' + $location.search().flash;
+    $location.search('flash', null);
+    $timeout(function() {
+      flash.success(msg);
+    })
   }
 
 }]);

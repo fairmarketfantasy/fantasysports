@@ -1,9 +1,11 @@
 class Users::SessionsController < Devise::SessionsController
+  include Referrals
 
   def create
     self.resource = warden.authenticate! scope: resource_name, recall: "#{controller_path}#sign_in_failure"
     sign_in resource_name, resource
-    render json: UserSerializer.new(current_user, scope: current_user)
+    render_api_response current_user, handle_referrals
+    #render json: UserSerializer.new(current_user, scope: current_user)
   end
 
   def destroy
