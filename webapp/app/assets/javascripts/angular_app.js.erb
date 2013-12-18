@@ -12,6 +12,7 @@ angular.module('app', [
 .config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider.
       when('/', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/coming-soon', {templateUrl: '/coming_soon.html', controller: 'HomeController'}).
       when('/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
       when('/market/:market_id/roster/:roster_id/vs/:opponent_roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
       when('/market/:market_id', {templateUrl: '/home.html', controller: 'HomeController'}).
@@ -20,8 +21,8 @@ angular.module('app', [
       when('/leaderboard', {templateUrl: '/leaderboard.html', controller: 'LeaderboardController'}).
       when('/rules', {templateUrl: '/rules.html', controller: 'RulesController'}).
       when('/terms', {templateUrl: '/terms.html', controller: 'RulesController'}).
-      when('/promos', {templateUrl: '/promos.html', controller: 'PromosController'}).
-      when('/legal', {templateUrl: '/legal.html', controller: 'LegalController'}).
+      when('/promos', {templateUrl: '/promos.html', controller: 'DummyController'}).
+      when('/legal', {templateUrl: '/legal.html', controller: 'DummyController'}).
       when('/support', {templateUrl: '/support.html', controller: 'SupportController'}).
     //...
       otherwise({redirectTo: '/'});
