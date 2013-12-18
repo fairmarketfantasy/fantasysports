@@ -1,5 +1,5 @@
 angular.module('app.services')
-  .factory('registrationService', function($dialog, $timeout) {
+  .factory('registrationService', ['$dialog', '$timeout', function($dialog, $timeout) {
     return {
       showModal: function(name) {
         if (name == 'signUp') {
@@ -78,4 +78,4 @@ angular.module('app.services')
       }
     };
 
-  });
+  }]);
