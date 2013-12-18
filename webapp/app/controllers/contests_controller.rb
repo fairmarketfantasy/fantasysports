@@ -21,12 +21,11 @@ class ContestsController < ApplicationController
       end
       roster = Roster.generate(current_user, contest.contest_type)
       roster.update_attribute(:contest_id, contest.id)
-      redirect_to "/#/market/#{roster.market_id}/roster/#{roster.id}"
+      redirect_to "/#/market/#{roster.market_id}/roster/#{roster.id}?flash=We found your buddy's contest. Let's build a roster!"
     else
-      flash[:success] = "You need to sign up or login to join this contest!"
       session[:referral_code] = (invitation && invitation.code) || params[:referral_code]
       session[:contest_code] = contest.invitation_code
-      redirect_to "/#?autologin=You need to create an account to join that contest" #// Trigger sign up modal
+      redirect_to "/#?autologin=You need to sign up or login to join that contest" #// Trigger sign up modal
     end
   end
 

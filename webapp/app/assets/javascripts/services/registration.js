@@ -1,5 +1,5 @@
 angular.module('app.services')
-  .factory('registrationService', function($dialog, $timeout) {
+  .factory('registrationService', ['$dialog', '$timeout', function($dialog, $timeout) {
     return {
       showModal: function(name) {
         if (name == 'signUp') {
@@ -10,14 +10,15 @@ angular.module('app.services')
           this.forgotPasswordModal();
         }
       },
-      signUpModal: function(){
+      signUpModal: function(message){
         var dialogOpts = {
               backdrop: true,
               keyboard: true,
               backdropClick: true,
               dialogClass: 'modal',
               templateUrl: '/sign_up_dialog.html',
-              controller: 'SignUpDialogController'
+              controller: 'SignUpDialogController',
+              resolve: {message: function(){ return message; }},
             };
 
         var d = $dialog.dialog(dialogOpts);
@@ -77,4 +78,4 @@ angular.module('app.services')
       }
     };
 
-  });
+  }]);
