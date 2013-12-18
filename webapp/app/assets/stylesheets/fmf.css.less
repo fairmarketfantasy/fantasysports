@@ -1309,6 +1309,27 @@ input[type="text"].players-search {
   padding: 0;
 
 }
+/* This blue pill shit is pretty gnarly */ 
+.blue-pills {
+  padding-top: 1em;
+}
+.blue-pills li a{
+  color: #666;
+  background-color: #fefefe;
+  border-left: #7575E7;
+}
+.blue-pills li a:hover{
+  color: @red;
+  background-color: #fefefe;
+  //border-left:  #0000FF;
+}
+.blue-pills li.active a {
+  background-color: #1b1ba3;
+}
+.blue-pills li.active a:hover{
+  background-color: #0000FF;
+  border-left:  #0000FF;
+}
 .roster-alert {
   margin-top: 14px;
 }
@@ -1439,11 +1460,12 @@ textarea[class*="span"] {
 .stats-list {
   margin-left: 100px;
 }
-.stats-total {
-
-}
 
 // Temporary. Remove this when we launch bball
+.coming-soon{
+  padding-top: 6em;
+  text-align: center;
+}
 .landing-container {
   position: relative;
 }
