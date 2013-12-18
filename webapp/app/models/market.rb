@@ -49,7 +49,7 @@ class Market < ActiveRecord::Base
           Honeybadger.notify(
             :error_class   => "MarketTender Error",
             :error_message => "MarketTenderError in #{method} for #{market.id}: #{e.message}",
-            #:parameters    => params
+            :backtrace => e.backtrace
           )
         end
       end
@@ -154,7 +154,7 @@ class Market < ActiveRecord::Base
         true
       end
     end
-    bad_h2h_types = bad_h2h_types.map(&:id)
+    bad_h2h_types = bad_h2h_types.map(&:id).unshift(-1)
     contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0")
     contests.find_each do |contest|
       contest.fill_with_rosters(percent)
