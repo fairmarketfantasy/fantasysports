@@ -22,11 +22,8 @@
             <h3 class="mr-player-name not-selected" ng-show="!showPlayer(roster, player) && roster.owner_id == currentUser.id">{{player.position}} Not Selected</h3>
             <span class="mr-stats" ng-show="showPlayer(roster, player)">{{player.team}} {{player.position}} ({{player.ppg | number:2 | zeroIfEmpty}} PPG)</span>
             <span class="mr-stats" ng-show="showPlayer(roster, player)">
-              <span ng-show="isInPlay(roster)">
+              <span>
                 ${{player.purchase_price | number:0}}
-              </span>
-              <span ng-show="!isInPlay(roster)">
-                ${{player.sell_price | number:0}}
               </span>
               <span ng-show="!player.locked && market.state != 'published' && roster.state != 'in_progress'">
                 (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">
