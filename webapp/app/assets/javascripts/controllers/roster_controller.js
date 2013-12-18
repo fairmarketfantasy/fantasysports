@@ -1,6 +1,6 @@
 angular.module("app.controllers")
 .controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', '$timeout', 'flash', '$templateCache', 'markets',
-            function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache) {
+            function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache, markets) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
