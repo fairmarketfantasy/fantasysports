@@ -140,8 +140,8 @@ angular.module("app.controllers")
     });
   };
 
-  $scope.isAwayTeam = function(team) {
-    return teamsToGames[team] && teamsToGames[team].away_team == team;
+  $scope.isHomeTeam = function(team) {
+    return teamsToGames[team] && teamsToGames[team].home_team == team;
   };
 
   $scope.isInPlay = function(roster) {
