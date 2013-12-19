@@ -34,7 +34,7 @@
 
 <h2>This Week's Games</h2>
 
-<p>Don't miss the action! <a href="http://fairmarketfantasy.com/">Sign in to Fair Market Fantasy</a> to submit a roster for one of these exciting events.</p>
+<p>Don't miss the action! <a href="<%= @base_url %>">Sign in to Fair Market Fantasy</a> to submit a roster for one of these exciting events.</p>
 
 <ul>
   <% @markets.each do |market| %>
@@ -44,10 +44,10 @@
 
 <% if @user.leagues.count > 0 %>
   <h2>Your Leagues</h2>
-  <p>These are your leagues. <a href="http://fairmarketfantasy.com/">Sign in to continue playing!</a></p>
+  <p>These are your leagues. <a href="<%= @base_url %>">Sign in to continue playing!</a></p>
   <ul>
   <% @user.leagues.each do |league| %>
-    <li><%= league.name %></li>
+    <li><a href="<%= @base_url %>#/league/<%= league.id %>"><%= league.name %></a></li>
   <% end %>
   </ul>
 <% end %>
