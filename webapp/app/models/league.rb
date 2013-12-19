@@ -47,10 +47,12 @@ class League < ActiveRecord::Base
 
   def current_contest
     @contest ||= begin
-        contest = Contest.where(:market_id => current_market.id, :league_id => self.id).first
+        market = current_market
+        raise HttpException.new(404, "Sorry, That league isn't running this week.  Try another game!") unless market
+        contest = Contest.where(:market_id => market.id, :league_id => self.id).first
         if !contest
           contest = Contest.create!(
-            market: current_market,
+            market: market,
             owner_id: self.users.first.id, # TODO: make a commissioner
             user_cap: contest_type.max_entries,
             buy_in: contest_type.buy_in,
