@@ -24,8 +24,11 @@ angular.module("app.controllers")
 
   function joinLeague(leagueId) {
     $scope.fs.contests.join_league(leagueId).then(function(data){
-      rosters.selectRoster(data);
-      $location.path('/market/' + data.market.id + '/roster/' + data.id);
+      // give the server time to save everything
+      $timeout(function() {
+        rosters.selectRoster(data);
+        $location.path('/market/' + data.market.id + '/roster/' + data.id);
+      }, 500);
     });
   }
 
