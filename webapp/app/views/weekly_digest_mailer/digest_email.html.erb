@@ -38,7 +38,7 @@
 
 <ul>
   <% @markets.each do |market| %>
-    <li><em><%= market.name %></em>: <%= market.nice_description %></li>
+    <li><a href="<%= @base_url %>#/market/<%= market.id %>"><em><%= market.name %></em>: <%= market.nice_description %></a></li>
   <% end %>
 </ul>
 
