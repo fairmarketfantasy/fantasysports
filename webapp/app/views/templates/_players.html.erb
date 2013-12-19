@@ -105,7 +105,7 @@
                 <i ng-show="player.status != 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
               </td>
               <td class="tiny" ng-hide="getFilterOpts().position">{{player.position | dashIfDEF}}</td>
-              <td class="tiny"><span ng-show="isHomeTeam(player.team)">@</span>{{player.team}}</td>
+              <td class="tiny">{{player.team}}</td>
               <td class="tiny" ng-show="getFilterOpts().position"><span ng-hide="isHomeTeam(player.team)">@</span>{{opponentFor(player)}}</td>
               <td class="tiny">{{player.ppg | number:0 |zeroIfEmpty}}</td>
               <td>${{player.buy_price | number:0}}</td>
