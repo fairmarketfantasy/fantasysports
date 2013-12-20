@@ -50,6 +50,11 @@ class Market < ActiveRecord::Base
         rescue Exception => e
           puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
           Rails.logger.error "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
+          Honeybadger.notify(
+            :error_class   => "MarketTender Error",
+            :error_message => "MarketTenderError in #{method} for #{market.id}: #{e.message}",
+            :backtrace => e.backtrace
+          )
         end
       end
     end
@@ -161,7 +166,7 @@ class Market < ActiveRecord::Base
         true
       end
     end
-    bad_h2h_types = bad_h2h_types.map(&:id)
+    bad_h2h_types = bad_h2h_types.map(&:id).unshift(-1)
     contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0")
     contests.find_each do |contest|
       contest.fill_with_rosters(percent)
@@ -292,15 +297,19 @@ class Market < ActiveRecord::Base
       max_entries: 515,
       buy_in: 1000,
       rake: 0.03,
-# 4995.5
-      # 7-10 50, 11-20 20, 21-50 10
-      payout_structure: '[250000, 100000, 40000, 20000, 10000, 10000,' +  # 1st -6th
-                          '5000, 5000, 5000, 5000,' + # 7-10
-                          '2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000,' + # 11-20
-                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,
-                           1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,
-                           1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 550]', # 21-50
-      payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $400, 4th: $200, 5th-6th: $100, 7th-10th: $50, 11th-20th: $20, 21st-49th: $10, 50th: $5.50",
+      # Payout lollapalooza: 1 1000 2 500 3 300 4-10 100 11-20 50 21-30 40 31-40 30 41-50 20 51-90 10
+      payout_structure: '[100050, 50000, 30000, ' + # 1-3
+                          '10000, 10000, 10000, 10000, 10000, 10000, 10000, ' +  # 4-10
+                          '5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, ' + # 11-30
+                          '5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, ' +
+                          '4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, ' + # 31-45
+                          '3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, ' + # 46-55
+                          '2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000,' + # 56-65
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,' + # 66-105
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,' +
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,' +
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 500]',
+      payout_description: "1st: $1k, 2nd: $500, 3rd: $300, 4th-10th: $100, 11th-30th: $50, 31st-45th: $40, 46th-55th: $30, 56th-65th: $20, 66th-104th: $10, 105th: $5",
       takes_tokens: false,
       limit: 1
     },
@@ -547,6 +556,7 @@ class Market < ActiveRecord::Base
     #self.price_multiplier = self.market_players.size / 50
     puts "using price multiplier: #{self.price_multiplier}"
     self.save!
+    self
   end
 
   def market_duration

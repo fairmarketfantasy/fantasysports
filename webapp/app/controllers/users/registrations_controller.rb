@@ -65,7 +65,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     prev_confirmed_email   = resource.email
 
     change_unconfirmed_email if prev_unconfirmed_email
-
+    if params[:user].nil?
+      render :nothing => true, :status => :ok
+      return
+    end
     method =  if params[:user][:current_password].present?
                 :update_with_password
               else

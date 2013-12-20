@@ -54,6 +54,10 @@ func makeRequest(u string) io.ReadCloser {
 		log.Printf("Failed to parse url %s: %s\n", u, err)
 	}
 	query := urlObj.Query()
+	/*
+	  NBA Realtime v3                 8uttxzxefmz45ds8ckz764vr
+	  NBA Images Production v1        5n9kzft8ty4dhubeke29mvbb
+	*/
 	query.Add("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
 	urlObj.RawQuery = query.Encode()
 
