@@ -7,6 +7,7 @@ class ContestTypeValidator < ActiveModel::Validator
         record.errors[:payout_structure] = "Payout structure adds to more than  100k"
       end
     elsif total_payout != total_buy_in - total_buy_in * record.rake
+      debugger
       record.errors[:payout_structure] = "Payout structure doesn't equal max_entries * buy_in - rake * max_entries * buy_in"
     end
     raise "Buy in must be between $0 and $1000" unless (0..100000).include?(record.buy_in)
@@ -52,7 +53,7 @@ class ContestType < ActiveRecord::Base
     ).first
     return existing if existing
     attributes = self.attributes.dup
-    [:id, :created_at ].each{|attr| attributes.delete(attr) }
+    ["id", "created_at"].each{|attr| attributes.delete(attr) }
     attributes[:market_id] = market.id
     ContestType.create!(attributes)
   end

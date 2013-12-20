@@ -1309,6 +1309,27 @@ input[type="text"].players-search {
   padding: 0;
 
 }
+/* This blue pill shit is pretty gnarly */ 
+.blue-pills {
+  padding-top: 1em;
+}
+.blue-pills li a{
+  color: #666;
+  background-color: #fefefe;
+  border-left: #7575E7;
+}
+.blue-pills li a:hover{
+  color: @red;
+  background-color: #fefefe;
+  //border-left:  #0000FF;
+}
+.blue-pills li.active a {
+  background-color: #1b1ba3;
+}
+.blue-pills li.active a:hover{
+  background-color: #0000FF;
+  border-left:  #0000FF;
+}
 .roster-alert {
   margin-top: 14px;
 }
@@ -1431,6 +1452,37 @@ textarea[class*="span"] {
 }
 .fb-share-btn {
   width: 60px;
+}
+
+.stats-headshot {
+  float: left;
+}
+.stats-list {
+  margin-left: 100px;
+}
+
+// Temporary. Remove this when we launch bball
+.coming-soon{
+  padding-top: 6em;
+  text-align: center;
+}
+.landing-container {
+  position: relative;
+}
+#playoff-teaser {
+  position: absolute;
+  top: 85px;
+  right: 20px;
+  text-align: center;
+  color: #fefefe;
+}
+#sport-teaser {
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  img {
+    height: 100px;
+  }
 }
 
 /* Media Queries: 980-1199px

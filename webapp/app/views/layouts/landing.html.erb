@@ -63,7 +63,7 @@
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-46242308-1', 'fairmarketfantasy.com');
-  ga('send', 'pageview');
+  //ga('send', 'pageview'); // Handled by angulartics
 
 </script>
   <div flash-alert active-class="alert in" class="fixed-flash fade">
@@ -102,6 +102,13 @@
       <div class="landing-mobile-app-links">
         <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
       </div>
+    </div>
+    <div id="sport-teaser">
+      <img src="<%= asset_path('bball-coming-soon.png') %>"/><br/>
+      <!--<img src="<%= asset_path('hockey-coming-soon.png') %>"/>-->
+    </div>
+    <div id="playoff-teaser">
+      <h4>Join now to play our <br/>special playoff games!</h4>
     </div>
   </div>
   <article class="about-container">
@@ -142,7 +149,7 @@
           <h1>Market Driven Pricing</h1>
           <p class="about-text">Prices are set based on user demand for each player, the more demand for a player, the higher the price goes.</p>
  
-          <p class="about-text">After the Opening, all player’s prices are fixed when you purchase them. You can change your roster and trade back a player who is not locked (playing) and receive his current price and then purchase another player. If you purchase a player and then sell him back at a profit, it will raise your salary cap by that amount. Similarly, if you do so at a loss it will reduce your salary cap by that amount.</p>
+          <p class="about-text">You can change your roster and trade back a player who isn't playing and receive his current price and then purchase another player. If you purchase a player and then sell him back at a profit, it will raise your salary cap by that amount. Similarly, if you do so at a loss it will reduce your salary cap by that amount.</p>
           <p class="about-text special">See the difference a sane player pricing model makes! <a class="btn btn-green btn-large btn-orange" href="javascript://" ng-click='signUpModal()'>Sign Up</a></p>
         </div>
         <div class="span5">

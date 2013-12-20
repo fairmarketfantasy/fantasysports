@@ -143,6 +143,8 @@ GEM
     hashie (2.0.5)
     highline (1.6.19)
     hike (1.2.3)
+    honeybadger (1.10.1)
+      json
     httpauth (0.2.0)
     httpclient (2.3.4.1)
     i18n (0.6.5)
@@ -359,6 +361,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   fog
   god
+  honeybadger
   jbuilder (~> 1.2)
   kaminari
   knife-ec2

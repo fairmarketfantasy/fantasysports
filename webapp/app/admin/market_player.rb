@@ -1,6 +1,8 @@
 ActiveAdmin.register MarketPlayer do
   filter :market_id
   filter :player_stats_id
+  filter :player_name, :as => :string
+
 
   index do
     column :id
@@ -18,11 +20,11 @@ ActiveAdmin.register MarketPlayer do
     column :market_id
     column :player_id
     column :player_stats_id
-    column(:name) {|mp| mp.player.name }
+    column(:name) {|mp| mp.player && mp.player.name }
     column :initial_shadow_bets
     column :shadow_bets
     column :bets
-    column('$10 price') {|mp| mp.price_in_10_dollar_contest }
+    column('$10 price') {|mp| mp.market && mp.price_in_10_dollar_contest }
     column :score
     default_actions
 

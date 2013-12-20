@@ -1,6 +1,6 @@
 angular.module("app.controllers")
 .controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', '$timeout', 'flash', '$templateCache', 'markets',
-            function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache) {
+            function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache, markets) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
@@ -140,22 +140,13 @@ angular.module("app.controllers")
     });
   };
 
-  $scope.fetchPlayerStats = function(player) {
-    return $scope.fs.events.for_players($scope.market.id, [player]).then(function(events) {
-      $scope.playerStats = events;
-      return events;
-    });
-  };
-
-  $scope.statsContent = function() {
-    // This is particularly disgusting, but I couldn't figure out a better way to do it.
-    // It's impossible to compile templates and use the content without rendering to the dom.
-    return angular.element('#player-stats-content')[0].innerHTML;
+  $scope.isHomeTeam = function(team) {
+    return teamsToGames[team] && teamsToGames[team].home_team == team;
   };
 
   $scope.isInPlay = function(roster) {
     if (!$scope.market) { return; }
-    return $scope.market.state != 'published' && roster.state != 'in_progress';
+    return $scope.market.state == 'opened' && roster.state != 'in_progress';
   };
 
   $scope.showPlayer = function(roster, player) {
@@ -171,6 +162,23 @@ angular.module("app.controllers")
 
   $scope.dayBefore = function(time) {
     return moment(time).subtract('days', 1);
+  };
+
+  $scope.openStatsDialog = function(player) {
+    var player = player,
+      dialogOpts = {
+      backdrop: true,
+      keyboard: true,
+      backdropClick: true,
+      dialogClass: 'modal',
+      templateUrl: '/stats_dialog.html',
+      controller: 'StatsDialogController',
+      resolve: {
+        player: function() { return player; },
+        market: function() {  return rosters.currentRoster.market; }
+      }
+    };
+    return $dialog.dialog(dialogOpts).open();
   };
 
   // doesn't depend on $scope because it's used after navigating away from this controller
