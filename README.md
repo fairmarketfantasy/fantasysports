@@ -91,6 +91,28 @@ rake market:close
 ```
 Or you can do it in sql as described below.
 
+## Weekly update emails
+
+To send a weekly update email to all users, run:
+
+```
+rake email:queue_digests
+```
+
+This should be run by a weekly cron job that emails an error if one occurs. It should run quickly and without errors, because it just creates a resque job for each user, and doesn't save to the database or send emails. Resque failed jobs and the email service (like SendGrid) will need to be monitored to ensure delivery.
+
+To send to a single user, run:
+
+```
+rake email:queue_digest_for_user[mail@example.com]
+```
+
+To send to a single user without Resque, fire up rails console and run:
+
+```
+user = User.where(email: 'mail@example.com').first
+WeeklyDigestMailer.digest_email(user).deliver
+```
 
 ## The SQL Functions that buy, sell, and update the market
 `cd` to market directory
