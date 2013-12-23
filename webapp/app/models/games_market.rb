@@ -8,9 +8,9 @@ class GamesMarket < ActiveRecord::Base
     loser = game.losing_team
     case self.market.game_type
     when 'regular_season' then
-      GamesMarket.find_by_sql(["SELECT * FROM finish_game(?, ?, ?, ?)", self.id, winner, loser, false])
+      nil # do nothing
     when 'single_elimination' then
-      GamesMarket.find_by_sql(["SELECT * FROM finish_game(?, ?, ?, ?)", self.id, winner, loser, true])
+      GamesMarket.find_by_sql(["SELECT * FROM finish_game(?, ?, ?)", self.id, winner, loser])
     end
     reload
     self.finished_at = Time.new

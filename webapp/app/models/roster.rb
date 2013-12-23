@@ -32,7 +32,6 @@ class Roster < ActiveRecord::Base
     end
   end
 
-
   def purchasable_players
     self.class.uncached do
       Player.purchasable_for_roster(self)

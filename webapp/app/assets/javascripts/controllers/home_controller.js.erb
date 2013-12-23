@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('HomeController', ['$scope', 'rosters', '$dialog', '$location', function($scope, rosters, $dialog, $location) {
+.controller('HomeController', ['$scope', 'rosters', 'markets', '$dialog', '$location', function($scope, rosters, markets, $dialog, $location) {
   $scope.rosters = rosters;
   if ($scope.currentUser) {
     rosters.fetchMine();
@@ -19,12 +19,14 @@ angular.module("app.controllers")
       var d = $dialog.dialog(dialogOpts);
       d.open();
     }
+
+    $scope.markets = markets;
   }
 
   $scope.showNextLeagueRoster = function(league) {
     $scope.fs.contests.join_league(league.id).then(function(data){
       rosters.selectRoster(data);
-      $location.path('/market/' + data.market.id + '/roster/' + data.id);
+      $location.path('/arket/' + data.market.id + '/roster/' + data.id);
     });
   };
 

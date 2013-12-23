@@ -72,10 +72,10 @@ class ActiveSupport::TestCase
   end
 
   def add_bets_to_market(market)
-    @market.publish
+    market.publish
     total_bets = 0
     market.market_players.each do |mp|
-        bets = 100 * 1000 * rand(10)
+        bets = 100 * 100 * rand(1..10)
         mp.initial_shadow_bets = mp.shadow_bets = mp.bets = bets
         mp.save!
         total_bets += bets
@@ -105,7 +105,7 @@ class ActiveSupport::TestCase
     teams = (1..4).map{ setup_team }
     @game1_1 = create(:game, :home_team => teams[0], :away_team => teams[1], :game_time => Time.now + 10.minute) # Publish subtracts 5 minutes
     @game1_2 = create(:game, :home_team => teams[2], :away_team => teams[3], :game_time => Time.now + 10.minute)
-    @market = create :new_market, :game_type => 'single_elimination'
+    @market = create :new_market, :game_type => 'single_elimination', :expected_total_points => 30
     [@game1_1, @game1_2].each do |game|
       GamesMarket.create(market_id: @market.id, game_stats_id: game.stats_id)
     end
@@ -157,8 +157,8 @@ class ActiveSupport::TestCase
     @players = @players.concat(other_players)
     @market = create :new_market
     GamesMarket.create(market_id: @market.id, game_stats_id: @game.stats_id)
-    @market.publish
     @market.add_default_contests
+    add_bets_to_market(@market)
     @market.reload
   end
 

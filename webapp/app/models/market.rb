@@ -46,6 +46,13 @@ class Market < ActiveRecord::Base
       Market.where(sql, *params).each do |market|
         puts "#{Time.now} -- #{method} market #{market.id}"
         begin
+=begin
+init_shadow_bets = market.reload.initial_shadow_bets
+total_bets = market.reload.total_bets
+shadow_bets = market.reload.shadow_bets
+real_bets = market.reload.total_bets - shadow_bets
+new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet_rate].max
+=end
           market.send(method)
         rescue Exception => e
           puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
@@ -141,6 +148,17 @@ class Market < ActiveRecord::Base
     reload
   end
 
+  def add_fill_roster_time(time, percent)
+    fill_times = JSON.parse(self.fill_roster_times)
+    index = fill_times.index{|arr| arr[0] > time.to_i }
+    if index.nil?
+      fill_times.push([time.to_i, percent])
+    else
+      fill_times.insert(index, [time.to_i, percent])
+    end
+    self.update_attribute(:fill_roster_times, fill_times.to_json)
+  end
+
   def fill_rosters
 =begin
   This is formatted as a json array of arrays like so:
@@ -182,7 +200,7 @@ class Market < ActiveRecord::Base
   end
 
   def lock_players
-    Market.find_by_sql("SELECT * from lock_players(#{self.id})")
+    Market.find_by_sql("SELECT * from lock_players(#{self.id}, '#{self.game_type == 'regular_season' ? 't' : 'f'}')")
     reload
   end
 
@@ -282,8 +300,24 @@ class Market < ActiveRecord::Base
     game && game.game_time
   end
 
-  def add_single_elimination_game(game)
-    GamesMarket.create!(:market_id => self.id, :game_stats_id => game.stats_id)
+  def self.create_single_elimination_game(sport_id, expected_total_points, opts)
+    self.create!({
+      :expected_total_points => expected_total_points,
+      :game_type => 'single_elimination',
+      }.merge(opts)
+    )
+  end
+
+  def add_single_elimination_game(game, price_multiplier = 1)
+    if self.started_at.nil? || game.game_time < self.started_at
+      self.update_attribute(:started_at, game.game_time) 
+    end
+    if self.closed_at.nil? || game.game_time > self.closed_at
+      self.update_attribute(:closed_at, game.game_time) 
+    end
+// SET THIS UP SO THAT EVERY MONDAY IN THE RANGE OF DATES HAS A SALARY BONUS
+    add_fill_roster_time(game.game_time - 1.hour, 1.0)
+    GamesMarket.create!(:market_id => self.id, :game_stats_id => game.stats_id, :price_multiplier => price_multiplier)
     [game.home_team, game.away_team].each do |team|
       market_players.where(:player_id => Player.where(:team => team).map(&:id)).update_all(:locked_at => next_game_time_for_team(team))
     end
