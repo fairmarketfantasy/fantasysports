@@ -1,4 +1,5 @@
 class Market < ActiveRecord::Base
+  attr_protected
   has_many :games_markets, :inverse_of => :market
   has_many :games, :through => :games_markets
   has_many :market_players
@@ -38,6 +39,7 @@ class Market < ActiveRecord::Base
       lock_players
       tabulate_scores
       set_payouts # this is used for leaderboards
+      deliver_bonuses
       finish_games
       complete
     end
@@ -94,6 +96,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       apply :tabulate_scores, "state in ('published', 'opened', 'closed')"
     end
 
+    def deliver_bonuses
+      apply :deliver_bonuses, "game_type = 'single_elimination' AND state in ('opened', 'closed')"
+    end
+
     def set_payouts
       apply :set_payouts, "state in ('opened', 'closed')"
     end
@@ -148,6 +154,20 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     reload
   end
 
+=begin
+  This is formatted as a json hash like so:
+  {<unix-timestamp>: {paid: true}, ...]
+=end
+  def add_salary_bonus_time(time)
+    bonus_times = JSON.parse(self.salary_bonuses || '{}')
+    bonus_times[time.to_i] ||= {"paid" => false}
+    self.update_attribute(:salary_bonuses, bonus_times.to_json)
+  end
+
+=begin
+  This is formatted as a json array of arrays like so:
+  [[<unix-timestamp, <percent-fill>], ...]
+=end
   def add_fill_roster_time(time, percent)
     fill_times = JSON.parse(self.fill_roster_times)
     index = fill_times.index{|arr| arr[0] > time.to_i }
@@ -160,10 +180,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def fill_rosters
-=begin
-  This is formatted as a json array of arrays like so:
-  [[<unix-timestamp, <percent-fill>], ...]
-=end
     fill_times = JSON.parse(self.fill_roster_times)
     percent = nil
     fill_times.each do |ft| 
@@ -206,6 +222,15 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def tabulate_scores
     Market.find_by_sql("SELECT * FROM tabulate_scores(#{self.id})")
+    reload
+  end
+
+  def deliver_bonuses
+    bonus_times = JSON.parse(self.salary_bonuses || '{}')
+    bonus_times.keys.sort.select{|time| time.to_i < Time.new.to_i && !bonus_times[time]['paid'] }.each do
+      self.rosters.update_all('remaining_salary = remaining_salary + 20000')
+      self.contest_types.update_all('salary_cap = salary_cap + 20000')
+    end
     reload
   end
 
@@ -310,12 +335,15 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def add_single_elimination_game(game, price_multiplier = 1)
     if self.started_at.nil? || game.game_time < self.started_at
-      self.update_attribute(:started_at, game.game_time) 
+      self.started_at = game.game_time
     end
     if self.closed_at.nil? || game.game_time > self.closed_at
-      self.update_attribute(:closed_at, game.game_time) 
+      self.closed_at = game.game_time
     end
-// SET THIS UP SO THAT EVERY MONDAY IN THE RANGE OF DATES HAS A SALARY BONUS
+    # Every monday at 9pm PST within the date range gets a bonus
+    self.started_at.to_date.upto(self.closed_at.to_date).map{|day| day.monday? ? Time.new(day.year, day.month, day.day, 21, 0, 0, '-08:00') : nil }.compact.each do |time|
+      add_salary_bonus_time(time)
+    end
     add_fill_roster_time(game.game_time - 1.hour, 1.0)
     GamesMarket.create!(:market_id => self.id, :game_stats_id => game.stats_id, :price_multiplier => price_multiplier)
     [game.home_team, game.away_team].each do |team|
