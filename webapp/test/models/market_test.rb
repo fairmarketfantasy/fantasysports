@@ -221,6 +221,24 @@ class MarketTest < ActiveSupport::TestCase
 
   end
 
+  test "deliver bonuses" do
+    setup_simple_market
+    @market.opened_at = Time.now - 60
+    @market.save!
+    @market.open
+    @market.update_attributes(:salary_bonuses => '{"' + (Time.new - 1.minute).to_i.to_s + '": {"paid": false}}', :game_type => 'single_elimination')
+    contest_types = @market.contest_types.all
+    5.times do
+      create(:roster, :market => @market, :contest_type => contest_types.first).fill_pseudo_randomly3(true).submit!
+    end
+    assert contest_types.length > 0
+    assert_difference '@market.rosters.reload.map(&:remaining_salary).sum', 5 * 20000 do
+      assert_difference '@market.contest_types.reload.map(&:salary_cap).sum', contest_types.length * 20000 do
+        Market.tend
+      end
+    end
+  end
+
   # lock_players removes players from the pool without affecting prices
   # it does so by updating the price multiplier
   test "lock players" do
