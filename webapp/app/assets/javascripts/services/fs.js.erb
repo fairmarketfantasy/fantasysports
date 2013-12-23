@@ -271,8 +271,8 @@ angular.module('app.services')
         show: function(id) {
           return $http({method: 'GET', url: '/markets/' + id});
         },
-        list: function() {
-          return $http({method: 'GET', url: '/markets'});
+        list: function(type) {
+          return $http({method: 'GET', url: '/markets?type=' + type});
         }
       },
       contests: {

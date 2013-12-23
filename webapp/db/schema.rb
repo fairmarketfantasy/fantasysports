@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131210023818) do
+ActiveRecord::Schema.define(version: 20131220155338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -145,9 +145,10 @@ ActiveRecord::Schema.define(version: 20131210023818) do
   add_index "games", ["stats_id"], name: "index_games_on_stats_id", unique: true, using: :btree
 
   create_table "games_markets", force: true do |t|
-    t.string   "game_stats_id", null: false
+    t.string   "game_stats_id",                  null: false
     t.integer  "market_id"
     t.datetime "finished_at"
+    t.decimal  "price_multiplier", default: 1.0
   end
 
   add_index "games_markets", ["market_id", "game_stats_id"], name: "index_games_markets_on_market_id_and_game_stats_id", unique: true, using: :btree
@@ -207,14 +208,15 @@ ActiveRecord::Schema.define(version: 20131210023818) do
     t.string   "player_stats_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_eliminated",       default: false
   end
 
   add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
 
   create_table "markets", force: true do |t|
     t.string   "name"
-    t.decimal  "shadow_bets",                       null: false
-    t.decimal  "shadow_bet_rate",                   null: false
+    t.decimal  "shadow_bets",                         null: false
+    t.decimal  "shadow_bet_rate",                     null: false
     t.datetime "opened_at"
     t.datetime "closed_at"
     t.datetime "created_at"
@@ -222,13 +224,14 @@ ActiveRecord::Schema.define(version: 20131210023818) do
     t.datetime "published_at"
     t.string   "state"
     t.decimal  "total_bets"
-    t.integer  "sport_id",                          null: false
+    t.integer  "sport_id",                            null: false
     t.decimal  "initial_shadow_bets"
-    t.decimal  "price_multiplier",    default: 1.0
+    t.decimal  "price_multiplier",      default: 1.0
     t.datetime "started_at"
     t.text     "fill_roster_times"
     t.string   "game_type"
     t.text     "salary_bonuses"
+    t.integer  "expected_total_points"
   end
 
   add_index "markets", ["closed_at", "started_at", "sport_id"], name: "index_markets_on_closed_at_and_started_at_and_sport_id", unique: true, using: :btree

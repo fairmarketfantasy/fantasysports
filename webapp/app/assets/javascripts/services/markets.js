@@ -4,19 +4,22 @@ angular.module('app.data')
     var gameData = {};
     return new function() {
       this.currentMarket = null;
+      this.marketType = 'regular_season';
       this.upcoming = [];
 
-      this.fetchUpcoming = function(id) {
+      this.fetchUpcoming = function(opts) {
         // TODO: memoize?
         var self = this;
-        var defaultMarket;
-        return fs.markets.list().then(function(markets) {
+        if (opts.type) {
+          self.marketType = opts.type;
+        }
+        return fs.markets.list(opts.type).then(function(markets) {
           self.upcoming = markets;
           _.each(markets, function(market) {
             marketData[market.id] = market;
           });
-          if (id) {
-            self.currentMarket = marketData[id];
+          if (opts.id) {
+            self.currentMarket = marketData[opts.id];
           } else {
             self.currentMarket = markets[0];
           }
