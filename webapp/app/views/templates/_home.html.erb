@@ -81,9 +81,9 @@
     <!--<h3>When would you like to play?</h3>-->
     <h3 style="padding-top: 5px">Play</h3>
     <ul class="market-type-list">
-      <li class="market-type-li" ng-class="{selected: markets.marketType == 'regular_season'}"><a class="market-type-selector" href="javascript://" ng-click="markets.fetchUpcoming({type: 'regular_season'})"><h3>This week</h3></a></li>
+      <li class="market-type-li" ng-class="{selected: markets.marketType == 'regular_season'}"><a class="market-type-selector" href="/#/home"><h3>This week</h3></a></li>
       <li><h6>OR</h6></li>
-      <li class="market-type-li" ng-class="{selected: markets.marketType == 'single_elimination'}"><a class="market-type-selector" href="javascript://" ng-click="markets.fetchUpcoming({type: 'single_elimination'})"><h3>The Playoffs</h3></a></li>
+      <li class="market-type-li" ng-class="{selected: markets.marketType == 'single_elimination'}"><a class="market-type-selector" href="/#/playoffs"><h3>The Playoffs</h3></a></li>
     </ul>
     <div class="league-selector" ng-show="currentUser.leagues.length == 0">
       <p>You aren't in any leagues yet. <br/>Create one below.</p>
