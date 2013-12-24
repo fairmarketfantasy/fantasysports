@@ -647,9 +647,9 @@ BEGIN
 
 	UPDATE market_players SET
     locked = false,
-    bets =  bets * ((_win_locked_bets + _loss_locked_bets) / _win_locked_bets - 1/13),
-    shadow_bets = shadow_bets * ((_win_locked_bets + _loss_locked_bets) / _win_locked_bets - 1/13),
-    initial_shadow_bets = shadow_bets * ((_win_locked_bets + _loss_locked_bets) / _win_locked_bets - 1/13),
+    bets =  score / _market.expected_total_points * _market.total_bets + bets * (((_win_locked_bets + _loss_locked_bets) / _market.total_bets)/(_win_locked_bets / _market.total_bets) - 1/13),
+    shadow_bets =  score / _market.expected_total_points * _market.total_bets + shadow_bets * (((_win_locked_bets + _loss_locked_bets) / _market.total_bets)/(_win_locked_bets / _market.total_bets) - 1/13),
+    initial_shadow_bets =  score / _market.expected_total_points * _market.total_bets + initial_shadow_bets * (((_win_locked_bets + _loss_locked_bets) / _market.total_bets)/(_win_locked_bets / _market.total_bets) - 1/13),
     locked_at = _next_game_time
 		WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _winning_team);
 
