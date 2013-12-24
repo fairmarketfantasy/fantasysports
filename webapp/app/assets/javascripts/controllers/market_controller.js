@@ -4,7 +4,8 @@ angular.module("app.controllers")
 
   marketService.fetchUpcoming({
       id: $routeParams.market_id,
-      type: $location.path() == '/playoffs' ? 'single_elimination' : 'regular_season'
+// TODO: Pick up here: UI needs to determine if loaded market is single elim and keep playoff setting when it's clicked
+      type: $location.path() == '/playoffs'  ? 'single_elimination' : 'regular_season'
   });
   $scope.rosters = rosters;
   $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'h2h', 'h2h rr'];
@@ -28,7 +29,7 @@ angular.module("app.controllers")
       $scope.contestClasses = contestClasses;
     });
   };
-  $scope.$watch('marketService.currentMarket', reloadMarket);
+  $scope.$watch('marketService.currentMarket.id', reloadMarket);
 
   $scope.day = function(timeStr) {
     var day = moment(timeStr);
