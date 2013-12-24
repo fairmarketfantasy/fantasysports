@@ -13,6 +13,7 @@ class GamesMarket < ActiveRecord::Base
       GamesMarket.find_by_sql(["SELECT * FROM finish_game(?, ?, ?)", self.id, winner, loser])
     end
     reload
+    game.update_attribute(:status, 'closed') unless game.status == 'closed' # Just in case it doesn't get closed by the datafetcher, which happens sometimes
     self.finished_at = Time.new
     save!
   end

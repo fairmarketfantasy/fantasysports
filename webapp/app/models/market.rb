@@ -242,7 +242,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   def finish_games
     self.games_markets.select('games_markets.*').joins(
         'JOIN games ON games_markets.game_stats_id=games.stats_id'
-    ).where("games.status = 'closed' AND games_markets.finished_at IS NULL").each{|gm| gm.finish! }
+    ).where("(games.status = 'closed' OR games.game_time < NOW() - INTERVAL '8 hours') AND games_markets.finished_at IS NULL").each{|gm| gm.finish! }
     reload
   end
 
