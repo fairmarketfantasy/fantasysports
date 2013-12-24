@@ -4,17 +4,13 @@ angular.module('app.data')
     var gameData = {};
     return new function() {
       this.currentMarket = null;
-      this.marketType = 'regular_season';
+      //this.marketType = 'regular_season';
       this.upcoming = [];
 
       this.fetchUpcoming = function(opts) {
         // TODO: memoize?
         var self = this;
-        if (opts.type) {
-          self.marketType = opts.type;
-        }
         return fs.markets.list(opts.type).then(function(markets) {
-          self.upcoming = markets;
           _.each(markets, function(market) {
             marketData[market.id] = market;
           });
@@ -24,6 +20,17 @@ angular.module('app.data')
             self.currentMarket = markets[0];
           }
         });
+      };
+
+      this.selectMarketId = function(id) {
+        this.selectMarketType(marketData[id].game_type);
+        this.currentMarket = marketData[id];
+      };
+
+      this.selectMarketType = function(type) {
+        this.marketType = type || 'regular_season';
+        this.upcoming = _.filter(marketData, function(elt) { return elt.game_type == type || (type == 'regular_season' && elt.game_type == null) /* last clause should be temporary*/});
+        this.currentMarket = this.upcoming[0];
       };
 
       this.selectMarket = function(market) {
