@@ -2,7 +2,10 @@ angular.module("app.controllers")
 .controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, currentUserService) {
   $scope.marketService = marketService;
 
-  marketService.fetchUpcoming({id: $routeParams.market_id});
+  marketService.fetchUpcoming({
+      id: $routeParams.market_id,
+      type: $location.path() == '/playoffs' ? 'single_elimination' : 'regular_season'
+  });
   $scope.rosters = rosters;
   $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'h2h', 'h2h rr'];
 

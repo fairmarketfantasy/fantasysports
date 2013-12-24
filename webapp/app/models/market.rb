@@ -169,8 +169,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   [[<unix-timestamp, <percent-fill>], ...]
 =end
   def add_fill_roster_time(time, percent)
-    fill_times = JSON.parse(self.fill_roster_times)
-    index = fill_times.index{|arr| arr[0] > time.to_i }
+    fill_times = JSON.parse(self.fill_roster_times || '[]')
+    index = fill_times.find{|arr| arr[0] > time.to_i }
     if index.nil?
       fill_times.push([time.to_i, percent])
     else
@@ -329,17 +329,25 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     self.create!({
       :expected_total_points => expected_total_points,
       :game_type => 'single_elimination',
+      :sport_id => sport_id,
+      :shadow_bets => 0,
+      :shadow_bet_rate => 0.75,
+      :published_at => Time.now + 1.minute
       }.merge(opts)
     )
   end
 
   def add_single_elimination_game(game, price_multiplier = 1)
+    if self.opened_at.nil? || game.game_time < self.started_at
+      self.opened_at = game.game_time.beginning_of_week + 24 * 60*60 + 11 * 60 * 60 # 9pm PST Tuesday
+    end
     if self.started_at.nil? || game.game_time < self.started_at
       self.started_at = game.game_time
     end
     if self.closed_at.nil? || game.game_time > self.closed_at
       self.closed_at = game.game_time
     end
+    self.save!
     # Every monday at 9pm PST within the date range gets a bonus
     self.started_at.to_date.upto(self.closed_at.to_date).map{|day| day.monday? ? Time.new(day.year, day.month, day.day, 21, 0, 0, '-08:00') : nil }.compact.each do |time|
       add_salary_bonus_time(time)
