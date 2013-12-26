@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started @ 2013-07-18 17:56:01 +0000 -->
+<team xmlns="http://feed.elasticstats.com/schema/basketball/team-v2.0.xsd" id="583eca2f-fb46-11e1-82cb-f4ce4684ea4c" name="Timberwolves" alias="MIN" market="Minnesota">
+  <venue id="7aed802e-3562-5b73-af1b-3859529f9b95" name="Target Center" capacity="19356" address="600 First Ave. North" city="Minneapolis" state="MN" zip="55403" country="US"/>
+  <hierarchy>
+    <league id="4353138d-4c22-4396-95d8-5f587d2df25c" name="NBA" alias="NBA"/>
+    <conference id="7fe7e212-de01-4f8f-a31d-b9f0a95731e3" name="WESTERN CONFERENCE" alias="WESTERN"/>
+    <division id="12bf14ba-eb16-4c6f-8275-e801b6947c1e" name="Northwest" alias="NORTHWEST"/>
+  </hierarchy>
+  <coaches>
+    <coach id="418dd8b9-c003-4d8d-99d0-eca60977174f" full_name="Rick Adelman" first_name="Rick" last_name="Adelman" position="HC"/>
+  </coaches>
+  <players>
+    <player id="0207e06d-471d-40d0-88ad-3755d4df6233" status="ACT" full_name="Andrei Kirilenko" first_name="Andrei" last_name="Kirilenko" abbr_name="A.Kirilenko" height="81" weight="235" position="F" primary_position="NA" jersey_number="47" college="St. Petersburg (Russia)" birthdate="1981-02-18" updated="2013-07-08T19:17:05+00:00">
+    </player>
+    <player id="22f65f0b-5ccb-4f72-9bbe-ab383c86fa6b" status="ACT" full_name="Chase Budinger" first_name="Chase" last_name="Budinger" abbr_name="C.Budinger" height="79" weight="217" position="F" primary_position="NA" jersey_number="10" college="Arizona" birthdate="1988-05-22" updated="2013-07-08T19:17:13+00:00">
+    </player>
+    <player id="47efff84-454e-4ad9-b140-7184ec4a5008" status="ACT" full_name="Corey Brewer" first_name="Corey" last_name="Brewer" abbr_name="C.Brewer" height="81" weight="187" position="F" primary_position="NA" jersey_number="13" college="Florida" birthdate="1986-03-05" updated="2013-07-18T17:56:01+00:00">
+    </player>
+    <player id="5af8d05e-98e0-4d4a-87a3-8f2ce31173a7" status="ACT" full_name="Alexey Shved" first_name="Alexey" last_name="Shved" abbr_name="A.Shved" height="77" weight="182" position="G" primary_position="NA" jersey_number="1" college="Russia" birthdate="1988-12-16" updated="2013-07-08T19:17:05+00:00">
+    </player>
+    <player id="627e78c7-3f9e-4ac3-9b7d-686087c665ae" status="ACT" full_name="Dante Cunningham" first_name="Dante" last_name="Cunningham" abbr_name="D.Cunningham" height="79" weight="228" position="F" primary_position="NA" jersey_number="33" college="Villanova" birthdate="1987-04-22" updated="2013-07-08T19:17:13+00:00">
+    </player>
+    <player id="684ed7d9-75cf-49d6-85a3-49dda31b446d" status="ACT" full_name="Brandon Roy" first_name="Brandon" last_name="Roy" abbr_name="B.Roy" height="77" weight="211" position="G" primary_position="NA" jersey_number="3" college="Washington" birthdate="1984-07-23" updated="2013-07-08T19:17:10+00:00">
+    </player>
+    <player id="767837db-62fa-4fc6-b118-1d56a8b23415" status="ACT" full_name="Kevin Martin" first_name="Kevin" last_name="Martin" abbr_name="K.Martin" height="79" weight="184" position="G" primary_position="NA" jersey_number="23" college="Western Carolina" birthdate="1983-02-01" updated="2013-07-08T19:17:12+00:00">
+    </player>
+    <player id="7d615ccd-db96-42a3-9a6c-7f18ea25634e" status="ACT" full_name="Kevin Love" first_name="Kevin" last_name="Love" abbr_name="K.Love" height="81" weight="259" position="F" primary_position="NA" jersey_number="42" college="UCLA" birthdate="1988-09-07" updated="2013-07-08T19:17:10+00:00">
+    </player>
+    <player id="7ef2df20-86a7-4898-be7a-4da083360680" status="ACT" full_name="Ronny Turiaf" first_name="Ronny" last_name="Turiaf" abbr_name="R.Turiaf" height="81" weight="248" position="C" primary_position="C" jersey_number="0" experience="8" college="Gonzaga" birth_place="Le Robert,, MTQ" birthdate="1983-01-13" updated="2013-07-17T17:07:29+00:00">
+      <draft team_id="583ecae2-fb46-11e1-82cb-f4ce4684ea4c" year="2005" round="2" pick="37"/>
+    </player>
+    <player id="a1f2324e-1613-41e2-8f5b-b8391443e88d" status="ACT" full_name="Derrick Williams" first_name="Derrick" last_name="Williams" abbr_name="D.Williams" height="79" weight="239" position="F" primary_position="NA" jersey_number="7" college="Arizona" birthdate="1991-05-25" updated="2013-07-08T19:17:15+00:00">
+    </player>
+    <player id="a3531f82-7374-41e7-ac71-ef5071ad2a12" status="ACT" full_name="Ricky Rubio" first_name="Ricky" last_name="Rubio" abbr_name="R.Rubio" height="75" weight="180" position="G" primary_position="NA" jersey_number="9" college="FC Barcelona" birthdate="1990-10-21" updated="2013-07-08T19:17:02+00:00">
+    </player>
+    <player id="b6cdfbf4-fd3f-46f3-b889-732b3bae1da8" status="ACT" full_name="Jose Barea" first_name="Jose" last_name="Barea" abbr_name="J.Barea" height="72" weight="173" position="G" primary_position="NA" jersey_number="11" college="Northeastern" birthdate="1984-06-26" updated="2013-07-08T19:17:06+00:00">
+    </player>
+    <player id="c459fa73-7b5b-44d5-9698-344b44cde2b8" status="ACT" full_name="Shabazz Muhammad" first_name="Shabazz" last_name="Muhammad" abbr_name="S.Muhammad" height="77" weight="222" position="G" primary_position="NA" jersey_number="0" college="UCLA" birthdate="1992-11-13" updated="2013-07-08T19:17:17+00:00">
+    </player>
+    <player id="ce45bcdc-8ce8-43cd-8039-87164b5abf8a" status="ACT" full_name="Nikola Pekovic" first_name="Nikola" last_name="Pekovic" abbr_name="N.Pekovic" height="83" weight="290" position="C" primary_position="NA" jersey_number="14" college="Montenegro" birthdate="1986-01-03" updated="2013-07-08T19:17:04+00:00">
+    </player>
+    <player id="ee82d0ca-c0d2-499b-92ca-af4f085e2452" status="ACT" full_name="Chris Johnson" first_name="Chris" last_name="Johnson" abbr_name="C.Johnson" height="83" weight="209" position="F" primary_position="NA" jersey_number="20" college="Louisiana State" birthdate="1985-07-15" updated="2013-07-08T19:17:15+00:00">
+    </player>
+    <player id="fd9448f0-99a2-4169-addf-235e14acf9f9" status="ACT" full_name="Gorgui Dieng" first_name="Gorgui" last_name="Dieng" abbr_name="G.Dieng" height="83" weight="228" position="C" primary_position="NA" jersey_number="0" college="Louisville" birthdate="1990-01-18" updated="2013-07-08T19:17:17+00:00">
+    </player>
+  </players>
+</team>
+<!-- Generation ended @ 2013-07-18 17:56:01 +0000 -->

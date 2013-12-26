@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:s="http://feed.elasticstats.com/schema/basketball/schedule-v2.0.xsd"
+           targetNamespace="http://feed.elasticstats.com/schema/basketball/schedule-v2.0.xsd" 
+           elementFormDefault="qualified"> 
+
+  <xs:include schemaLocation="common-v2.0.xsd" />
+  <xs:include schemaLocation="common-game-v2.0.xsd" />
+
+  <xs:complexType name="leagueType">
+    <xs:choice>
+      <xs:element name="daily-schedule" maxOccurs="1">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="s:scheduleType">
+              <xs:attribute name="date" use="required" type="xs:date"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="season-schedule" maxOccurs="1">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="s:scheduleType">
+              <xs:attribute name="id" use="required" type="xs:string"/>
+              <xs:attribute name="type" use="required" type="xs:string"/>
+              <xs:attribute name="year" use="required" type="xs:integer"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="tournament-schedule" type="s:tournamentType" maxOccurs="1" />
+    </xs:choice>
+    <xs:attributeGroup ref="s:baseOrganizationAttributes" />
+  </xs:complexType>
+
+  <xs:element name="league" type="s:leagueType" />
+
+  <xs:complexType name="scheduleType">
+    <xs:choice>
+      <xs:element name="games">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="game" type="s:gameType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="series" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="participant" minOccurs="0" maxOccurs="2">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="team" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                      <xs:attributeGroup ref="s:baseTeamAttributes" />
+                    </xs:complexType>  
+                  </xs:element>
+                  <xs:element name="source" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                      <xs:attribute name="id" use="required" type="xs:string" />
+                      <xs:attribute name="title" use="optional" type="xs:string" />
+                      <xs:attribute name="round" use="optional" type="xs:integer" />
+                      <xs:attributeGroup ref="s:outcomeAttributes" />
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute name="name" use="optional" type="xs:string" />
+                <xs:attribute name="record" use="optional" type="xs:integer" />
+                <xs:attribute name="seed" use="optional" type="xs:integer" />
+              </xs:complexType>  
+            </xs:element>
+            <xs:element name="games">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="game" type="s:gameType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="id" use="required" type="xs:string" />
+          <xs:attribute name="title" use="optional" type="xs:string" />
+          <xs:attributeGroup ref="s:eventStatusAttributes" />
+          <xs:attribute name="round" use="optional" type="xs:integer" />
+          <xs:attribute name="start_date" use="optional" type="xs:date" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="tournament" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="id" use="required" type="xs:string" />
+          <xs:attribute name="name" use="optional" type="xs:string" />
+          <xs:attribute name="status" use="optional">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="scheduled" />
+                <xs:enumeration value="inprogress" />
+                <xs:enumeration value="closed" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attribute name="start_date" use="optional" type="xs:date" />
+          <xs:attribute name="end_date" use="optional" type="xs:date" />
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:complexType name="gameType">
+    <xs:sequence>
+      <xs:element name="venue" type="s:venueType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="home" type="s:participantType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="away" type="s:participantType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="broadcast" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:attribute name="network" use="optional" type="xs:string" />
+          <xs:attribute name="satellite" use="optional" type="xs:string" />
+          <xs:attribute name="cable" use="optional" type="xs:string" />
+          <xs:attribute name="radio" use="optional" type="xs:string" />
+          <xs:attribute name="internet" use="optional" type="xs:string" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attributeGroup ref="s:baseGameAttributes" />
+  </xs:complexType>
+
+  <xs:complexType name="participantType">
+    <xs:sequence>
+      <xs:element name="source" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:attributeGroup ref="s:baseGameAttributes" />
+          <xs:attributeGroup ref="s:outcomeAttributes" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="id" use="optional" type="xs:string" />
+    <xs:attribute name="name" use="optional" type="xs:string"/>
+    <xs:attribute name="alias" use="optional" type="xs:string"/>
+    <xs:attribute name="seed" use="optional" type="xs:integer" />
+    <xs:attribute name="rotation" use="optional" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="tournamentType">
+    <xs:sequence>
+      <xs:element name="round" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="bracket" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="game" type="s:gameType" minOccurs="0" maxOccurs="unbounded"/>  
+                </xs:sequence>
+                <xs:attribute name="id" use="required" type="xs:string" />
+                <xs:attribute name="name" use="optional" type="xs:string"/>
+              </xs:complexType>  
+            </xs:element>
+            <xs:element name="game" type="s:gameType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="id" use="required" type="xs:string" />
+          <xs:attribute name="name" use="optional" type="xs:string"/>
+          <xs:attribute name="sequence" use="optional" type="xs:integer" />
+        </xs:complexType>  
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="id" use="required" type="xs:string" />
+    <xs:attribute name="name" use="optional" type="xs:string"/>
+    <xs:attributeGroup ref="s:eventStatusAttributes" />
+  </xs:complexType>
+
+</xs:schema>

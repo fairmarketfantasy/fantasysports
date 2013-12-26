@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started @ 2013-07-19 14:46:07 +0000 -->
+<league xmlns="http://feed.elasticstats.com/schema/basketball/schedule-v2.0.xsd" id="391971f2-7634-4903-bbea-c416a93efebe" name="NBA" alias="NBA">
+  <season-schedule id="f3b0a657-c316-41de-8aad-e4305361bb78" year="2012" type="REG">
+    <series id="46c4a944-2f60-40ed-b5c0-1be4ca25aa58" title="SD Test Series" status="scheduled" round="1" start_date="2013-06-21">
+      <participant name="Hawks" seed="1" record="0">
+        <team id="9d4eb99d-39b5-4150-94bb-4702f386598d" name="Hawks" alias="ATL" market="Atlanta"/>
+      </participant>
+      <participant name="Pacers" seed="4" record="0">
+        <team id="13c1eebe-4d78-4df0-ab39-409c9a3a51de" name="Pacers" alias="IND" market="Indiana"/>
+      </participant>
+      <games>
+        <game id="91184055-a273-4d38-ab4f-0877ae960e82" title="Game 1" status="scheduled" coverage="full" home_team="9d4eb99d-39b5-4150-94bb-4702f386598d" away_team="13c1eebe-4d78-4df0-ab39-409c9a3a51de" scheduled="2013-06-21T18:15:00+00:00">
+          <venue id="b037d175-3f55-49a1-ba36-545135ff8c56" name="Philips Arena" capacity="18729" address="One Philips Drive" city="Atlanta" state="GA" zip="30303" country="USA"/>
+          <home name="Atlanta Hawks" alias="ATL" seed="1" rotation="1" id="9d4eb99d-39b5-4150-94bb-4702f386598d">
+          </home>
+          <away name="Indiana Pacers" alias="IND" seed="4" rotation="1" id="13c1eebe-4d78-4df0-ab39-409c9a3a51de">
+          </away>
+          <broadcast network="1" satellite="1" cable="1" radio="1" internet="1"/>
+        </game>
+        <game id="18fae9b9-fcf7-4da7-91e6-5ac7727ee49d" title="Game 2" status="scheduled" coverage="full" home_team="9d4eb99d-39b5-4150-94bb-4702f386598d" away_team="13c1eebe-4d78-4df0-ab39-409c9a3a51de" scheduled="2013-06-22T18:15:00+00:00">
+          <venue id="b037d175-3f55-49a1-ba36-545135ff8c56" name="Philips Arena" capacity="18729" address="One Philips Drive" city="Atlanta" state="GA" zip="30303" country="USA"/>
+          <home name="Atlanta Hawks" alias="ATL" seed="1" rotation="1" id="9d4eb99d-39b5-4150-94bb-4702f386598d">
+          </home>
+          <away name="Indiana Pacers" alias="IND" seed="4" rotation="1" id="13c1eebe-4d78-4df0-ab39-409c9a3a51de">
+          </away>
+          <broadcast network="1" satellite="1" cable="1" radio="1" internet="1"/>
+        </game>
+      </games>
+    </series>
+  </season-schedule>
+</league>
+<!-- Generation ended @ 2013-07-19 14:46:07 +0000 -->
