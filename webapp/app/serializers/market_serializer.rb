@@ -1,5 +1,5 @@
 class MarketSerializer < ActiveModel::Serializer
-  attributes :id, :name, :shadow_bets, :shadow_bet_rate, :started_at, :opened_at, :closed_at, :sport_id, :total_bets, :state, :market_duration
+  attributes :id, :name, :shadow_bets, :shadow_bet_rate, :started_at, :opened_at, :closed_at, :sport_id, :total_bets, :state, :market_duration, :game_type
   has_many :games
 
 end

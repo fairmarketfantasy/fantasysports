@@ -102,6 +102,10 @@ angular.module('app.filters')
   }])
   .filter('niceMarketDesc', ['$filter', function($filter) {
     return function(market) {
+      // Playoff Desc
+      if (market.game_type == 'single_elimination') {
+        return '';
+      }
       // Day Desc
       if (market.games.length > 1 && new Date(market.closed_at) - new Date(market.started_at) < 24 * 60 * 60 * 1000) {
         return "All games on " + $filter('shortFormDate')(market.started_at )

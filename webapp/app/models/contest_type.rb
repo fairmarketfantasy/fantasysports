@@ -53,7 +53,7 @@ class ContestType < ActiveRecord::Base
     ).first
     return existing if existing
     attributes = self.attributes.dup
-    [:id, :created_at ].each{|attr| attributes.delete(attr) }
+    ["id", "created_at"].each{|attr| attributes.delete(attr) }
     attributes[:market_id] = market.id
     ContestType.create!(attributes)
   end

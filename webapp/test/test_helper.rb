@@ -65,13 +65,57 @@ class ActiveSupport::TestCase
     @team2 ||= create(:team2)
   end
 
+  def setup_team(opts = {})
+    team = create(:team, opts)
+    players = Positions.default_NFL.split(',').map{|p| create(:player, :team => team, :position => p) }
+    team
+  end
+
+  def add_bets_to_market(market)
+    market.publish
+    total_bets = 0
+    market.market_players.each do |mp|
+        bets = 100 * 100 * rand(1..10)
+        mp.initial_shadow_bets = mp.shadow_bets = mp.bets = bets
+        mp.save!
+        total_bets += bets
+    end 
+    market.total_bets = market.shadow_bets = market.initial_shadow_bets = total_bets
+    market.save!
+  end
+
+  def play_game(game)
+    # Home team always wins!
+    [game.away_team, game.home_team].each_with_index do |team, i|
+      team.players.each do |p|
+        StatEvent.create!(
+          :game_stats_id => game.stats_id,
+          :player_stats_id => p.stats_id,
+          :point_value => i+1,
+          :activity => 'rushing',
+          :data => ''
+        )
+      end
+    end
+    game.update_attributes(:home_team_status => '{"points": 14}', :away_team_status => '{"points": 7}', :status => 'closed', :game_time => Time.new-1.minute)
+    game
+  end
+  
+  def setup_single_elimination_market
+    teams = (1..4).map{ setup_team }
+    @game1_1 = create(:game, :home_team => teams[0], :away_team => teams[1], :game_time => Time.now + 10.minute) # Publish subtracts 5 minutes
+    @game1_2 = create(:game, :home_team => teams[2], :away_team => teams[3], :game_time => Time.now + 10.minute)
+    @market = create :new_market, :game_type => 'single_elimination', :expected_total_points => 30
+    [@game1_1, @game1_2].each do |game|
+      GamesMarket.create(market_id: @market.id, game_stats_id: game.stats_id)
+    end
+    add_bets_to_market(@market)
+    @market.reload
+  end
 
   #creates one market with 2 games, 4 teams, and 36 players. market is not published.
   def setup_multi_day_market
-    @teams = [create(:team1, :abbrev => "AA"),
-              create(:team1, :abbrev => "BB"),
-              create(:team1, :abbrev => "CC"),
-              create(:team1, :abbrev => "DD")]
+    @teams = (0..3).map{ create(:team) }
     @games = [create(:game, :home_team => @teams[0], :away_team => @teams[1], :game_time => Time.now.tomorrow + 10.minutes),
               create(:game, :home_team => @teams[2], :away_team => @teams[3], :game_time => Time.now.tomorrow  + 10.minutes, :game_day => Time.now.tomorrow.tomorrow.beginning_of_day)]
     @teams.each do |team|
@@ -83,16 +127,8 @@ class ActiveSupport::TestCase
     @games.each do |game|
       GamesMarket.create(market_id: @market.id, game_stats_id: game.stats_id)
     end
-    @market.publish
-    total_bets = 0
-    @market.market_players.each do |mp| 
-      bets = 100 * 1000 * rand(10)
-      mp.initial_shadow_bets = mp.shadow_bets = mp.bets = bets
-      mp.save!
-      total_bets += bets
-    end
-    @market.total_bets = @market.shadow_bets = @market.initial_shadow_bets = total_bets
-    @market.save!
+    add_bets_to_market(@market)
+    @market
   end
 
   def setup_multi_day_market2
@@ -121,8 +157,8 @@ class ActiveSupport::TestCase
     @players = @players.concat(other_players)
     @market = create :new_market
     GamesMarket.create(market_id: @market.id, game_stats_id: @game.stats_id)
-    @market.publish
     @market.add_default_contests
+    add_bets_to_market(@market)
     @market.reload
   end
 
@@ -209,6 +245,14 @@ FactoryGirl.define do
     name "blah"
   end
 
+  factory :team, class: Team do
+    sport_id 1
+    abbrev { generate(:random_string)[0..5] }
+    name  { generate(:random_string) }
+    conference 'NFC'
+    division 'NFC North'
+  end
+
   factory :team1, class: Team do
     sport_id 1
     abbrev 'GB'
@@ -256,9 +300,11 @@ FactoryGirl.define do
     state 'opened' # TODO: check this
     total_bets 5000
     sport_id 1
+    game_type 'regular_season'
   end
 
   factory :new_market, class: Market do
+    game_type "regular_season"
     shadow_bets 100000
     shadow_bet_rate 0.5
     published_at Time.now - 1.day

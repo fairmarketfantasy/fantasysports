@@ -4,7 +4,7 @@ namespace :market do
   desc 'tend the markets repeatedly'
   task :tend, [:wait_time] => :environment do |t, args|
     File.open(ENV['PIDFILE'], 'w') { |f| f << Process.pid } if ENV['PIDFILE']
-  	wait_time = 60
+  	wait_time = 30
   	if not args.wait_time.nil?
   		wait_time = Integer(args.wait_time)
   	end

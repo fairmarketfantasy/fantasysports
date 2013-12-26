@@ -1,6 +1,5 @@
 angular.module("app.controllers")
-.controller('HomeController', ['$scope', 'rosters', '$dialog', '$location', '$routeParams', '$timeout', function($scope, rosters, $dialog, $location, $routeParams, $timeout) {
-
+.controller('HomeController', ['$scope', 'rosters', 'markets', '$dialog', '$location', '$routeParams', '$timeout', function($scope, rosters, markets, $dialog, $location, $routeParams, $timeout) {
   $scope.rosters = rosters;
   if ($scope.currentUser) {
     rosters.fetchMine();
@@ -20,6 +19,8 @@ angular.module("app.controllers")
       var d = $dialog.dialog(dialogOpts);
       d.open();
     }
+
+    $scope.markets = markets;
   }
 
   function joinLeague(leagueId) {

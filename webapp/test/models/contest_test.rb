@@ -44,8 +44,7 @@ class ContestTest < ActiveSupport::TestCase
 
   #test auxillary functions
   test "payday auxillary functions" do
-    contest_type = create(:contest_type, :payout_structure => [5,4,3,2,1].to_json, :rake => 0.25, :buy_in => 2, :max_entries => 10 # Make the validator happy
-                         )
+    contest_type = create(:contest_type, :payout_structure => [5,4,3,2,1].to_json, :rake => 0.25, :buy_in => 2, :max_entries => 10)# Make the validator happy
     ranks = [1,1,3,3,5,5,5,8,9,10]
     rank_payment = contest_type.rank_payment(ranks)
     expected = {1 => 9, 3 => 5, 5 => 1}
@@ -82,7 +81,7 @@ class ContestTest < ActiveSupport::TestCase
     end
     @rosters.each{|r| r.update_attribute(:remaining_salary, 100)} # Fake out the score compensator
     @market.update_attribute :state, 'opened'
-    @game.update_attribute :status, 'closed'
+    @game.update_attributes(:home_team_status => '{"points": 14}', :away_team_status => '{"points": 7}', :status => 'closed')
     Market.tend # Close it
     Market.tend # Complete it
   end

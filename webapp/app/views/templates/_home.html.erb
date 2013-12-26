@@ -4,8 +4,9 @@
 </p>
 
 <div class="alert alert-info " ng-show="!rosters.justSubmittedRoster">
-  <h3>Launch Promotion</h3>
-  <p>On every $10 contest you enter, in addition to all other prizes you win, if you score higher than the winner of the Weekly Lollapalooza Contest <em><strong>you win $200</strong></em>. Similarly, in a $1 contest or a fanfree contest, if you outscore the winner of the Weekly Lollapalooza <em><strong>you win an additional $20</strong></em>! AND a perfect score on Monday in a $10 contest <em><strong>gets you an additional $100</strong></em> or $10 for a $1 contest.</p>
+  <h3>The Playoffs are on. Have you made a roster yet?</h3>
+  <p>For the NFL Playoffs we will have 2 new contest events, one to choose a lineup of players and one to choose a lineup of teams.</p>
+  <p><a href="/#/playoff_about">Read more about them</a></p>
 </div>
 
 <div ng-hide="!rosters.mine().length" class="entries-container">
@@ -77,7 +78,14 @@
 
 <div class="market-container">
   <div class="market-title clearfix">
-    <h3>When would you like to play?</h3>
+    <!-- Swap these around when playoffs end-->
+    <!--<h3>When would you like to play?</h3>-->
+    <h3 style="padding-top: 5px">Play</h3>
+    <ul class="market-type-list">
+      <li class="market-type-li" ng-class="{selected: markets.marketType == 'regular_season'}"><a class="market-type-selector" href="/#/home"><h3>This week</h3></a></li>
+      <li><h6>OR</h6></li>
+      <li class="market-type-li" ng-class="{selected: markets.marketType == 'single_elimination'}"><a class="market-type-selector" href="/#/playoffs"><h3>The Playoffs</h3></a></li>
+    </ul>
     <div class="league-selector" ng-show="currentUser.leagues.length == 0">
       <p>You aren't in any leagues yet. <br/>Create one below.</p>
     </div>

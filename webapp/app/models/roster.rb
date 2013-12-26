@@ -32,7 +32,6 @@ class Roster < ActiveRecord::Base
     end
   end
 
-
   def purchasable_players
     self.class.uncached do
       Player.purchasable_for_roster(self)
@@ -272,7 +271,7 @@ class Roster < ActiveRecord::Base
   end
 
   def next_game_time
-    MarketPlayer.next_game_time_for_players(self)
+    MarketPlayer.next_game_time_for_roster_players(self)
   end
 
 
@@ -340,11 +339,14 @@ class Roster < ActiveRecord::Base
           pair[0].buy_price >= expected && pair[1].buy_price <= expected
         end.first
         player = if players
-          (expected - players[0].buy_price).abs < (expected - players[1].buy_price).abs ? players[0] : players[1]
-        elsif expected > 0
-          @candidate_players[position].first
-        else
+          p = (expected - players[0].buy_price).abs < (expected - players[1].buy_price).abs ? players[0] : players[1]
+          indexes[position] -= 1 if p
+          p
+        elsif expected < 0
+          indexes[position] -= 1 if indexes[position] > 0
           @candidate_players[position][indexes[position]-1]
+        else
+          @candidate_players[position].first
         end
         add_player(player, place_bets)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
