@@ -68,7 +68,8 @@ class Users::RegistrationsControllerTest < ActionController::TestCase
       xhr :post, :create, format: :json, user: {name: "Terry P", email: "auseremail@gmail.com", password: "1234abcd", password_confirmation: "1234abcd"}
       assert_response :created
     end
-    assert_equal 1, user.transaction_records
+    user = User.last
+    assert_equal 1, user.transaction_records.where(:event => 'promo').count
     assert_equal 1000, user.customer_object.balance
   end
 

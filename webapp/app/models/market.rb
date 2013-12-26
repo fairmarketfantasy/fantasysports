@@ -1,4 +1,5 @@
 class Market < ActiveRecord::Base
+  attr_protected
   has_many :games_markets, :inverse_of => :market
   has_many :games, :through => :games_markets
   has_many :market_players
@@ -10,10 +11,13 @@ class Market < ActiveRecord::Base
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
   validates :state, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
+  validates :game_type, inclusion: { in: %w( regular_season single_elimination )}
 
   scope :published_after,   ->(time) { where('published_at > ?', time)}
   scope :opened_after,      ->(time) { where("opened_at > ?", time) }
   scope :closed_after,      ->(time) { where('closed_at > ?', time) }
+
+  before_save :set_game_type
 
   paginates_per 25
 
@@ -35,6 +39,8 @@ class Market < ActiveRecord::Base
       lock_players
       tabulate_scores
       set_payouts # this is used for leaderboards
+      deliver_bonuses
+      finish_games
       complete
     end
 
@@ -42,6 +48,13 @@ class Market < ActiveRecord::Base
       Market.where(sql, *params).each do |market|
         puts "#{Time.now} -- #{method} market #{market.id}"
         begin
+=begin
+init_shadow_bets = market.reload.initial_shadow_bets
+total_bets = market.reload.total_bets
+shadow_bets = market.reload.shadow_bets
+real_bets = market.reload.total_bets - shadow_bets
+new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet_rate].max
+=end
           market.send(method)
         rescue Exception => e
           puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
@@ -83,8 +96,16 @@ class Market < ActiveRecord::Base
       apply :tabulate_scores, "state in ('published', 'opened', 'closed')"
     end
 
+    def deliver_bonuses
+      apply :deliver_bonuses, "game_type = 'single_elimination' AND state in ('opened', 'closed')"
+    end
+
     def set_payouts
       apply :set_payouts, "state in ('opened', 'closed')"
+    end
+
+    def finish_games
+      apply :finish_games, "state in ('opened', 'closed')"
     end
 
     def close
@@ -92,7 +113,11 @@ class Market < ActiveRecord::Base
     end
 
     def complete
-      apply :complete, "state = 'closed' and not exists (select 1 from games g join games_markets gm on gm.game_stats_id = g.stats_id where gm.market_id = markets.id and g.status != 'closed')"
+      apply :complete, <<-EOF
+          state = 'closed' AND NOT EXISTS (
+            SELECT 1 FROM games g JOIN games_markets gm ON gm.game_stats_id = g.stats_id 
+             WHERE gm.market_id = markets.id AND (g.status != 'closed' OR gm.finished_at IS NULL))
+      EOF
     end
 
   end
@@ -129,11 +154,32 @@ class Market < ActiveRecord::Base
     reload
   end
 
-  def fill_rosters
+=begin
+  This is formatted as a json hash like so:
+  {<unix-timestamp>: {paid: true}, ...]
+=end
+  def add_salary_bonus_time(time)
+    bonus_times = JSON.parse(self.salary_bonuses || '{}')
+    bonus_times[time.to_i] ||= {"paid" => false}
+    self.update_attribute(:salary_bonuses, bonus_times.to_json)
+  end
+
 =begin
   This is formatted as a json array of arrays like so:
   [[<unix-timestamp, <percent-fill>], ...]
 =end
+  def add_fill_roster_time(time, percent)
+    fill_times = JSON.parse(self.fill_roster_times || '[]')
+    index = fill_times.find{|arr| arr[0] > time.to_i }
+    if index.nil?
+      fill_times.push([time.to_i, percent])
+    else
+      fill_times.insert(index, [time.to_i, percent])
+    end
+    self.update_attribute(:fill_roster_times, fill_times.to_json)
+  end
+
+  def fill_rosters
     fill_times = JSON.parse(self.fill_roster_times)
     percent = nil
     fill_times.each do |ft| 
@@ -170,7 +216,7 @@ class Market < ActiveRecord::Base
   end
 
   def lock_players
-    Market.find_by_sql("SELECT * from lock_players(#{self.id})")
+    Market.find_by_sql("SELECT * from lock_players(#{self.id}, '#{self.game_type == 'regular_season' ? 't' : 'f'}')")
     reload
   end
 
@@ -179,8 +225,24 @@ class Market < ActiveRecord::Base
     reload
   end
 
+  def deliver_bonuses
+    bonus_times = JSON.parse(self.salary_bonuses || '{}')
+    bonus_times.keys.sort.select{|time| time.to_i < Time.new.to_i && !bonus_times[time]['paid'] }.each do
+      self.rosters.update_all('remaining_salary = remaining_salary + 20000')
+      self.contest_types.update_all('salary_cap = salary_cap + 20000')
+    end
+    reload
+  end
+
   def set_payouts
     self.contests.each{|c| c.set_payouts! }
+    reload
+  end
+
+  def finish_games
+    self.games_markets.select('games_markets.*').joins(
+        'JOIN games ON games_markets.game_stats_id=games.stats_id'
+    ).where("games.status = 'closed' AND games_markets.finished_at IS NULL").each{|gm| gm.finish! }
     reload
   end
 
@@ -254,6 +316,46 @@ class Market < ActiveRecord::Base
       end
       self.state = 'complete'
       self.save!
+    end
+  end
+
+  def next_game_time_for_team(team)
+    team = Team.find(team) if team.is_a?(String)
+    game = self.games.where(['game_time > NOW() AND (home_team = ? OR away_team = ?)', team, team]).order('game_time asc').first
+    game && game.game_time
+  end
+
+  def self.create_single_elimination_game(sport_id, expected_total_points, opts)
+    self.create!({
+      :expected_total_points => expected_total_points,
+      :game_type => 'single_elimination',
+      :sport_id => sport_id,
+      :shadow_bets => 0,
+      :shadow_bet_rate => 0.75,
+      :published_at => Time.now + 1.minute
+      }.merge(opts)
+    )
+  end
+
+  def add_single_elimination_game(game, price_multiplier = 1)
+    if self.opened_at.nil? || game.game_time < self.started_at
+      self.opened_at = game.game_time.beginning_of_week + 24 * 60*60 + 11 * 60 * 60 # 9pm PST Tuesday
+    end
+    if self.started_at.nil? || game.game_time < self.started_at
+      self.started_at = game.game_time
+    end
+    if self.closed_at.nil? || game.game_time > self.closed_at
+      self.closed_at = game.game_time
+    end
+    self.save!
+    # Every monday at 9pm PST within the date range gets a bonus
+    self.started_at.to_date.upto(self.closed_at.to_date).map{|day| day.monday? ? Time.new(day.year, day.month, day.day, 21, 0, 0, '-08:00') : nil }.compact.each do |time|
+      add_salary_bonus_time(time)
+    end
+    add_fill_roster_time(game.game_time - 1.hour, 1.0)
+    GamesMarket.create!(:market_id => self.id, :game_stats_id => game.stats_id, :price_multiplier => price_multiplier)
+    [game.home_team, game.away_team].each do |team|
+      market_players.where(:player_id => Player.where(:team => team).map(&:id)).update_all(:locked_at => next_game_time_for_team(team))
     end
   end
 
@@ -415,6 +517,13 @@ class Market < ActiveRecord::Base
       takes_tokens: false,
     }
   ];
+
+  def set_game_type
+    unless self.game_type
+      self.game_type = 'regular_season'
+      self.save!
+    end
+  end
 
   #TODO: is this safe if run concurrently?
   def add_default_contests

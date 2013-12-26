@@ -277,8 +277,7 @@ class RosterTest < ActiveSupport::TestCase
           )
         end
         @market.closed_at = Time.new
-        @game.status = 'closed'
-        @game.save!
+        @game.update_attributes(:home_team_status => '{"points": 14}', :away_team_status => '{"points": 7}', :status => 'closed')
         @market.save!
         contest = roster1.contest
         assert_equal contest, roster2.contest
@@ -313,7 +312,7 @@ class RosterTest < ActiveSupport::TestCase
     @roster.submit!
     @roster.add_bonus('twitter_share')
     @roster.add_bonus('twitter_share')
-    assert_equal Roster::BONUSES['twitter_share'], @roster.bonus_points
+    assert_equal Roster::ROSTER_BONUSES['twitter_share'], @roster.bonus_points
     @market.update_attribute(:opened_at, Time.new - 1.minute)
     Market.tend
     assert_equal @roster.bonus_points, @roster.reload.score
