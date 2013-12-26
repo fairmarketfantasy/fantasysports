@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started @ 2013-07-16 16:11:47 +0000 -->
+<league xmlns="http://feed.elasticstats.com/schema/basketball/injuries-v2.0.xsd" id="391971f2-7634-4903-bbea-c416a93efebe" name="NBA" alias="NBA">
+  <injuries>
+    <team id="b7324be5-ebe3-4de2-b303-85ee2be4c25e" name="Cavaliers" market="Cleveland">
+      <player id="2acc2341-5ce7-47fb-859b-4a3c30085c67" full_name="Andrew Bynum" first_name="Andrew" last_name="Bynum" position="C" primary_position="NA" jersey_number="33">
+        <injury id="2877cb29-af71-4eb8-9693-7d8c5acb0977" comment="No new information concerning injury" desc="Knee Injury" status="Out Indefinitely" start_date="2013-01-01" update_date="2013-07-11"/>
+      </player>
+    </team>
+  </injuries>
+</league>
+<!-- Generation ended @ 2013-07-16 16:11:47 +0000 -->

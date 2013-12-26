@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:s="http://feed.elasticstats.com/schema/basketball/nba/standings-v2.0.xsd"
+           targetNamespace="http://feed.elasticstats.com/schema/basketball/nba/standings-v2.0.xsd"
+  elementFormDefault="qualified" >
+
+  <xs:include schemaLocation="../common-v2.0.xsd"/>
+  <xs:include schemaLocation="../common-standings-v2.0.xsd"/>
+
+  <xs:complexType name="leagueType">
+    <xs:sequence>
+      <xs:element name="season" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="conference" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="division" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="team" type="s:teamRecordType" minOccurs="0" maxOccurs="unbounded"/>
+                      </xs:sequence>
+                      <xs:attributeGroup ref="s:baseOrganizationAttributes" />
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>  
+                <xs:attributeGroup ref="s:baseOrganizationAttributes" />
+              </xs:complexType> 
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="id" use="required" type="xs:string"/>
+          <xs:attribute name="type" use="required" type="xs:string"/>
+          <xs:attribute name="year" use="required" type="xs:integer"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attributeGroup ref="s:baseOrganizationAttributes"/>
+  </xs:complexType>
+
+  <xs:element name="league" type="s:leagueType" />
+ 
+  <xs:complexType name="teamRecordType">
+    <xs:sequence>
+      <xs:element name="games-behind" type="s:gamesBehindType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="streak" type="s:streakType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="records" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="atlantic" type="s:recordType"/>
+            <xs:element name="below_500" type="s:recordType"/>
+            <xs:element name="central" type="s:recordType"/>
+            <xs:element name="conference" type="s:recordType"/>
+            <xs:element name="division" type="s:recordType"/>
+            <xs:element name="home" type="s:recordType"/>
+            <xs:element name="last_10" type="s:recordType"/>
+            <xs:element name="last_10_home" type="s:recordType"/>
+            <xs:element name="last_10_road" type="s:recordType"/>
+            <xs:element name="northwest" type="s:recordType"/>
+            <xs:element name="over_500" type="s:recordType"/>
+            <xs:element name="overtime" type="s:recordType"/>
+            <xs:element name="pacific" type="s:recordType"/>
+            <xs:element name="road" type="s:recordType"/>
+            <xs:element name="southeast" type="s:recordType"/>
+            <xs:element name="southwest" type="s:recordType"/>
+            <xs:element name="ten_points" type="s:recordType"/>
+            <xs:element name="three_points" type="s:recordType"/>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attributeGroup ref="s:baseTeamAttributes" />
+    <xs:attributeGroup ref="s:recordAttributes" />
+    <xs:attributeGroup ref="s:pointsAttributes" />
+  </xs:complexType>
+ 
+</xs:schema>
