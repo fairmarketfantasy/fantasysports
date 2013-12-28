@@ -42,6 +42,9 @@
               <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
             </span>
           </div>
+          <div class="mr-player-eliminated" ng-show="player.is_eliminated">
+            ELIMINATED
+          </div>
         </li>
       </ul>
     </div>

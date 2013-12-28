@@ -19,6 +19,7 @@ class PlayerSerializer < ActiveModel::Serializer
       :score,
       :locked,
       :headshot_url,
+      :is_eliminated,
       :benched_games,
       :next_game_at
 

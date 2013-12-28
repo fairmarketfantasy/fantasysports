@@ -129,6 +129,14 @@ angular.module("app.controllers")
     return _.map(teamsToGames, function(game, team) { return team; });
   };
 
+  $scope.pointsColumn = function(player) {
+    if ($scope.market && $scope.market.game_type && $scope.market.game_type.match(/elimination/) && new Date() > new Date($scope.market.started_at)) {
+      return 'score';
+    } else {
+      return 'ppg';
+    }
+  };
+
   $scope.opponentFor = function(player) {
     var game = teamsToGames[player.team];
     return _.find([game.home_team, game.away_team], function(team) { return team != player.team; });
@@ -142,11 +150,6 @@ angular.module("app.controllers")
 
   $scope.isHomeTeam = function(team) {
     return teamsToGames[team] && teamsToGames[team].home_team == team;
-  };
-
-  $scope.isInPlay = function(roster) {
-    if (!$scope.market) { return; }
-    return $scope.market.state == 'opened' && roster.state != 'in_progress';
   };
 
   $scope.showPlayer = function(roster, player) {

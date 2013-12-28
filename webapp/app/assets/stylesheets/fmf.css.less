@@ -962,6 +962,9 @@ input, textarea, .uneditable-input {
   font-weight: bolder;
   font-size: 18px;
 }
+.small {
+  font-size: 0.7em;
+}
 .tiny-p {
   font-size: 10px;
   line-height: 10px;
@@ -1206,6 +1209,13 @@ input, textarea, .uneditable-input {
 .negative::before {
   content: "-";
 }
+.mr-player-eliminated {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  color: red;
+  font-size: 0.8em;
+}
 .mr-player-score {
   font-size: 18px;
   font-weight: 500;
@@ -1216,6 +1226,7 @@ input, textarea, .uneditable-input {
   padding: 8px;
   border-bottom: 1px solid @grayLight;
   list-style-type: none;
+  position: relative;
 }
 .mr-player-info {
   float: left;

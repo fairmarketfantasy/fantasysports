@@ -11,7 +11,7 @@ class Market < ActiveRecord::Base
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
   validates :state, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
-  validates :game_type, inclusion: { in: %w( regular_season single_elimination )}
+  validates :game_type, inclusion: { in: %w( regular_season single_elimination team_single_elimination )}
 
   scope :published_after,   ->(time) { where('published_at > ?', time)}
   scope :opened_after,      ->(time) { where("opened_at > ?", time) }
@@ -326,7 +326,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def self.create_single_elimination_game(sport_id, expected_total_points, opts)
-    self.create!({
+    player_market = self.create!({
       :expected_total_points => expected_total_points,
       :game_type => 'single_elimination',
       :sport_id => sport_id,
@@ -335,6 +335,18 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       :published_at => Time.now + 1.minute
       }.merge(opts)
     )
+    team_market = self.create!({
+      :expected_total_points => expected_total_points, # TODO: revisit this and how transformations work with team markets
+      :game_type => 'team_single_elimination',
+      :sport_id => sport_id,
+      :shadow_bets => 0,
+      :shadow_bet_rate => 0.75,
+      :published_at => Time.now + 1.minute,
+      :linked_market_id => player_market.id
+      }.merge(opts)
+    )
+    player_market.update_attribute(:linked_market_id, player_market.id)
+    [player_market, team_market]
   end
 
   def add_single_elimination_game(game, price_multiplier = 1)
