@@ -29,12 +29,13 @@ $$ LANGUAGE SQL IMMUTABLE;
 DROP FUNCTION market_prices(integer, integer);
 
 CREATE OR REPLACE FUNCTION market_prices(_market_id integer, _buy_in integer)
-RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, score integer) AS $$
-	SELECT 
-		mp.player_id, 
-		price(mp.bets, m.total_bets, $2, m.price_multiplier), 
-		price(mp.bets, m.total_bets,  0, m.price_multiplier), 
-		mp.locked, 
+RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score integer) AS $$
+	SELECT
+		mp.player_id,
+		price(mp.bets, m.total_bets, $2, m.price_multiplier),
+		price(mp.bets, m.total_bets,  0, m.price_multiplier),
+		mp.locked,
+		mp.is_eliminated,
 		mp.score
 	FROM markets m
 	JOIN market_players mp on m.id = mp.market_id
@@ -47,7 +48,7 @@ DROP FUNCTION roster_prices(integer);
 CREATE OR REPLACE FUNCTION roster_prices(_roster_id integer)
 RETURNS TABLE (
 	purchase_price numeric,
-	player_id integer, buy_price numeric, sell_price numeric, locked boolean, score integer, 
+	player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score integer, 
 	id integer, stats_id character varying(255), sport_id integer, name character varying(255), 
 	name_abbr character varying(255), birthdate character varying(255), height integer, 
 	weight integer, college character varying(255), "position" character varying(255), 
@@ -77,8 +78,8 @@ $$ LANGUAGE plpgsql;
 DROP FUNCTION buy_prices(integer);
 
 CREATE OR REPLACE FUNCTION buy_prices(_roster_id integer)
-RETURNS TABLE(player_id integer, buy_price numeric) AS $$
-	SELECT mp.player_id, price(mp.bets, m.total_bets, r.buy_in, m.price_multiplier)
+RETURNS TABLE(player_id integer, buy_price numeric, is_eliminated boolean) AS $$
+	SELECT mp.player_id, price(mp.bets, m.total_bets, r.buy_in, m.price_multiplier), mp.is_eliminated
 	FROM market_players mp, markets m, rosters r
 	WHERE
 		r.id = $1 AND

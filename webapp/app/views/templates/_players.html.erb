@@ -77,7 +77,10 @@
                 <th class="tiny" ng-hide="getFilterOpts().position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
                 <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
                 <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
-                <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
+                <th class="tiny">
+                  <a href="javascript://" ng-show="pointsColumn() == 'ppg'" ng-click="filterPlayers({sort: 'ppg'})">PPG</a>
+                  <a href="javascript://" ng-show="pointsColumn() == 'score'" ng-click="">Score</a>
+                </th>
                 <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
                 <th class="tiny-btn"><a class="btn btn-small btn-invisible" href="">Add</a></th>
               </tr>
@@ -93,7 +96,10 @@
               <th class="tiny" ng-hide="getFilterOpts.position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
               <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
               <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
-              <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'ppg'})">PPG</a></th>
+              <th class="tiny">
+                <a href="javascript://" ng-show="pointsColumn() == 'ppg'" ng-click="filterPlayers({sort: 'ppg'})">PPG</a>
+                <a href="javascript://" ng-show="pointsColumn() == 'score'" ng-click="">Score</a>
+              </th>
               <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
               <th class="tiny-btn"></th>
             </tr>
@@ -101,13 +107,19 @@
           <tbody>
             <tr ng-repeat="player in players | filter:notInRoster">
               <td class="larger">{{player.name_abbr}} 
-                <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
-                <i ng-show="player.status != 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
+                <span ng-show="player.is_eliminated"><i class="small text-danger">ELIMINATED</i></span>
+                <span ng-hide="player.is_eliminated">
+                  <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
+                  <i ng-show="player.status != 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
+                </span>
               </td>
               <td class="tiny" ng-hide="getFilterOpts().position">{{player.position | dashIfDEF}}</td>
               <td class="tiny">{{player.team}}</td>
               <td class="tiny" ng-show="getFilterOpts().position"><span ng-hide="isHomeTeam(player.team)">@</span>{{opponentFor(player)}}</td>
-              <td class="tiny">{{player.ppg | number:0 |zeroIfEmpty}}</td>
+              <td class="tiny">
+                <span ng-show="pointsColumn() == 'ppg'">{{player.ppg | number:0 |zeroIfEmpty}}</span>
+                <span ng-show="pointsColumn() == 'score'">{{player.score | number:1 |zeroIfEmpty}}</span>
+              </td>
               <td>${{player.buy_price | number:0}}</td>
               <td class="tiny-btn"><a class="btn btn-small btn-success" href="javascript://" ng-click="addPlayer(player)">Add</a></td>
             </tr>
