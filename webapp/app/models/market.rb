@@ -598,7 +598,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def dump_players_csv
     csv = CSV.generate({}) do |csv|
-      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us"]
+      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us", "Expected Shadow Bets ->"]
       csv << ["Canonical Id", "Name", "Team", "Position", "Desired Shadow Bets"]
       self.players.each do |player|
         csv << [player.stats_id, player.name.gsub(/'/, ''), player.team.abbrev, player.position]
@@ -617,6 +617,9 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     data.rewind if data.respond_to?(:rewind) # Handle files
     CSV.parse(data, opts) do |row|
       count += 1
+      if count == 1
+        self.expected_total_points = row[2].empty? ? 1 : row[2]
+      end
       next if count <= 2
       player_stats_id, shadow_bets = row[0], row[4]
       if !shadow_bets.blank?
