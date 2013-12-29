@@ -210,6 +210,12 @@ class Contest < ActiveRecord::Base
     end
   end
 
+  def fill_reinforced_rosters
+    self.rosters.where('is_generated').each do |roster|
+      roster.fill_pseudo_randomly5(false)
+    end
+  end
+
   private
 
   def set_invitation_code

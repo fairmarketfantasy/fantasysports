@@ -4,7 +4,8 @@ class Game < ActiveRecord::Base
   has_many :games_markets, :inverse_of => :game, :foreign_key => "game_stats_id"
   has_many :markets, :through => :games_markets, :foreign_key => "game_stats_id"
   has_many :stat_events
-
+  #belongs_to :home_team, :class_name => 'Team', :foreign_key => 'home_team'
+  #belongs_to :away_team, :class_name => 'Team', :foreign_key => 'away_team'
 
   validates :stats_id, :home_team, :away_team, :status, :game_day, :game_time, presence: true
 
@@ -31,6 +32,7 @@ class Game < ActiveRecord::Base
   def winning_team
     home = get_home_team_status
     away = get_away_team_status
+    debugger if home['points'].nil?
     if home['points'] > away['points']
       home_team
     elsif away['points'] > home['points']

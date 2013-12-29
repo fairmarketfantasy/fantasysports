@@ -8,6 +8,7 @@ class Market < ActiveRecord::Base
   has_many :contest_types
   has_many :rosters
   belongs_to :sport
+  belongs_to :linked_market, :class_name => 'Market'
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
   validates :state, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
@@ -201,10 +202,11 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       end
     end
     bad_h2h_types = bad_h2h_types.map(&:id).unshift(-1)
-    contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0")
-    contests.find_each do |contest|
+    contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_types.join(',')})")
+    contests.where("(num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0").find_each do |contest|
       contest.fill_with_rosters(percent)
     end
+    contests.each {|c| c.fill_reinforced_rosters } if self.game_type =~ /elimination/i
   end
 
   def track_benched_players
@@ -325,9 +327,9 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     game && game.game_time
   end
 
-  def self.create_single_elimination_game(sport_id, expected_total_points, opts)
+  def self.create_single_elimination_game(sport_id, expected_total_player_points, expected_total_team_points, opts = {})
     player_market = self.create!({
-      :expected_total_points => expected_total_points,
+      :expected_total_points => expected_total_player_points,
       :game_type => 'single_elimination',
       :sport_id => sport_id,
       :shadow_bets => 0,
@@ -336,7 +338,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       }.merge(opts)
     )
     team_market = self.create!({
-      :expected_total_points => expected_total_points, # TODO: revisit this and how transformations work with team markets
+      :expected_total_points => expected_total_team_points, # TODO: revisit this and how transformations work with team markets
       :game_type => 'team_single_elimination',
       :sport_id => sport_id,
       :shadow_bets => 0,
@@ -345,29 +347,45 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       :linked_market_id => player_market.id
       }.merge(opts)
     )
-    player_market.update_attribute(:linked_market_id, player_market.id)
+    player_market.update_attribute(:linked_market_id, team_market.id)
+    Sport.find(sport_id).teams.each do |team| # Create all the team players if they don't exist
+      Player.create(
+        :stats_id => "TEAM-#{team.abbrev}", # Don't change these
+        :sport_id => sport_id,
+        :name => team.name,
+        :name_abbr => team.abbrev,
+        :position => 'TEAM',
+        :status => 'ACT',
+        :total_games => 0,
+        :total_points => 0,
+        :team => Team.find(team.abbrev),
+        :benched_games => 0
+      )
+    end
     [player_market, team_market]
   end
 
   def add_single_elimination_game(game, price_multiplier = 1)
-    if self.opened_at.nil? || game.game_time < self.started_at
-      self.opened_at = game.game_time.beginning_of_week + 24 * 60*60 + 11 * 60 * 60 # 9pm PST Tuesday
-    end
-    if self.started_at.nil? || game.game_time < self.started_at
-      self.started_at = game.game_time
-    end
-    if self.closed_at.nil? || game.game_time > self.closed_at
-      self.closed_at = game.game_time
-    end
-    self.save!
-    # Every monday at 9pm PST within the date range gets a bonus
-    self.started_at.to_date.upto(self.closed_at.to_date).map{|day| day.monday? ? Time.new(day.year, day.month, day.day, 21, 0, 0, '-08:00') : nil }.compact.each do |time|
-      add_salary_bonus_time(time)
-    end
-    add_fill_roster_time(game.game_time - 1.hour, 1.0)
-    GamesMarket.create!(:market_id => self.id, :game_stats_id => game.stats_id, :price_multiplier => price_multiplier)
-    [game.home_team, game.away_team].each do |team|
-      market_players.where(:player_id => Player.where(:team => team).map(&:id)).update_all(:locked_at => next_game_time_for_team(team))
+    [self, self.linked_market].each do |m|
+      if m.opened_at.nil? || game.game_time < m.started_at
+        m.opened_at = game.game_time.beginning_of_week + 24 * 60*60 + 11 * 60 * 60 # 9pm PST Tuesday
+      end
+      if m.started_at.nil? || game.game_time < m.started_at
+        m.started_at = game.game_time
+      end
+      if m.closed_at.nil? || game.game_time > m.closed_at
+        m.closed_at = game.game_time
+      end
+      m.save!
+      # Every monday at 9pm PST within the date range gets a bonus
+      m.started_at.to_date.upto(m.closed_at.to_date).map{|day| day.monday? ? Time.new(day.year, day.month, day.day, 21, 0, 0, '-08:00') : nil }.compact.each do |time|
+        m.add_salary_bonus_time(time)
+      end
+      m.add_fill_roster_time(game.game_time - 1.hour, 1.0)
+      GamesMarket.create!(:market_id => m.id, :game_stats_id => game.stats_id, :price_multiplier => price_multiplier)
+      [game.home_team, game.away_team].each do |team|
+        m.market_players.where(:player_id => Player.where(:team => team).map(&:id)).update_all(:locked_at => next_game_time_for_team(team))
+      end
     end
   end
 
@@ -542,7 +560,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
-        next if data[:name].match(/\d+k/) && (self.closed_at - self.started_at < 1.day || Rails.env == 'test')
+        next if data[:name].match(/\d+k/) && (self.name =~ /week|playoff/i || Rails.env == 'test')
         ContestType.create!(
           market_id: self.id,
           name: data[:name],
@@ -555,7 +573,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
           payout_description: data[:payout_description],
           takes_tokens: data[:takes_tokens],
           limit: data[:limit],
-          positions: Positions.for_sport_id(self.sport_id),
+          positions: self.game_type == 'team_single_elimination' ? Array.new(6, 'TEAM').join(',') : Positions.for_sport_id(self.sport_id),
         )
       end
     end

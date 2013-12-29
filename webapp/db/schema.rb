@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131220155338) do
+ActiveRecord::Schema.define(version: 20131229211546) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,9 +232,10 @@ ActiveRecord::Schema.define(version: 20131220155338) do
     t.string   "game_type"
     t.text     "salary_bonuses"
     t.integer  "expected_total_points"
+    t.integer  "linked_market_id"
   end
 
-  add_index "markets", ["closed_at", "started_at", "sport_id"], name: "index_markets_on_closed_at_and_started_at_and_sport_id", unique: true, using: :btree
+  add_index "markets", ["closed_at", "started_at", "game_type", "sport_id"], name: "market_unique_idx", unique: true, using: :btree
 
   create_table "oauth2_access_tokens", force: true do |t|
     t.integer  "user_id"
