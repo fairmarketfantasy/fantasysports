@@ -327,8 +327,9 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     game && game.game_time
   end
 
-  def self.create_single_elimination_game(sport_id, expected_total_player_points, expected_total_team_points, opts = {})
+  def self.create_single_elimination_game(sport_id, player_market_name, team_market_name, expected_total_player_points, expected_total_team_points, opts = {})
     player_market = self.create!({
+      :name => player_market_name,
       :expected_total_points => expected_total_player_points,
       :game_type => 'single_elimination',
       :sport_id => sport_id,
@@ -338,6 +339,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       }.merge(opts)
     )
     team_market = self.create!({
+      :name => team_market_name,
       :expected_total_points => expected_total_team_points, # TODO: revisit this and how transformations work with team markets
       :game_type => 'team_single_elimination',
       :sport_id => sport_id,
