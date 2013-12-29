@@ -106,7 +106,7 @@ class ActiveSupport::TestCase
     teams = (1..4).map{ setup_team }
     @game1_1 = create(:game, :home_team => teams[0], :away_team => teams[1], :game_time => Time.now + 10.minute) # Publish subtracts 5 minutes
     @game1_2 = create(:game, :home_team => teams[2], :away_team => teams[3], :game_time => Time.now + 10.minute)
-    @market, @team_market = Market.create_single_elimination_game(1, 2600, 1300)
+    @market, @team_market = Market.create_single_elimination_game(1, "player market", "team market", 2600, 1300)
     @market.add_single_elimination_game(@game1_1)
     @market.add_single_elimination_game(@game1_2)
     [@market, @team_market].each{|m| m.update_attribute(:published_at, Time.new - 1.minute) }
