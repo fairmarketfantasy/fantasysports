@@ -23,7 +23,7 @@ angular.module("app.controllers")
     if (!market) { return; }
     if (!marketService.currentMarket) {
       flash.error("Oops, we couldn't find that market, pick a different one.");
-      $location.path('/');
+      $location.path('/home');
       return;
     }
     return (market.id === marketService.currentMarket.id);
