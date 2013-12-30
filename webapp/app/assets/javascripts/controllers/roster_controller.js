@@ -20,11 +20,12 @@ angular.module("app.controllers")
   });
 
   $scope.removeLow = true;
-  var filterOpts = {position: 'QB', removeLow: true, sort: 'buy_price', dir: 'desc'};
+  var filterOpts = {position: rosters.uniqPositionList && rosters.uniqPositionList[0], removeLow: true, sort: 'buy_price', dir: 'desc'};
   $scope.getFilterOpts = function() {
     return angular.extend({}, filterOpts);
   };
   var fetchPlayers = function() {
+    filterOpts.position = filterOpts.position || rosters.uniqPositionList[0];
     $scope.filterPosition = filterOpts.position;
     if (!rosters.currentRoster || !$scope.currentUser) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
