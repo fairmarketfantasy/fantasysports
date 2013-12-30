@@ -23,13 +23,14 @@ angular.module('app.data')
       };
 
       this.selectMarketId = function(id) {
-        this.selectMarketType(marketData[id].game_type);
+        var type = marketData[id].game_type == 'regular_season' ? 'regular_season' : 'single_elimination'; // Hacky
+        this.selectMarketType(type);
         this.currentMarket = marketData[id];
       };
 
       this.selectMarketType = function(type) {
         this.marketType = type || 'regular_season';
-        this.upcoming = _.filter(marketData, function(elt) { return elt.game_type == type || (type == 'regular_season' && elt.game_type == null) /* last clause should be temporary*/});
+        this.upcoming = _.filter(marketData, function(elt) { return elt.game_type.match(type) || (type == 'regular_season' && elt.game_type == null) /* last clause should be temporary*/});
         this.currentMarket = this.upcoming[0];
       };
 

@@ -3,7 +3,7 @@ class PlayersController < ApplicationController
 
   def index
     roster = Roster.find(params[:roster_id])
-    @players = roster.purchasable_players.normal_positions
+    @players = roster.purchasable_players
     @players = @players.autocomplete(params[:autocomplete]) if params[:autocomplete]
 
     game = params[:game] ? Game.find(params[:game]) : nil
