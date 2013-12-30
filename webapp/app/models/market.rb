@@ -600,7 +600,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def dump_players_csv
     csv = CSV.generate({}) do |csv|
-      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us", "Expected Shadow Bets ->"]
+      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us", "Expected Fantasy Points ->"]
       csv << ["Canonical Id", "Name", "Team", "Position", "Desired Shadow Bets"]
       self.players.each do |player|
         csv << [player.stats_id, player.name.gsub(/'/, ''), player.team.abbrev, player.position]
