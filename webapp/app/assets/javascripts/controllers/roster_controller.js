@@ -150,7 +150,7 @@ angular.module("app.controllers")
   };
 
   $scope.isHomeTeam = function(team) {
-    return teamsToGames[team] && teamsToGames[team].home_team == team;
+    return !teamsToGames[team] || teamsToGames[team].home_team == team;
   };
 
   $scope.showPlayer = function(roster, player) {
