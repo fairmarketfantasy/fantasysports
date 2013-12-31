@@ -351,18 +351,21 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     )
     player_market.update_attribute(:linked_market_id, team_market.id)
     Sport.find(sport_id).teams.each do |team| # Create all the team players if they don't exist
-      Player.create(
-        :stats_id => "TEAM-#{team.abbrev}", # Don't change these
-        :sport_id => sport_id,
-        :name => team.name,
-        :name_abbr => team.abbrev,
-        :position => 'TEAM',
-        :status => 'ACT',
-        :total_games => 0,
-        :total_points => 0,
-        :team => Team.find(team.abbrev),
-        :benched_games => 0
-      )
+      begin
+        Player.create(
+          :stats_id => "TEAM-#{team.abbrev}", # Don't change these
+          :sport_id => sport_id,
+          :name => team.name,
+          :name_abbr => team.abbrev,
+          :position => 'TEAM',
+          :status => 'ACT',
+          :total_games => 0,
+          :total_points => 0,
+          :team => Team.find(team.abbrev),
+          :benched_games => 0
+        )
+      rescue ActiveRecord::RecordNotUnique
+      end
     end
     [player_market, team_market]
   end
