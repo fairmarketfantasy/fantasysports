@@ -6,7 +6,7 @@
       </a>
     </li>
   </ul>
-  
+
   <div class="contest-list">
     <h3 class="selected-market" ng-cloak><span ng-show="marketService.currentMarket.market_duration == 'week'">Weekly</span><span ng-show="marketService.currentMarket.market_duration == 'day'">Daily</span> Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</h3>
 
@@ -31,7 +31,7 @@
           <div ng-class="{'contest-copy': isBigContest(contestClass)}" >
             <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
             <h2><span ng-show="isBigContest(contestClass)">$</span>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
-            <p class="tiny-p">{{contestClasses[contestClass][0].max_entries}} Teams</p>
+            <p class="tiny-p">{{contestClasses[contestClass][0].max_entries}} Teams<br/> Guaranteed Run</p>
           </div>
           <div ng-class="{'contest-copy contest-long': isBigContest(contestClass)}">
             <p class="small-p">{{contestClasses[contestClass][0].contest_class_desc}}</p>
