@@ -20,8 +20,9 @@ module Referrals
     if session[:contest_code]
       contest = Contest.where(:invitation_code => session[:contest_code]).first
       if contest.private?
-        raise HttpException.new(403, "You already have a roster in this contest") if contest.rosters.map(&:owner_id).include?(current_user.id)
-        roster = Roster.generate(current_user, contest.contest_type)
+        roster = contest.rosters.select{|r| r.owner_id == current_user.id }.first
+        #raise HttpException.new(403, "You already have a roster in this contest") if contest.rosters.map(&:owner_id).include?(current_user.id)
+        roster ||= Roster.generate(current_user, contest.contest_type)
         roster.update_attribute(:contest_id, contest.id)
       else
         roster = Roster.generate(current_user, contest.contest_type)
