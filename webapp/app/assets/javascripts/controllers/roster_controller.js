@@ -140,7 +140,7 @@ angular.module("app.controllers")
 
   $scope.opponentFor = function(player) {
     var game = teamsToGames[player.team];
-    return _.find([game.home_team, game.away_team], function(team) { return team != player.team; });
+    return game && _.find([game.home_team, game.away_team], function(team) { return team != player.team; });
   };
 
   $scope.notStartedGames = function() {
