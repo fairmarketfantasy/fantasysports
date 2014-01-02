@@ -379,7 +379,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         m.started_at = game.game_time
       end
       if m.closed_at.nil? || game.game_time > m.closed_at
-        m.closed_at = game.game_time
+        m.closed_at = game.game_time + 4.days # just some long time in the future. We'll be closing these manually
       end
       m.save!
       # Every monday at 9pm PST within the date range gets a bonus

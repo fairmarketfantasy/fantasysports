@@ -78,6 +78,10 @@
       </form>
       <a href="javascript://" ng-click="showCardForm = false" class='btn btn-info'>cancel</a>
       <a href="javascript://" ng-click="saveCard()" ng-disabled="!card.isValid()" class='btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
+        <a class="secure-msg" href="javascript://" popover-trigger="mouseenter" popover="We never store your credit card information.  We use a safe, third-party financial provider to store and process all our credit card payments." popover-placement="right">
+          <img src="<%= asset_path 'icons/secure-red.gif' %>" height="16px" width="16px"/>
+          Why we&#39;re secure
+        </a>
       <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
     </div>
     <!--<div ng-hide="showCardForm" class="add-funds-container">
