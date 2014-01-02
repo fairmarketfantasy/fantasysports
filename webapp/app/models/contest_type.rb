@@ -34,9 +34,6 @@ class ContestType < ActiveRecord::Base
     super
   end
 
-  def positions # Temporary, can be removed after 12/01
-    Positions.for_sport_id(market.sport_id)
-  end
   def position_array
     @position_list ||= self.positions.split(',')
   end

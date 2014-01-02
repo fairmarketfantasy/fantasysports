@@ -26,6 +26,7 @@ class Roster < ActiveRecord::Base
   scope :finished, -> { where(state: ['finished'])}
   scope :with_perfect_score, ->(score) { select("rosters.*, #{score.to_f} as perfect_score") }
 
+
   def players_with_prices
     self.class.uncached do
       Player.find_by_sql("select * from roster_prices(#{self.id})")
@@ -221,9 +222,13 @@ class Roster < ActiveRecord::Base
         end
         order
       else
-        self.rosters_players << RostersPlayer.new(:player_id => player.id, :roster_id => self.id, :market_id => self.market_id, :purchase_price => player.buy_price, :player_stats_id => player.stats_id)
+        RostersPlayer.create!(:player_id => player.id, :roster_id => self.id, :market_id => self.market_id, :purchase_price => player.buy_price, :player_stats_id => player.stats_id)
         raise "Players passed into add_player without placing bets must have buy_price" if player.buy_price.nil?
         self.remaining_salary -= player.buy_price
+        self.class.uncached do
+          self.players.reload
+          self.rosters_players.reload
+        end
         self.save!
       end
     rescue StandardError => e
@@ -428,9 +433,9 @@ class Roster < ActiveRecord::Base
     if self.reload.remaining_salary.abs > max_diff
       tries = 5
       begin
-        players = self.rosters_players.reload.sort{|rp| -rp.purchase_price }
+        players = self.rosters_players.with_market_players(self.market).reload.sort{|rp| -rp.purchase_price }
         @rosters << {players: players, remaining: self.remaining_salary}
-        players.sample(2).each{|rp| remove_player(rp.player, false) }
+        players.select{|rp| !rp.locked }.sample(2).each{|rp| remove_player(rp.player, false) }
 =begin
         if self.remaining_salary > 0
           players.slice(0, 2).each{|rp| remove_player(rp.player, false) }
