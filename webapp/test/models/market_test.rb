@@ -324,6 +324,7 @@ class MarketTest < ActiveSupport::TestCase
     over_game.save!
     @market.update_attribute(:state, nil)
     @market.clean_publish
+    play_game(over_game)
     @market.update_attribute(:opened_at, Time.new-1.minute)
     Market.tend
     over_game.teams.each do |team|

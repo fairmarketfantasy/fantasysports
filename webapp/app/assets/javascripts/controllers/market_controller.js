@@ -2,11 +2,20 @@ angular.module("app.controllers")
 .controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, currentUserService) {
   $scope.marketService = marketService;
 
-  marketService.fetchUpcoming({
-      id: $routeParams.market_id,
 // TODO: Pick up here: UI needs to determine if loaded market is single elim and keep playoff setting when it's clicked
-      type: $location.path() == '/playoffs'  ? 'single_elimination' : 'regular_season'
+//----- WE SHOULD ALSO MAKE SURE THE SINGLE ELIMS AHVE A LOLLAPALOOZA
+  marketService.fetchUpcoming({type: 'single_elimination'}).then(function() {
+    marketService.fetchUpcoming({type: 'regular_season'}).then(function() {
+      if ($routeParams.market_id) {
+        marketService.selectMarketId($routeParams.market_id);
+      } else if ($location.path() == '/playoffs') {
+        marketService.selectMarketType('single_elimination');
+      } else {
+        marketService.selectMarketType('regular_season');
+      }
+    });
   });
+
   $scope.rosters = rosters;
   $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'h2h', 'h2h rr'];
 

@@ -20,11 +20,12 @@ angular.module("app.controllers")
   });
 
   $scope.removeLow = true;
-  var filterOpts = {position: 'QB', removeLow: true, sort: 'buy_price', dir: 'desc'};
+  var filterOpts = {position: rosters.uniqPositionList && rosters.uniqPositionList[0], removeLow: true, sort: 'buy_price', dir: 'desc'};
   $scope.getFilterOpts = function() {
     return angular.extend({}, filterOpts);
   };
   var fetchPlayers = function() {
+    filterOpts.position = filterOpts.position || rosters.uniqPositionList[0];
     $scope.filterPosition = filterOpts.position;
     if (!rosters.currentRoster || !$scope.currentUser) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {
@@ -129,6 +130,14 @@ angular.module("app.controllers")
     return _.map(teamsToGames, function(game, team) { return team; });
   };
 
+  $scope.pointsColumn = function(player) {
+    if ($scope.market && $scope.market.game_type && $scope.market.game_type.match(/elimination/) && new Date() > new Date($scope.market.started_at)) {
+      return 'score';
+    } else {
+      return 'ppg';
+    }
+  };
+
   $scope.opponentFor = function(player) {
     var game = teamsToGames[player.team];
     return _.find([game.home_team, game.away_team], function(team) { return team != player.team; });
@@ -142,11 +151,6 @@ angular.module("app.controllers")
 
   $scope.isHomeTeam = function(team) {
     return teamsToGames[team] && teamsToGames[team].home_team == team;
-  };
-
-  $scope.isInPlay = function(roster) {
-    if (!$scope.market) { return; }
-    return $scope.market.state == 'opened' && roster.state != 'in_progress';
   };
 
   $scope.showPlayer = function(roster, player) {

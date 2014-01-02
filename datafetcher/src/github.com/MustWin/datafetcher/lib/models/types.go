@@ -13,6 +13,7 @@ type Market struct {
 	ShadowBets      float64
 	ShadowBetRate   float64
 	PublishedAt     time.Time
+	GameType        string
 	State           string
 	StartedAt       time.Time `model:"key"`
 	FillRosterTimes string
