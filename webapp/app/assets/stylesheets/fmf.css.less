@@ -1091,9 +1091,13 @@ input, textarea, .uneditable-input {
   .border-radius(5px);
   position: relative;
 }
+.ie8 .player-overflow {
+  height: 400px;
+}
 .player-overflow {
   max-height: 400px;
-  overflow: scroll;
+  -ms-overflow-y : scroll; // IE 8, bitches
+  overflow-y: scroll;
   overflow-x: none;
 }
 .fixed-table-header {
