@@ -15,6 +15,8 @@ module Referrals
   end
 
   def handle_contest_joining(resp)
+    Rails.logger.debug '=' * 40
+    Rails.logger.debug session
     if session[:contest_code]
       contest = Contest.where(:invitation_code => session[:contest_code]).first
       if contest.private?

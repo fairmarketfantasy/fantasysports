@@ -1,4 +1,6 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  include Referrals
+
   def facebook
     @user = User.find_for_facebook_oauth(request.env["omniauth.auth"])
 
@@ -6,6 +8,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       sign_in @user, event: :authentication #this will throw if @user is not activated
       #if the user is not "confirmed", defined as a not-null confirmed_at timestamp, then this will fail
       # set_flash_message(:notice, :success, :kind => "Facebook") if is_navigational_format?
+      resp = handle_referrals
+      @redirect = resp[:redirect]
+      @flash = resp[:flash]
       render '/users/create_close', :layout => false
     else
       render '/users/create_error', :layout => false
