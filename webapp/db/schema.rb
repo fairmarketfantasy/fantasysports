@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131229211546) do
+ActiveRecord::Schema.define(version: 20140102084910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -413,6 +413,8 @@ ActiveRecord::Schema.define(version: 20131229211546) do
     t.datetime "updated_at"
     t.string   "player_stats_id", null: false
     t.string   "game_stats_id",   null: false
+    t.decimal  "quantity"
+    t.decimal  "points_per"
   end
 
   add_index "stat_events", ["game_stats_id"], name: "index_stat_events_on_game_stats_id", using: :btree
@@ -483,10 +485,10 @@ ActiveRecord::Schema.define(version: 20131229211546) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
-    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
+    t.string   "avatar"
     t.text     "bonuses"
     t.string   "referral_code"
   end

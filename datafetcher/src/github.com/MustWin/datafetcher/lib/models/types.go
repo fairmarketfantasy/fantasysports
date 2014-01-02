@@ -138,9 +138,11 @@ type StatEvent struct {
 	Activity      string `model:"key"`
 	Data          string
 	//  PointType string
-	PointValue float64
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	PointValue    float64
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Quantity      float64
+	PointsPer     float64
 }
 
 // Used by NFL defenseParser.  Kind of hacky. Move this into NFL package
