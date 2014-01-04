@@ -174,7 +174,7 @@ func (mgr *FetchManager) GetPbp(game *models.Game, currentSequenceNumber int) ([
 	game.HomeTeamStatus = state.CurrentGame.HomeTeamStatus
 	game.AwayTeamStatus = state.CurrentGame.AwayTeamStatus
 	mgr.Orm.Save(game)
-	/*for _, event := range gameEvents {
+	for _, event := range gameEvents {
 		if event.SequenceNumber < currentSequenceNumber {
 			continue
 		}
@@ -183,7 +183,7 @@ func (mgr *FetchManager) GetPbp(game *models.Game, currentSequenceNumber int) ([
 		if event.Type == "gameover" {
 			gameover = true
 		}
-	}*/
+	}
 	return gameEvents, currentSequenceNumber, gameover
 }
 

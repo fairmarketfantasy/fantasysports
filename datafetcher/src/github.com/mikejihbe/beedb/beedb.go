@@ -148,9 +148,9 @@ func (orm *Model) Find(output interface{}) error {
 		return err
 	}
 
-	if orm.TableName == "" {
-		orm.TableName = getTableName(StructName(output))
-	}
+	//if orm.TableName == "" { // These somehow get screwed up - I haven't figured out how yet.  Not caching these is probably super slow
+	orm.TableName = getTableName(StructName(output))
+	//}
 	for key, _ := range results {
 		keys = append(keys, key)
 	}
@@ -189,9 +189,9 @@ func (orm *Model) FindAll(rowsSlicePtr interface{}) error {
 		return err
 	}
 
-	if orm.TableName == "" {
-		orm.TableName = getTableName(getTypeName(rowsSlicePtr))
-	}
+	//if orm.TableName == "" {
+	orm.TableName = getTableName(getTypeName(rowsSlicePtr))
+	//}
 	for key, _ := range results {
 		keys = append(keys, key)
 	}
@@ -385,9 +385,9 @@ func (orm *Model) Save(output interface{}) error {
 		return err
 	}
 
-	if orm.TableName == "" {
-		orm.TableName = getTableName(StructName(output))
-	}
+	//if orm.TableName == "" {
+	orm.TableName = getTableName(StructName(output))
+	//}
 	id := results[snakeCasedName(orm.PrimaryKey)]
 	delete(results, snakeCasedName(orm.PrimaryKey))
 	if reflect.ValueOf(id).Int() == 0 {
@@ -533,6 +533,7 @@ func (orm *Model) Update(properties map[string]interface{}) (int64, error) {
 	if OnDebug {
 		fmt.Println(statement)
 		fmt.Println(orm)
+		fmt.Println(orm.ParamStr)
 	}
 	res, err := orm.Exec(statement, args...)
 	if err != nil {
@@ -554,9 +555,9 @@ func (orm *Model) Delete(output interface{}) (int64, error) {
 		return 0, err
 	}
 
-	if orm.TableName == "" {
-		orm.TableName = getTableName(StructName(output))
-	}
+	//if orm.TableName == "" {
+	orm.TableName = getTableName(StructName(output))
+	//}
 	id := results[strings.ToLower(orm.PrimaryKey)]
 	condition := fmt.Sprintf("%v%v%v='%v'", orm.QuoteIdentifier, strings.ToLower(orm.PrimaryKey), orm.QuoteIdentifier, id)
 	statement := fmt.Sprintf("DELETE FROM %v%v%v WHERE %v",
@@ -583,9 +584,9 @@ func (orm *Model) Delete(output interface{}) (int64, error) {
 func (orm *Model) DeleteAll(rowsSlicePtr interface{}) (int64, error) {
 	defer orm.InitModel()
 	orm.ScanPK(rowsSlicePtr)
-	if orm.TableName == "" {
-		orm.TableName = getTableName(getTypeName(rowsSlicePtr))
-	}
+	//if orm.TableName == "" {
+	orm.TableName = getTableName(getTypeName(rowsSlicePtr))
+	//}
 	var ids []string
 	val := reflect.Indirect(reflect.ValueOf(rowsSlicePtr))
 	if val.Len() == 0 {
