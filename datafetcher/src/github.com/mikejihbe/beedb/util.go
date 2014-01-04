@@ -142,13 +142,8 @@ func scanMapIntoStruct(obj interface{}, objMap map[string][]byte) error {
 
 				v = x
 			} else if supportsJsonEncoding(structField) {
-				log.Println(structField.Type())
-				log.Println(reflect.New(structField.Type()))
 				obj = reflect.New(structField.Type()).Interface()
-				log.Println(obj)
-				log.Println(string(data))
 				err := json.Unmarshal(data, obj)
-				log.Println(obj)
 				if err != nil {
 					log.Println("ERROR: " + err.Error())
 					return errors.New("Json Unmarshal failed: " + err.Error() + string(data))
