@@ -33,7 +33,7 @@ type ParseState struct {
 	CurrentTeam           *models.Team
 	CurrentPlayer         *models.Player
 	CurrentEvent          *models.GameEvent
-	CurrentPositionParser func(*ParseState) *models.StatEvent
+	CurrentPositionParser func(*ParseState) []*models.StatEvent
 	TeamCount             int
 	TeamScore             int
 	DefenseStat           *models.StatEvent
@@ -289,7 +289,7 @@ func buildStatEvent(state *ParseState) *models.StatEvent {
 	return &event
 }
 
-func defenseParser(state *ParseState) *models.StatEvent {
+func defenseParser(state *ParseState) []*models.StatEvent {
 	// td +3
 	// int +2
 	// fum_recovery +2
@@ -306,38 +306,35 @@ func defenseParser(state *ParseState) *models.StatEvent {
 	state.DefenseStat.PointValue += pointValue
 	if state.DefenseStatReturned == false {
 		state.DefenseStatReturned = true
-		return state.DefenseStat
+		return []*models.StatEvent{state.DefenseStat}
 	}
-	return nil
+	return []*models.StatEvent{}
 }
 
-func rushingReceivingParser(state *ParseState) *models.StatEvent {
+func rushingReceivingParser(state *ParseState, Activity string) []*models.StatEvent {
 	// td +6
 	// yds +1 per 10 yds
 	// -2 per fumble lost
 	event := buildStatEvent(state)
+	event.Activity = Activity
 	fumbles, _ := strconv.Atoi(state.CurrentElementAttr("fum"))
 	yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
 	touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
 	receptions, _ := strconv.Atoi(state.CurrentElementAttr("rec")) // PICK UP HERE, TEST THIS
 	points := 6.0*touchdowns + 1.0*yards/10.0 + 1.0*receptions - 2.0*fumbles
 	event.PointValue = float64(points)
-	return event
+	return []*models.StatEvent{event}
 }
 
-func rushingParser(state *ParseState) *models.StatEvent {
-	event := rushingReceivingParser(state)
-	event.Activity = "rushing"
-	return event
+func rushingParser(state *ParseState) []*models.StatEvent {
+	return rushingReceivingParser(state, "rushing")
 }
 
-func receivingParser(state *ParseState) *models.StatEvent {
-	event := rushingReceivingParser(state)
-	event.Activity = "receiving"
-	return event
+func receivingParser(state *ParseState) []*models.StatEvent {
+	return rushingReceivingParser(state, "receiving")
 }
 
-func puntReturnParser(state *ParseState) *models.StatEvent {
+func puntReturnParser(state *ParseState) []*models.StatEvent {
 	// td +6
 	// yds +1 per 10 yds
 	yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
@@ -345,10 +342,10 @@ func puntReturnParser(state *ParseState) *models.StatEvent {
 	event := buildStatEvent(state)
 	event.PointValue = float64(6.0*touchdowns + 1.0*yards/100.0)
 	event.Activity = "punt_return"
-	return event
+	return []*models.StatEvent{event}
 }
 
-func passingParser(state *ParseState) *models.StatEvent {
+func passingParser(state *ParseState) []*models.StatEvent {
 	// td +4
 	// yds +1 per 25 yds
 	// -2 per interception
@@ -358,10 +355,10 @@ func passingParser(state *ParseState) *models.StatEvent {
 	event := buildStatEvent(state)
 	event.Activity = "passing"
 	event.PointValue = float64(4.0*touchdowns + 1.0*yards/25.0 - 2.0*interceptions)
-	return event
+	return []*models.StatEvent{event}
 }
 
-func kickReturnParser(state *ParseState) *models.StatEvent {
+func kickReturnParser(state *ParseState) []*models.StatEvent {
 	// td +6
 	// 1 pt per 10 yds
 	yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
@@ -369,10 +366,10 @@ func kickReturnParser(state *ParseState) *models.StatEvent {
 	event := buildStatEvent(state)
 	event.Activity = "kick_return"
 	event.PointValue = float64(6.0*touchdowns + 1.0*yards/100.0)
-	return event
+	return []*models.StatEvent{event}
 }
 
-func fieldGoalParser(state *ParseState) *models.StatEvent {
+func fieldGoalParser(state *ParseState) []*models.StatEvent {
 	// success +5 per 50+ yd
 	// success +4 per 40-49 yd
 	// success +3 per <= 39+ yd
@@ -391,29 +388,29 @@ func fieldGoalParser(state *ParseState) *models.StatEvent {
 	event := buildStatEvent(state)
 	event.Activity = "field_goal"
 	event.PointValue = float64(5.0*made50 + 4.0*made49 + 3.0*(made39+made29+made19) - 2.0*(att19+att29+att39-made19-made29-made39) - 1.0*(att49-made49))
-	return event
+	return []*models.StatEvent{event}
 }
 
-func extraPointParser(state *ParseState) *models.StatEvent {
+func extraPointParser(state *ParseState) []*models.StatEvent {
 	// +1 per extra point made
 	made, _ := strconv.Atoi(state.CurrentElementAttr("made"))
 	event := buildStatEvent(state)
 	event.Activity = "extra_point"
 	event.PointValue = float64(made)
-	return event
+	return []*models.StatEvent{event}
 }
 
-func twoPointConvParser(state *ParseState) *models.StatEvent {
+func twoPointConvParser(state *ParseState) []*models.StatEvent {
 	// success +2
 	att, _ := strconv.Atoi(state.CurrentElementAttr("att"))
 	failed, _ := strconv.Atoi(state.CurrentElementAttr("failed"))
 	event := buildStatEvent(state)
 	event.Activity = "two_point_conversion"
 	event.PointValue = float64(2.0 * (att - failed))
-	return event
+	return []*models.StatEvent{event}
 }
 
-func ParseGameStatistics(state *ParseState) *models.StatEvent {
+func ParseGameStatistics(state *ParseState) *[]*models.StatEvent {
 	switch state.CurrentElementName() {
 	case "game":
 		game := buildGame(state.CurrentElement())
@@ -435,7 +432,8 @@ func ParseGameStatistics(state *ParseState) *models.StatEvent {
 		state.DefenseStat = defStat
 	case "player":
 		if state.CurrentPositionParser != nil {
-			return state.CurrentPositionParser(state)
+			result := state.CurrentPositionParser(state)
+			return &result
 		}
 		return nil
 	case "defense":
