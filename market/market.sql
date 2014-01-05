@@ -317,9 +317,6 @@ BEGIN
 		--perform the updates.
 		UPDATE markets SET total_bets = total_bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE id = _roster.market_id;
 		UPDATE market_players SET bets = bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE market_id = _roster.market_id and player_id = _player_id;
-    IF _roster.remaining_salary + _price < -5000 THEN
-		  RAISE EXCEPTION 'You can not afford this roster!';
-    END IF;
 		UPDATE rosters set remaining_salary = remaining_salary + _price where id = _roster_id;
 		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 		  	VALUES (_roster.market_id, _roster_id, 'sell', _player_id, _price);
