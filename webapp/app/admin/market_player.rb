@@ -22,6 +22,7 @@ ActiveAdmin.register MarketPlayer do
     column :player_id
     column :player_stats_id
     column(:name) {|mp| mp.player && mp.player.name }
+    column(:team) {|mp| mp.player && mp.player.team.abbrev }
     column(:initial_shadow_bets) {|mp| mp.initial_shadow_bets.to_i }
     column(:shadow_bets) {|mp| mp.shadow_bets.to_i }
     column(:bets) {|mp| mp.bets.to_i }
