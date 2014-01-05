@@ -58,7 +58,8 @@ class Player < ActiveRecord::Base
 
   def next_game_at # Requires with_market scope
     return nil unless self.market_id
-    Market.find(self.market_id).games.select{|g| [g.home_team, g.away_team].include?(self.team)}.game_time - 5.minutes
+    game = Market.find(self.market_id).games.select{|g| [g.home_team, g.away_team].include?(self.team)}
+    return game && game.game_time - 5.minutes
   end
 
   def benched_games
