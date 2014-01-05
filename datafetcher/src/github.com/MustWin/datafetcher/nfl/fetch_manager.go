@@ -182,6 +182,7 @@ func (mgr *FetchManager) GetPbp(game *models.Game, currentSequenceNumber int) ([
 		currentSequenceNumber = event.SequenceNumber
 		if event.Type == "gameover" {
 			gameover = true
+			mgr.GetStandings()
 		}
 	}
 	return gameEvents, currentSequenceNumber, gameover
@@ -199,8 +200,7 @@ func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
 				currentSequenceNumber = newSequenceNumber
 				mgr.GetStats(game)
 				if gameover {
-					mgr.GetStandings()
-					// And refresh 'em again later just in case
+					// Refresh 'em again later just in case
 					time.AfterFunc(1*time.Minute, func() { mgr.GetStandings() })
 					time.AfterFunc(10*time.Minute, func() { mgr.GetStandings() })
 					return

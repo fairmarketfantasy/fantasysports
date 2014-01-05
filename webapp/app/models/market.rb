@@ -193,6 +193,13 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def fill_rosters_to_percent(percent)
     # iterate through /all/ non h2h unfilled contests and generate rosters to fill them up
+    contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_type_ids.join(',')})")
+    contests.where("(num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0").find_each do |contest|
+      contest.fill_with_rosters(percent)
+    end
+  end
+
+  def bad_h2h_type_ids
     bad_h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).select do |ct| 
       if (ct.name == 'h2h' && [100, 1000].include?(ct.buy_in))# ||  # Fill H2H games of normal amounts
           #(ct.name == 'h2h rr' && [900, 9000].include?(ct.buy_in))
@@ -202,11 +209,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       end
     end
     bad_h2h_types = bad_h2h_types.map(&:id).unshift(-1)
-    contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_types.join(',')})")
-    contests.where("(num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0").find_each do |contest|
-      contest.fill_with_rosters(percent)
-    end
-    contests.each {|c| c.fill_reinforced_rosters } if self.game_type =~ /elimination/i
   end
 
   def track_benched_players
@@ -232,6 +234,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     bonus_times.keys.sort.select{|time| time.to_i < Time.new.to_i && !bonus_times[time]['paid'] }.each do
       self.rosters.update_all('remaining_salary = remaining_salary + 20000')
       self.contest_types.update_all('salary_cap = salary_cap + 20000')
+      self.contests.where("contest_type_id NOT IN(#{bad_h2h_type_ids.join(',')})").each {|c| c.fill_reinforced_rosters } if self.game_type =~ /elimination/i
     end
     reload
   end
