@@ -29,7 +29,7 @@ class Player < ActiveRecord::Base
   scope :with_purchase_price,   -> { select('players.*, rosters_players.purchase_price') } # Must also join rosters_players
   scope :with_market,           ->(market) { select('players.*').select(
                                              "#{market.id} as market_id, mp.is_eliminated, mp.score, mp.locked"
-                                           ).joins('JOIN market_players mp ON players.stats_id=mp.player_stats_id') }
+                                           ).joins("JOIN market_players mp ON players.stats_id=mp.player_stats_id AND mp.market_id = #{market.id}") }
   scope :with_prices,           -> (market, buy_in) {
       select('players.*, market_prices.*').joins("JOIN market_prices(#{market.id}, #{buy_in}) ON players.id = market_prices.player_id")
   }
