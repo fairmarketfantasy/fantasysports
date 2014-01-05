@@ -618,10 +618,11 @@ DECLARE
 	_games_market games_markets;
 	_market markets;
 	_linked_market markets;
-	_win_locked_shadow_bets numeric := 0;
+	_win_team_locked_shadow_bets numeric := 0;
 	_win_team_locked_bets numeric := 0;
-	_loss_team_locked_shadow_bets numeric := 0;
 	_loss_team_locked_bets numeric := 0;
+	_loss_team_locked_shadow_bets numeric := 0;
+	_loss_team_locked_initial_shadow_bets numeric := 0;
 	_loser_score numeric := 0;
 	_next_game_time timestamp;
 	_round_scaling_factor numeric;
@@ -657,11 +658,11 @@ BEGIN
 
   IF _market.game_type = 'single_elimination' THEN
     -- Get the winning team bets
-	  select INTO _win_team_locked_bets, _win_locked_shadow_bets  sum(bets), sum(shadow_bets)
+	  select INTO _win_team_locked_bets, _win_team_locked_shadow_bets  sum(bets), sum(shadow_bets)
       FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
 	  	WHERE market_id = _linked_market.id AND p.team = _winning_team;
     -- Get the losing team bets
-	  select INTO _loss_team_locked_bets, _loss_team_locked_shadow_bets, _loser_score  sum(bets), sum(shadow_bets), sum(score)
+	  select INTO _loss_team_locked_bets, _loss_team_locked_shadow_bets  sum(bets), sum(shadow_bets)
     FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
 		WHERE market_id = _linked_market.id AND p.team = _losing_team;
 
@@ -686,18 +687,15 @@ BEGIN
       locked_at = null
 	  	WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _losing_team);
   ELSE -- 'team_single_elimination'
-	  select INTO _loser_score   sum(score)
-      FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
-		  WHERE market_id = _linked_market.id AND p.team = _losing_team;
-	  select INTO _loss_team_locked_bets  sum(bets)
+	  select INTO _loss_team_locked_bets, _loss_team_locked_initial_shadow_bets,  _loss_team_locked_shadow_bets, _loser_score  sum(bets), sum(shadow_bets), sum(initial_shadow_bets), sum(score)
       FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
 		  WHERE market_id = _market.id AND p.team = _losing_team;
 
 	  UPDATE market_players SET
       locked = false,
       -- set shadow bets to new bets value - real bets
-      shadow_bets = (bets + _loss_team_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets) - ( bets - shadow_bets),
-      initial_shadow_bets =  (bets + _loss_team_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets) - ( bets - shadow_bets),
+      shadow_bets = (shadow_bets + _loss_team_locked_shadow_bets - _loser_score / _market.expected_total_points * _market.total_bets),
+      initial_shadow_bets =  (bets + _loss_team_locked_initial_shadow_bets - _loser_score / _market.expected_total_points * _market.total_bets) - ( bets - shadow_bets),
       bets = bets + _loss_team_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets,
       locked_at = _next_game_time
 	  	WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _winning_team);
@@ -708,6 +706,7 @@ BEGIN
       is_eliminated = true,
       bets = GREATEST(bets - shadow_bets, score / _market.expected_total_points * _market.total_bets),
       shadow_bets = GREATEST(bets - GREATEST(bets - shadow_bets, score / _market.expected_total_points * _market.total_bets), 0),
+      -- Not sure this is correct: how can we compensate the winning market player with these ISBs
       initial_shadow_bets = GREATEST(bets - GREATEST(bets - shadow_bets, score / _market.expected_total_points * _market.total_bets), 0),
       locked_at = null
 	  	WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _losing_team);
@@ -747,59 +746,4 @@ begin
 		UPDATE rosters set contest_rank = rank FROM ranks where rosters.id = ranks.id;
 end
 $$ LANGUAGE plpgsql;--SQL;
-
-/*
-Helpful functions
-
-SELECT p.name, mp.player_id, mp.bets, m.total_bets, price(mp.bets, m.total_bets, 10, m.price_multiplier)
-	FROM market_players mp, markets m, players p
-	WHERE
-		m.id = 51 AND
-		m.id = mp.market_id AND
-		p.id = mp.player_id AND
-		mp.locked = false;
-
-go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats 
--year 2012 -season REG -week 1 -away DAL -home NYG
-
-select 'go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home', home_team, '-away', away_team
-from games where season_year = 2013 and season_type = 'REG' and status = 'closed' and season_week = 1;
-
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home DEN -away BAL
-
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home NO -away AT
-
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home DEN -away BAL
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home NO -away ATL
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home PIT -away TEN
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home NYJ -away TB
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home BUF -away NE
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home IND -away OAK
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home DET -away MIN
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home CAR -away SEA
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home JAC -away KC
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home CHI -away CIN
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home CLE -away MIA
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home STL -away ARI
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home SF -away GB
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home DAL -away NYG
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home WAS -away PHI
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home SD -away HOU
-
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
 
