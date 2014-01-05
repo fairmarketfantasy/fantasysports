@@ -176,6 +176,7 @@ class ActiveSupport::TestCase
       salary_cap: 100000,
       payout_description: '[5000, 2500, 2500, 670]',
       takes_tokens: false,
+      positions:Positions.default_NFL,
       limit: 1
     )
     market.contest_types.reload
