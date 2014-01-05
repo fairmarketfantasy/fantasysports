@@ -622,7 +622,6 @@ DECLARE
 	_win_team_locked_bets numeric := 0;
 	_loss_team_locked_shadow_bets numeric := 0;
 	_loss_team_locked_bets numeric := 0;
-	_winner_score numeric := 0;
 	_loser_score numeric := 0;
 	_next_game_time timestamp;
 	_round_scaling_factor numeric;
@@ -649,14 +648,6 @@ BEGIN
 	--for each locked player that has not been removed: lock the player and sum the bets
 	select CURRENT_TIMESTAMP INTO _now;
 
-  -- Get the winning team bets
-	select INTO _win_team_locked_bets, _win_locked_shadow_bets, _winner_score  sum(bets), sum(shadow_bets), sum(score)
-    FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
-		WHERE market_id = _linked_market.id AND p.team = _winning_team;
-  -- Get the losing team bets
-	select INTO _loss_team_locked_bets, _loss_team_locked_shadow_bets, _loser_score  sum(bets), sum(shadow_bets), sum(score)
-    FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
-		WHERE market_id = _linked_market.id AND p.team = _losing_team;
 
   -- Update the winners bets and locked state
   SELECT INTO _next_game_time  game_time FROM games 
@@ -665,7 +656,17 @@ BEGIN
       AND (home_team = _winning_team OR away_team = _winning_team);
 
   IF _market.game_type = 'single_elimination' THEN
+    -- Get the winning team bets
+	  select INTO _win_team_locked_bets, _win_locked_shadow_bets  sum(bets), sum(shadow_bets)
+      FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
+	  	WHERE market_id = _linked_market.id AND p.team = _winning_team;
+    -- Get the losing team bets
+	  select INTO _loss_team_locked_bets, _loss_team_locked_shadow_bets, _loser_score  sum(bets), sum(shadow_bets), sum(score)
+    FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
+		WHERE market_id = _linked_market.id AND p.team = _losing_team;
+
     SELECT INTO _round_scaling_factor  CASE WHEN count(id) < 1 THEN 1/13 ELSE -1/13 END FROM games_markets WHERE market_id = _market.id AND finished_at IS NOT NULL;
+
 	  UPDATE market_players SET
       locked = false,
       bets =  score / _market.expected_total_points * _market.total_bets + bets * (((_win_team_locked_bets + _loss_team_locked_bets) / _linked_market.total_bets)/(_win_team_locked_bets / _linked_market.total_bets + _round_scaling_factor)),
@@ -685,12 +686,19 @@ BEGIN
       locked_at = null
 	  	WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _losing_team);
   ELSE -- 'team_single_elimination'
+	  select INTO _loser_score   sum(score)
+      FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
+		  WHERE market_id = _linked_market.id AND p.team = _losing_team;
+	  select INTO _loss_team_locked_bets  sum(bets)
+      FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
+		  WHERE market_id = _market.id AND p.team = _losing_team;
+
 	  UPDATE market_players SET
       locked = false,
       -- set shadow bets to new bets value - real bets
-      shadow_bets = (bets + _loss_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets) - ( bets - shadow_bets),
-      initial_shadow_bets =  (bets + _loss_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets) - ( bets - shadow_bets),
-      bets = bets + _loss_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets,
+      shadow_bets = (bets + _loss_team_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets) - ( bets - shadow_bets),
+      initial_shadow_bets =  (bets + _loss_team_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets) - ( bets - shadow_bets),
+      bets = bets + _loss_team_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets,
       locked_at = _next_game_time
 	  	WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _winning_team);
 

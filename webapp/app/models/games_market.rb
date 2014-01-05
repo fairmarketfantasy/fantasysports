@@ -23,7 +23,7 @@ class GamesMarket < ActiveRecord::Base
       StatEvent.create!(:player_stats_id => losing_mp.player_stats_id, :game_stats_id => game.stats_id, :activity => "Points Scored vs #{game.winning_team}", :point_value => 2 * away['points'], :data => '{}')
       StatEvent.create!(:player_stats_id => losing_mp.player_stats_id, :game_stats_id => game.stats_id, :activity => "Points Against vs #{game.winning_team}", :point_value => -2 * home['points'], :data => '{}')
       # TODO: Whatever market transformations are needed
-      # Mark losing player as eliminated
+      GamesMarket.find_by_sql(["SELECT * FROM finish_elimination_game(?, ?, ?)", self.id, winner, loser])
     end
     reload
     game.update_attribute(:status, 'closed') unless game.status == 'closed' # Just in case it doesn't get closed by the datafetcher, which happens sometimes

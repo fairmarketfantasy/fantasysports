@@ -220,12 +220,13 @@ func (orm *Model) FindMap() (resultsSlice []map[string][]byte, err error) {
 		fmt.Println(sqls)
 		fmt.Println(orm)
 	}
-	s, err := orm.Db.Prepare(sqls)
+	/*s, err := orm.Db.Prepare(sqls)
 	if err != nil {
 		return nil, err
 	}
 	defer s.Close()
-	res, err := s.Query(orm.ParamStr...)
+	res, err := s.Query(orm.ParamStr...)*/
+	res, err := orm.Db.Query(sqls, orm.ParamStr...)
 	if err != nil {
 		return nil, err
 	}
@@ -364,13 +365,14 @@ func (orm *Model) generateSql() (a string) {
 
 //Execute sql
 func (orm *Model) Exec(finalQueryString string, args ...interface{}) (sql.Result, error) {
-	rs, err := orm.Db.Prepare(finalQueryString)
+	/*rs, err := orm.Db.Prepare(finalQueryString)
 	if err != nil {
 		return nil, err
 	}
 	defer rs.Close()
 
-	res, err := rs.Exec(args...)
+	res, err := rs.Exec(args...)*/
+	res, err := orm.Db.Exec(finalQueryString, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -533,7 +535,6 @@ func (orm *Model) Update(properties map[string]interface{}) (int64, error) {
 	if OnDebug {
 		fmt.Println(statement)
 		fmt.Println(orm)
-		fmt.Println(orm.ParamStr)
 	}
 	res, err := orm.Exec(statement, args...)
 	if err != nil {
