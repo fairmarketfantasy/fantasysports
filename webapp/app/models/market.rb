@@ -46,7 +46,7 @@ class Market < ActiveRecord::Base
     end
 
     def apply method, sql, *params
-      Market.where(sql, *params).each do |market|
+      Market.where(sql, *params).order('id asc').each do |market|
         puts "#{Time.now} -- #{method} market #{market.id}"
         begin
 =begin
