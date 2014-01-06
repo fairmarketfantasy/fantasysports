@@ -621,6 +621,9 @@ select:focus:invalid {
   width: 80px;
   margin: 0 10px;
 }
+.secure-msg {
+  float: right;
+}
 .muted {margin-left: 24px;}
 .add-card {
   font-size: 4em;
@@ -965,6 +968,10 @@ input, textarea, .uneditable-input {
 .small {
   font-size: 0.7em;
 }
+.subheader {
+  font-size: 1em;
+  margin-bottom: 2px;
+}
 .tiny-p {
   font-size: 10px;
   line-height: 10px;
@@ -1084,9 +1091,13 @@ input, textarea, .uneditable-input {
   .border-radius(5px);
   position: relative;
 }
+.ie8 .player-overflow {
+  height: 400px;
+}
 .player-overflow {
   max-height: 400px;
-  overflow: scroll;
+  -ms-overflow-y : scroll; // IE 8, bitches
+  overflow-y: scroll;
   overflow-x: none;
 }
 .fixed-table-header {
@@ -1211,10 +1222,10 @@ input, textarea, .uneditable-input {
 }
 .mr-player-eliminated {
   position: absolute;
-  bottom: 5px;
-  right: 10px;
+  bottom: -4px;
+  right: 8px;
   color: red;
-  font-size: 0.8em;
+  font-size: 0.7em;
 }
 .mr-player-score {
   font-size: 18px;

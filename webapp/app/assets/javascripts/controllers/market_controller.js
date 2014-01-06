@@ -23,7 +23,7 @@ angular.module("app.controllers")
     if (!market) { return; }
     if (!marketService.currentMarket) {
       flash.error("Oops, we couldn't find that market, pick a different one.");
-      $location.path('/');
+      $location.path('/home');
       return;
     }
     return (market.id === marketService.currentMarket.id);
@@ -39,6 +39,10 @@ angular.module("app.controllers")
     });
   };
   $scope.$watch('marketService.currentMarket.id', reloadMarket);
+
+  $scope.hasLollapalooza = function() {
+    return _.find(_.keys($scope.contestClasses || {}), function(name) { return name.match(/k/); });
+  };
 
   $scope.day = function(timeStr) {
     var day = moment(timeStr);
