@@ -8,7 +8,7 @@
 <head>
   <!-- http://docs.angularjs.org/guide/ie -->
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
   <!-- CSS DIFF -->
   <meta name="viewport" content="width=1200">
@@ -105,19 +105,13 @@
     <div class="container">
     <div class="row top-nav">
       <div class="span8">
-        <a href="/#"><h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1></a> <span class="sub-title">Advanced market-driven pricing and the highest payouts in the industry!</span>
+        <a href="/#"><h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1></a> <span class="sub-title">Only available here, Play the NFL Playoffs!</span>
       </div>
-      <div class="span2">
+      <div class="span4">
         <ul class="nav nav-pills blue-pills modal-pills">
           <li ng-class="{active: currentUser.currentSport == 'NFL'}"><a ng-click="currentUser.currentSport = 'NFL'" href="/#/">NFL</a></li>
           <li ng-class="{active: currentUser.currentSport == 'NBA'}"><a ng-click="currentUser.currentSport = 'NBA'" href="/#/coming-soon">NBA</a></li>
         </ul>
-      </div>
-      <div class="span2">
-        <div class="links text-right">
-          <a class="sub-title txt-green-hover" href="/#/support">Support</a>
-          <a class="sub-title txt-green-hover" href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a>
-        </div>
       </div>
     </div>
   </div>
@@ -169,7 +163,8 @@
             <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
             <li class="nav-item"><a href="/#/rules" >Rules and Scoring</a></li>
             <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
-            <li class="nav-item end"><a href="/#/support">Support</a></li>
+            <li class="nav-item"><a href="/#/support">Support</a></li>
+            <li class="nav-item end"><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></li>
           </ul>
           <div class="nav-mobile-app-links">
             <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
