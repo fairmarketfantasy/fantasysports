@@ -299,6 +299,12 @@ func buildBreakdownStatEvent(state *ParseState, quantity int, activity string, p
 }
 
 func defenseParser(state *ParseState) []*models.StatEvent {
+	events := []*models.StatEvent{}
+	if state.DefenseStatReturned == false {
+		state.DefenseStatReturned = true
+		events = append(events, state.DefenseStat)
+	}
+
 	// td +3
 	// int +2
 	// fum_recovery +2
@@ -311,13 +317,34 @@ func defenseParser(state *ParseState) []*models.StatEvent {
 	safeties, _ := strconv.Atoi(state.CurrentElementAttr("sfty"))
 	sackf, _ := strconv.ParseFloat(state.CurrentElementAttr("sack"), 64)
 	sack := int(sackf)
-	pointValue := float64(3.0*(int_touchdowns+fum_touchdowns) + 2.0*interceptions + 2.0*fumble_recoveries + 2.0*safeties + 1.0*sack)
-	state.DefenseStat.PointValue += pointValue
-	if state.DefenseStatReturned == false {
-		state.DefenseStatReturned = true
-		return []*models.StatEvent{state.DefenseStat}
+
+	//pointValue := float64(3.0*(int_touchdowns+fum_touchdowns) + 2.0*interceptions + 2.0*fumble_recoveries + 2.0*safeties + 1.0*sack)
+
+	if (int_touchdowns > 0) {
+		events = append(events, buildBreakdownStatEvent(state, int_touchdowns, "int_touchdowns", 3.0))
 	}
-	return []*models.StatEvent{}
+
+	if (fum_touchdowns > 0) {
+		events = append(events, buildBreakdownStatEvent(state, fum_touchdowns, "fum_touchdowns", 3.0))
+	}
+
+	if (interceptions > 0) {
+		events = append(events, buildBreakdownStatEvent(state, interceptions, "interceptions", 2.0))
+	}
+
+	if (fumble_recoveries > 0) {
+		events = append(events, buildBreakdownStatEvent(state, fumble_recoveries, "fumble_recoveries", 2.0))
+	}
+
+	if (safeties > 0) {
+		events = append(events, buildBreakdownStatEvent(state, safeties, "safeties", 2.0))
+	}
+
+	if (sack > 0) {
+		events = append(events, buildBreakdownStatEvent(state, sack, "sacks", 2.0))
+	}
+
+	return events
 }
 
 func rushingReceivingParser(state *ParseState, activity string) []*models.StatEvent {
