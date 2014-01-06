@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131229211546) do
+ActiveRecord::Schema.define(version: 20140106215610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -381,9 +381,11 @@ ActiveRecord::Schema.define(version: 20131229211546) do
     t.integer  "expected_payout",  default: 0,     null: false
   end
 
-  add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
+  add_index "rosters", ["contest_id", "contest_rank"], name: "index_rosters_on_contest_id_and_contest_rank", using: :btree
   add_index "rosters", ["contest_type_id"], name: "index_rosters_on_contest_type_id", using: :btree
   add_index "rosters", ["market_id"], name: "index_rosters_on_market_id", using: :btree
+  add_index "rosters", ["owner_id"], name: "index_rosters_on_owner_id", using: :btree
+  add_index "rosters", ["state"], name: "index_rosters_on_state", using: :btree
   add_index "rosters", ["submitted_at"], name: "index_rosters_on_submitted_at", using: :btree
 
   create_table "rosters_players", force: true do |t|
