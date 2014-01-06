@@ -556,7 +556,8 @@ BEGIN
     SELECT player_stats_id FROM stat_events WHERE game_stats_id = _game.stats_id GROUP BY player_stats_id);
   UPDATE players SET benched_games = benched_games + 1 WHERE stats_id 
     NOT IN(SELECT player_stats_id FROM stat_events WHERE game_stats_id = _game.stats_id GROUP BY player_stats_id)
-    AND players.team IN(_game.home_team, _game.away_team);
+    AND players.team IN(_game.home_team, _game.away_team)
+    AND players.position != 'TEAM';
 
   UPDATE games SET bench_counted = true WHERE games.bench_counted_at < CURRENT_TIMESTAMP AND stats_id=_game_stats_id;
 
