@@ -34,6 +34,3 @@ ActiveAdmin.register TransactionRecord do
   end
 end
 
-
-
-
