@@ -385,8 +385,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         m.closed_at = game.game_time + 4.days # just some long time in the future. We'll be closing these manually
       end
       m.save!
-      # Every monday at 9pm PST within the date range gets a bonus
-      m.started_at.to_date.upto(m.closed_at.to_date).map{|day| day.monday? ? Time.new(day.year, day.month, day.day, 21, 0, 0, '-08:00') : nil }.compact.each do |time|
+      # Every sunday at 9pm PST within the date range gets a bonus
+      m.started_at.to_date.upto(m.closed_at.to_date).map{|day| day.sunday? ? Time.new(day.year, day.month, day.day, 21, 0, 0, '-08:00') : nil }.compact.each do |time|
         m.add_salary_bonus_time(time)
       end
       m.add_fill_roster_time(game.game_time - 1.hour, 1.0)
