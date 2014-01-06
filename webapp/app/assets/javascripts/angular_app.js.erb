@@ -11,7 +11,7 @@ angular.module('app', [
       ])
 .config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider.
-      when('/', {redirectTo: function(){ return window.App.currentUser ? '/home' : '/external' }}).
+      when('/', {redirectTo: function(){ return window.App.currentUser ? '/home' : '/external' }, reloadOnSearch: false}).
       when('/external', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/home', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/playoffs', {templateUrl: '/home.html', controller: 'HomeController'}).
