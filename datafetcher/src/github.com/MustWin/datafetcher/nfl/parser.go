@@ -289,6 +289,15 @@ func buildStatEvent(state *ParseState) *models.StatEvent {
 	return &event
 }
 
+func buildBreakdownStatEvent(state *ParseState, quantity int, activity string, pointsPer float64) *models.StatEvent {
+	event := buildStatEvent(state)
+	event.Quantity = float64(quantity)
+	event.Activity = activity
+	event.PointsPer = pointsPer
+	event.PointValue = event.Quantity * event.PointsPer
+	return event
+}
+
 func defenseParser(state *ParseState) []*models.StatEvent {
 	// td +3
 	// int +2
@@ -311,19 +320,35 @@ func defenseParser(state *ParseState) []*models.StatEvent {
 	return []*models.StatEvent{}
 }
 
-func rushingReceivingParser(state *ParseState, Activity string) []*models.StatEvent {
+func rushingReceivingParser(state *ParseState, activity string) []*models.StatEvent {
 	// td +6
 	// yds +1 per 10 yds
 	// -2 per fumble lost
-	event := buildStatEvent(state)
-	event.Activity = Activity
 	fumbles, _ := strconv.Atoi(state.CurrentElementAttr("fum"))
 	yards, _ := strconv.Atoi(state.CurrentElementAttr("yds"))
 	touchdowns, _ := strconv.Atoi(state.CurrentElementAttr("td"))
 	receptions, _ := strconv.Atoi(state.CurrentElementAttr("rec")) // PICK UP HERE, TEST THIS
-	points := 6.0*touchdowns + 1.0*yards/10.0 + 1.0*receptions - 2.0*fumbles
-	event.PointValue = float64(points)
-	return []*models.StatEvent{event}
+	// points := 6.0*touchdowns + 1.0*yards/10.0 + 1.0*receptions - 2.0*fumbles
+
+	events := []*models.StatEvent{}
+
+	if touchdowns > 0 {
+		events = append(events, buildBreakdownStatEvent(state, touchdowns, "touchdowns", 6.0))
+	}
+
+	if yards > 0 {
+		events = append(events, buildBreakdownStatEvent(state, yards, "yards", 0.1))
+	}
+
+	if receptions > 0 {
+		events = append(events, buildBreakdownStatEvent(state, receptions, "receptions", 1.0))
+	}
+
+	if fumbles > 0 {
+		events = append(events, buildBreakdownStatEvent(state, fumbles, "fumbles", -2.0))
+	}
+
+	return events
 }
 
 func rushingParser(state *ParseState) []*models.StatEvent {
