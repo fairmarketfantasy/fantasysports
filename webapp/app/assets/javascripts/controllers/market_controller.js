@@ -40,6 +40,10 @@ angular.module("app.controllers")
   };
   $scope.$watch('marketService.currentMarket.id', reloadMarket);
 
+  $scope.hasLollapalooza = function() {
+    return _.find(_.keys($scope.contestClasses || {}), function(name) { return name.match(/k/); });
+  };
+
   $scope.day = function(timeStr) {
     var day = moment(timeStr);
     return day.format("ddd, MMM Do , h:mm a");

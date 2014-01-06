@@ -568,7 +568,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
-        next if data[:name].match(/\d+k/) && (self.name =~ /week|playoff/i || Rails.env == 'test')
+        next if data[:name].match(/\d+k/) && (!(self.name =~ /week|playoff/i) || Rails.env == 'test')
         ContestType.create!(
           market_id: self.id,
           name: data[:name],
