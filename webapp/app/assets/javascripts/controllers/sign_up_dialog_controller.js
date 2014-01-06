@@ -47,7 +47,7 @@ angular.module("app.controllers")
   $scope.close = function(nextModal){
     dialog.close();
     if (typeof nextModal !== 'undefined') {
-      registrationService.showModal(nextModal);
+      registrationService.showModal(nextModal, $scope.message);
     }
   };
 

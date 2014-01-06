@@ -1,13 +1,13 @@
 angular.module('app.services')
   .factory('registrationService', ['$dialog', '$timeout', function($dialog, $timeout) {
     return {
-      showModal: function(name) {
+      showModal: function(name, message) {
         if (name == 'signUp') {
-          this.signUpModal();
+          this.signUpModal(message);
         } else if (name == 'login') {
-          this.loginModal();
+          this.loginModal(message);
         } else if (name == 'forgotPassword') {
-          this.forgotPasswordModal();
+          this.forgotPasswordModal(message);
         }
       },
       signUpModal: function(message){

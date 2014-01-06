@@ -63,7 +63,7 @@ angular.module("app.controllers")
     $scope.signUpModal(message);
   }
   if ($location.search().flash) {
-    var msg = '' + $location.search().flash;
+    var msg = '' + $location.search().flash.replace(/\+/g, ' ');
     $location.search('flash', null);
     $timeout(function() {
       flash.success(msg);

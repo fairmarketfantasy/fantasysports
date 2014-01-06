@@ -6,7 +6,7 @@
       </a>
     </li>
   </ul>
-  
+
   <div class="contest-list">
     <h3 class="selected-market" ng-cloak><span ng-show="marketService.currentMarket.market_duration == 'week'">Weekly</span><span ng-show="marketService.currentMarket.market_duration == 'day'">Daily</span> Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</h3>
 
@@ -19,19 +19,19 @@
     <div>
       <ul class="clearfix no-no" ng-cloak>
         <!-- Replace this when we want 5k back-->
-        <li class="contest-classes full-row" ng-class="{realfull: marketService.currentMarket.market_duration == 'day'}">
+        <li class="contest-classes full-row" ng-class="{realfull: !hasLollapalooza()}">
         <!--<li class="contest-classes full-row realfull">-->
           <h4>It's More Fun With Friends!</h4>
           <p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>
           <a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create your own private contest</a>
         </li>
         <!-- Replace this when we want 5k back-->
-        <li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass) && marketService.currentMarket.market_duration == 'day'}" ng-show="contestClasses[contestClass].length">
+        <li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">
         <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
           <div ng-class="{'contest-copy': isBigContest(contestClass)}" >
             <img ng-src="/assets/icon-{{contestClass}}.png" class="contest-image" />
             <h2><span ng-show="isBigContest(contestClass)">$</span>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
-            <p class="tiny-p">{{contestClasses[contestClass][0].max_entries}} Teams</p>
+            <p class="tiny-p">{{contestClasses[contestClass][0].max_entries}} Teams<br/> Guaranteed Run</p>
           </div>
           <div ng-class="{'contest-copy contest-long': isBigContest(contestClass)}">
             <p class="small-p">{{contestClasses[contestClass][0].contest_class_desc}}</p>

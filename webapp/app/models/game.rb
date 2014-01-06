@@ -29,10 +29,25 @@ class Game < ActiveRecord::Base
     JSON.parse(away_team_status || "{}")
   end
 
+  def winning_team_status
+    if winning_team == self.home_team
+      get_home_team_status
+    else
+      get_away_team_status
+    end
+  end
+
+  def losing_team_status
+    if winning_team == self.home_team
+      get_away_team_status
+    else
+      get_home_team_status
+    end
+  end
+
   def winning_team
     home = get_home_team_status
     away = get_away_team_status
-    debugger if home['points'].nil?
     if home['points'] > away['points']
       home_team
     elsif away['points'] > home['points']

@@ -9,6 +9,7 @@ defaults: &defaults
   host: localhost
   username: fantasysports
   password: F4n7a5y
+  pool: 10
 
 development:
   <<: *defaults

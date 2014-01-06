@@ -25,7 +25,7 @@ class ContestsController < ApplicationController
     else
       session[:referral_code] = (invitation && invitation.code) || params[:referral_code]
       session[:contest_code] = contest.invitation_code
-      redirect_to "/#?autologin=You need to sign up or login to join that contest" #// Trigger sign up modal
+      redirect_to "/#/?autologin=You need to sign up or login to join that contest" #// Trigger sign up modal
     end
   end
 
