@@ -237,6 +237,8 @@ class MarketTest < ActiveSupport::TestCase
         Market.tend
       end
     end
+    bonuses = JSON.parse(@market.reload.salary_bonuses)
+    assert bonuses[bonuses.keys.map(&:to_i).sort.first.to_s]['paid']
   end
 
   # lock_players removes players from the pool without affecting prices
