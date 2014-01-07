@@ -144,11 +144,16 @@ angular.module('app.data')
       this.removePlayer = function(player) {
         this.selectOpponentRoster(null);
         var self = this;
-        fs.rosters.remove_player(this.currentRoster.id, player.id).then(function(market_order) {
-          self.currentRoster.remaining_salary = parseFloat(self.currentRoster.remaining_salary) + parseFloat(market_order.price);
           var index = _.findIndex(self.currentRoster.players, function(p) { return p.id === player.id; });
           self.currentRoster.players[index] = {position: player.position};
-        });
+        fs.rosters.remove_player(this.currentRoster.id, player.id).then(
+          function(market_order) {
+            self.currentRoster.remaining_salary = parseFloat(self.currentRoster.remaining_salary) + parseFloat(market_order.price);
+          },
+          function() {
+            self.currentRoster.players[index] = player;
+          }
+        );
       };
 
       this.nextPosition = function(justAddedPlayer) {
