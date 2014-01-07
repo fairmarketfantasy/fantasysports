@@ -16,7 +16,7 @@ development:
 
 staging:
   <<: *defaults
-  host: '54.213.15.243'
+  host: fantasysports-staging-postgres.clvfjvvzcbre.us-west-2.rds.amazonaws.com
 
 test:
   <<: *defaults
