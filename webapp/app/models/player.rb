@@ -30,6 +30,8 @@ class Player < ActiveRecord::Base
   scope :with_market,           ->(market) { select('players.*').select(
                                              "#{market.id} as market_id, mp.is_eliminated, mp.score, mp.locked"
                                            ).joins("JOIN market_players mp ON players.id=mp.player_id AND mp.market_id = #{market.id}") }
+
+  # THIS IS REALLY SLOW, favor market_prices_for_players
   scope :with_prices,           -> (market, buy_in) {
       select('players.*, market_prices.*').joins("JOIN market_prices(#{market.id}, #{buy_in}) ON players.id = market_prices.player_id")
   }

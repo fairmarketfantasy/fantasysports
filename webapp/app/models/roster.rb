@@ -29,7 +29,10 @@ class Roster < ActiveRecord::Base
 
   def players_with_prices
     self.class.uncached do
-      Player.find_by_sql("select * from roster_prices(#{self.id})")
+      self.players.select('players.*, rosters_players.purchase_price, mp.*').joins(
+        # Not user input params
+        "JOIN market_prices_for_players(#{self.market_id}, #{self.buy_in}, #{self.rosters_players.map(&:player_id).unshift(-1).join(', ') }) mp ON mp.player_id=players.id")
+      #Player.find_by_sql("select * from roster_prices(#{self.id})")
     end
   end
 
