@@ -69,6 +69,18 @@ namespace :seed do
     end
   end
 
+  task :push_maintenance_to_s3 => :environment do
+    s3 = AWS::S3.new
+    bucket = s3.buckets['fairmarketfantasy-maintenance']
+    Dir[Rails.root + '../maintenance/**/*'].each do |path|
+      next unless File.file?(path)
+      s3_key = path.split('maintenance/')[1]
+      File.open(path) do |f|
+        bucket.objects[s3_key].write(f.read)
+      end
+    end
+  end
+
   task :push_headshots_to_s3 => :environment do
     # Fetch the headshot
     headshot_manifest = "http://api.sportsdatallc.org/nfl-images-p1/manifests/headshot/all_assets.xml?api_key=yq9uk9qu774eygre2vg2jafe"
