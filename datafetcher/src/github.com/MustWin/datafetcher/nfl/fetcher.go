@@ -53,6 +53,11 @@ func (f Fetcher) GetTeamRoster(team string) []*models.Player {
 func (f Fetcher) GetGameStats(game *models.Game) []*models.StatEvent {
 	// GET nfl-t1/2012/REG/1/DAL/NYG/statistics.xml
 	url := fmt.Sprintf(baseUrl+"%d/%s/%d/%s/%s/statistics.xml", game.SeasonYear, game.SeasonType, game.SeasonWeek, game.AwayTeam, game.HomeTeam)
-	statEvents, _ := parsers.ParseXml(f.FetchMethod(url), ParseGameStatistics)
-	return statEvents.([]*models.StatEvent)
+	parserResult, _ := parsers.ParseXml(f.FetchMethod(url), ParseGameStatistics)
+	statEventLists := parserResult.([]*[]*models.StatEvent)
+	statEvents := []*models.StatEvent{}
+	for i := 0; i < len(statEventLists); i++ {
+		statEvents = append(statEvents, *(statEventLists[i])...)
+	}
+	return statEvents
 }
