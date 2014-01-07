@@ -419,6 +419,8 @@ ActiveRecord::Schema.define(version: 20140106215610) do
     t.datetime "updated_at"
     t.string   "player_stats_id", null: false
     t.string   "game_stats_id",   null: false
+    t.decimal  "quantity"
+    t.decimal  "points_per"
   end
 
   add_index "stat_events", ["game_stats_id"], name: "index_stat_events_on_game_stats_id", using: :btree
