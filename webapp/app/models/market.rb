@@ -231,11 +231,13 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def deliver_bonuses
     bonus_times = JSON.parse(self.salary_bonuses || '{}')
-    bonus_times.keys.map(&:to_i).sort.select{|time| time.to_i < Time.new.to_i && !bonus_times[time]['paid'] }.each do
+    bonus_times.keys.sort.select{|time| time.to_i < Time.new.to_i && !bonus_times[time]['paid'] }.each do |time|
       self.rosters.update_all('remaining_salary = remaining_salary + 20000')
       self.contest_types.update_all('salary_cap = salary_cap + 20000')
       self.contests.where("contest_type_id NOT IN(#{bad_h2h_type_ids.join(',')})").each {|c| c.fill_reinforced_rosters } if self.game_type =~ /elimination/i
+      bonus_times[time]['paid'] = true
     end
+    self.update_attribute(:salary_bonuses, bonus_times.to_json)
     reload
   end
 

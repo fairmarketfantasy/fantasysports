@@ -69,6 +69,19 @@ namespace :seed do
     end
   end
 
+  desc 'put maintenance static page on s3'
+  task :push_maintenance_to_s3 => :environment do
+    s3 = AWS::S3.new
+    bucket = s3.buckets['fairmarketfantasy-maintenance']
+    Dir[Rails.root + '../maintenance/**/*'].each do |path|
+      next unless File.file?(path)
+      s3_key = path.split('maintenance/')[1]
+      File.open(path) do |f|
+        bucket.objects[s3_key].write(f.read)
+      end
+    end
+  end
+
   desc 'push player headshots to s3'
   task :push_headshots_to_s3 => :environment do
     # Fetch the headshot
