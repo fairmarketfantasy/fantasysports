@@ -71,7 +71,7 @@ namespace :seed do
 
   task :push_maintenance_to_s3 => :environment do
     s3 = AWS::S3.new
-    bucket = s3.buckets['fairmarketfantasy-maintenance']
+    bucket = s3.buckets['fairmarketfantasy.com']
     Dir[Rails.root + '../maintenance/**/*'].each do |path|
       next unless File.file?(path)
       s3_key = path.split('maintenance/')[1]
