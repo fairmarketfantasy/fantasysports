@@ -49,20 +49,22 @@ angular.module('app.data')
       // Takes a value and a function returning a promise. If value is present, we return
       // a promise resolved with that value. If not, we return the fetchPromise
       var promiseWrapper = function(value, fetchPromise) {
-        if (value) {
+        if (value && !value.abridged) {
           var fakeDeferred = $q.defer();
           fakeDeferred.resolve(value);
           return fakeDeferred.promise;
         } else {
-          return fetchPromise;
+          return fetchPromise();
         }
       };
 
       this.fetch = function(id, view_code) {
-        return promiseWrapper(rosterData[id], fs.rosters.show(id, view_code).then(function(roster) {
+        return promiseWrapper(rosterData[id], function() {
+          return fs.rosters.show(id, view_code).then(function(roster) {
             rosterData[roster.id] = roster;
             return roster;
-          }));
+          });
+        });
       };
 
       this.fetchMine = function(opts) {
@@ -77,9 +79,11 @@ angular.module('app.data')
       var pastStats;
       this.fetchPastStats = function() {
         // TODO: add throttle, effectively a cache TTL
-        return promiseWrapper(pastStats, fs.rosters.past_stats().then(function(stats) {
-          pastStats = stats;
-        }));
+        return promiseWrapper(pastStats, function() {
+          return fs.rosters.past_stats().then(function(stats) {
+            pastStats = stats;
+          });
+        });
       };
 
       this.fetchContest = function(contest_id, upToPage) {

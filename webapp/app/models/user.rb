@@ -142,6 +142,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def abridged? # Used in api serializer
+    false
+  end
+
   SYSTEM_USERNAMES = [
 "teetriceps",
 "basegear",
