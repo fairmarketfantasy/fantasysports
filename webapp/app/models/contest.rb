@@ -75,9 +75,9 @@ class Contest < ActiveRecord::Base
       total += 1
     end
     score = 0
-    self.market.market_players.order('score desc').each do |mp|
+    self.market.market_players.select('market_players.*, players.position').joins('JOIN players ON market_players.id=players.id').order('score desc').each do |mp|
       next unless mp.player # Hacky as shit, this should never happen
-      pos = mp.player.position
+      pos = mp[:position]
       if position_hash[pos] && position_hash[pos] > 0
         total  -= 1
         position_hash[pos] -= 1

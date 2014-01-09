@@ -24,6 +24,23 @@ CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeri
 	END;
 $$ LANGUAGE SQL IMMUTABLE;
 
+------------------------------------------ Select Specific Player Prices -----------------------------------------
+DROP FUNCTION market_prices_for_players(integer, integer, VARIADIC arr integer[]);
+
+CREATE OR REPLACE FUNCTION market_prices_for_players(_market_id integer, _buy_in integer, VARIADIC arr integer[])
+RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score integer) AS $$
+	SELECT
+		mp.player_id,
+		price(mp.bets, m.total_bets, $2, m.price_multiplier),
+		price(mp.bets, m.total_bets,  0, m.price_multiplier),
+		mp.locked,
+		mp.is_eliminated,
+		mp.score
+	FROM markets m
+	JOIN market_players mp on m.id = mp.market_id
+	WHERE m.id = $1 AND mp.player_id = any($3);
+$$ LANGUAGE SQL;
+
 ------------------------------------------ Player Prices -----------------------------------------
 
 DROP FUNCTION market_prices(integer, integer);
@@ -41,32 +58,6 @@ RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked b
 	JOIN market_players mp on m.id = mp.market_id
 	WHERE m.id = $1;
 $$ LANGUAGE SQL;
-
---purchase price, current buy and sell prices, locked, current score, and all player data
-DROP FUNCTION roster_prices(integer);
-
-CREATE OR REPLACE FUNCTION roster_prices(_roster_id integer)
-RETURNS TABLE (
-	purchase_price numeric,
-	player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score integer, 
-	id integer, stats_id character varying(255), sport_id integer, name character varying(255), 
-	name_abbr character varying(255), birthdate character varying(255), height integer, 
-	weight integer, college character varying(255), "position" character varying(255), 
-	jersey_number integer, status character varying(255), total_games integer, total_points integer, 
-	created_at timestamp without time zone, updated_at timestamp without time zone, 
-	team character varying(255), benched_games integer, removed boolean
-)
-AS $$
-DECLARE
-	_roster rosters;
-BEGIN
-	SELECT * FROM rosters WHERE rosters.id = _roster_id INTO _roster;
-	RETURN QUERY SELECT rp.purchase_price, mp.*, p.* from market_prices(_roster.market_id, _roster.buy_in) mp
-	join players p on p.id = mp.player_id
-	join rosters_players rp on rp.player_id = mp.player_id and rp.roster_id = _roster_id
-  order by id asc;
-END;
-$$ LANGUAGE plpgsql;
 
 ------------------------------------- OLD PRICE SCRIPTS --------------------------------------
 

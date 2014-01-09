@@ -13,6 +13,7 @@ Fantasysports::Application.configure do
 
   CLYNG_SECRET = "pk-18d8a70d-3f69-455f-ab2c-0dbd8c0d8685"
   CLYNG_PUBLISHABLE = "84bc73ca-5947-4357-b37b-aa5692289113"
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -66,7 +67,10 @@ Fantasysports::Application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
   # Use a different cache store in production.
-  config.cache_store = :file_store, File.join(Rails.root, 'tmp', 'cache')
+  #config.cache_store = :file_store, File.join(Rails.root, 'tmp', 'cache')
+  elasticache = Dalli::ElastiCache.new('staging-001.0nuqd9.0001.usw2.cache.amazonaws.com:11211')
+  config.cache_store = :dalli_store, elasticache.servers, {:expires_in => 1.day, :compress => true}
+
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = "http://assets.example.com"
