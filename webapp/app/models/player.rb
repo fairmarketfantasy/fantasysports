@@ -13,7 +13,7 @@ class Player < ActiveRecord::Base
   def is_eliminated; self[:is_eliminated]; end
 
   # Some positions are never used in NFL
-  default_scope { where("position NOT IN('OLB', 'OL')") }
+  #default_scope { where("position NOT IN('OLB', 'OL')") }
 
   has_many :market_players
   has_many :rosters_players
@@ -29,7 +29,9 @@ class Player < ActiveRecord::Base
   scope :with_purchase_price,   -> { select('players.*, rosters_players.purchase_price') } # Must also join rosters_players
   scope :with_market,           ->(market) { select('players.*').select(
                                              "#{market.id} as market_id, mp.is_eliminated, mp.score, mp.locked"
-                                           ).joins("JOIN market_players mp ON players.stats_id=mp.player_stats_id AND mp.market_id = #{market.id}") }
+                                           ).joins("JOIN market_players mp ON players.id=mp.player_id AND mp.market_id = #{market.id}") }
+
+  # THIS IS REALLY SLOW, favor market_prices_for_players
   scope :with_prices,           -> (market, buy_in) {
       select('players.*, market_prices.*').joins("JOIN market_prices(#{market.id}, #{buy_in}) ON players.id = market_prices.player_id")
   }
