@@ -96,6 +96,9 @@ GEM
     commander (4.1.5)
       highline (~> 1.6.11)
     commonjs (0.2.7)
+    dalli (2.7.0)
+    dalli-elasticache (0.1.0)
+      dalli (>= 1.0.0)
     debugger (1.6.2)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -354,6 +357,7 @@ DEPENDENCIES
   capistrano (= 2.15.5)
   carrierwave
   chef (~> 11.6.0)
+  dalli-elasticache
   debugger
   descriptive-statistics
   devise
