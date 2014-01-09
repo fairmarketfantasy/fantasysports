@@ -5,10 +5,10 @@ class PlayersController < ApplicationController
     roster = Roster.find(params[:roster_id])
     @player_prices = Rails.cache.fetch("market_prices_#{roster.market_id}", :expires_in => 1.minute) do
       h = {}
-      Player.normal_positions.with_prices(roster.market, roster.buy_in).each{|p| h[p.id] = p }
+      roster.market.players.normal_positions.with_prices(roster.market, roster.buy_in).each{|p| h[p.id] = p }
       h
     end
-    @players = Player.normal_positions
+    @players = roster.market.players.normal_positions
     @players = @players.autocomplete(params[:autocomplete]) if params[:autocomplete]
 
     game = params[:game] ? Game.find(params[:game]) : nil
@@ -21,13 +21,17 @@ class PlayersController < ApplicationController
         @players = @players.public_send(s, val)
       end
     end
-    @players = @players.where("id NOT IN(#{roster.rosters_players.map(&:player_id).push(-1).join(',')})")
+    @players = @players.where("players.id NOT IN(#{roster.rosters_players.map(&:player_id).push(-1).join(',')})")
     if sort == 'ppg'
       @players = @players.order_by_ppg(order)
+      @players = @players.map{|p| @player_prices[p.id]} # Swap out normal player records with the priced ones
+    elsif sort == 'buy_price'
+      @players = @players.map{|p| @player_prices[p.id]}
+      @players = @players.sort_by{|p| order == 'asc' ? p.buy_price : -p.buy_price}
     else
       @players = @players.order("#{sort} #{order}")
+      @players = @players.map{|p| @player_prices[p.id]}
     end
-    @players = @players.map{|p| @player_prices[p.id]} # Swap out normal player records with the priced ones
     render_api_response @players #.limit(50).page(params[:page] || 1)
   end
 

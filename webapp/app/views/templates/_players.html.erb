@@ -79,7 +79,7 @@
                 <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
                 <th class="tiny">
                   <a href="javascript://" ng-show="pointsColumn() == 'ppg'" ng-click="filterPlayers({sort: 'ppg'})">PPG</a>
-                  <a href="javascript://" ng-show="pointsColumn() == 'score'" ng-click="">Score</a>
+                  <a href="javascript://" ng-show="pointsColumn() == 'score'" ng-click="filterPlayers({sort: 'score'})">Score</a>
                 </th>
                 <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
                 <th class="tiny-btn"><a class="btn btn-small btn-invisible" href="">Add</a></th>
