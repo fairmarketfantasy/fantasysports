@@ -8,6 +8,7 @@ import (
 	"github.com/MustWin/datafetcher/lib/model"
 	"github.com/MustWin/datafetcher/lib/utils"
 	"github.com/MustWin/datafetcher/nfl"
+	"github.com/MustWin/datafetcher/nba"
 	"io"
 	"log"
 	"os"
@@ -35,7 +36,7 @@ func writePid() {
 }
 
 // Major options
-var sport = flag.String("sport", "NFL" /* Temporary default */, "REQUIRED: What sport to fetch: nfl")
+var sport = flag.String("sport", "NFL" /* Temporary default */, "REQUIRED: What sport to fetch: NFL")
 var fetch = flag.String("fetch", "", `What data to fetch:
       roster -team DAL
       teams -year 2012
@@ -61,11 +62,33 @@ var year = flag.Int("year", defaultYear(), "Year to scope the fetch.")
 var team = flag.String("team", "DAL", "Team to fetch. Only pass with roster")
 var statsId = flag.String("statsId", "N9837-8d7fh3-sd8sd8f7-MIJ3IYG", "Unique identifier of game to fetch. Only pass with pbp or stats")
 
+func getFetcherNFL(orm *model.Orm) (lib.Fetcher, lib.FetchManager) {
+	fetcher := nfl.Fetcher{*year, fetchers.HttpFetcher}
+	mgr := nfl.FetchManager{Orm: *orm, Fetcher: fetcher}
+	return fetcher, &mgr
+}
+
+func getFetcherNBA(orm *model.Orm) (lib.Fetcher, lib.FetchManager) {
+	fetcher := nba.Fetcher{*year, fetchers.HttpFetcher}
+	mgr := nba.FetchManager{Orm: *orm, Fetcher: fetcher}
+	return fetcher, &mgr
+}
+
+func getFetcher(sport *string, orm *model.Orm) (lib.Fetcher, lib.FetchManager) {
+	if *sport == "NBA" {
+		return getFetcherNBA(orm)
+	} else {
+		return getFetcherNFL(orm)
+	}
+}
+
 func main() {
 	flag.Parse()
 	fmt.Println("fetching data for year", *year)
 	//fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
-	fetcher := nfl.Fetcher{*year, fetchers.HttpFetcher}
+
+	//fetcher := nfl.Fetcher{*year, fetchers.HttpFetcher}
+
 	var orm model.Orm
 	var ormType model.Orm
 
@@ -75,7 +98,7 @@ func main() {
 	ormType = &model.OrmBase{}
 	orm = ormType.Init(lib.DbInit("NFL"))
 
-	mgr := nfl.FetchManager{Orm: orm, Fetcher: fetcher}
+	fetcher, mgr := getFetcher(sport, &orm)
 
 	switch *fetch {
 	case "teams":
@@ -110,7 +133,7 @@ func main() {
 	case "serve":
 		writePid()
 		log.Println("Periodically fetching data for your pleasure.")
-		mgr.Start(&mgr)
+		mgr.Start(mgr)
 		//block the current goroutine indefinitely
 		<-make(chan bool)
 
