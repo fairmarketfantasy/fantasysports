@@ -12,7 +12,9 @@ type FetchManager interface {
 	Daily() error
 	Schedule(name string, t time.Time, f func())
 	ScheduleCron(s string, f func())
+	Start(fm FetchManager)
 	GetStandings() []*models.Team
+	GetGameById(gameStatsId string) *models.Game
 	GetGames() []*models.Game
 	GetRoster(team string) []*models.Player
 	GetPbp(*models.Game, int) ([]*models.GameEvent, int, bool)
