@@ -90,7 +90,7 @@ angular.module("app.controllers")
       fetchPlayers();
       fetchRosters();
       fetchContest();
-    }, 10000);
+    }, 20000);
 
     // Override isn't really an override anymore...this could be better
   $scope.filterPlayers = function(opts, override) {

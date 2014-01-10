@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140102084910) do
+ActiveRecord::Schema.define(version: 20140107212934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -211,7 +211,8 @@ ActiveRecord::Schema.define(version: 20140102084910) do
     t.boolean  "is_eliminated",       default: false
   end
 
-  add_index "market_players", ["player_id", "market_id"], name: "index_market_players_on_player_id_and_market_id", unique: true, using: :btree
+  add_index "market_players", ["market_id", "player_id"], name: "index_market_players_on_market_id_and_player_id", unique: true, using: :btree
+  add_index "market_players", ["market_id", "score"], name: "index_market_players_on_market_id_and_score", using: :btree
 
   create_table "markets", force: true do |t|
     t.string   "name"
@@ -381,9 +382,11 @@ ActiveRecord::Schema.define(version: 20140102084910) do
     t.integer  "expected_payout",  default: 0,     null: false
   end
 
-  add_index "rosters", ["contest_id"], name: "index_rosters_on_contest_id", using: :btree
+  add_index "rosters", ["contest_id", "contest_rank"], name: "index_rosters_on_contest_id_and_contest_rank", using: :btree
   add_index "rosters", ["contest_type_id"], name: "index_rosters_on_contest_type_id", using: :btree
   add_index "rosters", ["market_id"], name: "index_rosters_on_market_id", using: :btree
+  add_index "rosters", ["owner_id"], name: "index_rosters_on_owner_id", using: :btree
+  add_index "rosters", ["state"], name: "index_rosters_on_state", using: :btree
   add_index "rosters", ["submitted_at"], name: "index_rosters_on_submitted_at", using: :btree
 
   create_table "rosters_players", force: true do |t|
@@ -395,7 +398,7 @@ ActiveRecord::Schema.define(version: 20140102084910) do
   end
 
   add_index "rosters_players", ["market_id"], name: "index_rosters_players_on_market_id", using: :btree
-  add_index "rosters_players", ["player_id", "roster_id"], name: "contest_rosters_players_index", unique: true, using: :btree
+  add_index "rosters_players", ["roster_id", "player_id"], name: "index_rosters_players_on_roster_id_and_player_id", unique: true, using: :btree
 
   create_table "sports", force: true do |t|
     t.string   "name",       null: false
