@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <!--<![endif]-->
+<head>
+  <!-- http://docs.angularjs.org/guide/ie -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <!-- CSS DIFF -->
+  <meta name="viewport" content="width=1200">
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+
+  <meta name="apple-itunes-app" content="app-id=719879920">
+
+  <title>Fair Market Fantasy</title>
+
+  <!-- TODO: Fill in the og goodness -->
+  <!-- og: == 'Open Graph Protocol' - Makes you Facebook "Like" Button & Sharing Friendly -->
+  <meta name="title" content="Fair Market Fantasy" property="og:title" />
+  <meta name="description" content="Fair Market Fantasy is the fairest fantasy sports gaming website out there" property="og:description" />
+  <meta name="copyright" content="MustWin, LLC" />
+  <meta name="author" content="MustWin, LLC" />
+
+  <!-- SEO -->
+  <meta name="description" content="Fair Market Fantasy is the fairest fantasy sports gaming website out there"/>
+
+  <link href="assets/application-b29c5bb1782ff200f6780ac2a97f6978.css" media="all" rel="stylesheet" />
+  <link href="assets/flat-ui-f3207a0a016e631aa4509ca105e49fc5.css" media="all" rel="stylesheet" />
+  <link href="assets/fonts-98172427a94ef0fe77c55ef1b659e0d1.css" media="all" rel="stylesheet" />
+  <link href="assets/fmf-cef1ab89f8dc5e5a488e6e1fe44361dd.css" media="all" rel="stylesheet" />
+
+  <!-- TODO: make these icons -->
+
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body ng-controller="ApplicationController" class="landing-body" >
+<!-- GA SHIT -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46242308-1', 'fairmarketfantasy.com');
+  //ga('send', 'pageview'); // Handled by angulartics
+
+</script>
+  <div class="fixed-header">
+    <div class="container clearfix">
+      <div class="span6 nav-span">
+        <h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span> Temporarily DOWN for Maintenance</h1>
+      </div>
+      <!--
+      <div class="span2 nav-span">
+        <a class="sign-in-nav" href="javascript://" ng-click="loginModal()">Sign In</a>
+      </div>
+      <div class="span2 nav-span">
+        <a href="javascript://" class="sign-up-nav" ng-click='signUpModal()'>Sign Up</a>
+      </div>
+      -->
+    </div>
+  </div>
+  <div class="landing-container">
+    <div class="span6 offset1 sign-up-content">
+      <div class="login-buttons" ng-controller="LoginController">
+        <h2 class="sign-up-heading">Play Fantasy Football for FREE or for Cash!</h2> 
+        <p class="sign-up-text">At <span class="special">Fair Market </span><span class="tilt">Fantasy</span> you can play daily and weekly fantasy football leagues for real money! Our player prices are set in real time, based on market demand, and we have the highest average  payouts in the industry!</p> 
+        <p class="special difference">Come back in a few. Games will resume shortly!</p>
+
+        <!--<p><a href="javascript://" class="btn btn-large btn-block btn-danger" ng-click='signUpModal()'>Sign Up, Now!</a></p>
+        <p><a href="javascript://" class="btn btn-large btn-block btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Sign Up with Facebook</a></p>
+        <p><a href="/terms" target="_blank">Terms and Conditions</a></p>-->
+      </div>
+      <div class="landing-mobile-app-links">
+        <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
+      </div>
+    </div>
+    <div id="sport-teaser">
+    </div>
+  </div>
+
+<%= javascript_include_tag "application" %>
+
+<%= yield :javascript %>
+
+</body>
+</html>
+<!-- Another #winning product brought to you by MustWin! http://mustw.in -->
+
