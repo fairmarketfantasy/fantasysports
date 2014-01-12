@@ -10,6 +10,7 @@ import (
 	"github.com/mreiferson/go-httpclient"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // Configure the HTTP client
@@ -58,7 +59,11 @@ func makeRequest(u string) io.ReadCloser {
 	  NBA Realtime v3                 8uttxzxefmz45ds8ckz764vr
 	  NBA Images Production v1        5n9kzft8ty4dhubeke29mvbb
 	*/
-	query.Add("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
+	if strings.Contains(u, "/nba-rt3/") {
+		query.Add("api_key", "8uttxzxefmz45ds8ckz764vr")
+	} else {
+		query.Add("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
+	}
 	urlObj.RawQuery = query.Encode()
 
 	return makeRequestWithRetries(urlObj.String(), 1)
