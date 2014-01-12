@@ -10,7 +10,7 @@ class RostersController < ApplicationController
       # Don't paginate active rosters
       rosters.active
     end
-    render_api_response rosters
+    render_api_response rosters # This is slow too, maybe make abridging smarter
   end
 
   def in_contest

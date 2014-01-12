@@ -77,20 +77,52 @@ class CustomerObject < ActiveRecord::Base
     sprintf( '%.2f', (balance/100) )
   end
 
-  def increase_balance(amount, event, opts = {})
+  def increase_monthly_contest_entries!(amount, opts = {})
     ActiveRecord::Base.transaction do
-      self.balance += amount
-      TransactionRecord.create!({:user => self.user, :event => event, :amount => amount}.merge(opts))
+      TransactionRecord.create!({:user => self.user, :amount => amount, :is_monthly_entry => true}.merge(opts))
+      self.monthly_contest_entries += amount
       self.save!
     end
   end
 
-  def decrease_balance(amount, event, opts = {})
+  def decrease_monthly_contest_entries!(amount, opts = {})
+    ActiveRecord::Base.transaction do
+      TransactionRecord.create!({:user => self.user, :amount => -amount, :is_monthly_entry => true}.merge(opts))
+      self.monthly_contest_entries -= amount
+      self.save!
+    end
+  end
+
+  def increase_monthly_winnings(amount, opts = {})
+    ActiveRecord::Base.transaction do
+      self.balance += amount
+      TransactionRecord.create!({:user => self.user, :event => opts[:event], :amount => amount}.merge(opts))
+      self.save!
+    end
+  end
+
+  def decrease_monthly_winnings(amount, event, opts = {})
+    ActiveRecord::Base.transaction do
+      self.balance += amount
+      TransactionRecord.create!({:user => self.user, :amount => -amount}.merge(opts))
+      self.save!
+    end
+  end
+
+  def increase_account_balance(amount, opts = {})
+    ActiveRecord::Base.transaction do
+      self.balance += amount
+      TransactionRecord.create!({:user => self.user, :event => opts[:event], :amount => amount}.merge(opts))
+      self.save!
+    end
+  end
+
+  def decrease_account_balance(amount, opts = {})
     ActiveRecord::Base.transaction do
       self.reload
       raise HttpException.new(409, "You're trying to transfer more than you have.") if self.balance - amount < 0 && self.user.id != SYSTEM_USER.id
       self.balance -= amount
-      TransactionRecord.create!({:user => self.user, :event => event, :amount => -amount}.merge(opts))
+      TransactionRecord.create!({:user => self.user, :event => opts[:event], :amount => -amount}.merge(opts))
       self.save!
     end
   end

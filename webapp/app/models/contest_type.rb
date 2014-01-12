@@ -6,9 +6,9 @@ class ContestTypeValidator < ActiveModel::Validator
       if total_payout > 10000000 # Catch the crazies
         record.errors[:payout_structure] = "Payout structure adds to more than  100k"
       end
-    elsif total_payout != total_buy_in - total_buy_in * record.rake
+    elsif total_payout != total_buy_in - record.rake
       debugger
-      record.errors[:payout_structure] = "Payout structure doesn't equal max_entries * buy_in - rake * max_entries * buy_in"
+      record.errors[:payout_structure] = "Payout structure doesn't equal max_entries * buy_in - rake"
     end
     raise "Buy in must be between $0 and $1000" unless (0..100000).include?(record.buy_in)
   end
@@ -23,7 +23,6 @@ class ContestType < ActiveRecord::Base
   validates_with ContestTypeValidator
 
   scope :public, -> { where('private = false OR private IS NULL') }
-  # TODO: validate payout structure, ensure rake isn't settable
 
   def get_payout_structure
     @payout_structure ||= JSON.load(self.payout_structure)

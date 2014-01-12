@@ -46,7 +46,7 @@ class Recipient < ActiveRecord::Base
     else
       raise HttpResponse.new 409, response.error[0].message
     end
-    customer_object.decrease_balance(amount.to_i, "withdrawal", :transaction_data => {:paypal_transaction_id => response.payKey}.to_json)
+    customer_object.decrease_account_balance(amount.to_i, "withdrawal", :transaction_data => {:paypal_transaction_id => response.payKey}.to_json)
   end
 
 end

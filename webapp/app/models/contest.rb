@@ -88,15 +88,6 @@ class Contest < ActiveRecord::Base
     score
   end
 
-  def rake_amount
-    rake = self.num_rosters * self.contest_type.buy_in * contest_type.rake
-    if contest_type.name == 'h2h rr'
-      per_game_buy_in = self.contest_type.buy_in / (self.contest_type.max_entries - 1)
-      rake = (self.num_rosters-1) * per_game_buy_in * num_rosters * contest_type.rake
-    end
-    rake
-  end
-
   def submitted_rosters_by_rank(&block)
     rosters = self.rosters.submitted.order("contest_rank ASC")
     ranks = rosters.collect(&:contest_rank)
@@ -143,11 +134,11 @@ class Contest < ActiveRecord::Base
           next
         end
         # puts "roster #{roster.id} won #{payment_per_roster}!"
-        roster.owner.payout(payment, self.contest_type.takes_tokens?, :event => 'payout', :roster_id => roster.id, :contest_id => self.id)
+        roster.owner.payout(:monthly_winnings, payment, :event => 'contest_payout', :roster_id => roster.id, :contest_id => self.id)
         roster.amount_paid = payment
         roster.save!
       end
-      SYSTEM_USER.payout(self.rake_amount, self.contest_type.takes_tokens?, :event => 'rake', :roster_id => nil, :contest_id => self.id)
+      SYSTEM_USER.payout(:monthly_entries, self.rake/ 1000, :event => 'rake', :roster_id => nil, :contest_id => self.id)
       self.paid_at = Time.new
 
       self.save!
