@@ -11,12 +11,12 @@ end
 
 class TransactionRecord < ActiveRecord::Base
   attr_protected
-  CONTEST_TYPES = %w( buy_in cancelled_roster payout rake )
+  CONTEST_TYPES = %w( buy_in cancelled_roster contest_payout rake )
   validates_presence_of :user
-  validates :event, inclusion: { in: CONTEST_TYPES + %w( 
-                                 deposit withdrawal buy_in cancelled_roster 
-                                 payout rake joined_grant token_buy token_buy_ios 
-                                 free_referral_payout paid_referral_payout referred_join_payout 
+  validates :event, inclusion: { in: CONTEST_TYPES + %w(
+                                 deposit withdrawal cancelled_roster
+                                 contest_payout payout rake joined_grant token_buy token_buy_ios
+                                 free_referral_payout paid_referral_payout referred_join_payout
                                  revert_transaction manual_payout promo) }
   validates_with TransactionRecordValidator
 
@@ -42,15 +42,22 @@ class TransactionRecord < ActiveRecord::Base
   def revert!
     user = self.user
 
-    opts = self.attributes
-    ['id', 'event', 'amount', 'is_tokens'].each do |a|
-      opts.delete(a)
+    opts = self.attributes.reject{|k| [:amount, :event, :user_id, :transaction_data, :created_at, :updated_at].include?(k) }
+    type = case
+      when self.is_monthly_winnings
+        'monthly_winnings'
+      when self.is_monthly_entry
+        'monthly_entry'
+      when self.is_tokens
+        '' # Shouldn't hit this
+      else
+        'balance'
     end
 
     if self.amount < 0
-      user.payout(self.amount.abs, self.is_tokens, opts.merge(:event => 'revert_transaction', :reverted_transaction_id => self.id))
+      user.payout(type, self.amount.abs, opts.merge(:event => 'revert_transaction', :reverted_transaction_id => self.id))
     else
-      user.charge(self.amount.abs, self.is_tokens, opts.merge(:event => 'revert_transaction', :reverted_transaction_id => self.id))
+      user.charge(type, self.amount.abs, opts.merge(:event => 'revert_transaction', :reverted_transaction_id => self.id))
     end
   end
 end
