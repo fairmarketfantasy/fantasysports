@@ -92,11 +92,16 @@ func main() {
 	var orm model.Orm
 	var ormType model.Orm
 
+	sportName := "NFL"
+	if *sport == "NBA" {
+		sportName = "NBA"
+	}
+
 	ormType = &model.OrmBase{}
 	orm = ormType.Init(lib.DbInit(""))
 	lib.InitSports()
 	ormType = &model.OrmBase{}
-	orm = ormType.Init(lib.DbInit("NFL"))
+	orm = ormType.Init(lib.DbInit(sportName))
 
 	fetcher, mgr := getFetcher(sport, &orm)
 

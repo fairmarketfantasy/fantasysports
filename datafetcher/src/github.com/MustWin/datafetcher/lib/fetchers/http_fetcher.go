@@ -59,7 +59,7 @@ func makeRequest(u string) io.ReadCloser {
 	  NBA Realtime v3                 8uttxzxefmz45ds8ckz764vr
 	  NBA Images Production v1        5n9kzft8ty4dhubeke29mvbb
 	*/
-	if strings.Contains(u, "/nba-rt3/") {
+	if strings.Contains(u, "/nba-p3/") {
 		query.Add("api_key", "8uttxzxefmz45ds8ckz764vr")
 	} else {
 		query.Add("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
