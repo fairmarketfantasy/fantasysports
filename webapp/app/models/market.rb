@@ -60,6 +60,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         rescue Exception => e
           puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
           Rails.logger.error "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
+          raise e if Rails.env == 'test'
           Honeybadger.notify(
             :error_class   => "MarketTender Error",
             :error_message => "MarketTenderError in #{method} for #{market.id}: #{e.message}",

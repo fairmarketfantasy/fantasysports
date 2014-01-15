@@ -38,6 +38,7 @@ class User < ActiveRecord::Base
   belongs_to :inviter, :class_name => 'User'
 
   before_create :set_blank_name
+  after_create :create_customer_object
 
   def set_blank_name
     self.name ||= ''
@@ -47,14 +48,9 @@ class User < ActiveRecord::Base
     customer_object.has_agreed_terms? && customer_object.is_active? && !customer_object.locked? || self.id == SYSTEM_USER.id
   end
 
-  def customer_object_with_create
-    co = customer_object_without_create
-    if co.nil?
-      co = CustomerObject.create!(:user_id => self.id)
-    end
-    co
+  def create_customer_object
+    CustomerObject.create!(:user_id => self.id)
   end
-  alias_method_chain :customer_object, :create
 
   def self.find_for_facebook_oauth(auth)
     Rails.logger.debug(auth.pretty_inspect)
@@ -104,7 +100,6 @@ class User < ActiveRecord::Base
 
   # NOENTRY TODO: change to count entries
   def charge(type, amount, opts = {}) # roster_id, contest_id, invitation_id, referred_id
-    raise "Type must be one of [balance, monthly_entry, monthly_winnings]" unless [:balance, :monthly_entry, :monthly_winnings].include?(type.to_sym)
     case type.to_sym
     when :balance
       self.customer_object.decrease_account_balance(amount, opts)
@@ -112,11 +107,12 @@ class User < ActiveRecord::Base
       self.customer_object.increase_monthly_contest_entries!(amount, opts)
     when :monthly_winnings
       self.customer_object.decrease_monthly_winnings(amount, opts)
+    else
+      raise "Type must be one of [balance, monthly_entry, monthly_winnings]" unless [:balance, :monthly_entry, :monthly_winnings].include?(type.to_sym)
     end
   end
 
   def payout(type, amount, opts)
-    raise "Type must be one of [balance, monthly_entry, monthly_winnins]" unless [:balance, :monthly_entry, :monthly_winnings].include?(type.to_sym)
     case type.to_sym
     when :balance
       self.customer_object.increase_account_balance(amount, opts)
@@ -124,6 +120,8 @@ class User < ActiveRecord::Base
       self.customer_object.decrease_monthly_contest_entries!(amount, opts)
     when :monthly_winnings
       self.customer_object.increase_monthly_winnings(amount, opts)
+    else
+      raise "Type must be one of [balance, monthly_entry, monthly_winnings]"
     end
   end
 

@@ -216,7 +216,7 @@ FactoryGirl.define do
     factory :paid_user do
       after(:create) do |user|
         user.confirm!
-        user.customer_object = create(:customer_object, user: user)
+        user.customer_object.update_attributes(is_active: true, has_agreed_terms: true)
         user.recipient       = create(:recipient, user: user, paypal_email: user.email, paypal_email_confirmation: user.email)
         user.token_balance = 2000
         user.save!

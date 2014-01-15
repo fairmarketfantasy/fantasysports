@@ -158,7 +158,7 @@ class Roster < ActiveRecord::Base
         #charge account
         if contest_type.buy_in > 0 && charge
           self.owner.charge(:monthly_entry, 1, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
-          SYSTEM_USER.charge(:monthly_entry, 1, :event => 'rake', :roster_id => nil, :contest_id => self.id) unless self.owner.id == SYSTEM_USER.id
+          #SYSTEM_USER.payout(:monthly_entry, 1, :event => 'rake', :roster_id => nil, :contest_id => self.id) unless self.owner.id == SYSTEM_USER.id
         end
       end
 

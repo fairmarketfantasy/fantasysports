@@ -36,7 +36,7 @@ class CustomerObjectTest < ActiveSupport::TestCase
         it "should increase by the amount" do
           assert_difference("customer_object.balance", amt) do
             assert_difference("TransactionRecord.count", 1) do
-              customer_object.increase_balance(amt, 'deposit')
+              customer_object.increase_account_balance(amt, :event => 'deposit')
             end
           end
         end

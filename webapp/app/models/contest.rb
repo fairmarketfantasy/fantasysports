@@ -13,39 +13,19 @@ class Contest < ActiveRecord::Base
 
   validates :owner_id, :contest_type_id, :buy_in, :market_id, presence: true
 
+  # NOENTRY TODO: REMOVE CUSTOM H2H amounts
   #creates a roster for the owner and creates an invitation code
   def self.create_private_contest(opts)
     market = Market.where(:id => opts[:market_id], state: ['published', 'opened']).first
     raise HttpException.new(409, "Sorry, that market couldn't be found or is no longer active. Try a later one.") unless market
     raise HttpException.new(409, "Sorry, it's too close to market close to create a contest. Try a later one.") if Time.new + 5.minutes > market.closed_at
     # H2H don't have to be an existing contst type, and in fact are always new ones so that if your challenged person doesn't accept, the roster is cancelled
-    existing_contest_type = market.contest_types.where(:name => opts[:type], :buy_in => opts[:buy_in], :takes_tokens => !!opts[:takes_tokens]).first
-    if opts[:type] == 'h2h' && existing_contest_type.nil?
-      buy_in       = opts[:buy_in]
-      rake = 0.03
-
-      contest_type = ContestType.create!(
-        :market_id => market.id,
-        :name => 'h2h',
-        :description => 'custom h2h contest',
-        :max_entries => 2,
-        :buy_in => opts[:buy_in],
-        :rake => rake,
-        :payout_structure => [2 * buy_in - buy_in * rake * 2].to_json,
-        :user_id => opts[:user_id],
-        :private => true,
-        :salary_cap => opts[:salary_cap] || 100000,
-        :payout_description => "Winner take all",
-        :takes_tokens => opts[:takes_tokens] || false,
-      )
-    else
-      contest_type = existing_contest_type
-      raise HttpException.new(404, "No such contest type found") unless contest_type
-    end
+    contest_type = market.contest_types.where(:name => opts[:type]).first
+    raise HttpException.new(404, "No such contest type found") unless contest_type
+    raise HttpException.new(409, "You can't create a private lollapalloza") if contest_type.name =~ /k/
 
     if opts[:league_id] || opts[:league_name]
       opts[:max_entries] = contest_type.max_entries
-      opts[:takes_tokens] = contest_type.takes_tokens
       opts[:user] = User.find(opts[:user_id])
       opts[:market] = market
       league = League.find_or_create_from_opts(opts)
@@ -138,7 +118,8 @@ class Contest < ActiveRecord::Base
         roster.amount_paid = payment
         roster.save!
       end
-      SYSTEM_USER.payout(:monthly_entries, self.rake/ 1000, :event => 'rake', :roster_id => nil, :contest_id => self.id)
+      # NOEENTRY TODO: Don't tax system user's monthly payouts
+      SYSTEM_USER.payout(:monthly_winnings, self.contest_type.rake, :event => 'rake', :roster_id => nil, :contest_id => self.id)
       self.paid_at = Time.new
 
       self.save!

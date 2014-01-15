@@ -95,16 +95,16 @@ class CustomerObject < ActiveRecord::Base
 
   def increase_monthly_winnings(amount, opts = {})
     ActiveRecord::Base.transaction do
-      self.balance += amount
-      TransactionRecord.create!({:user => self.user, :event => opts[:event], :amount => amount}.merge(opts))
+      self.monthly_winnings += amount
+      TransactionRecord.create!(opts.merge({:user => self.user, :event => opts[:event], :amount => amount, :is_monthly_winnings => true}))
       self.save!
     end
   end
 
-  def decrease_monthly_winnings(amount, event, opts = {})
+  def decrease_monthly_winnings(amount, opts = {})
     ActiveRecord::Base.transaction do
-      self.balance += amount
-      TransactionRecord.create!({:user => self.user, :amount => -amount}.merge(opts))
+      self.monthly_winnings += amount
+      TransactionRecord.create!(opts.merge({:user => self.user, :amount => -amount, :is_monthly_winnings => true}))
       self.save!
     end
   end

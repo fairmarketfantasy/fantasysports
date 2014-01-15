@@ -5,7 +5,6 @@ class RecipientTest < ActiveSupport::TestCase
   describe Recipient do
     let(:user) { 
       user = create(:user) 
-      user.customer_object = create(:customer_object, user: user)
       user
     }
 

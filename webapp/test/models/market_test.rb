@@ -205,7 +205,7 @@ class MarketTest < ActiveSupport::TestCase
     @market.save!
     @market.open
     contest_type = @market.contest_types.first
-    contest_type.update_attributes(:buy_in => 20000, :takes_tokens => false, :payout_structure => '[194000]')
+    contest_type.update_attributes(:buy_in => 20000, :takes_tokens => false, :payout_structure => '[238000]')
     5.times do
       create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
       create(:roster, :market => @market, :contest_type => contest_type).fill_pseudo_randomly3(false).submit!
@@ -253,7 +253,7 @@ class MarketTest < ActiveSupport::TestCase
 
     #buy some players randomly. plenty of bets
     contest_type = @market.contest_types.first
-    contest_type.update_attributes(:buy_in => 20000, :takes_tokens => false, :payout_structure => '[194000]')
+    contest_type.update_attributes(:buy_in => 20000, :takes_tokens => false, :payout_structure => '[238000]')
     10.times do
       create(:roster, :market => @market, :contest_type => contest_type).fill_randomly.submit!
       create(:roster, :market => @market, :contest_type => contest_type).fill_pseudo_randomly3(false).submit!
@@ -343,9 +343,9 @@ class MarketTest < ActiveSupport::TestCase
     @market.opened_at = Time.new - 1.minute
     @market.save!
     @market.open
-    contest_types = [@market.contest_types.where("buy_in = 100 and takes_tokens = true").first,
-        @market.contest_types.where("buy_in = 100 and takes_tokens = false").first,
-        @market.contest_types.where("buy_in = 1000").first]
+    contest_types = [@market.contest_types.where("name = 'h2h'").first,
+        @market.contest_types.where("name = 'Top5'").first,
+        @market.contest_types.where("name = '65/25/10'").first]
     user = create(:paid_user)
     rosters = contest_types.map{|ct| Roster.generate(user, ct).submit! }
     @market.fill_rosters
@@ -361,7 +361,7 @@ class MarketTest < ActiveSupport::TestCase
     setup_simple_market
     @market.update_attribute(:opened_at, Time.new-1.minute)
     @market.open
-    ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 10").first
+    ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 12").first
     users = (1..10).map{ create(:paid_user) }
     rosters = []
     users.each_with_index do |user, i|
@@ -393,10 +393,10 @@ class MarketTest < ActiveSupport::TestCase
     setup_simple_market
     add_lollapalooza(@market)
     ct1 = @market.contest_types.where("buy_in = 1000 and max_entries = 2").first
-    ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 10").first
+    ct2 = @market.contest_types.where("buy_in = 1000 and max_entries = 12").first
     ct3 = @market.contest_types.where("buy_in = 1000 and name LIKE '%k'").first
     # Fill 3 contest types with 11 users each.  H2H will create 6 contests. ct2 will have 2 contests, ct3 -> 100k
-    users = (1..11).map{ create(:paid_user) }
+    users = (1..13).map{ create(:paid_user) }
     @rosters = {
       ct1 => [],
       ct2 => [],
@@ -416,7 +416,7 @@ class MarketTest < ActiveSupport::TestCase
         @rosters[roster.contest_type] << roster
       end
     end
-    assert_equal 9, Contest.count # 6 h2h, 2 10 man, 1 lolla
+    assert_equal 10, Contest.count # 6 h2h, 2 10 man, 1 lolla
     # Open the market
     @market.opened_at = Time.now - 2.minutes
     @market.save!
@@ -441,9 +441,9 @@ class MarketTest < ActiveSupport::TestCase
     @market.update_attribute(:closed_at, Time.new - 1.minute)
     @market.market_players.each{|mp| mp.update_attribute(:locked_at, Time.new - 1.minute) }
     Market.tend
-    assert_equal 9, Contest.count
+    assert_equal 10, Contest.count
     assert_equal 'closed', @market.reload.state
-    assert_equal 9, Roster.where('is_generated').count # We only autofill the 10 man, not the remaining h2h
+    assert_equal 11, Roster.where('is_generated').count # We only autofill the 10 man, not the remaining h2h
     assert_equal 1, Roster.where(:cancelled => true).count # Cancelled the h2h
     assert Player.purchasable_for_roster(@rosters[ct1][0]).empty? # spot check
 
@@ -464,7 +464,7 @@ class MarketTest < ActiveSupport::TestCase
     # Rosters are scored and ranked
     @rosters.each do |ct, rosters|
       score = 0
-      rank = 12 # just a number higher than the lowest rank
+      rank = 14 # just a number higher than the lowest rank
       rosters.each_with_index do |roster, index|
         roster.reload
         next if roster.cancelled?
@@ -493,10 +493,10 @@ class MarketTest < ActiveSupport::TestCase
       end
     end
 
-    assert_equal 41, Roster.where("state = 'finished'").count
+    assert_equal 49, Roster.where("state = 'finished'").count
     assert_equal 1, Roster.where("state = 'cancelled'").count
-    assert_equal 9, Roster.where("is_generated").count
-    assert_equal 42, Roster.over.count
+    assert_equal 11, Roster.where("is_generated").count
+    assert_equal 50, Roster.over.count
 
     Contest.all.each{|c| TransactionRecord.validate_contest(c) }
   end
@@ -523,7 +523,7 @@ class MarketTest < ActiveSupport::TestCase
     pricing_roster = create(:roster, :market => @market, :contest_type => @market.contest_types.first).fill_randomly.submit!
     price = pricing_roster.players_with_prices.reduce(0){|sum, p| sum += p.buy_price }
     initial_players = Player.with_prices(@market, 1000).order('id asc')
-    @market.update_attribute(:opened_at, Time.new - 1.minute)
+    [@market, @team_market].each{|m| m.update_attribute(:opened_at, Time.new - 1.minute) }
     @market.games.update_all(:game_time => Time.new)
     @market.market_players.update_all(:locked_at => Time.new- 1.minute)
     initial_mps = @market.market_players.order('id asc').all
