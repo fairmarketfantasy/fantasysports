@@ -150,10 +150,16 @@ func ParseStandings(state *ParseState) *models.Team {
 	switch state.CurrentElementName() {
 
 	case "conference":
-		state.Conference = parsers.FindAttrByName(state.CurrentElement().Attr, "name")
+		conferenceName := parsers.FindAttrByName(state.CurrentElement().Attr, "name")
+		if conferenceName != "" {
+			state.Conference = conferenceName
+		}
 
 	case "division":
-		state.Division = parsers.FindAttrByName(state.CurrentElement().Attr, "name")
+		divisionName := parsers.FindAttrByName(state.CurrentElement().Attr, "name")
+		if divisionName != "" {
+			state.Division = divisionName
+		}
 
 	case "team":
 		team := buildTeam(state.CurrentElement())

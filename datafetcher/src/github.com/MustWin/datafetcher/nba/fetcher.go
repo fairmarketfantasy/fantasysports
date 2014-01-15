@@ -19,7 +19,7 @@ var baseUrl = "http://api.sportsdatallc.org/nba-p3/"
 
 func (f Fetcher) GetStandings() []*models.Team {
 	// GET Standings nba-t1/teams/:year/:nba_season/standings.xml
-	url := fmt.Sprintf(baseUrl+"teams/%d/%s/standings.xml", f.Year, "REG") // This just grabs all the teams
+	url := fmt.Sprintf(baseUrl+"seasontd/%d/%s/standings.xml", f.Year, "REG") // This just grabs all the teams
 	teams, _ := parsers.ParseXml(f.FetchMethod(url), ParseStandings)
 	return teams.([]*models.Team)
 }
