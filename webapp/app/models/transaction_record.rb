@@ -29,7 +29,7 @@ class TransactionRecord < ActiveRecord::Base
 
   def self.validate_contest(contest)
     return if contest.contest_type.max_entries == 0
-    sum = contest.transaction_records.reduce(0){|total, tr| total += tr.amount}
+    sum = contest.transaction_records.reduce(0){|total, tr| total +=  tr.is_monthly_entry? ? -1000 * tr.amount : tr.amount }
     if sum != 0
       raise "Contest #{contest.id} sums to #{sum}. Should Zero. Fucking check yo-self."
     end
@@ -44,11 +44,13 @@ class TransactionRecord < ActiveRecord::Base
 
     opts = self.attributes.reject{|k| [:amount, :event, :user_id, :transaction_data, :created_at, :updated_at].include?(k) }
     type = case
-      when self.is_monthly_winnings
+      when self.is_monthly_winnings?
+        opts[:is_monthly_winnings] = true
         'monthly_winnings'
-      when self.is_monthly_entry
+      when self.is_monthly_entry?
+        opts[:is_monthly_entry] = true
         'monthly_entry'
-      when self.is_tokens
+      when self.is_tokens?
         '' # Shouldn't hit this
       else
         'balance'

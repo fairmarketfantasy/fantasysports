@@ -142,7 +142,7 @@ class RosterTest < ActiveSupport::TestCase
     @roster.submit!
     assert_equal 'submitted', @roster.state
     assert_equal 1, @roster.players.length
-    assert_equal 100, @roster.buy_in
+    assert_equal 1000, @roster.buy_in
     @market.reload
     market_player = @market.market_players.where("player_id = #{player.id}").first
 
@@ -164,12 +164,11 @@ class RosterTest < ActiveSupport::TestCase
   end
 
   test "creating and canceling roster affects account balance" do
-    user = create(:user)
-    user.customer_object = create(:customer_object, user: user)
+    user = create(:paid_user)
     initial_entries  = user.customer_object.monthly_contest_entries
     roster = nil
     contest_type = @market.contest_types.where(:buy_in => 1000).first
-    assert_difference("TransactionRecord.count", 2) do
+    assert_difference("TransactionRecord.count", 1) do
       roster = Roster.generate(user, contest_type)
       roster.submit!
     end
@@ -233,7 +232,7 @@ class RosterTest < ActiveSupport::TestCase
 
   test "entering lolla twice" do
     add_lollapalooza @market
-    lolla = @market.contest_types.where(:name => '0.11k').first
+    lolla = @market.contest_types.where(:name => '0.13k').first
     user1 = create(:paid_user)
     assert_difference 'user1.customer_object.reload.monthly_contest_entries', 2 do
       assert_difference 'user1.customer_object.reload.monthly_contest_entries', 1 do
@@ -253,8 +252,8 @@ class RosterTest < ActiveSupport::TestCase
     user2 = roster2.owner
     contest = nil
     pre_count = nil
-    assert_difference 'user1.customer_object.reload.balance', -100 do
-      assert_difference 'user1.customer_object.reload.balance', 94 do
+    assert_difference 'user1.customer_object.reload.monthly_contest_entries', 1 do
+      assert_difference 'user1.customer_object.reload.monthly_winnings', 1900 do
         roster1.fill_randomly.submit!
         begin
           roster2.fill_randomly.submit!
@@ -289,13 +288,12 @@ class RosterTest < ActiveSupport::TestCase
           :data => ''
         )
       end
-
       contest.revert_payday!
       assert_equal 2*pre_count-2, contest.transaction_records.reload.count
     end
 
-    assert_difference 'user1.customer_object.reload.balance', 0 do
-      assert_difference 'user2.customer_object.reload.balance', 194 do
+    assert_difference 'user1.customer_object.reload.monthly_winnings', 0 do
+      assert_difference 'user2.customer_object.reload.monthly_winnings', 1900 do
         contest.payday!
       end
     end
