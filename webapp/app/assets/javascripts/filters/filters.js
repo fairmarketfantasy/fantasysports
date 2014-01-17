@@ -95,6 +95,11 @@ angular.module('app.filters')
       return input+(s[(v-20)%10]||s[v]||s[0]);
     };
   })
+  .filter('slashesToDashes', ['$filter', function($filter) {
+    return function(input) {
+      return input.replace(/\//g, '-');
+    };
+  }])
   .filter('allCaps', ['$filter', function($filter) {
     return function(input) {
       return input.toUpperCase();

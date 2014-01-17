@@ -17,7 +17,7 @@ angular.module("app.controllers")
   });
 
   $scope.rosters = rosters;
-  $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'h2h', 'h2h rr'];
+  $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'Top5', '65/25/10', 'h2h', 'h2h rr'];
 
   $scope.isCurrent = function(market){
     if (!market) { return; }

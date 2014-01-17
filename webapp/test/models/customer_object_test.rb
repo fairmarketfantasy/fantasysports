@@ -45,4 +45,43 @@ class CustomerObjectTest < ActiveSupport::TestCase
     end
 
   end
+
+  test "monthly accounting" do
+    c = create(:user).customer_object
+    c.update_attributes(:monthly_winnings => 150000, :monthly_contest_entries => 9, :contest_entries_deficit => 1)
+    assert_equal c.taxed_net_monthly_winnings, 75000
+    assert_difference "c.reload.monthly_winnings", -150000 do
+      assert_difference "c.reload.balance", 75000 - 1000 do # -1000 for this month's activation
+        c.do_monthly_accounting!
+      end
+    end
+    assert c.last_activated_at
+  end
+
+  test "user activation" do
+    u = create(:user)
+    assert !u.customer_object.is_active?
+    u.customer_object.increase_account_balance(1000, :event => 'deposit')
+    assert_difference "u.customer_object.reload.balance", -1000 do
+      u.customer_object.do_monthly_activation!
+    end
+    assert u.customer_object.is_active?
+  end
+
+  test "taxed winnings" do
+    c = create(:user).customer_object
+    c.update_attributes(:monthly_winnings => 150000, :monthly_contest_entries => 9, :contest_entries_deficit => 1)
+    assert_equal c.taxed_net_monthly_winnings, 75000
+  end
+
+  test "double activate not double charged" do
+    u = create(:user)
+    assert !u.customer_object.is_active?
+    u.customer_object.increase_account_balance(1000, :event => 'deposit')
+    assert_difference "u.customer_object.reload.balance", -1000 do
+      u.customer_object.do_monthly_activation!
+      u.customer_object.do_monthly_activation!
+    end
+    assert u.customer_object.is_active?
+  end
 end

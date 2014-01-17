@@ -2,6 +2,20 @@ require 'test_helper'
 
 class CardsControllerTest < ActionController::TestCase
 
+  test "activate with card payment" do
+    user = create(:paid_user) #already has a customer object
+    sign_in(user)
+    @customer_object = user.customer_object
+    @customer_object.update_attribute(:balance, 1000)
+    card = user.customer_object.credit_cards.first
+    NetworkMerchants.stubs(:charge_finalize).returns(true)
+    assert_difference('@customer_object.reload.balance', 0) do
+      xhr :post, :charge_redirect_url, 'token-id' => 'blah', :callback => 'callme'
+    end
+    assert user.customer_object.is_active?
+
+  end
+
   test "post to create when a user already has a customer object" do
     user = create(:paid_user) #already has a customer object
     sign_in(user)
