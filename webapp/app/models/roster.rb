@@ -109,61 +109,11 @@ class Roster < ActiveRecord::Base
     end
   end
 
-  def submit_without_sql_func(charge = true)
-    raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
-    self.transaction do
-      set_contest = contest
-      #enter contest
-      contest_type.with_lock do #prevents creation of contests of the same type at the same time
-        if set_contest.nil?
-          #enter roster into public contest
-          set_contest = Contest.where("contest_type_id = ?
-            AND (user_cap = 0 OR user_cap > 10
-                OR (num_rosters - num_generated < user_cap
-                    AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
-            AND NOT private", contest_type.id).order('id asc').first
-          if set_contest.nil?
-            if contest_type.limit.nil? || Contest.where(contest_type_id: contest_type.id).count < contest_type.limit
-              set_contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
-                  market_id: self.market_id, contest_type_id: contest_type.id)
-            else
-              raise HttpException.new(403, "Contest is full")
-            end
-          end
-        else #contest not nil. enter private contest
-          if set_contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => set_contest.league_id).first.nil?
-            LeagueMembership.create!(:league_id => set_contest.league_id, :user_id => self.owner_id)
-          end
-        end
-        set_contest.num_generated += 1 if self.is_generated?
-        set_contest.num_rosters += 1
-        set_contest.save!
-        if set_contest.num_rosters > set_contest.user_cap && set_contest.user_cap != 0
-          removed_roster = set_contest.rosters.where('is_generated = true AND NOT cancelled').first
-          raise HttpException.new(403, "Contest #{set_contest.id} is full") if removed_roster.nil?
-          removed_roster.cancel!("Removed for a real player")
-          set_contest.num_rosters -= 1
-          set_contest.num_generated -= 1
-          set_contest.save!
-        end
-        self.contest = set_contest
-        self.save!
-      end
-
-      #charge account
-      if contest_type.buy_in > 0 && charge
-        self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
-      end
-
-    end
-    return self
-  end
-
   #set the state to 'submitted'. If it's in a private contest, increment the number of 
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!(charge = true)
     #buy all the players on the roster. This sql function handles all of that.
-    raise HttpException.new(402, "Insufficient #{contest_type.takes_tokens? ? 'tokens' : 'funds'}") if charge && !owner.can_charge?(contest_type.buy_in, contest_type.takes_tokens?)
+    raise HttpException.new(402, "Unpaid subscription!") if charge && !owner.active_account?
       #purchase all the players and update roster state to submitted
 
       set_contest = contest
@@ -174,13 +124,13 @@ class Roster < ActiveRecord::Base
         if set_contest.nil?
           #enter roster into public contest
           set_contest = Contest.where("contest_type_id = ?
-            AND (user_cap = 0 OR user_cap > 10
+            AND (user_cap = 0 OR user_cap > 12
                 OR (num_rosters - num_generated < user_cap
                     AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
             AND NOT private", contest_type.id).order('id asc').first
           if set_contest.nil?
             if contest_type.limit.nil? || Contest.where(contest_type_id: contest_type.id).count < contest_type.limit
-              set_contest = Contest.create(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
+              set_contest = Contest.create!(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
                   market_id: self.market_id, contest_type_id: contest_type.id)
             else
               raise HttpException.new(403, "Contest is full")
@@ -207,7 +157,8 @@ class Roster < ActiveRecord::Base
 
         #charge account
         if contest_type.buy_in > 0 && charge
-          self.owner.charge(self.contest_type.buy_in, self.contest_type.takes_tokens, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
+          self.owner.charge(:monthly_entry, 1, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
+          #SYSTEM_USER.payout(:monthly_entry, 1, :event => 'rake', :roster_id => nil, :contest_id => self.id) unless self.owner.id == SYSTEM_USER.id
         end
       end
 
@@ -543,7 +494,7 @@ class Roster < ActiveRecord::Base
     self.with_lock do
       if self.state == 'submitted'
         Roster.transaction do
-          self.owner.payout(self.buy_in, self.contest_type.takes_tokens?, :event => 'cancelled_roster', :roster_id => self.id, :contest_id => self.contest_id)
+          self.owner.payout(:monthly_entry, 1, :event => 'cancelled_roster', :roster_id => self.id, :contest_id => self.contest_id)
           self.state = 'cancelled'
           self.cancelled = true
           self.cancelled_at = Time.new

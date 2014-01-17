@@ -3,13 +3,11 @@ require 'test_helper'
 class ContestTest < ActiveSupport::TestCase
   test "payday" do
     setup_simple_market
-    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 100 and NOT takes_tokens").first
+    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 1000 ").first
     refute_nil contest_type
 
-    user1 = create(:user)
-    user1.customer_object = create(:customer_object, user: user1)
-    user2 = create(:user)
-    user2.customer_object = create(:customer_object, user: user2)
+    user1 = create(:paid_user)
+    user2 = create(:paid_user)
     
     roster1 = Roster.generate(user1, contest_type).submit!
     roster2 = Roster.generate(user2, contest_type).submit!
@@ -23,15 +21,13 @@ class ContestTest < ActiveSupport::TestCase
 
     total_payout = contest_type.get_payout_structure.sum
     rake = total_payout * contest_type.rake
-    assert_difference 'user1.customer_object.reload.balance.to_f', contest_type.buy_in * 2 - 2 * contest_type.buy_in * contest_type.rake do
-      assert_difference 'user2.customer_object.reload.balance.to_f', 0 do
+    assert_difference 'user1.customer_object.reload.monthly_winnings.to_f', contest_type.buy_in * 2 - contest_type.rake do
+      assert_difference 'user2.customer_object.reload.monthly_winnings.to_f', 0 do
         roster1.contest.payday!
       end
     end
-    assert_equal roster1.contest.rake_amount.to_f, TransactionRecord.where(:event => 'rake', :contest_id => roster1.contest_id).first.amount.to_f
-    user1.reload
-    user2.reload
-    assert user1.customer_object.balance > user2.customer_object.balance
+    assert_equal roster1.contest_type.rake.to_f, TransactionRecord.where(:event => 'rake', :contest_id => roster1.contest_id).first.amount.to_f
+    assert user1.customer_object.reload.monthly_winnings > user2.customer_object.reload.monthly_winnings
 
     roster1.reload
     roster2.reload
@@ -44,7 +40,7 @@ class ContestTest < ActiveSupport::TestCase
 
   #test auxillary functions
   test "payday auxillary functions" do
-    contest_type = create(:contest_type, :payout_structure => [5,4,3,2,1].to_json, :rake => 0.25, :buy_in => 2, :max_entries => 10)# Make the validator happy
+    contest_type = create(:contest_type, :payout_structure => [5,4,3,2,1].to_json, :rake => 5, :buy_in => 2, :max_entries => 10)# Make the validator happy
     ranks = [1,1,3,3,5,5,5,8,9,10]
     rank_payment = contest_type.rank_payment(ranks)
     expected = {1 => 9, 3 => 5, 5 => 1}
@@ -88,11 +84,11 @@ class ContestTest < ActiveSupport::TestCase
 
   test 'record keeping' do
     setup_simple_market
-    ct = @market.contest_types.where("name='194' AND buy_in = 1000 AND max_entries = 10").first
+    ct = @market.contest_types.where("name='Top5' AND buy_in = 1000 AND max_entries = 12").first
     play_single_contest(ct)
     @rosters.each_with_index do |r, i|
       r.reload
-      if i <5
+      if i < 7
         assert_equal 1, r.losses
         assert_equal 0, r.wins
       else
@@ -102,6 +98,8 @@ class ContestTest < ActiveSupport::TestCase
     end
   end
 
+# TODO: put this back when we put back h2h rr
+=begin
   test 'unfilled h2h rr record keeping' do
     setup_simple_market
     ct = @market.contest_types.where("name='h2h rr' AND buy_in = 900 AND max_entries = 10").first
@@ -124,6 +122,7 @@ class ContestTest < ActiveSupport::TestCase
       assert_equal i, r.wins
     end
   end
+=end
 
   test 'league join' do
     setup_simple_market
@@ -142,7 +141,7 @@ class ContestTest < ActiveSupport::TestCase
     setup_simple_market
     add_lollapalooza(@market)
     ct = @market.contest_types.where("name LIKE '%k%'").first
-    11.times{ Roster.generate(create(:paid_user), ct).submit! }
+    13.times{ Roster.generate(create(:paid_user), ct).submit! }
     assert_raises HttpException do
       Roster.generate(create(:paid_user), ct).submit!
     end

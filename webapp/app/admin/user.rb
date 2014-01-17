@@ -57,8 +57,8 @@ ActiveAdmin.register User do
 
   member_action :user_payout, :method => :post do
     user = User.find(params[:id])
-    amount = params[:use_tokens] ? params[:amount].to_i : params[:amount].to_i * 100
-    user.payout(amount, params[:use_tokens], :event => 'manual_payout', :transaction_data => {reason: params[:reason]}.to_json)
+    amount = params[:amount].to_i * 100
+    user.customer_object.increase_account_balance(amount, 'manual_payout', :transaction_data => {reason: params[:reason] }.to_json)
     redirect_to({:action => :index}, {:notice => "User paid out successfully!"})
   end
   action_item :only => [:show, :edit] do
@@ -66,8 +66,6 @@ ActiveAdmin.register User do
       label_tag('form', 'Payout') + 
       text_field_tag('amount', '', :class => 'custom-text-input', :placeholder => "10.00", :maxlength => 6) + 
       text_field_tag('reason', '', :class => 'custom-text-input', :placeholder => "Why? refund for contest 187", :maxlength => 128) + 
-      label_tag('use_tokens', 'As Fanfrees?', :class => 'custom-text-input', :checked => false) + 
-      check_box_tag('use_tokens', '1', false) + 
       submit_tag("Pay them")
     end
   end

@@ -6,6 +6,60 @@ class CustomerObject < ActiveRecord::Base
   belongs_to :default_card, :class_name => 'CreditCard'
   has_many :credit_cards
 
+  def self.monthly_accounting!
+    CustomerObject.where
+  end
+
+  def do_monthly_accounting!
+    deficit_entries = self.entries_in_the_hole
+    self.update_attributes(:monthly_contest_entries => 0, :contest_entries_deficit => self.entries_in_the_hole)
+    user_earnings = taxed_net_monthly_winnings
+    tax_earnings = self.net_monthly_winnings - user_earnings
+    raise "Monthly accounting doesn't add up" unless deficit_entries * 1000 + user_earnings + tax_earnings - self.monthly_winnings == 0
+    self.class.transaction do
+      decrease_monthly_winnings(user_earnings, :event => 'monthly_user_balance')
+      decrease_monthly_winnings(deficit_entries * 1000, :event => 'monthly_user_entries') if deficit_entries > 0
+      decrease_monthly_winnings(tax_earnings, :event => 'monthly_taxes') if tax_earnings > 0
+      increase_account_balance(user_earnings, :event => 'monthly_user_balance')
+    end
+    if self.balance > 1000
+      do_monthly_activation!
+    end
+  end
+
+  def do_monthly_activation!
+    return if self.is_active && self.last_activated_at > Time.new.beginning_of_month
+    self.is_active = false
+    if self.balance >= 1000
+      self.balance -= 1000
+      self.is_active = true
+      self.last_activated_at = Time.new
+    end
+    self.save!
+  end
+
+  def taxed_net_monthly_winnings
+    tiers = [[10000, 0], [50000, 0.25], [100000, 0.5], [Float::MAX, 0.75]]
+    sum = 0
+    tiers.each_with_index do |tier, i|
+      previous_tier = i == 0 ? 0 : tiers[i-1][0]
+      sum += ([net_monthly_winnings, tier[0]].min - previous_tier ) * (1 - tier[1])
+    end
+    sum
+  end
+
+  def net_monthly_winnings
+    [self.monthly_winnings - self.entries_in_the_hole * 1000, 0].max
+  end
+
+  def entries_in_the_hole
+    self.monthly_contest_entries + self.contest_entries_deficit
+  end
+
+  def contest_winnings_multiplier
+    1 + self.entries_in_the_hole * 0.005
+  end
+
   #override reload to nil out memoized stripe object
   def reload
     @strip_object = nil
@@ -77,22 +131,55 @@ class CustomerObject < ActiveRecord::Base
     sprintf( '%.2f', (balance/100) )
   end
 
-  def increase_balance(amount, event, opts = {})
+  def increase_monthly_contest_entries!(amount, opts = {})
     ActiveRecord::Base.transaction do
-      self.balance += amount
-      TransactionRecord.create!({:user => self.user, :event => event, :amount => amount}.merge(opts))
+      TransactionRecord.create!({:user => self.user, :amount => amount, :is_monthly_entry => true}.merge(opts))
+      self.monthly_contest_entries += amount
       self.save!
     end
   end
 
-  def decrease_balance(amount, event, opts = {})
+  def decrease_monthly_contest_entries!(amount, opts = {})
+    ActiveRecord::Base.transaction do
+      TransactionRecord.create!({:user => self.user, :amount => -amount, :is_monthly_entry => true}.merge(opts))
+      self.monthly_contest_entries -= amount
+      self.save!
+    end
+  end
+
+  def increase_monthly_winnings(amount, opts = {})
+    ActiveRecord::Base.transaction do
+      self.monthly_winnings += amount
+      TransactionRecord.create!(opts.merge({:user => self.user, :event => opts[:event], :amount => amount, :is_monthly_winnings => true}))
+      self.save!
+    end
+  end
+
+  def decrease_monthly_winnings(amount, opts = {})
+    ActiveRecord::Base.transaction do
+      self.monthly_winnings -= amount
+      TransactionRecord.create!(opts.merge({:user => self.user, :amount => -amount, :is_monthly_winnings => true}))
+      self.save!
+    end
+  end
+
+  def increase_account_balance(amount, opts = {})
+    ActiveRecord::Base.transaction do
+      self.balance += amount
+      TransactionRecord.create!({:user => self.user, :event => opts[:event], :amount => amount}.merge(opts))
+      self.save!
+    end
+  end
+
+  def decrease_account_balance(amount, opts = {})
     ActiveRecord::Base.transaction do
       self.reload
       raise HttpException.new(409, "You're trying to transfer more than you have.") if self.balance - amount < 0 && self.user.id != SYSTEM_USER.id
       self.balance -= amount
-      TransactionRecord.create!({:user => self.user, :event => event, :amount => -amount}.merge(opts))
+      TransactionRecord.create!({:user => self.user, :event => opts[:event], :amount => -amount}.merge(opts))
       self.save!
     end
   end
+
 
 end

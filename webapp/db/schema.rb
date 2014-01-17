@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140107212934) do
+ActiveRecord::Schema.define(version: 20140116211018) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,13 +87,19 @@ ActiveRecord::Schema.define(version: 20140107212934) do
   end
 
   create_table "customer_objects", force: true do |t|
-    t.integer  "user_id",                         null: false
+    t.integer  "user_id",                                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "balance",         default: 0
-    t.boolean  "locked",          default: false, null: false
+    t.integer  "balance",                 default: 0
+    t.boolean  "locked",                  default: false, null: false
     t.text     "locked_reason"
     t.integer  "default_card_id"
+    t.boolean  "has_agreed_terms",        default: false
+    t.boolean  "is_active",               default: false
+    t.integer  "monthly_winnings",        default: 0
+    t.integer  "monthly_contest_entries", default: 0
+    t.decimal  "contest_entries_deficit", default: 0.0
+    t.datetime "last_activated_at"
   end
 
   create_table "email_unsubscribes", force: true do |t|
@@ -457,6 +463,8 @@ ActiveRecord::Schema.define(version: 20140107212934) do
     t.datetime "updated_at"
     t.integer  "reverted_transaction_id"
     t.integer  "promo_id"
+    t.boolean  "is_monthly_winnings"
+    t.boolean  "is_monthly_entry"
   end
 
   add_index "transaction_records", ["roster_id"], name: "index_transaction_records_on_roster_id", using: :btree
