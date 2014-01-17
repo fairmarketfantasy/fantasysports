@@ -13,11 +13,9 @@ class Promo < ActiveRecord::Base
       raise HttpException.new(403, "You already redeemed that code!") if redeemed
       raise HttpException.new(403, "That code is no longer valid!") if self.valid_until < Time.new
       PromoRedemption.create!(:user_id => user.id, :promo_id => self.id)
-      if self.tokens > 0
-        user.payout(self.tokens, true, :event => "promo", :promo_id => self.id)
-      end
       if self.cents > 0
-        user.payout(self.cents, false, :event => "promo", :promo_id => self.id)
+        user.payout(:balance, self.cents, :event => "promo", :promo_id => self.id)
+        SYSTEM_USER.charge(:balance, self.cents, :event => 'promo', :promo_id=> self.id)
       end
     end
   end

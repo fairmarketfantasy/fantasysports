@@ -167,14 +167,14 @@ class ActiveSupport::TestCase
   def add_lollapalooza(market)
     ContestType.create!(
       market_id: market.id,
-      name: '0.11k',
-      description: '$110',
-      max_entries: 11,
+      name: '0.13k',
+      description: '$130',
+      max_entries: 13,
       buy_in: 1000,
-      rake: 0.03,
-      payout_structure: '[5000, 2500, 2500, 670]',
+      rake: 3000,
+      payout_structure: '[5000, 2500, 2500]',
       salary_cap: 100000,
-      payout_description: '[5000, 2500, 2500, 670]',
+      payout_description: '[5000, 2500, 2500]',
       takes_tokens: false,
       positions:Positions.default_NFL,
       limit: 1
@@ -216,7 +216,7 @@ FactoryGirl.define do
     factory :paid_user do
       after(:create) do |user|
         user.confirm!
-        user.customer_object = create(:customer_object, user: user)
+        user.customer_object.update_attributes(is_active: true, has_agreed_terms: true)
         user.recipient       = create(:recipient, user: user, paypal_email: user.email, paypal_email_confirmation: user.email)
         user.token_balance = 2000
         user.save!
@@ -230,6 +230,8 @@ FactoryGirl.define do
     after(:create) do |customer_object|
       c = create(:credit_card, customer_object: customer_object)
       customer_object.default_card = c
+      customer_object.has_agreed_terms = true
+      customer_object.is_active = true
       customer_object.save!
     end
   end
@@ -349,7 +351,7 @@ FactoryGirl.define do
     max_entries 100
     salary_cap 100000
     buy_in 1000
-    rake 0.05
+    rake 5000
     payout_structure '[95000]'
     payout_description 'some payout description'
     positions Positions.default_NFL

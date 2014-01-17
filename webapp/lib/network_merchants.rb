@@ -89,6 +89,7 @@ class NetworkMerchants
     end
   end
 
+  # NOENTRY TODO: Make this setup subscriptions instead of directly increasing balance
   def self.charge_finalize(customer_object, token_id)
     xml = send_confirm(token_id)
     raise HttpException.new(403, "Charge failed with #{xml['result-text']}") if xml['result'] != '1'

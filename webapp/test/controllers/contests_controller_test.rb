@@ -3,7 +3,7 @@ require 'test_helper'
 class ContestsControllerTest < ActionController::TestCase
   setup do
     setup_simple_market
-    @public_contest_type = @market.contest_types.where("max_entries = 10 and buy_in = 100").first
+    @public_contest_type = @market.contest_types.where("max_entries = 12 and buy_in = 1000").first
     @user = create(:paid_user)
     @roster = Roster.generate(@user, @public_contest_type)
     @roster.submit!

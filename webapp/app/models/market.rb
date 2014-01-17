@@ -60,6 +60,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         rescue Exception => e
           puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
           Rails.logger.error "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
+          raise e if Rails.env == 'test'
           Honeybadger.notify(
             :error_class   => "MarketTender Error",
             :error_message => "MarketTenderError in #{method} for #{market.id}: #{e.message}",
@@ -403,12 +404,12 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     # Name, description,                                              max_entries, buy_in, rake, payout_structure
     {
       name: '5k',
-      description: '5k Lollapalooza! $2500 for 1st prize!',
-      max_entries: 515,
+      description: '5k Lollapalooza! $1000 for 1st prize!',
+      max_entries: 600,
       buy_in: 1000,
-      rake: 0.03,
+      rake: 100000,
       # Payout lollapalooza: 1 1000 2 500 3 300 4-10 100 11-20 50 21-30 40 31-40 30 41-50 20 51-90 10
-      payout_structure: '[100050, 50000, 30000, ' + # 1-3
+      payout_structure: '[100000, 50000, 30000, ' + # 1-3
                           '10000, 10000, 10000, 10000, 10000, 10000, 10000, ' +  # 4-10
                           '5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, ' + # 11-30
                           '5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, ' +
@@ -418,8 +419,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
                           '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,' + # 66-105
                           '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,' +
                           '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,' +
-                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 500]',
-      payout_description: "1st: $1k, 2nd: $500, 3rd: $300, 4th-10th: $100, 11th-30th: $50, 31st-45th: $40, 46th-55th: $30, 56th-65th: $20, 66th-104th: $10, 105th: $5",
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]',
+      payout_description: "1st: $1k, 2nd: $500, 3rd: $300, 4th-10th: $100, 11th-30th: $50, 31st-45th: $40, 46th-55th: $30, 56th-65th: $20, 66th-105th: $10",
       takes_tokens: false,
       limit: 1
     },
@@ -437,95 +438,36 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     },
 =end
     {
-      name: '970',
-      description: '100FF contest, winner gets 970 FanFrees!',
-      max_entries: 10,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[970]',
-      payout_description: "970FF prize purse, winner takes all",
-      takes_tokens: true,
-    },
-    {
-      name: '970',
-      description: '10 teams, $1 entry fee, winner takes home $9.70',
-      max_entries: 10,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[970]',
-      payout_description: "$9.70 prize purse, winner takes all",
-      takes_tokens: false,
-    },
-    {
-      name: '970',
-      description: '10 teams, $10 entry fee, winner takes home $97.00',
-      max_entries: 10,
+      name: '65/25/10',
+      description: '12 teams, top 3 winners take home $65, $25, $10',
+      max_entries: 12,
       buy_in: 1000,
-      rake: 0.03,
-      payout_structure: '[9700]',
-      payout_description: "$97 prize purse, winner takes all",
+      rake: 2000,
+      payout_structure: '[6500, 2500, 1000]',
+      payout_description: "$100 prize purse, 1st: $65, 2nd: $25, 3rd: $10",
       takes_tokens: false,
     },
     {
-      name: '194',
-      description: '100FF contest, top 5 winners get 194 FanFrees!',
-      max_entries: 10,
-      buy_in: 100, #100 ff
-      rake: 0.03,
-      payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top five win 194 FanFrees",
-      takes_tokens: true,
-    },
-    {
-      name: '194',
-      description: '10 teams, $1 entry fee, top 5 winners take home $1.94',
-      max_entries: 10,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top five win $1.94",
-      takes_tokens: false,
-    },
-    {
-      name: '194',
-      description: '10 teams, $10 entry fee, top 5 winners take home $19.40',
-      max_entries: 10,
+      name: 'Top5',
+      description: '12 teams, top 5 winners take home $20',
+      max_entries: 12,
       buy_in: 1000,
-      rake: 0.03,
-      payout_structure: '[1940,1940,1940,1940,1940]',
-      payout_description: "Top five win $19.40",
+      rake: 2000,
+      payout_structure: '[2000,2000,2000,2000,2000]',
+      payout_description: "Top five win $20",
       takes_tokens: false,
     },
     {
       name: 'h2h',
-      description: '100FF h2h contest, winner gets 194 FanFrees!',
-      max_entries: 2,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[194]',
-      payout_description: "194FF prize purse, winner takes all",
-      takes_tokens: true,
-    },
-    {
-      name: 'h2h',
-      description: 'h2h contest, $1 entry fee, winner takes home $1.94',
-      max_entries: 2,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[194]',
-      payout_description: "$1.94 prize purse, winner takes all",
-      takes_tokens: false,
-    },
-    {
-      name: 'h2h',
-      description: 'h2h contest, $10 entry fee, winner takes home $19.40',
+      description: 'h2h contest, winner takes home $19',
       max_entries: 2,
       buy_in: 1000,
-      rake: 0.03,
-      payout_structure: '[1940]',
-      payout_description: "$19.40 prize purse, winner takes all",
+      rake: 100,
+      payout_structure: '[1900]',
+      payout_description: "$19 prize purse, winner takes all",
       takes_tokens: false,
     },
+=begin
     {
       name: 'h2h rr',
       description: '10 team, h2h round-robin contest, 900FF entry fee, 9 games for 194FF per win',
@@ -556,6 +498,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       payout_description: "9 h2h games each pay out $19.40",
       takes_tokens: false,
     }
+=end
   ];
 
   def set_game_type

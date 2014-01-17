@@ -88,14 +88,12 @@ angular.module("app.controllers")
   };
 
   $scope.addPaypalFunds = function(){
-    var amt = $scope.chargeAmt;
     $scope.addMoneySpinner = true;
     var w = window.open('/users/paypal_waiting');
-    fs.user.addMoney(amt).then(function(resp){
+    fs.user.addMoney().then(function(resp){
       // window.App.currentUser.balance = resp.balance;
       // $scope.close();
        //flash.success("Success, $" + $scope.chargeAmt + " added your your account.");
-      $scope.chargeAmt = null;
       w.location.href = resp.approval_url;
       $scope.addMoneySpinner = false;
     }, function(resp){
@@ -107,12 +105,11 @@ angular.module("app.controllers")
   $scope.addCreditCardFunds = function() {
     var callbackName = Math.random().toString(36).substring(7);
     $scope.addMoneySpinner = true;
-    fs.cards.charge_url($scope.chargeAmt, $scope.selectedCardId, callbackName).then(function(data) { return data.url; }).then(function(url) {
+    fs.cards.charge_url(10, $scope.selectedCardId, callbackName).then(function(data) { return data.url; }).then(function(url) {
       fs.cards.charge(url, callbackName).then(function(user) {
         $timeout(function() {
           $scope.currentUser = currentUserService.currentUser = window.App.currentUser = user;
         });
-        $scope.chargeAmt = null;
         $scope.addMoneySpinner = false;
         flash.success("Funds deposited successfully");
         $scope.close();
