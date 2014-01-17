@@ -112,7 +112,8 @@ func buildEvent(element *xml.StartElement) *models.GameEvent {
 	event.StatsId = parsers.FindAttrByName(element.Attr, "id")
 	event.Clock = parsers.FindAttrByName(element.Attr, "clock")
 	event.Type = parsers.FindAttrByName(element.Attr, "type")
-	event.SequenceNumber, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "sequence"))
+        // not in element; use ParseState to generate?
+	// event.SequenceNumber = strconv.Atoi(parsers.FindAttrByName(element.Attr, "sequence")) 
 	// event.Data = ...
 	event.GameEventData = models.GameEventData{}
 	err := parsers.InitFromAttrs(*element, &event.GameEventData)
@@ -216,7 +217,7 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
 		game.SeasonYear = state.SeasonYear
 		state.CurrentGame = game
 
-	case "summary":
+	/*case "summary":
 		if state.CurrentEvent != nil { // We have a play summary
 			t, _ := state.GetDecoder().Token()
 			state.CurrentEvent.Summary = string([]byte(t.(xml.CharData)))
@@ -233,7 +234,7 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
 			if err != nil {
 				log.Println(err)
 			}
-		}
+		}*/
 
 	case "quarter":
 		state.CurrentQuarter, _ = strconv.Atoi(parsers.FindAttrByName(state.CurrentElement().Attr, "number"))
@@ -244,14 +245,14 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
 		state.CurrentEvent = event
 		return event
 
-	case "drive":
+	/*case "drive":
 		state.ActingTeam = parsers.FindAttrByName(state.CurrentElement().Attr, "team")
 
 	case "play":
 		event := buildEvent(state.CurrentElement())
 		event.GameStatsId = state.CurrentGame.StatsId
 		state.CurrentEvent = event
-		return event
+		return event*/
 
 	default:
 	}

@@ -36,8 +36,9 @@ func (f Fetcher) GetSchedule(seasonType string) []*models.Game {
 
 func (f Fetcher) GetPlayByPlay(game *models.Game) ([]*models.GameEvent, *ParseState) {
 	// GET Play-By-Play nba-t1/:year/:nba_season/:nba_season_week/:away_team/:home_team/pbp.xml
+	// curl http://api.sportsdatallc.org/nba-p3/games/$PARAM_GAME_ID/pbp.xml?api_key=$SPORTSDATA_NBA_API_KEY
 	fmt.Println(game)
-	url := fmt.Sprintf(baseUrl+"%d/%s/%d/%s/%s/pbp.xml", game.SeasonYear, game.SeasonType, game.SeasonWeek, game.AwayTeam, game.HomeTeam)
+	url := fmt.Sprintf(baseUrl+"games/%s/pbp.xml", game.StatsId)
 	gameEvents, state := parsers.ParseXml(f.FetchMethod(url), ParsePlayByPlay)
 	return gameEvents.([]*models.GameEvent), state.(*ParseState)
 }
