@@ -29,7 +29,7 @@
         <li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">
         <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
           <div ng-class="{'contest-copy': isBigContest(contestClass)}" >
-            <img ng-src="/assets/icon-{{contestClass | slashesToDashes}}.png" class="contest-image" />
+            <img ng-src="/assets/icon-{{contestClass | slashesToDashes | lowercase}}.png" class="contest-image" />
             <h2><span ng-show="isBigContest(contestClass)">$</span>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
             <p class="tiny-p">{{contestClasses[contestClass][0].max_entries}} Teams<br/> Guaranteed Run</p>
           </div>
