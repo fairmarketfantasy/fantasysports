@@ -28,7 +28,7 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def do_monthly_activation!
-    return if self.is_active && self.last_activated_at > Time.new.beginning_of_month
+    return if self.is_active && self.last_activated_at && self.last_activated_at > Time.new.beginning_of_month
     self.is_active = false
     if self.balance >= 1000
       self.balance -= 1000

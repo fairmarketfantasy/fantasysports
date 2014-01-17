@@ -9,7 +9,7 @@ class CardsControllerTest < ActionController::TestCase
     @customer_object.update_attribute(:balance, 1000)
     card = user.customer_object.credit_cards.first
     NetworkMerchants.stubs(:charge_finalize).returns(true)
-    assert_difference('@customer_object.reload.balance', 0) do
+    assert_difference('@customer_object.reload.balance', -1000) do
       xhr :post, :charge_redirect_url, 'token-id' => 'blah', :callback => 'callme'
     end
     assert user.customer_object.is_active?
@@ -17,6 +17,16 @@ class CardsControllerTest < ActionController::TestCase
   end
 
   test "post to create when a user already has a customer object" do
+    o = stub(:id => 12,
+            :type       => 'visa',
+            :number => '**2039',
+            :expire_year         => 2016,
+            :expire_month        => 12,
+            :state           => 'ok',
+            :first_name      => 'Merry',
+            :last_name       => 'Hobag',
+            :create          => true)
+    PayPal::SDK::REST::CreditCard.stubs(:new).returns(o)
     user = create(:paid_user) #already has a customer object
     sign_in(user)
     assert_no_difference("CustomerObject.count") do

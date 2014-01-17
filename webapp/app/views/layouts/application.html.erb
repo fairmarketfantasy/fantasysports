@@ -209,6 +209,9 @@
   window.setCurrentUser = function(user) {
     window.App.currentUser = user;
   };
+  window.refreshUser = function(amount) {
+    angular.element('body').injector().get('currentUserService').refreshUser();
+  };
   window.addToBalance = function(amount) {
     window.App.currentUser.balance = window.App.currentUser.balance + amount;
     var $scope = $('body').scope();
