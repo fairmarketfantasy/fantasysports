@@ -43,6 +43,7 @@ class CardsController < ApplicationController
     callback = 'jsonp_' + params[:callback]
     begin
       NetworkMerchants.charge_finalize(current_user.customer_object, params['token-id'])
+      current_user.customer_object.do_monthly_activation!
       render_api_response current_user, :callback => callback
     rescue HttpException => e
       render_api_response({:error => e.message}, :callback => callback)

@@ -46,7 +46,8 @@ class UsersController < ApplicationController
     @amount_in_cents = payment.transactions.first.amount.total.to_i * 100
     @type = params[:type]
     if @type == 'money'
-      current_user.customer_object.increase_balance(@amount_in_cents, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
+      current_user.customer_object.increase_account_balance(@amount_in_cents, :event => 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
+      current_user.customer_object.do_monthly_activation!
       Invitation.redeem_paid(current_user)
       Eventing.report(current_user, 'addFunds', :amount => @amount_in_cents)
     end

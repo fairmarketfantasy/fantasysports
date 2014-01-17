@@ -11,7 +11,8 @@
   <script type="text/javascript">
     if(window.opener) {
       <% if @type == 'money' %>
-      window.opener.addToBalance(<%= @amount_in_cents %>);
+          window.opener.addToBalance(<%= @amount_in_cents %>);
+          window.opener.refreshUser();
       <% elsif @type == 'token' %>
           window.opener.addToTokenBalance(<%= @tokens %>);
       <% end %>
