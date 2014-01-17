@@ -3,6 +3,7 @@ class UserSerializer < ActiveModel::Serializer
     :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses, :referral_code, :inviter_id, :currentSport # Leaderboard keys
 
 
+  has_one :customer_object
   has_one :in_progress_roster
   has_many :leagues
 
@@ -22,6 +23,10 @@ class UserSerializer < ActiveModel::Serializer
 
   def bonuses
     JSON.parse(object.bonuses || '{}')
+  end
+
+  def customer_object
+    scope.id == object.id ? object.customer_object : nil
   end
 
 end

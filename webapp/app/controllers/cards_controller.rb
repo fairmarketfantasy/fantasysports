@@ -32,7 +32,7 @@ class CardsController < ApplicationController
   def charge_url
     begin
     card = (params[:card_id] && current_user.customer_object.credit_cards.find(params[:card_id]) ) || current_user.customer_object.default_card
-    url = NetworkMerchants.charge_form(:callback => params[:callback], :amount => sprintf("%0.02f", params[:amount].to_f), :card => card)
+    url = NetworkMerchants.charge_form(:callback => params[:callback], :amount => sprintf("%0.02f", 10), :card => card)
     render_api_response({url: url})
     rescue HttpException => e
       render_api_response({:error => e.message}, :callback => callback)

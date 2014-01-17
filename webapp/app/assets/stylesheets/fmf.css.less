@@ -464,22 +464,24 @@ select:focus:invalid {
   width: 90%;
   margin: 0 auto 12px;
   padding-bottom: 4px;
-  position: relative
 }
-.fanfrees-info {
+.nmw-info {
   position: absolute;
-  top: 45%;
-  right: -4%;
+  right: 0;
+  color: black;
 }
 .popover {
   width: 300px;
   border: 1px solid #777;
   background-color: #FFF;
+  color: @grayDark;
+  line-height: 1.1em;
 }
 .popover.right .arrow {
   border-right-color: #777;
 }
 .user-balance {
+  position: relative;
   color: @offWhite;
   font-size: 13px;
   line-height: .8;
@@ -598,6 +600,26 @@ select:focus:invalid {
 
 
 /* Add Funds Modal */
+.account-states {
+  .clearfix();
+}
+.account-state {
+  float: left;
+  width: 25%;
+  text-align: center;
+  min-height: 100px;
+}
+.account-state-header {
+  font-weight: bold;
+  font-size: 1.2em;
+  font-size: 1em;
+  padding: 10px 0;
+}
+
+.account-state-info {
+  color: black;
+}
+
 .card {
   border: 2px solid @gray;
   .border-radius(4px);  
@@ -620,6 +642,9 @@ select:focus:invalid {
 .add-funds-input {
   width: 80px;
   margin: 0 10px;
+}
+.payment-total {
+  font-size: 2em;
 }
 .secure-msg {
   float: right;
@@ -662,7 +687,7 @@ input, textarea, .uneditable-input {
 }
 .payment-container {
   div {
-    padding: 1em 0;
+ //   padding: 1em 0;
   }
   .btn-info {
     padding: 1em 1em;
@@ -889,9 +914,9 @@ input, textarea, .uneditable-input {
 }
 .contest-classes {
   list-style-type: none;
-  width: 22%;
+  width: 30%;
   padding: 12px 0;
-  margin: 0 1.5% 10px;
+  margin: 0 1.6% 10px;
   .border-radius(4px);
   float: left;  
   text-align: center;

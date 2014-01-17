@@ -1,5 +1,5 @@
 <div class='modal-header'>
-  <h3 class='inline-block'>Deposit Funds</h3>
+  <h3 class='inline-block'>Manage Subscription</h3>
   <p class='inline-block pull-right'>
     Balance: <span class='balance'>{{ currentUser.balance | centsToDollars }}</span>
   </p>
@@ -7,7 +7,44 @@
 <div class='mal centered' ng-show='showSpinner'>
   <img src='/assets/ajax-loader-big.gif'>
 </div>
-<div class='modal-body'>
+<!-- Paid subscription -->
+<div class='modal-body' ng-show="currentUser.customer_object.is_active">
+  <h4>Your Account This Month</h4>
+  <div class="account-states">
+    <div class="account-state">
+      <div class="account-state-header">Net Monthly Winnings</div>
+      {{currentUser.customer_object.net_monthly_winnings | centsToDollars }}
+      <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+        popover-trigger="mouseenter" popover="Net Monthly Winnings are how much you're ahead this month. It's your winnings total - $10 per entry. Check out the FAQs for more info." popover-placement="right">
+    </div>
+    <div class="account-state">
+      <div class="account-state-header">Contests Entered</div>
+      {{currentUser.customer_object.monthly_contest_entries }}
+      <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+        popover-trigger="mouseenter" popover="Monthly Contest Entries is the number of contests you've entered this month. Check out the FAQs for more info." popover-placement="right">
+    </div>
+    <div class="account-state">
+      <div class="account-state-header">Total Entry Deficit</div>
+      {{currentUser.customer_object.contest_entries_deficit }}
+      <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+        popover-trigger="mouseenter" popover="Total Entry Deficit is the rolling total of monthly contest entries that haven't been paid for by winnings. Check out the FAQs for more info." popover-placement="right">
+    </div>
+    <div class="account-state">
+      <div class="account-state-header">Winnings Multiplier</div>
+      {{currentUser.customer_object.contest_winnings_multiplier }}%
+      <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+        popover-trigger="mouseenter" popover="As your total entry deficit increases, so does your winnings multiplier! Check out the FAQs for more info." popover-placement="right">
+    </div>
+  </div>
+</div>
+
+<!-- UnPaid subscription -->
+<div class='modal-body' ng-hide="currentUser.customer_object.is_active">
+  <h4>Looks like you need to pay your subscription this month</h4>
+  <div class="payment-info">
+    <a href="javsacript://" popover-trigger="mouseenter" popover="FairMarketFantasy now has a $10 monthly entry fee. That $10 is ALL YOU CAN LOSE! Winnings are still yours. Check out the FAQs for more info!" 
+      popover-placement="right">What is this?<img src="<%= asset_path "info-icon.png" %>" width="17px"></a>
+  </div>
   <ul class="nav nav-pills modal-pills">
     <li ng-class="{active: payment_type == 'credit-card'}">
       <a href="javascript://" ng-click="payment_type = 'credit-card'">Pay with Credit Card</a>
@@ -93,24 +130,18 @@
     </div>-->
   </div>
   <div class="payment-container" ng-hide="showCardForm">
+    <h5>Checkout</h5>
     <div ng-show="payment_type == 'paypal'">
-      <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
-      <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>
+      <span class="payment-total">Total: $10</span><a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>
         <span ng-show="payment_type == 'paypal'">Pay with PayPal</span>
         <span ng-show="payment_type == 'credit-card'">Add Money</span>
       </a>
       <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
-      </p>
-      <span class='muted tilt'>*At least $5.</span>
     </div>
     <div ng-show="payment_type == 'credit-card'">
-      <h5>Select an Amount</h5>
       <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
       <div ng-hide='addMoneySpinner'>
-        <a href="javascript://" class='btn btn-info' ng-click="chargeAmt = 10" ng-class="{'btn-selected': chargeAmt == 10}">$10</a>
-        <a href="javascript://" class='btn btn-info' ng-click="chargeAmt = 25" ng-class="{'btn-selected': chargeAmt == 25}">$25</a>
-        <a href="javascript://" class='btn btn-info' ng-click="chargeAmt = 50" ng-class="{'btn-selected': chargeAmt == 50}">$50</a>
-        <div><a href="javascript://" class="btn btn-primary" ng-click="addFunds()">Submit</a></div>
+        <div><span class="payment-total">Total: $10</span><a href="javascript://" class="btn btn-primary" ng-click="addFunds()">Submit</a></div>
       </div>
     </div>
   </div>
