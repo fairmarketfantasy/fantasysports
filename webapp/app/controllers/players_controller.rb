@@ -24,13 +24,13 @@ class PlayersController < ApplicationController
     @players = @players.where("players.id NOT IN(#{roster.rosters_players.map(&:player_id).push(-1).join(',')})")
     if sort == 'ppg'
       @players = @players.order_by_ppg(order)
-      @players = @players.map{|p| @player_prices[p.id]} # Swap out normal player records with the priced ones
+      @players = @players.map{|p| @player_prices[p.id]}.select{|p| !p.locked? } # Swap out normal player records with the priced ones
     elsif sort == 'buy_price'
-      @players = @players.map{|p| @player_prices[p.id]}
+      @players = @players.map{|p| @player_prices[p.id]}.select{|p| !p.locked? }
       @players = @players.sort_by{|p| order == 'asc' ? p.buy_price : -p.buy_price}
     else
       @players = @players.order("#{sort} #{order}")
-      @players = @players.map{|p| @player_prices[p.id]}
+      @players = @players.map{|p| @player_prices[p.id]}.select{|p| !p.locked? }
     end
     render_api_response @players #.limit(50).page(params[:page] || 1)
   end
