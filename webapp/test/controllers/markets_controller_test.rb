@@ -9,7 +9,6 @@ class MarketsControllerTest < ActionController::TestCase
     setup_simple_market
     @contest_type = create(:contest_type)
     @user = create(:user)
-    @user.customer_object = create(:customer_object, user: @user)
   end
 
   test "index" do

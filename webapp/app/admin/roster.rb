@@ -2,6 +2,7 @@ ActiveAdmin.register Roster do
   filter :submitted_at
   filter :market_id
   filter :contest_id
+  filter :owner_id
   filter :state
 
   index do

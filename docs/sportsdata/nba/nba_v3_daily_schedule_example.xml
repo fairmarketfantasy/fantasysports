@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started @ 2013-07-19 01:37:12 +0000 -->
+<league xmlns="http://feed.elasticstats.com/schema/basketball/schedule-v2.0.xsd" id="391971f2-7634-4903-bbea-c416a93efebe" name="NBA" alias="NBA">
+  <daily-schedule date="2013-04-01">
+    <games>
+      <game id="83c5c498-55b6-4c63-9764-d2f3c012be96" status="scheduled" coverage="full" home_team="5710dd10-c308-4f26-a5d5-f311fba90d58" away_team="2b33bbc4-527a-49c3-a8a8-3c2103580044" scheduled="2013-04-01T23:00:00+00:00">
+        <venue id="c1ec6908-3ad8-4e1a-b667-8bdbcb9a0af6" name="Air Canada Centre" capacity="19800" address="40 Bay St." city="Toronto" state="ON" zip="M5J 2X2" country="CANADA"/>
+        <home name="Raptors" alias="TOR" id="5710dd10-c308-4f26-a5d5-f311fba90d58">
+        </home>
+        <away name="Pistons" alias="DET" id="2b33bbc4-527a-49c3-a8a8-3c2103580044">
+        </away>
+      </game>
+      <game id="dc989417-5bac-4c37-b0c2-6493a0568c6e" status="closed" coverage="extended_boxscore" home_team="9d4eb99d-39b5-4150-94bb-4702f386598d" away_team="b7324be5-ebe3-4de2-b303-85ee2be4c25e" scheduled="2013-04-01T23:30:00+00:00">
+        <venue id="b037d175-3f55-49a1-ba36-545135ff8c56" name="Philips Arena" capacity="18729" address="One Philips Drive" city="Atlanta" state="GA" zip="30303" country="USA"/>
+        <home name="Atlanta Hawks" alias="ATL" rotation="1" id="9d4eb99d-39b5-4150-94bb-4702f386598d">
+        </home>
+        <away name="Cleveland Cavaliers" alias="CLE" rotation="1" id="b7324be5-ebe3-4de2-b303-85ee2be4c25e">
+        </away>
+        <broadcast network="1" satellite="1" cable="1" radio="1" internet="1"/>
+      </game>
+      <game id="9208dba1-2cdf-4ed7-b707-6a06c4cc53cd" status="closed" coverage="full" home_team="2c247ff1-2827-4726-9a9c-0b233fbbe451" away_team="a6bec935-0be2-4053-8331-728f48dfb664" scheduled="2013-04-02T00:00:00+00:00">
+        <venue id="e8156b95-bd64-4d5f-b355-6344376ad8de" name="BMO Harris Bradley Center" capacity="18717" address="1001 N. Fourth St." city="Milwaukee" state="WI" zip="53203" country="USA"/>
+        <home name="Bucks" alias="MIL" id="2c247ff1-2827-4726-9a9c-0b233fbbe451">
+        </home>
+        <away name="49ers" alias="CHAR" id="a6bec935-0be2-4053-8331-728f48dfb664">
+        </away>
+      </game>
+      <game id="bfc7d000-3de4-4ef5-aa80-26f13c63045f" status="scheduled" coverage="full" home_team="77390cfa-892e-4a7d-8aa3-211dfd3cf0e7" away_team="b2384b43-0d0c-4876-94ec-edc3c82882ba" scheduled="2013-04-02T00:00:00+00:00">
+        <home name="Cougars" alias="HOU" id="77390cfa-892e-4a7d-8aa3-211dfd3cf0e7">
+        </home>
+        <away name="Magic" alias="ORL" id="b2384b43-0d0c-4876-94ec-edc3c82882ba">
+        </away>
+      </game>
+      <game id="dc9bc888-5100-4528-977b-438d3d7e418b" status="scheduled" coverage="full" home_team="c7999816-7e9a-44a8-abca-c4d387769d6d" away_team="5a790801-3847-410b-8f05-037fbf1a53f1" scheduled="2013-04-02T00:00:00+00:00">
+        <venue id="7caac6aa-8b13-4012-8940-ed4b66a4bd9e" name="Target Center" capacity="19356" address="600 First Ave. North" city="Minneapolis" state="MN" zip="55403" country="USA"/>
+        <home name="Timberwolves" alias="MIN" id="c7999816-7e9a-44a8-abca-c4d387769d6d">
+        </home>
+        <away name="Celtics" alias="BOS" id="5a790801-3847-410b-8f05-037fbf1a53f1">
+        </away>
+      </game>
+      <game id="e7d43351-5126-4f69-83ae-0a2e2a2bb726" status="scheduled" coverage="full" home_team="0a3a0175-aee0-4970-a2b8-76b12b68f7d1" away_team="8dfc624b-8379-4dd5-a960-b9fea4d7d86f" scheduled="2013-04-02T00:00:00+00:00">
+        <home name="Tigers" alias="MEM" id="0a3a0175-aee0-4970-a2b8-76b12b68f7d1">
+        </home>
+        <away name="Spurs" alias="SA" id="8dfc624b-8379-4dd5-a960-b9fea4d7d86f">
+        </away>
+      </game>
+      <game id="0e8fd796-02a6-42ab-aa84-7cce37fbdb68" status="inprogress" coverage="full" home_team="9e6fb156-9a3d-49c2-be23-97b544485c75" away_team="168f949e-890e-4ed4-bf3c-4b10ae7a5fd6" scheduled="2013-04-02T01:00:00+00:00">
+        <venue id="2611e504-a6cc-46d8-a843-74682e4dd423" name="EnergySolutions Arena" capacity="19911" address="301 W. South Temple St." city="Salt Lake City" state="UT" zip="84101" country="USA"/>
+        <home name="Jazz" alias="UTAH" id="9e6fb156-9a3d-49c2-be23-97b544485c75">
+        </home>
+        <away name="Pilots" alias="PORT" id="168f949e-890e-4ed4-bf3c-4b10ae7a5fd6">
+        </away>
+      </game>
+      <game id="4592e0c8-edc8-4187-aa82-824de019c91c" status="scheduled" coverage="full" home_team="72ba9005-ac8b-4586-8a89-9d57c674d543" away_team="13c1eebe-4d78-4df0-ab39-409c9a3a51de" scheduled="2013-04-02T02:30:00+00:00">
+        <venue id="ae775819-cb86-4ef9-b067-52256ecb65bc" name="Staples Center" capacity="18997" address="1111 S. Figueroa St." city="Los Angeles" state="CA" zip="90015" country="USA"/>
+        <home name="Clippers" alias="LAC" id="72ba9005-ac8b-4586-8a89-9d57c674d543">
+        </home>
+        <away name="Pacers" alias="IND" id="13c1eebe-4d78-4df0-ab39-409c9a3a51de">
+        </away>
+      </game>
+    </games>
+  </daily-schedule>
+</league>
+<!-- Generation ended @ 2013-07-19 01:37:12 +0000 -->

@@ -8,6 +8,7 @@ gem 'rails', '4.0.0'
 
 # Use sqlite3 as the database for Active Record
 gem 'pg'
+gem 'dalli-elasticache'
 
 # Use SCSS for stylesheets
 gem 'less-rails'
@@ -40,12 +41,18 @@ gem 'mustwin_devise_oauth2_providable', '1.1.6'#, :path => '/Users/mike/code/dev
 gem 'protected_attributes'
 gem 'activeadmin', github: 'gregbell/active_admin', branch: 'master'
 
+# work queue
+gem "resque", "~> 1.25.1"
+
 # data processing
 gem 'nokogiri'
 gem 'aws-sdk'
 
 #pagination
 gem 'kaminari'
+
+# Third Party Integrations
+gem 'honeybadger'
 
 #payments
 gem 'skeuocard-rails'
@@ -75,6 +82,7 @@ end
 group :development do
   gem 'pry'
   gem 'quiet_assets'
+  gem 'descriptive-statistics'
 end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

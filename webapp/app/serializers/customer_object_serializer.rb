@@ -1,5 +1,6 @@
 class CustomerObjectSerializer < ActiveModel::Serializer
-  attributes :id, :balance, :locked, :locked_reason, :cards
+  attributes :id, :balance, :net_monthly_winnings, :monthly_contest_entries, :contest_entries_deficit,
+      :locked, :locked_reason, :cards, :is_active, :has_agreed_terms, :contest_winnings_multiplier
 
   def cards
     object.credit_cards.select{|c| !c.deleted }.map do |card|

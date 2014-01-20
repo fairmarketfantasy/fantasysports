@@ -4,23 +4,34 @@ angular.module('app.data')
     var gameData = {};
     return new function() {
       this.currentMarket = null;
+      //this.marketType = 'regular_season';
       this.upcoming = [];
 
-      this.fetchUpcoming = function(id) {
+      this.fetchUpcoming = function(opts) {
         // TODO: memoize?
         var self = this;
-        var defaultMarket;
-        return fs.markets.list().then(function(markets) {
-          self.upcoming = markets;
+        return fs.markets.list(opts.type).then(function(markets) {
           _.each(markets, function(market) {
             marketData[market.id] = market;
           });
-          if (id) {
-            self.currentMarket = marketData[id];
+          if (opts.id) {
+            self.currentMarket = marketData[opts.id];
           } else {
             self.currentMarket = markets[0];
           }
         });
+      };
+
+      this.selectMarketId = function(id) {
+        var type = marketData[id].game_type == 'regular_season' ? 'regular_season' : 'single_elimination'; // Hacky
+        this.selectMarketType(type);
+        this.currentMarket = marketData[id];
+      };
+
+      this.selectMarketType = function(type) {
+        this.marketType = type || 'regular_season';
+        this.upcoming = _.filter(marketData, function(elt) { return elt.game_type.match(type) || (type == 'regular_season' && elt.game_type == null) /* last clause should be temporary*/});
+        this.currentMarket = this.upcoming[0];
       };
 
       this.selectMarket = function(market) {
@@ -53,6 +64,24 @@ angular.module('app.data')
         }
       };
 
+      this.contestClassesFor = function(marketId) {
+        var deferred = $q.defer();
+
+        fs.contests.for_market(marketId).then(function(contestTypes) {
+          var contestClasses = {};
+          _.each(contestTypes, function(type) {
+            if (!contestClasses[type.name]) {
+              contestClasses[type.name] = [];
+            }
+            contestClasses[type.name].push(type);
+          });
+          deferred.resolve(contestClasses);
+        }, function(reason) {
+          deferred.reject('Could not get contest classes from API: ' + reason);
+        });
+
+        return deferred.promise;
+      }
     }();
   }]);
 

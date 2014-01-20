@@ -49,20 +49,22 @@ angular.module('app.data')
       // Takes a value and a function returning a promise. If value is present, we return
       // a promise resolved with that value. If not, we return the fetchPromise
       var promiseWrapper = function(value, fetchPromise) {
-        if (value) {
+        if (value && !value.abridged) {
           var fakeDeferred = $q.defer();
           fakeDeferred.resolve(value);
           return fakeDeferred.promise;
         } else {
-          return fetchPromise;
+          return fetchPromise();
         }
       };
 
-      this.fetch = function(id) {
-        return promiseWrapper(rosterData[id], fs.rosters.show(id).then(function(roster) {
+      this.fetch = function(id, view_code) {
+        return promiseWrapper(rosterData[id], function() {
+          return fs.rosters.show(id, view_code).then(function(roster) {
             rosterData[roster.id] = roster;
             return roster;
-          }));
+          });
+        });
       };
 
       this.fetchMine = function(opts) {
@@ -77,13 +79,16 @@ angular.module('app.data')
       var pastStats;
       this.fetchPastStats = function() {
         // TODO: add throttle, effectively a cache TTL
-        return promiseWrapper(pastStats, fs.rosters.past_stats().then(function(stats) {
-          pastStats = stats;
-        }));
+        return promiseWrapper(pastStats, function() {
+          return fs.rosters.past_stats().then(function(stats) {
+            pastStats = stats;
+          });
+        });
       };
 
-      this.fetchContest = function(contest_id) {
-        return fs.rosters.in_contest(contest_id).then(function(rosters) {
+      this.fetchContest = function(contest_id, upToPage) {
+        upToPage = upToPage || 1;
+        return fs.rosters.in_contest(contest_id, upToPage).then(function(rosters) {
           _.each(rosters, function(roster) {
             rosterData[roster.id] = roster;
           });
@@ -143,11 +148,16 @@ angular.module('app.data')
       this.removePlayer = function(player) {
         this.selectOpponentRoster(null);
         var self = this;
-        fs.rosters.remove_player(this.currentRoster.id, player.id).then(function(market_order) {
-          self.currentRoster.remaining_salary = parseFloat(self.currentRoster.remaining_salary) + parseFloat(market_order.price);
           var index = _.findIndex(self.currentRoster.players, function(p) { return p.id === player.id; });
           self.currentRoster.players[index] = {position: player.position};
-        });
+        fs.rosters.remove_player(this.currentRoster.id, player.id).then(
+          function(market_order) {
+            self.currentRoster.remaining_salary = parseFloat(self.currentRoster.remaining_salary) + parseFloat(market_order.price);
+          },
+          function() {
+            self.currentRoster.players[index] = player;
+          }
+        );
       };
 
       this.nextPosition = function(justAddedPlayer) {
@@ -172,19 +182,22 @@ angular.module('app.data')
       };
 
       this.submit = function() {
+        var deferred = $q.defer();
+
         var self = this;
         fs.rosters.submit(this.currentRoster.id).then(function(roster) {
-          $location.path('/market/' + self.currentRoster.market.id);
           if (roster.contest_type.takes_tokens) {
             currentUserService.currentUser.token_balance -= roster.buy_in;
           } else {
             currentUserService.currentUser.balance -= roster.buy_in;
           }
           self.reset();
-          flash.success("Roster submitted successfully!");
           currentUserService.refreshUser();
+          deferred.resolve(roster);
           //self.justSubmittedRoster = roster;
         });
+
+        return deferred.promise;
       };
 
       this.cancel = function() {

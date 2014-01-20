@@ -1,4 +1,5 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  include Referrals
   prepend_before_filter :require_no_authentication, :only => [ :new, :create, :cancel ]
   # POST /resource
   def sign_up_from_html
@@ -30,27 +31,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     else
       render :json => {:error => resource.errors.values.join(', ')}, :status => :unprocessable_entity
     end
-  end
-
-  def handle_referrals
-    resp = {}
-    if session[:referral_code]
-      Invitation.redeem(current_user, session[:referral_code])
-      session(:referral_code)
-    end
-    if session[:contest_code]
-      contest = Contest.where(:invitation_code => session[:contest_code]).first
-      if contest.private?
-        raise HttpException.new(403, "You already have a roster in this contest") if contest.rosters.map(&:owner_id).include?(current_user.id)
-        roster = Roster.generate(current_user, contest.contest_type)
-        roster.update_attribute(:contest_id, contest.id)
-      else
-        roster = Roster.generate(current_user, contest.contest_type)
-      end
-      session.delete(:contest_code)
-      resp.merge! redirect: "/market/#{contest.market_id}/roster/#{roster.id}"
-    end
-    resp
   end
 
   def create
@@ -85,7 +65,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     prev_confirmed_email   = resource.email
 
     change_unconfirmed_email if prev_unconfirmed_email
-
+    if params[:user].nil?
+      render :nothing => true, :status => :ok
+      return
+    end
     method =  if params[:user][:current_password].present?
                 :update_with_password
               else

@@ -34,15 +34,24 @@ class Invitation < ActiveRecord::Base
     invitation
   end
 
-  def self.redeem(current_user, code)
+  def self.redeem(current_user, code, contest = nil)
     inv = Invitation.where(:code => code).first
+    if inv.nil? && user = User.where(:referral_code => code).first
+      inv = Invitation.create!(
+        email: current_user.email,
+        inviter_id: user.id,
+        private_contest_id: contest && contest.private? ? contest.id : nil,
+        contest_type_id: contest && !contest.private? ? contest.contest_type_id : nil,
+        code: SecureRandom.hex(16)
+      )
+    end
     raise HttpException.new(404, "No invitation found with that code") unless inv
     inv.transaction do
       if !inv.redeemed
         current_user.inviter = inv.inviter
         current_user.save!
         current_user.transaction do
-          inv.inviter.payout(FREE_USER_REFERRAL_PAYOUT, false, :event => 'free_referral_payout', :invitation_id => inv.id, :referred_id => current_user.id)
+          inv.inviter.payout(:balance, FREE_USER_REFERRAL_PAYOUT, :event => 'free_referral_payout', :invitation_id => inv.id, :referred_id => current_user.id)
           inv.redeemed = true
           inv.save!
         end
@@ -53,10 +62,10 @@ class Invitation < ActiveRecord::Base
   def self.redeem_paid(current_user)
     if current_user.inviter && TransactionRecord.where(:event => 'paid_referral_payout', :referred_id => current_user.id).first.nil?
       self.transaction do
-        SYSTEM_USER.charge(PAID_USER_REFERRAL_PAYOUT, false, :event => 'paid_referral_payout', :referred_id => current_user.inviter.id)
-        current_user.inviter.payout(PAID_USER_REFERRAL_PAYOUT, false, :event => 'paid_referral_payout', :referred_id => current_user.id)
-        SYSTEM_USER.charge(PAID_USER_REFERRAL_PAYOUT, false, :event => 'paid_referral_payout', :referred_id => current_user.id)
-        current_user.payout(PAID_USER_REFERRAL_PAYOUT, false, :event => 'referred_join_payout', :referred_id => current_user.id)
+        SYSTEM_USER.charge(:balance, PAID_USER_REFERRAL_PAYOUT, :event => 'paid_referral_payout', :referred_id => current_user.inviter.id)
+        current_user.inviter.payout(:balance, PAID_USER_REFERRAL_PAYOUT, :event => 'paid_referral_payout', :referred_id => current_user.id)
+        SYSTEM_USER.charge(:balance, PAID_USER_REFERRAL_PAYOUT, :event => 'paid_referral_payout', :referred_id => current_user.id)
+        current_user.payout(:balance, PAID_USER_REFERRAL_PAYOUT, :event => 'referred_join_payout', :referred_id => current_user.id)
       end
     end
   end

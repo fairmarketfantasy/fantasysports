@@ -1,72 +1,63 @@
 angular.module("app.controllers")
-.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', 'message', '$timeout', function($scope, dialog, flash, fs, message, $timeout) {
+.controller('SignUpDialogController', ['$scope', 'dialog', 'flash', 'fs', '$timeout', 'registrationService', 'message', function($scope, dialog, flash, fs, $timeout, registrationService, message) {
   $scope.user = $scope.user || {};
   $scope.message = message;
+  $scope.noPromo = true;
 
-  // ['forgotPass', 'signUpForm', 'signInForm']
-  $scope.changeState = function(state, message){
-
-    //set all states to false
-    states =['forgotPass', 'signUpForm', 'signInForm'];
-    _.each(states, function(st){
-      $scope[st] = false;
-    });
-
-    $scope[state] = true;
-
-    if(state === 'forgotPass'){
-      $scope.title = "Forgot Password";
-      $scope.message = 'Enter your email address for instructions.';
-    } else if(state === 'signUpForm') {
-      $scope.title = "Sign Up";
-      $scope.message = message;
-    } else if(state === 'signInForm') {
-      $scope.title = "Sign In";
-      $scope.message = message;
-    }
-  };
-
-  if (message == 'signin') {
-    $scope.changeState('signInForm');
-  } else {
-    $scope.changeState('signUpForm', message || '');
-  }
-
-  $scope.signUp = function() {
+  $scope.submit = function() {
     if (!$scope.isValid()) { return; }
     fs.user.create($scope.user).then(function(resp){
       //only fires on success, errors are intercepted by fsAPIInterceptor
-      $timeout(function() {window.location.reload(true);});
-    });
-  };
-
-  $scope.forgotPass = false;
-
-  $scope.resetPassword = function(){
-    fs.user.resetPassword($scope.user.email).then(function(resp){
-      flash.success(resp.message);
-      $scope.close();
+      $timeout(function() {window.location.reload(true);}, 500);
     });
   };
 
   $scope.isValid = function(){
-    var required       = ($scope.user.username && $scope.user.name && $scope.user.email && $scope.user.password && $scope.user.password_confirmation);
-    var passLength     = ($scope.user.password && $scope.user.password.length >= 6);
-    var matchingPass   = ($scope.user.password === $scope.user.password_confirmation);
+    var prevErrorMsg = $scope.errorMsg;
+    var fields = ['username', 'name', 'email', 'password', 'password_confirmation'], required = false;
+    for (var i=0; i < fields.length; i++) {
+      if ($scope.signUpForm[fields[i]].$error.required) {
+        required = true;
+      }
+    }
+    var email          = $scope.signUpForm.email.$error.email;
+    var passLength     = $scope.signUpForm.password.$error.minlength;
+    var matchingPass   = ($scope.user.password !== $scope.user.password_confirmation);
 
     $scope.errorMsg = null;
-    if (!required) {
+    if (required) {
       $scope.errorMsg = "All fields are required";
-    } else if (!passLength) {
-      $scope.errorMsg = "Password must be >= 6 chars";
-    } else if (!matchingPass) {
+    } else if (email) {
+      $scope.errorMsg = "Email address must be valid";
+    } else if (passLength) {
+      $scope.errorMsg = "Password must be at least 6 characters long";
+    } else if (matchingPass) {
       $scope.errorMsg = "Password and confirmation must match";
+    }
+    if ($scope.errorMsg != prevErrorMsg) {
+      $timeout(function() {
+        $.placeholder.shim();
+      });
     }
     return !$scope.errorMsg;
   };
 
-  $scope.close = function(){
+  $scope.login = registrationService.login;
+
+  $scope.close = function(nextModal){
     dialog.close();
+    if (typeof nextModal !== 'undefined') {
+      registrationService.showModal(nextModal, $scope.message);
+    }
+  };
+
+  $scope.applyPromo = function() {
+    $scope.promoSpinner = true;
+    fs.user.applyPromo($scope.promo_code).then(function(){
+      $scope.promoSpinner = false;
+      $scope.noPromo = false;
+      flash.success("Promo applied!");
+    }, function() { $scope.promoSpinner = false; });
   };
 
 }]);

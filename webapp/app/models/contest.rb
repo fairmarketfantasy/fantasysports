@@ -13,39 +13,19 @@ class Contest < ActiveRecord::Base
 
   validates :owner_id, :contest_type_id, :buy_in, :market_id, presence: true
 
+  # NOENTRY TODO: REMOVE CUSTOM H2H amounts
   #creates a roster for the owner and creates an invitation code
   def self.create_private_contest(opts)
     market = Market.where(:id => opts[:market_id], state: ['published', 'opened']).first
     raise HttpException.new(409, "Sorry, that market couldn't be found or is no longer active. Try a later one.") unless market
     raise HttpException.new(409, "Sorry, it's too close to market close to create a contest. Try a later one.") if Time.new + 5.minutes > market.closed_at
     # H2H don't have to be an existing contst type, and in fact are always new ones so that if your challenged person doesn't accept, the roster is cancelled
-    existing_contest_type = market.contest_types.where(:name => opts[:type], :buy_in => opts[:buy_in], :takes_tokens => !!opts[:takes_tokens]).first
-    if opts[:type] == 'h2h' && existing_contest_type.nil?
-      buy_in       = opts[:buy_in]
-      rake = 0.03
-
-      contest_type = ContestType.create!(
-        :market_id => market.id,
-        :name => 'h2h',
-        :description => 'custom h2h contest',
-        :max_entries => 2,
-        :buy_in => opts[:buy_in],
-        :rake => rake,
-        :payout_structure => [2 * buy_in - buy_in * rake * 2].to_json,
-        :user_id => opts[:user_id],
-        :private => true,
-        :salary_cap => opts[:salary_cap] || 100000,
-        :payout_description => "Winner take all",
-        :takes_tokens => opts[:takes_tokens] || false,
-      )
-    else
-      contest_type = existing_contest_type
-      raise HttpException.new(404, "No such contest type found") unless contest_type
-    end
+    contest_type = market.contest_types.where(:name => opts[:type]).first
+    raise HttpException.new(404, "No such contest type found") unless contest_type
+    raise HttpException.new(409, "You can't create a private lollapalloza") if contest_type.name =~ /k/
 
     if opts[:league_id] || opts[:league_name]
       opts[:max_entries] = contest_type.max_entries
-      opts[:takes_tokens] = contest_type.takes_tokens
       opts[:user] = User.find(opts[:user_id])
       opts[:market] = market
       league = League.find_or_create_from_opts(opts)
@@ -66,13 +46,55 @@ class Contest < ActiveRecord::Base
     self.contest_type.get_payout_structure.length
   end
 
-  def rake_amount
-    rake = self.num_rosters * self.contest_type.buy_in * contest_type.rake
-    if contest_type.name == 'h2h rr'
-      per_game_buy_in = self.contest_type.buy_in / (self.contest_type.max_entries - 1)
-      rake = (self.num_rosters-1) * per_game_buy_in * num_rosters * contest_type.rake
+  def perfect_score
+    position_hash = {}
+    total = 0
+    contest_type.position_array.each do |p|
+      position_hash[p] ||= 0
+      position_hash[p] += 1
+      total += 1
     end
-    rake
+    score = 0
+    self.market.market_players.select('market_players.*, players.position').joins('JOIN players ON market_players.id=players.id').order('score desc').each do |mp|
+      next unless mp.player # Hacky as shit, this should never happen
+      pos = mp[:position]
+      if position_hash[pos] && position_hash[pos] > 0
+        total  -= 1
+        position_hash[pos] -= 1
+        score += mp.score
+        return score if total == 0
+      end
+    end
+    score
+  end
+
+  def submitted_rosters_by_rank(&block)
+    rosters = self.rosters.submitted.order("contest_rank ASC")
+    ranks = rosters.collect(&:contest_rank)
+
+    #figure out how much each rank gets -- tricky only because of ties
+    rank_payment = contest_type.rank_payment(ranks)
+    #organize rosters by rank
+    rosters_by_rank = Contest._rosters_by_rank(rosters)
+
+    #for each rank, make payments
+    rosters_by_rank.each_pair do |rank, ranked_rosters|
+      payment = rank_payment[rank]
+      payment_per_roster = Float(payment) / ranked_rosters.length
+      payments_for_rosters = rounded_payouts(payment_per_roster, ranked_rosters.length)
+
+      ranked_rosters.each_with_index do |roster, i|
+        yield roster, rank, payments_for_rosters[i] #roster, rank, expected_payout
+      end
+    end
+  end
+
+  def set_payouts!
+    self.with_lock do
+      submitted_rosters_by_rank do |roster, rank, payment|
+        roster.update_attribute(:expected_payout, payment)
+      end
+    end
   end
 
   #pays owners of rosters according to their place in the contest
@@ -82,37 +104,22 @@ class Contest < ActiveRecord::Base
       raise if self.paid_at || self.cancelled_at
       puts "Payday! for contest #{self.id}"
       Rails.logger.debug("Payday! for contest #{self.id}")
-      rosters = self.rosters.submitted.order("contest_rank ASC")
-
-      ranks = rosters.collect(&:contest_rank)
-
-      #figure out how much each rank gets -- tricky only because of ties
-      rank_payment = contest_type.rank_payment(ranks)
-      #organize rosters by rank
-      rosters_by_rank = Contest._rosters_by_rank(rosters)
-
-      #for each rank, make payments
-      rosters_by_rank.each_pair do |rank, ranked_rosters|
-        payment = rank_payment[rank]
-        payment_per_roster = Float(payment) / ranked_rosters.length
-        payments_for_rosters = rounded_payouts(payment_per_roster, ranked_rosters.length)
-
-        ranked_rosters.each_with_index do |roster, i|
-          roster.set_records!
-          roster.paid_at = Time.new
-          roster.state = 'finished'
-          if payment.nil?
-            roster.amount_paid = 0
-            roster.save!
-            next
-          end
-          # puts "roster #{roster.id} won #{payment_per_roster}!"
-          roster.owner.payout(payments_for_rosters[i], self.contest_type.takes_tokens?, :event => 'payout', :roster_id => roster.id, :contest_id => self.id)
-          roster.amount_paid = payments_for_rosters[i]
+      submitted_rosters_by_rank do |roster, rank, payment|
+        roster.set_records!
+        roster.paid_at = Time.new
+        roster.state = 'finished'
+        if payment.nil?
+          roster.amount_paid = 0
           roster.save!
+          next
         end
+        # puts "roster #{roster.id} won #{payment_per_roster}!"
+        roster.owner.payout(:monthly_winnings, payment, :event => 'contest_payout', :roster_id => roster.id, :contest_id => self.id)
+        roster.amount_paid = payment
+        roster.save!
       end
-      SYSTEM_USER.payout(self.rake_amount, self.contest_type.takes_tokens?, :event => 'rake', :roster_id => nil, :contest_id => self.id)
+      # NOEENTRY TODO: Don't tax system user's monthly payouts
+      SYSTEM_USER.payout(:monthly_winnings, self.contest_type.rake, :event => 'rake', :roster_id => nil, :contest_id => self.id)
       self.paid_at = Time.new
 
       self.save!
@@ -170,8 +177,14 @@ class Contest < ActiveRecord::Base
       roster.contest_id = self.id
       roster.is_generated = true
       roster.save!
-      roster.fill_pseudo_randomly3
+      roster.fill_pseudo_randomly5(false)
       roster.submit!
+    end
+  end
+
+  def fill_reinforced_rosters
+    self.rosters.where('is_generated').each do |roster|
+      roster.fill_pseudo_randomly5(false)
     end
   end
 

@@ -1,49 +1,53 @@
-    <div class="roster"> 
-      <div class="roster-area">
-        <div class="clearfix">
-          <h4 class="team-heading inline-heading">Roster</h4>
-          <a class="btn btn-small btn-info pull-right" href="javascript://" ng-show="roster.owner_id == currentUser.id && roster.state == 'in_progress'" ng-click="rosters.autoFill()">AutoFill</a>
-          <div class="salary-cap score" ng-show="inThePast(market.started_at)" highlight-changes="roster.score">Team Score: {{roster.score | zeroIfEmpty}}
-          </div>
-        </div>
-
-        <div class="roster-overflow">
-            
-          <ul class="no-no" highlight-changes-in-list="roster.players" key-to-watch="score">
-            <li class="mr-item clearfix" ng-repeat="player in roster.players">
-            <div ng-show="player.id && player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': 'url(' + player.headshot_url +')'}"></div>
-              <div ng-hide="player.id" class="mr-player-image"></div>
-              <div ng-show="player.position == 'DEF' && player.id" class="mr-player-image defense filled"></div>
-              
-              <div class="mr-player-info">
-                <h3 class="mr-player-name" ng-show="player.id">{{player.name}}</h3>
-                <h3 class="mr-player-name not-selected" ng-hide="player.id">{{player.position}} Not Selected</h3>
-                <span class="mr-stats" ng-show="player.id">{{player.team}} {{player.position}} ({{player.ppg | number:2 | zeroIfEmpty}} PPG)</span>
-                <span class="mr-stats" ng-show="player.id">
-                  <span ng-show="isInPlay(roster)">
-                    ${{player.purchase_price | number:0}}
-                  </span>
-                  <span ng-show="!isInPlay(roster)">
-                    ${{player.buy_price | number:0}}
-                  </span>
-                  <span ng-show="!player.locked && market.state != 'published' && roster.state != 'in_progress'">
-                    (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">
-                      <span ng-show="player.sell_price - player.purchase_price >= 0">+</span>
-                      <span ng-show="player.sell_price - player.purchase_price < 0">-</span>
-                      ${{Math.abs(player.sell_price - player.purchase_price) | number:0}}
-                    </span>)
-                  </span>
-                </span>
-              </div>
-              
-              <div class="mr-player-cta">
-                <p class="mr-player-score" ng-show="roster.state != 'in_progress' && inThePast(market.started_at)"><a href="javascript://" tooltip-trigger="mouseenter" ng-mouseover="fetchPlayerStats(player)" tooltip-html-unsafe="{{statsContent()}}">{{player.score | number:1}}</a></p>
-                <a class="btn btn-small btn-orange" ng-show="roster.owner_id == currentUser.id && player.id && (market.state == 'published' || market.state == 'opened' && !player.locked)" href="javascript://" ng-click="removePlayer(player)">Trade</a>
-                <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-      </div>
+<div class="roster"> 
+  <div class="roster-area">
+    <div class="clearfix">
+      <h4 class="team-heading inline-heading">Roster</h4>
+      <a class="btn btn-small btn-info " href="javascript://" ng-show="roster.owner_id == currentUser.id && roster.state == 'in_progress'" ng-click="rosters.autoFill()">AutoFill</a>
+      <span class="remaining-salary" ng-show="rosters.opponentRoster">${{totalSalary(roster) | number:0}} total</span>
+      <span class="salary-cap score" ng-show="inThePast(market.started_at)" highlight-changes="roster.score">Team Score: {{roster.score | zeroIfEmpty}}
+      </span>
     </div>
+
+    <div class="roster-overflow">
+
+      <ul class="no-no" highlight-changes-in-list="roster.players" key-to-watch="score">
+        <li class="mr-item clearfix" ng-repeat="player in roster.players">
+          <div ng-show="showPlayer(roster, player) && player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
+          <div ng-show="showPlayer(roster, player) && player.position == 'DEF'" class="mr-player-image defense filled"></div>
+          <div ng-hide="showPlayer(roster, player)" class="mr-player-image"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name" ng-show="showPlayer(roster, player)">{{player.name}}</h3>
+            <h3 class="mr-player-name not-selected" ng-show="!showPlayer(roster, player) && roster.owner_id != currentUser.id">{{player.position}} Not Locked In</h3>
+            <h3 class="mr-player-name not-selected" ng-show="!showPlayer(roster, player) && roster.owner_id == currentUser.id">{{player.position}} Not Selected</h3>
+            <span class="mr-stats" ng-show="showPlayer(roster, player)">{{player.team}} {{player.position}} ({{player.ppg | number:2 | zeroIfEmpty}} PPG)</span>
+            <span class="mr-stats" ng-show="showPlayer(roster, player)">
+              <span>
+                ${{player.purchase_price | number:0}}
+              </span>
+              <span ng-show="!player.locked && market.state != 'published' && roster.state != 'in_progress'">
+                (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">
+                  <span ng-show="player.sell_price - player.purchase_price >= 0">+</span>
+                  <span ng-show="player.sell_price - player.purchase_price < 0">-</span>
+                  ${{Math.abs(player.sell_price - player.purchase_price) | number:0}}
+                </span>)
+              </span>
+            </span>
+          </div>
+
+          <div class="mr-player-cta">
+            <p class="mr-player-score" ng-show="roster.state != 'in_progress' && inThePast(market.started_at)"><a href="javascript://" ng-click="openStatsDialog(player)">{{player.score | number:1}}</a></p>
+            <span ng-show="roster.owner_id == currentUser.id">
+              <a class="btn btn-small btn-orange" ng-show="player.id && (market.state == 'published' || market.state == 'opened' && !player.locked)" href="javascript://" ng-click="removePlayer(player)">Trade</a>
+              <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
+            </span>
+          </div>
+          <div class="mr-player-eliminated" ng-show="player.is_eliminated">
+            ELIMINATED
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>

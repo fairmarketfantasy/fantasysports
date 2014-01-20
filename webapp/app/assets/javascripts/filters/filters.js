@@ -1,16 +1,17 @@
 angular.module('app.filters')
   .filter('truncate', function () {
     return function (text, length, end) {
-      if (isNaN(length))
-          length = 10;
+      if (isNaN(length)) {
+        length = 10;
+      }
 
       if (end === undefined) {
-          end = "...";
+        end = "...";
       }
-      if (text.length <= length || text.length - end.length <= length) {
-          return text;
+      if (!text || text.length <= length || text.length - end.length <= length) {
+        return text;
       } else {
-          return String(text).substring(0, length-end.length) + end;
+        return String(text).substring(0, length-end.length) + end;
       }
     };
   })
@@ -94,6 +95,11 @@ angular.module('app.filters')
       return input+(s[(v-20)%10]||s[v]||s[0]);
     };
   })
+  .filter('slashesToDashes', ['$filter', function($filter) {
+    return function(input) {
+      return input.replace(/\//g, '-');
+    };
+  }])
   .filter('allCaps', ['$filter', function($filter) {
     return function(input) {
       return input.toUpperCase();
@@ -101,6 +107,10 @@ angular.module('app.filters')
   }])
   .filter('niceMarketDesc', ['$filter', function($filter) {
     return function(market) {
+      // Playoff Desc
+      if (market.game_type == 'single_elimination') {
+        return '';
+      }
       // Day Desc
       if (market.games.length > 1 && new Date(market.closed_at) - new Date(market.started_at) < 24 * 60 * 60 * 1000) {
         return "All games on " + $filter('shortFormDate')(market.started_at )

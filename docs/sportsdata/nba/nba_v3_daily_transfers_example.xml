@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started @ 2013-09-05 22:00:30 +0000 -->
+<league xmlns="http://feed.elasticstats.com/schema/basketball/transfers-v2.0.xsd" id="4353138d-4c22-4396-95d8-5f587d2df25c" name="NBA" alias="NBA">
+  <transfers start_time="2013-08-30T04:00:00+00:00" end_time="2013-08-31T03:59:59+00:00">
+    <player id="2af72a11-d1ed-47df-bc20-8bafaef96c61" full_name="Viacheslav Kravtsov" first_name="Viacheslav" last_name="Kravtsov" position="C" primary_position="C" jersey_number="0">
+      <transfer id="1c9b01c3-1491-4dfd-906d-c320cae2e018" effective_date="2013-08-30" last_modified="2013-08-30T16:03:37+00:00">
+        <from_team id="583ecefd-fb46-11e1-82cb-f4ce4684ea4c" name="Bucks" market="Milwaukee"/>
+        <to_team id="583ecfa8-fb46-11e1-82cb-f4ce4684ea4c" name="Suns" market="Phoenix"/>
+      </transfer>
+    </player>
+    <player id="13e16339-08f3-4f5b-9e33-774a673a2e6c" full_name="Trent Lockett" first_name="Trent" last_name="Lockett" position="G" primary_position="SG" jersey_number="0">
+      <transfer id="35ec8ee6-4e72-4b59-8387-7deaf509061d" effective_date="2013-08-28" last_modified="2013-08-30T16:08:39+00:00">
+        <to_team id="583ed0ac-fb46-11e1-82cb-f4ce4684ea4c" name="Kings" market="Sacramento"/>
+      </transfer>
+    </player>
+    <player id="9e70fd45-4543-429c-aed7-3ce81ef5906d" full_name="Caron Butler" first_name="Caron" last_name="Butler" position="F" primary_position="SF" jersey_number="5">
+      <transfer id="74800030-d4ad-4c24-a078-84ec918ff17d" effective_date="2013-08-29" last_modified="2013-08-30T16:02:49+00:00">
+        <from_team id="583ecfa8-fb46-11e1-82cb-f4ce4684ea4c" name="Suns" market="Phoenix"/>
+        <to_team id="583ecefd-fb46-11e1-82cb-f4ce4684ea4c" name="Bucks" market="Milwaukee"/>
+      </transfer>
+    </player>
+    <player id="05a90cd6-73de-43d5-9d30-bc2588d03262" full_name="Ish Smith" first_name="Ish" last_name="Smith" position="G" primary_position="PG" jersey_number="15">
+      <transfer id="a1d0bb5f-a131-44ae-a729-ba1bf4e2c23a" effective_date="2013-08-29" last_modified="2013-08-30T16:03:17+00:00">
+        <from_team id="583ecefd-fb46-11e1-82cb-f4ce4684ea4c" name="Bucks" market="Milwaukee"/>
+        <to_team id="583ecfa8-fb46-11e1-82cb-f4ce4684ea4c" name="Suns" market="Phoenix"/>
+      </transfer>
+    </player>
+    <player id="d8298a51-2639-422a-869b-61c6fe27afd1" full_name="Luke Babbitt" first_name="Luke" last_name="Babbitt" position="F" primary_position="SF" jersey_number="8">
+      <transfer id="f6eb7474-a2c9-44e0-9506-76ff3f6a8cd1" effective_date="2013-08-28" last_modified="2013-08-30T16:09:10+00:00">
+        <from_team id="583ed056-fb46-11e1-82cb-f4ce4684ea4c" name="Trail Blazers" market="Portland"/>
+      </transfer>
+    </player>
+  </transfers>
+</league>
+<!-- Generation ended @ 2013-09-05 22:00:30 +0000 -->

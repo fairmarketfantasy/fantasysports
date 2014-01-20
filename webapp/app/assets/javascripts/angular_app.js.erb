@@ -5,22 +5,29 @@ angular.module('app', [
       'app.filters',
       'app.controllers',
       'app.templates',
-      'angular-flash.service',
-      'angular-flash.flash-alert-directive',
-      'ui.bootstrap'])
+      'angular-flash.service', 'angular-flash.flash-alert-directive',
+      'ui.bootstrap',
+      'angulartics', 'angulartics.google.analytics'
+      ])
 .config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider.
-      when('/', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/', {redirectTo: function(){ return window.App.currentUser ? '/home' : '/external' }, reloadOnSearch: false}).
+      when('/external', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/home', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/playoffs', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/playoff_about', {templateUrl: '/playoff_about.html', controller: 'DummyController'}).
+      when('/coming-soon', {templateUrl: '/coming_soon.html', controller: 'HomeController'}).
       when('/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
       when('/market/:market_id/roster/:roster_id/vs/:opponent_roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
       when('/market/:market_id', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/league/:league_id', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/rosters', {templateUrl: '/roster_list.html', controller: 'RosterListController'}).
       when('/history', {templateUrl: '/roster_list.html', controller: 'RosterHistoryController'}).
       when('/leaderboard', {templateUrl: '/leaderboard.html', controller: 'LeaderboardController'}).
       when('/rules', {templateUrl: '/rules.html', controller: 'RulesController'}).
       when('/terms', {templateUrl: '/terms.html', controller: 'RulesController'}).
-      when('/promos', {templateUrl: '/promos.html', controller: 'PromosController'}).
-      when('/legal', {templateUrl: '/legal.html', controller: 'LegalController'}).
+      when('/promos', {templateUrl: '/promos.html', controller: 'DummyController'}).
+      when('/legal', {templateUrl: '/legal.html', controller: 'DummyController'}).
       when('/support', {templateUrl: '/support.html', controller: 'SupportController'}).
     //...
       otherwise({redirectTo: '/'});

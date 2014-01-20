@@ -1,14 +1,14 @@
 package beedb
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/grsmv/inflect"
+	"log"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
-
-// "log"
 )
 
 func getTypeName(obj interface{}) (typestr string) {
@@ -69,6 +69,20 @@ func pluralizeString(str string) string {
 	return str + "s"
 }
 
+func supportsJsonEncoding(val reflect.Value) bool {
+	// Find all key tags and build query to find unique object
+	valType := reflect.TypeOf(val.Interface())
+	//log.Println(valType.Elem())
+	for i := 0; i < valType.NumField(); i++ {
+		field := valType.Field(i)
+		tag := field.Tag
+		if tag.Get("json") != "" && tag.Get("json") != "-" {
+			return true
+		}
+	}
+	return false
+}
+
 func scanMapIntoStruct(obj interface{}, objMap map[string][]byte) error {
 	dataStruct := reflect.Indirect(reflect.ValueOf(obj))
 	if dataStruct.Kind() != reflect.Struct {
@@ -116,20 +130,29 @@ func scanMapIntoStruct(obj interface{}, objMap map[string][]byte) error {
 			v = x
 		//Now only support Time type
 		case reflect.Struct:
-			if structField.Type().String() != "time.Time" {
+			if structField.Type().String() == "time.Time" {
+				x, err := time.Parse("2006-01-02 15:04:05", string(data))
+				if err != nil {
+					x, err = time.Parse("2006-01-02 15:04:05.000 -0700", string(data))
+
+					if err != nil {
+						return errors.New("unsupported time format: " + string(data))
+					}
+				}
+
+				v = x
+			} else if supportsJsonEncoding(structField) {
+				obj = reflect.New(structField.Type()).Interface()
+				err := json.Unmarshal(data, obj)
+				if err != nil {
+					log.Println("ERROR: " + err.Error())
+					return errors.New("Json Unmarshal failed: " + err.Error() + string(data))
+				}
+				v = reflect.Indirect(reflect.ValueOf(obj)).Interface()
+			} else {
 				return errors.New("unsupported struct type in Scan: " + structField.Type().String())
 			}
 
-			x, err := time.Parse("2006-01-02 15:04:05", string(data))
-			if err != nil {
-				x, err = time.Parse("2006-01-02 15:04:05.000 -0700", string(data))
-
-				if err != nil {
-					return errors.New("unsupported time format: " + string(data))
-				}
-			}
-
-			v = x
 		default:
 			return errors.New("unsupported type in Scan: " + reflect.TypeOf(v).String())
 		}
@@ -158,7 +181,15 @@ func scanStructIntoMap(obj interface{}) (map[string]interface{}, error) {
 		value := dataStruct.FieldByName(fieldName)
 		if value.Kind().String() != "struct" || value.Type().String() == "time.Time" {
 			mapped[mapKey] = value.Interface()
+		} else if supportsJsonEncoding(value) {
+			// Encode as json text into column.  TODO: handle unmarshaling in scanMapIntoStruct
+			json, err := json.Marshal(value.Interface())
+			if err != nil {
+				log.Panicf("Unable to convert value to json string %s", value.Interface())
+			}
+			mapped[mapKey] = string(json)
 		}
+
 	}
 
 	return mapped, nil

@@ -1,4 +1,6 @@
 class RostersController < ApplicationController
+  skip_before_filter :authenticate_user!, :only => [:show]
+
   def mine
     rosters = current_user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').order('closed_at desc')
     rosters = if params[:historical]
@@ -8,12 +10,12 @@ class RostersController < ApplicationController
       # Don't paginate active rosters
       rosters.active
     end
-    render_api_response rosters
+    render_api_response rosters # This is slow too, maybe make abridging smarter
   end
 
   def in_contest
     contest = Contest.find(params[:contest_id])
-    render_api_response contest.rosters.submitted.order('contest_rank asc').limit(10)
+    render_api_response contest.rosters.where(:state => ['submitted', 'finished']).order('contest_rank asc').limit((params[:page] || 1).to_i * 10).with_perfect_score(contest.perfect_score), :abridged => true
   end
 
   # Create a roster for a contest type
@@ -62,8 +64,18 @@ class RostersController < ApplicationController
   end
 
   def show
-    roster = Roster.find(params[:id])
+    roster = if current_user
+      Roster.find(params[:id])
+    else
+      Roster.where(:id => params[:id], :view_code => params[:view_code]).first
+    end
+    raise HttpException.new(404, "Roster not found or code not included") unless roster
     render_api_response roster
+  end
+
+  def public_roster
+    roster = Roster.find_by_view_code(params[:code])
+    redirect_to "/#/market/#{roster.market_id}/roster/#{roster.id}/?view_code=#{roster.view_code}"
   end
 
   def submit
@@ -95,7 +107,19 @@ class RostersController < ApplicationController
 
   def autofill
     roster = current_user.rosters.where(:id => params[:id]).first
-    roster.fill_pseudo_randomly3
+    roster.fill_pseudo_randomly5
+    render_api_response roster
+  end
+
+  def share
+    roster = current_user.rosters.find(params[:id])
+    roster.add_bonus(params[:event])
+    case params[:event]
+      when 'twitter_follow'
+        Eventing.report(current_user, 'twitterFollow')
+      when 'twitter_share'
+        Eventing.report(current_user, 'twitterShare')
+    end
     render_api_response roster
   end
 end

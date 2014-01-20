@@ -6,8 +6,9 @@ class ContestTypeValidator < ActiveModel::Validator
       if total_payout > 10000000 # Catch the crazies
         record.errors[:payout_structure] = "Payout structure adds to more than  100k"
       end
-    elsif total_payout != total_buy_in - total_buy_in * record.rake
-      record.errors[:payout_structure] = "Payout structure doesn't equal max_entries * buy_in - rake * max_entries * buy_in"
+    elsif total_payout != total_buy_in - record.rake
+      debugger
+      record.errors[:payout_structure] = "Payout structure doesn't equal max_entries * buy_in - rake"
     end
     raise "Buy in must be between $0 and $1000" unless (0..100000).include?(record.buy_in)
   end
@@ -22,7 +23,6 @@ class ContestType < ActiveRecord::Base
   validates_with ContestTypeValidator
 
   scope :public, -> { where('private = false OR private IS NULL') }
-  # TODO: validate payout structure, ensure rake isn't settable
 
   def get_payout_structure
     @payout_structure ||= JSON.load(self.payout_structure)
@@ -33,6 +33,14 @@ class ContestType < ActiveRecord::Base
     super
   end
 
+  def position_array
+    @position_list ||= self.positions.split(',')
+  end
+
+  def position_array
+    @position_list ||= self.positions.split(',')
+  end
+
   def duplicate_into_market(market)
     existing = market.contest_types.where(
       :name => self.name,
@@ -41,7 +49,7 @@ class ContestType < ActiveRecord::Base
     ).first
     return existing if existing
     attributes = self.attributes.dup
-    [:id, :created_at ].each{|attr| attributes.delete(attr) }
+    ["id", "created_at"].each{|attr| attributes.delete(attr) }
     attributes[:market_id] = market.id
     ContestType.create!(attributes)
   end

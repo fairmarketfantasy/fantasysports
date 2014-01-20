@@ -148,9 +148,9 @@ func (orm *Model) Find(output interface{}) error {
 		return err
 	}
 
-	if orm.TableName == "" {
-		orm.TableName = getTableName(StructName(output))
-	}
+	//if orm.TableName == "" { // These somehow get screwed up - I haven't figured out how yet.  Not caching these is probably super slow
+	orm.TableName = getTableName(StructName(output))
+	//}
 	for key, _ := range results {
 		keys = append(keys, key)
 	}
@@ -189,9 +189,9 @@ func (orm *Model) FindAll(rowsSlicePtr interface{}) error {
 		return err
 	}
 
-	if orm.TableName == "" {
-		orm.TableName = getTableName(getTypeName(rowsSlicePtr))
-	}
+	//if orm.TableName == "" {
+	orm.TableName = getTableName(getTypeName(rowsSlicePtr))
+	//}
 	for key, _ := range results {
 		keys = append(keys, key)
 	}
@@ -220,12 +220,13 @@ func (orm *Model) FindMap() (resultsSlice []map[string][]byte, err error) {
 		fmt.Println(sqls)
 		fmt.Println(orm)
 	}
-	s, err := orm.Db.Prepare(sqls)
+	/*s, err := orm.Db.Prepare(sqls)
 	if err != nil {
 		return nil, err
 	}
 	defer s.Close()
-	res, err := s.Query(orm.ParamStr...)
+	res, err := s.Query(orm.ParamStr...)*/
+	res, err := orm.Db.Query(sqls, orm.ParamStr...)
 	if err != nil {
 		return nil, err
 	}
@@ -364,13 +365,14 @@ func (orm *Model) generateSql() (a string) {
 
 //Execute sql
 func (orm *Model) Exec(finalQueryString string, args ...interface{}) (sql.Result, error) {
-	rs, err := orm.Db.Prepare(finalQueryString)
+	/*rs, err := orm.Db.Prepare(finalQueryString)
 	if err != nil {
 		return nil, err
 	}
 	defer rs.Close()
 
-	res, err := rs.Exec(args...)
+	res, err := rs.Exec(args...)*/
+	res, err := orm.Db.Exec(finalQueryString, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -385,9 +387,9 @@ func (orm *Model) Save(output interface{}) error {
 		return err
 	}
 
-	if orm.TableName == "" {
-		orm.TableName = getTableName(StructName(output))
-	}
+	//if orm.TableName == "" {
+	orm.TableName = getTableName(StructName(output))
+	//}
 	id := results[snakeCasedName(orm.PrimaryKey)]
 	delete(results, snakeCasedName(orm.PrimaryKey))
 	if reflect.ValueOf(id).Int() == 0 {
@@ -554,9 +556,9 @@ func (orm *Model) Delete(output interface{}) (int64, error) {
 		return 0, err
 	}
 
-	if orm.TableName == "" {
-		orm.TableName = getTableName(StructName(output))
-	}
+	//if orm.TableName == "" {
+	orm.TableName = getTableName(StructName(output))
+	//}
 	id := results[strings.ToLower(orm.PrimaryKey)]
 	condition := fmt.Sprintf("%v%v%v='%v'", orm.QuoteIdentifier, strings.ToLower(orm.PrimaryKey), orm.QuoteIdentifier, id)
 	statement := fmt.Sprintf("DELETE FROM %v%v%v WHERE %v",
@@ -583,9 +585,9 @@ func (orm *Model) Delete(output interface{}) (int64, error) {
 func (orm *Model) DeleteAll(rowsSlicePtr interface{}) (int64, error) {
 	defer orm.InitModel()
 	orm.ScanPK(rowsSlicePtr)
-	if orm.TableName == "" {
-		orm.TableName = getTableName(getTypeName(rowsSlicePtr))
-	}
+	//if orm.TableName == "" {
+	orm.TableName = getTableName(getTypeName(rowsSlicePtr))
+	//}
 	var ids []string
 	val := reflect.Indirect(reflect.ValueOf(rowsSlicePtr))
 	if val.Len() == 0 {

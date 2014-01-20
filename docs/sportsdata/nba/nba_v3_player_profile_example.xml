@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started @ 2013-07-19 01:21:29 +0000 -->
+<player xmlns="http://feed.elasticstats.com/schema/basketball/profile-v2.0.xsd" id="7d615ccd-db96-42a3-9a6c-7f18ea25634e" status="ACT" full_name="Kevin Love" first_name="Kevin" last_name="Love" abbr_name="K.Love" height="81" weight="259" position="F" primary_position="NA" jersey_number="42" college="UCLA" birthdate="1988-09-07" updated="2013-07-08T19:17:10+00:00">
+  <league id="4353138d-4c22-4396-95d8-5f587d2df25c" name="NBA" alias="NBA"/>
+  <team id="583eca2f-fb46-11e1-82cb-f4ce4684ea4c" name="Timberwolves" market="Minnesota" alias="MIN"/>
+</player>
+<!-- Generation ended @ 2013-07-19 01:21:29 +0000 -->

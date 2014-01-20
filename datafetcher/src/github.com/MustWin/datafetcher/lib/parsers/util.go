@@ -3,12 +3,12 @@ package parsers
 import (
 	"encoding/xml"
 	"errors"
-	"github.com/MustWin/datafetcher/lib"
+	"github.com/MustWin/datafetcher/lib/utils"
 	"reflect"
 	"strconv"
 	"time"
 
-//  "log"
+	//  "log"
 )
 
 func FindAttrByName(attrs []xml.Attr, name string) string {
@@ -27,7 +27,7 @@ func InitFromAttrs(element xml.StartElement, value interface{}) error {
 	}
 	for _, attr := range element.Attr {
 		key := attr.Name.Local
-		field := val.FieldByName(lib.CamelCase(key))
+		field := val.FieldByName(utils.CamelCase(key))
 		data := attr.Value
 		var v interface{}
 		if field.IsValid() {

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:p="http://feed.elasticstats.com/schema/basketball/profile-v2.0.xsd"
+           targetNamespace="http://feed.elasticstats.com/schema/basketball/profile-v2.0.xsd"
+           elementFormDefault="qualified" >
+
+  <xs:include schemaLocation="common-v2.0.xsd"/>
+  <xs:include schemaLocation="common-statistics-v2.0.xsd"/>
+  
+  <xs:complexType name="playerProfileType">
+    <xs:sequence>
+      <xs:element name="league" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:attributeGroup ref="p:baseOrganizationAttributes" />
+        </xs:complexType>
+      </xs:element>
+      
+      <xs:element name="team" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:attributeGroup ref="p:baseTeamAttributes" />  
+        </xs:complexType>
+      </xs:element>
+      
+      <xs:element name="draft" type="p:draftType" minOccurs="0" maxOccurs="1"/>
+      
+      <xs:element name="seasons" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="season" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="team" type="p:teamType" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="id"   use="required" type="xs:string"/>
+                <xs:attribute name="type" use="required" type="xs:string"/>
+                <xs:attribute name="year" use="required" type="xs:integer"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      
+    </xs:sequence>
+    <xs:attributeGroup ref="p:extendedPlayerAttributes" />
+  </xs:complexType>
+  
+  <xs:element name="player" type="p:playerProfileType" />
+   
+  <xs:complexType name="teamType">
+    <xs:sequence>
+      <xs:element name="statistics" type="p:playerRecordType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attributeGroup ref="p:baseTeamAttributes" />
+  </xs:complexType>
+
+</xs:schema>

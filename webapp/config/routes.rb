@@ -24,6 +24,7 @@ Fantasysports::Application.routes.draw do
   # You can have the root of your site routed with "root"
   get '/healthcheck' => 'application#healthcheck'
   post '/support' => 'pages#support'
+  get '/public' => 'pages#public'
   get '/terms' => 'pages#terms'
   get '/guide' => 'pages#guide'
   get '/landing' => 'pages#landing'
@@ -39,7 +40,7 @@ Fantasysports::Application.routes.draw do
   get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
 
   #for /users/:id
-  resources :users, only: [:show] do
+  resources :users, only: [:index, :show] do
     collection do
       get 'unsubscribe',     action: :unsubscribe
       get 'name_taken',      action: :name_taken
@@ -76,16 +77,24 @@ Fantasysports::Application.routes.draw do
       get 'mine', :action => 'mine'
       get 'past_stats', :action => 'past_stats'
       get 'in_contest/:contest_id', :action => 'in_contest'
+      get 'public/:view_code', :action => 'public_roster'
     end
-    member do 
+    member do
       post 'submit', :action => 'submit'
       post 'autofill', :action => 'autofill'
       post 'add_player/:player_id', :action => 'add_player'
       post 'remove_player/:player_id', :action => 'remove_player'
+      post 'share', :action => 'share'
     end
   end
 
   get "/transactions" => 'transaction_record#index'
+
+  resources :promo, only: [:create] do
+    collection do
+      post 'redeem', :action => 'redeem'
+    end
+  end
 
   resources :contests, only: [:create] do
     collection do

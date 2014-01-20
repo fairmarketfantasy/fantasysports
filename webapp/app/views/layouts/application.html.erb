@@ -8,12 +8,14 @@
 <head>
   <!-- http://docs.angularjs.org/guide/ie -->
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
   <!-- CSS DIFF -->
   <meta name="viewport" content="width=1200">
 
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+
+  <meta name="apple-itunes-app" content="app-id=719879920">
 
   <%
     title = @page_title || 'Fair Market Fantasy'
@@ -53,6 +55,41 @@
 </head>
 
 <body ng-controller="ApplicationController">
+<!-- FB SHIT -->
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+    // init the FB JS SDK
+    FB.init({
+      appId      : '<%= FACEBOOK_APP_ID %>',             // App ID from the app dashboard
+      status     : true,                                 // Check Facebook Login status
+      xfbml      : true                                  // Look for social plugins on the page
+    });
+
+    // Additional initialization code such as adding Event Listeners goes here
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+<!-- GA SHIT -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46242308-1', 'fairmarketfantasy.com');
+  //ga('send', 'pageview'); // Handled by angulartics http://luisfarzati.github.io/angulartics/
+
+</script>
+
   <div flash-alert active-class="alert in" class="fixed-flash fade " ng-cloak>
     <div class="container">
       <div class="row">
@@ -67,14 +104,14 @@
   <header class="full">
     <div class="container">
     <div class="row top-nav">
-      <div class="span9">
-        <h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1> <span class="sub-title">Advanced market-driven pricing and the highest payouts in the industry!</span>
+      <div class="span8">
+        <a href="/#"><h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1></a> <span class="sub-title">Only available here, Play the NFL Playoffs!</span>
       </div>
-      <div class="span3">
-        <div class="links text-right">
-          <a class="sub-title txt-green-hover" href="/#/support">Support</a>
-          <a class="sub-title txt-green-hover" href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a>
-        </div>
+      <div class="span4">
+        <ul class="nav nav-pills blue-pills modal-pills">
+          <li ng-class="{active: currentUser.currentSport == 'NFL'}"><a ng-click="currentUser.currentSport = 'NFL'" href="/#/">NFL</a></li>
+          <li ng-class="{active: currentUser.currentSport == 'NBA'}"><a ng-click="currentUser.currentSport = 'NBA'" href="/#/coming-soon">NBA</a></li>
+        </ul>
       </div>
     </div>
   </div>
@@ -93,15 +130,14 @@
         <div class="user-dash clearfix">
           <div class="user-balance no-border">
             <small>Cash:</small>&nbsp;&nbsp;{{ currentUser.balance | centsToDollars }}
-            <div class="user-dash no-border clearfix">
-              <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Deposit Funds</a>
-            </div>
           </div>
           <div class="user-balance no-border">
-            <small>FF:</small>&nbsp;&nbsp;{{ currentUser.token_balance }}
-            <div class="user-dash no-border clearfix">
-              <a class="btn btn-small btn-success" href="javascript://" ng-click="addFanFreesModal()">Add FanFrees</a>
-            </div>
+            <img class="nmw-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+              popover-trigger="mouseenter" popover="Net Monthly Winnings are how much you're ahead this month. Check out the FAQs for more info!" popover-placement="right">
+            <small>NMW:</small>&nbsp;&nbsp;{{ currentUser.customer_object.net_monthly_winnings | centsToDollars }}
+          </div>
+          <div class="user-dash no-border clearfix">
+            <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Manage Subscription</a>
           </div>
        </div>
 
@@ -118,13 +154,18 @@
         <div class="span3 user-navigation">
           <ul class="nav">
             <li class="nav-item"><a href="/#/">Home</a></li>
+            <li class="nav-item nav-item-highlight"><a href="/#/playoffs">Play the Playoffs</a></li>
             <li class="nav-item"><a href="/#/rosters">My Contests</a></li>
             <li class="nav-item"><a href="/#/history">History</a></li>
             <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
             <li class="nav-item"><a href="/#/rules" >Rules and Scoring</a></li>
             <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
-            <li class="nav-item end"><a href="/#/support">Support</a></li>
+            <li class="nav-item"><a href="/#/support">Support</a></li>
+            <li class="nav-item end"><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></li>
           </ul>
+          <div class="nav-mobile-app-links">
+            <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
+          </div>
         </div>
         <div class="span9 page-content">
           <div class="padded-content">
@@ -143,6 +184,7 @@
             <h4 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h4>
             <p>Copyright 2013, Fair Market Fantasy, LLC. All Rights Reserved.</p>
             <p>Designed and developed by <a href="http://mustw.in">Must Win</a></p>
+            <p>Based in San Francisco, CA</p>
           </div>
           <div class="span3 offset5 tos-padding">
             <p><a href="#/terms">Terms and Conditions</a></p>
@@ -162,10 +204,13 @@
   window.App = {
     site: "<%= SITE %>",
     currentUser: <%= (UserSerializer.new(current_user, scope: current_user).to_json.html_safe) || 'null' %>,
-    isUserAdmin: <%= current_user && current_user.admin? || false %>,
+    isUserAdmin: <%= current_user && current_user.admin? || false %>
   };
   window.setCurrentUser = function(user) {
     window.App.currentUser = user;
+  };
+  window.refreshUser = function(amount) {
+    angular.element('body').injector().get('currentUserService').refreshUser();
   };
   window.addToBalance = function(amount) {
     window.App.currentUser.balance = window.App.currentUser.balance + amount;
@@ -182,17 +227,6 @@
 
 <%= render :partial => 'templates/ng_includes' %>
 <%= javascript_include_tag "application" %>
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-43238810-1', 'fanfairfantasy.com');
-  ga('send', 'pageview');
-
-</script>
 
 <%= yield :javascript %>
 

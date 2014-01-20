@@ -9,13 +9,14 @@ defaults: &defaults
   host: localhost
   username: fantasysports
   password: F4n7a5y
+  pool: 16
 
 development:
   <<: *defaults
 
 staging:
   <<: *defaults
-  host: '54.213.15.243'
+  host: fantasysports-staging-postgres.clvfjvvzcbre.us-west-2.rds.amazonaws.com
 
 test:
   <<: *defaults
@@ -23,4 +24,4 @@ test:
 
 production:
   <<: *defaults
-  host: '54.213.46.254' # AWS elastic IP pointed to prod db
+  host: fantasysports-postgres-master.clvfjvvzcbre.us-west-2.rds.amazonaws.com

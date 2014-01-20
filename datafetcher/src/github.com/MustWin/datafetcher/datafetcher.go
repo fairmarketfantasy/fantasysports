@@ -6,8 +6,9 @@ import (
 	"github.com/MustWin/datafetcher/lib"
 	"github.com/MustWin/datafetcher/lib/fetchers"
 	"github.com/MustWin/datafetcher/lib/model"
+	"github.com/MustWin/datafetcher/lib/utils"
 	"github.com/MustWin/datafetcher/nfl"
-	"github.com/MustWin/datafetcher/nfl/models"
+	"github.com/MustWin/datafetcher/nba"
 	"io"
 	"log"
 	"os"
@@ -35,15 +36,16 @@ func writePid() {
 }
 
 // Major options
-var sport = flag.String("sport", "NFL" /* Temporary default */, "REQUIRED: What sport to fetch: nfl")
+var sport = flag.String("sport", "NFL" /* Temporary default */, "REQUIRED: What sport to fetch: NFL")
 var fetch = flag.String("fetch", "", `What data to fetch:
       roster -team DAL
-      teams -year 2012 -season PRE|REG|PST
-      schedule -year 2012 -season PRE|REG|PST
-      pbp -year 2012 -season PRE|REG|PST -week 3 -away DAL -home NYG
-      stats -year 2012 -season PRE|REG|PST -week 3 -away DAL -home NYG
+      teams -year 2012
+      games -year 2012
+      pbp -statsId N9837-8d7fh3-sd8sd8f7-MIJ3IYG
+      stats -statsId N9837-8d7fh3-sd8sd8f7-MIJ3IYG
 `)
 
+// TODO: namespace this per sport
 func defaultYear() int {
 	now := time.Now()
 	defaultNflYear := now.Year()
@@ -56,73 +58,87 @@ func defaultYear() int {
 
 // Minor options
 var year = flag.Int("year", defaultYear(), "Year to scope the fetch.")
-var season = flag.String("season", "REG", "Season to fetch, one of PRE|REG|POST.")
-var week = flag.Int("week", 1, "Team to fetch. Only pass with pbp")
 
 var team = flag.String("team", "DAL", "Team to fetch. Only pass with roster")
-var homeTeam = flag.String("home", "NYG", "Home team of game to fetch. Only pass with pbp")
-var awayTeam = flag.String("away", "DAL", "Away team of game to fetch. Only pass with pbp")
-var playId = flag.String("playId", "28140456-0132-4829-ae38-d68e10a5acc9", "PlayId of the summary to fetch. Only pass with play.")
+var statsId = flag.String("statsId", "N9837-8d7fh3-sd8sd8f7-MIJ3IYG", "Unique identifier of game to fetch. Only pass with pbp or stats")
+
+func getFetcherNFL(orm *model.Orm) (lib.Fetcher, lib.FetchManager) {
+	fetcher := nfl.Fetcher{*year, fetchers.HttpFetcher}
+	mgr := nfl.FetchManager{Orm: *orm, Fetcher: fetcher}
+	return fetcher, &mgr
+}
+
+func getFetcherNBA(orm *model.Orm) (lib.Fetcher, lib.FetchManager) {
+	fetcher := nba.Fetcher{*year, fetchers.HttpFetcher}
+	mgr := nba.FetchManager{Orm: *orm, Fetcher: fetcher}
+	return fetcher, &mgr
+}
+
+func getFetcher(sport *string, orm *model.Orm) (lib.Fetcher, lib.FetchManager) {
+	if *sport == "NBA" {
+		return getFetcherNBA(orm)
+	} else {
+		return getFetcherNFL(orm)
+	}
+}
 
 func main() {
 	flag.Parse()
 	fmt.Println("fetching data for year", *year)
 	//fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
-	fetcher := nfl.Fetcher{*year, *season, *week, fetchers.HttpFetcher}
+
+	//fetcher := nfl.Fetcher{*year, fetchers.HttpFetcher}
+
 	var orm model.Orm
 	var ormType model.Orm
+
+	sportName := "NFL"
+	if *sport == "NBA" {
+		sportName = "NBA"
+	}
 
 	ormType = &model.OrmBase{}
 	orm = ormType.Init(lib.DbInit(""))
 	lib.InitSports()
-	ormType = &models.NflOrm{}
-	orm = ormType.Init(lib.DbInit("NFL"))
+	ormType = &model.OrmBase{}
+	orm = ormType.Init(lib.DbInit(sportName))
+
+	fetcher, mgr := getFetcher(sport, &orm)
 
 	switch *fetch {
 	case "teams":
 		log.Println("Fetching Team data")
-		teams := fetcher.GetStandings()
-		orm.SaveAll(teams)
-		lib.PrintPtrs(teams)
+		teams := mgr.GetStandings()
+		utils.PrintPtrs(teams)
 
-	case "schedule":
+	case "games":
 		log.Println("Fetching Schedule data")
-		games := fetcher.GetSchedule()
-		orm.SaveAll(games)
-		lib.PrintPtrs(games)
+		games := mgr.GetGames()
+		utils.PrintPtrs(games)
 
 	case "pbp":
 		log.Println("Fetching play by play data")
-		plays := fetcher.GetPlayByPlay(*awayTeam, *homeTeam)
-		lib.PrintPtrs(plays)
+		plays, _, _ := mgr.GetPbp(mgr.GetGameById(*statsId), -1)
+		utils.PrintPtrs(plays)
 		orm.SaveAll(plays)
-		lib.PrintPtrs(plays)
+		//utils.PrintPtrs(plays)
 
 	case "roster":
 		log.Println("Fetching Roster data")
 		players := fetcher.GetTeamRoster(*team)
 		orm.SaveAll(players)
-		lib.PrintPtrs(players)
+		utils.PrintPtrs(players)
 
 	case "stats":
 		log.Println("Fetching play summary data")
-		statEvents := fetcher.GetGameStatistics(*awayTeam, *homeTeam)
+		statEvents := mgr.GetStats(mgr.GetGameById(*statsId))
 		orm.SaveAll(statEvents)
-		lib.PrintPtrs(statEvents)
-
-	case "all":
-		log.Println("Fetching teams, schedule, pbp, roster, and stats")
-		orm.SaveAll(fetcher.GetStandings())
-		orm.SaveAll(fetcher.GetSchedule())
-		orm.SaveAll(fetcher.GetPlayByPlay(*awayTeam, *homeTeam))
-		orm.SaveAll(fetcher.GetTeamRoster(*team))
-		orm.SaveAll(fetcher.GetGameStatistics(*awayTeam, *homeTeam))
+		utils.PrintPtrs(statEvents)
 
 	case "serve":
 		writePid()
 		log.Println("Periodically fetching data for your pleasure.")
-		mgr := nfl.FetchManager{Orm: orm, Fetcher: fetcher}
-		mgr.Start(&mgr)
+		mgr.Start(mgr)
 		//block the current goroutine indefinitely
 		<-make(chan bool)
 

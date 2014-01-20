@@ -7,6 +7,14 @@ class PagesController < ApplicationController
     end
   end
 
+  def public
+    if current_user
+      redirect_to  '/'
+    else
+      render :index, layout: 'public'
+    end
+  end
+
   def landing
     render layout: "landing"
   end

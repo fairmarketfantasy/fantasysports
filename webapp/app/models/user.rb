@@ -38,24 +38,19 @@ class User < ActiveRecord::Base
   belongs_to :inviter, :class_name => 'User'
 
   before_create :set_blank_name
-  after_create :award_tokens
+  after_create :create_customer_object
 
   def set_blank_name
     self.name ||= ''
   end
 
-  def award_tokens
-    self.payout(1000, true, :event => 'joined_grant')
+  def active_account?
+    customer_object.has_agreed_terms? && customer_object.is_active? && !customer_object.locked? || self.id == SYSTEM_USER.id
   end
 
-  def customer_object_with_create
-    co = customer_object_without_create
-    if co.nil?
-      co = CustomerObject.create!(:user_id => self.id)
-    end
-    co
+  def create_customer_object
+    CustomerObject.create!(:user_id => self.id)
   end
-  alias_method_chain :customer_object, :create
 
   def self.find_for_facebook_oauth(auth)
     Rails.logger.debug(auth.pretty_inspect)
@@ -79,6 +74,14 @@ class User < ActiveRecord::Base
     self[:email].blank? ? self.unconfirmed_email : self[:email]
   end
 
+  def referral_code
+    if self[:referral_code].nil?
+      self.referral_code = SecureRandom.hex(16)
+      self.save!
+    end
+    super
+  end
+
   def image_url
     #avatar    (from upload: AvatarUploader)
     #image_url (from facebook)
@@ -95,43 +98,35 @@ class User < ActiveRecord::Base
     rosters.where(:state => 'in_progress').first
   end
 
-  def can_charge?(amount, charge_tokens = false)
-    return true if amount == 0 || self == SYSTEM_USER
-    if charge_tokens
-      return false if amount > self.token_balance
+  # NOENTRY TODO: change to count entries
+  def charge(type, amount, opts = {}) # roster_id, contest_id, invitation_id, referred_id
+    case type.to_sym
+    when :balance
+      self.customer_object.decrease_account_balance(amount, opts)
+    when :monthly_entry
+      self.customer_object.increase_monthly_contest_entries!(amount, opts)
+    when :monthly_winnings
+      self.customer_object.decrease_monthly_winnings(amount, opts)
     else
-      return false unless customer_object
-      return false if amount > customer_object.balance
-    end
-    return true
-  end
-
-  def charge(amount, use_tokens, opts = {}) # roster_id, contest_id, invitation_id, referred_id
-    if use_tokens
-      ActiveRecord::Base.transaction do
-        self.reload
-        raise HttpException.new(409, "You don't have enough FanFrees for that.") if amount > self.token_balance && self != SYSTEM_USER
-        self.token_balance -= amount
-        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => -amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id],:invitation_id => opts[:invitation_id], :is_tokens => use_tokens, :referred_id => opts[:referred_id])
-        self.save
-      end
-    else
-      self.customer_object.decrease_balance(amount, opts[:event], opts)
+      raise "Type must be one of [balance, monthly_entry, monthly_winnings]" unless [:balance, :monthly_entry, :monthly_winnings].include?(type.to_sym)
     end
   end
 
-  #def increase_balance(amount, event, roster_id = nil, contest_id = nil, invitation_id= nil)
-  def payout(amount, use_tokens, opts)
-    if use_tokens
-      ActiveRecord::Base.transaction do
-        self.reload
-        self.token_balance += amount
-        TransactionRecord.create!(:user => self, :event => opts[:event], :amount => amount, :roster_id => opts[:roster_id], :contest_id => opts[:contest_id], :invitation_id => opts[:invitation_id], :referred_id => opts[:referred_id], :is_tokens => use_tokens)
-        self.save
-      end
+  def payout(type, amount, opts)
+    case type.to_sym
+    when :balance
+      self.customer_object.increase_account_balance(amount, opts)
+    when :monthly_entry
+      self.customer_object.decrease_monthly_contest_entries!(amount, opts)
+    when :monthly_winnings
+      self.customer_object.increase_monthly_winnings(amount, opts)
     else
-      self.reload.customer_object.increase_balance(amount, opts[:event], opts)
+      raise "Type must be one of [balance, monthly_entry, monthly_winnings]"
     end
+  end
+
+  def abridged? # Used in api serializer
+    false
   end
 
   SYSTEM_USERNAMES = [
