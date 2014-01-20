@@ -22,6 +22,8 @@
 //= require vendor/angular-ui-bootstrap-tpls-0.4.0.min.js
 //= require vendor/angular-flash.js
 //= require vendor/moment.min.js
+//= require vendor/angulartics.js
+//= require vendor/angulartics-google-analytics.js
 //= require skeuocard
 
 // Our angular app

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started @ 2013-05-10 20:13:24 +0000 -->
+<game xmlns="http://feed.elasticstats.com/schema/basketball/game-v2.0.xsd" id="e1c2303d-b222-48a3-b2c7-ad0ffedd1b44" status="inprogress" coverage="full" home_team="8dfc624b-8379-4dd5-a960-b9fea4d7d86f" away_team="acb77cf9-fc14-4a9a-a3be-ccd4f0d901ae" scheduled="2013-05-09T01:30:00+00:00" clock="00:00" quarter="2">
+  <team name="Spurs" market="San Antonio" id="8dfc624b-8379-4dd5-a960-b9fea4d7d86f" points="43">
+    <scoring>
+      <quarter number="1" sequence="1" points="23"/>
+      <quarter number="2" sequence="2" points="20"/>
+    </scoring>
+    <leaders>
+      <points>
+        <player full_name="Tim Duncan" position="F" primary_position="NA" jersey_number="21" id="4f625a5c-db34-4c2b-914f-28cc74d87c33">
+          <statistics field_goals_made="6" field_goals_att="12" field_goals_pct="50.0" three_points_made="0" three_points_att="0" three_points_pct="0.0" two_points_made="6" two_points_att="12" two_points_pct="0.5" blocked_att="0" free_throws_made="5" free_throws_att="5" free_throws_pct="100.0" offensive_rebounds="1" defensive_rebounds="3" rebounds="4" assists="1" turnovers="1" steals="0" blocks="0" personal_fouls="1" tech_fouls="0" flagrant_fouls="0" points="17"/>
+        </player>
+      </points>
+      <rebounds>
+        <player full_name="Kawhi Leonard" position="F" primary_position="NA" jersey_number="2" id="e12841e6-90c8-4a1f-9737-012fcdb6f87e">
+          <statistics field_goals_made="2" field_goals_att="5" field_goals_pct="40.0" three_points_made="0" three_points_att="0" three_points_pct="0.0" two_points_made="2" two_points_att="5" two_points_pct="0.4" blocked_att="0" free_throws_made="1" free_throws_att="4" free_throws_pct="25.0" offensive_rebounds="5" defensive_rebounds="2" rebounds="7" assists="0" turnovers="2" steals="0" blocks="1" personal_fouls="0" tech_fouls="0" flagrant_fouls="0" points="5"/>
+        </player>
+      </rebounds>
+      <assists>
+        <player full_name="Tony Parker" position="G" primary_position="NA" jersey_number="9" id="96a50281-5b55-4108-85d5-92f7c62584c6">
+          <statistics field_goals_made="4" field_goals_att="9" field_goals_pct="44.4" three_points_made="0" three_points_att="0" three_points_pct="0.0" two_points_made="4" two_points_att="9" two_points_pct="0.444" blocked_att="0" free_throws_made="5" free_throws_att="7" free_throws_pct="71.4" offensive_rebounds="0" defensive_rebounds="2" rebounds="2" assists="2" turnovers="1" steals="2" blocks="0" personal_fouls="1" tech_fouls="0" flagrant_fouls="0" points="13"/>
+        </player>
+      </assists>
+    </leaders>
+  </team>
+  <team name="Warriors" market="Golden State" id="acb77cf9-fc14-4a9a-a3be-ccd4f0d901ae" points="62">
+    <scoring>
+      <quarter number="1" sequence="1" points="28"/>
+      <quarter number="2" sequence="2" points="34"/>
+    </scoring>
+    <leaders>
+      <points>
+        <player full_name="Klay Thompson" position="G" primary_position="NA" jersey_number="11" id="026ccff9-c2d7-4efc-b4cf-9f0e0462768a">
+          <statistics field_goals_made="11" field_goals_att="18" field_goals_pct="61.1" three_points_made="7" three_points_att="8" three_points_pct="87.5" two_points_made="4" two_points_att="10" two_points_pct="0.4" blocked_att="0" free_throws_made="0" free_throws_att="0" free_throws_pct="0.0" offensive_rebounds="1" defensive_rebounds="5" rebounds="6" assists="0" turnovers="0" steals="3" blocks="0" personal_fouls="0" tech_fouls="0" flagrant_fouls="0" points="29"/>
+        </player>
+      </points>
+      <rebounds>
+        <player full_name="Andrew Bogut" position="C" primary_position="NA" jersey_number="12" id="9fc9d2b6-c1f2-436f-b6a6-89130801d0b0">
+          <statistics field_goals_made="2" field_goals_att="2" field_goals_pct="100.0" three_points_made="0" three_points_att="0" three_points_pct="0.0" two_points_made="2" two_points_att="2" two_points_pct="1.0" blocked_att="0" free_throws_made="0" free_throws_att="0" free_throws_pct="0.0" offensive_rebounds="1" defensive_rebounds="7" rebounds="8" assists="1" turnovers="0" steals="0" blocks="0" personal_fouls="2" tech_fouls="0" flagrant_fouls="0" points="4"/>
+        </player>
+      </rebounds>
+      <assists>
+        <player full_name="Draymond Green" position="F" primary_position="NA" jersey_number="23" id="fb7b7242-1785-438e-858d-d4140ab30980">
+          <statistics field_goals_made="0" field_goals_att="4" field_goals_pct="0.0" three_points_made="0" three_points_att="1" three_points_pct="0.0" two_points_made="0" two_points_att="3" two_points_pct="0.0" blocked_att="0" free_throws_made="0" free_throws_att="0" free_throws_pct="0.0" offensive_rebounds="2" defensive_rebounds="3" rebounds="5" assists="5" turnovers="1" steals="0" blocks="0" personal_fouls="2" tech_fouls="0" flagrant_fouls="0" points="0"/>
+        </player>
+      </assists>
+    </leaders>
+  </team>
+</game>
+<!-- Generation ended @ 2013-05-10 20:13:25 +0000 -->

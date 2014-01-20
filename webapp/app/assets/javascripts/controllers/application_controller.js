@@ -1,11 +1,25 @@
 angular.module("app.controllers")
-.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'rosters', '$location', 'flash', '$dialog', '$timeout', function($scope, fs, currentUserService, rosters, $location, flash, $dialog, $timeout) {
+.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'registrationService', 'rosters', '$location', 'flash', '$dialog', '$timeout', '$routeParams',
+            function($scope, fs, currentUserService, registrationService, rosters, $location, flash, $dialog, $timeout, $routeParams) {
 
   $scope.fs = fs;
+  $scope.$routeParams = $routeParams;
 
   $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;
   $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;}, true);
+
+  $scope.signUpModal = function(msg) {
+    registrationService.signUpModal(msg);
+  }
+
+  $scope.loginModal = function() {
+    registrationService.loginModal();
+  }
+
+  $scope.forgotPasswordModal = function() {
+    registrationService.forgotPasswordModal();
+  }
 
   $scope.resetPasswordModal = function(token){
     currentUserService.resetPasswordModal(token);
@@ -43,29 +57,17 @@ angular.module("app.controllers")
     console && console.log(obj);
   };
 
-//# TODO: separate sign up controller from login controller.  Right now sign up template calls login controller and login controller calls sign up
-  $scope.signUpModal = function(message){
-    var dialogOpts = {
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          dialogClass: 'modal',
-          templateUrl: '/sign_up_dialog.html',
-          controller: 'SignUpDialogController',
-          resolve: {message: function(){ return message; }},
-        };
-
-     var d = $dialog.dialog(dialogOpts);
-     d.open();
-     $timeout(function() {
-        $.placeholder.shim();
-     });
-  };
-
   if ($location.search().autologin) {
     var message = $location.search().autologin;
     $location.search('autologin', null);
     $scope.signUpModal(message);
+  }
+  if ($location.search().flash) {
+    var msg = '' + $location.search().flash.replace(/\+/g, ' ');
+    $location.search('flash', null);
+    $timeout(function() {
+      flash.success(msg);
+    })
   }
 
 }]);

@@ -22,15 +22,21 @@ id              | integer                     | not null default nextval('contes
  paid_at         | timestamp without time zone | 
  private         | boolean                     | default false
 =end
-    column(:owner) {|c| c.owner && c.owner.email }
-    column :start_time
-    column :end_time
-    column(:contest_type){|c| c.contest_type.name}
+    column(:market_name) {|c| c.market && c.market.name }
+    #column :start_time
+    #column :end_time
+    column(:contest_type){|c| c.contest_type.name }
+    column(:league){|c| c.league && c.league.name }
     column :buy_in
+    column(:fanfrees) {|c| c.contest_type.takes_tokens? }
     column :user_cap
     column :invitation_code
     column :num_rosters
+    column :num_generated
     column :private
+    column :rosters do |contest|
+      link_to "Rosters", :controller => "rosters", :action => "index", 'q[contest_id_eq]' => "#{contest.id}".html_safe
+    end
     default_actions
 
   end

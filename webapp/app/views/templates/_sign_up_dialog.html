@@ -1,37 +1,37 @@
-<div ng-controller="LoginController">
+<form name="signUpForm" ng-submit="submit()" novalidate data-annotate-blur class="annotate-blur">
   <div class='modal-header'>
-    <h3>{{ title }}</h3>
+    <h3>Sign Up</h3>
   </div>
   <div class='modal-body clearfix'>
-    <form>
-      <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
-      <p >{{message}}</p>
-      <div class='modal-form-container'>
-        <input type='text' placeholder='Username' ng-show='signUpForm' ng-model="user.username" class='mvm' /><br />
-        <input type='text' placeholder='Real Name' ng-show='signUpForm' ng-model="user.name" class='mvm' /><br />
-        <input type='text' placeholder='Email' ng-model="user.email" class='mvm' /><br />
-        <input type='password' placeholder='Password' ng-show='!forgotPass' ng-model="user.password" class='mvm' tooltip="Must be at least 6 characters" tooltip-placement='right' tooltip-trigger='focus' /><br />
-        <input type='password' placeholder='Confirm' ng-show='signUpForm' ng-model="user.password_confirmation" class='mvm'/><br />
-        <div class='mvm' ng-hide='signInForm'>
-          Have an account?&nbsp<a href="javascript://" ng-click="changeState('signInForm')">Sign In</a>
-        </div>
-        <div class='mvm' ng-hide='signUpForm'>
-          Not a member?&nbsp<a href="javascript://" ng-click="changeState('signUpForm')">Sign Up</a>
-        </div>
-        <div class='mvm' ng-hide='forgotPass'>
-          <a href="javascript://" ng-click="changeState('forgotPass')">Forgot Your Password?</a>
-        </div>
+    <p ng-show="message">{{message}}</p>
+    <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
+    <div class='modal-form-container'>
+      <input type='text' name="username" required placeholder='Username' ng-model="user.username" class='mvm' focus-me="signUpForm.username.$error.required" /><br />
+      <input type='text' name="name" required placeholder='Real Name' ng-model="user.name" class='mvm' /><br />
+      <input type='email' name="email" required placeholder='Email' ng-model="user.email" class='mvm' /><br />
+      <input type='password' ng-minlength="6" name="password" required placeholder='Password' ng-model="user.password" class='mvm'><br />
+      <input type='password' name="password_confirmation" required placeholder='Confirm' ng-model="user.password_confirmation" class='mvm'/><br />
+      <div class='mvm'>
+        Have an account?&nbsp;<a href="javascript://" ng-click="close('login')">Sign In</a>
       </div>
-      <div class='modal-form-container secondary'>
-        <div class='mtl mbl inline-block'>Or, sign <span ng-show='signUpForm'>up</span><span ng-show='signInForm'>in</span> with facebook</div><br />
-        <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
+      <div class='mvm'>
+        <a href="javascript://" ng-click="close('forgotPassword')">Forgot Your Password?</a>
       </div>
     </div>
-    <div class='modal-footer'>
-      <a href="javascript://" class="btn btn-primary" ng-show='signUpForm' ng-click="signUp()" ng-class="{ disabled: !isValid()}">Sign Up</a>
-      <a href="javascript://" class="btn btn-primary" ng-show='signInForm' ng-click="login('email')">Sign In</a>
-      <a href='javascript://' class='btn btn-primary' ng-show='forgotPass' ng-click='resetPassword()'>Send Instructions</a>
-      <a href="javascript://" class="btn" ng-click="close()">close</a>
+    <div class='modal-form-container secondary'>
+      <div class='mtl mbl inline-block'>Or, sign up with facebook</div><br />
+      <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
+
+      <div class="promo-code" ng-show="noPromo">
+        <h4>Promo code?</h4>
+        <input type="text" name="promo_code" ng-model="promo_code">
+        <a ng-hide="promoSpinner" ng-click="applyPromo()" class="btn btn-success">Apply!</a>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='promoSpinner'/>
+      </div>
     </div>
-  </form>
-</div>
+  </div>
+  <div class='modal-footer'>
+    <input type="submit" ng-click="" class="btn btn-primary" value="Sign Up">
+    <a href="javascript://" class="btn" ng-click="close()">close</a>
+  </div>
+</form>

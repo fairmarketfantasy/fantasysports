@@ -1,30 +1,45 @@
 angular.module("app.controllers")
-.controller('HomeController', ['$scope', 'rosters', '$dialog', '$location', function($scope, rosters, $dialog, $location) {
+.controller('HomeController', ['$scope', 'rosters', 'markets', '$dialog', '$location', '$routeParams', '$timeout', function($scope, rosters, markets, $dialog, $location, $routeParams, $timeout) {
   $scope.rosters = rosters;
-  rosters.fetchMine();
-  rosters.fetchPastStats();
-  rosters.setPoller(function() { rosters.fetchMine(); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
+  if ($scope.currentUser) {
+    rosters.fetchMine();
+    rosters.fetchPastStats();
+    rosters.setPoller(function() { rosters.fetchMine(); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
 
-  // Force them to set a user!
-  if (_.isEmpty($scope.currentUser.username)) {
-    var dialogOpts = {
-          backdrop: true,
-          keyboard: false,
-          backdropClick: false,
-          dialogClass: 'modal',
-          templateUrl: '/add_username_modal.html',
-          controller: 'UserNameController'
-        };
-    var d = $dialog.dialog(dialogOpts);
-    d.open();
+    // Force them to set a user!
+    if (_.isEmpty($scope.currentUser.username)) {
+      var dialogOpts = {
+            backdrop: true,
+            keyboard: false,
+            backdropClick: false,
+            dialogClass: 'modal',
+            templateUrl: '/add_username_modal.html',
+            controller: 'UserNameController'
+          };
+      var d = $dialog.dialog(dialogOpts);
+      d.open();
+    }
+
+    $scope.markets = markets;
+  }
+
+  function joinLeague(leagueId) {
+    $scope.fs.contests.join_league(leagueId).then(function(data){
+      // give the server time to save everything
+      $timeout(function() {
+        rosters.selectRoster(data);
+        $location.path('/market/' + data.market.id + '/roster/' + data.id);
+      }, 500);
+    });
   }
 
   $scope.showNextLeagueRoster = function(league) {
-    $scope.fs.contests.join_league(league.id).then(function(data){
-      rosters.selectRoster(data);
-      $location.path('/market/' + data.market.id + '/roster/' + data.id);
-    });
+    joinLeague(league.id);
   };
+
+  if (typeof $routeParams.league_id !== 'undefined') {
+    joinLeague($routeParams.league_id);
+  }
 
   //$scope.$watch('league')
 

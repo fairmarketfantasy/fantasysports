@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <!--<![endif]-->
+<head>
+  <!-- http://docs.angularjs.org/guide/ie -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <!-- CSS DIFF -->
+  <meta name="viewport" content="width=1200">
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+
+  <meta name="apple-itunes-app" content="app-id=719879920">
+
+  <%
+    title = @page_title || 'Fair Market Fantasy'
+    description = @page_description || 'Fair Market Fantasy is the fairest fantasy sports gaming website out there'
+    keywords = @page_keywords || ''
+    tagline = "The fair market fantasy game!"
+  %>
+  <title><%= title %></title>
+
+  <!-- TODO: Fill in the og goodness -->
+  <!-- og: == 'Open Graph Protocol' - Makes you Facebook "Like" Button & Sharing Friendly -->
+  <meta name="title" content="<%= title %>" property="og:title" />
+  <meta name="og:type" content="<%= @og_type || '' %>" property="og:type" />
+  <meta name="og:url" content="<%= @og_url || '' %>" property="og:url" />
+  <meta name="og:image" content="<%= @og_image || '' %>" property="og:image" />
+  <meta name="og:site_name" content="<%= @og_site || '' %>" property="og:site_name" />
+  <meta name="fb:app_id" content="<%= nil %>" property="fb:app_id" />
+  <meta name="fb:admins" content="" property="fb:admins" />
+  <meta name="description" content="<%= description %>" property="og:description" />
+  <meta name="copyright" content="MustWin, LLC" />
+  <meta name="author" content="MustWin, LLC" />
+
+  <!-- SEO -->
+  <meta name="description" content="<%= description %>"/>
+  <meta name="keywords" content="<%= keywords %>"/>
+
+  <%= csrf_meta_tags %>
+  <%= stylesheet_link_tag "application", "flat-ui", "fonts", "fmf", :media => "all" %>
+
+  <!-- TODO: make these icons -->
+  <link rel="shortcut icon" href="<%= asset_path 'favicon.png' %>"/>
+  <link rel="apple-touch-icon" href="<%= asset_path 'favicon.png' %>"/>
+
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body ng-controller="ApplicationController">
+<!-- GA SHIT -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46242308-1', 'fairmarketfantasy.com');
+  ga('send', 'pageview');
+
+</script>
+  <div flash-alert active-class="alert in" class="fixed-flash fade " ng-cloak>
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <strong class="alert-heading"></strong>
+          <span class="alert-message">{{flash.message}}</span>
+        </div>
+      </div>
+    </div>
+  </div>  
+  <!-- This is where you work your magic, do your best! -->
+  <header class="full">
+    <div class="container">
+    <div class="row top-nav">
+      <div class="span9">
+        <a href="/#"><h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1></a> <span class="sub-title">Advanced market-driven pricing and the highest payouts in the industry!</span>
+      </div>
+      <div class="span3">
+        <div class="links text-right">
+
+          <a class="sub-title txt-green-hover" href="javascript://" ng-click="signUpModal()">Sign Up</a>
+          <a class="sub-title txt-green-hover" href="javascript://" ng-click="loginModal()">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+
+    <div class="row header-bottom" ng-cloak>
+      <div class="span3 user-container text-center" ng-hide="currentUser">
+        <h3 class="public-user-cta">Join the Fun!</h3>
+        <div class="btn btn-success"><h3><a href="javascript://" style="color: #fefefe" ng-click="signUpModal()">Sign up!</a></h3></div>
+      </div>
+    </div>
+  </header>
+  
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="span3 user-navigation">
+          <ul class="nav">
+            <li class="nav-item"><a href="/#/">Home</a></li>
+            <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
+            <li class="nav-item"><a href="#/rules" >Rules and Scoring</a></li>
+            <li class="nav-item"><a href="#/legal" >Legal Info</a></li>
+            <li class="nav-item end"><a href="#/support">Support</a></li>
+          </ul>
+          <div class="nav-mobile-app-links">
+            <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
+          </div>
+        </div>
+        <div class="span9 page-content">
+          <div class="padded-content">
+            <div class="content">
+              <div id="content" ng-view>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="span4">
+            <h4 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h4>
+            <p>Copyright 2013, Fair Market Fantasy, LLC. All Rights Reserved.</p>
+            <p>Designed and developed by <a href="http://mustw.in">Must Win</a></p>
+            <p>Based in San Francisco, CA</p>
+          </div>
+          <div class="span3 offset5 tos-padding">
+            <p><a href="#/terms">Terms and Conditions</a></p>
+            <p><a href="#/legal">US &amp; Canada Legality</a></p>
+            <p><a href="#/support">Customer Support / Contact</a></p>
+            <p><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></p>
+
+          </div>
+        </div>
+      </div>
+    </footer>
+  </article>
+
+
+<!-- Setup some handy globals -->
+<script type="text/javascript">
+  window.App = {
+    site: "<%= SITE %>",
+    currentUser: <%= (UserSerializer.new(current_user, scope: current_user).to_json.html_safe) || 'null' %>,
+    isUserAdmin: <%= current_user && current_user.admin? || false %>,
+  };
+  window.setCurrentUser = function(user) {
+    window.App.currentUser = user;
+  };
+  window.addToBalance = function(amount) {
+    window.App.currentUser.balance = window.App.currentUser.balance + amount;
+    var $scope = $('body').scope();
+    $scope.$emit('user-changed');
+  };
+  window.addToTokenBalance = function(amount) {
+    window.App.currentUser.token_balance = window.App.currentUser.token_balance + amount;
+    var $scope = $('body').scope();
+    $scope.$emit('user-changed');
+  };
+</script>
+
+
+<%= render :partial => 'templates/ng_includes' %>
+<%= javascript_include_tag "application" %>
+
+<%= yield :javascript %>
+
+</body>
+</html>
+<!-- Another #winning product brought to you by MustWin! http://mustw.in -->
+

@@ -9,10 +9,13 @@ class Player < ActiveRecord::Base
   def sell_price; self[:sell_price]; end
   def score; self[:score]; end
   def locked; self[:locked]; end
+  def market_id; self[:market_id]; end
+  def is_eliminated; self[:is_eliminated]; end
 
   # Some positions are never used in NFL
-  default_scope { where("position NOT IN('OLB', 'OL')") }
+  #default_scope { where("position NOT IN('OLB', 'OL')") }
 
+  has_many :market_players
   has_many :rosters_players
   has_and_belongs_to_many :rosters, join_table: 'rosters_players'
 
@@ -22,15 +25,24 @@ class Player < ActiveRecord::Base
   scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
   scope :in_position,  ->(position)   { where(position: position) }
   scope :normal_positions,      -> { where(:position => %w(QB RB WR TE K DEF)) }
-  scope :order_by_ppg,         ->(dir = 'desc') { order("(total_points / (total_games + .001)) #{dir}") }
+  scope :order_by_ppg,          ->(dir = 'desc') { order("(total_points / (total_games + .001)) #{dir}") }
   scope :with_purchase_price,   -> { select('players.*, rosters_players.purchase_price') } # Must also join rosters_players
+  scope :with_market,           ->(market) { select('players.*').select(
+                                             "#{market.id} as market_id, mp.is_eliminated, mp.score, mp.locked"
+                                           ).joins("JOIN market_players mp ON players.id=mp.player_id AND mp.market_id = #{market.id}") }
+
+  # THIS IS REALLY SLOW, favor market_prices_for_players
   scope :with_prices,           -> (market, buy_in) {
       select('players.*, market_prices.*').joins("JOIN market_prices(#{market.id}, #{buy_in}) ON players.id = market_prices.player_id")
   }
 
+  scope :active, -> () {
+    where("status = 'ACT' AND benched_games < 3")
+  }
+
   scope :purchasable_for_roster, -> (roster) { 
     select(
-      "players.*, buy_prices.buy_price as buy_price"
+      "players.*, buy_prices.buy_price as buy_price, buy_prices.is_eliminated"
     ).joins("JOIN buy_prices(#{roster.id}) as buy_prices on buy_prices.player_id = players.id")
   }
 
@@ -42,7 +54,18 @@ class Player < ActiveRecord::Base
   scope :sellable, -> { where('sell_prices.locked != true' ) }
 
   def headshot_url(size = 65) # or 195
-    return "http://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/#{stats_id}/#{size}.jpg"
+    return nil if position == 'DEF'
+    return "https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/#{stats_id}/#{size}.jpg"
+  end
+
+  def next_game_at # Requires with_market scope
+    return nil unless self.market_id
+    game = Market.find(self.market_id).games.order('game_time asc').select{|g| [g.home_team, g.away_team].include?(self.team)}.first
+    return game && game.game_time - 5.minutes
+  end
+
+  def benched_games
+    self.removed? ? 100 : super
   end
 
 end

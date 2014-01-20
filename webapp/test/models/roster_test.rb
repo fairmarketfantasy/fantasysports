@@ -4,6 +4,7 @@ class RosterTest < ActiveSupport::TestCase
 
   setup do
     setup_simple_market
+    initialize_player_bets(@market)
     @roster = create(:roster, :market => @market, :contest_type => @market.contest_types.first)
   end 
 
@@ -128,6 +129,7 @@ class RosterTest < ActiveSupport::TestCase
 
   #purchasing a player causes the price to go up
   test "purchasing a player affects prices" do
+    initialize_player_bets(@market)
     player = @roster.purchasable_players.first
     @other_roster = create(:roster, :market => @market, :contest_type => @market.contest_types.first)
     initial_price = player.buy_price
@@ -140,7 +142,7 @@ class RosterTest < ActiveSupport::TestCase
     @roster.submit!
     assert_equal 'submitted', @roster.state
     assert_equal 1, @roster.players.length
-    assert_equal 100, @roster.buy_in
+    assert_equal 1000, @roster.buy_in
     @market.reload
     market_player = @market.market_players.where("player_id = #{player.id}").first
 
@@ -162,26 +164,25 @@ class RosterTest < ActiveSupport::TestCase
   end
 
   test "creating and canceling roster affects account balance" do
-    user = create(:user)
-    user.customer_object = create(:customer_object, user: user)
-    initial_balance = user.customer_object.balance
+    user = create(:paid_user)
+    initial_entries  = user.customer_object.monthly_contest_entries
     roster = nil
     contest_type = @market.contest_types.where(:buy_in => 1000).first
     assert_difference("TransactionRecord.count", 1) do
       roster = Roster.generate(user, contest_type)
       roster.submit!
     end
-    assert_equal  initial_balance - 1000, user.customer_object.reload.balance
+    assert_equal initial_entries + 1, user.customer_object.reload.monthly_contest_entries
     assert_difference("TransactionRecord.count", 1) do
       roster.cancel!('test')
     end
-    assert_equal  initial_balance, user.customer_object.reload.balance
+    assert_equal  initial_entries, user.customer_object.reload.monthly_contest_entries
 
     #creating and canceling a roster before submitting it should not affect balance
     roster = Roster.generate(user, contest_type)
-    assert_equal  initial_balance, user.customer_object.reload.balance
+    assert_equal  initial_entries, user.customer_object.reload.monthly_contest_entries
     roster.destroy
-    assert_equal  initial_balance, user.customer_object.reload.balance
+    assert_equal  initial_entries, user.customer_object.reload.monthly_contest_entries
   end
 
   test "cancelling roster cleans up after itself" do
@@ -201,16 +202,16 @@ class RosterTest < ActiveSupport::TestCase
   end
 
   test "adding a real user to a contest bumps generated rosters" do
-    contest_type = @market.contest_types.where('takes_tokens AND max_entries = 10').first
+    contest_type = @market.contest_types.where('max_entries = 12').first
     roster = create(:roster, :market => @market, :contest_type => contest_type)
     roster.submit!
     roster.contest.fill_with_rosters(1.0)
     contest = roster.contest
     contest.num_generated
-    (1..9).each do |i|
-      assert_equal 10-i, contest.reload.num_generated
+    (1..11).each do |i|
+      assert_equal 12-i, contest.reload.num_generated
       create(:roster, :market => @market, :contest_type => contest_type).submit!
-      assert_equal 10, contest.reload.num_rosters
+      assert_equal 12, contest.reload.num_rosters
     end
     assert_equal 0, contest.reload.num_generated
     assert_equal 1, Contest.count
@@ -219,35 +220,40 @@ class RosterTest < ActiveSupport::TestCase
   end
 
   test "cancelling roster pays out properly" do
-    roster = create(:roster, :market => @market, :contest_type => @market.contest_types.where('takes_tokens').first)
     roster2 = create(:roster, :market => @market, :contest_type => @market.contest_types.where('NOT takes_tokens').first)
-    roster.submit!
     roster2.submit!
 
     assert_difference 'TransactionRecord.count', 1 do
-      assert_difference 'roster.owner.reload.token_balance', roster.contest.buy_in do
-        roster.cancel!('reason')
-      end
-    end
-    assert_difference 'TransactionRecord.count', 1 do
-      assert_difference 'roster2.owner.customer_object.reload.balance', roster2.contest.buy_in do
+      assert_difference 'roster2.owner.customer_object.reload.monthly_contest_entries', -1 do
         roster2.cancel!('reason')
       end
+    end
+  end
+
+  test "entering lolla twice" do
+    add_lollapalooza @market
+    lolla = @market.contest_types.where(:name => '0.13k').first
+    user1 = create(:paid_user)
+    assert_difference 'user1.customer_object.reload.monthly_contest_entries', 2 do
+      assert_difference 'user1.customer_object.reload.monthly_contest_entries', 1 do
+        Roster.generate(user1, lolla).submit!
+      end
+      Roster.generate(user1, lolla).submit!
     end
   end
 
   test "re-scoring a roster" do
     @market.update_attribute(:opened_at, Time.new - 1.minute)
     @market.open
-    contest_type = @market.contest_types.where(:name => 'h2h', :buy_in => 100, :takes_tokens => false).first
+    contest_type = @market.contest_types.where(:name => 'h2h', :buy_in => 1000, :takes_tokens => false).first
     roster1 = create(:roster, :market => @market, :contest_type => contest_type)
     roster2 = create(:roster, :market => @market, :contest_type => contest_type)
     user1 = roster1.owner
     user2 = roster2.owner
     contest = nil
     pre_count = nil
-    assert_difference 'user1.customer_object.reload.balance', -100 do
-      assert_difference 'user1.customer_object.reload.balance', 94 do
+    assert_difference 'user1.customer_object.reload.monthly_contest_entries', 1 do
+      assert_difference 'user1.customer_object.reload.monthly_winnings', 1900 do
         roster1.fill_randomly.submit!
         begin
           roster2.fill_randomly.submit!
@@ -263,8 +269,7 @@ class RosterTest < ActiveSupport::TestCase
           )
         end
         @market.closed_at = Time.new
-        @game.status = 'closed'
-        @game.save!
+        @game.update_attributes(:home_team_status => '{"points": 14}', :away_team_status => '{"points": 7}', :status => 'closed')
         @market.save!
         contest = roster1.contest
         assert_equal contest, roster2.contest
@@ -283,16 +288,25 @@ class RosterTest < ActiveSupport::TestCase
           :data => ''
         )
       end
-
       contest.revert_payday!
       assert_equal 2*pre_count-2, contest.transaction_records.reload.count
     end
 
-    assert_difference 'user1.customer_object.reload.balance', 0 do
-      assert_difference 'user2.customer_object.reload.balance', 194 do
+    assert_difference 'user1.customer_object.reload.monthly_winnings', 0 do
+      assert_difference 'user2.customer_object.reload.monthly_winnings', 1900 do
         contest.payday!
       end
     end
+  end
+
+  test "adding same bonus twice" do
+    @roster.submit!
+    @roster.add_bonus('twitter_share')
+    @roster.add_bonus('twitter_share')
+    assert_equal Roster::ROSTER_BONUSES['twitter_share'], @roster.bonus_points
+    @market.update_attribute(:opened_at, Time.new - 1.minute)
+    Market.tend
+    assert_equal @roster.bonus_points, @roster.reload.score
   end
 
 end

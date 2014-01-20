@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => [:for_market]
 
   def show
     game_stats_id = params[:id]

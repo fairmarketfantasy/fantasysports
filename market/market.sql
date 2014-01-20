@@ -19,52 +19,45 @@ DROP FUNCTION price(numeric, numeric, numeric, numeric);
 
 CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric) 
 	RETURNS numeric AS $$
-	SELECT CASE ($2 + $3) WHEN 0 THEN 1000 ELSE 
+	SELECT CASE ($2 + $3) WHEN 0 THEN 1000 ELSE
 		ROUND(LEAST(100000, GREATEST(1000, ($1 + $3) * 100000 * $4 / ($2 + $3))))
 	END;
 $$ LANGUAGE SQL IMMUTABLE;
+
+------------------------------------------ Select Specific Player Prices -----------------------------------------
+DROP FUNCTION market_prices_for_players(integer, integer, VARIADIC arr integer[]);
+
+CREATE OR REPLACE FUNCTION market_prices_for_players(_market_id integer, _buy_in integer, VARIADIC arr integer[])
+RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score integer) AS $$
+	SELECT
+		mp.player_id,
+		price(mp.bets, m.total_bets, $2, m.price_multiplier),
+		price(mp.bets, m.total_bets,  0, m.price_multiplier),
+		mp.locked,
+		mp.is_eliminated,
+		mp.score
+	FROM markets m
+	JOIN market_players mp on m.id = mp.market_id
+	WHERE m.id = $1 AND mp.player_id = any($3);
+$$ LANGUAGE SQL;
 
 ------------------------------------------ Player Prices -----------------------------------------
 
 DROP FUNCTION market_prices(integer, integer);
 
 CREATE OR REPLACE FUNCTION market_prices(_market_id integer, _buy_in integer)
-RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, score integer) AS $$
-	SELECT 
-		mp.player_id, 
-		price(mp.bets, m.total_bets, $2, m.price_multiplier), 
-		price(mp.bets, m.total_bets,  0, m.price_multiplier), 
-		mp.locked, 
+RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score integer) AS $$
+	SELECT
+		mp.player_id,
+		price(mp.bets, m.total_bets, $2, m.price_multiplier),
+		price(mp.bets, m.total_bets,  0, m.price_multiplier),
+		mp.locked,
+		mp.is_eliminated,
 		mp.score
 	FROM markets m
 	JOIN market_players mp on m.id = mp.market_id
 	WHERE m.id = $1;
 $$ LANGUAGE SQL;
-
---purchase price, current buy and sell prices, locked, current score, and all player data
-DROP FUNCTION roster_prices(integer);
-
-CREATE OR REPLACE FUNCTION roster_prices(_roster_id integer)
-RETURNS TABLE (
-	purchase_price numeric,
-	player_id integer, buy_price numeric, sell_price numeric, locked boolean, score integer, 
-	id integer, stats_id character varying(255), sport_id integer, name character varying(255), 
-	name_abbr character varying(255), birthdate character varying(255), height integer, 
-	weight integer, college character varying(255), "position" character varying(255), 
-	jersey_number integer, status character varying(255), total_games integer, total_points integer, 
-	created_at timestamp without time zone, updated_at timestamp without time zone, 
-	team character varying(255), benched_games integer
-)
-AS $$
-DECLARE
-	_roster rosters;
-BEGIN
-	SELECT * FROM rosters WHERE rosters.id = _roster_id INTO _roster;
-	RETURN QUERY SELECT rp.purchase_price, mp.*, p.* from market_prices(_roster.market_id, _roster.buy_in) mp
-	join players p on p.id = mp.player_id
-	join rosters_players rp on rp.player_id = mp.player_id and rp.roster_id = _roster_id;
-END;
-$$ LANGUAGE plpgsql;
 
 ------------------------------------- OLD PRICE SCRIPTS --------------------------------------
 
@@ -76,14 +69,14 @@ $$ LANGUAGE plpgsql;
 DROP FUNCTION buy_prices(integer);
 
 CREATE OR REPLACE FUNCTION buy_prices(_roster_id integer)
-RETURNS TABLE(player_id integer, buy_price numeric) AS $$
-	SELECT mp.player_id, price(mp.bets, m.total_bets, r.buy_in, m.price_multiplier)
+RETURNS TABLE(player_id integer, buy_price numeric, is_eliminated boolean) AS $$
+	SELECT mp.player_id, price(mp.bets, m.total_bets, r.buy_in, m.price_multiplier), mp.is_eliminated
 	FROM market_players mp, markets m, rosters r
 	WHERE
 		r.id = $1 AND
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
-		(is_session_variable_set('override_market_close') OR NOT (mp.locked_at < NOW() OR mp.locked)) AND
+		(is_session_variable_set('override_market_close') OR NOT (mp.locked)) AND
 		mp.player_id NOT IN (SELECT rosters_players.player_id 
 			FROM rosters_players WHERE roster_id = $1);
 $$ LANGUAGE SQL;
@@ -141,25 +134,27 @@ BEGIN
 	  	WHERE rosters_players.id = locked_out.id;
   END IF;
 
-	-- increment bets for all market players in roster by buy_in amount
-	UPDATE market_players SET bets = bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
-		WHERE market_id = _roster.market_id AND player_id IN
-			(SELECT player_id from rosters_players where roster_id = _roster_id); 
+  IF NOT _roster.is_generated THEN
+	  -- increment bets for all market players in roster by buy_in amount
+	  UPDATE market_players SET bets = bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
+	  	WHERE market_id = _roster.market_id AND player_id IN
+	  		(SELECT player_id from rosters_players where roster_id = _roster_id); 
 
-	-- increment total_bets by buy_in times number of players bought
-	update markets set total_bets = total_bets + 
-		_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
-		where id = _roster.market_id;
+	  -- increment total_bets by buy_in times number of players bought
+	  update markets set total_bets = total_bets + 
+	  	_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
+	  	where id = _roster.market_id;
 
-	-- update rosters_players with current sell prices of players
-	WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id)) 
-		UPDATE rosters_players set purchase_price = prices.sell_price FROM prices 
-		WHERE id = prices.roster_player_id;
+	  -- update rosters_players with current sell prices of players
+	  WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id)) 
+	  	UPDATE rosters_players set purchase_price = prices.sell_price FROM prices 
+	  	WHERE id = prices.roster_player_id;
 
-	-- insert into market_orders
-	INSERT INTO market_orders (market_id, roster_id, action, player_id, price, created_at, updated_at)
-	   SELECT _roster.market_id, _roster_id, 'buy', player_id, purchase_price, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-	   FROM rosters_players where roster_id = _roster_id;
+	  -- insert into market_orders
+	  INSERT INTO market_orders (market_id, roster_id, action, player_id, price, created_at, updated_at)
+	     SELECT _roster.market_id, _roster_id, 'buy', player_id, purchase_price, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+	     FROM rosters_players where roster_id = _roster_id;
+  END IF;
 
 	--update roster's remaining salary and state
 	update rosters set remaining_salary = 100000 -
@@ -313,9 +308,6 @@ BEGIN
 		--perform the updates.
 		UPDATE markets SET total_bets = total_bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE id = _roster.market_id;
 		UPDATE market_players SET bets = bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE market_id = _roster.market_id and player_id = _player_id;
-    IF _roster.remaining_salary + _price < -5000 THEN
-		  RAISE EXCEPTION 'You can not afford this roster!';
-    END IF;
 		UPDATE rosters set remaining_salary = remaining_salary + _price where id = _roster_id;
 		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 		  	VALUES (_roster.market_id, _roster_id, 'sell', _player_id, _price);
@@ -324,6 +316,26 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+--------------------------------------- PUBLISH CLEAN MARKET --------------------------------------
+DROP FUNCTION publish_clean_market(integer);
+CREATE OR REPLACE FUNCTION publish_clean_market(_market_id integer, OUT _market markets) RETURNS markets AS $$
+BEGIN
+	--ensure that there are no associated market_players, market_orders, or rosters.
+	--TODO: this is nice for dev and testing but may be a little dangerous in production
+	--ensure that the market exists and may be published
+	SELECT * FROM markets WHERE id = _market_id AND published_at < CURRENT_TIMESTAMP AND
+			(state is null OR state = '') FOR UPDATE into _market;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'market % is not publishable', _market_id;
+	END IF;
+	DELETE FROM market_orders WHERE market_id = _market_id;
+	DELETE FROM market_players WHERE market_id = _market_id;
+	DELETE FROM rosters_players WHERE market_id = _market_id;
+	DELETE FROM rosters WHERE market_id = _market_id;
+  SELECT * FROM publish_market(_market_id) INTO _market;
+END;
+$$ LANGUAGE plpgsql;
 
 --------------------------------------- PUBLISH MARKET --------------------------------------
 
@@ -378,37 +390,39 @@ BEGIN
 		return;
 	END IF;
 
-	--ensure that there are no associated market_players, market_orders, or rosters.
-	--TODO: this is nice for dev and testing but may be a little dangerous in production
-	DELETE FROM market_players WHERE market_id = _market_id;
-	DELETE FROM market_orders WHERE market_id = _market_id;
-	DELETE FROM rosters_players WHERE market_id = _market_id;
-	DELETE FROM rosters WHERE market_id = _market_id;
+	-- insert players into market. use the first game time for which the player is participating and zero shadow bets.
+  IF _market.game_type != 'team_single_elimination' THEN
+	  INSERT INTO market_players (market_id, player_id, shadow_bets, bets, initial_shadow_bets, locked_at, player_stats_id, created_at, updated_at)
+	  	SELECT
+	  		_market_id, p.id, 0, 0, 0,
+	  		min(g.game_time), p.stats_id, NOW(), NOW()
+	  	FROM 
+	  		players p, games g, games_markets gm 
+	  	WHERE 
+	  		NOT EXISTS (select 1 from market_players where market_id=_market_id AND player_id=p.id) AND
+        gm.market_id = _market_id AND
+	  		g.stats_id = gm.game_stats_id AND
+	  		(p.team = g.home_team OR p.team = g.away_team)
+	  	GROUP BY p.id;
+  ELSE
+	  INSERT INTO market_players (market_id, player_id, shadow_bets, bets, initial_shadow_bets, locked_at, player_stats_id, created_at, updated_at)
+	  	SELECT
+	  		_market_id, p.id, 0, 0, 0,
+	  		min(g.game_time), p.stats_id, NOW(), NOW()
+	  	FROM 
+	  		players p, games g, games_markets gm 
+	  	WHERE 
+	  		NOT EXISTS (select 1 from market_players where market_id=_market_id AND player_id=p.id) AND
+        gm.market_id = _market_id AND
+	  		g.stats_id = gm.game_stats_id AND
+	  		(p.team = g.home_team OR p.team = g.away_team) AND
+        position = 'TEAM'
+	  	GROUP BY p.id;
 
-	--get the total ppg. use ghetto lagrangian filtering
-	SELECT sum((total_points + .01) / (total_games + .1))
-		FROM players WHERE team in (
-			SELECT home_team from games g, games_markets gm WHERE gm.market_id = _market_id and g.stats_id = gm.game_stats_id
-			UNION
-			SELECT away_team from games g, games_markets gm WHERE gm.market_id = _market_id and g.stats_id = gm.game_stats_id
-		) INTO _total_ppg;
-
-	-- insert players into market. use the first game time for which the player is participating and calculate shadow bets.
-	INSERT INTO market_players (market_id, player_id, shadow_bets, locked_at, player_stats_id)
-		SELECT
-			_market_id, p.id,
-			(((p.total_points + .01) / (p.total_games + .1)) / _total_ppg) * _market.shadow_bets,
-			min(g.game_time), p.stats_id
-		FROM 
-			players p, games g, games_markets gm 
-		WHERE 
-			gm.market_id = _market_id AND
-			g.stats_id = gm.game_stats_id AND
-			(p.team = g.home_team OR p.team = g.away_team)
-		GROUP BY p.id;
+  END IF;
 
 	--set bets and initial_shadow_bets shadow bets for all those players we just added - avoids calculating it thrice per player
-	UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets WHERE market_id = _market_id;
+	--UPDATE market_players SET bets = shadow_bets, initial_shadow_bets = shadow_bets WHERE market_id = _market_id;
 
   -- Get the total number of games in the market, calculate price multiplier
   SELECT count(id) FROM games_markets WHERE market_id = _market_id INTO _games;
@@ -533,25 +547,28 @@ BEGIN
     SELECT player_stats_id FROM stat_events WHERE game_stats_id = _game.stats_id GROUP BY player_stats_id);
   UPDATE players SET benched_games = benched_games + 1 WHERE stats_id 
     NOT IN(SELECT player_stats_id FROM stat_events WHERE game_stats_id = _game.stats_id GROUP BY player_stats_id)
-    AND players.team IN(_game.home_team, _game.away_team);
+    AND players.team IN(_game.home_team, _game.away_team)
+    AND players.position != 'TEAM';
 
   UPDATE games SET bench_counted = true WHERE games.bench_counted_at < CURRENT_TIMESTAMP AND stats_id=_game_stats_id;
 
 END;
 $$ LANGUAGE plpgsql;
+
 ---------------------------------- lock players ---------------------------------
 
-DROP FUNCTION lock_players(integer);
+DROP FUNCTION lock_players(integer, boolean);
 
 --removes locked players from the market and updates the price multiplier
-CREATE OR REPLACE FUNCTION lock_players(_market_id integer) RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION lock_players(_market_id integer, _remove_bets boolean) RETURNS VOID AS $$
 DECLARE
+	_locked_initial_shadow_bets numeric := 0;
 	_locked_shadow_bets numeric := 0;
 	_locked_bets numeric := 0;
 	_now timestamp;
 BEGIN
 	--ensure that the market exists and may be closed
-	PERFORM id FROM markets WHERE id = _market_id AND state = 'opened' FOR UPDATE;
+	PERFORM id FROM markets WHERE id = _market_id AND state IN('opened', 'closed')  FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % not found', _market_id;
 	END IF;
@@ -559,25 +576,140 @@ BEGIN
 	--for each locked player that has not been removed: lock the player and sum the bets
 	select CURRENT_TIMESTAMP INTO _now;
 
-	select INTO _locked_bets, _locked_shadow_bets
-    sum(bets), sum(shadow_bets) FROM market_players
-		WHERE market_id = _market_id and locked_at < _now and locked = false;
+  select INTO _locked_bets, _locked_shadow_bets, _locked_initial_shadow_bets
+    sum(bets), sum(shadow_bets), sum(initial_shadow_bets) FROM market_players
+    WHERE market_id = _market_id and locked_at < _now and not locked;
 
 	update market_players set locked = true
-		WHERE market_id = _market_id and locked_at < _now and locked = false;
+		WHERE market_id = _market_id and locked_at < _now and not locked;
 
-	IF _locked_bets > 0 OR _locked_shadow_bets > 0 THEN
-		--update the price multiplier
-		update markets set 
-			total_bets = total_bets - _locked_bets,
-			shadow_bets = shadow_bets - _locked_shadow_bets,
-			price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
-			WHERE id = _market_id;
-	END IF;
-	
+  IF _remove_bets AND (_locked_bets > 0 OR _locked_shadow_bets > 0) THEN
+    RAISE NOTICE 'LOCKING % bets', _locked_bets;
+          --update the price multiplier
+    update markets set
+             price_multiplier = price_multiplier * (1 - (_locked_bets / total_bets)),
+             total_bets = total_bets - _locked_bets,
+             shadow_bets = shadow_bets - _locked_shadow_bets,
+             initial_shadow_bets = initial_shadow_bets - _locked_initial_shadow_bets
+            WHERE id = _market_id;
+  END IF;
+
 END;
 $$ LANGUAGE plpgsql;
 
+---------------------------------- finish game ---------------------------------
+-- Used for single elimination style games
+DROP FUNCTION finish_elimination_game(integer, character varying(255), character varying(255));
+
+--re-adds locked players to the market and transfers bets from losers to these players
+CREATE OR REPLACE FUNCTION finish_elimination_game(_games_market_id integer, _winning_team character varying(255),  _losing_team character varying(255)) RETURNS VOID AS $$
+DECLARE
+	_games_market games_markets;
+	_market markets;
+	_linked_market markets;
+	_win_team_locked_shadow_bets numeric := 0;
+	_win_team_locked_bets numeric := 0;
+	_loss_team_locked_bets numeric := 0;
+	_loss_team_locked_shadow_bets numeric := 0;
+	_loss_team_locked_initial_shadow_bets numeric := 0;
+	_loser_score numeric := 0;
+	_next_game_time timestamp;
+	_round_scaling_factor numeric;
+	_now timestamp;
+BEGIN
+	--ensure that the market exists and may be closed
+	SELECT * FROM games_markets WHERE id = _games_market_id AND finished_at IS NULL  FOR UPDATE INTO _games_market;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'games_market % not found', _games_market_id;
+	END IF;
+	--ensure that the market exists and may be closed
+	SELECT * FROM markets WHERE id = _games_market.market_id AND state IN('opened', 'closed')  FOR UPDATE INTO _market;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'market % not found', _games_market._market_id;
+	END IF;
+  IF _market.game_type != 'single_elimination' AND _market.game_type != 'team_single_elimination' THEN
+		RAISE EXCEPTION 'market % is not an elimination game', _games_market._market_id;
+  END IF;
+	SELECT * FROM markets WHERE id = _market.linked_market_id AND state IN('opened', 'closed')  FOR UPDATE INTO _linked_market;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'linked market % not found', _market.linked_market_id;
+	END IF;
+
+	--for each locked player that has not been removed: lock the player and sum the bets
+	select CURRENT_TIMESTAMP INTO _now;
+
+
+  -- Update the winners bets and locked state
+  SELECT INTO _next_game_time  game_time FROM games 
+    WHERE game_time > _now 
+      AND stats_id IN(SELECT game_stats_id FROM games_markets WHERE market_id = _games_market.market_id)
+      AND (home_team = _winning_team OR away_team = _winning_team);
+
+  IF _market.game_type = 'single_elimination' THEN
+    -- Get the winning team bets
+	  select INTO _win_team_locked_bets, _win_team_locked_shadow_bets  sum(bets), sum(shadow_bets)
+      FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
+	  	WHERE market_id = _linked_market.id AND p.team = _winning_team;
+    -- Get the losing team bets
+	  select INTO _loss_team_locked_bets, _loss_team_locked_shadow_bets  sum(bets), sum(shadow_bets)
+    FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
+		WHERE market_id = _linked_market.id AND p.team = _losing_team;
+
+    SELECT INTO _round_scaling_factor  CASE WHEN count(id) < 1 THEN 1/13 ELSE -1/13 END FROM games_markets WHERE market_id = _market.id AND finished_at IS NOT NULL;
+
+	  UPDATE market_players SET
+      locked = false,
+      bets =  score / _market.expected_total_points * _market.total_bets + bets * (((_win_team_locked_bets + _loss_team_locked_bets) / _linked_market.total_bets)/(_win_team_locked_bets / _linked_market.total_bets + _round_scaling_factor)),
+      -- set shadow bets to new bets value - real bets
+      shadow_bets =  score / _market.expected_total_points * _market.total_bets + bets * (((_win_team_locked_bets + _loss_team_locked_bets) / _linked_market.total_bets)/(_win_team_locked_bets / _linked_market.total_bets + _round_scaling_factor)) - (bets - shadow_bets),
+      initial_shadow_bets =  score / _market.expected_total_points * _market.total_bets + bets * (((_win_team_locked_bets + _loss_team_locked_bets) / _linked_market.total_bets)/(_win_team_locked_bets / _linked_market.total_bets + _round_scaling_factor)) - (bets - shadow_bets),
+      locked_at = _next_game_time
+	  	WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _winning_team);
+
+    -- Update the losers bets and locked state
+	  UPDATE market_players SET
+      locked = false,
+      is_eliminated = true,
+      shadow_bets = GREATEST(bets - GREATEST(bets - shadow_bets, score / _market.expected_total_points * _market.total_bets), 0),
+      initial_shadow_bets = GREATEST(bets - GREATEST(bets - shadow_bets, score / _market.expected_total_points * _market.total_bets), 0),
+      bets = GREATEST(bets - shadow_bets, score / _market.expected_total_points * _market.total_bets),
+      locked_at = null
+	  	WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _losing_team);
+  ELSE -- 'team_single_elimination'
+	  select INTO _loss_team_locked_bets, _loss_team_locked_initial_shadow_bets,  _loss_team_locked_shadow_bets, _loser_score  sum(bets), sum(shadow_bets), sum(initial_shadow_bets), sum(score)
+      FROM market_players mp JOIN players p ON mp.player_stats_id = p.stats_id
+		  WHERE market_id = _market.id AND p.team = _losing_team;
+
+	  UPDATE market_players SET
+      locked = false,
+      -- set shadow bets to new bets value - real bets
+      shadow_bets = (shadow_bets + _loss_team_locked_shadow_bets - _loser_score / _market.expected_total_points * _market.total_bets),
+      initial_shadow_bets =  (bets + _loss_team_locked_initial_shadow_bets - _loser_score / _market.expected_total_points * _market.total_bets) - ( bets - shadow_bets),
+      bets = bets + _loss_team_locked_bets - _loser_score / _market.expected_total_points * _market.total_bets,
+      locked_at = _next_game_time
+	  	WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _winning_team);
+
+    -- Update the losers bets and locked state
+	  UPDATE market_players SET
+      locked = false,
+      is_eliminated = true,
+      bets = GREATEST(bets - shadow_bets, score / _market.expected_total_points * _market.total_bets),
+      shadow_bets = GREATEST(bets - GREATEST(bets - shadow_bets, score / _market.expected_total_points * _market.total_bets), 0),
+      -- Not sure this is correct: how can we compensate the winning market player with these ISBs
+      initial_shadow_bets = GREATEST(bets - GREATEST(bets - shadow_bets, score / _market.expected_total_points * _market.total_bets), 0),
+      locked_at = null
+	  	WHERE market_id = _market.id AND player_stats_id IN(SELECT stats_id FROM players WHERE team = _losing_team);
+
+  END IF;
+	--update the price multiplier
+	update markets set
+		total_bets = (select sum(bets) from market_players where market_id=_games_market.market_id),
+		shadow_bets = (select sum(shadow_bets) from market_players where market_id=_games_market.market_id),
+		initial_shadow_bets = (select sum(initial_shadow_bets) from market_players where market_id=_games_market.market_id)
+		WHERE id = _games_market.market_id;
+
+END;
+$$ LANGUAGE plpgsql;
 
 --------------------------------------- Assign Scores --------------------------------------
 
@@ -587,15 +719,15 @@ DROP FUNCTION tabulate_scores(integer);
 CREATE OR REPLACE FUNCTION tabulate_scores(_market_id integer) RETURNS VOID AS $$
 begin
 	UPDATE market_players set score = 
-		(select Greatest(0, sum(point_value)) FROM stat_events 
+		(select coalesce(sum(point_value), 0) FROM stat_events 
 			WHERE player_stats_id = market_players.player_stats_id and game_stats_id in 
 				(select game_stats_id from games_markets where market_id = $1)
 		) where market_id = $1;
 
   WITH contest_info as
     (SELECT rosters.id, contest_types.salary_cap FROM rosters JOIN contest_types ON rosters.contest_type_id=contest_types.id WHERE rosters.market_id=$1)
-	  UPDATE rosters set score = LEAST(1, 1 + remaining_salary / salary_cap) * (select sum(score) from market_players where player_stats_id IN(
-        SELECT player_stats_id FROM rosters_players WHERE roster_id = rosters.id) AND market_id = $1)
+	  UPDATE rosters set score = coalesce(bonus_points, 0) + LEAST(1.03, 1 + remaining_salary / salary_cap) * coalesce((select sum(score) from market_players where player_stats_id IN(
+        SELECT player_stats_id FROM rosters_players WHERE roster_id = rosters.id) AND market_id = $1), 0)
     FROM contest_info WHERE rosters.id=contest_info.id;
 
 	WITH ranks as
@@ -603,59 +735,4 @@ begin
 		UPDATE rosters set contest_rank = rank FROM ranks where rosters.id = ranks.id;
 end
 $$ LANGUAGE plpgsql;--SQL;
-
-/*
-Helpful functions
-
-SELECT p.name, mp.player_id, mp.bets, m.total_bets, price(mp.bets, m.total_bets, 10, m.price_multiplier)
-	FROM market_players mp, markets m, players p
-	WHERE
-		m.id = 51 AND
-		m.id = mp.market_id AND
-		p.id = mp.player_id AND
-		mp.locked = false;
-
-go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats 
--year 2012 -season REG -week 1 -away DAL -home NYG
-
-select 'go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home', home_team, '-away', away_team
-from games where season_year = 2013 and season_type = 'REG' and status = 'closed' and season_week = 1;
-
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season week 1 -home DEN -away BAL
-
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home NO -away AT
-
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home DEN -away BAL
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home NO -away ATL
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home PIT -away TEN
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home NYJ -away TB
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home BUF -away NE
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home IND -away OAK
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home DET -away MIN
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home CAR -away SEA
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home JAC -away KC
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home CHI -away CIN
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home CLE -away MIA
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home STL -away ARI
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home SF -away GB
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home DAL -away NYG
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home WAS -away PHI
-GOPATH=`pwd` go run -a src/github.com/MustWin/datafetcher/datafetcher.go -fetch stats -year 2013 -season REG -week 1 -home SD -away HOU
-
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
 

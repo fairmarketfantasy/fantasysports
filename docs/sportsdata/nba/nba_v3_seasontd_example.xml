@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generation started @ 2013-05-02 19:21:40 +0000 -->
+<season xmlns="http://feed.elasticstats.com/schema/basketball/statistics-v2.0.xsd" id="f3b0a657-c316-41de-8aad-e4305361bb78" year="2012" type="REG">
+  <team id="8dfc624b-8379-4dd5-a960-b9fea4d7d86f" name="Spurs" market="San Antonio">
+    <team_records>
+      <overall>
+        <total games_played="1" minutes="0" field_goals_made="5" field_goals_att="7" three_points_made="3" three_points_att="3" blocked_att="1" free_throws_made="0" free_throws_att="0" offensive_rebounds="0" defensive_rebounds="0" assists="3" turnovers="0" steals="1" blocks="0" personal_fouls="1" tech_fouls="0" points="13" fast_break_pts="0" paint_pts="0" free_throws_pct="0" two_points_pct="0.5" three_points_pct="1.0" field_goals_pct="0.714" rebounds="0" two_points_made="2" two_points_att="4"/>
+        <average paint_pts_per_game="0.0" fast_break_pts_per_game="0.0" points_per_game="13.0" blocked_att_per_game="1.0" turnovers_per_game="0.0" field_goals_att_per_game="7.0" free_throws_att_per_game="0.0" off_rebounds_per_game="0.0" two_points_att_per_game="4.0" assists_per_game="3.0" blocks_per_game="0.0" personal_fouls_per_game="1.0" two_points_made_per_game="2.0" rebounds_per_game="0.0" three_points_made_per_game="3.0" minutes_per_game="0.0" def_rebounds_per_game="0.0" free_throws_made_per_game="0.0" field_goals_made_per_game="5.0" steals_per_game="1.0" three_points_att_per_game="3.0"/>
+      </overall>
+      <opponents>
+        <total games_played="1" minutes="0" field_goals_made="6" field_goals_att="7" three_points_made="1" three_points_att="1" blocked_att="0" free_throws_made="2" free_throws_att="2" offensive_rebounds="0" defensive_rebounds="1" assists="6" turnovers="1" steals="0" blocks="1" personal_fouls="0" tech_fouls="0" points="15" fast_break_pts="0" paint_pts="0" free_throws_pct="1.0" two_points_pct="0.833" three_points_pct="1.0" field_goals_pct="0.857" rebounds="1" two_points_made="5" two_points_att="6"/>
+        <average paint_pts_per_game="0.0" fast_break_pts_per_game="0.0" points_per_game="15.0" blocked_att_per_game="0.0" turnovers_per_game="1.0" field_goals_att_per_game="7.0" free_throws_att_per_game="2.0" off_rebounds_per_game="0.0" two_points_att_per_game="6.0" assists_per_game="6.0" blocks_per_game="1.0" personal_fouls_per_game="0.0" two_points_made_per_game="5.0" rebounds_per_game="1.0" three_points_made_per_game="1.0" minutes_per_game="0.0" def_rebounds_per_game="1.0" free_throws_made_per_game="2.0" field_goals_made_per_game="6.0" steals_per_game="0.0" three_points_att_per_game="1.0"/>
+      </opponents>
+    </team_records>
+    <player_records>
+      <player id="e12841e6-90c8-4a1f-9737-012fcdb6f87e" full_name="Kawhi Leonard" first_name="Kawhi" last_name="Leonard" position="F" jersey_number="2">
+        <overall>
+          <total games_played="1" games_started="0" minutes="0" field_goals_made="1" field_goals_att="1" three_points_made="0" three_points_att="0" blocked_att="0" free_throws_made="0" free_throws_att="0" offensive_rebounds="0" defensive_rebounds="0" assists="1" turnovers="0" steals="0" blocks="0" personal_fouls="0" tech_fouls="0" points="2" free_throws_pct="0" two_points_pct="1.0" three_points_pct="0" field_goals_pct="1.0" rebounds="0" two_points_made="1" two_points_att="1"/>
+          <average points_per_game="2.0" blocked_att_per_game="0.0" turnovers_per_game="0.0" field_goals_att_per_game="1.0" free_throws_att_per_game="0.0" off_rebounds_per_game="0.0" two_points_att_per_game="1.0" assists_per_game="1.0" blocks_per_game="0.0" personal_fouls_per_game="0.0" two_points_made_per_game="1.0" rebounds_per_game="0.0" three_points_made_per_game="0.0" minutes_per_game="0.0" def_rebounds_per_game="0.0" free_throws_made_per_game="0.0" field_goals_made_per_game="1.0" steals_per_game="0.0" three_points_att_per_game="0.0"/>
+        </overall>
+      </player>
+      <player id="96a50281-5b55-4108-85d5-92f7c62584c6" full_name="Tony Parker" first_name="Tony" last_name="Parker" position="G" jersey_number="9">
+        <overall>
+          <total games_played="1" games_started="0" minutes="0" field_goals_made="1" field_goals_att="1" three_points_made="1" three_points_att="1" blocked_att="0" free_throws_made="0" free_throws_att="0" offensive_rebounds="0" defensive_rebounds="0" assists="0" turnovers="0" steals="0" blocks="0" personal_fouls="0" tech_fouls="0" points="3" free_throws_pct="0" two_points_pct="0" three_points_pct="1.0" field_goals_pct="1.0" rebounds="0" two_points_made="0" two_points_att="0"/>
+          <average points_per_game="3.0" blocked_att_per_game="0.0" turnovers_per_game="0.0" field_goals_att_per_game="1.0" free_throws_att_per_game="0.0" off_rebounds_per_game="0.0" two_points_att_per_game="0.0" assists_per_game="0.0" blocks_per_game="0.0" personal_fouls_per_game="0.0" two_points_made_per_game="0.0" rebounds_per_game="0.0" three_points_made_per_game="1.0" minutes_per_game="0.0" def_rebounds_per_game="0.0" free_throws_made_per_game="0.0" field_goals_made_per_game="1.0" steals_per_game="0.0" three_points_att_per_game="1.0"/>
+        </overall>
+      </player>
+      <player id="4f625a5c-db34-4c2b-914f-28cc74d87c33" full_name="Tim Duncan" first_name="Tim" last_name="Duncan" position="F" jersey_number="21">
+        <overall>
+          <total games_played="1" games_started="0" minutes="0" field_goals_made="2" field_goals_att="3" three_points_made="1" three_points_att="1" blocked_att="1" free_throws_made="0" free_throws_att="0" offensive_rebounds="0" defensive_rebounds="0" assists="0" turnovers="0" steals="1" blocks="0" personal_fouls="1" tech_fouls="0" points="5" free_throws_pct="0" two_points_pct="0.5" three_points_pct="1.0" field_goals_pct="0.667" rebounds="0" two_points_made="1" two_points_att="2"/>
+          <average points_per_game="5.0" blocked_att_per_game="1.0" turnovers_per_game="0.0" field_goals_att_per_game="3.0" free_throws_att_per_game="0.0" off_rebounds_per_game="0.0" two_points_att_per_game="2.0" assists_per_game="0.0" blocks_per_game="0.0" personal_fouls_per_game="1.0" two_points_made_per_game="1.0" rebounds_per_game="0.0" three_points_made_per_game="1.0" minutes_per_game="0.0" def_rebounds_per_game="0.0" free_throws_made_per_game="0.0" field_goals_made_per_game="2.0" steals_per_game="1.0" three_points_att_per_game="1.0"/>
+        </overall>
+      </player>
+      <player id="77a8a227-ebc0-4fe6-ab12-996da2965e51" full_name="Aron Baynes" first_name="Aron" last_name="Baynes" position="F" jersey_number="16">
+        <overall>
+          <total games_played="1" games_started="0" minutes="0" field_goals_made="1" field_goals_att="2" three_points_made="1" three_points_att="1" blocked_att="0" free_throws_made="0" free_throws_att="0" offensive_rebounds="0" defensive_rebounds="0" assists="0" turnovers="0" steals="0" blocks="0" personal_fouls="0" tech_fouls="0" points="3" free_throws_pct="0" two_points_pct="0.0" three_points_pct="1.0" field_goals_pct="0.5" rebounds="0" two_points_made="0" two_points_att="1"/>
+          <average points_per_game="3.0" blocked_att_per_game="0.0" turnovers_per_game="0.0" field_goals_att_per_game="2.0" free_throws_att_per_game="0.0" off_rebounds_per_game="0.0" two_points_att_per_game="1.0" assists_per_game="0.0" blocks_per_game="0.0" personal_fouls_per_game="0.0" two_points_made_per_game="0.0" rebounds_per_game="0.0" three_points_made_per_game="1.0" minutes_per_game="0.0" def_rebounds_per_game="0.0" free_throws_made_per_game="0.0" field_goals_made_per_game="1.0" steals_per_game="0.0" three_points_att_per_game="1.0"/>
+        </overall>
+      </player>
+      <player id="d94223ca-29fa-4a31-82a3-843af50f32d6" full_name="Stephen Jackson" first_name="Stephen" last_name="Jackson" position="F" jersey_number="3">
+        <overall>
+          <total games_played="1" games_started="0" minutes="0" field_goals_made="0" field_goals_att="0" three_points_made="0" three_points_att="0" blocked_att="0" free_throws_made="0" free_throws_att="0" offensive_rebounds="0" defensive_rebounds="0" assists="2" turnovers="0" steals="0" blocks="0" personal_fouls="0" tech_fouls="0" points="0" free_throws_pct="0" two_points_pct="0" three_points_pct="0" field_goals_pct="0" rebounds="0" two_points_made="0" two_points_att="0"/>
+          <average points_per_game="0.0" blocked_att_per_game="0.0" turnovers_per_game="0.0" field_goals_att_per_game="0.0" free_throws_att_per_game="0.0" off_rebounds_per_game="0.0" two_points_att_per_game="0.0" assists_per_game="2.0" blocks_per_game="0.0" personal_fouls_per_game="0.0" two_points_made_per_game="0.0" rebounds_per_game="0.0" three_points_made_per_game="0.0" minutes_per_game="0.0" def_rebounds_per_game="0.0" free_throws_made_per_game="0.0" field_goals_made_per_game="0.0" steals_per_game="0.0" three_points_att_per_game="0.0"/>
+        </overall>
+      </player>
+    </player_records>
+  </team>
+</season>
+<!-- Generation ended @ 2013-05-02 19:21:41 +0000 -->

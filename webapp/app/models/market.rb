@@ -1,4 +1,5 @@
 class Market < ActiveRecord::Base
+  attr_protected
   has_many :games_markets, :inverse_of => :market
   has_many :games, :through => :games_markets
   has_many :market_players
@@ -7,13 +8,17 @@ class Market < ActiveRecord::Base
   has_many :contest_types
   has_many :rosters
   belongs_to :sport
+  belongs_to :linked_market, :class_name => 'Market'
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
   validates :state, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
+  validates :game_type, inclusion: { in: %w( regular_season single_elimination team_single_elimination )}
 
   scope :published_after,   ->(time) { where('published_at > ?', time)}
   scope :opened_after,      ->(time) { where("opened_at > ?", time) }
   scope :closed_after,      ->(time) { where('closed_at > ?', time) }
+
+  before_save :set_game_type
 
   paginates_per 25
 
@@ -30,21 +35,37 @@ class Market < ActiveRecord::Base
       open
       remove_shadow_bets
       track_benched_players
+      fill_rosters
       close
       lock_players
-      fill_rosters
       tabulate_scores
+      set_payouts # this is used for leaderboards
+      deliver_bonuses
+      finish_games
       complete
     end
 
     def apply method, sql, *params
-      Market.where(sql, *params).each do |market|
+      Market.where(sql, *params).order('id asc').each do |market|
         puts "#{Time.now} -- #{method} market #{market.id}"
         begin
+=begin
+init_shadow_bets = market.reload.initial_shadow_bets
+total_bets = market.reload.total_bets
+shadow_bets = market.reload.shadow_bets
+real_bets = market.reload.total_bets - shadow_bets
+new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet_rate].max
+=end
           market.send(method)
         rescue Exception => e
           puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
           Rails.logger.error "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
+          raise e if Rails.env == 'test'
+          Honeybadger.notify(
+            :error_class   => "MarketTender Error",
+            :error_message => "MarketTenderError in #{method} for #{market.id}: #{e.message}",
+            :backtrace => e.backtrace
+          )
         end
       end
     end
@@ -70,11 +91,23 @@ class Market < ActiveRecord::Base
     end
 
     def lock_players
-      apply :lock_players, "state = 'opened'"
+      apply :lock_players, "state IN('opened', 'closed')"
     end
     
     def tabulate_scores
       apply :tabulate_scores, "state in ('published', 'opened', 'closed')"
+    end
+
+    def deliver_bonuses
+      apply :deliver_bonuses, "game_type = 'single_elimination' AND state in ('opened', 'closed')"
+    end
+
+    def set_payouts
+      apply :set_payouts, "state in ('opened', 'closed')"
+    end
+
+    def finish_games
+      apply :finish_games, "state in ('opened', 'closed')"
     end
 
     def close
@@ -82,7 +115,11 @@ class Market < ActiveRecord::Base
     end
 
     def complete
-      apply :complete, "state = 'closed' and not exists (select 1 from games g join games_markets gm on gm.game_stats_id = g.stats_id where gm.market_id = markets.id and g.status != 'closed')"
+      apply :complete, <<-EOF
+          state = 'closed' AND NOT EXISTS (
+            SELECT 1 FROM games g JOIN games_markets gm ON gm.game_stats_id = g.stats_id 
+             WHERE gm.market_id = markets.id AND (g.status != 'closed' OR gm.finished_at IS NULL))
+      EOF
     end
 
   end
@@ -91,6 +128,14 @@ class Market < ActiveRecord::Base
     ['published', 'opened'].include?(self.state) || Market.override_close
   end
 
+  def clean_publish
+    Market.find_by_sql("select * from publish_clean_market(#{self.id})")
+    reload
+    if self.state == 'published'
+      self.add_default_contests
+    end
+    self
+  end
   #publish the market. returns the published market.
   def publish
     Market.find_by_sql("select * from publish_market(#{self.id})")
@@ -111,11 +156,32 @@ class Market < ActiveRecord::Base
     reload
   end
 
-  def fill_rosters
+=begin
+  This is formatted as a json hash like so:
+  {<unix-timestamp>: {paid: true}, ...]
+=end
+  def add_salary_bonus_time(time)
+    bonus_times = JSON.parse(self.salary_bonuses || '{}')
+    bonus_times[time.to_i] ||= {"paid" => false}
+    self.update_attribute(:salary_bonuses, bonus_times.to_json)
+  end
+
 =begin
   This is formatted as a json array of arrays like so:
   [[<unix-timestamp, <percent-fill>], ...]
 =end
+  def add_fill_roster_time(time, percent)
+    fill_times = JSON.parse(self.fill_roster_times || '[]')
+    index = fill_times.find{|arr| arr[0] > time.to_i }
+    if index.nil?
+      fill_times.push([time.to_i, percent])
+    else
+      fill_times.insert(index, [time.to_i, percent])
+    end
+    self.update_attribute(:fill_roster_times, fill_times.to_json)
+  end
+
+  def fill_rosters
     fill_times = JSON.parse(self.fill_roster_times)
     percent = nil
     fill_times.each do |ft| 
@@ -127,11 +193,23 @@ class Market < ActiveRecord::Base
   end
 
   def fill_rosters_to_percent(percent)
-      # iterate through /all/ non h2h unfilled contests and generate rosters to fill them up
-      h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).map(&:id)
-      self.contests.where("contest_type_id NOT IN(#{h2h_types.join(',')}) AND (num_rosters < user_cap OR user_cap = 0)").find_each do |contest|
-        contest.fill_with_rosters(percent)
+    # iterate through /all/ non h2h unfilled contests and generate rosters to fill them up
+    contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_type_ids.join(',')})")
+    contests.where("(num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0").find_each do |contest|
+      contest.fill_with_rosters(percent)
+    end
+  end
+
+  def bad_h2h_type_ids
+    bad_h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).select do |ct| 
+      if (ct.name == 'h2h' && [100, 1000].include?(ct.buy_in))# ||  # Fill H2H games of normal amounts
+          #(ct.name == 'h2h rr' && [900, 9000].include?(ct.buy_in))
+        false
+      else
+        true
       end
+    end
+    bad_h2h_types = bad_h2h_types.map(&:id).unshift(-1)
   end
 
   def track_benched_players
@@ -143,7 +221,7 @@ class Market < ActiveRecord::Base
   end
 
   def lock_players
-    Market.find_by_sql("SELECT * from lock_players(#{self.id})")
+    Market.find_by_sql("SELECT * from lock_players(#{self.id}, '#{self.game_type == 'regular_season' ? 't' : 'f'}')")
     reload
   end
 
@@ -152,10 +230,33 @@ class Market < ActiveRecord::Base
     reload
   end
 
+  def deliver_bonuses
+    bonus_times = JSON.parse(self.salary_bonuses || '{}')
+    bonus_times.keys.sort.select{|time| time.to_i < Time.new.to_i && !bonus_times[time]['paid'] }.each do |time|
+      self.rosters.update_all('remaining_salary = remaining_salary + 20000')
+      self.contest_types.update_all('salary_cap = salary_cap + 20000')
+      self.contests.where("contest_type_id NOT IN(#{bad_h2h_type_ids.join(',')})").each {|c| c.fill_reinforced_rosters } if self.game_type =~ /elimination/i
+      bonus_times[time]['paid'] = true
+    end
+    self.update_attribute(:salary_bonuses, bonus_times.to_json)
+    reload
+  end
+
+  def set_payouts
+    self.contests.each{|c| c.set_payouts! }
+    reload
+  end
+
+  def finish_games
+    self.games_markets.select('games_markets.*').joins(
+        'JOIN games ON games_markets.game_stats_id=games.stats_id'
+    ).where("(games.status = 'closed' OR games.game_time < NOW() - INTERVAL '8 hours') AND games_markets.finished_at IS NULL").each{|gm| gm.finish! }
+    reload
+  end
+
   # close a market. allocates remaining rosters in this manner:
   def close
     raise "cannot close if state is not open" if state != 'opened' 
-
     #cancel all un-submitted rosters
     self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
     self.contests.where(
@@ -201,7 +302,7 @@ class Market < ActiveRecord::Base
       end
 =end
     self.fill_rosters_to_percent(1.0)
-
+    self.lock_players
     self.state, self.closed_at = 'closed', Time.now
     save!
     return self
@@ -226,17 +327,100 @@ class Market < ActiveRecord::Base
     end
   end
 
+  def next_game_time_for_team(team)
+    team = Team.find(team) if team.is_a?(String)
+    game = self.games.where(['game_time > NOW() AND (home_team = ? OR away_team = ?)', team, team]).order('game_time asc').first
+    game && game.game_time
+  end
+
+  def self.create_single_elimination_game(sport_id, player_market_name, team_market_name, expected_total_player_points, expected_total_team_points, opts = {})
+    player_market = self.create!({
+      :name => player_market_name,
+      :expected_total_points => expected_total_player_points,
+      :game_type => 'single_elimination',
+      :sport_id => sport_id,
+      :shadow_bets => 0,
+      :shadow_bet_rate => 0.75,
+      :published_at => Time.now + 1.minute
+      }.merge(opts)
+    )
+    team_market = self.create!({
+      :name => team_market_name,
+      :expected_total_points => expected_total_team_points, # TODO: revisit this and how transformations work with team markets
+      :game_type => 'team_single_elimination',
+      :sport_id => sport_id,
+      :shadow_bets => 0,
+      :shadow_bet_rate => 0.75,
+      :published_at => Time.now + 1.minute,
+      :linked_market_id => player_market.id
+      }.merge(opts)
+    )
+    player_market.update_attribute(:linked_market_id, team_market.id)
+    Sport.find(sport_id).teams.each do |team| # Create all the team players if they don't exist
+      begin
+        Player.create(
+          :stats_id => "TEAM-#{team.abbrev}", # Don't change these
+          :sport_id => sport_id,
+          :name => team.name,
+          :name_abbr => team.abbrev,
+          :position => 'TEAM',
+          :status => 'ACT',
+          :total_games => 0,
+          :total_points => 0,
+          :team => Team.find(team.abbrev),
+          :benched_games => 0
+        )
+      rescue ActiveRecord::RecordNotUnique
+      end
+    end
+    [player_market, team_market]
+  end
+
+  def add_single_elimination_game(game, price_multiplier = 1)
+    [self, self.linked_market].each do |m|
+      if m.opened_at.nil? || game.game_time < m.started_at
+        m.opened_at = game.game_time.beginning_of_week + 24 * 60*60 + 11 * 60 * 60 # 9pm PST Tuesday
+      end
+      if m.started_at.nil? || game.game_time < m.started_at
+        m.started_at = game.game_time
+      end
+      if m.closed_at.nil? || game.game_time > m.closed_at
+        m.closed_at = game.game_time + 4.days # just some long time in the future. We'll be closing these manually
+      end
+      m.save!
+      # Every sunday at 9pm PST within the date range gets a bonus
+      m.started_at.to_date.upto(m.closed_at.to_date).map{|day| day.sunday? ? Time.new(day.year, day.month, day.day, 21, 0, 0, '-08:00') : nil }.compact.each do |time|
+        m.add_salary_bonus_time(time)
+      end
+      m.add_fill_roster_time(game.game_time - 1.hour, 1.0)
+      GamesMarket.create!(:market_id => m.id, :game_stats_id => game.stats_id, :price_multiplier => price_multiplier)
+      [game.home_team, game.away_team].each do |team|
+        m.market_players.where(:player_id => Player.where(:team => team).map(&:id)).update_all(:locked_at => next_game_time_for_team(team))
+      end
+    end
+  end
+
   @@default_contest_types = [
     # Name, description,                                              max_entries, buy_in, rake, payout_structure
     {
       name: '5k',
-      description: '5k Lollapalooza! $2500 for 1st prize!',
-      max_entries: 515,
+      description: '5k Lollapalooza! $1000 for 1st prize!',
+      max_entries: 600,
       buy_in: 1000,
-      rake: 0.03,
-# 4995.5
-      payout_structure: '[250000, 100000, 50000, 25000, 15000, 10000, 10000, 5000, 5000, 5000, 5000, 5000, 2500, 2500,  2500, 2500, 2500, 2050]',
-      payout_description: "1st: $2.5k, 2nd: 1k, 3rd: $500, 4th: $250, 5th: $150, 6th: $100, 7th-10th: $50, 10th-16th: $25",
+      rake: 100000,
+      # Payout lollapalooza: 1 1000 2 500 3 300 4-10 100 11-20 50 21-30 40 31-40 30 41-50 20 51-90 10
+      payout_structure: '[100000, 50000, 30000, ' + # 1-3
+                          '10000, 10000, 10000, 10000, 10000, 10000, 10000, ' +  # 4-10
+                          '5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, ' + # 11-30
+                          '5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, ' +
+                          '4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, 4000, ' + # 31-45
+                          '3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, ' + # 46-55
+                          '2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000,' + # 56-65
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,' + # 66-105
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,' +
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000,' +
+                          '1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]',
+      payout_description: "1st: $1k, 2nd: $500, 3rd: $300, 4th-10th: $100, 11th-30th: $50, 31st-45th: $40, 46th-55th: $30, 56th-65th: $20, 66th-105th: $10",
       takes_tokens: false,
       limit: 1
     },
@@ -254,95 +438,36 @@ class Market < ActiveRecord::Base
     },
 =end
     {
-      name: '970',
-      description: '100FF contest, winner gets 970 FanFrees!',
-      max_entries: 10,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[970]',
-      payout_description: "970FF prize purse, winner takes all",
-      takes_tokens: true,
-    },
-    {
-      name: '970',
-      description: '10 teams, $1 entry fee, winner takes home $9.70',
-      max_entries: 10,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[970]',
-      payout_description: "$9.70 prize purse, winner takes all",
-      takes_tokens: false,
-    },
-    {
-      name: '970',
-      description: '10 teams, $10 entry fee, winner takes home $97.00',
-      max_entries: 10,
+      name: '65/25/10',
+      description: '12 teams, top 3 winners take home $65, $25, $10',
+      max_entries: 12,
       buy_in: 1000,
-      rake: 0.03,
-      payout_structure: '[9700]',
-      payout_description: "$97 prize purse, winner takes all",
+      rake: 2000,
+      payout_structure: '[6500, 2500, 1000]',
+      payout_description: "$100 prize purse, 1st: $65, 2nd: $25, 3rd: $10",
       takes_tokens: false,
     },
     {
-      name: '194',
-      description: '100FF contest, top 5 winners get 194 FanFrees!',
-      max_entries: 10,
-      buy_in: 100, #100 ff
-      rake: 0.03,
-      payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top five win 194 FanFrees",
-      takes_tokens: true,
-    },
-    {
-      name: '194',
-      description: '10 teams, $1 entry fee, top 5 winners take home $1.94',
-      max_entries: 10,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[194,194,194,194,194]',
-      payout_description: "Top five win $1.94",
-      takes_tokens: false,
-    },
-    {
-      name: '194',
-      description: '10 teams, $10 entry fee, top 5 winners take home $19.40',
-      max_entries: 10,
+      name: 'Top5',
+      description: '12 teams, top 5 winners take home $20',
+      max_entries: 12,
       buy_in: 1000,
-      rake: 0.03,
-      payout_structure: '[1940,1940,1940,1940,1940]',
-      payout_description: "Top five win $19.40",
+      rake: 2000,
+      payout_structure: '[2000,2000,2000,2000,2000]',
+      payout_description: "Top five win $20",
       takes_tokens: false,
     },
     {
       name: 'h2h',
-      description: '100FF h2h contest, winner gets 194 FanFrees!',
-      max_entries: 2,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[194]',
-      payout_description: "194FF prize purse, winner takes all",
-      takes_tokens: true,
-    },
-    {
-      name: 'h2h',
-      description: 'h2h contest, $1 entry fee, winner takes home $1.94',
-      max_entries: 2,
-      buy_in: 100,
-      rake: 0.03,
-      payout_structure: '[194]',
-      payout_description: "$1.94 prize purse, winner takes all",
-      takes_tokens: false,
-    },
-    {
-      name: 'h2h',
-      description: 'h2h contest, $10 entry fee, winner takes home $19.40',
+      description: 'h2h contest, winner takes home $19',
       max_entries: 2,
       buy_in: 1000,
-      rake: 0.03,
-      payout_structure: '[1940]',
-      payout_description: "$19.40 prize purse, winner takes all",
+      rake: 100,
+      payout_structure: '[1900]',
+      payout_description: "$19 prize purse, winner takes all",
       takes_tokens: false,
     },
+=begin
     {
       name: 'h2h rr',
       description: '10 team, h2h round-robin contest, 900FF entry fee, 9 games for 194FF per win',
@@ -373,15 +498,22 @@ class Market < ActiveRecord::Base
       payout_description: "9 h2h games each pay out $19.40",
       takes_tokens: false,
     }
+=end
   ];
+
+  def set_game_type
+    unless self.game_type
+      self.game_type = 'regular_season'
+      self.save!
+    end
+  end
 
   #TODO: is this safe if run concurrently?
   def add_default_contests
     self.transaction do
       return if self.contest_types.length > 0
       @@default_contest_types.each do |data|
-      #debugger
-        next if data[:name].match(/\d+k/) && (self.closed_at - self.started_at < 1.day || Rails.env == 'test')
+        next if data[:name].match(/\d+k/) && (!(self.name =~ /week|playoff/i) || Rails.env == 'test')
         ContestType.create!(
           market_id: self.id,
           name: data[:name],
@@ -393,7 +525,8 @@ class Market < ActiveRecord::Base
           salary_cap: 100000,
           payout_description: data[:payout_description],
           takes_tokens: data[:takes_tokens],
-          limit: data[:limit]
+          limit: data[:limit],
+          positions: self.game_type == 'team_single_elimination' ? Array.new(6, 'TEAM').join(',') : Positions.for_sport_id(self.sport_id),
         )
       end
     end
@@ -418,10 +551,10 @@ class Market < ActiveRecord::Base
 
   def dump_players_csv
     csv = CSV.generate({}) do |csv|
-      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us"]
+      csv << ["INSTRUCTIONS: Do not modify the first 4 columns of this sheet.  Fill out the Desired Shadow Bets column. Save the file as a .csv and send back to us", "Expected Fantasy Points ->"]
       csv << ["Canonical Id", "Name", "Team", "Position", "Desired Shadow Bets"]
       self.players.each do |player|
-        csv << [player.stats_id, player.name, player.team.abbrev, player.position]
+        csv << [player.stats_id, player.name.gsub(/'/, ''), player.team.abbrev, player.position]
       end
     end
   end
@@ -433,9 +566,13 @@ class Market < ActiveRecord::Base
 
     count = 0
     total_bets = 0
-    opts = {:col_sep => data.lines[1].split(';').length > 1 ? ';' : ','}
+    opts = {:col_sep => data.lines.to_a.split(';').length > 1 ? ';' : ','}
+    data.rewind if data.respond_to?(:rewind) # Handle files
     CSV.parse(data, opts) do |row|
       count += 1
+      if count == 1
+        self.expected_total_points = row[2].empty? ? 1 : row[2]
+      end
       next if count <= 2
       player_stats_id, shadow_bets = row[0], row[4]
       if !shadow_bets.blank?
@@ -445,7 +582,7 @@ class Market < ActiveRecord::Base
           next
         end
         puts "betting $#{shadow_bets} on #{p.name}"
-        shadow_bets = Integer(shadow_bets) * 100
+        shadow_bets = shadow_bets.to_i * 100
       else
         shadow_bets = 0
       end
@@ -454,19 +591,28 @@ class Market < ActiveRecord::Base
         puts "WARNING: No market player found with id #{player_stats_id}"
         next
       end
-      mp.shadow_bets = mp.initial_shadow_bets = mp.bets = shadow_bets
+      #debugger# if mp.bets > mp.initial_shadow_bets ## PICK UP HERE, THIS SHOULD STOP
+      mp.bets = (mp.bets || 0) - (mp.initial_shadow_bets || 0) + shadow_bets
+      mp.shadow_bets = mp.initial_shadow_bets = shadow_bets
       mp.save!
       total_bets += shadow_bets
     end
 
     #set the shadow bets to whatever they should be
     puts "\nTotal bets: $#{total_bets/100}"
-    self.shadow_bets = self.total_bets = self.initial_shadow_bets = total_bets
+    # Re-count all these things, because bets may already be placed
+    bets = {:bets => 0, :shadow_bets => 0}
+    market_players = self.market_players.reload.map do |mp|
+      bets[:bets] += mp.bets || 0
+      bets[:shadow_bets] += mp.shadow_bets || 0
+    end
+    self.shadow_bets = self.initial_shadow_bets = bets[:shadow_bets]
+    self.total_bets = bets[:bets]
     #TEMPORARY: artificially raise the price multiplier
     #self.price_multiplier = self.market_players.size / 50
     puts "using price multiplier: #{self.price_multiplier}"
     self.save!
-
+    self
   end
 
   def market_duration
@@ -490,6 +636,22 @@ class Market < ActiveRecord::Base
     self.override_close = false
     Market.find_by_sql("SELECT set_session_variable('override_market_close', null)")
     result
+  end
+
+  def nice_description
+    # from niceMarketDesc filter in app/assets/javascripts/filters/filters.js
+    # Day Desc
+    if games.length > 1 && (closed_at - started_at) < 1.day
+      return "All games on " + started_at.strftime('%a %d')
+    end
+    # Game Desc
+    if games.length == 1
+      return games[0].away_team + " at " + games[0].home_team + " on " + games[0].network
+    end
+    # Date Desc
+    if (closed_at - started_at) > 1.day
+      return started_at.strftime('%a %d') + " - " + closed_at.strftime('%a %d')
+    end
   end
 
 end

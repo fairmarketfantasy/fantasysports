@@ -3,7 +3,7 @@ package nfl
 import (
 	"github.com/MustWin/datafetcher/lib"
 	"github.com/MustWin/datafetcher/lib/model"
-	"github.com/MustWin/datafetcher/nfl/models"
+	"github.com/MustWin/datafetcher/lib/models"
 	"log"
 	"sort"
 	"strconv"
@@ -24,11 +24,7 @@ func (mgr *FetchManager) Startup() error {
 
 func (mgr *FetchManager) Daily() error {
 	// Refresh all games for each season
-	games := make([]*models.Game, 0)
-	for _, seasonType := range NflSeasons {
-		mgr.Fetcher.NflSeason = seasonType
-		games = append(games, mgr.refreshGames()...)
-	}
+	games := mgr.GetGames()
 	//lib.PrintPtrs(games)
 
 	// Set the fetcher to the correct dates / seasons, etc
@@ -36,11 +32,11 @@ func (mgr *FetchManager) Daily() error {
 	mgr.refreshFetcher(games)
 
 	// Grab the latest standings for this season
-	teams := mgr.refreshStandings()
+	teams := mgr.GetStandings()
 
 	// Refresh rosters for each team
 	for _, team := range teams {
-		mgr.refreshTeamRosters(team.Abbrev)
+		mgr.GetRoster(team.Abbrev)
 	}
 
 	// Schedule jobs to collect play stats
@@ -52,19 +48,6 @@ func (mgr *FetchManager) Daily() error {
 	mgr.createMarkets(games)
 
 	return nil
-}
-
-// TODO: Remove this, it will be handled by the publish task
-func (mgr *FetchManager) savePlayersForMarket(market models.Market, teamAbbrev string) {
-	var players []models.Player
-	err := mgr.Orm.GetDb().Where("team = $1", teamAbbrev).FindAll(&players)
-	if err != nil {
-		log.Println(err)
-	}
-	for _, player := range players {
-		mktPlayer := models.MarketPlayer{MarketId: market.Id, PlayerId: player.Id}
-		mgr.Orm.GetDb().Save(&mktPlayer)
-	}
 }
 
 func appendForKey(key string, markets map[string][]*models.Game, value *models.Game) {
@@ -79,26 +62,29 @@ func (mgr *FetchManager) createMarket(name string, games Games) {
 	sort.Sort(games)
 	market := models.Market{}
 	market.Name = name
+	market.GameType = "regular_season"
 	market.ShadowBetRate = 0.75
 	market.PublishedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
 	market.StartedAt = games[0].GameTime.Add(-5 * time.Minute)           // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
 	market.ClosedAt = games[len(games)-1].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
 	t := market.ClosedAt
+	var sunday10am time.Time
 	for i := 0; i < 7; i++ {
 		t = market.ClosedAt.Add(time.Hour * time.Duration(i*-24))
 		if t.Weekday() == time.Wednesday {
 			market.OpenedAt = time.Date(t.Year(), t.Month(), t.Day(), 5, 0, 0, 0, time.UTC) // Set opened at to Tuesday of the same week at 9pmish
-			i = 7
+		}
+		if t.Weekday() == time.Sunday {
+			sunday10am = time.Date(t.Year(), t.Month(), t.Day(), 15, 0, 0, 0, time.UTC) // Set opened at to Tuesday of the same week at 9pmish
 		}
 	}
 	if len(games) > 1 {
-		t := market.OpenedAt.Add(5 * 24 * time.Hour) // Approx sunday 9pm PST
-		sunday10am := time.Date(t.Year(), t.Month(), t.Day(), 17, 0, 0, 0, time.UTC)
+		beforeStart := strconv.Itoa(int(market.StartedAt.Add(-12 * time.Hour).Unix()))
 		sunday10amUnix := strconv.Itoa(int(sunday10am.Unix())) // 10am PST
 		sunday1pmUnix := strconv.Itoa(int(sunday10am.Add(3 * time.Hour).Unix()))
 		sundayEveningUnix := strconv.Itoa(int(sunday10am.Add(6 * time.Hour).Unix()))
 		closedAtUnix := strconv.Itoa(int(market.ClosedAt.Unix()))
-		market.FillRosterTimes = "[[" + sunday10amUnix + ", 0.9], [" + sunday1pmUnix + ", 0.95], [" + sundayEveningUnix + ", 0.95], [" + closedAtUnix + ", 1.0]]"
+		market.FillRosterTimes = "[[" + beforeStart + ", 0.1], [" + sunday10amUnix + ", 0.9], [" + sunday1pmUnix + ", 0.99], [" + sundayEveningUnix + ", 1.0], [" + closedAtUnix + ", 1.0]]"
 	} else {
 		dayBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-24 * time.Hour).Unix()))
 		twoHoursBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-2 * time.Hour).Unix()))
@@ -110,8 +96,6 @@ func (mgr *FetchManager) createMarket(name string, games Games) {
 	for _, game := range games {
 		mktGame := models.GamesMarket{GameStatsId: game.StatsId, MarketId: market.Id}
 		mgr.Orm.Save(&mktGame)
-		mgr.savePlayersForMarket(market, game.HomeTeam)
-		mgr.savePlayersForMarket(market, game.AwayTeam)
 	}
 }
 
@@ -138,69 +122,87 @@ func (mgr *FetchManager) refreshFetcher(games []*models.Game) {
 	now := time.Now()
 	for i := 0; i < len(games); i++ {
 		if now.After(games[i].GameTime) {
-			mgr.Fetcher.NflSeason = games[i].SeasonType
-			mgr.Fetcher.NflSeasonWeek = games[i].SeasonWeek
+			//mgr.Fetcher.NflSeason = games[i].SeasonType
+			//mgr.Fetcher.NflSeasonWeek = games[i].SeasonWeek
 			mgr.Fetcher.Year = games[0].SeasonYear
 		}
 	}
 }
 
-func (mgr *FetchManager) refreshStandings() []*models.Team {
+func (mgr *FetchManager) GetStandings() []*models.Team {
 	log.Println("Fetching teams")
 	teams := mgr.Fetcher.GetStandings()
 	mgr.Orm.SaveAll(teams)
 	return teams
 }
 
-func (mgr *FetchManager) refreshGames() []*models.Game {
+func (mgr *FetchManager) GetGames() []*models.Game {
 	log.Println("Fetching games")
-	games := mgr.Fetcher.GetSchedule()
+	games := make([]*models.Game, 0)
+	for _, seasonType := range NflSeasons {
+		games = append(games, mgr.Fetcher.GetSchedule(seasonType)...)
+	}
 	log.Println(games)
 	mgr.Orm.SaveAll(games)
 	return games
 }
 
-func (mgr *FetchManager) refreshTeamRosters(team string) {
+func (mgr *FetchManager) GetRoster(team string) []*models.Player {
 	log.Printf("Fetching %s players", team)
 	players := mgr.Fetcher.GetTeamRoster(team)
 	mgr.Orm.SaveAll(players)
+	return players
 }
 
-func (mgr *FetchManager) refreshGameStatistics(game *models.Game) {
+func (mgr *FetchManager) GetGameById(gameStatsId string) *models.Game {
+	game := models.Game{}
+	mgr.Orm.GetDb().Where("stats_id = $1", gameStatsId).Find(&game)
+	return &game
+}
+
+func (mgr *FetchManager) GetStats(game *models.Game) []*models.StatEvent {
 	log.Printf("Fetching stats for game %s", game.StatsId)
 	// EPIC FUCKING TODO: don't save all of these every time, add a cache layer that checks to see if they're updated
-	stats := mgr.Fetcher.GetGameStatistics(game.AwayTeam, game.HomeTeam)
+	stats := mgr.Fetcher.GetGameStats(game)
 	mgr.Orm.SaveAll(stats)
+	return stats
+}
+
+func (mgr *FetchManager) GetPbp(game *models.Game, currentSequenceNumber int) ([]*models.GameEvent, int, bool) {
+	gameover := false
+	gameEvents, state := mgr.Fetcher.GetPlayByPlay(game)
+	game.HomeTeamStatus = state.CurrentGame.HomeTeamStatus
+	game.AwayTeamStatus = state.CurrentGame.AwayTeamStatus
+	mgr.Orm.Save(game)
+	for _, event := range gameEvents {
+		if event.SequenceNumber < currentSequenceNumber {
+			continue
+		}
+		mgr.Orm.Save(event)
+		currentSequenceNumber = event.SequenceNumber
+		if event.Type == "gameover" {
+			gameover = true
+			mgr.GetStandings()
+		}
+	}
+	return gameEvents, currentSequenceNumber, gameover
 }
 
 func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
 	POLLING_PERIOD := 30 * time.Second
 	currentSequenceNumber := -1
-	gameover := false
 	if game.GameTime.After(time.Now().Add(-250*time.Minute)) && game.Status != "closed" {
 		var poll = func() {}
 		poll = func() {
 			mgr.refreshFetcher([]*models.Game{game})
-			dirty := false
-			gameEvents := mgr.Fetcher.GetPlayByPlay(game.AwayTeam, game.HomeTeam)
-			for i, event := range gameEvents {
-				if event.SequenceNumber < currentSequenceNumber {
-					continue
-				}
-				mgr.Orm.Save(event)
-				currentSequenceNumber = i
-				dirty = true
-				if event.Type == "gameover" {
-					gameover = true
-				}
-			}
-			if dirty {
-				mgr.refreshGameStatistics(game)
+			_, newSequenceNumber, gameover := mgr.GetPbp(game, currentSequenceNumber)
+			if newSequenceNumber > currentSequenceNumber {
+				currentSequenceNumber = newSequenceNumber
+				mgr.GetStats(game)
 				if gameover {
-					mgr.refreshStandings()
-					// And refresh 'em again later just in case
-					time.AfterFunc(1*time.Minute, func() { mgr.refreshStandings() })
-					time.AfterFunc(10*time.Minute, func() { mgr.refreshStandings() })
+					// Refresh 'em again later just in case
+					time.AfterFunc(1*time.Minute, func() { mgr.GetStandings() })
+					time.AfterFunc(10*time.Minute, func() { mgr.GetStandings() })
 					return
 				}
 			}

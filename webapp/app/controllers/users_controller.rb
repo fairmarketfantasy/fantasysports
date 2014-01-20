@@ -46,15 +46,10 @@ class UsersController < ApplicationController
     @amount_in_cents = payment.transactions.first.amount.total.to_i * 100
     @type = params[:type]
     if @type == 'money'
-      current_user.customer_object.increase_balance(@amount_in_cents, 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
+      current_user.customer_object.increase_account_balance(@amount_in_cents, :event => 'deposit', :transaction_data => {:paypal_transaction_id => payment.id}.to_json)
+      current_user.customer_object.do_monthly_activation!
       Invitation.redeem_paid(current_user)
       Eventing.report(current_user, 'addFunds', :amount => @amount_in_cents)
-    elsif @type == 'token'
-      @tokens, opts = User::TOKEN_SKUS.find{|tokens, opts| opts[:cost] == @amount_in_cents}
-      current_user.token_balance += @tokens.to_i
-      current_user.save!
-      TransactionRecord.create!(:user => current_user, :event => 'token_buy', :amount => @amount_in_cents, :transaction_data => opts.to_json)
-      Eventing.report(current_user, 'buyTokens', :amount => @amount_in_cents)
     end
     cookies.delete :pending_payment
     render '/users/paypal_return', layout: false
@@ -92,31 +87,10 @@ class UsersController < ApplicationController
   end
 
   def add_money
-    unless params[:amount]
-      render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
-    end
-    generate_paypal_payment('money', params[:amount].to_i * 100)
-  end
-
-  def token_plans
-    render_api_response User::TOKEN_SKUS
-  end
-
-  def add_tokens
-    current_user.transaction do
-      if params[:receipt] # From iOS
-        data = Venice::Receipt.verify(params[:receipt]).to_h
-        raise HttpException.new(403, "That receipt has already been redeemed") if TransactionRecord.where(:ios_transaction_id => data[:transaction_id]).first
-        current_user.token_balance += User::TOKEN_SKUS[data[:product_id]][:tokens]
-        current_user.save!
-        TransactionRecord.create!(:user => current_user, :event => 'token_buy_ios', :amount => User::TOKEN_SKUS[data[:product_id]], :ios_transaction_id => data[:transaction_id], :transaction_data => data.to_json)
-        Eventing.report(current_user, 'buyTokens', :amount => User::TOKEN_SKUS[data[:product_id]])
-        render_api_response current_user
-      else
-        sku = User::TOKEN_SKUS[params[:product_id]]
-        generate_paypal_payment('token', sku[:cost])
-      end
-    end
+    #unless params[:amount]
+      #render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
+    #end
+    generate_paypal_payment('money', 1000) # $10
   end
 
   def withdraw_money

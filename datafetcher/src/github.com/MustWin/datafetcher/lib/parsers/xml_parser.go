@@ -24,7 +24,7 @@ type XmlState interface {
   //type: func (stateStruct interface{}, decoder *xml.Decoder, element xml.StartElement) *A)
   It returns a []*A
 */
-func ParseXml(xmlStream io.ReadCloser, handlerFunc interface{}) interface{} {
+func ParseXml(xmlStream io.ReadCloser, handlerFunc interface{}) (interface{}, XmlState) {
 	chk := ty.Check(new(func(func(ty.B) *ty.A) []*ty.A), handlerFunc)
 	handler, sliceType := chk.Args[0], chk.Returns[0]
 	s := reflect.New(handler.Type().In(0).Elem())
@@ -49,5 +49,5 @@ func ParseXml(xmlStream io.ReadCloser, handlerFunc interface{}) interface{} {
 		default:
 		}
 	}
-	return results.Interface()
+	return results.Interface(), state
 }

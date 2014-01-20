@@ -2,36 +2,47 @@ angular.module("app.controllers")
 .controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, currentUserService) {
   $scope.marketService = marketService;
 
-  marketService.fetchUpcoming($routeParams.market_id);
+// TODO: Pick up here: UI needs to determine if loaded market is single elim and keep playoff setting when it's clicked
+//----- WE SHOULD ALSO MAKE SURE THE SINGLE ELIMS AHVE A LOLLAPALOOZA
+  marketService.fetchUpcoming({type: 'single_elimination'}).then(function() {
+    marketService.fetchUpcoming({type: 'regular_season'}).then(function() {
+      if ($routeParams.market_id) {
+        marketService.selectMarketId($routeParams.market_id);
+      } else if ($location.path() == '/playoffs') {
+        marketService.selectMarketType('single_elimination');
+      } else {
+        marketService.selectMarketType('regular_season');
+      }
+    });
+  });
+
   $scope.rosters = rosters;
-  $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'h2h', 'h2h rr'];
+  $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'Top5', '65/25/10', 'h2h', 'h2h rr'];
 
   $scope.isCurrent = function(market){
     if (!market) { return; }
     if (!marketService.currentMarket) {
       flash.error("Oops, we couldn't find that market, pick a different one.");
-      $location.path('/');
+      $location.path('/home');
       return;
     }
     return (market.id === marketService.currentMarket.id);
   };
 
   var reloadMarket = function() {
-    if (!marketService.currentMarket) {
+    if (! marketService.currentMarket) {
       return;
     }
 
-    $scope.fs.contests.for_market(marketService.currentMarket.id).then(function(contestTypes) {
-      $scope.contestClasses = {};
-      _.each(contestTypes, function(type) {
-        if (!$scope.contestClasses[type.name]) {
-          $scope.contestClasses[type.name] = [];
-        }
-        $scope.contestClasses[type.name].push(type);
-      });
+    marketService.contestClassesFor(marketService.currentMarket.id).then(function(contestClasses) {
+      $scope.contestClasses = contestClasses;
     });
   };
-  $scope.$watch('marketService.currentMarket', reloadMarket);
+  $scope.$watch('marketService.currentMarket.id', reloadMarket);
+
+  $scope.hasLollapalooza = function() {
+    return _.find(_.keys($scope.contestClasses || {}), function(name) { return name.match(/k/); });
+  };
 
   $scope.day = function(timeStr) {
     var day = moment(timeStr);

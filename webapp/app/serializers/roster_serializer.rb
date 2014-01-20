@@ -1,40 +1,72 @@
 class RosterSerializer < ActiveModel::Serializer
-  attributes :id, 
-      :owner_id, 
+  attributes :id,
+      :owner_id,
       :owner_name, # include whole object?
-      :state, 
-      :contest_id, 
-      :buy_in, 
-      :remaining_salary, 
-      :score, 
-      :contest_rank, 
-      :contest_rank_payout, 
-      :amount_paid, 
-      :paid_at, 
-      :cancelled_cause, 
-      :cancelled_at, 
-      :positions,
+      :state,
+      :contest_id,
+      :buy_in,
+      :remaining_salary, # abridged
+      :score,
+      :contest_rank,
+      :contest_rank_payout,
+      :amount_paid,
+      :paid_at,
+      :cancelled_cause,
+      :cancelled_at,
+      :positions, # abridged
       :started_at,
       :market_id, # ios Dependency
       :next_game_time,
-      :live
+      :live, # abridged
+      :bonus_points,
+      :perfect_score,
+      :view_code,
+      :abridged
 
-  has_one :league
-  has_one :contest
-  has_one :contest_type
-  has_many :players
-  has_one :market
+  has_one  :league # abridged
+  has_one  :contest # abridged
+  has_one  :contest_type # abridged
+  has_many :players # abridged
+  has_one  :market # abridged
+
+  def abridged
+    scope.abridged? ? true : false
+  end
+
+  def remaining_salary
+    scope.abridged? ? nil : object.remaining_salary
+  end
+
+  def contest_type
+    scope.abridged? ? nil : object.contest_type
+  end
+
+  def market
+    scope.abridged? ? nil : object.market
+  end
+
+  def next_game_time
+    scope.abridged? ? nil : object.next_game_time
+  end
+
+  def contest
+    scope.abridged? ? nil : object.contest
+  end
 
   def league
-    object.contest && object.contest.league
+    scope.abridged? ? nil : object.contest && object.contest.league
   end
 
   def players
-    @players ||= object.players_with_prices
+    scope.abridged? ? [] : @players ||= object.players_with_prices
+  end
+
+  def positions
+    scope.abridged? ? nil : object.contest_type.positions
   end
 
   def live
-    object.live?
+    scope.abridged? ? nil : object.live?
   end
 
   def owner_name
@@ -45,12 +77,17 @@ class RosterSerializer < ActiveModel::Serializer
     end
   end
 
-  def contest_rank_payout
-    if object.contest_rank
-      object.contest_type.payout_for_rank(object.contest_rank)
-    else
-      nil
-    end
+  def contest_rank_payout # api compatible attr name
+    object.expected_payout
+  end
+
+  # This doesn't actually work to filter out associations. Doh.
+  def attributes
+    hash = super
+    if scope.abridged?
+      #[:players, :positions, :live, :next_game_time, :contest, :contest_type, :market].each{|k| hash.delete(k) }
+    end 
+    hash
   end
 
 end

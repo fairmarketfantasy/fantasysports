@@ -27,10 +27,11 @@ angular.module("app.controllers")
 
    var setSelectedCardId = function(){
      if($scope.cards.length){
-       $scope.selectedCardId = _.find($scope.cards, function(card){
-           return card.default;
-       }).id;
-       $scope.showCardForm = false;
+      var selectedCard = (_.find($scope.cards, function(card){
+           return card['default'];
+       }) || $scope.cards[0]);
+       $scope.selectedCardId = selectedCard && selectedCard.id;
+         $scope.showCardForm = false;
      }
    };
 
@@ -63,7 +64,7 @@ angular.module("app.controllers")
         $scope.card._getUnderlyingValue('number'),
         $scope.card._getUnderlyingValue('cvc'),
         $scope.card._getUnderlyingValue('name'),
-        $scope.card._getUnderlyingValue('expMonth'),
+        parseInt($scope.card._getUnderlyingValue('expMonth')) < 10 ? $scope.card._getUnderlyingValue('expMonth')  + '/' : $scope.card._getUnderlyingValue('expMonth'),
         $scope.card._getUnderlyingValue('expYear').slice(2)
       ).then(function(resp) {
         $scope.saveCardSpinner = false;
@@ -87,14 +88,12 @@ angular.module("app.controllers")
   };
 
   $scope.addPaypalFunds = function(){
-    var amt = $scope.chargeAmt;
     $scope.addMoneySpinner = true;
     var w = window.open('/users/paypal_waiting');
-    fs.user.addMoney(amt).then(function(resp){
+    fs.user.addMoney().then(function(resp){
       // window.App.currentUser.balance = resp.balance;
       // $scope.close();
        //flash.success("Success, $" + $scope.chargeAmt + " added your your account.");
-      $scope.chargeAmt = null;
       w.location.href = resp.approval_url;
       $scope.addMoneySpinner = false;
     }, function(resp){
@@ -106,12 +105,11 @@ angular.module("app.controllers")
   $scope.addCreditCardFunds = function() {
     var callbackName = Math.random().toString(36).substring(7);
     $scope.addMoneySpinner = true;
-    fs.cards.charge_url($scope.chargeAmt, $scope.selectedCardId, callbackName).then(function(data) { return data.url; }).then(function(url) {
+    fs.cards.charge_url(10, $scope.selectedCardId, callbackName).then(function(data) { return data.url; }).then(function(url) {
       fs.cards.charge(url, callbackName).then(function(user) {
         $timeout(function() {
           $scope.currentUser = currentUserService.currentUser = window.App.currentUser = user;
         });
-        $scope.chargeAmt = null;
         $scope.addMoneySpinner = false;
         flash.success("Funds deposited successfully");
         $scope.close();

@@ -25,12 +25,24 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:sign_in)        { |u| u.permit(:email, :password) }
   end
 
+  class AbridgedScope
+    def abridged?
+      true
+    end
+  end
+
   def render_api_response(data, opts = {}) # TODO: handle pagination?
     if data.respond_to?(:to_a) && data.class != Hash
       opts[:serializer] = ApiArraySerializer
     end
     if opts[:redirect]
       response.headers['X-CLIENT-REDIRECT'] = opts.delete(:redirect)
+    end
+    if opts[:flash]
+      response.headers['X-CLIENT-FLASH'] = opts.delete(:flash)
+    end
+    if opts[:abridged]
+      opts[:scope] = AbridgedScope.new
     end
     opts[:json] = data
     render opts
