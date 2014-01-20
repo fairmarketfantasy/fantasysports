@@ -303,7 +303,6 @@
     [signup addTarget:self action:@selector(signUpHeaderSwitch:) forControlEvents:UIControlEventTouchUpInside];
     self.signUpHeaderButton = signup;
     
-    
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         greenBg.frame = CGRectMake(0, 0, 320, 65);
         logo.frame = CGRectOffset(logo.frame, 0, 17);

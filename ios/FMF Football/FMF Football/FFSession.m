@@ -47,6 +47,7 @@
 - (void)registerAndLoginUsingFBAccessToken:(NSString *)accessToken fbUid:(NSString *)fbuid
                                    success:(SBSuccessBlock)success failure:(SBErrorBlock)failure
 {
+    [self clearCredentials];
     NSDictionary *params = @{@"access_token": accessToken};
     
     NSMutableURLRequest *req = [self.anonymousHttpClient requestWithMethod:@"POST"
@@ -81,6 +82,8 @@
 
 - (void)getOAuth:(FFUser *)user fbAccessToken:(NSString *)accessToken success:(SBSuccessBlock)success failure:(SBErrorBlock)err
 {
+    [self clearCredentials];
+    
     NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionary];
     [mutableParameters setObject:@"facebook" forKey:@"grant_type"];
     [mutableParameters setObject:accessToken forKey:@"token"];
@@ -132,6 +135,11 @@
     [[FFContestType meta] removeAll];
     [[FFUser meta] removeAll];
     [[FFRoster meta] removeAll];
+    [self.authorizedHttpClient clearAuthorizationHeader];
+    // remove all user defaults stuff
+    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [super logout];
 }
 

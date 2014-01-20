@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>Fair Market Fantasy</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIcons</key>
@@ -31,7 +31,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -45,13 +45,13 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>200</string>
+	<string>202</string>
 	<key>FFEmailRegex</key>
 	<string>(^[-!#$%&amp;'*+/=?^_`{}|~0-9A-Z]+(\\.[-!#$%&amp;'*+/=?^_`{}|~0-9A-Z]+)*|^\"([\001-\010\013\014\016-\037!#-\\[\\]-\177]|\\[\001-011\013\014\016-\177])*\")@(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\\.)+[A-Z]{2,6}\\.?$</string>
 	<key>FacebookAppID</key>
 	<string>517379538328159</string>
 	<key>FacebookDisplayName</key>
-	<string>FMF Football</string>
+	<string>Fair Market Fantasy</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>SBAPIAllowInvalidSSLCertificate</key>
