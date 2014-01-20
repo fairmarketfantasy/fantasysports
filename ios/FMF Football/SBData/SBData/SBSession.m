@@ -237,13 +237,15 @@ static NSMutableDictionary *_sessionByEmailAddress = nil;
         if (user != nil) {
             // now try to find an existing session with that data
             SBSessionData *session = [[SBSessionData meta] findOne:@{ @"userKey": [user key] }];
-            NSLog(@"session: %@", session);
-            if (session) {
-                user.session = self;
-                user.authorized = YES;
-                _sessionData = session;
-                _user = user;
+            if (!session) {
+                session = [[SBSessionData alloc] init];
             }
+            NSLog(@"session: %@", session);
+            user.session = self;
+            user.authorized = YES;
+            _user = user;
+            _sessionData = session;
+            [_sessionData save];
         }
     }
     return self;
@@ -331,6 +333,12 @@ static NSMutableDictionary *_sessionByEmailAddress = nil;
         _apiCredential = [AFOAuthCredential retrieveCredentialWithIdentifier:self.identifier];
     }
     return _apiCredential;
+}
+
+- (void)clearCredentials
+{
+    [AFOAuthCredential deleteCredentialWithIdentifier:self.identifier];
+    [self.authorizedHttpClient clearAuthorizationHeader];
 }
 
 - (void)setApiCredential:(AFOAuthCredential *)apiCredential
@@ -441,6 +449,7 @@ static NSMutableDictionary *_sessionByEmailAddress = nil;
       ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
           if (response.statusCode == 401) {
               // attempt to re-up the auth token using the refresh token against a 401
+              [self clearCredentials];
               [self.authorizedHttpClient authenticateUsingOAuthWithPath:@"/oauth2/token" refreshToken:self.apiCredential.refreshToken success:^(AFOAuthCredential *credential) {
                   NSLog(@"got re-auth using refreshToken %@ %@", self.apiCredential.refreshToken, request.URL);
                   
@@ -475,6 +484,7 @@ static NSMutableDictionary *_sessionByEmailAddress = nil;
             NSRange signInRange = [url rangeOfString:@"/users/sign_in" options:0];
             if (signInRange.location != NSNotFound && signInRange.location + signInRange.length == url.length) {
                 // our access token likely expired, try to re-authenticate with the refresh token
+                [self clearCredentials];
                 [self.authorizedHttpClient authenticateUsingOAuthWithPath:@"/oauth2/token" refreshToken:self.apiCredential.refreshToken success:^(AFOAuthCredential *credential) {
                     NSLog(@"got re-auth using refreshToken %@ %@", self.apiCredential.refreshToken, request.URL);
                     
@@ -544,6 +554,7 @@ static NSMutableDictionary *_sessionByEmailAddress = nil;
 
 - (void)getOAuth:(SBUser *)user password:(NSString *)password success:(SBSuccessBlock)success failure:(SBErrorBlock)failure
 {
+    [self clearCredentials];
     [self.authorizedHttpClient authenticateUsingOAuthWithPath:@"/oauth2/token" username:user.email
                                                      password:password scope:nil success:
      ^(AFOAuthCredential *credential) {

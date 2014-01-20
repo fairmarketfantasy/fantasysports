@@ -100,6 +100,7 @@ extern NSString *SBDidReceiveRemoteNotificationAuthorization;
                success:(SBSuccessBlock)success failure:(SBErrorBlock)fail;
 
 - (void)logout;
+- (void)clearCredentials;
 
 - (void)registerAndLoginUser:(SBUser *)user password:(NSString *)password
                      success:(SBSuccessBlock)success failure:(SBErrorBlock)failure;
