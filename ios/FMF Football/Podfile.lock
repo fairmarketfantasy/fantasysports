@@ -5,10 +5,10 @@ PODS:
   - AFNetworking (1.3.3)
   - AFOAuth2Client (0.1.2):
     - AFNetworking (~> 1.3)
-  - FMDB (2.1):
+  - FMDB (2.2):
     - FMDB/standard
-  - FMDB/common (2.1)
-  - FMDB/standard (2.1):
+  - FMDB/common (2.2)
+  - FMDB/standard (2.2):
     - FMDB/common
   - FormatterKit (1.2.1):
     - FormatterKit/AddressFormatter
@@ -67,9 +67,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   A2StoryboardSegueContext: c5ee4ebdfcc29ac4e544cbe832f6489cade23213
   AFHTTPRequestOperationLogger: c6ad1f4bfd64fc9a8dbe94c8489420d195f15cb0
-  AFNetworking: 0700ec7a58c36ad217173e167f6e4df7270df66b
+  AFNetworking: 61fdd49e2ffe6380378df37b3b6e70630bb9dd66
   AFOAuth2Client: 579d6f298b0047dfd5a6eec6ab5b28c01f6b4547
-  FMDB: 3fd5aaf632ca4ed39e3f101e0398504e6d5b0918
+  FMDB: 97472cfacf0d9e445e915704fb43b4b142799c36
   FormatterKit: 43c6567e367a872196747fda0c26395c37bd7dd6
   IAPManager: fb36017e64524e2ecb9ae2101daaa83165cc5211
   ISO8601DateFormatter: 72ad8f5b4f51bd8fb317d7284c32fee5f54a6584
@@ -79,4 +79,4 @@ SPEC CHECKSUMS:
   SecureUDID: f29e17c7fc56968b6c42ce328b901a9fec87bb44
   sqlite3: da2547a00213287224486db2893bb9c181c6f8d2
 
-COCOAPODS: 0.27.1
+COCOAPODS: 0.28.0
