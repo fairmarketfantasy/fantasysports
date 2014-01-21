@@ -54,8 +54,11 @@ class User < ActiveRecord::Base
 
   def self.find_for_facebook_oauth(auth)
     Rails.logger.debug(auth.pretty_inspect)
-    user = User.find_by(email: auth.info.email) || User.where(uid: auth.uid, provider: auth.provider, fb_token: auth.credentials.token).first_or_create
+    user = User.find_by(email: auth.info.email) || User.where(uid: auth.uid, provider: auth.provider, fb_token: auth.credentials.token).first_or_initialize
+    # Re-set these parameters in case we're using a new auth method
     user.email = auth.info.email
+    user.provider = auth.provider
+    user.uid = auth.uid
     user.fb_token = auth.credentials.token
     user.name = auth.extra.raw_info.name
     user.image_url = auth.info.image.gsub('http', 'https')
