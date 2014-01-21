@@ -98,27 +98,6 @@ class UsersController < ApplicationController
     generate_paypal_payment('money', params[:amount].to_i * 100)
   end
 
-  def token_plans
-    render_api_response User::TOKEN_SKUS
-  end
-
-  def add_tokens
-    current_user.transaction do
-      if params[:receipt] # From iOS
-        data = Venice::Receipt.verify(params[:receipt]).to_h
-        raise HttpException.new(403, "That receipt has already been redeemed") if TransactionRecord.where(:ios_transaction_id => data[:transaction_id]).first
-        current_user.token_balance += User::TOKEN_SKUS[data[:product_id]][:tokens]
-        current_user.save!
-        TransactionRecord.create!(:user => current_user, :event => 'token_buy_ios', :amount => User::TOKEN_SKUS[data[:product_id]], :ios_transaction_id => data[:transaction_id], :transaction_data => data.to_json)
-        Eventing.report(current_user, 'buyTokens', :amount => User::TOKEN_SKUS[data[:product_id]])
-        render_api_response current_user
-      else
-        sku = User::TOKEN_SKUS[params[:product_id]]
-        generate_paypal_payment('token', sku[:cost])
-      end
-    end
-  end
-
   def withdraw_money
     authenticate_user!
     unless params[:amount]
