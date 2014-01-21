@@ -30,7 +30,7 @@ class RostersController < ApplicationController
 
   def create_league_entry
     league = League.find(params[:league_id])
-    raise HttpException(404, "League not found or you are not a member") unless league.users.include?(current_user)
+    raise HttpException.new(404, "League not found or you are not a member") unless league.users.include?(current_user)
     existing = Roster.where(:contest_id => league.current_contest.id, :owner_id => current_user.id).first
     if existing
       render_api_response(existing)

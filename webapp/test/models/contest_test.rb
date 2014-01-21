@@ -38,6 +38,41 @@ class ContestTest < ActiveSupport::TestCase
     assert roster2.state == 'finished'
   end
 
+  test "payday bonuses for negative net monthly winnings" do
+    setup_simple_market
+    contest_type = @market.contest_types.where("max_entries = 2 and buy_in = 1000 ").first
+
+    user1, user2 = create(:paid_user), create(:paid_user)
+
+    roster1, roster2 = Roster.generate(user1, contest_type).submit!, Roster.generate(user2, contest_type).submit!
+
+    #make sure rosters are in same contest
+    assert_equal roster1.contest, roster2.contest
+
+    roster1.update_attribute(:contest_rank, 1)
+    roster2.update_attribute(:contest_rank, 2)
+
+    user1.customer_object.update_attribute(:contest_entries_deficit, 4)
+
+    total_payout = contest_type.get_payout_structure.sum
+    assert_difference 'user1.customer_object.reload.monthly_winnings.to_f', total_payout * 1.02 do
+      assert_difference 'user2.customer_object.reload.monthly_winnings.to_f', 0 do
+        roster1.contest.payday!
+      end
+    end
+    assert_equal roster1.contest_type.rake.to_f, TransactionRecord.where(:event => 'rake', :contest_id => roster1.contest_id).first.amount.to_f
+    assert user1.customer_object.reload.monthly_winnings > user2.customer_object.reload.monthly_winnings
+
+    roster1.reload
+    roster2.reload
+    assert roster1.amount_paid > 0
+    assert_equal 0,  roster2.amount_paid
+    assert roster1.paid_at && roster2.paid_at
+    assert roster1.state == 'finished'
+    assert roster2.state == 'finished'
+
+  end
+
   #test auxillary functions
   test "payday auxillary functions" do
     contest_type = create(:contest_type, :payout_structure => [5,4,3,2,1].to_json, :rake => 5, :buy_in => 2, :max_entries => 10)# Make the validator happy
