@@ -81,6 +81,7 @@ Fantasysports::Application.routes.draw do
     end
     member do
       post 'submit', :action => 'submit'
+      post 'toggle_remove_bench', :action => 'toggle_remove_bench'
       post 'autofill', :action => 'autofill'
       post 'add_player/:player_id', :action => 'add_player'
       post 'remove_player/:player_id', :action => 'remove_player'

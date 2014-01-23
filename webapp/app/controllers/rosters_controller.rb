@@ -111,6 +111,12 @@ class RostersController < ApplicationController
     render_api_response roster
   end
 
+  def toggle_remove_bench
+    roster = current_user.rosters.where(:id => params[:id]).first
+    roster.update_attribute(:remove_benched, !roster.remove_benched)
+    render_api_response roster
+  end
+
   def share
     roster = current_user.rosters.find(params[:id])
     roster.add_bonus(params[:event])
