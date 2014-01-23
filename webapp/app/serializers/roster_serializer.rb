@@ -20,6 +20,7 @@ class RosterSerializer < ActiveModel::Serializer
       :live, # abridged
       :bonus_points,
       :perfect_score,
+      :remove_benched,
       :view_code,
       :abridged
 

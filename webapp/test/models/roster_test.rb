@@ -230,6 +230,17 @@ class RosterTest < ActiveSupport::TestCase
     end
   end
 
+  test "swapping benched players" do
+    @market.update_attribute(:opened_at, Time.new - 1.minute)
+    @market.open
+    @roster.fill_pseudo_randomly5
+    players = @roster.players.first(2)
+    players.each{|p| p.update_attribute(:removed, true) }
+    Market.tend
+    # Neither benched player is still there
+    assert_equal players.map(&:id), players.map(&:id) - @roster.players.reload.map(&:id)
+  end
+
   test "entering lolla twice" do
     add_lollapalooza @market
     lolla = @market.contest_types.where(:name => '0.13k').first
