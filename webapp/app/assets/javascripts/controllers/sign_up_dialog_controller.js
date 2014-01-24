@@ -6,9 +6,9 @@ angular.module("app.controllers")
 
   $scope.submit = function() {
     if (!$scope.isValid()) { return; }
-    fs.user.create($scope.user).then(function(resp){
+    fs.user.create($scope.user, registrationService.getLoginOpts()).then(function(resp){
       //only fires on success, errors are intercepted by fsAPIInterceptor
-      $timeout(function() {window.location.reload(true);}, 500);
+      $timeout(function() {window.location.reload(true);}, 750);
     });
   };
 

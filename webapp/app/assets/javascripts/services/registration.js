@@ -1,6 +1,9 @@
 angular.module('app.services')
   .factory('registrationService', ['$dialog', '$timeout', function($dialog, $timeout) {
+    var loginOpts = {};
     return {
+      addLoginOpt: function(key, val) { loginOpts[key] = val; },
+      getLoginOpts: function() { return loginOpts; },
       showModal: function(name, message) {
         if (name == 'signUp') {
           this.signUpModal(message);
@@ -68,7 +71,7 @@ angular.module('app.services')
             google: 'height=260,width=630'*/
         };
         if(service === 'email'){
-          fs.user.login($scope.user).then(function(resp){
+          fs.user.login($scope.user, loginOpts).then(function(resp){
             // window.setCurrentUser(resp);
             window.location.reload(true);
           });

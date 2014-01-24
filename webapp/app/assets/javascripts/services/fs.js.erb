@@ -5,7 +5,7 @@ angular.module('app.services')
           keyboard: true,
           backdropClick: true,
           dialogClass: 'modal',
-    };
+    }, loginOpts = {};
 
     return {
       currentUser: window.App.currentUser,
@@ -190,14 +190,16 @@ angular.module('app.services')
         applyPromo: function(code) {
           return $http({method: 'POST', url: '/promo', params: {code: code}});
         },
-        create: function(user_attrs){
-          return $http({method: 'POST', url: '/users.json', data: {user: user_attrs}});
+        create: function(user_attrs, params){
+          params = params || {};
+          return $http({method: 'POST', url: '/users.json', params: params, data: {user: user_attrs}});
         },
         update: function(user_attrs) {
           return $http({method: 'PUT', url: '/users.json', data: {user: user_attrs}});
         },
-        login: function(user_attrs){
-          return $http({method: 'POST', url: '/users/sign_in', data: {user: user_attrs}});
+        login: function(user_attrs, params){
+          params = params || {};
+          return $http({method: 'POST', url: '/users/sign_in', params: params, data: {user: user_attrs}});
         },
         addMoney: function(amount){
           return $http({method: 'POST', url: '/users/add_money', data: {amount: amount} });
@@ -327,6 +329,9 @@ angular.module('app.services')
         },
         show: function(id, view_code) {
           return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + (view_code || '')});
+        },
+        getSample: function(id, view_code) {
+          return $http({method: 'GET', url: '/rosters/sample'});
         },
         in_contest: function(contest_id, page) {
           page = page || 1;

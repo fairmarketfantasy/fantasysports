@@ -1,0 +1,46 @@
+<div ng-controller="SampleRosterController" class="roster"> 
+  
+  <div class="roster-area">
+    <div class="clearfix">
+      <h4 class="team-heading inline-heading">Sign Up to Claim THIS Roster</h4>
+      <p><a href="javascript://" class="btn btn-large btn-block btn-danger" ng-click='signUpModal()'>I WANT THIS ROSTER!</a></p>
+    </div>
+    <div class="loading-message" ng-hide="roster">
+      <img src=<%= asset_path 'ajax-throbber.gif' %>/>
+      <h4>We're Building you a Custom Roster</h4>
+    </div>
+
+    <div class="roster-overflow">
+
+      <ul class="no-no">
+        <li class="mr-item clearfix" ng-repeat="player in roster.players">
+          <div ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name" >{{player.name}}</h3>
+            <span class="mr-stats">{{player.team}} {{player.position}} ({{player.ppg | number:2 | zeroIfEmpty}} PPG)</span>
+            <span class="mr-stats" >
+              <span>
+                ${{player.buy_price | number:0}}
+              </span>
+            </span>
+          </div>
+
+          <div class="mr-player-cta">
+            <p class="mr-player-score" ng-show="roster.state != 'in_progress' && inThePast(market.started_at)"><a href="javascript://" ng-click="openStatsDialog(player)">{{player.score | number:1}}</a></p>
+            <span ng-show="roster.owner_id == currentUser.id">
+              <a class="btn btn-small btn-orange" ng-show="player.id && (market.state == 'published' || market.state == 'opened' && !player.locked)" href="javascript://" ng-click="removePlayer(player)">Trade</a>
+              <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
+            </span>
+          </div>
+          <div class="mr-player-eliminated" ng-show="player.is_eliminated">
+            ELIMINATED
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+

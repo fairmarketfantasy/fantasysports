@@ -14,6 +14,15 @@ module Referrals
     end
   end
 
+  def handle_roster_claiming(resp)
+    if params[:claim_roster]
+      existing = Roster.find(params[:claim_roster])
+      roster = Roster.generate(current_user, existing.contest_type)
+      roster.build_from_existing(existing)
+      resp.merge! redirect: "/market/#{existing.market_id}/roster/#{roster.id}", flash: "Thanks for signing up. Let's get that roster entered."
+    end
+  end
+
   def handle_contest_joining(resp)
     Rails.logger.debug '=' * 40
     Rails.logger.debug session
@@ -36,6 +45,7 @@ module Referrals
     resp = {}
     handle_promos(resp)
     handle_referral(resp)
+    handle_roster_claiming(resp)
     handle_contest_joining(resp)
     resp
   end
