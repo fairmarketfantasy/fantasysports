@@ -78,6 +78,7 @@ Fantasysports::Application.routes.draw do
       get 'past_stats', :action => 'past_stats'
       get 'in_contest/:contest_id', :action => 'in_contest'
       get 'public/:view_code', :action => 'public_roster'
+      get 'sample', :action => 'sample_roster'
     end
     member do
       post 'submit', :action => 'submit'

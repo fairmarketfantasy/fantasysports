@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140116211018) do
+ActiveRecord::Schema.define(version: 20140123235732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -386,6 +386,7 @@ ActiveRecord::Schema.define(version: 20140116211018) do
     t.text     "bonuses"
     t.string   "view_code"
     t.integer  "expected_payout",  default: 0,     null: false
+    t.boolean  "remove_benched",   default: true
   end
 
   add_index "rosters", ["contest_id", "contest_rank"], name: "index_rosters_on_contest_id_and_contest_rank", using: :btree
@@ -407,9 +408,10 @@ ActiveRecord::Schema.define(version: 20140116211018) do
   add_index "rosters_players", ["roster_id", "player_id"], name: "index_rosters_players_on_roster_id_and_player_id", unique: true, using: :btree
 
   create_table "sports", force: true do |t|
-    t.string   "name",       null: false
+    t.string   "name",                      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_active",  default: true
   end
 
   add_index "sports", ["name"], name: "index_sports_on_name", unique: true, using: :btree

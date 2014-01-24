@@ -26,7 +26,6 @@ class Roster < ActiveRecord::Base
   scope :finished, -> { where(state: ['finished'])}
   scope :with_perfect_score, ->(score) { select("rosters.*, #{score.to_f} as perfect_score") }
 
-
   def players_with_prices
     self.class.uncached do
       self.players.select('players.*, rosters_players.purchase_price, mp.*').joins(
@@ -312,72 +311,6 @@ class Roster < ActiveRecord::Base
       end while(remaining_positions.length > 0)
     end
     self.reload
-  end
-
-  def fill_pseudo_randomly6(place_bets = true)
-    @candidate_players, indexes = fill_candidate_players
-    return self unless @candidate_players
-    ActiveRecord::Base.transaction do
-      begin
-        position = remaining_positions.sample # One level of randomization
-        skipped = false
-        min = self.reload.remaining_salary - remaining_positions.reduce(0) do |sum, pos| 
-          if pos == position && !skipped
-            skipped = true
-            sum += 0
-          else
-            sum += @candidate_players[pos][[2, indexes[pos]-1].min].buy_price
-          end
-        end
-        skipped = false
-        max = self.remaining_salary - remaining_positions.reduce(0) do |sum, pos| 
-          if pos == position && !skipped
-            skipped = true
-            sum += 0
-          else
-            sum += @candidate_players[pos][indexes[pos]-1].buy_price
-          end
-        end
-        players = @candidate_players[position].slice(0, indexes[position])
-        players = @candidate_players[position] if players.empty?
-        if min == max # only one selection left
-          min -= 3000
-          max += 3000
-        end
-        eligible_players = players.select{|p| (min..max).include?(p.buy_price)}
-        player = if eligible_players.length > 0
-          eligible_players.sample
-        else
-          players.slice(0, [3, indexes[position]].max).sample || players.slice(0, 3).sample
-        end
-        add_player(player, place_bets)
-        @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id }
-      end while(remaining_positions.length > 0)
-    end
-    self.reload
-  end
-
-  def fill_pseudo_randomly7(place_bets = true)
-    fill_pseudo_randomly6(place_bets)
-    max_diff = 4000
-    @rosters ||= []
-    if self.reload.remaining_salary.abs > max_diff
-      tries = 5
-      begin
-        players = self.rosters_players.reload
-        @rosters << {players: players, remaining: self.remaining_salary}
-        players.sample(2).each{|rp| remove_player(rp.player, false) }
-        fill_pseudo_randomly4(place_bets)
-        tries -= 1
-      end while(self.reload.remaining_salary.abs > max_diff && tries > 0)
-      if self.remaining_salary.abs > max_diff
-        self.rosters_players.reload.each{|rp| remove_player(rp.player, false) }
-        self.purchasable_players.active.where(:id => @rosters.sort_by{|t| t[:remaining].abs }.first[:players].map(&:player_id)).each do |p|
-          add_player(p, false)
-        end
-      end
-    end
-    self
   end
 
   def fill_pseudo_randomly5(place_bets = true)

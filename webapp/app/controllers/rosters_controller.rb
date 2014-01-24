@@ -1,5 +1,5 @@
 class RostersController < ApplicationController
-  skip_before_filter :authenticate_user!, :only => [:show]
+  skip_before_filter :authenticate_user!, :only => [:show, :sample_roster]
 
   def mine
     rosters = current_user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').order('closed_at desc')
@@ -61,6 +61,22 @@ class RostersController < ApplicationController
     Eventing.report(current_user, 'removePlayer', :player_id => player.id)
     price = roster.remove_player(player)
     render_api_response({:price => price})
+  end
+
+  def sample_roster
+    s = Sport.where('is_active').first
+    m = Market.where(:sport_id => s.id, :state => ['published', 'opened'], :game_type => 'regular_season').order("name ilike '%week%' desc").first
+    # Fill the lolla first, if that's full, revert to Top5 contests
+    lolla = m.contest_types.where("name ilike '%k%'").first.contests.first
+    contest_type = if lolla && lolla.user_cap - (lolla.num_rosters - lolla.num_generated) > 0
+      lolla.contest_type
+    else
+      m.contest_types.where(:name => 'Top5').first || m.contest_types.where(:name => '194').first
+    end
+    roster = Rails.cache.fetch("landing_roster_#{contest_type.id}", :expires_in => 5.minutes) do
+      Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
+    end
+    render_api_response roster, :scope => SYSTEM_USER
   end
 
   def show
