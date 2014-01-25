@@ -4,8 +4,8 @@ import (
 	"encoding/xml"
 	"github.com/BurntSushi/ty"
 	"io"
+	"log"
 	"reflect"
-	//"log"
 )
 
 type XmlState interface {

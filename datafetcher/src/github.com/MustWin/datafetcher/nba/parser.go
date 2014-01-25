@@ -3,6 +3,7 @@ package nba
 import (
 	//  "io"
 	"encoding/xml"
+	"github.com/MustWin/datafetcher/lib"
 	"github.com/MustWin/datafetcher/lib/models"
 	"github.com/MustWin/datafetcher/lib/parsers"
 	"log"
@@ -15,66 +16,6 @@ const timeFormat = "2006-01-02T15:04:05-07:00" // Reference time format
 
 // TODO: figure out inheritance?
 // TODO: Consider this next time: https://github.com/metaleap/go-xsd
-
-type ParseState struct {
-	InElement     *xml.StartElement // Tracks where we are in our traversal
-	InElementName string
-	Decoder       *xml.Decoder
-
-	// Possibly useful for statekeeping as we're going through things
-	Conference            string
-	Division              string
-	SeasonYear            int
-	SeasonType            string
-	CurrentGame           *models.Game
-	CurrentQuarter        int
-	ActingTeam            string
-	CurrentTeam           *models.Team
-	CurrentPlayer         *models.Player
-	CurrentEvent          *models.GameEvent
-	CurrentPositionParser func(*ParseState) []*models.StatEvent
-	TeamCount             int
-	TeamScore             int
-	DefenseStat           *models.StatEvent
-	DefenseStatReturned   bool
-}
-
-func (state *ParseState) CurrentElement() *xml.StartElement {
-	return state.InElement
-}
-func (state *ParseState) CurrentElementAttr(name string) string {
-	return parsers.FindAttrByName(state.InElement.Attr, name)
-}
-func (state *ParseState) CurrentElementName() string {
-	return state.InElement.Name.Local
-}
-func (state *ParseState) GetDecoder() *xml.Decoder {
-	return state.Decoder
-}
-func (state *ParseState) SetDecoder(decoder *xml.Decoder) {
-	state.Decoder = decoder
-}
-func (state *ParseState) SetCurrentElement(element *xml.StartElement) {
-	state.InElement = element
-}
-func (state *ParseState) FindNextStartElement(elementName string) *xml.StartElement {
-	for {
-		t, _ := state.GetDecoder().Token()
-		if t == nil {
-			return nil
-		}
-		// Inspect the type of the token just read.
-		switch element := t.(type) {
-		case xml.StartElement:
-			// If we just read a StartElement token
-			state.SetCurrentElement(&element)
-			if element.Name.Local == elementName {
-				return &element
-			}
-		default:
-		}
-	}
-}
 
 func contains(list []string, elem string) bool {
 	for _, t := range list {
@@ -112,8 +53,8 @@ func buildEvent(element *xml.StartElement) *models.GameEvent {
 	event.StatsId = parsers.FindAttrByName(element.Attr, "id")
 	event.Clock = parsers.FindAttrByName(element.Attr, "clock")
 	event.Type = parsers.FindAttrByName(element.Attr, "type")
-        // not in element; use ParseState to generate?
-	// event.SequenceNumber = strconv.Atoi(parsers.FindAttrByName(element.Attr, "sequence")) 
+	// not in element; use ParseState to generate?
+	// event.SequenceNumber = strconv.Atoi(parsers.FindAttrByName(element.Attr, "sequence"))
 	// event.Data = ...
 	event.GameEventData = models.GameEventData{}
 	err := parsers.InitFromAttrs(*element, &event.GameEventData)
@@ -126,7 +67,11 @@ func buildEvent(element *xml.StartElement) *models.GameEvent {
 func buildGame(element *xml.StartElement) *models.Game {
 	var game = models.Game{}
 	game.StatsId = parsers.FindAttrByName(element.Attr, "id")
-	game.GameTime, _ = time.Parse(timeFormat, parsers.FindAttrByName(element.Attr, "scheduled"))
+	game_time := parsers.FindAttrByName(element.Attr, "scheduled")
+	if game_time == "" {
+		return nil
+	}
+	game.GameTime, _ = time.Parse(timeFormat, game_time)
 	game.GameDay = game.GameTime.Add(-6 * time.Hour).Truncate(time.Hour * 24) // All football games are in the USA, correct GMT times for night games
 	game.BenchCountedAt = game.GameTime.Add(5 * time.Hour)
 	game.HomeTeam = parsers.FindAttrByName(element.Attr, "home_team")
@@ -138,7 +83,8 @@ func buildGame(element *xml.StartElement) *models.Game {
 func buildTeam(element *xml.StartElement) *models.Team {
 	var team = models.Team{}
 	//decoder.DecodeElement(&team, &element)
-	team.Abbrev = parsers.FindAttrByName(element.Attr, "id")
+	team.StatsId = parsers.FindAttrByName(element.Attr, "id")
+	team.Abbrev = parsers.FindAttrByName(element.Attr, "name")
 	team.Name = parsers.FindAttrByName(element.Attr, "name")
 	team.Market = parsers.FindAttrByName(element.Attr, "market")
 	team.Country = "USA"
@@ -146,7 +92,7 @@ func buildTeam(element *xml.StartElement) *models.Team {
 }
 
 // Returns a models.Team object
-func ParseStandings(state *ParseState) *models.Team {
+func ParseStandings(state *lib.ParseState) *models.Team {
 	//state := xmlState.(*ParseState)
 	switch state.CurrentElementName() {
 
@@ -175,7 +121,7 @@ func ParseStandings(state *ParseState) *models.Team {
 
 var count = 0
 
-func ParseGames(state *ParseState) *models.Game {
+func ParseGames(state *lib.ParseState) *models.Game {
 	//state := xmlState.(*ParseState)
 	switch state.CurrentElementName() {
 
@@ -186,9 +132,11 @@ func ParseGames(state *ParseState) *models.Game {
 	case "game":
 		count++
 		game := buildGame(state.CurrentElement())
-		game.SeasonType = state.SeasonType
-		game.SeasonYear = state.SeasonYear
-		state.CurrentGame = game
+		if game != nil {
+			game.SeasonType = state.SeasonType
+			game.SeasonYear = state.SeasonYear
+			state.CurrentGame = game
+		}
 		//log.Println("returning a game")
 		return game
 
@@ -199,7 +147,9 @@ func ParseGames(state *ParseState) *models.Game {
 		venue.Name = parsers.FindAttrByName(state.CurrentElement().Attr, "name")
 		venue.City = parsers.FindAttrByName(state.CurrentElement().Attr, "city")
 		venue.State = parsers.FindAttrByName(state.CurrentElement().Attr, "state")
-		state.CurrentGame.Venue = venue
+		if state.CurrentGame != nil {
+			state.CurrentGame.Venue = venue
+		}
 	case "broadcast":
 		state.CurrentGame.Network = parsers.FindAttrByName(state.CurrentElement().Attr, "network")
 	default:
@@ -207,7 +157,7 @@ func ParseGames(state *ParseState) *models.Game {
 	return nil
 }
 
-func ParsePlayByPlay(state *ParseState) *models.GameEvent {
+func ParsePlayByPlay(state *lib.ParseState) *models.GameEvent {
 	//state := xmlState.(*ParseState)
 	switch state.CurrentElementName() {
 
@@ -218,23 +168,23 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
 		state.CurrentGame = game
 
 	/*case "summary":
-		if state.CurrentEvent != nil { // We have a play summary
-			t, _ := state.GetDecoder().Token()
-			state.CurrentEvent.Summary = string([]byte(t.(xml.CharData)))
-		} else { // We have a game summary
-			home := state.FindNextStartElement("home")
-			away := state.FindNextStartElement("away")
-			state.CurrentGame.HomeTeamStatus = models.TeamStatus{}
-			state.CurrentGame.AwayTeamStatus = models.TeamStatus{}
-			err := parsers.InitFromAttrs(*home, &state.CurrentGame.HomeTeamStatus)
-			if err != nil {
-				log.Println(err)
-			}
-			err = parsers.InitFromAttrs(*away, &state.CurrentGame.AwayTeamStatus)
-			if err != nil {
-				log.Println(err)
-			}
-		}*/
+	if state.CurrentEvent != nil { // We have a play summary
+		t, _ := state.GetDecoder().Token()
+		state.CurrentEvent.Summary = string([]byte(t.(xml.CharData)))
+	} else { // We have a game summary
+		home := state.FindNextStartElement("home")
+		away := state.FindNextStartElement("away")
+		state.CurrentGame.HomeTeamStatus = models.TeamStatus{}
+		state.CurrentGame.AwayTeamStatus = models.TeamStatus{}
+		err := parsers.InitFromAttrs(*home, &state.CurrentGame.HomeTeamStatus)
+		if err != nil {
+			log.Println(err)
+		}
+		err = parsers.InitFromAttrs(*away, &state.CurrentGame.AwayTeamStatus)
+		if err != nil {
+			log.Println(err)
+		}
+	}*/
 
 	case "quarter":
 		state.CurrentQuarter, _ = strconv.Atoi(parsers.FindAttrByName(state.CurrentElement().Attr, "number"))
@@ -260,7 +210,7 @@ func ParsePlayByPlay(state *ParseState) *models.GameEvent {
 
 }
 
-func ParseRoster(state *ParseState) *models.Player {
+func ParseRoster(state *lib.ParseState) *models.Player {
 	switch state.CurrentElementName() {
 	case "team":
 		state.CurrentTeam = buildTeam(state.CurrentElement())
@@ -281,7 +231,7 @@ func ParseRoster(state *ParseState) *models.Player {
 	return nil
 }
 
-func buildStatEvent(state *ParseState) *models.StatEvent {
+func buildStatEvent(state *lib.ParseState) *models.StatEvent {
 	var event = models.StatEvent{}
 	event.GameStatsId = state.CurrentGame.StatsId
 	event.PlayerStatsId = state.CurrentElementAttr("id")
@@ -289,7 +239,7 @@ func buildStatEvent(state *ParseState) *models.StatEvent {
 	return &event
 }
 
-func buildBreakdownStatEvent(state *ParseState, quantity int, activity string, pointsPer float64) *models.StatEvent {
+func buildBreakdownStatEvent(state *lib.ParseState, quantity int, activity string, pointsPer float64) *models.StatEvent {
 	event := buildStatEvent(state)
 	event.Quantity = float64(quantity)
 	event.Activity = activity
@@ -298,7 +248,7 @@ func buildBreakdownStatEvent(state *ParseState, quantity int, activity string, p
 	return event
 }
 
-func defenseParser(state *ParseState) []*models.StatEvent {
+func defenseParser(state *lib.ParseState) []*models.StatEvent {
 	events := []*models.StatEvent{}
 	if state.DefenseStatReturned == false {
 		state.DefenseStatReturned = true
@@ -320,34 +270,34 @@ func defenseParser(state *ParseState) []*models.StatEvent {
 
 	//pointValue := float64(3.0*(int_touchdowns+fum_touchdowns) + 2.0*interceptions + 2.0*fumble_recoveries + 2.0*safeties + 1.0*sack)
 
-	if (int_touchdowns > 0) {
+	if int_touchdowns > 0 {
 		events = append(events, buildBreakdownStatEvent(state, int_touchdowns, "int_touchdowns", 3.0))
 	}
 
-	if (fum_touchdowns > 0) {
+	if fum_touchdowns > 0 {
 		events = append(events, buildBreakdownStatEvent(state, fum_touchdowns, "fum_touchdowns", 3.0))
 	}
 
-	if (interceptions > 0) {
+	if interceptions > 0 {
 		events = append(events, buildBreakdownStatEvent(state, interceptions, "interceptions", 2.0))
 	}
 
-	if (fumble_recoveries > 0) {
+	if fumble_recoveries > 0 {
 		events = append(events, buildBreakdownStatEvent(state, fumble_recoveries, "fumble_recoveries", 2.0))
 	}
 
-	if (safeties > 0) {
+	if safeties > 0 {
 		events = append(events, buildBreakdownStatEvent(state, safeties, "safeties", 2.0))
 	}
 
-	if (sack > 0) {
+	if sack > 0 {
 		events = append(events, buildBreakdownStatEvent(state, sack, "sacks", 2.0))
 	}
 
 	return events
 }
 
-func rushingReceivingParser(state *ParseState, activity string) []*models.StatEvent {
+func rushingReceivingParser(state *lib.ParseState, activity string) []*models.StatEvent {
 	// td +6
 	// yds +1 per 10 yds
 	// -2 per fumble lost
@@ -378,15 +328,15 @@ func rushingReceivingParser(state *ParseState, activity string) []*models.StatEv
 	return events
 }
 
-func rushingParser(state *ParseState) []*models.StatEvent {
+func rushingParser(state *lib.ParseState) []*models.StatEvent {
 	return rushingReceivingParser(state, "rushing")
 }
 
-func receivingParser(state *ParseState) []*models.StatEvent {
+func receivingParser(state *lib.ParseState) []*models.StatEvent {
 	return rushingReceivingParser(state, "receiving")
 }
 
-func puntReturnParser(state *ParseState) []*models.StatEvent {
+func puntReturnParser(state *lib.ParseState) []*models.StatEvent {
 	// td +6
 	// yds +1 per 10 yds
 	// from rules: 0.01 pts per returning kick/punt yard (1pt/100yds)
@@ -404,7 +354,7 @@ func puntReturnParser(state *ParseState) []*models.StatEvent {
 	return events
 }
 
-func passingParser(state *ParseState) []*models.StatEvent {
+func passingParser(state *lib.ParseState) []*models.StatEvent {
 	// td +4
 	// yds +1 per 25 yds
 	// -2 per interception
@@ -427,7 +377,7 @@ func passingParser(state *ParseState) []*models.StatEvent {
 	return events
 }
 
-func kickReturnParser(state *ParseState) []*models.StatEvent {
+func kickReturnParser(state *lib.ParseState) []*models.StatEvent {
 	// td +6
 	// 1 pt per 10 yds
 	// from rules: 0.01 pts per returning kick/punt yard (1pt/100yds)
@@ -445,7 +395,7 @@ func kickReturnParser(state *ParseState) []*models.StatEvent {
 	return events
 }
 
-func fieldGoalParser(state *ParseState) []*models.StatEvent {
+func fieldGoalParser(state *lib.ParseState) []*models.StatEvent {
 	// success +5 per 50+ yd
 	// success +4 per 40-49 yd
 	// success +3 per <= 39+ yd
@@ -467,7 +417,7 @@ func fieldGoalParser(state *ParseState) []*models.StatEvent {
 	return []*models.StatEvent{event}
 }
 
-func extraPointParser(state *ParseState) []*models.StatEvent {
+func extraPointParser(state *lib.ParseState) []*models.StatEvent {
 	// +1 per extra point made
 	made, _ := strconv.Atoi(state.CurrentElementAttr("made"))
 	event := buildStatEvent(state)
@@ -478,7 +428,7 @@ func extraPointParser(state *ParseState) []*models.StatEvent {
 	return []*models.StatEvent{event}
 }
 
-func twoPointConvParser(state *ParseState) []*models.StatEvent {
+func twoPointConvParser(state *lib.ParseState) []*models.StatEvent {
 	// success +2
 	att, _ := strconv.Atoi(state.CurrentElementAttr("att"))
 	failed, _ := strconv.Atoi(state.CurrentElementAttr("failed"))
@@ -490,7 +440,7 @@ func twoPointConvParser(state *ParseState) []*models.StatEvent {
 	return []*models.StatEvent{event}
 }
 
-func ParseGameStatistics(state *ParseState) *[]*models.StatEvent {
+func ParseGameStatistics(state *lib.ParseState) *[]*models.StatEvent {
 	switch state.CurrentElementName() {
 	case "game":
 		game := buildGame(state.CurrentElement())

@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	//"time"
 )
@@ -31,12 +32,26 @@ func findRoot() string {
 		pwd, _ = filepath.Split(strings.TrimRight(pwd, "/\\"))
 	}
 }
-func FileFetcher(url string) io.ReadCloser {
+
+type FileFetcher struct {
+	Sport string
+}
+
+func (f *FileFetcher) GetSport() string {
+	return f.Sport
+}
+
+func (f *FileFetcher) Fetch(url string) io.ReadCloser {
 	rootPath := findRoot()
-	path := rootPath + "docs/sportsdata/nfl/" + strings.Replace(strings.Replace(url, "http://api.sportsdatallc.org/nfl-t1/", "", 1), "/", "-", -1)
+	regex, _ := regexp.Compile("http://api.sportsdatallc.org/.*?/")
+	cleanUrl := regex.ReplaceAllLiteralString(url, "")
+	path := rootPath + "docs/sportsdata/" + strings.ToLower(f.Sport) + "/" + strings.Replace(cleanUrl, "/", "-", -1)
 	file, err := os.Open(path)
 	if err != nil {
 		log.Panicf("Failed to open file at %s", path)
 	}
 	return file
+}
+
+func (f *FileFetcher) AddUrlParam(key string, val string) {
 }

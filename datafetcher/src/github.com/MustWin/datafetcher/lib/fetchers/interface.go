@@ -2,4 +2,8 @@ package fetchers
 
 import "io"
 
-type FetchMethod func(string) io.ReadCloser
+type FetchMethod interface {
+	GetSport() string
+	Fetch(string) io.ReadCloser
+	AddUrlParam(string, string)
+}
