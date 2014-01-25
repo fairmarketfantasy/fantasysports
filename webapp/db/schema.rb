@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140123235732) do
+ActiveRecord::Schema.define(version: 20140125011350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -432,11 +432,11 @@ ActiveRecord::Schema.define(version: 20140123235732) do
   add_index "stat_events", ["player_stats_id", "game_stats_id", "activity"], name: "player_game_activity", unique: true, using: :btree
 
   create_table "teams", force: true do |t|
-    t.integer  "sport_id",   null: false
-    t.string   "abbrev",     null: false
-    t.string   "name",       null: false
-    t.string   "conference", null: false
-    t.string   "division",   null: false
+    t.integer  "sport_id",                null: false
+    t.string   "abbrev",                  null: false
+    t.string   "name",                    null: false
+    t.string   "conference",              null: false
+    t.string   "division",                null: false
     t.string   "market"
     t.string   "state"
     t.string   "country"
@@ -445,10 +445,12 @@ ActiveRecord::Schema.define(version: 20140123235732) do
     t.text     "standings"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "stats_id",   default: ""
   end
 
   add_index "teams", ["abbrev", "sport_id"], name: "index_teams_on_abbrev_and_sport_id", unique: true, using: :btree
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
+  add_index "teams", ["stats_id"], name: "index_teams_on_stats_id", using: :btree
 
   create_table "transaction_records", force: true do |t|
     t.string   "event",                                   null: false

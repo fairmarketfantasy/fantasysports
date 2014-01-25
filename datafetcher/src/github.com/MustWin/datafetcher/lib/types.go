@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var Sports = []string{"NFL"}
+var Sports = []string{"NFL", "NBA"}
 
 type Sport struct {
 	model.ModelBase

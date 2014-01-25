@@ -7,8 +7,8 @@ import (
 	"github.com/MustWin/datafetcher/lib/fetchers"
 	"github.com/MustWin/datafetcher/lib/model"
 	"github.com/MustWin/datafetcher/lib/utils"
-	"github.com/MustWin/datafetcher/nfl"
 	"github.com/MustWin/datafetcher/nba"
+	"github.com/MustWin/datafetcher/nfl"
 	"io"
 	"log"
 	"os"
@@ -36,7 +36,7 @@ func writePid() {
 }
 
 // Major options
-var sport = flag.String("sport", "NFL" /* Temporary default */, "REQUIRED: What sport to fetch: NFL")
+var sport = flag.String("sport", "" /* Temporary default */, "REQUIRED: What sport to fetch: NFL")
 var fetch = flag.String("fetch", "", `What data to fetch:
       roster -team DAL
       teams -year 2012
@@ -59,51 +59,39 @@ func defaultYear() int {
 // Minor options
 var year = flag.Int("year", defaultYear(), "Year to scope the fetch.")
 
-var team = flag.String("team", "DAL", "Team to fetch. Only pass with roster")
+var team = flag.String("team", "DAL", "Team to fetch. Only pass with roster. Abbrev in NFL, statsId in NBA")
 var statsId = flag.String("statsId", "N9837-8d7fh3-sd8sd8f7-MIJ3IYG", "Unique identifier of game to fetch. Only pass with pbp or stats")
 
-func getFetcherNFL(orm *model.Orm) (lib.Fetcher, lib.FetchManager) {
-	fetcher := nfl.Fetcher{*year, fetchers.HttpFetcher}
-	mgr := nfl.FetchManager{Orm: *orm, Fetcher: fetcher}
-	return fetcher, &mgr
-}
-
-func getFetcherNBA(orm *model.Orm) (lib.Fetcher, lib.FetchManager) {
-	fetcher := nba.Fetcher{*year, fetchers.HttpFetcher}
-	mgr := nba.FetchManager{Orm: *orm, Fetcher: fetcher}
-	return fetcher, &mgr
-}
-
-func getFetcher(sport *string, orm *model.Orm) (lib.Fetcher, lib.FetchManager) {
-	if *sport == "NBA" {
-		return getFetcherNBA(orm)
-	} else {
-		return getFetcherNFL(orm)
+func getFetcher(sport *string, orm *model.Orm) lib.FetchManager {
+	switch *sport {
+	case "NBA":
+		fetcher := nba.Fetcher{*year, &fetchers.FileFetcher{"NBA"}}
+		fetcher.FetchMethod.AddUrlParam("api_key", "8uttxzxefmz45ds8ckz764vr")
+		return &nba.FetchManager{Orm: *orm, Fetcher: fetcher}
+	case "NFL":
+		fetcher := nfl.Fetcher{*year, &fetchers.HttpFetcher{"NFL", make(map[string]string)}}
+		fetcher.FetchMethod.AddUrlParam("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
+		return &nfl.FetchManager{Orm: *orm, Fetcher: fetcher}
+	default:
+		log.Panic("No fetchers defined for " + *sport)
 	}
+	return nil
 }
 
 func main() {
 	flag.Parse()
 	fmt.Println("fetching data for year", *year)
-	//fetcher := nfl.Fetcher{*year, *season, *week, fetchers.FileFetcher}
-
-	//fetcher := nfl.Fetcher{*year, fetchers.HttpFetcher}
 
 	var orm model.Orm
 	var ormType model.Orm
-
-	sportName := "NFL"
-	if *sport == "NBA" {
-		sportName = "NBA"
-	}
 
 	ormType = &model.OrmBase{}
 	orm = ormType.Init(lib.DbInit(""))
 	lib.InitSports()
 	ormType = &model.OrmBase{}
-	orm = ormType.Init(lib.DbInit(sportName))
+	orm = ormType.Init(lib.DbInit(*sport))
 
-	fetcher, mgr := getFetcher(sport, &orm)
+	mgr := getFetcher(sport, &orm)
 
 	switch *fetch {
 	case "teams":
@@ -125,7 +113,7 @@ func main() {
 
 	case "roster":
 		log.Println("Fetching Roster data")
-		players := fetcher.GetTeamRoster(*team)
+		players := mgr.GetRoster(*team)
 		orm.SaveAll(players)
 		utils.PrintPtrs(players)
 

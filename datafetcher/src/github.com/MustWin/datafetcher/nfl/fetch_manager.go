@@ -18,47 +18,15 @@ type FetchManager struct {
 	Orm     model.Orm
 }
 
-func (mgr *FetchManager) Startup() error {
-	return mgr.Daily()
+func (mgr *FetchManager) Sport() string {
+	return "NBA"
 }
 
-func (mgr *FetchManager) Daily() error {
-	// Refresh all games for each season
-	games := mgr.GetGames()
-	//lib.PrintPtrs(games)
-
-	// Set the fetcher to the correct dates / seasons, etc
-
-	mgr.refreshFetcher(games)
-
-	// Grab the latest standings for this season
-	teams := mgr.GetStandings()
-
-	// Refresh rosters for each team
-	for _, team := range teams {
-		mgr.GetRoster(team.Abbrev)
-	}
-
-	// Schedule jobs to collect play stats
-	for _, game := range games {
-		mgr.schedulePbpCollection(game)
-	}
-
-	// Create markets for
-	mgr.createMarkets(games)
-
-	return nil
+func (mgr *FetchManager) GetFetcher() Fetcher {
+	return mgr.Fetcher
 }
 
-func appendForKey(key string, markets map[string][]*models.Game, value *models.Game) {
-	_, found := markets[key]
-	if !found {
-		markets[key] = make([]*models.Game, 0)
-	}
-	markets[key] = append(markets[key], value)
-}
-
-func (mgr *FetchManager) createMarket(name string, games Games) {
+func (mgr *FetchManager) createMarket(name string, games lib.Games) {
 	sort.Sort(games)
 	market := models.Market{}
 	market.Name = name
@@ -99,14 +67,14 @@ func (mgr *FetchManager) createMarket(name string, games Games) {
 	}
 }
 
-func (mgr *FetchManager) createMarkets(games []*models.Game) {
+func (mgr *FetchManager) CreateMarkets(games []*models.Game) {
 	dayMarkets := make(map[string][]*models.Game, 0)
 	weekMarkets := make(map[string][]*models.Game, 0)
 	for i := 0; i < len(games); i++ {
 		dayKey := games[i].GameDay.String()
 		weekKey := games[i].SeasonType + "-" + strconv.Itoa(games[i].SeasonWeek)
-		appendForKey(dayKey, dayMarkets, games[i])
-		appendForKey(weekKey, weekMarkets, games[i])
+		lib.AppendForKey(dayKey, dayMarkets, games[i])
+		lib.AppendForKey(weekKey, weekMarkets, games[i])
 	}
 	for _, daysGames := range dayMarkets {
 		game := daysGames[len(daysGames)-1]
@@ -118,7 +86,7 @@ func (mgr *FetchManager) createMarkets(games []*models.Game) {
 }
 
 // Assumes games are in chronological order now
-func (mgr *FetchManager) refreshFetcher(games []*models.Game) {
+func (mgr *FetchManager) RefreshFetcher(games []*models.Game) {
 	now := time.Now()
 	for i := 0; i < len(games); i++ {
 		if now.After(games[i].GameTime) {
@@ -187,44 +155,6 @@ func (mgr *FetchManager) GetPbp(game *models.Game, currentSequenceNumber int) ([
 	}
 	return gameEvents, currentSequenceNumber, gameover
 }
-
-func (mgr *FetchManager) schedulePbpCollection(game *models.Game) {
-	POLLING_PERIOD := 30 * time.Second
-	currentSequenceNumber := -1
-	if game.GameTime.After(time.Now().Add(-250*time.Minute)) && game.Status != "closed" {
-		var poll = func() {}
-		poll = func() {
-			mgr.refreshFetcher([]*models.Game{game})
-			_, newSequenceNumber, gameover := mgr.GetPbp(game, currentSequenceNumber)
-			if newSequenceNumber > currentSequenceNumber {
-				currentSequenceNumber = newSequenceNumber
-				mgr.GetStats(game)
-				if gameover {
-					// Refresh 'em again later just in case
-					time.AfterFunc(1*time.Minute, func() { mgr.GetStandings() })
-					time.AfterFunc(10*time.Minute, func() { mgr.GetStandings() })
-					return
-				}
-			}
-			time.AfterFunc(POLLING_PERIOD, poll)
-		}
-		mgr.Schedule("nfl-pbp-"+game.StatsId, game.GameTime.Add(-5*time.Minute), poll)
-	}
-}
-
-/*
-func (f *FetchManager) GetPlayByPlay(awayTeam string, homeTeam string) []*models.GameEvent {
-  // GET Play-By-Play nfl-t1/:year/:nfl_season/:nfl_season_week/:away_team/:home_team/pbp.xml
-  url := fmt.Sprintf(baseUrl + "%d/%s/%d/%s/%s/pbp.xml", f.Year, f.NflSeason, f.NflSeasonWeek, awayTeam, homeTeam)
-  return parsers.ParseXml(f.FetchMethod(url), ParsePlayByPlay).([]*models.GameEvent)
-}
-
-func (f *FetchManager) GetPlaySummary(awayTeam string, homeTeam string, playId string) []*models.StatEvent {
-  // GET Play Summary nfl-t1/:year/:nfl_season/:nfl_season_week/:away_team/:home_team/plays/:play_id.xml
-  url := fmt.Sprintf(baseUrl + "%d/%s/%d/%s/%s/plays/%s.xml", f.Year, f.NflSeason, f.NflSeasonWeek, awayTeam, homeTeam, playId)
-  return parsers.ParseXml(f.FetchMethod(url), ParsePlaySummary).([]*models.StatEvent)
-}
-*/
 
 type Games []*models.Game
 

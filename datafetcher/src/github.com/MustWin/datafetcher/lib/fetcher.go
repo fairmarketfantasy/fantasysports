@@ -5,5 +5,9 @@ import (
 )
 
 type Fetcher interface {
-	GetTeamRoster(team string) []*models.Player
+	GetStandings() []*models.Team
+	GetSchedule(string) []*models.Game
+	GetPlayByPlay(*models.Game) ([]*models.GameEvent, *ParseState)
+	GetTeamRoster(string) []*models.Player
+	GetGameStats(*models.Game) []*models.StatEvent
 }
