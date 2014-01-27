@@ -13,4 +13,8 @@ class Positions
   def self.default_NFL
     'QB,RB,RB,WR,WR,WR,DEF,K,TE'
   end
+
+  def self.default_NBA
+    ''
+  end
 end
