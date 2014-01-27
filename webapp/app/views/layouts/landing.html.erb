@@ -82,11 +82,14 @@
         <h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1>
       </div>
       <div class="span2 nav-span">
+        <a class="coming-soon-nav"><span>NBA Coming Soon</span></a>
+      </div>
+      <div class="span2 nav-span">
         <a class="sign-in-nav" href="javascript://" ng-click="loginModal()">Sign In</a>
       </div>
       <div class="span2 nav-span">
         <a href="javascript://" class="sign-up-nav" ng-click='signUpModal()'>Sign Up</a>
-      </div>
+      </div>      
     </div>
   </div>
   <div class="landing-container">
@@ -102,10 +105,6 @@
       <div class="landing-mobile-app-links">
         <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
       </div>
-    </div>
-    <div id="sport-teaser">
-      <img src="<%= asset_path('bball-coming-soon.png') %>"/><br/>
-      <!--<img src="<%= asset_path('hockey-coming-soon.png') %>"/>-->
     </div>
     <div class="span5 sample-team" ng-include="'/sample_team.html'"></div>
   </div>
