@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"github.com/BurntSushi/ty"
 	"io"
-	"log"
+	//"log"
 	"reflect"
 )
 
