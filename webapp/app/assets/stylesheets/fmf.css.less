@@ -303,7 +303,7 @@ select:focus:invalid {
 .sign-up {
   margin: 20px 0;
 }
-.sign-in-nav, .sign-up-nav {
+.sign-in-nav, .sign-up-nav, .coming-soon-nav {
   height: 49px;
   line-height: 49px;
   font-size: 18px;
@@ -341,6 +341,15 @@ select:focus:invalid {
 }
 .sign-in-nav:hover {
   background-color: @blue;
+}
+.coming-soon-nav, .coming-soon-nav:hover {
+  background-image: asset-url('bball-coming-soon.png');
+  background-position: center 67%;
+  background-repeat: no-repeat;
+  font-size: 11px;
+  opacity: 0.9;
+  font-weight: bold;
+  color: @white;
 }
 .fixed-header {
   background-color: rgba(0,0,0,0.8);
