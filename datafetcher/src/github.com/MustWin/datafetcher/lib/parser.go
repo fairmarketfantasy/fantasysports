@@ -24,6 +24,7 @@ type ParseState struct {
 	CurrentTeam           *models.Team
 	CurrentPlayer         *models.Player
 	CurrentEvent          *models.GameEvent
+	CurrentEventSequence  int
 	CurrentPositionParser func(*ParseState) []*models.StatEvent
 	TeamCount             int
 	TeamScore             int

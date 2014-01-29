@@ -3,6 +3,7 @@ package parsers
 import (
 	"encoding/xml"
 	"errors"
+	"github.com/MustWin/datafetcher/lib/models"
 	"github.com/MustWin/datafetcher/lib/utils"
 	"reflect"
 	"strconv"
@@ -10,6 +11,15 @@ import (
 
 	//  "log"
 )
+
+func FilterNils(slice []*models.StatEvent) (result []*models.StatEvent) {
+	for _, val := range slice {
+		if val != nil {
+			result = append(result, val)
+		}
+	}
+	return
+}
 
 func FindAttrByName(attrs []xml.Attr, name string) string {
 	for _, attr := range attrs {
