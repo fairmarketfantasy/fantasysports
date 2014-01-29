@@ -1,12 +1,12 @@
 package nfl
 
 import (
+	"fmt"
 	"github.com/MustWin/datafetcher/lib"
 	"github.com/MustWin/datafetcher/lib/fetchers"
 	"github.com/MustWin/datafetcher/lib/models"
 	"github.com/MustWin/datafetcher/lib/parsers"
-	//"io"
-	"fmt"
+	"log"
 )
 
 // Initialize these with these set  year int, seasonType string, seasonWeek string,
@@ -44,7 +44,12 @@ func (f Fetcher) GetPlayByPlay(game *models.Game) ([]*models.GameEvent, *lib.Par
 func (f Fetcher) GetTeamRoster(team string) []*models.Player {
 	//GET Team Roster nfl-t1/teams/:team/roster.xml
 	url := fmt.Sprintf(baseUrl+"teams/%s/roster.xml", team)
-	result, _ := parsers.ParseXml(f.FetchMethod.Fetch(url), ParseRoster)
+	result, err := parsers.ParseXml(f.FetchMethod.Fetch(url), ParseRoster)
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println(url)
+	log.Println("HERE")
 	players := result.([]*models.Player)
 	defPlayer := models.Player{StatsId: "DEF-" + team, Team: team, Name: team + " Defense", NameAbbr: team, Position: "DEF", Status: "ACT"}
 	players = append(players, &defPlayer)

@@ -19,7 +19,7 @@ type FetchManager struct {
 }
 
 func (mgr *FetchManager) Sport() string {
-	return "NBA"
+	return "NFL"
 }
 
 func (mgr *FetchManager) GetFetcher() Fetcher {

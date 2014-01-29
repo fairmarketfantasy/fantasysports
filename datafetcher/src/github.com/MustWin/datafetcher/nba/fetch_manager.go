@@ -31,33 +31,18 @@ func (mgr *FetchManager) createMarket(name string, games lib.Games) {
 	market.Name = name
 	market.GameType = "regular_season"
 	market.ShadowBetRate = 0.75
-	market.PublishedAt = games[0].GameDay.Add(-6 * 24 * time.Hour)
+	// publish 2 days before game day
+	market.PublishedAt = games[0].GameDay.Add(-2 * 24 * time.Hour)
 	market.StartedAt = games[0].GameTime.Add(-5 * time.Minute)           // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
 	market.ClosedAt = games[len(games)-1].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
-	t := market.ClosedAt
-	var sunday10am time.Time
-	for i := 0; i < 7; i++ {
-		t = market.ClosedAt.Add(time.Hour * time.Duration(i*-24))
-		if t.Weekday() == time.Wednesday {
-			market.OpenedAt = time.Date(t.Year(), t.Month(), t.Day(), 5, 0, 0, 0, time.UTC) // Set opened at to Tuesday of the same week at 9pmish
-		}
-		if t.Weekday() == time.Sunday {
-			sunday10am = time.Date(t.Year(), t.Month(), t.Day(), 15, 0, 0, 0, time.UTC) // Set opened at to Tuesday of the same week at 9pmish
-		}
-	}
-	if len(games) > 1 {
-		beforeStart := strconv.Itoa(int(market.StartedAt.Add(-12 * time.Hour).Unix()))
-		sunday10amUnix := strconv.Itoa(int(sunday10am.Unix())) // 10am PST
-		sunday1pmUnix := strconv.Itoa(int(sunday10am.Add(3 * time.Hour).Unix()))
-		sundayEveningUnix := strconv.Itoa(int(sunday10am.Add(6 * time.Hour).Unix()))
-		closedAtUnix := strconv.Itoa(int(market.ClosedAt.Unix()))
-		market.FillRosterTimes = "[[" + beforeStart + ", 0.1], [" + sunday10amUnix + ", 0.9], [" + sunday1pmUnix + ", 0.99], [" + sundayEveningUnix + ", 1.0], [" + closedAtUnix + ", 1.0]]"
-	} else {
-		dayBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-24 * time.Hour).Unix()))
-		twoHoursBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-2 * time.Hour).Unix()))
-		closedAtUnix := strconv.Itoa(int(market.ClosedAt.Unix()))
-		market.FillRosterTimes = "[[" + dayBeforeUnix + ", 0.5], [" + twoHoursBeforeUnix + ", 0.8], [" + closedAtUnix + ", 1.0]]"
-	}
+	// publish 2 days before game time
+	market.OpenedAt = market.StartedAt.Add(-2 * 24 * time.Hour)
+
+	beforeStart := strconv.Itoa(int(market.StartedAt.Add(-12 * time.Hour).Unix()))
+	twoHoursBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-2 * time.Hour).Unix()))
+	closedAtUnix := strconv.Itoa(int(market.ClosedAt.Unix()))
+	market.FillRosterTimes = "[[" + beforeStart + ", 0.3], [" + twoHoursBeforeUnix + ", 0.9], [" + closedAtUnix + ", 1.0]]"
+
 	log.Printf("Creating market %s starting at %s and closing on %s with %d games", market.Name, market.StartedAt, market.ClosedAt, len(games))
 	mgr.Orm.Save(&market)
 	for _, game := range games {
@@ -68,20 +53,21 @@ func (mgr *FetchManager) createMarket(name string, games lib.Games) {
 
 func (mgr *FetchManager) CreateMarkets(games []*models.Game) {
 	dayMarkets := make(map[string][]*models.Game, 0)
-	weekMarkets := make(map[string][]*models.Game, 0)
+	//weekMarkets := make(map[string][]*models.Game, 0)
 	for i := 0; i < len(games); i++ {
 		dayKey := games[i].GameDay.String()
-		weekKey := games[i].SeasonType + "-" + strconv.Itoa(games[i].SeasonWeek)
+		//	weekKey := games[i].SeasonType + "-" + strconv.Itoa(games[i].SeasonWeek)
 		lib.AppendForKey(dayKey, dayMarkets, games[i])
-		lib.AppendForKey(weekKey, weekMarkets, games[i])
+		//	lib.AppendForKey(weekKey, weekMarkets, games[i])
 	}
 	for _, daysGames := range dayMarkets {
-		game := daysGames[len(daysGames)-1]
-		mgr.createMarket(game.GameTime.Add(-6*time.Hour).Format("Monday")+" Night Football", []*models.Game{game})
+		for _, game := range daysGames {
+			mgr.createMarket(game.GameTime.Add(-6*time.Hour).Format("Monday")+" Basketball", []*models.Game{game})
+		}
 	}
-	for _, weekGames := range weekMarkets {
+	/*for _, weekGames := range weekMarkets {
 		mgr.createMarket("All of Week "+strconv.Itoa(weekGames[0].SeasonWeek), weekGames)
-	}
+	}*/
 }
 
 // Assumes games are in chronological order now

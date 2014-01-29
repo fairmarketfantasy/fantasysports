@@ -62,20 +62,16 @@ var year = flag.Int("year", defaultYear(), "Year to scope the fetch.")
 var team = flag.String("team", "DAL", "Team to fetch. Only pass with roster. Abbrev in NFL, statsId in NBA")
 var statsId = flag.String("statsId", "N9837-8d7fh3-sd8sd8f7-MIJ3IYG", "Unique identifier of game to fetch. Only pass with pbp or stats")
 
-func getFetcher(sport *string, orm *model.Orm) lib.FetchManager {
-	switch *sport {
-	case "NBA":
-		fetcher := nba.Fetcher{*year, &fetchers.FileFetcher{"NBA"}}
-		fetcher.FetchMethod.AddUrlParam("api_key", "8uttxzxefmz45ds8ckz764vr")
-		return &nba.FetchManager{Orm: *orm, Fetcher: fetcher}
-	case "NFL":
-		fetcher := nfl.Fetcher{*year, &fetchers.HttpFetcher{"NFL", make(map[string]string)}}
-		fetcher.FetchMethod.AddUrlParam("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
-		return &nfl.FetchManager{Orm: *orm, Fetcher: fetcher}
-	default:
-		log.Panic("No fetchers defined for " + *sport)
-	}
-	return nil
+func getFetchers(orm *model.Orm) map[string]lib.FetchManager {
+	fetch := make(map[string]lib.FetchManager)
+	nbaFetcher := nba.Fetcher{*year, &fetchers.HttpFetcher{"NBA", make(map[string]string)}}
+	nbaFetcher.FetchMethod.AddUrlParam("api_key", "8uttxzxefmz45ds8ckz764vr")
+	fetch["NBA"] = &nba.FetchManager{Orm: *orm, Fetcher: nbaFetcher}
+
+	nflFetcher := nfl.Fetcher{*year, &fetchers.HttpFetcher{"NFL", make(map[string]string)}}
+	nflFetcher.FetchMethod.AddUrlParam("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
+	fetch["NFL"] = &nfl.FetchManager{Orm: *orm, Fetcher: nflFetcher}
+	return fetch
 }
 
 func main() {
@@ -91,7 +87,16 @@ func main() {
 	ormType = &model.OrmBase{}
 	orm = ormType.Init(lib.DbInit(*sport))
 
-	mgr := getFetcher(sport, &orm)
+	fetchers := getFetchers(&orm)
+
+	var mgr lib.FetchManager
+	log.Println(*fetch)
+	if *fetch != "serve" {
+		mgr = fetchers[*sport]
+		if mgr == nil {
+			log.Panic("No fetchers defined for " + *sport)
+		}
+	}
 
 	switch *fetch {
 	case "teams":
@@ -126,7 +131,10 @@ func main() {
 	case "serve":
 		writePid()
 		log.Println("Periodically fetching data for your pleasure.")
-		mgr.Start(mgr)
+		for sport, mgr := range fetchers {
+			log.Println("Starting to Fetch " + sport)
+			mgr.Start(mgr)
+		}
 		//block the current goroutine indefinitely
 		<-make(chan bool)
 
