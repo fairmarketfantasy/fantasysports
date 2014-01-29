@@ -48,8 +48,6 @@ func (f Fetcher) GetTeamRoster(team string) []*models.Player {
 	url := fmt.Sprintf(baseUrl+"teams/%s/profile.xml", team)
 	result, _ := parsers.ParseXml(f.FetchMethod.Fetch(url), ParseRoster)
 	players := result.([]*models.Player)
-	defPlayer := models.Player{StatsId: "DEF-" + team, Team: team, Name: team + " Defense", NameAbbr: team, Position: "DEF", Status: "ACT"}
-	players = append(players, &defPlayer)
 	return players
 }
 
