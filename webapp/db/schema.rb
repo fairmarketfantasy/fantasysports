@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140125011350) do
+ActiveRecord::Schema.define(version: 20140129145721) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -299,6 +299,14 @@ ActiveRecord::Schema.define(version: 20140125011350) do
   add_index "oauth2_refresh_tokens", ["token"], name: "index_oauth2_refresh_tokens_on_token", unique: true, using: :btree
   add_index "oauth2_refresh_tokens", ["user_id"], name: "index_oauth2_refresh_tokens_on_user_id", using: :btree
 
+  create_table "player_positions", force: true do |t|
+    t.integer "player_id", null: false
+    t.string  "position",  null: false
+  end
+
+  add_index "player_positions", ["player_id", "position"], name: "index_player_positions_on_player_id_and_position", unique: true, using: :btree
+  add_index "player_positions", ["position"], name: "index_player_positions_on_position", using: :btree
+
   create_table "players", force: true do |t|
     t.string   "stats_id"
     t.integer  "sport_id"
@@ -386,6 +394,7 @@ ActiveRecord::Schema.define(version: 20140125011350) do
     t.text     "bonuses"
     t.string   "view_code"
     t.integer  "expected_payout",  default: 0,     null: false
+    t.boolean  "remove_benched",   default: true
   end
 
   add_index "rosters", ["contest_id", "contest_rank"], name: "index_rosters_on_contest_id_and_contest_rank", using: :btree
@@ -499,10 +508,10 @@ ActiveRecord::Schema.define(version: 20140125011350) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
-    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
+    t.string   "avatar"
     t.text     "bonuses"
     t.string   "referral_code"
   end
