@@ -3,6 +3,7 @@ class Player < ActiveRecord::Base
   belongs_to :sport
   belongs_to :team, :foreign_key => 'team'
   has_many :stat_events
+  has_many :positions, :class_name => 'PlayerPosition'
 
   def purchase_price; self[:purchase_price]; end
   def buy_price; self[:buy_price]; end
@@ -11,6 +12,7 @@ class Player < ActiveRecord::Base
   def locked; self[:locked]; end
   def market_id; self[:market_id]; end
   def is_eliminated; self[:is_eliminated]; end
+  def position; self[:position]; end
 
   # Some positions are never used in NFL
   #default_scope { where("position NOT IN('OLB', 'OL')") }
@@ -24,7 +26,7 @@ class Player < ActiveRecord::Base
   scope :in_market,    ->(market)     { where(team: market.games.map{|g| g.teams.map(&:abbrev)}.flatten) }
   scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
   scope :in_position,  ->(position)   { where(position: position) }
-  scope :normal_positions,      -> { where(:position => %w(QB RB WR TE K DEF)) }
+  scope :normal_positions,      -> { select('players.*, player_positions.position').joins('JOIN player_positions ON players.id=player_positions.player_id').where("position IN('QB', 'RB', 'WR', 'TE', 'K', 'DEF')") }
   scope :order_by_ppg,          ->(dir = 'desc') { order("(total_points / (total_games + .001)) #{dir}") }
   scope :with_purchase_price,   -> { select('players.*, rosters_players.purchase_price') } # Must also join rosters_players
   scope :with_market,           ->(market) { select('players.*').select(
@@ -42,8 +44,8 @@ class Player < ActiveRecord::Base
 
   scope :purchasable_for_roster, -> (roster) { 
     select(
-      "players.*, buy_prices.buy_price as buy_price, buy_prices.is_eliminated"
-    ).joins("JOIN buy_prices(#{roster.id}) as buy_prices on buy_prices.player_id = players.id")
+      "players.*, player_positions.position, buy_prices.buy_price as buy_price, buy_prices.is_eliminated"
+    ).joins("JOIN buy_prices(#{roster.id}) as buy_prices on buy_prices.player_id = players.id JOIN player_positions ON players.id=player_positions.player_id")
   }
 
   scope :with_sell_prices, -> (roster) { 

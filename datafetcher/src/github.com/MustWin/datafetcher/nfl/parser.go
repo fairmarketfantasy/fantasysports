@@ -95,12 +95,13 @@ func buildPlayer(element *xml.StartElement) *models.Player {
 	player.NameAbbr = parsers.FindAttrByName(element.Attr, "name_abbr")
 	player.Birthdate = parsers.FindAttrByName(element.Attr, "birthdate")
 	player.Status = parsers.FindAttrByName(element.Attr, "status")
-	player.Position = parsers.FindAttrByName(element.Attr, "position")
-	if contains(defensivePositions, player.Position) {
-		player.Position = "DEF"
-	} else if player.Position == "FB" {
-		player.Position = "RB"
+	position := parsers.FindAttrByName(element.Attr, "position")
+	if contains(defensivePositions, position) {
+		position = "DEF"
+	} else if position == "FB" {
+		position = "RB"
 	}
+	player.Positions = []string{position}
 	player.JerseyNumber, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "jersey_number"))
 	player.College = parsers.FindAttrByName(element.Attr, "college")
 	player.Height, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "height"))
@@ -268,7 +269,7 @@ func ParseRoster(state *ParseState) *models.Player {
 		player := buildPlayer(state.CurrentElement())
 		player.Team = state.CurrentTeam.Abbrev
 		state.CurrentPlayer = player
-		if player.Position == "DEF" {
+		if contains(player.Positions, "DEF") {
 			return nil
 		}
 		return player
@@ -320,27 +321,27 @@ func defenseParser(state *ParseState) []*models.StatEvent {
 
 	//pointValue := float64(3.0*(int_touchdowns+fum_touchdowns) + 2.0*interceptions + 2.0*fumble_recoveries + 2.0*safeties + 1.0*sack)
 
-	if (int_touchdowns > 0) {
+	if int_touchdowns > 0 {
 		events = append(events, buildBreakdownStatEvent(state, int_touchdowns, "int_touchdowns", 3.0))
 	}
 
-	if (fum_touchdowns > 0) {
+	if fum_touchdowns > 0 {
 		events = append(events, buildBreakdownStatEvent(state, fum_touchdowns, "fum_touchdowns", 3.0))
 	}
 
-	if (interceptions > 0) {
+	if interceptions > 0 {
 		events = append(events, buildBreakdownStatEvent(state, interceptions, "interceptions", 2.0))
 	}
 
-	if (fumble_recoveries > 0) {
+	if fumble_recoveries > 0 {
 		events = append(events, buildBreakdownStatEvent(state, fumble_recoveries, "fumble_recoveries", 2.0))
 	}
 
-	if (safeties > 0) {
+	if safeties > 0 {
 		events = append(events, buildBreakdownStatEvent(state, safeties, "safeties", 2.0))
 	}
 
-	if (sack > 0) {
+	if sack > 0 {
 		events = append(events, buildBreakdownStatEvent(state, sack, "sacks", 2.0))
 	}
 

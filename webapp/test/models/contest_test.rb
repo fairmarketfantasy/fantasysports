@@ -55,15 +55,16 @@ class ContestTest < ActiveSupport::TestCase
     assert_equal by_rank[2].length, 2
   end
 
-  def play_single_contest(ct, num_rosters = 10)
+  def play_single_contest(ct, num_rosters = 12)
     users = (1..num_rosters).map{ create(:paid_user) }
     @rosters = []
     users.each_with_index do |user, i|
       roster = Roster.generate(user, ct)
       @rosters << roster
       roster.submit!
+      i = 8 if i > 8
       next if i == 0
-      @players[1..i].each{|player| roster.add_player(player) }
+      @players[1..i].each{|player| roster.add_player(player, player.positions.first.position) }
     end
     @market.update_attribute(:closed_at, Time.new - 1.minute)
     @players.each do |p| 

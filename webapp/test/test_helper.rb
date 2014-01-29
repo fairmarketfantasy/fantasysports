@@ -67,7 +67,7 @@ class ActiveSupport::TestCase
 
   def setup_team(opts = {})
     team = create(:team, opts)
-    players = Positions.default_NFL.split(',').map{|p| create(:player, :team => team, :position => p) }
+    players = Positions.default_NFL.split(',').map{|pos| p = create(:player, :team => team); PlayerPosition.create(:player_id => p.id, :position => pos); p}
     team
   end
 
@@ -122,7 +122,9 @@ class ActiveSupport::TestCase
               create(:game, :home_team => @teams[2], :away_team => @teams[3], :game_time => Time.now.tomorrow  + 10.minutes, :game_day => Time.now.tomorrow.tomorrow.beginning_of_day)]
     @teams.each do |team|
       @players = Positions.default_NFL.split(',').map do |position|
-        create :player, :team => team, :position => position
+        p = create :player, :team => team
+        PlayerPosition.create(:player_id => p.id, :position => position)
+         p
       end
     end
     @market = create :new_market
@@ -151,9 +153,11 @@ class ActiveSupport::TestCase
     @players = []
     other_players = []
     Positions.default_NFL.split(',').each do |position|
-      player = create :player, :team => @team1, :position => position
+      player = create :player, :team => @team1
+      PlayerPosition.create!(:player_id => player.id, :position => position)
       @players << player
-      player = create :player, :team => @team2, :position => position
+      player = create :player, :team => @team2
+      PlayerPosition.create!(:player_id => player.id, :position => position)
       other_players << player
     end
     @players = @players.concat(other_players)

@@ -6,7 +6,7 @@ class PlayerTest < ActiveSupport::TestCase
 
     describe ".autocomplete" do
 
-      let(:mcfadden) { create(:player, name: "Darren McFadden", position: 'RB') }
+      let(:mcfadden) { p = create(:player, name: "Darren McFadden"); PlayerPosition.create!(:player_id => p.id, :position => "RB"); p }
 
       it "should take a string and return the right results" do
         Player.autocomplete("Darr").must_include(mcfadden)

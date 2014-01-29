@@ -175,5 +175,8 @@ func (n *UniqModel) BeforeSave(db model.Orm, m model.Model) (error, bool) {
 		}
 	}
 	err = orm.Save(existing)
-	return err, false
+	if err != nil {
+		return err, false
+	}
+	return m.AfterSave(db, m), false
 }

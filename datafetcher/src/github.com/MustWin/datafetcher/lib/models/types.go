@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/MustWin/datafetcher/lib/model"
 	"time"
 )
 
@@ -108,6 +109,13 @@ type PlayerStatus struct {
 	PracticeStatus string
 }
 
+type PlayerPosition struct {
+	UniqModel
+	Id       int
+	PlayerId int
+	Position string
+}
+
 type Player struct {
 	UniqModel
 	Id           int
@@ -120,7 +128,7 @@ type Player struct {
 	Height       int
 	Weight       int
 	College      string
-	Position     string
+	Positions    []string
 	JerseyNumber int
 	Status       string
 	PlayerStatus PlayerStatus
@@ -129,6 +137,18 @@ type Player struct {
 	//BenchedGames int
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (p *Player) AfterSave(db model.Orm, m model.Model) (err error) {
+	player := m.(*Player)
+	for _, position := range player.Positions {
+		pp := PlayerPosition{PlayerId: player.Id, Position: position}
+		err = db.GetDb().Save(&pp)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 type StatEvent struct {

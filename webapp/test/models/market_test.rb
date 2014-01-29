@@ -161,7 +161,7 @@ class MarketTest < ActiveSupport::TestCase
     roster1.rosters_players.each do |rp|
       market_player_bets[rp.player_id] = @market.market_players.where(:player_id => rp.player_id).first.bets
       prices[rp.player_id] = rp.purchase_price.to_i
-      roster2.add_player(rp.player)
+      roster2.add_player(rp.player, rp.position)
     end
     roster2.submit!
     roster2.rosters_players.each do|rp|
@@ -182,7 +182,7 @@ class MarketTest < ActiveSupport::TestCase
         roster.fill_pseudo_randomly5(false)
       else
         roster1.players_with_prices.each do |p|
-          roster.add_player(p, false)
+          roster.add_player(p, p.position, false)
         end
         roster.rosters_players.each do |rp|
           market_player_bets[rp.player_id] = @market.market_players.where(:player_id => rp.player_id).first.bets
@@ -367,7 +367,7 @@ class MarketTest < ActiveSupport::TestCase
     users.each_with_index do |user, i|
       roster = Roster.generate(user, ct2)
       i = 8 if i >= 8
-      @players[0..i].each{|player| roster.add_player(player) }
+      @players[0..i].each{|player| roster.add_player(player, player.positions.first.position) }
       roster.submit!
       rosters << roster
     end
@@ -406,7 +406,7 @@ class MarketTest < ActiveSupport::TestCase
       i = 8 if i >= 8
       [ct1, ct2, ct3].each do |ct|
         roster = Roster.generate(user, ct)
-        @players[0..i].each{|player| roster.add_player(player) }
+        @players[0..i].each{|player| roster.add_player(player, player.positions.first.position) }
         begin
           roster.submit!
         rescue => e

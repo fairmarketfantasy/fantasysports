@@ -51,7 +51,7 @@ func (f Fetcher) GetTeamRoster(team string) []*models.Player {
 	log.Println(url)
 	log.Println("HERE")
 	players := result.([]*models.Player)
-	defPlayer := models.Player{StatsId: "DEF-" + team, Team: team, Name: team + " Defense", NameAbbr: team, Position: "DEF", Status: "ACT"}
+	defPlayer := models.Player{StatsId: "DEF-" + team, Team: team, Name: team + " Defense", NameAbbr: team, Positions: []string{"DEF"}, Status: "ACT"}
 	players = append(players, &defPlayer)
 	return players
 }

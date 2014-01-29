@@ -179,7 +179,11 @@ func scanStructIntoMap(obj interface{}) (map[string]interface{}, error) {
 
 		mapKey := snakeCasedName(fieldName)
 		value := dataStruct.FieldByName(fieldName)
-		if value.Kind().String() != "struct" || value.Type().String() == "time.Time" {
+		log.Println(fieldName)
+		log.Println(value.Kind().String())
+		if value.Kind().String() == "slice" {
+			// MT
+		} else if value.Kind().String() != "struct" || value.Type().String() == "time.Time" {
 			mapped[mapKey] = value.Interface()
 		} else if supportsJsonEncoding(value) {
 			// Encode as json text into column.  TODO: handle unmarshaling in scanMapIntoStruct

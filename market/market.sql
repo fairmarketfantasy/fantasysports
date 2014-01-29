@@ -207,7 +207,7 @@ $$ LANGUAGE plpgsql;
 
 -- /* buy a player for a roster */
 DROP FUNCTION buy(integer, integer);
-CREATE OR REPLACE FUNCTION buy(_roster_id integer, _player_id integer, OUT _price numeric) RETURNS numeric AS $$
+CREATE OR REPLACE FUNCTION buy(_roster_id integer, _player_id integer, _position character varying(255), OUT _price numeric) RETURNS numeric AS $$
 DECLARE
 	_roster rosters;
 	_market_player market_players;
@@ -244,8 +244,8 @@ BEGIN
 	RAISE NOTICE 'price = %', _price;
 
 	--if the roster is in progress, we can just add the player to the roster without locking on the market
-	INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id) 
-		VALUES (_player_id, _roster_id, _price, _market_player.player_stats_id, _market.id);
+	INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id, position)
+		VALUES (_player_id, _roster_id, _price, _market_player.player_stats_id, _market.id, _position);
 
 	IF _roster.state = 'submitted' THEN
 		--perform the updates.
@@ -410,13 +410,14 @@ BEGIN
 	  		_market_id, p.id, 0, 0, 0,
 	  		min(g.game_time), p.stats_id, NOW(), NOW()
 	  	FROM 
-	  		players p, games g, games_markets gm 
+	  		players p, games g, games_markets gm, player_positions pp
 	  	WHERE 
 	  		NOT EXISTS (select 1 from market_players where market_id=_market_id AND player_id=p.id) AND
         gm.market_id = _market_id AND
 	  		g.stats_id = gm.game_stats_id AND
 	  		(p.team = g.home_team OR p.team = g.away_team) AND
-        position = 'TEAM'
+        p.id = pp.player_id AND
+        pp.position = 'TEAM'
 	  	GROUP BY p.id;
 
   END IF;
@@ -548,7 +549,7 @@ BEGIN
   UPDATE players SET benched_games = benched_games + 1 WHERE stats_id 
     NOT IN(SELECT player_stats_id FROM stat_events WHERE game_stats_id = _game.stats_id GROUP BY player_stats_id)
     AND players.team IN(_game.home_team, _game.away_team)
-    AND players.position != 'TEAM';
+    AND 'TEAM' NOT IN(SELECT position from player_positions where player_id=players.id);
 
   UPDATE games SET bench_counted = true WHERE games.bench_counted_at < CURRENT_TIMESTAMP AND stats_id=_game_stats_id;
 

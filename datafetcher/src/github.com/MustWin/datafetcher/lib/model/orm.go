@@ -48,7 +48,11 @@ func (o *OrmBase) Save(m Model) error {
 		return err
 	}
 	if cont {
-		return o.GetDb().Save(m)
+		err = o.GetDb().Save(m)
+		if err == nil {
+			err = m.AfterSave(o, m)
+		}
+		return err
 	}
 	return nil
 }
