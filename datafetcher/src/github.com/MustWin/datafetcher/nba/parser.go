@@ -33,9 +33,16 @@ func buildPlayer(element *xml.StartElement) *models.Player {
 	player.NameAbbr = parsers.FindAttrByName(element.Attr, "name_abbr")
 	player.Birthdate = parsers.FindAttrByName(element.Attr, "birthdate")
 	player.Status = parsers.FindAttrByName(element.Attr, "status")
-	player.Position = parsers.FindAttrByName(element.Attr, "primary_position")
-	if player.Position == "NA" {
-		player.Position = parsers.FindAttrByName(element.Attr, "position")
+	position := parsers.FindAttrByName(element.Attr, "primary_position")
+	if position == "NA" {
+		position = parsers.FindAttrByName(element.Attr, "position")
+	}
+	player.Positions = []string{position, "UTIL"}
+	if contains([]string{"PG", "SG"}, position) {
+		player.Positions = append(player.Positions, "G")
+	}
+	if contains([]string{"PF", "SF"}, position) {
+		player.Positions = append(player.Positions, "F")
 	}
 	player.JerseyNumber, _ = strconv.Atoi(parsers.FindAttrByName(element.Attr, "jersey_number"))
 	player.College = parsers.FindAttrByName(element.Attr, "college")
@@ -211,9 +218,6 @@ func ParseRoster(state *lib.ParseState) *models.Player {
 		player := buildPlayer(state.CurrentElement())
 		player.Team = state.CurrentTeam.Abbrev
 		state.CurrentPlayer = player
-		if player.Position == "DEF" {
-			return nil
-		}
 		return player
 	case "injury":
 		err := parsers.InitFromAttrs(*state.CurrentElement(), &state.CurrentPlayer.PlayerStatus)

@@ -3,6 +3,8 @@ class RostersPlayer < ActiveRecord::Base
   belongs_to :roster
   belongs_to :player
 
+  validates_presence_of :position
+
   scope :with_market_players, ->(market) { 
     select('rosters_players.*, market_players.locked'
         ).joins('JOIN market_players ON rosters_players.player_stats_id = market_players.player_stats_id'

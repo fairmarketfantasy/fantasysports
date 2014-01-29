@@ -28,7 +28,7 @@ class Roster < ActiveRecord::Base
 
   def players_with_prices
     self.class.uncached do
-      self.players.select('players.*, rosters_players.purchase_price, mp.*').joins(
+      self.players.select('players.*, rosters_players.position, rosters_players.purchase_price, mp.*').joins(
         # Not user input params
         "JOIN market_prices_for_players(#{self.market_id}, #{self.buy_in}, #{self.rosters_players.map(&:player_id).unshift(-1).join(', ') }) mp ON mp.player_id=players.id")
       #Player.find_by_sql("select * from roster_prices(#{self.id})")
@@ -70,8 +70,8 @@ class Roster < ActiveRecord::Base
   end
 
   def build_from_existing(roster)
-    roster.players.each do |player|
-      self.add_player(player)
+    roster.rosters_players.each do |rp|
+      self.add_player(rp.player, rp.position)
     end
   end
 
@@ -164,18 +164,18 @@ class Roster < ActiveRecord::Base
     return self
   end
 
-  def add_player(player, place_bets = true)
+  def add_player(player, position, place_bets = true)
     begin
-      raise HttpException.new(409, "There is no room for another #{player.position} in your roster") unless remaining_positions.include?(player.position)
+      raise HttpException.new(409, "There is no room for another #{position} in your roster") unless remaining_positions.include?(position)
       if place_bets
-        order = exec_price("SELECT * from buy(#{self.id}, #{player.id})")
+        order = exec_price("SELECT * from buy(#{self.id}, #{player.id}, '#{position}')")
         self.class.uncached do
           self.players.reload
           self.rosters_players.reload
         end
         order
       else
-        RostersPlayer.create!(:player_id => player.id, :roster_id => self.id, :market_id => self.market_id, :purchase_price => player.buy_price, :player_stats_id => player.stats_id)
+        RostersPlayer.create!(:player_id => player.id, :roster_id => self.id, :market_id => self.market_id, :purchase_price => player.buy_price, :player_stats_id => player.stats_id, :position => position)
         raise "Players passed into add_player without placing bets must have buy_price" if player.buy_price.nil?
         self.remaining_salary -= player.buy_price
         self.class.uncached do
@@ -238,7 +238,7 @@ class Roster < ActiveRecord::Base
     #find which positions to fill
     self.players.each{|p| self.remove_player(p) }
     positions = self.position_array
-    pos_taken = self.players.collect(&:position)
+    pos_taken = self.rosters_players.collect(&:position)
     pos_taken.each do |pos|
       i = positions.index(pos)
       positions.delete_at(i) if not i.nil?
@@ -258,7 +258,7 @@ class Roster < ActiveRecord::Base
       player = players.sample
       next if player.nil?
       players.delete(player)
-      add_player(player, false)
+      add_player(player, pos, false)
     end
     self.reload
   end
@@ -279,7 +279,7 @@ class Roster < ActiveRecord::Base
           slice_end = [[players.index{|p| p.buy_price < expected}, indexes[position]].compact.min, 3].max
         end
         player = players.slice(slice_start, slice_end - slice_start).sample
-        add_player(player, place_bets)
+        add_player(player, position, place_bets)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
@@ -306,7 +306,7 @@ class Roster < ActiveRecord::Base
         else
           @candidate_players[position].first
         end
-        add_player(player, place_bets)
+        add_player(player, position, place_bets)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
@@ -335,8 +335,8 @@ class Roster < ActiveRecord::Base
       end while(self.reload.remaining_salary.abs > max_diff && tries > 0)
       if self.remaining_salary.abs > max_diff
         self.rosters_players.reload.each{|rp| remove_player(rp.player, false) }
-        self.purchasable_players.active.where(:id => @rosters.sort_by{|t| t[:remaining].abs }.first[:players].map(&:player_id)).each do |p|
-          add_player(p, false)
+        self.purchasable_players.active.where(:id => @rosters.sort_by{|t| t[:remaining].abs }.first[:rosters_players]).each do |rp|
+          add_player(rp.player, rp.position, false)
         end
       end
     end
@@ -386,7 +386,7 @@ class Roster < ActiveRecord::Base
       begin
         position = remaining_positions.sample # One level of randomization
         player = weighted_sample(indexes[position] > 0 ? @candidate_players[position].slice(0, indexes[position]) : @candidate_players[position])
-        add_player(player, false)
+        add_player(player, position, false)
         @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
       end while(remaining_positions.length > 0)
     end
@@ -411,7 +411,7 @@ class Roster < ActiveRecord::Base
 
   def remaining_positions
     positions = position_array.dup
-    pos_taken = self.class.uncached{ self.players.reload }.map(&:position)
+    pos_taken = self.class.uncached{ self.rosters_players.reload }.map(&:position)
     pos_taken.each do |pos|
       i = positions.index(pos)
       positions.delete_at(i) if not i.nil?

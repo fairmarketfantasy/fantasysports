@@ -118,7 +118,7 @@ class RosterTest < ActiveSupport::TestCase
     player = @roster.purchasable_players.first
     initial_cap = @roster.remaining_salary
     assert_difference('@roster.reload.remaining_salary.to_f', -player.buy_price) do
-      @roster.add_player player
+      @roster.add_player player, player.positions.first.position
     end
     player = @roster.players.with_sell_prices(@roster).sellable.first
     assert_difference('@roster.reload.remaining_salary.to_f', player.sell_price) do
@@ -133,7 +133,7 @@ class RosterTest < ActiveSupport::TestCase
     player = @roster.purchasable_players.first
     @other_roster = create(:roster, :market => @market, :contest_type => @market.contest_types.first)
     initial_price = player.buy_price
-    @roster.add_player player
+    @roster.add_player player, player.positions.first.position
 
     #because the first roster has not been submitted, the price should not have changed
     player = @other_roster.purchasable_players.where(:id => player.id).first
@@ -157,7 +157,7 @@ class RosterTest < ActiveSupport::TestCase
     assert_equal player.buy_price, initial_price
 
     #purchasing with a submitted roster should shift prices
-    @roster.add_player player
+    @roster.add_player player, player.positions.first.position
     #now the price of the player should be higher
     player = @other_roster.purchasable_players.where(:id => player.id).first
     assert player.buy_price > initial_price, "buy price: #{player.buy_price}, initial price: #{initial_price}"
@@ -192,7 +192,7 @@ class RosterTest < ActiveSupport::TestCase
     market.reload
     total_bets = market.total_bets
     assert_difference ['RostersPlayer.count', 'MarketOrder.count'], 1 do
-      @roster.add_player player
+      @roster.add_player player, player.positions.first.position
     end
     assert market.reload.total_bets > total_bets, "adding player increases total bets"
     assert_difference ['RostersPlayer.count', 'MarketOrder.count'], -1 do

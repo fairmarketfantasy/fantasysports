@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140129145721) do
+ActiveRecord::Schema.define(version: 20140129171740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -316,7 +316,6 @@ ActiveRecord::Schema.define(version: 20140129145721) do
     t.integer  "height"
     t.integer  "weight"
     t.string   "college"
-    t.string   "position"
     t.integer  "jersey_number"
     t.string   "status"
     t.integer  "total_games",   default: 0,     null: false
@@ -410,6 +409,7 @@ ActiveRecord::Schema.define(version: 20140129145721) do
     t.decimal "purchase_price",  default: 1000.0, null: false
     t.string  "player_stats_id"
     t.integer "market_id",                        null: false
+    t.string  "position"
   end
 
   add_index "rosters_players", ["market_id"], name: "index_rosters_players_on_market_id", using: :btree
