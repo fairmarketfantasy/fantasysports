@@ -4,30 +4,74 @@
 * Postgresql
 * Go 1.1
 
-# Setup:
+# Development Setup:
+
+This guide is written for OS X.  Other operating systems will need to follow a similar process, but should use native package managers, etc.
+Translating to other OSs is left as an exercise for the reader.
+
+## Install Build Tools
+
+OS X requires the "Command Line Tools for XCode".  You will need an apple developer account.  You can download them here: https://developer.apple.com/downloads
+
+## Install a package manager
+
+This is how we will install application dependencies
+
+
+For OS X, use HomeBrew.  You can get it here: http://brew.sh/
+
+## Install RVM (Ruby Version Manager)
+
+This helps our application stay independent from whatever else you're working on.
+
 
 Follow instructions for setting up RVM (https://rvm.io).  Use Homebrew or your favorite package manager to setup the dependencies
 
-## The database
-In a psql console:
-```
-create database fantasysports;
-create user fantasysports with password 'F4n7a5y' superuser;
+## Install and Setup the Database
+
+````
+brew install postgresql
 ```
 
-In your terminal:
+Follow the instructions printed out after the installation to both:
+* create a database named "postgres"
+* start postgresql on launch (optional)
+
+If you lose that information, it can be retrieved again via `brew info postgresql`
+
+Open a psql console and create the fantasysports database
+```
+current-time[dir]yourprompt % psql -h localhost postgres
+psql (9.1.9, server 9.3.1)
+Type "help" for help.
+
+postgres=# create database fantasysports;
+CREATE DATABASE
+postgres=# create user fantasysports with password 'F4n7a5y' superuser;
+CREATE USER
+\q
+```
+
+## Setup the Rails Application
+
+`cd` into the webapp directory, this should cause rvm to create the gemset or complain that you don't have the proper ruby version installed.
+
+Install the proper ruby version:
+```
+rvm install ruby-2.0.0-p195
+rvm use ruby-2.0.0-p195@fantasysports` # shouldn't need to do this, but can't hurt.
+```
+
+Install dependencies
+```
+bundle install
+```
+
+Setup
 ```
 rake db:migrate
 rake db:setup_functions
 rake db:seed
-```
-
-## The rails app
-`cd` into the webapp directory, this should cause rvm to create the gemset.
-
-Install dependencies
-````
-bundle install
 ```
 
 Start the rails server:
@@ -35,61 +79,21 @@ Start the rails server:
 rails s
 ```
 
-## Seed Data
+You can now open localhost:3000 in a browser
 
-```
-rake seed:reload
-```
 
-## The data fetcher
+## Setup the Data Fetcher
+
+Install golang (v1.1.1 as of this writing):
+```
+brew install go
+```
 
 Seed some data:
 ```
-rake seed:nfl:data --trace
+# From the webapp directory
+rake seed:data --trace
 ```
-
-Fetch points for a market
-```
-rake seed:nfl:market[<id>]
-```
-
-*new*
-
-you can also run the data fetcher outside the rake task,
-which should save a considerable amount of memory
-(since all rake tasks create a new ruby env, but we don't need it
-because we're just starting some go code)
-
-`cd` to datafetcher dir
-```
-export GOPATH=`pwd`
-export PATH=$PATH:$GOPATH/bin
-go install github.com/MustWin/datafetcher/
-```
-There should be no errors reported to stdout.
-This will create the bin and pkg directories in your current directory, and in the bin dir you'll find a binary called datafetcher. And finally, to run it:
-```
-datafetcher -fetch serve
-```
-To fetch in the background:
-```
-nohup datafetcher -fetch serve > datafetcher.log 2>&1 & echo $! > datafetcher.pid
-```
-This sends the output to datafetcher.log and the pid to datafetcher.pid
-To kill the task, just kill -9 the pid in the file.
-
-##Market maintenance task
-`rake market:tend[wait_time]`
-This will publish, open, and close all markets, wait a bit, and do it all over again. Forever.
-It is okay if this runs on multiple machines at once -- the open and close scripts can't affect one another (they block each other on the db)
-The wait_time is optional, the default value is 60 seconds.
-If you are playing around and want to publish, open or close markets, you can call these rake tasks:
-```
-rake market:publish
-rake market:open
-rake market:close
-```
-Or you can do it in sql as described below.
 
 ## Weekly update emails
 
@@ -114,53 +118,4 @@ user = User.where(email: 'mail@example.com').first
 WeeklyDigestMailer.digest_email(user).deliver
 ```
 
-## The SQL Functions that buy, sell, and update the market
-`cd` to market directory
-psql -f market.sql fantasysports
-
-Or from the psql prompt (assuming you launched it from the market dir)
-\i market.sql
-
-Functions currently available:
-```
-buy(roster_id, player_id)
-sell(roster_id, player_id)
-get_price(roster_id, player_id)
-```
-
-To test these functions:
-CAUTION: this will delete all markets, roster, and players from your db. I'll work on making this not the case soon.
-`SELECT test_market();`
-
-This will delete all markets, players, and rosters, then create 1 market (with market id = 1) with 3 players and 3 rosters. Now you can buy and sell the 3 players and watch their prices change.
-
-Then call:
-`SELECT buy(1, 2);`
-to add player 2 to roster 1. This will:
-- increment the total_bets for the market
-- increment the bets in market_players
-- decrement the remaining_salary in rosters
-- insert into rosters_players to put the player in the roster
-- insert the order into market_orders and return the inserted market_order entry, which includes the price paid.
-
-Similarly, to sell a player, call
-`SELECT sell(1, 2)`
-to sell player 2 from roster 1. It does all of the above, but in reverse. It returs the sell order that is saved in market_orders, which includes the price for which the player sold.
-
-To get the price of player 2 for roster 1:
-`SELECT get_price(1, 2)`
-If the roster does NOT have the player, it will return the BUY price for the player. If the roster DOES have the player, it will return the SELL price of the player.
-
-Enjoy!
-
-## The API
-
-To get an OAuth token:
-
-    $ curl -d 'client_id=fairmarketfantasy&client_secret=f4n7Astic&grant_type=password&username=fantasysports@mustw.in&password=F4n7a5y' 'http://vagrant.vm:3000/oauth2/token'
-    {"access_token":"ACCESS_TOKEN_HERE","token_type":"bearer","expires_in":86399,"refresh_token":"REFRESH_TOKEN_HERE"}
-
-To use an OAuth token to authenticate:
-
-    $ curl -H 'Authorization: Bearer ACCESS_TOKEN_HERE' 'http://vagrant.vm:3000/users'
 

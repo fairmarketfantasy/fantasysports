@@ -91,7 +91,7 @@ func main() {
 
 	var mgr lib.FetchManager
 	log.Println(*fetch)
-	if *fetch != "serve" {
+	if *fetch != "" && *fetch != "serve" {
 		mgr = fetchers[*sport]
 		if mgr == nil {
 			log.Panic("No fetchers defined for " + *sport)
