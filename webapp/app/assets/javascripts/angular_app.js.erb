@@ -10,21 +10,23 @@ angular.module('app', [
       'angulartics', 'angulartics.google.analytics'
       ])
 .config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
-    $routeProvider.
+  $routeProvider.
+    //PICK UP HERE, FIGURE OUT ROUTES
       when('/', {redirectTo: function(){ return window.App.currentUser ? '/home' : '/external' }, reloadOnSearch: false}).
       when('/external', {templateUrl: '/home.html', controller: 'HomeController'}).
-      when('/home', {templateUrl: '/home.html', controller: 'HomeController'}).
-      when('/playoffs', {templateUrl: '/home.html', controller: 'HomeController'}).
-      when('/playoff_about', {templateUrl: '/playoff_about.html', controller: 'DummyController'}).
-      when('/coming-soon', {templateUrl: '/coming_soon.html', controller: 'HomeController'}).
-      when('/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
-      when('/market/:market_id/roster/:roster_id/vs/:opponent_roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
-      when('/market/:market_id', {templateUrl: '/home.html', controller: 'HomeController'}).
-      when('/league/:league_id', {templateUrl: '/home.html', controller: 'HomeController'}).
-      when('/rosters', {templateUrl: '/roster_list.html', controller: 'RosterListController'}).
-      when('/history', {templateUrl: '/roster_list.html', controller: 'RosterHistoryController'}).
-      when('/leaderboard', {templateUrl: '/leaderboard.html', controller: 'LeaderboardController'}).
-      when('/rules', {templateUrl: '/rules.html', controller: 'RulesController'}).
+      when('/home', { redirectTo: function() { return _.find(App.sports, function(s) { return s.is_active; }).name + '/home' } }).
+      when('/:sport/home', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/:sport/playoffs', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/:sport/playoff_about', {templateUrl: '/playoff_about.html', controller: 'DummyController'}).
+      when('/:sport/coming-soon', {templateUrl: '/coming_soon.html', controller: 'HomeController'}).
+      when('/:sport/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
+      when('/:sport/market/:market_id/roster/:roster_id/vs/:opponent_roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
+      when('/:sport/market/:market_id', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/:sport/league/:league_id', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/:sport/rosters', {templateUrl: '/roster_list.html', controller: 'RosterListController'}).
+      when('/:sport/history', {templateUrl: '/roster_list.html', controller: 'RosterHistoryController'}).
+      when('/:sport/leaderboard', {templateUrl: '/leaderboard.html', controller: 'LeaderboardController'}).
+      when('/:sport/rules', {templateUrl: '/rules.html', controller: 'RulesController'}).
       when('/terms', {templateUrl: '/terms.html', controller: 'RulesController'}).
       when('/promos', {templateUrl: '/promos.html', controller: 'DummyController'}).
       when('/legal', {templateUrl: '/legal.html', controller: 'DummyController'}).

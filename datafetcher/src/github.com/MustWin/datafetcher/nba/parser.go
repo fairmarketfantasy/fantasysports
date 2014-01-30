@@ -31,7 +31,7 @@ func buildPlayer(element *xml.StartElement) *models.Player {
 	player.StatsId = parsers.FindAttrByName(element.Attr, "id")
 	player.Name = parsers.FindAttrByName(element.Attr, "name_full")
 	player.NameAbbr = parsers.FindAttrByName(element.Attr, "name_abbr")
-	player.Birthdate = parsers.FindAttrByName(element.Attr, "birthdate")
+	//player.Birthdate = parsers.FindAttrByName(element.Attr, "birthdate")
 	player.Status = parsers.FindAttrByName(element.Attr, "status")
 	position := parsers.FindAttrByName(element.Attr, "primary_position")
 	if position == "NA" {
@@ -230,6 +230,9 @@ func ParseRoster(state *lib.ParseState) *models.Player {
 
 func buildStatEvent(state *lib.ParseState) *models.StatEvent {
 	var event = models.StatEvent{}
+	log.Println(state)
+	log.Println(state.CurrentGame)
+	log.Println(state.CurrentPlayer)
 	event.GameStatsId = state.CurrentGame.StatsId
 	event.PlayerStatsId = state.CurrentPlayer.StatsId
 	event.Data = ""
@@ -278,12 +281,10 @@ func ParseGameStatistics(state *lib.ParseState) *[]*models.StatEvent {
 		state.CurrentTeam = buildTeam(state.CurrentElement())
 	case "player":
 		state.CurrentPlayer = buildPlayer(state.CurrentElement())
-		if state.CurrentPositionParser != nil {
-			result := state.CurrentPositionParser(state)
-			return &result
-		}
-		return nil
 	case "statistics":
+		if state.CurrentPlayer == nil {
+			return nil
+		}
 		events := statsParser(state)
 		return &events
 	}

@@ -4,14 +4,14 @@ angular.module("app.controllers")
 
 // TODO: Pick up here: UI needs to determine if loaded market is single elim and keep playoff setting when it's clicked
 //----- WE SHOULD ALSO MAKE SURE THE SINGLE ELIMS AHVE A LOLLAPALOOZA
-  marketService.fetchUpcoming({type: 'single_elimination'}).then(function() {
-    marketService.fetchUpcoming({type: 'regular_season'}).then(function() {
+  marketService.fetchUpcoming({type: 'single_elimination', sport: currentUserService.currentUser.currentSport}).then(function() {
+    marketService.fetchUpcoming({type: 'regular_season', sport: currentUserService.currentUser.currentSport}).then(function() {
       if ($routeParams.market_id) {
-        marketService.selectMarketId($routeParams.market_id);
-      } else if ($location.path() == '/playoffs') {
-        marketService.selectMarketType('single_elimination');
+        marketService.selectMarketId($routeParams.market_id, currentUserService.currentUser.currentSport);
+      } else if ($location.path().match(/\w+\/playoffs/)) {
+        marketService.selectMarketType('single_elimination', currentUserService.currentUser.currentSport);
       } else {
-        marketService.selectMarketType('regular_season');
+        marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
       }
     });
   });
@@ -23,7 +23,7 @@ angular.module("app.controllers")
     if (!market) { return; }
     if (!marketService.currentMarket) {
       flash.error("Oops, we couldn't find that market, pick a different one.");
-      $location.path('/home');
+      $location.path(currentUserService.currentUser.currentSport + '/home');
       return;
     }
     return (market.id === marketService.currentMarket.id);
@@ -52,7 +52,7 @@ angular.module("app.controllers")
   $scope.joinContest = function(contestType) {
     $scope.fs.contests.join(contestType.id, rosters.justSubmittedRoster && rosters.justSubmittedRoster.id).then(function(data){
       rosters.selectRoster(data);
-      $location.path('/market/' + marketService.currentMarket.id + '/roster/' + data.id);
+      $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + marketService.currentMarket.id + '/roster/' + data.id);
     });
   };
 
@@ -61,14 +61,14 @@ angular.module("app.controllers")
   };
 
   $scope.cancelRoster = function() {
-    var path = '/market/' + marketService.currentMarket.id;
+    var path =  '/' + currentUserService.currentUser.currentSport +'/market/' + marketService.currentMarket.id;
     rosters.cancel();
     $location.path(path);
   };
 
   $scope.clearJustSubmittedRoster = function() {
     $scope.justSubmittedRoster = null;
-    $location.path('/');
+    $location.path('/' + currentUserService.currentUser.currentSport + '/home');
     flash.success("Awesome, You're IN. Good luck!");
   };
 
@@ -97,7 +97,7 @@ angular.module("app.controllers")
       ).then(function(roster) {
         flash.success("Awesome, your contest is all setup. Now lets create your entry into the contest.");
         rosters.selectRoster(roster);
-        $location.path('/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
+        $location.path('/' + currentUserService.currentUser.currentSport +'/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
         currentUserService.refreshUser();
       });
     });

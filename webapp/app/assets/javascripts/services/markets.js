@@ -1,16 +1,19 @@
 angular.module('app.data')
   .factory('markets', ['fs', '$q', function(fs, $q) {
-    var marketData = {};
-    var gameData = {};
+    var marketData = {}
+      , gameData = {}
+      , sportsToIds = _.object(_.map(App.sports, function(s) { return s.name; }), _.map(App.sports, function(s) { return s.id; }))
+      , idsToSports= _.invert(sportsToIds);
+
     return new function() {
       this.currentMarket = null;
-      //this.marketType = 'regular_season';
       this.upcoming = [];
 
       this.fetchUpcoming = function(opts) {
+        this.upcoming = [];
         // TODO: memoize?
         var self = this;
-        return fs.markets.list(opts.type).then(function(markets) {
+        return fs.markets.list(opts.type, opts.sport).then(function(markets) {
           _.each(markets, function(market) {
             marketData[market.id] = market;
           });
@@ -22,15 +25,18 @@ angular.module('app.data')
         });
       };
 
-      this.selectMarketId = function(id) {
+      this.selectMarketId = function(id, sport) {
         var type = marketData[id].game_type == 'regular_season' ? 'regular_season' : 'single_elimination'; // Hacky
-        this.selectMarketType(type);
+        this.selectMarketType(type, idsToSports[marketData[id].sport_id]);
         this.currentMarket = marketData[id];
       };
 
-      this.selectMarketType = function(type) {
+      this.selectMarketType = function(type, sport) {
         this.marketType = type || 'regular_season';
-        this.upcoming = _.filter(marketData, function(elt) { return elt.game_type.match(type) || (type == 'regular_season' && elt.game_type == null) /* last clause should be temporary*/});
+        this.upcoming = _.filter(marketData, function(elt) {
+          return elt.sport_id == sportsToIds[sport] && elt.game_type.match(type) || (type == 'regular_season' && elt.game_type == null);
+          /* last clause should be temporary*/
+        });
         this.currentMarket = this.upcoming[0];
       };
 

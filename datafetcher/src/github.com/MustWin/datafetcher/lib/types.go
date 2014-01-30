@@ -1,24 +1,15 @@
 package lib
 
 import (
-	"github.com/MustWin/datafetcher/lib/model"
+	"github.com/MustWin/datafetcher/lib/models"
 	"log"
-	"time"
 )
 
 var Sports = []string{"NFL", "NBA"}
 
-type Sport struct {
-	model.ModelBase
-	Id        int
-	Name      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
 func InitSports() {
 	for _, sport := range Sports {
-		s := Sport{Name: sport}
+		s := models.Sport{Name: sport}
 		err := orm.Save(&s)
 		if err != nil {
 			log.Println(err)

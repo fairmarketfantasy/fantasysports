@@ -27,8 +27,11 @@ func (mgr *FetchManager) GetFetcher() Fetcher {
 }
 
 func (mgr *FetchManager) createMarket(name string, games lib.Games) {
+	sport := models.Sport{}
+	mgr.Orm.GetDb().Where("name = $1", mgr.Sport()).Find(&sport)
 	sort.Sort(games)
 	market := models.Market{}
+	market.SportId = sport.Id
 	market.Name = name
 	market.GameType = "regular_season"
 	market.ShadowBetRate = 0.75

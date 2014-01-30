@@ -1,5 +1,6 @@
 angular.module('app.services')
-  .factory('currentUserService', ['$dialog', '$rootScope', 'flash', '$timeout', 'fs', function($dialog, $rootScope, flash, $timeout, fs) {
+.factory('currentUserService', ['$dialog', '$rootScope', 'flash', '$timeout', '$rootScope', '$routeParams', 'fs', 
+         function($dialog, $rootScope, flash, $timeout, $rootScope, $routeParams, fs) {
     var dialogOpts = {
           backdrop: true,
           keyboard: true,
@@ -273,8 +274,8 @@ angular.module('app.services')
         show: function(id) {
           return $http({method: 'GET', url: '/markets/' + id});
         },
-        list: function(type) {
-          return $http({method: 'GET', url: '/markets?type=' + type});
+        list: function(type, sport) {
+          return $http({method: 'GET', url: '/markets', params: {type: type, sport: sport}});
         }
       },
       contests: {

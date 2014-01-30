@@ -50,7 +50,7 @@ class RostersController < ApplicationController
   def add_player
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
     player = Player.find(params[:player_id])
-    price = roster.add_player(player)
+    price = roster.add_player(player, params[:position])
     Eventing.report(current_user, 'addPlayer', :player_id => player.id)
     render_api_response({:price => price})
   end

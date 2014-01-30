@@ -25,8 +25,8 @@ class Player < ActiveRecord::Base
   scope :on_team,      ->(team)       { where(team: team)}
   scope :in_market,    ->(market)     { where(team: market.games.map{|g| g.teams.map(&:abbrev)}.flatten) }
   scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
-  scope :in_position,  ->(position)   { where(position: position) }
-  scope :normal_positions,      -> { select('players.*, player_positions.position').joins('JOIN player_positions ON players.id=player_positions.player_id').where("position IN('QB', 'RB', 'WR', 'TE', 'K', 'DEF')") }
+  scope :in_position,  ->(position)   { select('players.*, player_positions.position').joins('JOIN player_positions ON players.id=player_positions.player_id').where(["player_positions.position = ?", position]) }
+  scope :normal_positions,      -> { select('players.*, player_positions.position').joins('JOIN player_positions ON players.id=player_positions.player_id').where("player_positions.position IN('QB', 'RB', 'WR', 'TE', 'K', 'DEF')") }
   scope :order_by_ppg,          ->(dir = 'desc') { order("(total_points / (total_games + .001)) #{dir}") }
   scope :with_purchase_price,   -> { select('players.*, rosters_players.purchase_price') } # Must also join rosters_players
   scope :with_market,           ->(market) { select('players.*').select(

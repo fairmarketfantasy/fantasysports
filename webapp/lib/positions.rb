@@ -15,6 +15,6 @@ class Positions
   end
 
   def self.default_NBA
-    'QB,RB,RB,WR,WR,WR,DEF,K,TE'
+    'PG,SG,PF,SF,C,G,F,UTIL'
   end
 end

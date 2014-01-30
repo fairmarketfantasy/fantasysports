@@ -2,6 +2,7 @@ package lib
 
 import (
 	"database/sql"
+	"github.com/MustWin/datafetcher/lib/models"
 	_ "github.com/bmizerany/pq"
 	"github.com/mikejihbe/beedb"
 	"log"
@@ -35,11 +36,11 @@ func DbInit(sportName string) (*beedb.Model, map[string]interface{}) {
 	if sportName == "" {
 		return orm, make(map[string]interface{})
 	}
-	var sport Sport
+	var sport models.Sport
 	err := orm.Where("name = $1", sportName).Find(&sport)
 	if err != nil {
 		//find available sports?
-		var sports []Sport
+		var sports []models.Sport
 		orm.FindAll(&sports)
 		sportNames := make([]string, 0)
 		for _, sport := range sports {

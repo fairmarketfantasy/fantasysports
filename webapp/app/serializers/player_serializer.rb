@@ -9,6 +9,7 @@ class PlayerSerializer < ActiveModel::Serializer
       :height, 
       :weight, 
       :college, 
+      # TODO Make these multiple
       :position, 
       :jersey_number, 
       :status, 
