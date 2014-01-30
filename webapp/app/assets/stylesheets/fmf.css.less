@@ -239,13 +239,13 @@ select:focus:invalid {
   height: 600px;
 }
 .sign-up-content {
-  padding-top: 12%;
+  padding-top: 80px;
   text-align: center;
 }
 .ie8 .sign-up-content {
   padding-top: 8%;
 }
-.login-buttons, .landing-mobile-app-links {
+.login-buttons {
   width: 86%;
   padding: 20px 3%;
   margin: 0 auto;
@@ -256,6 +256,13 @@ select:focus:invalid {
   .border-radius(6px);
   border: solid 2px rgba(0,0,0,0.3);
 }
+.landing-mobile-app-links {
+  width: 300px;
+  text-align: center;
+  top: 500px;
+  right: 30px;
+  position: absolute;
+}
 .ie8 .login-buttons {
   background-color: @white;
   border: solid 2px @grayDark;
@@ -265,7 +272,7 @@ select:focus:invalid {
   padding-top: 40px;
 }
 .sign-up-heading {
-  font-size: 38px;
+  font-size: 26px;
   margin-bottom: 14px;
   margin-top: 0;
   color: rgba(0,0,0,0.7);
@@ -274,9 +281,16 @@ select:focus:invalid {
   font-size: 20px;
   margin-bottom: 14px;
 }
+.new-sign-up-text {
+  font-size: 16px;
+  margin-top: -10px;
+}
 .difference {
   font-size: 22px;
   margin-bottom: 20px;
+}
+.landing-container .difference {
+  margin-bottom: 0;  
 }
 .fui-facebook {
   margin-right: 2px;
@@ -285,7 +299,8 @@ select:focus:invalid {
   text-align: center;
 }
 .sample-team {
-  padding-top: 50px;
+  padding-top: 0;
+  text-align: left;
   .roster {
     width: 100%;
   }
@@ -1123,6 +1138,13 @@ input, textarea, .uneditable-input {
   padding: 10px 4%;
   width: 92%;
 }
+.landing-container .roster-overflow {
+  height: 300px;
+  overflow-y: scroll;
+}
+.landing-container .mr-player-cta {
+  margin-top: 14px;
+}
 .result-area {
   color: #fefefe;
   text-align: center;
@@ -1653,11 +1675,12 @@ textarea[class*="span"] {
     padding-top: 9%;
   }
   .sign-up-heading {
-    font-size: 28px;
+    font-size: 24px;
   }
   .sign-up-text {
     font-size: 16px;
   }
+
   .difference {
     font-size: 20px;
     margin-bottom: 16px;
@@ -1674,7 +1697,7 @@ textarea[class*="span"] {
     padding-top: 8%;
   }
   .sign-up-heading {
-    font-size: 24px;
+    font-size: 20px;
   }
   .sign-up-text {
     font-size: 14px;
