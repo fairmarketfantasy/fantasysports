@@ -25,7 +25,8 @@ angular.module("app.controllers")
     return angular.extend({}, filterOpts);
   };
   var fetchPlayers = function() {
-    filterOpts.position = filterOpts.position || rosters.uniqPositionList[0];
+    // This is hideous, and all it does is set the default position
+    filterOpts.position = filterOpts.position || (!filterOpts.game && !filterOpts.autocomplete && rosters.uniqPositionList[0]) || undefined;
     $scope.filterPosition = filterOpts.position;
     if (!rosters.currentRoster || !$scope.currentUser) { return; }
     $scope.fs.players.list(rosters.currentRoster.id, filterOpts).then(function(players) {

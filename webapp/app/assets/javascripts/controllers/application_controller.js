@@ -1,13 +1,23 @@
 angular.module("app.controllers")
-.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'registrationService', 'rosters', '$location', 'flash', '$dialog', '$timeout', '$routeParams',
-            function($scope, fs, currentUserService, registrationService, rosters, $location, flash, $dialog, $timeout, $routeParams) {
+.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'registrationService', 'rosters', '$location', 'flash', '$dialog', '$timeout', '$route', '$routeParams',
+            function($scope, fs, currentUserService, registrationService, rosters, $location, flash, $dialog, $timeout, $route, $routeParams) {
 
+  $scope.sports = window.App.sports;
   $scope.fs = fs;
   $scope.$routeParams = $routeParams;
 
   $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;
   $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;}, true);
+
+  $scope.sportHasPlayoffs = function() {
+    return _.find(App.sports, function(s) { return s.name == $scope.currentUser.currentSport; } ).playoffs_on;
+  };
+
+  // Watch the sport scope
+  $scope.$watch(function() { return $route.current && $route.current.params.sport; }, function(newSport, oldSport) {
+    App.currentUser.currentSport = newSport;
+  });
 
   $scope.signUpModal = function(msg) {
     registrationService.signUpModal(msg);

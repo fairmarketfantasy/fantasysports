@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+type Sport struct {
+	UniqModel
+	Id        int
+	Name      string `model:"key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 type Market struct {
 	UniqModel
 	Id              int

@@ -1,7 +1,7 @@
 <div ng-controller="MarketController">
   <ul class="clearfix market-list">
     <li class="market-li" ng-repeat="market in marketService.upcoming">
-      <a href="#/market/{{market.id}}" class="market-link" ng-class="{ highlightMkt: isCurrent(market) }">
+    <a href="#/{{currentUser.currentSport}}/market/{{market.id}}" class="market-link" ng-class="{ highlightMkt: isCurrent(market) }">
         <strong>{{market.name}}</strong><br /> {{market | niceMarketDesc}}
       </a>
     </li>

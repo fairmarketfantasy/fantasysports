@@ -108,9 +108,11 @@
         <a href="/#"><h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1></a> <span class="sub-title">Only available here, Play the NFL Playoffs!</span>
       </div>
       <div class="span4">
-        <ul class="nav nav-pills blue-pills modal-pills">
-          <li ng-class="{active: currentUser.currentSport == 'NFL'}"><a ng-click="currentUser.currentSport = 'NFL'" href="/#/">NFL</a></li>
-          <li ng-class="{active: currentUser.currentSport == 'NBA'}"><a ng-click="currentUser.currentSport = 'NBA'" href="/#/coming-soon">NBA</a></li>
+        <ul class="nav nav-pills blue-pills modal-pills" ng-cloak>
+          <li ng-repeat="sport in sports" ng-class="{active: currentUser.currentSport == sport.name}">
+            <a ng-show="sport.is_active" href="/#/{{sport.name}}/home">{{sport.name}}</a>
+            <a ng-hide="sport.is_active" href="/#/coming-soon">{{sport.name}}</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -140,9 +142,6 @@
             <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Manage Subscription</a>
           </div>
        </div>
-
-
-
       </div>
     </div>
     </div>
@@ -153,12 +152,12 @@
       <div class="row">
         <div class="span3 user-navigation">
           <ul class="nav">
-            <li class="nav-item"><a href="/#/">Home</a></li>
-            <li class="nav-item nav-item-highlight"><a href="/#/playoffs">Play the Playoffs</a></li>
-            <li class="nav-item"><a href="/#/rosters">My Contests</a></li>
-            <li class="nav-item"><a href="/#/history">History</a></li>
+            <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/home">Home</a></li>
+            <li class="nav-item nav-item-highlight"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>
+            <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rosters">My Contests</a></li>
+            <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>
             <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
-            <li class="nav-item"><a href="/#/rules" >Rules and Scoring</a></li>
+            <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rules" >Rules and Scoring</a></li>
             <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
             <li class="nav-item"><a href="/#/support">Support</a></li>
             <li class="nav-item end"><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></li>
@@ -206,6 +205,9 @@
     currentUser: <%= (UserSerializer.new(current_user, scope: current_user).to_json.html_safe) || 'null' %>,
     isUserAdmin: <%= current_user && current_user.admin? || false %>
   };
+
+window.App.sports = <%= Sport.all.map{|s| SportSerializer.new(s, scope: current_user) }.to_json.html_safe %>;
+
   window.setCurrentUser = function(user) {
     window.App.currentUser = user;
   };

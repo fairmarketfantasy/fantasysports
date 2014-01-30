@@ -179,8 +179,6 @@ func scanStructIntoMap(obj interface{}) (map[string]interface{}, error) {
 
 		mapKey := snakeCasedName(fieldName)
 		value := dataStruct.FieldByName(fieldName)
-		log.Println(fieldName)
-		log.Println(value.Kind().String())
 		if value.Kind().String() == "slice" {
 			// MT
 		} else if value.Kind().String() != "struct" || value.Type().String() == "time.Time" {
