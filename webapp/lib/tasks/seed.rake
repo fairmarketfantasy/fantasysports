@@ -36,6 +36,7 @@ namespace :seed do
     Market.tend
   end
 
+  desc 'Run the datafetcher for all sports'
   task :data do
     run_fetcher "-year 2013 -fetch serve"
   end
