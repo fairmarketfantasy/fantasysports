@@ -36,6 +36,10 @@ namespace :seed do
     Market.tend
   end
 
+  task :data do
+    run_fetcher "-year 2013 -fetch serve"
+  end
+
   namespace :nfl do
 
     desc 'fetch the nfl data for the year (keeps running)'
