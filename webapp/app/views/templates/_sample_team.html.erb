@@ -1,9 +1,9 @@
 <div ng-controller="SampleRosterController" class="roster"> 
   
   <div class="roster-area">
-    <div class="clearfix">
+    <div class="clearfix hide">
       <h4 class="team-heading inline-heading">Sign Up to Claim THIS Roster</h4>
-      <p><a href="javascript://" class="btn btn-large btn-block btn-danger" ng-click='signUpModal()'>I WANT THIS ROSTER!</a></p>
+      
     </div>
     <div class="loading-message" ng-hide="roster">
       <img src=<%= asset_path 'ajax-throbber.gif' %>/>
@@ -28,19 +28,15 @@
           </div>
 
           <div class="mr-player-cta">
-            <p class="mr-player-score" ng-show="roster.state != 'in_progress' && inThePast(market.started_at)"><a href="javascript://" ng-click="openStatsDialog(player)">{{player.score | number:1}}</a></p>
-            <span ng-show="roster.owner_id == currentUser.id">
-              <a class="btn btn-small btn-orange" ng-show="player.id && (market.state == 'published' || market.state == 'opened' && !player.locked)" href="javascript://" ng-click="removePlayer(player)">Trade</a>
-              <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
-            </span>
-          </div>
-          <div class="mr-player-eliminated" ng-show="player.is_eliminated">
-            ELIMINATED
+              <a class="btn btn-small btn-orange" href="javascript://" ng-click="signUpModal()">Trade</a>
           </div>
         </li>
       </ul>
     </div>
 
   </div>
-</div>
+    <div class="text-center">
+      <p><a href="javascript://" class="btn btn-large btn-danger" ng-click='signUpModal()'>Claim this roster!</a> <a href="javascript://" class="btn btn-large btn-success" ng-click='signUpModal()'>Start Over From Scratch!</a></p>
+    </div>
 
+</div>

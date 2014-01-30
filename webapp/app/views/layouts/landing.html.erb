@@ -95,18 +95,21 @@
   <div class="landing-container">
     <div class="span6 offset1 sign-up-content">
       <div class="login-buttons" ng-controller="LoginController">
-        <h2 class="sign-up-heading">Play Fantasy Football for FREE or for Cash!</h2> 
-        <p class="sign-up-text">At <span class="special">Fair Market </span><span class="tilt">Fantasy</span> you can play daily and weekly fantasy football leagues for real money! Our player prices are set in real time, based on market demand, and we have the highest average  payouts in the industry!</p> <p class="special difference">Sign up and feel the difference!</p>
+        <h2 class="sign-up-heading">Try a friendlier, fairer, daily fantasay sports site - FREE!</h2> 
+        <p class="new-sign-up-text">Here's a sample roster we've generated for you, you can edit it, start over, take it as it is, whatever you want!</p>
 
-        <p><a href="javascript://" class="btn btn-large btn-block btn-danger" ng-click='signUpModal()'>Sign Up, Now!</a></p>
-        <p><a href="javascript://" class="btn btn-large btn-block btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Sign Up with Facebook</a></p>
+        <p class="special difference">Football: Super Bowl One-Day Roster</p>
+
+        <div class="sample-team clearfix" ng-include="'/sample_team.html'"></div>
+
         <p><a href="/terms" target="_blank">Terms and Conditions</a></p>
+
       </div>
       <div class="landing-mobile-app-links">
         <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
       </div>
     </div>
-    <div class="span5 sample-team" ng-include="'/sample_team.html'"></div>
+    
   </div>
   <article class="about-container">
     <div class="container">
