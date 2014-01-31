@@ -16,6 +16,7 @@ angular.module("app.controllers")
 
   // Watch the sport scope
   $scope.$watch(function() { return $route.current && $route.current.params.sport; }, function(newSport, oldSport) {
+    if (!App.currentUser) { return; }
     App.currentUser.currentSport = newSport;
   });
 
