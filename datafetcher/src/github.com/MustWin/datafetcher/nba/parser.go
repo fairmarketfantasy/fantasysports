@@ -29,8 +29,8 @@ func contains(list []string, elem string) bool {
 func buildPlayer(element *xml.StartElement) *models.Player {
 	var player = models.Player{}
 	player.StatsId = parsers.FindAttrByName(element.Attr, "id")
-	player.Name = parsers.FindAttrByName(element.Attr, "name_full")
-	player.NameAbbr = parsers.FindAttrByName(element.Attr, "name_abbr")
+	player.Name = parsers.FindAttrByName(element.Attr, "full_name")
+	player.NameAbbr = parsers.FindAttrByName(element.Attr, "last_name")
 	//player.Birthdate = parsers.FindAttrByName(element.Attr, "birthdate")
 	player.Status = parsers.FindAttrByName(element.Attr, "status")
 	position := parsers.FindAttrByName(element.Attr, "primary_position")
@@ -216,7 +216,8 @@ func ParseRoster(state *lib.ParseState) *models.Player {
 		state.CurrentTeam = buildTeam(state.CurrentElement())
 	case "player":
 		player := buildPlayer(state.CurrentElement())
-		player.Team = state.CurrentTeam.Abbrev
+		log.Println(state.CurrentTeam.StatsId)
+		player.Team = state.CurrentTeam.StatsId
 		state.CurrentPlayer = player
 		return player
 	case "injury":

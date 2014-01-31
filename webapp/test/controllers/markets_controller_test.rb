@@ -12,7 +12,7 @@ class MarketsControllerTest < ActionController::TestCase
   end
 
   test "index" do
-    xhr :get, :index
+    xhr :get, :index, :sport => 'NFL'
     assert_response :success
   end
 

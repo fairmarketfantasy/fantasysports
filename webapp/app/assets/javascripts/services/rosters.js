@@ -134,7 +134,7 @@ angular.module('app.data')
         var self = this;
         var index = indexForPlayerInRoster(this.currentRoster, player)
         if (index >= 0) {
-          return fs.rosters.add_player(this.currentRoster.id, player.id).then(function(market_order) {
+          return fs.rosters.add_player(this.currentRoster.id, player.id, player.position).then(function(market_order) {
             self.currentRoster.remaining_salary -= parseInt(market_order.price);
             player.purchase_price = market_order.price;
             player.sell_price = market_order.price;
@@ -211,7 +211,7 @@ angular.module('app.data')
         fs.rosters.cancel(currentRoster.id).then(function(data) {
           delete rosterData[currentRoster.id];
           self.reset();
-          $location.path('/market/' + currentRoster.market.id);
+          $location.path(currentUserService.currentUser.currentSport + '/market/' + currentRoster.market.id);
         });
       };
 

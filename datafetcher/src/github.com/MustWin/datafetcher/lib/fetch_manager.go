@@ -8,7 +8,7 @@ import (
 )
 
 type FetchManager interface {
-	Sport() string
+	GetSport() *models.Sport
 	Startup(FetchManager) error
 	Daily(FetchManager) error
 	Schedule(string, time.Time, func())
@@ -50,7 +50,7 @@ func (f *FetchManagerBase) Daily(mgr FetchManager) error {
 	// Refresh rosters for each team
 	for _, team := range teams {
 		var id string
-		switch mgr.Sport() {
+		switch mgr.GetSport().Name {
 		case "NFL":
 			id = team.Abbrev
 		default:
@@ -108,7 +108,7 @@ func (f *FetchManagerBase) SchedulePbpCollection(mgr FetchManager, game *models.
 			}
 			time.AfterFunc(POLLING_PERIOD, poll)
 		}
-		mgr.Schedule(mgr.Sport()+"-pbp-"+game.StatsId, game.GameTime.Add(-5*time.Minute), poll)
+		mgr.Schedule(mgr.GetSport().Name+"-pbp-"+game.StatsId, game.GameTime.Add(-5*time.Minute), poll)
 	}
 }
 

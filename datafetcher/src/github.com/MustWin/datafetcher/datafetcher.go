@@ -62,15 +62,16 @@ var year = flag.Int("year", defaultYear(), "Year to scope the fetch.")
 var team = flag.String("team", "DAL", "Team to fetch. Only pass with roster. Abbrev in NFL, statsId in NBA")
 var statsId = flag.String("statsId", "N9837-8d7fh3-sd8sd8f7-MIJ3IYG", "Unique identifier of game to fetch. Only pass with pbp or stats")
 
+// Pick up here, figure out how to pass in a sport
 func getFetchers(orm *model.Orm) map[string]lib.FetchManager {
 	fetch := make(map[string]lib.FetchManager)
 	nbaFetcher := nba.Fetcher{*year, &fetchers.HttpFetcher{"NBA", make(map[string]string)}}
 	nbaFetcher.FetchMethod.AddUrlParam("api_key", "8uttxzxefmz45ds8ckz764vr")
-	fetch["NBA"] = &nba.FetchManager{Orm: *orm, Fetcher: nbaFetcher}
+	fetch["NBA"] = &nba.FetchManager{Orm: *orm, Fetcher: nbaFetcher, Sport: lib.Sports["NBA"]}
 
 	nflFetcher := nfl.Fetcher{*year, &fetchers.HttpFetcher{"NFL", make(map[string]string)}}
 	nflFetcher.FetchMethod.AddUrlParam("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
-	fetch["NFL"] = &nfl.FetchManager{Orm: *orm, Fetcher: nflFetcher}
+	fetch["NFL"] = &nfl.FetchManager{Orm: *orm, Fetcher: nflFetcher, Sport: lib.Sports["NFL"]}
 	return fetch
 }
 
@@ -120,6 +121,9 @@ func main() {
 		log.Println("Fetching Roster data")
 		players := mgr.GetRoster(*team)
 		orm.SaveAll(players)
+		for _, p := range players {
+			log.Println(p.Team)
+		}
 		utils.PrintPtrs(players)
 
 	case "stats":

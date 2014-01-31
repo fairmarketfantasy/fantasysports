@@ -16,10 +16,11 @@ type FetchManager struct {
 	lib.FetchManagerBase
 	Fetcher Fetcher
 	Orm     model.Orm
+	Sport   *models.Sport
 }
 
-func (mgr *FetchManager) Sport() string {
-	return "NBA"
+func (mgr *FetchManager) GetSport() *models.Sport {
+	return mgr.Sport
 }
 
 func (mgr *FetchManager) GetFetcher() Fetcher {
@@ -27,11 +28,9 @@ func (mgr *FetchManager) GetFetcher() Fetcher {
 }
 
 func (mgr *FetchManager) createMarket(name string, games lib.Games) {
-	sport := models.Sport{}
-	mgr.Orm.GetDb().Where("name = $1", mgr.Sport()).Find(&sport)
 	sort.Sort(games)
 	market := models.Market{}
-	market.SportId = sport.Id
+	market.SportId = mgr.Sport.Id
 	market.Name = name
 	market.GameType = "regular_season"
 	market.ShadowBetRate = 0.75
@@ -107,6 +106,9 @@ func (mgr *FetchManager) GetGames() []*models.Game {
 func (mgr *FetchManager) GetRoster(team string) []*models.Player {
 	log.Printf("Fetching %s players", team)
 	players := mgr.Fetcher.GetTeamRoster(team)
+	for _, player := range players {
+		player.SportId = mgr.Sport.Id
+	}
 	mgr.Orm.SaveAll(players)
 	return players
 }
