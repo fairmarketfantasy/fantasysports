@@ -120,8 +120,8 @@ type PlayerStatus struct {
 type PlayerPosition struct {
 	UniqModel
 	Id       int
-	PlayerId int
-	Position string
+	PlayerId int    `model:"key"`
+	Position string `model:"key"`
 }
 
 type Player struct {

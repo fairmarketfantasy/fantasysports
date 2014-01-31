@@ -1,7 +1,16 @@
 class Player < ActiveRecord::Base
   attr_protected
   belongs_to :sport
-  belongs_to :team, :foreign_key => 'team'
+  #belongs_to :team, :foreign_key => 'team' # THe sportsdata data model is so bad taht sometimes this is an abbrev, sometimes its a stats id
+  def team
+    return self[:team] if self[:team].is_a? Team
+    team = if self[:team].split('-').count > 2
+      Team.where(:stats_id => self[:team])
+    else
+      Team.where(:abbrev => self[:team])
+    end
+    team.first
+  end
   has_many :stat_events
   has_many :positions, :class_name => 'PlayerPosition'
 
@@ -23,15 +32,21 @@ class Player < ActiveRecord::Base
 
   scope :autocomplete, ->(str)        { where("name ilike '%#{str}%'") }
   scope :on_team,      ->(team)       { where(team: team)}
-  scope :in_market,    ->(market)     { where(team: market.games.map{|g| g.teams.map(&:abbrev)}.flatten) }
-  scope :in_game,      ->(game)       { where(team: game.teams.pluck(:abbrev)) }
+  scope :in_market,    ->(market)     { where(team: market.games.map{|g| g.teams.map{|t| [t.abbrev, t.stats_id]} }.flatten) }
+  scope :in_game,      ->(game)       { where(team: game.teams.map{|t| [t.abbrev, t.stats_id]}.flatten ) }
   scope :in_position,  ->(position)   { select('players.*, player_positions.position').joins('JOIN player_positions ON players.id=player_positions.player_id').where(["player_positions.position = ?", position]) }
-  scope :normal_positions,      -> { select('players.*, player_positions.position').joins('JOIN player_positions ON players.id=player_positions.player_id').where("player_positions.position IN('QB', 'RB', 'WR', 'TE', 'K', 'DEF')") }
+  scope :normal_positions,      ->(sport_id) { select('players.*, player_positions.position'
+                                    ).joins('JOIN player_positions ON players.id=player_positions.player_id'
+                                    ).where("player_positions.position IN( '#{Positions.for_sport_id(sport_id).split(',').join("','") }')") }
   scope :order_by_ppg,          ->(dir = 'desc') { order("(total_points / (total_games + .001)) #{dir}") }
   scope :with_purchase_price,   -> { select('players.*, rosters_players.purchase_price') } # Must also join rosters_players
   scope :with_market,           ->(market) { select('players.*').select(
                                              "#{market.id} as market_id, mp.is_eliminated, mp.score, mp.locked"
                                            ).joins("JOIN market_players mp ON players.id=mp.player_id AND mp.market_id = #{market.id}") }
+  scope :with_prices_for_players, -> (market, buy_in, player_ids) {
+      select('players.*, mp.*').joins(
+        "JOIN market_prices_for_players(#{market.id}, #{buy_in}, #{player_ids.join(', ') }) mp ON mp.player_id=players.id")
+  }
 
   # THIS IS REALLY SLOW, favor market_prices_for_players
   scope :with_prices,           -> (market, buy_in) {

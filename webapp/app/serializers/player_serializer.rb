@@ -1,19 +1,18 @@
 class PlayerSerializer < ActiveModel::Serializer
-  attributes :id, 
-      :stats_id, 
-      :team, 
-      :sport_id, 
-      :name, 
-      :name_abbr, 
-      :birthdate, 
-      :height, 
-      :weight, 
-      :college, 
-      # TODO Make these multiple
-      :position, 
-      :jersey_number, 
-      :status, 
-      :ppg, 
+  attributes :id,
+      :stats_id,
+      :team,
+      :sport_id,
+      :name,
+      :name_abbr,
+      :birthdate,
+      :height,
+      :weight,
+      :college,
+      :position,
+      :jersey_number,
+      :status,
+      :ppg,
       :purchase_price,
       :buy_price,
       :sell_price,
@@ -25,7 +24,7 @@ class PlayerSerializer < ActiveModel::Serializer
       :next_game_at
 
   def team
-    object[:team]
+    Team.find_by_identifier(object[:team]).name
   end
 
   def ppg

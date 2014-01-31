@@ -9,4 +9,9 @@ class Team < ActiveRecord::Base
     Game.where("home_team = #{self.id} OR away_team_id = #{self.id}")
   end
 
+  # Either an abbrev or a stats_id
+  def self.find_by_identifier(identifier)
+    (identifier.split('-').count > 2 ? Team.where(:stats_id => identifier) : Team.where(:abbrev => identifier)).first
+  end
+
 end

@@ -214,7 +214,7 @@ class Roster < ActiveRecord::Base
   end
 
   def exec_price(sql)
-    Integer(ActiveRecord::Base.connection.execute(sql).first['_price'])
+    ActiveRecord::Base.connection.execute(sql).first['_price'].to_i
   end
 
   def cleanup
@@ -280,7 +280,7 @@ class Roster < ActiveRecord::Base
         end
         player = players.slice(slice_start, slice_end - slice_start).sample
         add_player(player, position, place_bets)
-        @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
+        @candidate_players = remove_from_candidate_players(@candidate_players, player)
       end while(remaining_positions.length > 0)
     end
     self.reload
@@ -306,8 +306,9 @@ class Roster < ActiveRecord::Base
         else
           @candidate_players[position].first
         end
+        debugger if player.nil?
         add_player(player, position, place_bets)
-        @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
+        @candidate_players = remove_from_candidate_players(@candidate_players, player)
       end while(remaining_positions.length > 0)
     end
     self.reload
@@ -320,9 +321,11 @@ class Roster < ActiveRecord::Base
     if self.reload.remaining_salary.abs > max_diff
       tries = 5
       begin
-        players = self.rosters_players.with_market_players(self.market).reload.sort{|rp| -rp.purchase_price }
+        players = self.class.uncached do
+          self.rosters_players.with_market_players(self.market).reload.sort{|rp| -rp.purchase_price }
+        end
         @rosters << {players: players, remaining: self.remaining_salary}
-        players.select{|rp| !rp.locked }.sample(2).each{|rp| remove_player(rp.player, false) }
+        players.select{|rp| !rp.locked }.sample(2).each{|rp| remove_player(rp.player, place_bets) }
 =begin
         if self.remaining_salary > 0
           players.slice(0, 2).each{|rp| remove_player(rp.player, false) }
@@ -336,7 +339,7 @@ class Roster < ActiveRecord::Base
       if self.remaining_salary.abs > max_diff
         self.rosters_players.reload.each{|rp| remove_player(rp.player, false) }
         roster_players = @rosters.sort_by{|t| t[:remaining].abs }.first[:players]
-        players_with_prices = self.purchasable_players.active.where(:id => roster_players.map(&:player_id))
+        players_with_prices = Player.with_prices_for_players(self.market, self.buy_in, roster_players.map(&:player_id))
         players_with_prices.each do |p|
           add_player(p, roster_players.find{|rp| rp.player_id == p.id }.position, false)
         end
@@ -365,12 +368,21 @@ class Roster < ActiveRecord::Base
     end)
   end
 
+  def remove_from_candidate_players(candidate_players, player)
+    player.positions.map(&:position).each do |pos|
+      next unless candidate_players[pos]
+      candidate_players[pos] = candidate_players[pos].reject{|p| p.id == player.id}
+    end
+    candidate_players
+  end
+
   def fill_candidate_players
       candidate_players = {}
       indexes = {}
-      position_array.each { |pos| candidate_players[pos] = []; indexes[pos] = 0 }
+      remaining_positions.each { |pos| candidate_players[pos] = []; indexes[pos] = 0 }
       self.purchasable_players.active.each do |p|
         next unless candidate_players.include?(p.position)
+        next if self.rosters_players.map(&:player_id).include?(p.id)
         candidate_players[p.position] << p
         indexes[p.position] += 1 if p.buy_price > 1500
       end
@@ -389,7 +401,7 @@ class Roster < ActiveRecord::Base
         position = remaining_positions.sample # One level of randomization
         player = weighted_sample(indexes[position] > 0 ? @candidate_players[position].slice(0, indexes[position]) : @candidate_players[position])
         add_player(player, position, false)
-        @candidate_players[position] = @candidate_players[position].reject{|p| p.id == player.id}
+        @candidate_players = remove_from_candidate_players(@candidate_players, player)
       end while(remaining_positions.length > 0)
     end
     self.reload

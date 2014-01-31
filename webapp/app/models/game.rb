@@ -10,7 +10,8 @@ class Game < ActiveRecord::Base
   validates :stats_id, :home_team, :away_team, :status, :game_day, :game_time, presence: true
 
   def teams
-    Team.where(abbrev: [self.home_team, self.away_team])
+    # Again, because sportsdata uses both for different sports.  So dumb.
+    Team.where("stats_id IN('#{self.home_team}', '#{self.away_team}') OR abbrev IN('#{self.home_team}', '#{self.away_team}')")
   end
 
   def players
