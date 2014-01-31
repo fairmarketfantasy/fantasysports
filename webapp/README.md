@@ -3,6 +3,9 @@
 Learn it. Love it.  http://guides.rubyonrails.org
 
 
+# Seed basic data
+`rake db:seed`
+
 # Start the Server
 
 `rails s`
