@@ -264,11 +264,11 @@ func statsParser(state *lib.ParseState) []*models.StatEvent {
 	events := parsers.FilterNils([]*models.StatEvent{
 		buildBreakdownStatEvent(state, points, "points", 1.0),
 		buildBreakdownStatEvent(state, fieldgoal, "3pt made", 0.5),
-		buildBreakdownStatEvent(state, rebound, "rebounds", 1.25),
+		buildBreakdownStatEvent(state, rebound, "rebounds", 1.2),
 		buildBreakdownStatEvent(state, assist, "assists", 1.5),
 		buildBreakdownStatEvent(state, steal, "steals", 2.0),
 		buildBreakdownStatEvent(state, block, "blocks", 2.0),
-		buildBreakdownStatEvent(state, turnover, "turnovers", -0.5),
+		buildBreakdownStatEvent(state, turnover, "turnovers", -1),
 	})
 	return events
 }
@@ -280,6 +280,7 @@ func ParseGameStatistics(state *lib.ParseState) *[]*models.StatEvent {
 		state.CurrentGame = game
 	case "team":
 		state.CurrentTeam = buildTeam(state.CurrentElement())
+		state.CurrentPlayer = nil // Reset this so the last player from the old team doesn't get credit
 	case "player":
 		state.CurrentPlayer = buildPlayer(state.CurrentElement())
 	case "statistics":

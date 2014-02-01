@@ -98,6 +98,9 @@ func (mgr *FetchManager) GetGames() []*models.Game {
 	for _, seasonType := range NbaSeasons {
 		games = append(games, mgr.Fetcher.GetSchedule(seasonType)...)
 	}
+	for _, game := range games {
+		game.SportId = mgr.Sport.Id
+	}
 	log.Println(games)
 	mgr.Orm.SaveAll(games)
 	return games

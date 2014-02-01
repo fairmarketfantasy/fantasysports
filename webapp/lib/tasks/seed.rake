@@ -6,14 +6,26 @@
 # end
 
 desc 'run data fetcher with given arguments'
-def run_fetcher(args)
+def run_fetcher(args, compile = true)
   yaml = YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))[Rails.env]
   root = File.join(Rails.root, '..', 'datafetcher')
-  puts "PATH=$PATH:/usr/local/go/bin DB_HOST=#{yaml["host"]} GOPATH=#{root} go run -a #{root}/src/github.com/MustWin/datafetcher/datafetcher.go #{args}"
-  `PATH=$PATH:/usr/local/go/bin DB_HOST=#{yaml["host"]} GOPATH=#{root} go run -a #{root}/src/github.com/MustWin/datafetcher/datafetcher.go #{args}`
+  puts "PATH=$PATH:/usr/local/go/bin DB_HOST=#{yaml["host"]} GOPATH=#{root} go run #{compile ? '-a' : ''} #{root}/src/github.com/MustWin/datafetcher/datafetcher.go #{args}"
+  `PATH=$PATH:/usr/local/go/bin DB_HOST=#{yaml["host"]} GOPATH=#{root} go run #{compile ? '-a' : ''} #{root}/src/github.com/MustWin/datafetcher/datafetcher.go #{args}`
 end
 
 namespace :seed do
+  namespace :backfill do
+    desc "Backfill stats for every game in this season"
+    task :fill_stats_ytd => :environment do
+      threadpool = ThreadPool.new(16)
+      Game.where(:sport_id => Sport.where(:name => 'NBA').first, :season_type => 'REG', :season_year => 2013, :status => 'closed').each do |g|
+        next if g.stat_events.length > 0
+        run_fetcher "-year 2013 -fetch stats -sport " + g.sport.name + " -statsId " + g.stats_id, false
+      end
+      threadpool.shutdown
+    end
+  end
+
   desc 'reload the seeds in the database'
   task :reload do
     `rake db:drop`
