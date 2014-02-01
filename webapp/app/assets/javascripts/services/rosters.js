@@ -215,6 +215,13 @@ angular.module('app.data')
         });
       };
 
+      this.toggleRemoveBenched = function() {
+        var self = this;
+        fs.rosters.toggleRemoveBenched(this.currentRoster.id).then(function(roster) {
+          self.selectRoster(roster);
+        });
+      };
+
       this.autoFill = function() {
         var self = this;
         fs.rosters.autoFill(this.currentRoster.id).then(function(roster) {

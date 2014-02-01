@@ -36,6 +36,7 @@ class Market < ActiveRecord::Base
       remove_shadow_bets
       track_benched_players
       fill_rosters
+      remove_benched_players
       close
       lock_players
       tabulate_scores
@@ -84,6 +85,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   
     def fill_rosters
       apply :fill_rosters, "state IN('opened')"
+    end
+
+    def remove_benched_players
+      apply :remove_benched_players, "state IN('opened')"
     end
   
     def track_benched_players
@@ -210,6 +215,15 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       end
     end
     bad_h2h_types = bad_h2h_types.map(&:id).unshift(-1)
+  end
+
+  def remove_benched_players
+    # select distinct rosters.* from rosters JOIN rosters_players ON rosters.id=rosters_players.roster_id JOIN players ON rosters_players.player_id=players.id WHERE rosters_players.market_id=326 
+    # AND (players.status = 'IR' OR players.removed);
+    affected_rosters = Roster.select('distinct rosters.*'
+                 ).joins('JOIN rosters_players ON rosters.id=rosters_players.roster_id JOIN players ON rosters_players.player_id=players.id'
+                 ).where(["rosters_players.market_id = ? AND #{Player.bench_conditions}", self.id])
+    affected_rosters.each{|r| r.swap_benched_players! }
   end
 
   def track_benched_players

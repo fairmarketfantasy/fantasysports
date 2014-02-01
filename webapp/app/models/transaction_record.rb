@@ -14,8 +14,8 @@ class TransactionRecord < ActiveRecord::Base
   CONTEST_TYPES = %w( buy_in cancelled_roster contest_payout rake )
   validates_presence_of :user
   validates :event, inclusion: { in: CONTEST_TYPES + %w(
-                                 deposit withdrawal cancelled_roster
-                                 contest_payout payout rake joined_grant token_buy token_buy_ios
+                                 deposit withdrawal
+                                 contest_payout_bonus payout joined_grant token_buy token_buy_ios
                                  free_referral_payout paid_referral_payout referred_join_payout
                                  revert_transaction manual_payout promo monthly_user_balance monthly_taxes monthly_user_entries) }
   validates_with TransactionRecordValidator
@@ -29,7 +29,7 @@ class TransactionRecord < ActiveRecord::Base
 
   def self.validate_contest(contest)
     return if contest.contest_type.max_entries == 0
-    sum = contest.transaction_records.reduce(0){|total, tr| total +=  tr.is_monthly_entry? ? -1000 * tr.amount : tr.amount }
+    sum = contest.transaction_records.where("event != 'contest_payout_bonus'").reduce(0){|total, tr| total +=  tr.is_monthly_entry? ? -1000 * tr.amount : tr.amount }
     if sum != 0
       raise "Contest #{contest.id} sums to #{sum}. Should Zero. Fucking check yo-self."
     end

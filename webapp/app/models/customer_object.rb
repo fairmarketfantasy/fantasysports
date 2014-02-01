@@ -57,7 +57,8 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def contest_winnings_multiplier
-    1 + self.entries_in_the_hole * 0.005
+    # Exclude the current contest when counting bonus
+    1 + [self.entries_in_the_hole-1, 0].max * 0.005
   end
 
   #override reload to nil out memoized stripe object

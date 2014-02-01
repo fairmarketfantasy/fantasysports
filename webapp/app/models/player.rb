@@ -53,8 +53,9 @@ class Player < ActiveRecord::Base
       select('players.*, market_prices.*').joins("JOIN market_prices(#{market.id}, #{buy_in}) ON players.id = market_prices.player_id")
   }
 
+  scope :benched,   -> { where(Player.bench_conditions ) }
   scope :active, -> () {
-    where("status = 'ACT' AND benched_games < 3")
+    where("status = 'ACT' AND NOT removed AND benched_games < 3")
   }
 
   scope :purchasable_for_roster, -> (roster) { 
@@ -69,6 +70,10 @@ class Player < ActiveRecord::Base
     ).joins( "JOIN sell_prices(#{roster.id}) as sell_prices on sell_prices.player_id = players.id" )
   }
   scope :sellable, -> { where('sell_prices.locked != true' ) }
+
+  def self.bench_conditions
+    "(players.status = 'IR' OR players.removed OR players.benched_games >= 3)"
+  end
 
   def headshot_url(size = 65) # or 195
     return nil if position == 'DEF'

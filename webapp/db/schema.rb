@@ -393,6 +393,7 @@ ActiveRecord::Schema.define(version: 20140130224746) do
     t.text     "bonuses"
     t.string   "view_code"
     t.integer  "expected_payout",  default: 0,     null: false
+    t.boolean  "remove_benched",   default: true
   end
 
   add_index "rosters", ["contest_id", "contest_rank"], name: "index_rosters_on_contest_id_and_contest_rank", using: :btree
