@@ -97,6 +97,7 @@ angular.module('app.filters')
   })
   .filter('slashesToDashes', ['$filter', function($filter) {
     return function(input) {
+      if (!input) { return ""; }
       return input.replace(/\//g, '-');
     };
   }])

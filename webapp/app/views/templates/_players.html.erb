@@ -58,7 +58,7 @@
             <span class="first-icon fui-checkbox-unchecked"></span>
             <span class="second-icon fui-checkbox-checked"></span>
           </span>
-          Remove Back-ups
+          No Back-ups
         </label>
       
         <input id="removeLowFilter" class="hide" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" />
@@ -114,8 +114,8 @@
                 </span>
               </td>
               <td class="tiny" ng-hide="getFilterOpts().position">{{player.position | dashIfDEF}}</td>
-              <td class="tiny">{{player.team}}</td>
-              <td class="tiny" ng-show="getFilterOpts().position"><span ng-hide="isHomeTeam(player.team)">@</span>{{opponentFor(player)}}</td>
+              <td class="tiny">{{player.team | truncate:8}}</td>
+              <td class="tiny" ng-show="getFilterOpts().position"><span ng-hide="isHomeTeam(player.team)">@</span>{{opponentFor(player) | truncate:8}}</td>
               <td class="tiny">
                 <span ng-show="pointsColumn() == 'ppg'">{{player.ppg | number:0 |zeroIfEmpty}}</span>
                 <span ng-show="pointsColumn() == 'score'">{{player.score | number:1 |zeroIfEmpty}}</span>

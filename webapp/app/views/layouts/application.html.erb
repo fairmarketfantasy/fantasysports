@@ -111,7 +111,7 @@
         <ul class="nav nav-pills blue-pills modal-pills" ng-cloak>
           <li ng-repeat="sport in sports" ng-class="{active: currentUser.currentSport == sport.name}">
             <a ng-show="sport.is_active" href="/#/{{sport.name}}/home">{{sport.name}}</a>
-            <a ng-hide="sport.is_active" href="/#/coming-soon">{{sport.name}}</a>
+            <a ng-hide="sport.is_active" href="/#/{{sport.name}}/coming-soon">{{sport.name}}</a>
           </li>
         </ul>
       </div>
