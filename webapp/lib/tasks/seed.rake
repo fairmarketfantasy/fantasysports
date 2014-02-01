@@ -91,38 +91,43 @@ namespace :seed do
   desc 'push player headshots to s3'
   task :push_headshots_to_s3 => :environment do
     # Fetch the headshot
-    headshot_manifest = "http://api.sportsdatallc.org/nfl-images-p1/manifests/headshot/all_assets.xml?api_key=yq9uk9qu774eygre2vg2jafe"
-    path = File.join(Rails.root, '..', 'docs', 'sportsdata', 'nfl', 'headshots.xml')
-=begin
-    open(headshot_manifest) do |xml|
-      File.open(path, 'w') do |f|
-        f.write(xml.read)
+    sports = {
+      "nfl" => 'yq9uk9qu774eygre2vg2jafe',
+      "nba" => '5n9kzft8ty4dhubeke29mvbb'
+    }
+    # NBA: 5n9kzft8ty4dhubeke29mvbb
+    sports.each do |sport, key|
+      headshot_manifest = "http://api.sportsdatallc.org/#{sport}-images-p1/manifests/headshot/all_assets.xml?api_key=#{key}"
+      path = File.join(Rails.root, '..', 'docs', 'sportsdata', sport, 'headshots.xml')
+      open(headshot_manifest) do |xml|
+        File.open(path, 'w') do |f|
+          f.write(xml.read)
+        end
       end
-    end
-=end
-    s3 = AWS::S3.new
-    bucket = s3.buckets['fairmarketfantasy-prod']
-    uploaded = bucket.objects.collect(&:key)
-    File.open(path) do |f|
-      doc = Nokogiri::XML(f)
-      doc.css('asset').each do |asset|
-        attr = asset.attributes['player_id']
-        next unless attr
-        player_stats_id = attr.value
-        asset.css('link').each do |link|
-          href = link.attributes['href'].value # "/headshot/23c9e491-bf62-48e2-abc3-057b50dc1142/195.jpg" 
-          href = href.gsub("/headshot/", "")
-          s3_key = "headshots/" + player_stats_id + '/' + href.split('/')[1]
-          next if uploaded.include?(s3_key)
-          puts s3_key
-          url = "http://api.sportsdatallc.org/nfl-images-p1/headshot/#{href}?api_key=yq9uk9qu774eygre2vg2jafe"
-          open(url) do |img|
-            begin
-              bucket.objects[s3_key].write(img.read)
-              uploaded << href
-            rescue => e
-              puts e.message
-              retry
+      s3 = AWS::S3.new
+      bucket = s3.buckets['fairmarketfantasy-prod']
+      uploaded = bucket.objects.collect(&:key)
+      File.open(path) do |f|
+        doc = Nokogiri::XML(f)
+        doc.css('asset').each do |asset|
+          attr = asset.attributes['player_id']
+          next unless attr
+          player_stats_id = attr.value
+          asset.css('link').each do |link|
+            href = link.attributes['href'].value # "/headshot/23c9e491-bf62-48e2-abc3-057b50dc1142/195.jpg" 
+            href = href.gsub("/headshot/", "")
+            s3_key = "headshots/" + player_stats_id + '/' + href.split('/')[1]
+            next if uploaded.include?(s3_key)
+            puts s3_key
+            url = "http://api.sportsdatallc.org/nba-images-p1/headshot/#{href}?api_key=#{key}"
+            open(url) do |img|
+              begin
+                bucket.objects[s3_key].write(img.read)
+                uploaded << href
+              rescue => e
+                puts e.message
+                retry
+              end
             end
           end
         end
