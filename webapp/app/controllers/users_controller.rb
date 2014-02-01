@@ -13,7 +13,7 @@ class UsersController < ApplicationController
 
   def unsubscribe
     user = User.where(:email => params[:email]).first
-    raise HttpException(403, "You must be logged in as the unsubscribing user to do that") if user && user != current_user
+    raise HttpException.new(403, "You must be logged in as the unsubscribing user to do that") if user && user != current_user
     @type = params[:type] || 'all'
     EmailUnsubscribe.create(:email => params[:email], :email_type => @type)
     render :layout => false
@@ -50,6 +50,12 @@ class UsersController < ApplicationController
       current_user.customer_object.do_monthly_activation!
       Invitation.redeem_paid(current_user)
       Eventing.report(current_user, 'addFunds', :amount => @amount_in_cents)
+    elsif @type == 'token'
+      @tokens, opts = User::TOKEN_SKUS.find{|tokens, opts| opts[:cost] == @amount_in_cents}
+      current_user.token_balance += @tokens.to_i
+      current_user.save!
+      TransactionRecord.create!(:user => current_user, :event => 'token_buy', :amount => @amount_in_cents, :transaction_data => opts.to_json)
+      Eventing.report(current_user, 'buyTokens', :amount => @amount_in_cents)
     end
     cookies.delete :pending_payment
     render '/users/paypal_return', layout: false
@@ -87,10 +93,10 @@ class UsersController < ApplicationController
   end
 
   def add_money
-    #unless params[:amount]
-      #render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
-    #end
-    generate_paypal_payment('money', 1000) # $10
+    unless params[:amount]
+      render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
+    end
+    generate_paypal_payment('money', params[:amount].to_i * 100)
   end
 
   def withdraw_money
