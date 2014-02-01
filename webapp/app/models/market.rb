@@ -22,6 +22,8 @@ class Market < ActiveRecord::Base
 
   paginates_per 25
 
+  @@thread_pool = ThreadPool.new(4)
+
   class << self
 
     # THIS IS A UTILITY FUNCTION, DO NOT CALL IT FROM THE APPLICATION
@@ -57,7 +59,9 @@ shadow_bets = market.reload.shadow_bets
 real_bets = market.reload.total_bets - shadow_bets
 new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet_rate].max
 =end
-          market.send(method)
+          @@thread_pool.schedule do
+            market.send(method)
+          end
         rescue Exception => e
           puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
           Rails.logger.error "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
@@ -145,6 +149,37 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   def publish
     Market.find_by_sql("select * from publish_market(#{self.id})")
     reload
+    total_expected = 0
+    total_bets = 0
+    market_players = self.market_players
+    market_players.each do |mp|
+      # calculate total ppg # TODO: this should be YTD
+      total_exp = mp.player.total_points / mp.player.total_games + 0.0001
+      # calculate ppg in last 5 games
+      recent_exp = ActiveRecord::Base.connection.execute(
+        "SELECT sum(point_value) points FROM stat_events
+          WHERE player_stats_id = '#{mp.player.stats_id}' AND game_stats_id IN(
+            select stats_id from games where game_time < now() and (home_team = '#{mp.player[:team] }' OR away_team = '#{mp.player[:team] }')
+        order by game_time desc limit 5)"
+      ).first['points'].to_f / 5
+      # set expected ppg
+      # TODO: HANDLE INACTIVE
+      if mp.player.status != 'ACT'
+        mp.expected_points = 0
+      else
+        mp.expected_points = 0.7 * total_exp + 0.3 * recent_exp
+      end
+      total_expected += mp.expected_points
+    end
+    market_players.each do |mp|
+      # set total_bets & shadow_bets based on expected_ppg/ total_expected_ppg * 30000
+      mp.bets = mp.shadow_bets = mp.initial_shadow_bets = mp.expected_points.to_f / (total_expected +0.0001) * 30000
+      total_bets += mp.bets
+      mp.save!
+    end
+    self.expected_total_points = total_expected
+    self.total_bets = total_bets
+    save!
     if self.state == 'published'
       self.add_default_contests
     end
@@ -317,7 +352,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 =end
     self.fill_rosters_to_percent(1.0)
     self.lock_players
-    self.state, self.closed_at = 'closed', Time.now
+    self.state = 'closed'
     save!
     return self
   end

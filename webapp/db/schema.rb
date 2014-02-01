@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140130224746) do
+ActiveRecord::Schema.define(version: 20140201220626) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -143,6 +143,7 @@ ActiveRecord::Schema.define(version: 20140130224746) do
     t.datetime "bench_counted_at"
     t.text     "home_team_status"
     t.text     "away_team_status"
+    t.integer  "sport_id"
   end
 
   add_index "games", ["bench_counted_at"], name: "index_games_on_bench_counted_at", using: :btree
@@ -215,6 +216,7 @@ ActiveRecord::Schema.define(version: 20140130224746) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_eliminated",       default: false
+    t.decimal  "expected_points",     default: 0.0
   end
 
   add_index "market_players", ["market_id", "player_id"], name: "index_market_players_on_market_id_and_player_id", unique: true, using: :btree

@@ -1,11 +1,10 @@
 class Game < ActiveRecord::Base
   attr_protected
-  self.primary_key = "stats_id" 
+  self.primary_key = "stats_id"
   has_many :games_markets, :inverse_of => :game, :foreign_key => "game_stats_id"
   has_many :markets, :through => :games_markets, :foreign_key => "game_stats_id"
-  has_many :stat_events
-  #belongs_to :home_team, :class_name => 'Team', :foreign_key => 'home_team'
-  #belongs_to :away_team, :class_name => 'Team', :foreign_key => 'away_team'
+  has_many :stat_events, :foreign_key => "game_stats_id"
+  belongs_to :sport
 
   validates :stats_id, :home_team, :away_team, :status, :game_day, :game_time, presence: true
 

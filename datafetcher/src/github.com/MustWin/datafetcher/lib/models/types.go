@@ -92,6 +92,7 @@ type TeamStatus struct {
 type Game struct {
 	UniqModel
 	Id             int
+	SportId        int
 	StatsId        string `model:"key"`
 	SeasonType     string
 	SeasonYear     int
