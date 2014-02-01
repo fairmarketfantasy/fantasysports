@@ -6,7 +6,7 @@
         ng-show="currentUser && (market.state == 'published' || market.state == 'opened') && rosters.currentRoster.contest">
         Invite Friends</a>
       <a href="#/{{currentUser.currentSport}}market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster == rosters.currentRoster || !currentUser">Back to Contests</a>
-      <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name}}.png" class="contest-info-image" />
+      <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name | slashesToDashes}}.png" class="contest-info-image" />
       <div class="contest-info-description">
         <h2 ng-show="rosters.currentRoster.league" class="contest-title">{{rosters.currentRoster.contest_type.name}} {{rosters.currentRoster.league.name}} League Game</h2>
         <h2 ng-hide="rosters.currentRoster.league" class="contest-title">{{markets.currentMarket.name}}
@@ -23,10 +23,6 @@
         </p>
         <ul>
           <li>Starts: {{markets.currentMarket.started_at | shortFormTime }}</li>
-          <li>Buy-in: 
-            <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.contest_type.buy_in }} FanFrees</span>
-            <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.contest_type.buy_in | centsToDollars }}</span>
-          </li>
           <li>Entries: {{rosters.currentRoster.contest_type.max_entries | unlimitedIfZero}}</li>
           <li>Payout: {{rosters.currentRoster.contest_type.payout_description}}</li>
           <li ng-show="rosters.currentRoster.contest_rank && rosters.currentRoster.state != 'in_progress' && inThePast(market.started_at)">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>

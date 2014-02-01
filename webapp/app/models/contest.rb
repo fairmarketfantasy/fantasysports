@@ -55,12 +55,17 @@ class Contest < ActiveRecord::Base
       total += 1
     end
     score = 0
-    self.market.market_players.select('market_players.*, players.position').joins('JOIN players ON market_players.id=players.id').order('score desc').each do |mp|
+    # TODO: now that players can have multiple positions, this is approximate.  Making it correct is still probably worthwhile.  
+    # This is acually an NP complete Set Covering problem with small sets, so it should be brute forceable without much trouble.
+    # http://en.wikipedia.org/wiki/Set_cover_problem
+    players = []
+    self.market.market_players.select('market_players.*, player_positions.position').joins('JOIN player_positions ON market_players.player_id=player_positions.player_id').order('score desc').each do |mp|
       next unless mp.player # Hacky as shit, this should never happen
       pos = mp[:position]
-      if position_hash[pos] && position_hash[pos] > 0
+      if position_hash[pos] && position_hash[pos] > 0 && !players.include?(mp.player_id)
         total  -= 1
         position_hash[pos] -= 1
+        players += [mp.player_id]
         score += mp.score
         return score if total == 0
       end
