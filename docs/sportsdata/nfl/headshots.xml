@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assetlist xmlns="http://feed.elasticstats.com/schema/assets/manifest-v1.0.xsd" type="Headshot" sport="NFL">
+	<asset id="ec6fbd43-3feb-4e0b-968c-39d69d4794b8" created="2013-11-13T22:06:57+0000" updated="2013-11-13T22:07:34+0000" player_id="53747116-98f0-4405-91da-f25b1d938813">
+		<title><![CDATA[Andre-Brown]]></title>
+		<description><![CDATA[]]></description>
+		
+		<links>
+			<link width="195" height="270" href="/headshot/ec6fbd43-3feb-4e0b-968c-39d69d4794b8/195.jpg" /><link width="65" height="90" href="/headshot/ec6fbd43-3feb-4e0b-968c-39d69d4794b8/65.jpg" />
+						
+		</links>
+	</asset>
 	<asset id="23c9e491-bf62-48e2-abc3-057b50dc1142" created="2013-08-28T20:04:09+0000" updated="2013-08-28T20:04:29+0000" player_id="04724372-46de-48ec-9063-c90c22b5ef10">
 		<title><![CDATA[Dominique-Curry]]></title>
 		<description><![CDATA[]]></description>
@@ -13839,15 +13848,6 @@
 		
 		<links>
 			<link width="195" height="270" href="/headshot/9f332458-36cb-4fa7-9246-c2616ba7e430/195.jpg" /><link width="65" height="90" href="/headshot/9f332458-36cb-4fa7-9246-c2616ba7e430/65.jpg" />
-						
-		</links>
-	</asset>
-	<asset id="74e8ac75-f27a-4614-9f45-509176fd307b" created="2012-11-18T23:23:45+0000" updated="2013-01-09T18:53:27+0000" player_id="53747116-98f0-4405-91da-f25b1d938813">
-		<title><![CDATA[Andre-Brown]]></title>
-		<description><![CDATA[]]></description>
-		
-		<links>
-			<link width="195" height="270" href="/headshot/74e8ac75-f27a-4614-9f45-509176fd307b/195.jpg" /><link width="65" height="90" href="/headshot/74e8ac75-f27a-4614-9f45-509176fd307b/65.jpg" />
 						
 		</links>
 	</asset>
