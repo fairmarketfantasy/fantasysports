@@ -1,0 +1,15 @@
+name             'fantasysports'
+maintainer       'MustWin'
+maintainer_email 'we@mustw.in'
+license          'All rights reserved'
+description      'Installs/Configures fantasysports'
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version          '0.1.0'
+
+depends 'build-essential'
+depends 'golang'
+depends 'nginx'
+depends 'postgresql'
+depends 'aliases'
+#depends 'chef-puma'
+depends 'application'
