@@ -1,5 +1,5 @@
 angular.module('app.services')
-.factory('currentUserService', ['$dialog', '$rootScope', 'flash', '$timeout', '$rootScope', '$routeParams', 'fs', 
+.factory('currentUserService', ['$dialog', '$rootScope', 'flash', '$timeout', '$rootScope', '$routeParams', 'fs',
          function($dialog, $rootScope, flash, $timeout, $rootScope, $routeParams, fs) {
     var dialogOpts = {
           backdrop: true,
@@ -79,6 +79,8 @@ angular.module('app.services')
       },
 
       setUser: function(user) {
+        console.log($routeParams.sport);
+        user.currentSport = $routeParams.sport;
         this.currentUser = window.App.currentUser = user;
       },
 
@@ -185,6 +187,9 @@ angular.module('app.services')
         return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
       },
       user: {
+        agreeToTerms: function(){
+          return $http({method: 'POST', url: '/users/agree_to_terms'});
+        },
         refresh: function(){
           return $http({method: 'GET', url: '/users.json'});
         },

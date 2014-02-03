@@ -82,28 +82,31 @@
         <h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1>
       </div>
       <div class="span2 nav-span">
-        <a class="coming-soon-nav"><span>NBA Coming Soon</span></a>
+        <a class="coming-soon-nav"><span>New Daily NBA Games</span></a>
       </div>
       <div class="span2 nav-span">
         <a class="sign-in-nav" href="javascript://" ng-click="loginModal()">Sign In</a>
       </div>
       <div class="span2 nav-span">
         <a href="javascript://" class="sign-up-nav" ng-click='signUpModal()'>Sign Up</a>
-      </div>      
+      </div>
     </div>
   </div>
   <div class="landing-container">
     <div class="span6 offset1 sign-up-content">
       <div class="login-buttons" ng-controller="LoginController">
-        <h2 class="sign-up-heading">Try a friendlier, fairer, daily fantasy sports site - FREE!</h2> 
-        <p class="new-sign-up-text">Here's a sample roster we've generated for you, you can edit it, start over, take it as it is, whatever you want!</p>
-
-        <p class="special difference">Football: Super Bowl One-Day Roster</p>
+        <h2 class="sign-up-heading">Friendlier, fairer, daily fantasy sports!</h2> 
+        <p style="margin: 0;" class="new-sign-up-text">We created a roster to get you started!</p>
 
         <div class="sample-team clearfix" ng-include="'/sample_team.html'"></div>
 
         <p><a href="/terms" target="_blank">Terms and Conditions</a></p>
 
+      </div>
+      <div id="playoff-teaser">
+        <h4><i>Free </i>entry <br/>unlimited contests <br/><i>real cash</i> prizes</h4>
+        <p>only $10/mth</p>
+        <p><a href="javascript://" class="btn btn-large btn-success" ng-click='signUpModal()'>Sign up Now!</a></p>
       </div>
       <div class="landing-mobile-app-links">
         <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>

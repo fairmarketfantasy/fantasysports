@@ -51,7 +51,8 @@ class Market < ActiveRecord::Base
     def apply method, sql, *params
       Market.where(sql, *params).order('id asc').each do |market|
         puts "#{Time.now} -- #{method} market #{market.id}"
-        begin
+        @@thread_pool.schedule do
+          begin
 =begin
 init_shadow_bets = market.reload.initial_shadow_bets
 total_bets = market.reload.total_bets
@@ -59,18 +60,17 @@ shadow_bets = market.reload.shadow_bets
 real_bets = market.reload.total_bets - shadow_bets
 new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet_rate].max
 =end
-          @@thread_pool.schedule do
-            market.send(method)
+              market.send(method)
+          rescue Exception => e
+            puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
+            Rails.logger.error "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
+            raise e if Rails.env == 'test'
+            Honeybadger.notify(
+              :error_class   => "MarketTender Error",
+              :error_message => "MarketTenderError in #{method} for #{market.id}: #{e.message}",
+              :backtrace => e.backtrace
+            )
           end
-        rescue Exception => e
-          puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
-          Rails.logger.error "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
-          raise e if Rails.env == 'test'
-          Honeybadger.notify(
-            :error_class   => "MarketTender Error",
-            :error_message => "MarketTenderError in #{method} for #{market.id}: #{e.message}",
-            :backtrace => e.backtrace
-          )
         end
       end
     end
@@ -154,7 +154,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     market_players = self.market_players
     market_players.each do |mp|
       # calculate total ppg # TODO: this should be YTD
-      total_exp = mp.player.total_points / mp.player.total_games + 0.0001
+      total_exp = mp.player.total_points / (mp.player.total_games + 0.0001)
       # calculate ppg in last 5 games
       recent_exp = ActiveRecord::Base.connection.execute(
         "SELECT sum(point_value) points FROM stat_events

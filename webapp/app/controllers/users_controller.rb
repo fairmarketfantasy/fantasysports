@@ -109,4 +109,9 @@ class UsersController < ApplicationController
     end
   end
 
+  def agree_to_terms
+    current_user.customer_object.update_attribute :has_agreed_terms, true
+    render_api_response current_user
+  end
+
 end

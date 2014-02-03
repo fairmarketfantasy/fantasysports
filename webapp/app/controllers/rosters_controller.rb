@@ -67,12 +67,14 @@ class RostersController < ApplicationController
     s = Sport.where('is_active').first
     m = Market.where(:sport_id => s.id, :state => ['published', 'opened'], :game_type => 'regular_season').order("name ilike '%week%' desc").first
     # Fill the lolla first, if that's full, revert to Top5 contests
-    lolla = m.contest_types.where("name ilike '%k%'").first.contests.first
+    lolla_type = m.contest_types.where("name ilike '%k%'").first
+    lolla = lolla_type && lolla_type.contests.first
     contest_type = if lolla && lolla.user_cap - (lolla.num_rosters - lolla.num_generated) > 0
       lolla.contest_type
     else
       m.contest_types.where(:name => 'Top5').first || m.contest_types.where(:name => '194').first
     end
+
     roster = Rails.cache.fetch("landing_roster_#{contest_type.id}", :expires_in => 5.minutes) do
       Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
     end

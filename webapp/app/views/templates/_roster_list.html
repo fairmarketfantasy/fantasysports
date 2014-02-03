@@ -48,7 +48,7 @@
         <span ng-show="inThePast(roster.started_at) && roster.state == 'finished'">{{roster.contest_rank_payout || 0}}</span>
         <span ng-hide="inThePast(roster.started_at) && roster.state == 'finished'">N/A</span>
       </td>
-      <td><a href="#/market/{{roster.market.id}}/roster/{{roster.id}}">view</a></td>
+      <td><a href="#/{{currentUser.currentSport}}/market/{{roster.market.id}}/roster/{{roster.id}}">view</a></td>
     </tr>
   </tbody>
 </table>

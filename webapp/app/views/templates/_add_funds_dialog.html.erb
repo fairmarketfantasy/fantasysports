@@ -7,141 +7,156 @@
 <div class='mal centered' ng-show='showSpinner'>
   <img src='/assets/ajax-loader-big.gif'>
 </div>
-<!-- Paid subscription -->
-<div class='modal-body' ng-show="currentUser.customer_object.is_active">
-  <h4>Your Account This Month</h4>
-  <div class="account-states">
-    <div class="account-state">
-      <div class="account-state-header">Net Monthly Winnings</div>
-      {{currentUser.customer_object.net_monthly_winnings | centsToDollars }}
-      <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
-        popover-trigger="mouseenter" popover="Net Monthly Winnings are how much you're ahead this month. It's your winnings total - $10 per entry. Check out the FAQs for more info." popover-placement="right">
-    </div>
-    <div class="account-state">
-      <div class="account-state-header">Contests Entered</div>
-      {{currentUser.customer_object.monthly_contest_entries }}
-      <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
-        popover-trigger="mouseenter" popover="Monthly Contest Entries is the number of contests you've entered this month. Check out the FAQs for more info." popover-placement="right">
-    </div>
-    <div class="account-state">
-      <div class="account-state-header">Total Entry Deficit</div>
-      {{currentUser.customer_object.contest_entries_deficit }}
-      <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
-        popover-trigger="mouseenter" popover="Total Entry Deficit is the rolling total of monthly contest entries that haven't been paid for by winnings. Check out the FAQs for more info." popover-placement="right">
-    </div>
-    <div class="account-state">
-      <div class="account-state-header">Winnings Multiplier</div>
-      {{currentUser.customer_object.contest_winnings_multiplier }}%
-      <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
-        popover-trigger="mouseenter" popover="As your total entry deficit increases, so does your winnings multiplier! Check out the FAQs for more info." popover-placement="right">
-    </div>
-  </div>
+<div class='modal-body'>
+<!-- New Terms -->
+<div ng-show="!currentUser.customer_object.has_agreed_terms">
+  <h4>FairMarket has new terms and conditions</h4>
+  <p>Instead of paying for every contest entry, you'll pay only a $10 monthly subscription at the beginning of the month. Unlimited contest entries are FREE!  You can <a href="/terms" target="_blank">read more about how it works</a></p>
+  <label class="checkbox " for="agree-terms" ng-click="agreeToTerms()" ng-class="{'checked': currentUser.customer_object.has_agreed_terms}">
+    <span class="icons">
+      <span class="first-icon fui-checkbox-unchecked"></span>
+      <span class="second-icon fui-checkbox-checked"></span>
+    </span>
+    Agree to terms
+  </label>
+  <input id="agree-terms" class="hide" type="checkbox" ng-model="currentUser.customer_object.has_agreed_terms" ng-change="agreeToTerms()" />
 </div>
-
-<!-- UnPaid subscription -->
-<div class='modal-body' ng-hide="currentUser.customer_object.is_active">
-  <h4>Looks like you need to pay your subscription this month</h4>
-  <div class="payment-info">
-    <a href="javsacript://" popover-trigger="mouseenter" popover="FairMarketFantasy now has a $10 monthly entry fee. That $10 is ALL YOU CAN LOSE! Winnings are still yours. Check out the FAQs for more info!" 
-      popover-placement="right">What is this?<img src="<%= asset_path "info-icon.png" %>" width="17px"></a>
-  </div>
-  <ul class="nav nav-pills modal-pills">
-    <li ng-class="{active: payment_type == 'credit-card'}">
-      <a href="javascript://" ng-click="payment_type = 'credit-card'">Pay with Credit Card</a>
-    </li>
-    <li ng-class="{active: payment_type == 'paypal'}">
-      <a href="javascript://" ng-click="payment_type = 'paypal'; showCardForm = false">Pay with PayPal</a>
-    </li>
-  </ul>
-  <div ng-show="payment_type == 'credit-card'">
-    <div class='clearfix'>
-      <div class="add-funds-container">
-        <h5>Select a Card</h5>
-        <ul class='unstlyed card-list no-no' ng-hide="showCardForm">
-          <li class='inline-block clickable card' ng-repeat="card in cards" ng-class="{default: isSelectedCard(card) }" ng-click="setSelectedCard(card)">
-            <div class='card-token'>
-              <div class='relative pull-right delete-card'>
-                <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
-                <div ng-show="showConfirm(card.id)" class='card-confirm-delete popover right'>
-                  <div class='arrow'>
-                  </div>
-                  <h3 class='popover-title'>Are you sure?</h3>
-                  <div class='popover-content'>
-                    <a class='btn btn-mini btn-danger mtm' ng-hide='deleteCardSpinner' ng-click='deleteCard(card.id)'>Yes, delete</a>
-                    <img src='/assets/ajax-loader-micro.gif' ng-show='deleteCardSpinner'/>
-                    <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
-                  </div>
-                </div>
-              </div>
-              <div class='overflow-hide'>
-                {{ card.first_name }} {{card.last_name}}<br />
-              </div>
-              <div class="card-type">{{card.type}}</div>
-              <div class='ptm'>
-                {{ card.obscured_number}}
-              </div>
-            </div>
-          </li>
-          <li class='add-card bold inline-block phm' ng-show="showAddCardButton()" ng-click="showCardForm = true">
-            <a href="javascript://" class='btn btn-info btn-mini'>Add a Card</a>
-          </li>
-        </ul>
+<!-- Paid subscription -->
+  <div ng-show="currentUser.customer_object.is_active">
+    <h4>Your Account This Month</h4>
+    <div class="account-states">
+      <div class="account-state">
+        <div class="account-state-header">Net Monthly Winnings</div>
+        {{currentUser.customer_object.net_monthly_winnings | centsToDollars }}
+        <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+          popover-trigger="mouseenter" popover="Net Monthly Winnings are how much you're ahead this month. It's your winnings total - $10 per entry. Check out the FAQs for more info." popover-placement="right">
+      </div>
+      <div class="account-state">
+        <div class="account-state-header">Contests Entered</div>
+        {{currentUser.customer_object.monthly_contest_entries }}
+        <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+          popover-trigger="mouseenter" popover="Monthly Contest Entries is the number of contests you've entered this month. Check out the FAQs for more info." popover-placement="right">
+      </div>
+      <div class="account-state">
+        <div class="account-state-header">Total Entry Deficit</div>
+        {{currentUser.customer_object.contest_entries_deficit }}
+        <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+          popover-trigger="mouseenter" popover="Total Entry Deficit is the rolling total of monthly contest entries that haven't been paid for by winnings. Check out the FAQs for more info." popover-placement="right">
+      </div>
+      <div class="account-state">
+        <div class="account-state-header">Winnings Multiplier</div>
+        {{currentUser.customer_object.contest_winnings_multiplier }}%
+        <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+          popover-trigger="mouseenter" popover="As your total entry deficit increases, so does your winnings multiplier! Check out the FAQs for more info." popover-placement="right">
       </div>
     </div>
-    <div ng-show="showCardForm" class='credit-card mal'>
-      <form>
-        <h6>Add a New Card</h6>
-        <div id="credit-card-form" class="credit-card-input no-js">
-          <p class="no-support-warning">Either you have Javascript disabled, or you're using an unsupported browser, amigo.</p>
-          <label for="cc_type">Card Type</label>
-          <select name="cc_type" ng-model="cardInfo.type">
-            <option selected value="">...</option>
-            <option value="visa">Visa</option>
-            <option value="discover">Discover</option>
-            <option value="mastercard">MasterCard</option>
-            <option value="amex">American Express</option>
-          </select>
-          <label for="cc_number">Card Number</label>
-          <input type="text" name="cc_number" id="cc_number" ng-model="cardInfo.number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
-          <label for="cc_exp_month">Expiration Month</label>
-          <input type="text" name="cc_exp_month" id="cc_exp_month" ng-model="cardInfo.exp_month" placeholder="00">
-          <label for="cc_exp_year">Expiration Year</label>
-          <input type="text" name="cc_exp_year" id="cc_exp_year" ng-model="cardInfo.exp_year" placeholder="00">
-          <label for="cc_name">Cardholder's Name</label>
-          <input type="text" name="cc_name" id="cc_name" ng-model="cardInfo.name" placeholder="John Doe">
-          <label for="cc_cvc">Card Validation Code</label>
-          <input type="text" name="cc_cvc" id="cc_cvc" ng-model="cardInfo.cvc" placeholder="123" maxlength="3" size="3">
-        </div>
-      </form>
-      <a href="javascript://" ng-click="showCardForm = false" class='btn btn-info'>cancel</a>
-      <a href="javascript://" ng-click="saveCard()" ng-disabled="!card.isValid()" class='btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
-        <a class="secure-msg" href="javascript://" popover-trigger="mouseenter" popover="We never store your credit card information.  We use a safe, third-party financial provider to store and process all our credit card payments." popover-placement="right">
-          <img src="<%= asset_path 'icons/secure-red.gif' %>" height="16px" width="16px"/>
-          Why we&#39;re secure
-        </a>
-      <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
-    </div>
-    <!--<div ng-hide="showCardForm" class="add-funds-container">
-      <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
-      <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Add Money</a>
-      <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
-      </p>
-      <span class='muted tilt'>*At least $5.</span>
-    </div>-->
   </div>
-  <div class="payment-container" ng-hide="showCardForm">
-    <h5>Checkout</h5>
-    <div ng-show="payment_type == 'paypal'">
-      <span class="payment-total">Total: $10</span><a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>
-        <span ng-show="payment_type == 'paypal'">Pay with PayPal</span>
-        <span ng-show="payment_type == 'credit-card'">Add Money</span>
-      </a>
-      <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
+
+<!-- UnPaid subscription -->
+  <div class='modal-body' ng-hide="currentUser.customer_object.is_active">
+    <h4>Looks like you need to pay your subscription this month</h4>
+    <div class="payment-info">
+      <a href="javsacript://" popover-trigger="mouseenter" popover="FairMarketFantasy now has a $10 monthly entry fee. That $10 is ALL YOU CAN LOSE! Winnings are still yours. Check out the FAQs for more info!" 
+        popover-placement="right">What is this?<img src="<%= asset_path "info-icon.png" %>" width="17px"></a>
     </div>
+    <ul class="nav nav-pills modal-pills">
+      <li ng-class="{active: payment_type == 'credit-card'}">
+        <a href="javascript://" ng-click="payment_type = 'credit-card'">Pay with Credit Card</a>
+      </li>
+      <li ng-class="{active: payment_type == 'paypal'}">
+        <a href="javascript://" ng-click="payment_type = 'paypal'; showCardForm = false">Pay with PayPal</a>
+      </li>
+    </ul>
     <div ng-show="payment_type == 'credit-card'">
-      <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
-      <div ng-hide='addMoneySpinner'>
-        <div><span class="payment-total">Total: $10</span><a href="javascript://" class="btn btn-primary" ng-click="addFunds()">Submit</a></div>
+      <div class='clearfix'>
+        <div class="add-funds-container">
+          <h5>Select a Card</h5>
+          <ul class='unstlyed card-list no-no' ng-hide="showCardForm">
+            <li class='inline-block clickable card' ng-repeat="card in cards" ng-class="{default: isSelectedCard(card) }" ng-click="setSelectedCard(card)">
+              <div class='card-token'>
+                <div class='relative pull-right delete-card'>
+                  <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
+                  <div ng-show="showConfirm(card.id)" class='card-confirm-delete popover right'>
+                    <div class='arrow'>
+                    </div>
+                    <h3 class='popover-title'>Are you sure?</h3>
+                    <div class='popover-content'>
+                      <a class='btn btn-mini btn-danger mtm' ng-hide='deleteCardSpinner' ng-click='deleteCard(card.id)'>Yes, delete</a>
+                      <img src='/assets/ajax-loader-micro.gif' ng-show='deleteCardSpinner'/>
+                      <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
+                    </div>
+                  </div>
+                </div>
+                <div class='overflow-hide'>
+                  {{ card.first_name }} {{card.last_name}}<br />
+                </div>
+                <div class="card-type">{{card.type}}</div>
+                <div class='ptm'>
+                  {{ card.obscured_number}}
+                </div>
+              </div>
+            </li>
+            <li class='add-card bold inline-block phm' ng-show="showAddCardButton()" ng-click="showCardForm = true">
+              <a href="javascript://" class='btn btn-info btn-mini'>Add a Card</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div ng-show="showCardForm" class='credit-card mal'>
+        <form>
+          <h6>Add a New Card</h6>
+          <div id="credit-card-form" class="credit-card-input no-js">
+            <p class="no-support-warning">Either you have Javascript disabled, or you're using an unsupported browser, amigo.</p>
+            <label for="cc_type">Card Type</label>
+            <select name="cc_type" ng-model="cardInfo.type">
+              <option selected value="">...</option>
+              <option value="visa">Visa</option>
+              <option value="discover">Discover</option>
+              <option value="mastercard">MasterCard</option>
+              <option value="amex">American Express</option>
+            </select>
+            <label for="cc_number">Card Number</label>
+            <input type="text" name="cc_number" id="cc_number" ng-model="cardInfo.number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+            <label for="cc_exp_month">Expiration Month</label>
+            <input type="text" name="cc_exp_month" id="cc_exp_month" ng-model="cardInfo.exp_month" placeholder="00">
+            <label for="cc_exp_year">Expiration Year</label>
+            <input type="text" name="cc_exp_year" id="cc_exp_year" ng-model="cardInfo.exp_year" placeholder="00">
+            <label for="cc_name">Cardholder's Name</label>
+            <input type="text" name="cc_name" id="cc_name" ng-model="cardInfo.name" placeholder="John Doe">
+            <label for="cc_cvc">Card Validation Code</label>
+            <input type="text" name="cc_cvc" id="cc_cvc" ng-model="cardInfo.cvc" placeholder="123" maxlength="3" size="3">
+          </div>
+        </form>
+        <a href="javascript://" ng-click="showCardForm = false" class='btn btn-info'>cancel</a>
+        <a href="javascript://" ng-click="saveCard()" ng-disabled="!card.isValid()" class='btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
+          <a class="secure-msg" href="javascript://" popover-trigger="mouseenter" popover="We never store your credit card information.  We use a safe, third-party financial provider to store and process all our credit card payments." popover-placement="right">
+            <img src="<%= asset_path 'icons/secure-red.gif' %>" height="16px" width="16px"/>
+            Why we&#39;re secure
+          </a>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
+      </div>
+      <!--<div ng-hide="showCardForm" class="add-funds-container">
+        <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
+        <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Add Money</a>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
+        </p>
+        <span class='muted tilt'>*At least $5.</span>
+      </div>-->
+    </div>
+    <div class="payment-container" ng-hide="showCardForm">
+      <h5>Checkout</h5>
+      <div ng-show="payment_type == 'paypal'">
+        <span class="payment-total">Total: $10</span><a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>
+          <span ng-show="payment_type == 'paypal'">Pay with PayPal</span>
+          <span ng-show="payment_type == 'credit-card'">Add Money</span>
+        </a>
+        <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
+      </div>
+      <div ng-show="payment_type == 'credit-card'">
+        <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
+        <div ng-hide='addMoneySpinner'>
+          <div><span class="payment-total">Total: $10</span><a href="javascript://" class="btn btn-primary" ng-click="addFunds()">Submit</a></div>
+        </div>
       </div>
     </div>
   </div>
