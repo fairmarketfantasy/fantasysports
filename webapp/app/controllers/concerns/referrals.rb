@@ -47,6 +47,7 @@ module Referrals
     handle_referral(resp)
     handle_roster_claiming(resp)
     handle_contest_joining(resp)
+    resp[:redirect] = "/#{Sport.where('is_active').first.name }/home" unless resp[:redirect]
     resp
   end
 
