@@ -64,8 +64,7 @@ class RostersController < ApplicationController
   end
 
   def sample_roster
-    s = Sport.where('is_active').first
-    m = Market.where(:sport_id => s.id, :state => ['published', 'opened'], :game_type => 'regular_season').order("name ilike '%week%' desc").first
+    m = Market.where(:sport_id => Sport.where('is_active'), :state => ['published', 'opened'], :game_type => 'regular_season').order("name ilike '%week%' desc").first
     # Fill the lolla first, if that's full, revert to Top5 contests
     lolla_type = m.contest_types.where("name ilike '%k%'").first
     lolla = lolla_type && lolla_type.contests.first

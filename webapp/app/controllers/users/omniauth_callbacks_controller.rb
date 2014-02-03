@@ -9,8 +9,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       #if the user is not "confirmed", defined as a not-null confirmed_at timestamp, then this will fail
       # set_flash_message(:notice, :success, :kind => "Facebook") if is_navigational_format?
       resp = handle_referrals
-      @redirect = resp[:redirect]
-      @flash = resp[:flash]
+      @redirect = resp[:redirect] || ''
+      @flash = resp[:flash] || ''
       render '/users/create_close', :layout => false
     else
       render '/users/create_error', :layout => false
