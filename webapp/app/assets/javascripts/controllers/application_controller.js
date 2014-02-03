@@ -20,8 +20,8 @@ angular.module("app.controllers")
     App.currentUser.currentSport = newSport;
   });
 
-  $scope.signUpModal = function(msg) {
-    registrationService.signUpModal(msg);
+  $scope.signUpModal = function(msg, opts) {
+    registrationService.signUpModal(msg, opts);
   }
 
   $scope.loginModal = function() {

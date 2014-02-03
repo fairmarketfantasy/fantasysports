@@ -19,7 +19,7 @@ module Referrals
       existing = Roster.find(params[:claim_roster])
       roster = Roster.generate(current_user, existing.contest_type)
       roster.build_from_existing(existing)
-      resp.merge! redirect: "/market/#{existing.market_id}/roster/#{roster.id}", flash: "Thanks for signing up. Let's get that roster entered."
+      resp.merge! redirect: "/#{existing.market.sport.name}/market/#{existing.market_id}/roster/#{roster.id}", flash: "Thanks for signing up. Let's get that roster entered."
     end
   end
 
@@ -37,7 +37,7 @@ module Referrals
         roster = Roster.generate(current_user, contest.contest_type)
       end
       session.delete(:contest_code)
-      resp.merge! redirect: "/market/#{contest.market_id}/roster/#{roster.id}", flash: "Great! We put you in your buddy's contest.  Now let's make a roster"
+      resp.merge! redirect: "/#{contest.market.sport.name}/market/#{contest.market_id}/roster/#{roster.id}", flash: "Great! We put you in your buddy's contest.  Now let's make a roster"
     end
   end
 

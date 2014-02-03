@@ -1,10 +1,6 @@
 <div ng-controller="SampleRosterController" class="roster"> 
   
   <div class="roster-area">
-    <div class="clearfix hide">
-      <h4 class="team-heading inline-heading">Sign Up to Claim THIS Roster</h4>
-      
-    </div>
     <div class="loading-message" ng-hide="roster">
       <img src=<%= asset_path 'ajax-throbber.gif' %>/>
       <h4>We're Building you a Custom Roster</h4>
@@ -28,7 +24,7 @@
           </div>
 
           <div class="mr-player-cta">
-              <a class="btn btn-small btn-orange" href="javascript://" ng-click="signUpModal()">Trade</a>
+            <a class="btn btn-small btn-orange" href="javascript://" ng-click="signUpModal('Sign up to edit this roster!', {claim_roster: roster.id})">Trade</a>
           </div>
         </li>
       </ul>
@@ -36,7 +32,7 @@
 
   </div>
     <div class="text-center">
-      <p><a href="javascript://" class="btn btn-large btn-danger" ng-click='signUpModal()'>Claim this roster!</a> <a href="javascript://" class="btn btn-large btn-success" ng-click='signUpModal()'>Start Over From Scratch!</a></p>
+      <p><a href="javascript://" class="btn btn-large btn-danger" ng-click='signUpModal()'>Make a new one!</a> <a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">Claim this roster!</a></p>
     </div>
 
 </div>

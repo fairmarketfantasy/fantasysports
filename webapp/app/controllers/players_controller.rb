@@ -22,8 +22,8 @@ class PlayersController < ApplicationController
       end
     end
     # TODO: add positional exclusion using uniq roster remaining_positions
-    @players = @players.where("players.id NOT IN(#{roster.rosters_players.map(&:player_id).push(-1).join(',')})"
-                      ).where("player_positions.position IN('#{roster.remaining_positions.uniq.join("','")}')")
+    @players = @players.where("players.id NOT IN(#{roster.rosters_players.map(&:player_id).push(-1).join(',')})")
+                      #.where("player_positions.position IN('#{roster.remaining_positions.uniq.join("','")}')")
     if sort == 'ppg'
       @players = @players.order_by_ppg(order)
       swap_priced_players!

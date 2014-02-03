@@ -42,6 +42,7 @@ Fantasysports::Application.routes.draw do
   #for /users/:id
   resources :users, only: [:index, :show] do
     collection do
+      post 'agree_to_terms',     action: :agree_to_terms
       get 'unsubscribe',     action: :unsubscribe
       get 'name_taken',      action: :name_taken
       get 'token_plans',     action: :token_plans

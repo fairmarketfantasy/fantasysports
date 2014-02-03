@@ -54,6 +54,10 @@ angular.module("app.controllers")
     dialog.close();
   };
 
+  $scope.agreeToTerms = function() {
+    fs.user.agreeToTerms().then(function(user) { currentUserService.currentUser = user; });
+  };
+
   $scope.saveCard = function() {
     if (!$scope.card.isValid() && $scope.card._getUnderlyingValue('type') != 'amex') { return; }
     $scope.saveCardSpinner = true;

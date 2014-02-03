@@ -5,7 +5,7 @@ angular.module("app.controllers")
 
   // Don't include 100k, 10k, 5k contests from MarketController since these are periodic (weekly)
   // and unlikely to be signed up for immediately after submitting a roster.
-  $scope.contestTypeOrder = ['194', '970', 'h2h', 'h2h rr'];
+  $scope.contestTypeOrder = ['194', '970', 'Top5', '65/25/10', 'h2h', 'h2h rr'];
 
   $scope.currentUser = currentUserService.currentUser;
   $scope.market = market;
