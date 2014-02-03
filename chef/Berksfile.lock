@@ -1,0 +1,56 @@
+{
+  "sources": {
+    "git": {
+      "locked_version": "2.5.2"
+    },
+    "apt": {
+      "locked_version": "2.1.0"
+    },
+    "nginx": {
+      "locked_version": "1.7.0"
+    },
+    "chef-puma": {
+      "locked_version": "0.1.0",
+      "git": "git@github.com:yourabi/chef-puma.git",
+      "ref": "75f6de14ae0e4c37aaae2bfbb2a750b2936b3b02"
+    },
+    "application": {
+      "locked_version": "3.0.0"
+    },
+    "postgresql": {
+      "locked_version": "0.11.2",
+      "git": "git@github.com:phlipper/chef-postgresql.git",
+      "ref": "79e70f1d318836a9846545a178cf7b1529ba4e22"
+    },
+    "dmg": {
+      "locked_version": "1.1.0"
+    },
+    "build-essential": {
+      "locked_version": "1.4.0"
+    },
+    "yum": {
+      "locked_version": "2.3.0"
+    },
+    "windows": {
+      "locked_version": "1.10.0"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.4"
+    },
+    "runit": {
+      "locked_version": "1.1.6"
+    },
+    "ohai": {
+      "locked_version": "1.1.10"
+    },
+    "monit": {
+      "locked_version": "0.7.1"
+    },
+    "logrotate": {
+      "locked_version": "1.2.2"
+    },
+    "dpkg_autostart": {
+      "locked_version": "0.1.6"
+    }
+  }
+}

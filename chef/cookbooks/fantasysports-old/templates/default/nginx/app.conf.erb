@@ -1,0 +1,58 @@
+# Redirect www and non-ssl to ssl root
+server {
+  listen 80;
+  server_name <%= (([@main_domain] + @redirect_domains).map{|d| (@sub_domain) + d }).join(' ') %>;
+  rewrite ^/(.*) https://<%= @sub_domain + @main_domain %>/$1 permanent;
+}
+
+upstream <%= @app_name %>{
+  server  unix:<%= @app_root %>/shared/tmp/puma.sock fail_timeout=0;
+}
+
+server {
+  client_max_body_size 4G;
+
+  listen  443 ssl;
+  keepalive_timeout    300;
+
+  server_name <%= @sub_domain + @main_domain %>;
+  access_log  <%= @app_root %>/shared/log/nginx.<%= @app_name %>.access.log;
+
+  ssl_certificate /etc/nginx/keys/<%= @main_domain %>.chained.crt;
+  ssl_certificate_key /etc/nginx/keys/<%= @main_domain %>.key;
+
+  location ~ ^/(assets|fonts|stylesheets)/(.*)$ {
+      root <%= @app_root %>/current/webapp/public;
+  }
+
+  location ~ ^/(.*\.html|.*\.txt|.*\.gz) {
+      root <%= @app_root %>/current/webapp/public;
+  }
+
+  location / {
+      #proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-Forwarded-Proto http;
+      #proxy_redirect off;
+
+      #if (!-f $request_filename) {
+        #proxy_pass http://<%= @app_name %>;
+        #break;
+      #}
+      index  index.html index.htm;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      #proxy_set_header X-Forwarded-Proto https;
+      proxy_redirect     off;
+      proxy_pass   http://<%= @app_name %>;
+  }
+
+  #error_page  404  /404.html;
+
+  # redirect server error pages to the static page /50x.html
+  #
+  error_page   500 502 503 504  /50x.html;
+  #location = /50x.html {
+  #,..root   /var/www/nginx-default;
+  #}
+}
