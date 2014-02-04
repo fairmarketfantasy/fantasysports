@@ -11,12 +11,14 @@ angular.module("app.controllers")
   $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;}, true);
 
   $scope.sportHasPlayoffs = function() {
-    return _.find(App.sports, function(s) { return s.name == $scope.currentUser.currentSport; } ).playoffs_on;
+    var sport = _.find(App.sports, function(s) { return s.name == $scope.currentUser.currentSport; } );
+    return sport && sport.playoffs_on;
   };
 
   // Watch the sport scope
   $scope.$watch(function() { return $route.current && $route.current.params.sport; }, function(newSport, oldSport) {
-    if (!App.currentUser) { return; }
+    if (!App.currentUser || !newSport) { return; }
+    console.log(newSport);
     App.currentUser.currentSport = newSport;
   });
 

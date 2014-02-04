@@ -336,7 +336,7 @@ class Roster < ActiveRecord::Base
   end
 
   def fill_pseudo_randomly5(place_bets = true)
-    fill_pseudo_randomly3(place_bets)
+    fill_pseudo_randomly3(place_bets) if remaining_positions.length > 0
     max_diff = 4000
     @rosters ||= []
     if self.reload.remaining_salary.abs > max_diff
