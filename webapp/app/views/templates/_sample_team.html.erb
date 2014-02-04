@@ -6,7 +6,7 @@
       <h4>We're Building you a Custom Roster</h4>
     </div>
 
-    <div class="roster-overflow">
+    <div class="roster-overflow" ng-show="roster">
 
       <ul class="no-no">
         <li class="mr-item clearfix" ng-repeat="player in roster.players">
@@ -32,7 +32,7 @@
 
   </div>
     <div class="text-center">
-      <p><a href="javascript://" class="btn btn-large btn-danger" ng-click='signUpModal()'>Make a new one!</a> <a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">Claim this roster!</a></p>
+      <p><a href="javascript://" class="btn btn-large btn-danger" ng-click='reloadRoster(true)'>Make a new one!</a> <a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">Claim this roster!</a></p>
     </div>
 
 </div>

@@ -75,8 +75,12 @@ class RostersController < ApplicationController
       m.contest_types.where(:name => 'Top5').first || m.contest_types.where(:name => '194').first
     end
 
-    roster = Rails.cache.fetch("landing_roster_#{contest_type.id}", :expires_in => 5.minutes) do
+    roster = if params[:reload]
       Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
+    else 
+      Rails.cache.fetch("landing_roster_#{contest_type.id}", :expires_in => 5.minutes) do
+        Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
+      end
     end
     render_api_response roster, :scope => SYSTEM_USER
   end
