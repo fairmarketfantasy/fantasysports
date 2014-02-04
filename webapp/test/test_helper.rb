@@ -67,7 +67,17 @@ class ActiveSupport::TestCase
 
   def setup_team(opts = {})
     team = create(:team, opts)
-    players = Positions.default_NFL.split(',').map{|pos| p = create(:player, :team => team); PlayerPosition.create(:player_id => p.id, :position => pos); p}
+    players = (Positions.default_NFL.split(',') + ['TEAM']).each do |pos| 
+      p = create(:player, :team => team)
+      PlayerPosition.create(:player_id => p.id, :position => pos)
+      StatEvent.create!(
+          :game_stats_id => 'fake-id',
+          :player_stats_id => p.stats_id,
+          :point_value => 1,
+          :activity => 'rushing',
+          :data => ''
+        )
+      end
     team
   end
 
@@ -103,7 +113,7 @@ class ActiveSupport::TestCase
   end
   
   def setup_single_elimination_market
-    teams = (1..4).map{ setup_team }
+    teams = (1..4).map{ setup_team(:sport_id => 1) }
     @game1_1 = create(:game, :home_team => teams[0], :away_team => teams[1], :game_time => Time.now + 10.minute) # Publish subtracts 5 minutes
     @game1_2 = create(:game, :home_team => teams[2], :away_team => teams[3], :game_time => Time.now + 10.minute)
     @market, @team_market = Market.create_single_elimination_game(1, "player market", "team market", 2600, 1300)

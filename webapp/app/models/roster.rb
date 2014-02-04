@@ -112,9 +112,11 @@ class Roster < ActiveRecord::Base
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!(charge = true)
     #buy all the players on the roster. This sql function handles all of that.
-    raise HttpException.new(402, "Agree to terms!") if charge && !owner.customer_object.has_agreed_terms?
-    raise HttpException.new(402, "Unpaid subscription!") if charge && !owner.active_account?
-    raise HttpException.new(409, "Rosters must have <$20k remaining salary!") if remaining_salary > 20000 && Rails.env != 'test' # Doing this in test will make everything way slow
+    if self.owner.id != SYSTEM_USER.id
+      raise HttpException.new(402, "Agree to terms!") if charge && !owner.customer_object.has_agreed_terms?
+      raise HttpException.new(402, "Unpaid subscription!") if charge && !owner.active_account?
+      raise HttpException.new(409, "Rosters must have <$20k remaining salary!") if remaining_salary > 20000 && Rails.env != 'test' # Doing this in test will make everything way slow
+    end
       #purchase all the players and update roster state to submitted
 
       set_contest = contest
@@ -235,7 +237,7 @@ class Roster < ActiveRecord::Base
   end
 
   def swap_benched_players!
-    players = self.players.with_purchase_price.benched
+    players = self.players_with_prices.benched
     candidate_players, _ = fill_candidate_players(players.map(&:position))
     players.each do |player|
       if candidate_players[player.position].length > 0
@@ -245,9 +247,9 @@ class Roster < ActiveRecord::Base
           closest_player = candidate if (closest_player.buy_price - target_price).abs > (candidate.buy_price - target_price).abs
           closest_player
         end
-        candidate_players[player.position] = candidate_players[player.position].reject{|p| p.id == player.id}
+        remove_from_candidate_players(candidate_players, replacement_player)
         remove_player(player, !self.is_generated?)
-        add_player(replacement_player, !self.is_generated?)
+        add_player(replacement_player, player.position, !self.is_generated?)
       end
     end
   end
@@ -395,10 +397,10 @@ class Roster < ActiveRecord::Base
     candidate_players
   end
 
-  def fill_candidate_players
+  def fill_candidate_players(positions = nil)
       candidate_players = {}
       indexes = {}
-      remaining_positions.each { |pos| candidate_players[pos] = []; indexes[pos] = 0 }
+      (positions || remaining_positions).each { |pos| candidate_players[pos] = []; indexes[pos] = 0 }
       self.purchasable_players.active.each do |p|
         next unless candidate_players.include?(p.position)
         next if self.rosters_players.map(&:player_id).include?(p.id)

@@ -55,6 +55,7 @@ class CustomerObjectTest < ActiveSupport::TestCase
         c.do_monthly_accounting!
       end
     end
+    assert c.is_active?
     assert c.last_activated_at
   end
 

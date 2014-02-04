@@ -6,14 +6,6 @@ class UserTest < ActiveSupport::TestCase
 
     let(:user) { build(:user) }
 
-    describe "#image_url" do
-
-      it "should default to gravatar" do
-        assert /gravatar/.match(user.image_url)
-      end
-
-    end
-
     describe "avatar uploader" do
 
       let(:file) { fixture_file_upload('mickey.png', 'image/png') }

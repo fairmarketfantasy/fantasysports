@@ -143,7 +143,6 @@ class Contest < ActiveRecord::Base
         next if tr.reverted? || tr.event == 'buy_in'#TransactionRecord::CONTEST_TYPES.include?(tr.event)
         tr.revert!
       end
-      TransactionRecord.validate_contest(self)
       self.save!
       self.market.tabulate_scores
     end

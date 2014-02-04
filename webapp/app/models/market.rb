@@ -22,7 +22,7 @@ class Market < ActiveRecord::Base
 
   paginates_per 25
 
-  @@thread_pool = ThreadPool.new(4)
+  #@@thread_pool = ThreadPool.new(4)
 
   class << self
 
@@ -51,7 +51,7 @@ class Market < ActiveRecord::Base
     def apply method, sql, *params
       Market.where(sql, *params).order('id asc').each do |market|
         puts "#{Time.now} -- #{method} market #{market.id}"
-        @@thread_pool.schedule do
+        #@@thread_pool.schedule do
           begin
 =begin
 init_shadow_bets = market.reload.initial_shadow_bets
@@ -71,8 +71,9 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
               :backtrace => e.backtrace
             )
           end
-        end
+      #  end
       end
+      #@@thread_pool.wait_for_empty
     end
 
     def publish

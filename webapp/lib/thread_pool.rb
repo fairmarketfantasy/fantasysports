@@ -68,9 +68,9 @@ class ThreadPool
       end
     end
   end
-  
+
   # ### Work scheduling
-  
+
   # To schedule a piece of work to be done is to say to the `Pool` that you
   # want something done.
   def schedule(*args, &block)
@@ -78,9 +78,17 @@ class ThreadPool
     # into the work `Queue` and executed once a thread is ready to work.
     @jobs << [block, args]
   end
-  
+
+  # NOT PRETTY. NOT PRETTY AT ALL.
+  def wait_for_empty
+    begin
+      puts @jobs.length
+      Thread.yield if !@jobs.empty?
+    end while !@jobs.empty?
+  end
+
   # ### Graceful shutdown
-  
+
   # If you ever wish to close down your application, I took the liberty of
   # making it easy for you to wait for any currently executing jobs to finish
   # before you exit.

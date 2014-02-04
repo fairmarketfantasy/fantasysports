@@ -35,3 +35,17 @@ God.watch do |w|
   w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
 end
 
+God.watch do |w|
+  pid_file = PID_PATH + "/accounter.pid"
+  w.name = "accounter"
+  w.start = "bundle exec rake users:do_accounting --trace"
+  w.dir = BASE_DIR + '/current/webapp'
+  w.log = BASE_DIR + '/shared/log/accounter.log'
+  w.env = {"RAILS_ENV" => ENV['RAILS_ENV'],
+           "PIDFILE" => pid_file}
+  w.stop          = -> { `kill -s KILL #{IO.read(pid_file)}` }
+  w.start_grace   = 5.seconds
+  w.restart_grace = 5.seconds
+  w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
+end
+
