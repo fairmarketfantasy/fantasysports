@@ -186,12 +186,6 @@ angular.module('app.data')
 
         var self = this;
         fs.rosters.submit(this.currentRoster.id).then(function(roster) {
-          // NOENTRY TODO: EDIT THIS FOR NO ENTRY
-          if (roster.contest_type.takes_tokens) {
-            currentUserService.currentUser.token_balance -= roster.buy_in;
-          } else {
-            currentUserService.currentUser.balance -= roster.buy_in;
-          }
           self.reset();
           currentUserService.refreshUser();
           deferred.resolve(roster);

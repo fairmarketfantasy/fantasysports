@@ -2,7 +2,8 @@ class RostersController < ApplicationController
   skip_before_filter :authenticate_user!, :only => [:show, :sample_roster]
 
   def mine
-    rosters = current_user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').order('closed_at desc')
+    sport = params[:sport] ? Sport.where(:name => params[:sport]).first : Sport.where('is_active').first
+    rosters = current_user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').where(['m.sport_id = ?', sport.id]).order('closed_at desc')
     rosters = if params[:historical]
       page = params[:page] || 1
       rosters.over.page(page)
