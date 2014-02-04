@@ -8,10 +8,13 @@ angular.module("app.controllers")
     marketService.fetchUpcoming({type: 'regular_season', sport: currentUserService.currentUser.currentSport}).then(function() {
       if ($routeParams.market_id) {
         marketService.selectMarketId($routeParams.market_id, currentUserService.currentUser.currentSport);
+        reloadMarket();
       } else if ($location.path().match(/\w+\/playoffs/)) {
         marketService.selectMarketType('single_elimination', currentUserService.currentUser.currentSport);
+        reloadMarket();
       } else {
         marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
+        reloadMarket();
       }
     });
   });
@@ -30,15 +33,15 @@ angular.module("app.controllers")
   };
 
   var reloadMarket = function() {
-    if (! marketService.currentMarket) {
+    if (!marketService.currentMarket) {
       return;
     }
-
     marketService.contestClassesFor(marketService.currentMarket.id).then(function(contestClasses) {
       $scope.contestClasses = contestClasses;
     });
   };
-  $scope.$watch('marketService.currentMarket.id', reloadMarket);
+
+//  $scope.$watch('marketService.currentMarket.id', reloadMarket);
 
   $scope.hasLollapalooza = function() {
     return _.find(_.keys($scope.contestClasses || {}), function(name) { return name.match(/k/); });

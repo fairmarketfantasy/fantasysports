@@ -85,7 +85,7 @@
   <div class="market-title clearfix">
     <!-- Swap these around when playoffs end-->
     <!--<h3>When would you like to play?</h3>-->
-    <h3 style="padding-top: 5px">Play <span ng-hide="sportHasPlayoffs()">This week</h3>
+    <h3 style="padding-top: 5px">Play <span ng-hide="sportHasPlayoffs()">This week</span></h3>
     <ul ng-show="sportHasPlayoffs()"class="market-type-list">
       <li class="market-type-li" ng-class="{selected: markets.marketType == 'regular_season'}">
         <a class="market-type-selector" href="/#/{{currentUser.currentSport}}/home"><h3>This week</h3></a>
