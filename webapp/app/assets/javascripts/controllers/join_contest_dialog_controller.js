@@ -27,7 +27,7 @@ angular.module("app.controllers")
 
   $scope.joinContest = function(contestType) {
     $scope.close({
-      contestType: contestType,
+      contestType: contestType
     });
   };
 

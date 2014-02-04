@@ -48,7 +48,7 @@ class League < ActiveRecord::Base
         else # day
           market = market.where(["to_char(started_at - interval '6 hours', 'D') =  ? AND closed_at - started_at < '2 days'", self.start_day.to_s])
         end
-        debugger
+        #debugger
         market.first
     end
   end
