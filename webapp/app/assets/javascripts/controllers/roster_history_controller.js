@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('RosterHistoryController', ['$scope', 'rosters', 'markets', 'flash', function($scope, rosterService, markets, flash) {
+.controller('RosterHistoryController', ['$scope', 'rosters', 'markets', 'flash', 'currentUserService', '$routeParams', function($scope, rosterService, markets, flash, currentUserService, $routeParams) {
   rosterService.setPoller(null);
   $scope.rosterService = rosterService;
   $scope.history = true;
@@ -8,7 +8,7 @@ angular.module("app.controllers")
   $scope.rosterList = [];
   $scope.fetchMore = function() {
     page++;
-    rosterService.fetchMine({historical: true, page: page}).then(function(rosters) {
+    rosterService.fetchMine({sport: $routeParams.sport, historical: true, page: page}).then(function(rosters) {
       if (rosters.length == 0) {
         $scope.showMore = false;
       }
