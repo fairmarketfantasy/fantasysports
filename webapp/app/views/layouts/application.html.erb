@@ -153,7 +153,7 @@
         <div class="span3 user-navigation">
           <ul class="nav">
             <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/home">Home</a></li>
-            <li class="nav-item nav-item-highlight"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>
+            <li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>
             <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rosters">My Contests</a></li>
             <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>
             <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
