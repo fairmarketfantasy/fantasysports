@@ -29,6 +29,7 @@ class TransactionRecord < ActiveRecord::Base
 
   def self.validate_contest(contest)
     return if contest.contest_type.max_entries == 0
+    debugger if contest.transaction_records.where("event != 'contest_payout_bonus'").reduce(0){|total, tr| total +=  tr.is_monthly_entry? ? -1000 * tr.amount : tr.amount } != 0
     sum = contest.transaction_records.where("event != 'contest_payout_bonus'").reduce(0){|total, tr| total +=  tr.is_monthly_entry? ? -1000 * tr.amount : tr.amount }
     if sum != 0
       raise "Contest #{contest.id} sums to #{sum}. Should Zero. Fucking check yo-self."
@@ -56,7 +57,7 @@ class TransactionRecord < ActiveRecord::Base
         'balance'
     end
 
-    if self.amount < 0
+    if self.amount < 0 || (amount > 0 && type == 'monthly_entry')
       user.payout(type, self.amount.abs, opts.merge(:event => 'revert_transaction', :reverted_transaction_id => self.id))
     else
       user.charge(type, self.amount.abs, opts.merge(:event => 'revert_transaction', :reverted_transaction_id => self.id))

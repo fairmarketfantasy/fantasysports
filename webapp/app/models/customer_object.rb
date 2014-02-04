@@ -7,7 +7,9 @@ class CustomerObject < ActiveRecord::Base
   has_many :credit_cards
 
   def self.monthly_accounting!
-    CustomerObject.where
+    CustomerObject.where(['is_active AND has_agreed_terms AND last_activated_at < ?', Time.new.beginning_of_month]).each do |co|
+      co.do_monthly_accounting!
+    end
   end
 
   def do_monthly_accounting!
@@ -21,9 +23,10 @@ class CustomerObject < ActiveRecord::Base
       decrease_monthly_winnings(deficit_entries * 1000, :event => 'monthly_user_entries') if deficit_entries > 0
       decrease_monthly_winnings(tax_earnings, :event => 'monthly_taxes') if tax_earnings > 0
       increase_account_balance(user_earnings, :event => 'monthly_user_balance')
-    end
-    if self.balance > 1000
-      do_monthly_activation!
+      puts "--Accounting #{self.user.id}"
+      if self.balance > 1000
+        do_monthly_activation!
+      end
     end
   end
 
@@ -36,6 +39,7 @@ class CustomerObject < ActiveRecord::Base
       self.last_activated_at = Time.new
     end
     self.save!
+    puts "--Activated #{self.user.id}"
   end
 
   def taxed_net_monthly_winnings
@@ -49,7 +53,7 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def net_monthly_winnings
-    [self.monthly_winnings - self.entries_in_the_hole * 1000, 0].max
+    self.monthly_winnings - self.entries_in_the_hole * 1000
   end
 
   def entries_in_the_hole
@@ -134,7 +138,7 @@ class CustomerObject < ActiveRecord::Base
 
   def increase_monthly_contest_entries!(amount, opts = {})
     ActiveRecord::Base.transaction do
-      TransactionRecord.create!({:user => self.user, :amount => amount, :is_monthly_entry => true}.merge(opts))
+      TransactionRecord.create!(opts.merge({:user => self.user, :amount => amount, :is_monthly_entry => true}))
       self.monthly_contest_entries += amount
       self.save!
     end
@@ -142,7 +146,7 @@ class CustomerObject < ActiveRecord::Base
 
   def decrease_monthly_contest_entries!(amount, opts = {})
     ActiveRecord::Base.transaction do
-      TransactionRecord.create!({:user => self.user, :amount => -amount, :is_monthly_entry => true}.merge(opts))
+      TransactionRecord.create!(opts.merge({:user => self.user, :amount => -amount, :is_monthly_entry => true}))
       self.monthly_contest_entries -= amount
       self.save!
     end
