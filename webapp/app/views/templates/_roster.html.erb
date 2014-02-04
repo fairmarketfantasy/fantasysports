@@ -6,7 +6,7 @@
         ng-show="currentUser && (market.state == 'published' || market.state == 'opened') && rosters.currentRoster.contest">
         Invite Friends</a>
       <a href="#/{{currentUser.currentSport}}/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster == rosters.currentRoster || !currentUser">Back to Contests</a>
-      <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name | slashesToDashes}}.png" class="contest-info-image" />
+      <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name | slashesToDashes | lowercase }}.png" class="contest-info-image" />
       <div class="contest-info-description">
         <h2 ng-show="rosters.currentRoster.league" class="contest-title">{{rosters.currentRoster.contest_type.name}} {{rosters.currentRoster.league.name}} League Game</h2>
         <h2 ng-hide="rosters.currentRoster.league" class="contest-title">{{markets.currentMarket.name}}
