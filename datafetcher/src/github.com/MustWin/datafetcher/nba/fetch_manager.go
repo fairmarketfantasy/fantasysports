@@ -55,20 +55,21 @@ func (mgr *FetchManager) createMarket(name string, games lib.Games) {
 }
 
 func (mgr *FetchManager) CreateMarkets(games []*models.Game) {
-	dayMarkets := make(map[string][]*models.Game, 0)
+	//dayMarkets := make(map[string][]*models.Game, 0)
 	//weekMarkets := make(map[string][]*models.Game, 0)
 	for i := 0; i < len(games); i++ {
-		dayKey := games[i].GameDay.String()
+		//dayKey := games[i].GameDay.String()
+		mgr.createMarket(games[i].GameTime.Add(-6*time.Hour).Format("Monday")+" Basketball", []*models.Game{games[i]})
 		//	weekKey := games[i].SeasonType + "-" + strconv.Itoa(games[i].SeasonWeek)
-		lib.AppendForKey(dayKey, dayMarkets, games[i])
+		//lib.AppendForKey(dayKey, dayMarkets, games[i])
 		//	lib.AppendForKey(weekKey, weekMarkets, games[i])
 	}
-	for _, daysGames := range dayMarkets {
+	/*for _, daysGames := range dayMarkets {
 		for _, game := range daysGames {
 			mgr.createMarket(game.GameTime.Add(-6*time.Hour).Format("Monday")+" Basketball", []*models.Game{game})
 		}
 	}
-	/*for _, weekGames := range weekMarkets {
+	for _, weekGames := range weekMarkets {
 		mgr.createMarket("All of Week "+strconv.Itoa(weekGames[0].SeasonWeek), weekGames)
 	}*/
 }
