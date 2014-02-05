@@ -1,7 +1,7 @@
 name 'mustwin-rails-worker'
 description 'A puma worker'
 
-override_attributes({'mustwin' => {'roles' => {'WORKER' => true}}}) # Used by mustwin-basics
+override_attributes({'easternpeak' => {'roles' => {'WORKER' => true}}}) # Used by mustwin-basics
 
 # TODO: this is basically copied from mustwin-rails-web, just make a rails role and add worker stuff to another role
 run_list(
@@ -18,5 +18,3 @@ run_list(
   'recipe[golang]', # Worker specific
   'recipe[mustwin-basics]',
 )
-
-

@@ -3,11 +3,11 @@
 current_dir = File.dirname(__FILE__)
 log_level                :info
 log_location             STDOUT
-node_name                "mustwin"
-client_key               "#{current_dir}/mustwin.pem"
-validation_client_name   "mustwin-validator"
-validation_key           "#{current_dir}/mustwin-validator.pem"
-chef_server_url          "https://api.opscode.com/organizations/mustwin"
+node_name                "easternpeak"
+client_key               "#{current_dir}/easternpeak.pem"
+validation_client_name   "easternpeak-validator"
+validation_key           "#{current_dir}/easternpeak-validator.pem"
+chef_server_url          "https://api.opscode.com/organizations/easternpeak"
 chef_client_path 'chef-client -l debug'
 cache_type               'BasicFile'
 cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
@@ -38,3 +38,4 @@ knife[:aws_user_data] = ""
 # AWS SSH Keypair.
 knife[:ssh_user] = "ubuntu"
 knife[:aws_ssh_key_id] = "fantasysports"
+
