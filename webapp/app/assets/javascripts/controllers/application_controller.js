@@ -8,6 +8,7 @@ angular.module("app.controllers")
 
   $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;
+
   $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;}, true);
 
   $scope.sportHasPlayoffs = function() {

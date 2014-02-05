@@ -5,7 +5,7 @@
   <div class='clearfix'>
     <img ng-src="{{currentUser.image_url}}" class='user-avatar'/> <a href="javascript://" ng-hide='showUpload' ng-click="showUpload = true">Upload a new photo</a>
     <form ng-upload action="/users/uploads" ng-show='showUpload'>
-      <input name="user[avatar]" type='file' />
+      <input name="user[avatar]" type='file' accept='image/*' />
       <a href="javascript://" class="btn btn-primary btn-mini" upload-submit="results(contents, completed)" >Upload Photo</a>
       <a href="javascript://" class="btn btn-mini" ng-click='showUpload = false'>Cancel</a>
     </form>
