@@ -10,7 +10,7 @@ class UserSerializer < ActiveModel::Serializer
   attribute :confirmed?, key: :confirmed
 
   def currentSport
-    Sport.where('is_active').first
+    Sport.where('is_active').first.name
   end
 
   def balance
