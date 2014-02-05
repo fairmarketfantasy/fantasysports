@@ -27,9 +27,9 @@ end
 =end
 
 # Setup the DB
-user = node['mustwin']['database']['username']
-database = node['mustwin']['database']['database']
-pass = node['mustwin']['database']['password']
+user = node['easternpeak']['database']['username']
+database = node['easternpeak']['database']['database']
+pass = node['easternpeak']['database']['password']
 
 pg_user user do
   privileges :superuser => true, :login => true

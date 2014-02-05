@@ -1,8 +1,8 @@
 # DB
 # https://github.com/phlipper/chef-postgresql
-default['mustwin']['database']['database'] = 'mustwin'
-default['mustwin']['database']['username'] = 'mustwin'
-default['mustwin']['database']['password'] = 'dbpass'
+default['easternpeak']['database']['database'] = 'mustwin'
+default['easternpeak']['database']['username'] = 'mustwin'
+default['easternpeak']['database']['password'] = 'dbpass'
 
 
 # Replication setup
