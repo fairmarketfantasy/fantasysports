@@ -28,7 +28,7 @@ angular.module("app.controllers")
       // give the server time to save everything
       $timeout(function() {
         rosters.selectRoster(data);
-        $location.path('/market/' + data.market.id + '/roster/' + data.id);
+        $location.path('/' + $scope.currentUser.currentSport + '/market/' + data.market.id + '/roster/' + data.id);
       }, 500);
     });
   }

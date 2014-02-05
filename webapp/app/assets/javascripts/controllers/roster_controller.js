@@ -227,14 +227,14 @@ angular.module("app.controllers")
     fs.contests.join(contestType.id, roster.id).then(function(data) {
       rosters.selectRoster(data);
       flash.success("Awesome, we've started a new roster with all the players from your last roster. Go ahead and customize then enter again!");
-      $location.path('/market/' + $scope.market.id + '/roster/' + data.id);
+      $location.path('/' + $scope.currentUser.currentSport + '/market/' + $scope.market.id + '/roster/' + data.id);
     });
   };
 
   $scope.submitRoster = function() {
     rosters.submit().then(function(roster) {
       flash.success("Roster submitted successfully!");
-      $location.path('/market/' + roster.market.id);
+      $location.path('/' + $scope.currentUser.currentSport + '/market/' + roster.market.id);
       $timeout(function() {
         joinContestModal('submitRoster', roster).then(function(result) {
           if (result && result.contestType) {
