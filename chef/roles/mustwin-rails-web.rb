@@ -1,7 +1,7 @@
 name 'mustwin-rails-web'
 description 'A puma web server behind an AWS ELB'
 
-override_attributes({'mustwin' => {'roles' => {'WEB' => true}}}) # Used by mustwin-basics
+override_attributes({'easternpeak' => {'roles' => {'WEB' => true}}}) # Used by mustwin-basics
 
 run_list(
   'recipe[apt]',
@@ -16,4 +16,3 @@ run_list(
   'recipe[openssl]',
   'recipe[mustwin-basics]',
 )
-

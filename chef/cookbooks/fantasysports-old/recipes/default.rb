@@ -145,7 +145,7 @@ end
 deploy node[APP_NAME]['root'] do
 
   # Use a local repo if you prefer
-  repo "git@github.com:MustWin/fantasysports.git"
+  repo "git@github.com:fairmarketfantasy/fantasysports.git"
   ssh_wrapper "/home/ubuntu/wrap-ssh4git.sh"
   environment "RAILS_ENV" => node['env']['RAILS_ENV']
   revision "HEAD"
@@ -207,7 +207,7 @@ deploy node[APP_NAME]['root'] do
 
     # Build Go deps
     execute "Fetch Go deps" do
-      command("cd #{current_release}/datafetcher; GOPATH=`pwd` PATH=$PATH:$GOPATH/bin /usr/local/go/bin/go install github.com/MustWin/datafetcher/")
+      command("cd #{current_release}/datafetcher; GOPATH=`pwd` PATH=$PATH:$GOPATH/bin /usr/local/go/bin/go install github.com/fairmarketfantasy/datafetcher/")
     end
 
     execute "De-register from load balancer" do
@@ -243,7 +243,7 @@ deploy node[APP_NAME]['root'] do
   #migration_command "cd #{release_path}/webapp; bundle exec rake db:migrate --trace"
   migrate false # Handled manually
   restart_command "/home/ubuntu/start_god.sh"
-    
+
   create_dirs_before_symlink  nil
 
   # You can use this to customize if your app has extra configuration files

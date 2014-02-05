@@ -31,69 +31,43 @@ EeQRzRKjWfaE3gP/+COE6LXctFyznzWONkqZNRiCBeH4DYi3scNT6QyCNIgvNe0V/piq
 -----END RSA PRIVATE KEY-----
 EOF
 
-override['mustwin']['app_name'] = APP_NAME
-override['mustwin']['rails_prefix'] = ''
-override['mustwin']['database']['database'] = APP_NAME
-override['mustwin']['database']['username'] = APP_NAME
-override['mustwin']['database']['password'] = '50c1al6rOw7h'
-override['mustwin']['database']['master_url'] = ''#54.200.29.203'
+override['easternpeak']['app_name'] = APP_NAME
+override['easternpeak']['rails_prefix'] = ''
+override['easternpeak']['database']['database'] = APP_NAME
+override['easternpeak']['database']['username'] = APP_NAME
+override['easternpeak']['database']['password'] = '50c1al6rOw7h'
+override['easternpeak']['database']['master_url'] = ''#54.200.29.203'
 
-override['mustwin']['services']['WEB'] = ['puma']
-override['mustwin']['services']['WORKER'] = ['tweeter']
+override['easternpeak']['services']['WEB'] = ['puma']
+override['easternpeak']['services']['WORKER'] = ['tweeter']
 
-override['mustwin']['ssh_key.pub'] = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQChvNIhcdqDqzMOHrIo0RldW4aGyDiqb7URoxw/lNTOeQZKJjEMF2//1nM5hoAtzMK6Ql5uHqVjvNVPcVc7kNJmvaA0FzZIUEoHIOFwapgpuGCbHVfLPi/6P+ULHW3SxK/qmMmpFTANk6QTMRw/7M5BRCvIFIuj8Q4hiodpo2asRkZxD1KEukxNXdo9KpGV6wPLl7tlkmAS8EbuBotsR7HJXKyVPUnl+6nCpxVrefcjK26V9fqaxM1Ci0l9Eq5lLbqP1+d/SNUOrQMPVi2WHY2zccvJOthKceMBzagMljS2tQcWodV+Ph8OfXmlftPbnN5HHJ2vq1of8Iy/5RvZa35dlYzgmqbPe8/gIy5Q+3u9CEgQrbbVCrxo0lITmRCJxDfwIcUX692KkMSPffboYv7tzr/8qdP/H0CCSdjtpzcOBNS9lFwmp2qtMzmXY33t3unKJUDx2+JvVgCPQwVXvcxx+SB0ouVs4PGhj50cooPOxvzaswwrXsAzmBYyc0vi+9Y+OcodC0MWnQnaRjo8dK724Yzpl9GG+QuXzFH9enrZw6mBo/npHvtJtK4dxZeosneIRxqwBsTv+1W7+jzdXyYmKpdlXRDJj4QnYI7eY653PAwCPpo+EvUgFDCOQ4Pu/khkAM27uphxUrJw0YXQ1UnTQ2OD1AlLVqKkJZzLsyFAcQ== ubuntu@ip-172-31-35-253"
-override['mustwin']['ssh_key'] = <<-EOF
+override['easternpeak']['ssh_key.pub'] = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJlQy3RFRx7s+XQZCkZFQYaVqg1vxXlZCU4kZjqG2uXAK6cxznxs+aj/OicvsOHngtUfiZhMYPyEFS9TiM04vMOu246FGVN3CXTlT9U8v8MbIlTMnMUQ/WYG+Y3oSzZp1cHvmYoINJXk++iVNsEUGFF3TBgh1MJz1ZdcTf7XbrAtOmwIQ5LvW8MGVHA9neoywwzmxNl6AnOT8SyKTxMSii10+xqUbCP3/Sz1pcPmk03ZGqGsqNGIpK+cM/DBjMrGVwZNADM9fzgC3/BmdkacVfJRHsYG5Op7IJw8hhlWmFrzG/nwpkfSrzyEy+rIgUCNNReh/yJxJJutq9D2OOVd4T fantasysport@easternpeak.com"
+override['easternpeak']['ssh_key'] = <<-EOF
 -----BEGIN RSA PRIVATE KEY-----
-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
+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
 -----END RSA PRIVATE KEY-----
 EOF
-
-

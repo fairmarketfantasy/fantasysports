@@ -13,7 +13,7 @@ template node["postgresql"]["data_directory"] + '/recovery.conf' do
   group   'root'
   mode 00755
   variables({
-    :master_url => node['mustwin']['database']['master_url'],
+    :master_url => node['easternpeak']['database']['master_url'],
     :port => node['postgresql']['port'],
   })
 end
@@ -39,7 +39,7 @@ execute "remove data dir" do
 end
 
 execute "rsync data dir" do
-  command("/usr/bin/pg_basebackup -v -P -c fast -h #{ node['mustwin']['database']['master_url'] } -U replicator -D #{node['postgresql']['data_directory'] }")
+  command("/usr/bin/pg_basebackup -v -P -c fast -h #{ node['easternpeak']['database']['master_url'] } -U replicator -D #{node['postgresql']['data_directory'] }")
   environment 'PGPASSWORD' => REPLICATOR_PASS
   #command("rsync -avz --rsh=\"ssh -o StrictHostKeyChecking=no -i /home/ubuntu/#{node['mustwin']['app_name']}.pem\" --rsync-path=\"sudo rsync\"  ubuntu@#{ node['mustwin']['database']['master_url'] }:#{node['postgresql']['data_directory'] }/\ #{node['postgresql']['data_directory']}  --exclude postmaster.pid")
   #not_if "ps aux | grep postgresql | grep -v grep"
