@@ -38,7 +38,7 @@
     </li>
   </ul>
 
-  <a class="see-all" href="/#/rosters">See All Live Contests</a>
+  <a class="see-all" href="/#/{{currentUser.currentSport}}/rosters">See All Live {{currentUser.currentSport}} Contests</a>
 
 </div>
 <div ng-show="!rosters.mine().length && rosters.pastStats().total_entries > 0" class="entries-container">
