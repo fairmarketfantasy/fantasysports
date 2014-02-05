@@ -8,14 +8,12 @@ angular.module("app.controllers")
     marketService.fetchUpcoming({type: 'regular_season', sport: currentUserService.currentUser.currentSport}).then(function() {
       if ($routeParams.market_id) {
         marketService.selectMarketId($routeParams.market_id, currentUserService.currentUser.currentSport);
-        reloadMarket();
       } else if ($location.path().match(/\w+\/playoffs/)) {
         marketService.selectMarketType('single_elimination', currentUserService.currentUser.currentSport);
-        reloadMarket();
       } else {
         marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
-        reloadMarket();
       }
+      reloadMarket();
     });
   });
 
