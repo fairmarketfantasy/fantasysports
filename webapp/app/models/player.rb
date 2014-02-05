@@ -11,7 +11,10 @@ class Player < ActiveRecord::Base
     end
     team.first
   end
-  has_many :stat_events
+  belongs_to :player, :foreign_key => 'player_stats_id', :inverse_of => :stat_events
+
+  # This bullshit doesn't work if the foreign key isn't an id column
+  has_many :stat_events, :foreign_key => 'player_stats_id', :inverse_of => :player
   has_many :positions, :class_name => 'PlayerPosition'
 
   def purchase_price; self[:purchase_price]; end
