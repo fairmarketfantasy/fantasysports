@@ -16,8 +16,8 @@ type Sport struct {
 type Market struct {
 	UniqModel
 	Id              int
-	Name            string
-	SportId         int `model:"key"`
+	Name            string `model:"key"`
+	SportId         int    `model:"key"`
 	TotalBets       float64
 	ShadowBets      float64
 	ShadowBetRate   float64
