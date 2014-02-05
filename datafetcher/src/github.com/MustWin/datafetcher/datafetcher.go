@@ -64,9 +64,6 @@ var statsId = flag.String("statsId", "N9837-8d7fh3-sd8sd8f7-MIJ3IYG", "Unique id
 
 // Pick up here, figure out how to pass in a sport
 func getFetchers(orm *model.Orm) map[string]lib.FetchManager {
-	log.Println(lib.Sports)
-	log.Println(lib.Sports["NBA"])
-	log.Println(lib.Sports["NFL"])
 	fetch := make(map[string]lib.FetchManager)
 	nbaFetcher := nba.Fetcher{*year, &fetchers.HttpFetcher{"NBA", make(map[string]string)}}
 	nbaFetcher.FetchMethod.AddUrlParam("api_key", "8uttxzxefmz45ds8ckz764vr")
