@@ -71,7 +71,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
               :backtrace => e.backtrace
             )
           end
-      #  end
+        #end
       end
       #@@thread_pool.wait_for_empty
     end
@@ -174,12 +174,12 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
     market_players.each do |mp|
       # set total_bets & shadow_bets based on expected_ppg/ total_expected_ppg * 30000
-      mp.bets = mp.shadow_bets = mp.initial_shadow_bets = mp.expected_points.to_f / (total_expected +0.0001) * 30000
+      mp.bets = mp.shadow_bets = mp.initial_shadow_bets = mp.expected_points.to_f / (total_expected + 0.0001) * 300000
       total_bets += mp.bets
       mp.save!
     end
     self.expected_total_points = total_expected
-    self.total_bets = total_bets
+    self.total_bets = self.shadow_bets = self.initial_shadow_bets = total_bets
     save!
     if self.state == 'published'
       self.add_default_contests

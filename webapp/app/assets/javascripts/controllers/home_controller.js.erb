@@ -4,7 +4,7 @@ angular.module("app.controllers")
   if ($scope.currentUser) {
     rosters.fetchMine();
     rosters.fetchPastStats();
-    rosters.setPoller(function() { rosters.fetchMine(); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
+    rosters.setPoller(function() { rosters.fetchMine({sport: $routeParams.sport}); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
 
     // Force them to set a user!
     if (_.isEmpty($scope.currentUser.username)) {
@@ -28,7 +28,7 @@ angular.module("app.controllers")
       // give the server time to save everything
       $timeout(function() {
         rosters.selectRoster(data);
-        $location.path('/market/' + data.market.id + '/roster/' + data.id);
+        $location.path('/' + $scope.currentUser.currentSport + '/market/' + data.market.id + '/roster/' + data.id);
       }, 500);
     });
   }

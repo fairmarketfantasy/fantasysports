@@ -1,7 +1,7 @@
 angular.module("app.controllers")
-.controller('RosterListController', ['$scope', 'rosters', 'markets', 'flash', function($scope, rosterService, markets, flash) {
+.controller('RosterListController', ['$scope', 'rosters', 'markets', 'flash', '$routeParams', function($scope, rosterService, markets, flash, $routeParams) {
   $scope.rosterService = rosterService;
-  rosterService.fetchMine().then(function() {
+  rosterService.fetchMine({sport: $routeParams.sport}).then(function() {
     $scope.rosterList = rosterService.top();
   });
   rosterService.setPoller(function() { rosterService.fetchMine(); }, 10000);
