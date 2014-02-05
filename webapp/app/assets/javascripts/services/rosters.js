@@ -206,7 +206,7 @@ angular.module('app.data')
         fs.rosters.cancel(currentRoster.id).then(function(data) {
           delete rosterData[currentRoster.id];
           self.reset();
-          $location.path(currentUserService.currentUser.currentSport + '/market/' + currentRoster.market.id);
+          $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + currentRoster.market.id);
         });
       };
 
