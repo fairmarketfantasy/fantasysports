@@ -1,195 +1,206 @@
 # API Formats
 
-Api formats are defined in app/serializers
+API formats are defined in app/serializers.  So, for instance, a post to create a new user can post fields like those found in app/serializers/user_serializer.rb
+
+The best place to see how these endpoints are used is by using the web application and seeing what it does when it communicates to the backend using chrome's developer tools, or the like
 
 # API ENDPOINTS
 
 
 Accepts  Verb     URI Pattern                                                   Controller#Action
 
- JSON    POST     /users(.:format)                                              users/registrations#create
+# JSON    POST     /users(.:format)                                              users/registrations#create
+  Additional Params: password_confirmation
+  Creates new user.
 
-  Creates new user
-
- JSON    PUT      /users(.:format)                                              users/registrations#update
+# JSON    PUT      /users(.:format)                                              users/registrations#update
 
   Updates a user
 
- FORM    GET|POST /users/auth/:provider(.:format)                               users/omniauth_callbacks#passthru {:provider=>/facebook|facebook_access_token/}
+# FORM    GET|POST /users/auth/:provider(.:format)                               users/omniauth_callbacks#passthru {:provider=>/facebook|facebook_access_token/}
 
   Handles facebook login
 
- FORM    GET|POST /users/auth/:action/callback(.:format)                        users/omniauth_callbacks#(?-mix:facebook|facebook_access_token)
-
+# FORM    GET|POST /users/auth/:action/callback(.:format)                        users/omniauth_callbacks#(?-mix:facebook|facebook_access_token)
+  Notes: this is configured by the facebook application.
   Redirect url for oauth
 
-         GET      /users(.:format)                                              users#index
+#         GET      /users(.:format)                                              users#index
 
   Get the current user's representation
 
-         GET      /pages/mobile/forgot_password(.:format)                       mobile_pages#forgot_password
+#         GET      /pages/mobile/forgot_password(.:format)                       mobile_pages#forgot_password
 
   HTML form for resetting password
 
-         GET      /pages/mobile/support(.:format)                               mobile_pages#support
+#         GET      /pages/mobile/support(.:format)                               mobile_pages#support
 
   HTML page for support
 
-         GET      /pages/mobile/terms(.:format)                                 mobile_pages#terms
+#         GET      /pages/mobile/terms(.:format)                                 mobile_pages#terms
 
   HTML page for terms
 
-         GET      /pages/mobile/rules(.:format)                                 mobile_pages#rules
+#         GET      /pages/mobile/rules(.:format)                                 mobile_pages#rules
 
   HTML page for rules
 
-         GET      /join_contest/:invitation_code(.:format)                      contests#join
+#         GET      /join_contest/:invitation_code(.:format)                      contests#join
 
-  Join a contest link with an invitation code
+  Join a contest link with an invitation code. Will redirect to login if not authenticated but will maintain session state to enter them in the contest.
 
- FORM    POST     /users/agree_to_terms(.:format)                               users#agree_to_terms
+# FORM    POST     /users/agree_to_terms(.:format)                               users#agree_to_terms
 
   Update a user to agree to new subscription terms
 
-         GET      /users/name_taken(.:format)                                   users#name_taken
-
+#         GET      /users/name_taken(.:format)                                   users#name_taken
+  Params - name: the name to check
   Check if a username is taken
 
- FORM    POST     /users/set_username(.:format)                                 users#set_username
-
+# FORM    POST     /users/set_username(.:format)                                 users#set_username
+  Params - name: the new username
   Set the authenticated users username
 
- FORM    POST     /users/reset_password(.:format)                               users#reset_password
+# FORM    POST     /users/reset_password(.:format)                               users#reset_password
+  Params - email: the email to reset
+  Sends an email starting the password reset flow
 
-  Reset the users password
-
-         GET      /users(.:format)                                              users#index
+#         GET      /users(.:format)                                              users#index
 
   Get the current user's representation
 
-         GET      /users/:id(.:format)                                          users#show
+#         GET      /users/:id(.:format)                                          users#show
 
   Get another user's representation
 
- FORM    POST     /rosters/enter_league/:league_id(.:format)                    rosters#create_league_entry
+# FORM    POST     /rosters/enter_league/:league_id(.:format)                    rosters#create_league_entry
 
   Join a league, get a roster for the league
 
-         GET      /rosters/mine(.:format)                                       rosters#mine
-
+#         GET      /rosters/mine(.:format)                                       rosters#mine
+  Params - historical: if passed, will get historical rosters
+         - sport: if passed, will only fetch rosters of that sport
   Get my list of current rosters.  Also can get historical rosters
 
-         GET      /rosters/past_stats(.:format)                                 rosters#past_stats
+#         GET      /rosters/past_stats(.:format)                                 rosters#past_stats
 
   Fetch past roster statistics
 
-         GET      /rosters/in_contest/:contest_id(.:format)                     rosters#in_contest
+#         GET      /rosters/in_contest/:contest_id(.:format)                     rosters#in_contest
 
   List rosters in a contest. Effectively a leaderboard.
 
-         GET      /rosters/public/:view_code(.:format)                          rosters#public_roster
+#         GET      /rosters/public/:view_code(.:format)                          rosters#public_roster
 
   List rosters in a contest. Effectively a leaderboard.
 
-         GET      /rosters/sample(.:format)                                     rosters#sample_roster
+#         GET      /rosters/sample(.:format)                                     rosters#sample_roster
 
   Fetch an example autogenerated roster (for public landing)
 
- FORM    POST     /rosters/:id/submit(.:format)                                 rosters#submit
+# FORM    POST     /rosters/:id/submit(.:format)                                 rosters#submit
 
   Submit a roster into a contest
 
- FORM    POST     /rosters/:id/toggle_remove_bench(.:format)                    rosters#toggle_remove_bench
+# FORM    POST     /rosters/:id/toggle_remove_bench(.:format)                    rosters#toggle_remove_bench
 
   Toggle an option for automatically removing benched players from their roster
 
- FORM    POST     /rosters/:id/autofill(.:format)                               rosters#autofill
+# FORM    POST     /rosters/:id/autofill(.:format)                               rosters#autofill
 
   Fill a roster algorithmically
 
- FORM    POST     /rosters/:id/add_player/:player_id/:position(.:format)        rosters#add_player
+# FORM    POST     /rosters/:id/add_player/:player_id/:position(.:format)        rosters#add_player
 
   Add a player to a roster
 
- FORM    POST     /rosters/:id/remove_player/:player_id(.:format)               rosters#remove_player
+# FORM    POST     /rosters/:id/remove_player/:player_id(.:format)               rosters#remove_player
 
   Remove a player from a roster
 
- FORM    POST     /rosters/:id/share(.:format)                                  rosters#share
+# FORM    POST     /rosters/:id/share(.:format)                                  rosters#share
 
   Report that a roster was shared
 
- JSON    POST     /rosters(.:format)                                            rosters#create
+# JSON    POST     /rosters(.:format)                                            rosters#create
 
   Create a roster
 
-         GET      /rosters/:id(.:format)                                        rosters#show
+#         GET      /rosters/:id(.:format)                                        rosters#show
 
   Get the representation of a roster
 
- JSON    DELETE   /rosters/:id(.:format)                                        rosters#destroy
+# JSON    DELETE   /rosters/:id(.:format)                                        rosters#destroy
 
   Delete a roster
 
-         GET      /transactions(.:format)                                       transaction_record#index
-
+#         GET      /transactions(.:format)                                       transaction_record#index
+  Params - page: the page number
   List Transactions
 
- FORM    POST     /contests/join(.:format)                                      contests#join
-
+# FORM    POST     /contests/join(.:format)                                      contests#join
+  Params - referral_code: a code from the invitee
+         - contest_code: a code identifying the private contest
   Join a contest
 
- FORM    POST     /contests/:id/invite(.:format)                                contests#invite
-
+# FORM    POST     /contests/:id/invite(.:format)                                contests#invite
+  Params - invitees: a comma delimited list of emails
+         - message: a message to put in the email to invitees
   Invite emails to a contest
 
- FORM    POST     /contests(.:format)                                           contests#create
-
+# FORM    POST     /contests(.:format)                                           contests#create
+  Notes: this may accept json too.
   Create a new contest
 
-         GET      /games/for_market/:id(.:format)                               games#for_market
+#         GET      /games/for_market/:id(.:format)                               games#for_market
 
   List the games in a market
 
-         GET      /games/:id(.:format)                                          games#show
+#         GET      /games/:id(.:format)                                          games#show
 
   Get the representation for a game
 
-         GET      /players/mine(.:format)                                       players#mine
+#         GET      /players/mine(.:format)                                       players#mine
 
   Fetch players in my rosters
 
-         GET      /players/public(.:format)                                     players#public
+#         GET      /players/public(.:format)                                     players#public
 
   Get a list of players for an unauthenticated user
 
-         GET      /players/for_roster/:id(.:format)                             players#for_roster
+#         GET      /players/for_roster/:id(.:format)                             players#for_roster
 
   List players in a roster
 
-         GET      /players(.:format)                                            players#index
-
+#         GET      /players(.:format)                                            players#index
+  Params - roster_id: required. grabs players eligible for this roster
+         - autocomplete: will scope to players matching a string
+         - in_game: will scope to players on one of the teams in the game
+         - in_position: will scope to players in this position
+         - on_team: will scope to players on this team
+         - sort: the column to sort by. One of: ppg, buy_price, name
+         - dir: the direction to sort
   List players available to a roster
 
-         GET      /markets(.:format)                                            markets#index
-
+#         GET      /markets(.:format)                                            markets#index
+  Params - sport: the string for the sport to grab markets for
   List upcoming markets available for entry
 
-         GET      /markets/:id(.:format)                                        markets#show
+#         GET      /markets/:id(.:format)                                        markets#show
 
   Get the representation for a market
 
-         GET      /events/for_players(.:format)                                 events#for_players
+#         GET      /events/for_players(.:format)                                 events#for_players
 
   Get game events for the players
 
- JSON    POST     /push_devices(.:format)                                       push_devices#create
+# JSON    POST     /push_devices(.:format)                                       push_devices#create
 
   Register a new push device (for sending notifications)
 
- JSON    GET      /                         devise/oauth2_providable/authorizations#new
- JSON    POST     /authorizations(.:format) devise/oauth2_providable/authorizations#create
- JSON    GET|POST /authorize(.:format)      devise/oauth2_providable/authorizations#new
- JSON    POST     /token(.:format)          devise/oauth2_providable/tokens#create
+# JSON    GET      /                         devise/oauth2_providable/authorizations#new
+  JSON    POST     /authorizations(.:format) devise/oauth2_providable/authorizations#create
+  JSON    GET|POST /authorize(.:format)      devise/oauth2_providable/authorizations#new
+  JSON    POST     /token(.:format)          devise/oauth2_providable/tokens#create
 
   Oauth endpoints for client authorization
