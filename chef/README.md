@@ -1,7 +1,7 @@
 
 AMI
 ===============
-This ami has: 
+This ami has:
 ubuntu
 rvm
 ruby1.9.3 from apt
@@ -27,11 +27,15 @@ Start a web server in ec2:
 ```
 knife ec2 server create --image "ami-c6cc43f6" -G default,web --flavor m1.small --identity-file ~/.ssh/fantasysports.pem --run-list "role[mustwin-rails-web],recipe[fantasysports]" -d chef-full -E production -N fantasysports-web-001
 
+staging
+
+knife ec2 server create --image "ami-c6cc43f6" -G default,web --flavor m1.small --identity-file ~/.ssh/fantasysports.pem --run-list "role[mustwin-rails-web],recipe[fantasysports]" -d chef-full -E staging -N fantasysports-web-001
+
 ```
 
 Update an environment
 ```
-knife environment from file environments/production.rb
+knife environment from file environments/staging.rb
 ```
 
 Update a cookbook

@@ -7,7 +7,7 @@
 # All rights reserved - Do Not Redistribute
 
 # EPIC TODO: Put this in a mustwin-ops cookbook, the slave recipe requires it
-template "/home/ubuntu/#{node['mustwin']['app_name']}.pem" do
+template "/home/ubuntu/#{node['easternpeak']['app_name']}.pem" do
   source  'aws.pem.erb'
   owner   'ubuntu'
   group   'ubuntu'
