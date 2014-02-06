@@ -37,9 +37,9 @@ class CustomerObject < ActiveRecord::Base
       self.balance -= 1000
       self.is_active = true
       self.last_activated_at = Time.new
+      puts "--Activated #{self.user.id}"
     end
     self.save!
-    puts "--Activated #{self.user.id}"
   end
 
   def taxed_net_monthly_winnings
