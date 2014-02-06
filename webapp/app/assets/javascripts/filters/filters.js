@@ -118,7 +118,7 @@ angular.module('app.filters')
       }
       // Game Desc
       if (market.games.length == 1) {
-        return market.games[0].away_team + " at " + market.games[0].home_team + " on " + market.games[0].network;
+        return $filter('shortFormTime')(market.games[0].game_time) + " on " + market.games[0].network;
       }
       // Date Desc
       if (new Date(market.closed_at) - new Date(market.started_at) > 24 * 60 * 60 * 1000) {
