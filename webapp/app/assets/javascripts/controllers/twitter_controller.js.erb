@@ -8,7 +8,7 @@ window.twttr = (function (d,s,id) {
 angular.module("app.controllers")
 // TODO: change the name of this to ShareController, or split them up
 .controller('TwitterController', ['$scope', '$timeout', 'fs', function($scope, $timeout, fs) {
-  $scope.shareUrl = 'https://fairmarketfantasy.com/public/#/market/' +
+  $scope.shareUrl = 'https://fairmarketfantasy.com/public/#/' + $scope.currentUser.currentSport + '/market/' +
               (($scope.$routeParams && $scope.$routeParams.market_id) || $scope.roster.market_id)  + '/roster/' +
               (($scope.$routeParams && $scope.$routeParams.roster_id) || $scope.roster.id) + '?view_code=' +
               (($scope.$routeParams && $scope.$routeParams.view_code) || ($scope.roster && $scope.roster.view_code ));

@@ -97,7 +97,7 @@ class RostersController < ApplicationController
 
   def public_roster
     roster = Roster.find_by_view_code(params[:code])
-    redirect_to "/#/market/#{roster.market_id}/roster/#{roster.id}/?view_code=#{roster.view_code}"
+    redirect_to "/#/#{roster.market.sport.name}/market/#{roster.market_id}/roster/#{roster.id}/?view_code=#{roster.view_code}"
   end
 
   def submit
