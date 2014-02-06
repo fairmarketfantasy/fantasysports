@@ -70,8 +70,8 @@
           <td>{{roster.score | number:2}}</td>
           <td>
             <span ng-show="roster.id == rosters.currentRoster.id">This roster</span>
-            <a ng-show="roster.owner_id == currentUser.id && roster.id != rosters.currentRoster.id" href="#/market/{{market.id}}/roster/{{roster.id}}">View roster</a>
-            <a ng-show="roster.owner_id != currentUser.id" href="#/market/{{market.id}}/roster/{{rosters.currentRoster.id}}/vs/{{roster.id}}">See their roster</a>
+            <a ng-show="roster.owner_id == currentUser.id && roster.id != rosters.currentRoster.id" href="/#/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{roster.id}}">View roster</a>
+            <a ng-show="roster.owner_id != currentUser.id" href="/#/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{rosters.currentRoster.id}}/vs/{{roster.id}}">See their roster</a>
           </td>
         </tr>
       </tbody>

@@ -19,7 +19,7 @@ namespace :seed do
     task :fill_stats_ytd => :environment do
       threadpool = ThreadPool.new(16)
       Game.where(:sport_id => Sport.where(:name => 'NBA').first, :season_type => 'REG', :season_year => 2013, :status => 'closed').each do |g|
-        next if g.stat_events.length > 0
+      #  next if g.stat_events.length > 0
         run_fetcher "-year 2013 -fetch stats -sport " + g.sport.name + " -statsId " + g.stats_id, false
       end
       threadpool.shutdown

@@ -43,7 +43,7 @@
         </span>
         <span ng-show="roster.state == 'cancelled'">Refunded on {{transaction.roster.cancelled_at | shortFormTime}}. {{transaction.roster.cancelled_reason}}</span>
       </div>
-      <div class="transaction-detail"><a href="#/market/{{transaction.roster.market.id}}/roster/{{transaction.roster.id}}">View roster</a></div>
+      <div class="transaction-detail"><a href="/#/{{currentUser.currentSport}}/market/{{transaction.roster.market.id}}/roster/{{transaction.roster.id}}">View roster</a></div>
     </div>
   </li>
 </ul>
