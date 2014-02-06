@@ -8,7 +8,7 @@ import (
 	"github.com/MustWin/datafetcher/lib/model"
 	"github.com/MustWin/datafetcher/lib/utils"
 	"github.com/MustWin/datafetcher/nba"
-	"github.com/MustWin/datafetcher/nfl"
+	//	"github.com/MustWin/datafetcher/nfl"
 	"io"
 	"log"
 	"os"
@@ -68,10 +68,11 @@ func getFetchers(orm *model.Orm) map[string]lib.FetchManager {
 	nbaFetcher := nba.Fetcher{*year, &fetchers.HttpFetcher{"NBA", make(map[string]string)}}
 	nbaFetcher.FetchMethod.AddUrlParam("api_key", "8uttxzxefmz45ds8ckz764vr")
 	fetch["NBA"] = &nba.FetchManager{Orm: *orm, Fetcher: nbaFetcher, Sport: lib.Sports["NBA"]}
-
-	nflFetcher := nfl.Fetcher{*year, &fetchers.HttpFetcher{"NFL", make(map[string]string)}}
-	nflFetcher.FetchMethod.AddUrlParam("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
-	fetch["NFL"] = &nfl.FetchManager{Orm: *orm, Fetcher: nflFetcher, Sport: lib.Sports["NFL"]}
+	/*
+		nflFetcher := nfl.Fetcher{*year, &fetchers.HttpFetcher{"NFL", make(map[string]string)}}
+		nflFetcher.FetchMethod.AddUrlParam("api_key", "dmefnmpwjn7nk6uhbhgsnxd6")
+		fetch["NFL"] = &nfl.FetchManager{Orm: *orm, Fetcher: nflFetcher, Sport: lib.Sports["NFL"]}
+	*/
 	return fetch
 }
 

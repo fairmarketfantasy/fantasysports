@@ -216,7 +216,6 @@ func ParseRoster(state *lib.ParseState) *models.Player {
 		state.CurrentTeam = buildTeam(state.CurrentElement())
 	case "player":
 		player := buildPlayer(state.CurrentElement())
-		log.Println(state.CurrentTeam.StatsId)
 		player.Team = state.CurrentTeam.StatsId
 		state.CurrentPlayer = player
 		return player
@@ -231,9 +230,6 @@ func ParseRoster(state *lib.ParseState) *models.Player {
 
 func buildStatEvent(state *lib.ParseState) *models.StatEvent {
 	var event = models.StatEvent{}
-	log.Println(state)
-	log.Println(state.CurrentGame)
-	log.Println(state.CurrentPlayer)
 	event.GameStatsId = state.CurrentGame.StatsId
 	event.PlayerStatsId = state.CurrentPlayer.StatsId
 	event.Data = ""
