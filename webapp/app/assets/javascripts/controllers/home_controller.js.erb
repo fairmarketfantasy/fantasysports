@@ -1,10 +1,11 @@
 angular.module("app.controllers")
 .controller('HomeController', ['$scope', 'rosters', 'markets', '$dialog', '$location', '$routeParams', '$timeout', function($scope, rosters, markets, $dialog, $location, $routeParams, $timeout) {
   $scope.rosters = rosters;
+
   if ($scope.currentUser) {
-    rosters.fetchMine();
+    rosters.fetchMine({sport: $routeParams.sport});
     rosters.fetchPastStats();
-    rosters.setPoller(function() { rosters.fetchMine({sport: $routeParams.sport}); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
+    rosters.setPoller(function() { rosters.fetchMine({sport: $scope.currentUser.currentSport}); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
 
     // Force them to set a user!
     if (_.isEmpty($scope.currentUser.username)) {
