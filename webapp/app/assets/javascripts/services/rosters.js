@@ -9,11 +9,15 @@ angular.module('app.data')
       this.inProgressRoster = null;
       this.justSubmittedRoster = null;
 
+
+
       // TODO: maybe make this the only public function for fetching mine?
       // TODO: memoize this and myLiveStats
-      this.mine = function() {
+      this.mine = function(opts) {
         return _.filter(rosterData, function(roster) {
-          return roster.owner_id === window.App.currentUser.id;
+            if(roster.sport == opts){
+                return roster.owner_id === window.App.currentUser.id;
+            }
         });
       };
 
@@ -21,23 +25,25 @@ angular.module('app.data')
         return pastStats;
       };
 
-      this.myLiveStats = function() {
+      this.myLiveStats = function(opts) {
         var stats = {top: 0, avg: 0, total_payout: 0, total_score: 0, count: 0};
-        _.each(this.mine(), function(roster) {
-          stats.count++;
-          stats.total_score += roster.score;
-          stats.total_payout += roster.contest_rank_payout || 0;
-          if (stats.top < roster.score) {
-            stats.top = roster.score;
-          }
+        _.each(this.mine(opts), function(roster) {
+            if(roster.sport == opts){
+              stats.count++;
+              stats.total_score += roster.score;
+              stats.total_payout += roster.contest_rank_payout || 0;
+              if (stats.top < roster.score) {
+                stats.top = roster.score;
+              }
+            }
         });
         stats.avg = stats.total_score / stats.count;
         return stats;
       };
 
-      this.top = function(limit) {
+      this.top = function(opts, limit) {
         var top = _.sortBy(
-          _.filter(this.mine(), function(roster) { return roster.state == 'submitted'; }),
+          _.filter(this.mine(opts), function(roster) { return roster.state == 'submitted'; }),
           function(r) { return -(new Date(r.started_at)).valueOf(); }
         );
         if (limit) {
@@ -67,10 +73,12 @@ angular.module('app.data')
         });
       };
 
+
       this.fetchMine = function(opts) {
         return fs.rosters.mine(opts).then(function(rosters) {
           _.each(rosters, function(roster) {
             rosterData[roster.id] = roster;
+            $.extend(rosterData[roster.id], opts)
           });
           return rosters;
         });
