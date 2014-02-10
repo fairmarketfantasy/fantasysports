@@ -33,6 +33,7 @@ angular.module('app.data')
 
       this.selectMarketType = function(type, sport) {
         this.marketType = type || 'regular_season';
+
         this.upcoming = _.filter(marketData, function(elt) {
           return elt.sport_id == sportsToIds[sport] && elt.game_type.match(type) || (type == 'regular_season' && elt.game_type == null);
           /* last clause should be temporary*/
@@ -50,10 +51,7 @@ angular.module('app.data')
           fakeDeferred.resolve(marketData[id]);
           return fakeDeferred.promise;
         } else {
-          return fs.markets.show(id).then(function(market) {
-            marketData[market.id] = market;
-            return market;
-          });
+          return fs.markets.show(id);
         }
       };
 
