@@ -85,12 +85,10 @@ angular.module('app.data')
       };
 
       var pastStats;
-      this.fetchPastStats = function() {
+      this.fetchPastStats = function(opts) {
         // TODO: add throttle, effectively a cache TTL
-        return promiseWrapper(pastStats, function() {
-          return fs.rosters.past_stats().then(function(stats) {
-            pastStats = stats;
-          });
+        return fs.rosters.past_stats(opts).then(function(stats) {
+          pastStats = stats;
         });
       };
 

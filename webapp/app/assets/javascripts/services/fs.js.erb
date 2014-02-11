@@ -347,8 +347,8 @@ angular.module('app.services')
         toggleRemoveBenched: function(id) {
           return $http({method: 'POST', url: '/rosters/' + id + '/toggle_remove_bench'});
         },
-        past_stats: function() {
-          return $http({method: 'GET', url: '/rosters/past_stats'});
+        past_stats: function(opts) {
+          return $http({method: 'GET', url: '/rosters/past_stats?' + $.param(opts)});
         },
         mine: function(opts) {
           opts = opts || {};
