@@ -40,7 +40,7 @@
   <a class="see-all" href="/#/{{currentUser.currentSport}}/rosters">See All Live {{currentUser.currentSport}} Contests</a>
 
 </div>
-<div ng-show="!rosters.mine($routeParams.sport).length && rosters.pastStats().total_entries > 0" class="entries-container">
+<div ng-hide="rosters.mine($routeParams.sport).length >= 0 && rosters.pastStats().total_entries >= 0" class="entries-container">
   <div class="roster-title">
     <h3>Past Entries</h3>
   </div>
@@ -64,7 +64,7 @@
     </li>
   </ul>
 
-  <a class="see-all" href="/#/history">See All Past Contests</a>
+  <a class="see-all" href="/#/{{$routeParams.sport}}/history">See All {{$routeParams.sport}} Past Contests</a>
 
 </div>
 <div ng-show="rosters.pastStats().total_entries == 0 && rosters.mine($routeParams.sport).length == 0" class="entries-container no-entries">

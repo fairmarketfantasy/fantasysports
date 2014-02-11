@@ -255,6 +255,7 @@ angular.module("app.controllers")
 
   $scope.finish = function() {
     rosters.reset('/market/' + rosters.currentRoster.market.id);
+    $location.path( $routeParams.sport +'/home' )
   };
 
   $scope.addPlayer = function(player) {
