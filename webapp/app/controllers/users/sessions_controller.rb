@@ -4,6 +4,7 @@ class Users::SessionsController < Devise::SessionsController
   def create
     self.resource = warden.authenticate! scope: resource_name, recall: "#{controller_path}#sign_in_failure"
     sign_in resource_name, resource
+    delete_broken_rosters(current_user)
     render_api_response current_user, handle_referrals
     #render json: UserSerializer.new(current_user, scope: current_user)
   end
@@ -19,5 +20,12 @@ class Users::SessionsController < Devise::SessionsController
 
   def sign_in_failure
     render json: { error: 'login failed: invalid username or password' }, status: :unauthorized
+  end
+
+  private
+
+  # hot fix until market loosing will be fixed
+  def delete_broken_rosters(user)
+    user.rosters.each { |roster| roster.destroy if roster.market.nil? }
   end
 end
