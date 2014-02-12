@@ -5,7 +5,7 @@
       <a href="javascript://" class="btn btn-orange btn-invite-friends" ng-click="rosters.openInviteFriends(rosters.currentRoster)" 
         ng-show="currentUser && (market.state == 'published' || market.state == 'opened') && rosters.currentRoster.contest">
         Invite Friends</a>
-      <a href="#/{{currentUser.currentSport}}/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster == rosters.currentRoster || !currentUser">Back to Contests</a>
+      <a href="#/{{currentUser.currentSport}}/market/{{markets.currentMarket.id}}" class="btn btn-inverse btn-cancel-entry" ng-hide="rosters.inProgressRoster == rosters.currentRoster || !currentUser || rosters.currentRoster.state == 'finished'">Back to Contests</a>
       <img ng-src="/assets/icon-{{rosters.currentRoster.contest_type.name | slashesToDashes | lowercase }}.png" class="contest-info-image" />
       <div class="contest-info-description">
         <h2 ng-show="rosters.currentRoster.league" class="contest-title">{{rosters.currentRoster.contest_type.name}} {{rosters.currentRoster.league.name}} League Game</h2>
@@ -26,6 +26,7 @@
           <li>Entries: {{rosters.currentRoster.contest_type.max_entries | unlimitedIfZero}}</li>
           <li>Payout: {{rosters.currentRoster.contest_type.payout_description}}</li>
           <li ng-show="rosters.currentRoster.contest_rank && rosters.currentRoster.state != 'in_progress' && inThePast(market.started_at)">Rank: {{rosters.currentRoster.contest_rank | ordinal }} of {{rosters.currentRoster.contest.num_rosters}}</li>
+        </ul>
       </div>
     </div>
 
