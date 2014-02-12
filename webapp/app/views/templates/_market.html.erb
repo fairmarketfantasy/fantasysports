@@ -11,7 +11,7 @@
     <h3 class="selected-market" ng-cloak>
       <span ng-show="marketService.currentMarket.market_duration == 'week'">Weekly</span>
       <span ng-show="marketService.currentMarket.market_duration == 'day'">Daily</span>
-      <span ng-show="!marketService.currentMarket">There are not contents at this moment</span>
+      <span ng-show="!marketService.currentMarket">There are no contents at this moment</span>
       <span ng-hide="!marketService.currentMarket"> Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</span>
     </h3>
 
