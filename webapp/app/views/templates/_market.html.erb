@@ -8,7 +8,12 @@
   </ul>
 
   <div class="contest-list">
-    <h3 class="selected-market" ng-cloak><span ng-show="marketService.currentMarket.market_duration == 'week'">Weekly</span><span ng-show="marketService.currentMarket.market_duration == 'day'">Daily</span> Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</h3>
+    <h3 class="selected-market" ng-cloak>
+      <span ng-show="marketService.currentMarket.market_duration == 'week'">Weekly</span>
+      <span ng-show="marketService.currentMarket.market_duration == 'day'">Daily</span>
+      <span ng-show="!marketService.currentMarket">There are not contents at this moment</span>
+      <span ng-hide="!marketService.currentMarket"> Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</span>
+    </h3>
 
     <ul class="games hide" ng-cloak>
       <li ng-repeat="game in market.games" ng-class="{started: gameStarted(game)}">
@@ -19,7 +24,7 @@
     <div>
       <ul class="clearfix no-no" ng-cloak>
         <!-- Replace this when we want 5k back-->
-        <li class="contest-classes full-row" ng-class="{realfull: !hasLollapalooza()}">
+        <li ng-hide="!marketService.currentMarket" class="contest-classes full-row" ng-class="{realfull: !hasLollapalooza()}">
         <!--<li class="contest-classes full-row realfull">-->
           <h4>It's More Fun With Friends!</h4>
           <p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>
