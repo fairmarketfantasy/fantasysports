@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('ResetPasswordDialogController', ['$scope', 'fs', 'currentUserService', '$dialog', 'token', function($scope, fs, currentUserService, $dialog, token) {
+.controller('ResetPasswordDialogController', ['$scope', 'fs', 'currentUserService', '$dialog', 'token','dialog', function($scope, fs, currentUserService, $dialog, token, dialog) {
 
   $scope.user = {reset_password_token: token};
 
@@ -10,6 +10,8 @@ angular.module("app.controllers")
     });
   };
 
-
+  $scope.close = function(){
+    dialog.close();
+  };
 
 }]);
