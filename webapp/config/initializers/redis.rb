@@ -1,7 +1,7 @@
 config = {
   'test' => 'redis://:@localhost:1234/',
   'development' => 'redis://:@localhost:1234/',
-  'staging' => 'redis://:@54.213.15.243:1234/',
+  'staging' => 'redis://:@54.201.179.230:1234/',
   'production' => 'redis://:@54.201.72.28:1234/', # This will be problematic with multiple workers
 }
 uri = URI.parse(config[Rails.env])
