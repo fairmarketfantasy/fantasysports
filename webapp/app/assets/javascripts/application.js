@@ -18,12 +18,14 @@
 //= require vendor/jquery.html5-placeholder-shim.js
 //= require vendor/underscore-min.js
 //= require vendor/jsonh
-//= require vendor/angular-1.0.8.min.js
+//= require vendor/angular-1.2.12.js
+//= require vendor/angular-route-1.2.12.js
 //= require vendor/angular-ui-bootstrap-tpls-0.4.0.min.js
 //= require vendor/angular-flash.js
 //= require vendor/moment.min.js
 //= require vendor/angulartics.js
 //= require vendor/angulartics-google-analytics.js
+//= require vendor/autofill-event.js
 //= require skeuocard
 
 // Our angular app
