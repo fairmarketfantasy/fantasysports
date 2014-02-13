@@ -3,7 +3,9 @@ class RostersController < ApplicationController
 
   def mine
     sport = params[:sport] ? Sport.where(:name => params[:sport]).first : Sport.where('is_active').first
-    rosters = current_user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').where(['m.sport_id = ?', sport.id]).order('closed_at desc')
+    rosters = current_user.rosters.where.not(state: 'in_progress').
+                                   joins('JOIN markets m ON rosters.market_id=m.id').
+                                   where(['m.sport_id = ?', sport.id]).order('closed_at desc')
     rosters = if params[:historical]
       page = params[:page] || 1
       rosters.over.page(page)
@@ -77,7 +79,7 @@ class RostersController < ApplicationController
 
     roster = if params[:reload]
       Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
-    else 
+    else
       Rails.cache.fetch("landing_roster_#{contest_type.id}", :expires_in => 5.minutes) do
         Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
       end
