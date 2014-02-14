@@ -9,7 +9,7 @@
     <div class="roster-overflow" ng-show="roster">
 
       <ul class="no-no">
-        <li class="mr-item clearfix" ng-repeat="player in roster.players">
+        <li ng-class="{'no-border': $index == 6 || $last }" class="mr-item clearfix" ng-repeat="player in roster.players">
           <div ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
           <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled"></div>
 
@@ -22,17 +22,17 @@
               </span>
             </span>
           </div>
-
-          <div class="mr-player-cta">
-            <a class="btn btn-small btn-orange" href="javascript://" ng-click="signUpModal('Sign up to edit this roster!', {claim_roster: roster.id})">Trade</a>
-          </div>
         </li>
       </ul>
     </div>
 
   </div>
-    <div class="text-center">
-      <p><a href="javascript://" class="btn btn-large btn-danger" ng-click='reloadRoster(true)'>Make a new one!</a> <a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">Claim this roster!</a></p>
+    <div class="text-center roster-area-footer">
+      <p>
+        <a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">enter roster to win 100 fanbucks</a>
+        <a href="javascript://" class="btn btn-large btn-danger" ng-click='reloadRoster(true)'>get new lineup</a>
+      </p>
+      <p style="text-align: left">You will be able to trade, adjust change your line up at will until the game begins!</p>
     </div>
 
 </div>
