@@ -90,7 +90,10 @@ func InitFromAttrs(element xml.StartElement, value interface{}) error {
 					if err != nil {
 						x, err = time.Parse("2006-01-02 15:04:05.000 -0700", data)
 						if err != nil {
-							return errors.New("unsupported time format: " + data)
+							x, err = time.Parse("2006-01-02", data)
+							if err != nil {
+								return errors.New("unsupported time format: " + data)
+							}
 						}
 					}
 				}
