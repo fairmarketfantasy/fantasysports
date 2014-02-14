@@ -79,11 +79,29 @@
   <div class="fixed-header">
     <div class="container clearfix">
       <div class="span6 nav-span">
-        <h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1>
+        <h1 class="logo-font">Predict <span class="logo-slash">That</span></h1>
+        <nav class="landing-nav">
+          <ul>
+              <li>
+                <a class="dropdown-toggle">Sport</a>
+                <ul class="header-drop-menu dropdown-menu">
+                  <li ng-class="{'no-border': $last}" ng-repeat="choice in sports" >
+                    <em class="menu-arrow"></em>{{choice.name}}
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a class="dropdown-toggle">Fantasy Entertainment</a>
+              </li>
+              <li>
+                <a class="dropdown-toggle">Politics</a>
+              </li>
+          </ul>
+        </nav>
       </div>
-      <div class="span2 nav-span">
-        <a class="coming-soon-nav"><span>New Daily NBA Games</span></a>
-      </div>
+      <!--<div class="span2 nav-span">-->
+        <!--<a class="coming-soon-nav"><span>New Daily NBA Games</span></a>-->
+      <!--</div>-->
       <div class="span2 nav-span">
         <a class="sign-in-nav" href="javascript://" ng-click="loginModal()">Sign In</a>
       </div>
@@ -95,18 +113,22 @@
   <div class="landing-container">
     <div class="span6 offset1 sign-up-content">
       <div class="login-buttons" ng-controller="LoginController">
-        <h2 class="sign-up-heading">Friendlier, fairer, daily fantasy sports!</h2> 
-        <p style="margin: 0;" class="new-sign-up-text">We created a roster to get you started!</p>
 
         <div class="sample-team clearfix" ng-include="'/sample_team.html'"></div>
 
-        <p><a href="/terms" target="_blank">Terms and Conditions</a></p>
+        <p class="terms">
+          <span>*No purchase necessary</span>
+          <a href="/terms" target="_blank">Terms and Conditions</a>
+        </p>
 
       </div>
       <div id="playoff-teaser">
-        <h4><i>Free </i>entry <br/>unlimited contests <br/><i>real cash</i> prizes</h4>
-        <p>only $10/mth</p>
         <p><a href="javascript://" class="btn btn-large btn-success" ng-click='signUpModal()'>Sign up Now!</a></p>
+        <h4>$10 mounthly fee allows <br /> unlimited free predictions <br /> to win contest prizes</h4>
+        <p>15 day free trial</p>
+        <p class="individual-predict">dr you can make individual predictions</p>
+        <p><i>Steph Curry more or less than 2.8 3pters</i></p>
+
       </div>
       <div class="landing-mobile-app-links">
         <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
@@ -118,58 +140,54 @@
     <div class="container">
       <div class="row">
         <div class="span7 about-section first-section">
-          <h1>About Us</h1>
-          <p class="about-text"><span class="special">Fair Market </span><span class="tilt">Fantasy</span> offers you fantasy football contests that only last one day or a week! You can play 100% FREE or for Cash 100% legally! On top of that our prices are based on market demand and our cash payouts are higher than anyone else!</p>
-          <ul>
-            <li class="about-text">Take your chances in our huge weekly contest and win big!</li>
-            <li class="about-text">Play in our 194% where the top half nearly doubles their money just for being average or better!</li>
-            <li class="about-text">We also have Winner Take All Leagues, Head to Heads, and Round Robin 10 player Head-to-Head Challenges!</li>
-          </ul>
-          <p class="about-text special">Intrigued? Play for FREE, we won't even ask for a credit card! <a class="btn btn-green btn-large btn-orange" href="javascript://" ng-click='signUpModal()'>Sign Up</a></p>
+          <h1>About</h1>
+          <p>For a $10 Subscription fee <span class="special">Fair Market </span><span class="tilt">Fantasy</span>  provides content, chat, and free enty into an unlimited number of prediction contests to win prizes . The prizes are denominated in Fanbucks and there is a 15 Fanbuck charge for every contest entered or prediction made.</p>
+          <p>At the end of the month, if you have a positive Fanbuck balance it is converted on a one for one basis into dollars and deposited in your account.</p>
+          <p>You have nothing at stake or at risk. Predict as much as you like.</p>
 
         </div>
         <div class="span5">
           <%= image_tag 'about-icon.png', :class => 'landing-icon first-image' %>
         </div>
       </div>
-      <div class="row">
-        <div class="span5">
-          <%= image_tag 'friends-icon.png', :class => 'landing-icon' %>
-        </div>
-        <div class="span7 about-section">
-          <h1>It's Better With friends</h1>
-          <p class="about-text">Challenge your friends to a custom friendly game for bragging rights or real money! You set the format and the payout, invite your friends, and watch in real time as you show them the meaning of the term "Champion!"</p>
-          <ul>
-            <li class="about-text">Challenge someone to a friendly head to head match for bragging rights or real money!</li>
-            <li class="about-text">Create a weekly league for your office or old college buddies!</li>
-            <li class="about-text">Challenge 9 friends to play in a cut-throat 10 player Head to Head Round Robin!</li>
-          </ul>
-          <p class="about-text special">Heard Enough? Get started and show your friends who's boss! <a class="btn btn-green btn-large btn-orange" href="javascript://" ng-click='signUpModal()'>Sign Up</a></p>
-        </div>
+      <!--<div class="row">-->
+        <!--<div class="span5">-->
+          <!--<%= image_tag 'friends-icon.png', :class => 'landing-icon' %>-->
+        <!--</div>-->
+        <!--<div class="span7 about-section">-->
+          <!--<h1>It's Better With friends</h1>-->
+          <!--<p class="about-text">Challenge your friends to a custom friendly game for bragging rights or real money! You set the format and the payout, invite your friends, and watch in real time as you show them the meaning of the term "Champion!"</p>-->
+          <!--<ul>-->
+            <!--<li class="about-text">Challenge someone to a friendly head to head match for bragging rights or real money!</li>-->
+            <!--<li class="about-text">Create a weekly league for your office or old college buddies!</li>-->
+            <!--<li class="about-text">Challenge 9 friends to play in a cut-throat 10 player Head to Head Round Robin!</li>-->
+          <!--</ul>-->
+          <!--<p class="about-text special">Heard Enough? Get started and show your friends who's boss! <a class="btn btn-green btn-large btn-orange" href="javascript://" ng-click='signUpModal()'>Sign Up</a></p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="row">-->
+        <!--<div class="span7 about-section">-->
+          <!--<h1>Market Driven Pricing</h1>-->
+          <!--<p class="about-text">Prices are set based on user demand for each player, the more demand for a player, the higher the price goes.</p>-->
+ <!---->
+          <!--<p class="about-text">You can change your roster and trade back a player who isn't playing and receive his current price and then purchase another player. If you purchase a player and then sell him back at a profit, it will raise your salary cap by that amount. Similarly, if you do so at a loss it will reduce your salary cap by that amount.</p>-->
+          <!--<p class="about-text special">See the difference a sane player pricing model makes! <a class="btn btn-green btn-large btn-orange" href="javascript://" ng-click='signUpModal()'>Sign Up</a></p>-->
+        <!--</div>-->
+        <!--<div class="span5">-->
+          <!--<%= image_tag 'market-icon.png', :class => 'landing-icon' %>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="row">-->
+        <!--<div class="span5">-->
+          <!--<%= image_tag 'legal-icon.png', :class => 'landing-icon' %>-->
+        <!--</div>-->
+        <!--<div class="span7 about-section">-->
+          <!--<h1>Legality</h1>-->
+          <!--<p class="about-text">Fair Market Fantasy is a US-based skill games company, and all of our contests are operated 100% legally under United States and Canadian law. The US Government and 45 of the 50 states consider fantasy sports a game of skill.</p>-->
+          <!--<p class="about-text">We do not allow residents of Arizona, Iowa, Louisiana, Montana or the Canadian province of Quebec to participate in our contests due to state-specific regulation against cash prize awards. Also, due to agreements with our payment providers, Washington is restricted as well. We also require our users to be 18 years of age or older (19 in Alabama and Nebraska). We take the legal status of our contests very seriously. If you have any questions related to this topic, please <a href="mailto:support@fairmarketfantasy.com">contact us</a>.</p>-->
+          <!--<p class="about-text special">Ready to try it out for yourself? <a class="btn btn-green btn-large btn-orange" href="javascript://" ng-click='signUpModal()'>Sign Up</a></p>-->
+        <!--</div>-->
       </div>
-      <div class="row">
-        <div class="span7 about-section">
-          <h1>Market Driven Pricing</h1>
-          <p class="about-text">Prices are set based on user demand for each player, the more demand for a player, the higher the price goes.</p>
- 
-          <p class="about-text">You can change your roster and trade back a player who isn't playing and receive his current price and then purchase another player. If you purchase a player and then sell him back at a profit, it will raise your salary cap by that amount. Similarly, if you do so at a loss it will reduce your salary cap by that amount.</p>
-          <p class="about-text special">See the difference a sane player pricing model makes! <a class="btn btn-green btn-large btn-orange" href="javascript://" ng-click='signUpModal()'>Sign Up</a></p>
-        </div>
-        <div class="span5">
-          <%= image_tag 'market-icon.png', :class => 'landing-icon' %>
-        </div>
-      </div>
-      <div class="row">
-        <div class="span5">
-          <%= image_tag 'legal-icon.png', :class => 'landing-icon' %>
-        </div>
-        <div class="span7 about-section">
-          <h1>Legality</h1>
-          <p class="about-text">Fair Market Fantasy is a US-based skill games company, and all of our contests are operated 100% legally under United States and Canadian law. The US Government and 45 of the 50 states consider fantasy sports a game of skill.</p>
-          <p class="about-text">We do not allow residents of Arizona, Iowa, Louisiana, Montana or the Canadian province of Quebec to participate in our contests due to state-specific regulation against cash prize awards. Also, due to agreements with our payment providers, Washington is restricted as well. We also require our users to be 18 years of age or older (19 in Alabama and Nebraska). We take the legal status of our contests very seriously. If you have any questions related to this topic, please <a href="mailto:support@fairmarketfantasy.com">contact us</a>.</p>
-          <p class="about-text special">Ready to try it out for yourself? <a class="btn btn-green btn-large btn-orange" href="javascript://" ng-click='signUpModal()'>Sign Up</a></p>
-        </div>
-      </div>    </div>
   </article>
 
 
@@ -181,7 +199,9 @@
     site: "<%= SITE %>",
     currentUser: <%= (UserSerializer.new(current_user, scope: current_user).to_json.html_safe) || 'null' %>,
     isUserAdmin: <%= current_user && current_user.admin? || false %>,
+    sports: <%= Sport.all.map{|s| SportSerializer.new(s, scope: current_user) }.to_json.html_safe %>
   };
+
   window.setCurrentUser = function(user) {
     window.App.currentUser = user;
   };
