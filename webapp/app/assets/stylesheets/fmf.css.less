@@ -108,6 +108,23 @@ footer {
     font-size: 12px;
   }
 }
+
+.sign-up-modal{
+  width: 650px;
+}
+.sign-up-modal .modal-body{
+  height: 335px;
+  width: 605px;
+}
+.sing-up-link {
+  margin-top: 30px;
+  padding:0 5px;
+  border-right:1px solid #BDC3C7;
+}
+.modal-header .close.close-modal{
+  font-size: 24px;
+  margin-top: 1px;
+}
 .fixed-flash {
   color: @white;
   position: fixed;
@@ -311,7 +328,7 @@ select:focus:invalid {
   }
 }
 .promo-code {
-  margin-top: 2em;
+  margin-top: 7.2em;
   input[type="text"] {
     width: 90px;
   }
@@ -612,6 +629,10 @@ select:focus:invalid {
   }
 }
 
+.border-none{
+  border: none !important;
+}
+
 /* Content Area */
 .nav {
   width: 94%;
@@ -762,7 +783,7 @@ select:focus:invalid {
   font-size: 2em;
 }
 input, textarea, .uneditable-input {
-  width: 280px;
+  width: 300px;
 }
 .card-cvc {
   width: 76px;
@@ -1005,6 +1026,54 @@ input, textarea, .uneditable-input {
   color: @white;
   cursor: default;
 }
+
+.landing-market-list{
+  list-style-type: none;
+  margin: 0;
+  padding: 0 18px;
+  position: relative;
+}
+
+.landing-market-li{
+  border-left: 1px solid #686D6F;
+  float: left;
+  margin-bottom: 4px;
+  max-height: 35px;
+  padding: 5px 10px;
+  text-align: center;
+  width: 130px;
+}
+.landing-market-link{
+  color:#cccccc;
+  cursor:pointer;
+}
+
+.landing-market-link.active-market{
+  color:#D2302D;
+}
+
+.slider-prev,
+.slider-next{
+  background: url('sprite.png') no-repeat -7px -65px;
+  float: left;
+  height: 19px;
+  left: 2px;
+  position: absolute;
+  top: 16%;
+  width: 11px;
+  cursor: pointer;
+}
+
+.slider-next{
+  background: url('sprite.png') no-repeat -7px -134px;
+  left: inherit;
+  right: 2px;
+}
+
+.landing-border {
+  border-right: 1px solid #686D6F;
+}
+
 .contest-list {
   padding: 10px 20px;
 }
@@ -1372,11 +1441,32 @@ input, textarea, .uneditable-input {
 
 .modal-form-container {
   float: left;
-  margin: 0 20px 20px;
+  margin: 0 10px 20px;
 }
+
+.modal-line {
+  div{
+    border-left: 1px solid #BDC3C7;
+    height: 115px;
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+  span {
+    color:#BDC3C7;
+  }
+}
+
 .secondary {
-  margin: 20px;
+  margin:0 20px;
 }
+
+.mbl, .mvl, .mal {
+  margin-bottom: 10px;
+}
+.mtl, .mvl, .mal {
+  margin-top: 10px;
+}
+
 .positive {
   color: @green;
 }

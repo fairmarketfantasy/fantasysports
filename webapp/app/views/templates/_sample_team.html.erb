@@ -1,5 +1,14 @@
-<div ng-controller="SampleRosterController" class="roster"> 
-  
+<div ng-controller="SampleRosterController" class="roster">
+
+  <ul class="clearfix landing-market-list" ng-show="marketService.upcoming">
+    <li class="slider-prev" ng-click="prev()"></li>
+    <li class="landing-market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, slide) in marketService.upcoming" ng-show="i == $slideIndex || i == $slideIndex + 1 || i == $slideIndex + 2">
+      <a class="landing-market-link" ng-class="{ highlightMkt: isCurrent(market) }">
+        <strong>{{slide.name}}</strong>
+      </a>
+    </li>
+    <li class="slider-next" ng-click="next()"></li>
+  </ul>
   <div class="roster-area">
     <div class="loading-message" ng-hide="roster">
       <img src=<%= asset_path 'ajax-throbber.gif' %>/>

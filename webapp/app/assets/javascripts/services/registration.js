@@ -22,7 +22,7 @@ angular.module('app.services')
               backdrop: true,
               keyboard: true,
               backdropClick: true,
-              dialogClass: 'modal',
+              dialogClass: 'modal sign-up-modal',
               templateUrl: '/sign_up_dialog.html',
               controller: 'SignUpDialogController',
               resolve: {message: function(){ return message; }},
