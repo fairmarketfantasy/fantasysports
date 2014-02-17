@@ -40,7 +40,7 @@ angular.module('app.services')
               backdrop: true,
               keyboard: true,
               backdropClick: true,
-              dialogClass: 'modal',
+              dialogClass: 'modal sign-in-modal',
               templateUrl: '/login_dialog.html',
               controller: 'LoginDialogController',
               resolve: {message: function(){ return message; }},

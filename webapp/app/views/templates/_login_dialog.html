@@ -1,6 +1,8 @@
 <form name="loginForm" ng-submit="submit()" novalidate data-annotate-blur class="annotate-blur">
   <div class='modal-header'>
-    <h3>Sign In</h3>
+    <h3>Sign In
+        <button class="close close-modal" ng-click="close()">×</button>
+    </h3>
   </div>
   <div class='modal-body clearfix'>
     <p ng-show="message">{{message}}</p>
@@ -8,12 +10,17 @@
     <div class='modal-form-container'>
       <input type='text' name="email" required placeholder='Email' ng-model="user.email" class='mvm' focus-me="loginForm.email.$error.required" /><br />
       <input type='password' name="password" required placeholder='Password' ng-model="user.password" class='mvm'><br />
-      <div class='mvm'>
+      <div class='mvm pull-left sing-up-link'>
         Not a member?&nbsp;<a href="javascript://" ng-click="close('signUp')">Sign Up</a>
       </div>
-      <div class='mvm'>
+      <div class='mvm pull-left sing-up-link border-none'>
         <a href="javascript://" ng-click="close('forgotPassword')">Forgot Your Password?</a>
       </div>
+    </div>
+    <div class='modal-form-container modal-line'>
+        <div></div>
+        <span>or</span>
+        <div></div>
     </div>
     <div class='modal-form-container secondary'>
       <div class='mtl mbl inline-block'>Or, sign in with facebook</div><br />
@@ -22,6 +29,5 @@
   </div>
   <div class='modal-footer'>
     <input type="submit" class="btn btn-primary" value="Sign In">
-    <a href="javascript://" ng-click="close()" class="btn">close</a>
   </div>
 </form>
