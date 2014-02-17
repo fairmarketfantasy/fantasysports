@@ -36,6 +36,14 @@ angular.module('app.filters')
       return input;
     };
   })
+  .filter('dividedOneHundred', function() {
+    return function(input) {
+      if (!input) {
+        return "0";
+      }
+      return input / 100;
+    };
+  })
   .filter('emptyIfZero', function() {
     return function(input, scope) {
       if (input === 0) {

@@ -336,8 +336,8 @@ angular.module('app.services')
         show: function(id, view_code) {
           return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + (view_code || '')});
         },
-        getSample: function(reload) {
-          var params = {reload: reload};
+        getSample: function(id, sport) {
+          var params = {id: id, sport: sport};
           return $http({method: 'GET', url: '/rosters/sample', params: params});
         },
         in_contest: function(contest_id, page) {

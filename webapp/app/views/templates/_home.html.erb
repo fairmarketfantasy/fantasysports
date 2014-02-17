@@ -59,7 +59,7 @@
       <span class="ei-info">Average Score</span>
     </li>
     <li class="ei-item">
-      <p class="ei-number">{{rosters.pastStats().total_payout | number:2}}</p>
+      <p class="ei-number">{{rosters.pastStats().total_payout | dividedOneHundred | number:2}}</p>
       <span class="ei-info">Payout</span>
     </li>
   </ul>

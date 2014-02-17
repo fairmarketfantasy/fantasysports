@@ -500,7 +500,8 @@ select:focus:invalid {
         top: 17px;
         left: 2px;
       }
-      &:hover .menu-arrow {
+      &:hover .menu-arrow,
+      .menu-arrow.active-arrow {
         background: url('sprite.png') no-repeat -9px -12px;
       }
     }
@@ -1799,11 +1800,10 @@ textarea[class*="span"] {
   position: relative;
 }
 #playoff-teaser {
-  position: absolute;
-  top: 60px;
-  right: 345px;
+  color: #FEFEFE;
+  float: right;
   text-align: center;
-  color: #fefefe;
+  margin-right: 14%;
 }
 #sport-teaser {
   position: absolute;
