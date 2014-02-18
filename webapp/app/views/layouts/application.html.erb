@@ -152,17 +152,6 @@
     <div class="container">
       <div class="row">
         <div class="span3 user-navigation">
-          <ul class="nav">
-            <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/home">Home</a></li>
-            <li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>
-            <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rosters">My Contests</a></li>
-            <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>
-            <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
-            <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rules" >Rules and Scoring</a></li>
-            <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
-            <li class="nav-item"><a href="/#/support">Support</a></li>
-            <li class="nav-item end"><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></li>
-          </ul>
           <div class="nav-mobile-app-links">
             <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
           </div>
@@ -180,13 +169,26 @@
     <footer>
       <div class="container">
         <div class="row">
-          <div class="span4">
-            <h4 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h4>
+          <div class="span9">
+            <div class="clearfix">
+                <h4 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h4>
+                <ul class="footer-nav">
+                  <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/home">Home</a></li>
+                  <li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>
+                  <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rosters">My Contests</a></li>
+                  <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>
+                  <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
+                  <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rules" >Rules and Scoring</a></li>
+                  <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
+                  <li class="nav-item"><a href="/#/support">Support</a></li>
+                  <li class="nav-item end"><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></li>
+                </ul>
+            </div>
             <p>Copyright 2013, Fair Market Fantasy, LLC. All Rights Reserved.</p>
             <p>Designed and developed by <a href="http://mustw.in">Must Win</a></p>
             <p>Based in San Francisco, CA</p>
           </div>
-          <div class="span3 offset5 tos-padding">
+          <div class="span3 tos-padding">
             <p><a href="#/terms">Terms and Conditions</a></p>
             <p><a href="#/legal">US &amp; Canada Legality</a></p>
             <p><a href="#/support">Customer Support / Contact</a></p>

@@ -72,7 +72,7 @@ footer {
     text-decoration: underline;
   }
   a:hover {
-    background-color: mix(@info, rgba(255,255,255,0), 70%);
+//    background-color: mix(@info, rgba(255,255,255,0), 70%);
     color: @white;
   }
   p {
@@ -80,6 +80,7 @@ footer {
   }
   .logo-font {
     font-size: 30px;
+    float:left;
   }
 }
 
@@ -112,7 +113,18 @@ footer {
 .sign-up-modal{
   width: 650px;
 }
-.sign-in-modal {
+
+.reset-modal{
+  width: 365px;
+  margin-left: -243px;
+}
+
+.reset-modal .modal-body{
+  width: 335px;
+}
+
+.sign-in-modal,
+.forgot-modal{
   width: 595px;
 }
 .sign-in-modal .modal-body {
@@ -123,11 +135,32 @@ footer {
   height: 335px;
   width: 605px;
 }
+.forgot-modal .modal-body{
+  width: 605px;
+}
 .sing-up-link {
   margin-top: 30px;
   padding:0 5px;
   border-right:1px solid #BDC3C7;
 }
+.modal-line {
+  div{
+    border-left: 1px solid #BDC3C7;
+    height: 115px;
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+  span {
+    color:#BDC3C7;
+  }
+}
+.sign-in-modal .modal-line div {
+  height: 40px;
+}
+.forgot-modal .modal-line div {
+  height: 30px;
+}
+
 .modal-header .close.close-modal{
   font-size: 24px;
   margin-top: 1px;
@@ -460,7 +493,7 @@ select:focus:invalid {
 .landing-nav {
   color:#fff;
   float:left;
-  margin: 0 0 0 30px;
+  margin: 0 0 0 15px;
   ul{
     list-style: none;
     margin:0;
@@ -493,15 +526,16 @@ select:focus:invalid {
       position: relative;
       cursor:pointer;
       .menu-arrow {
-        background: url('sprite.png') no-repeat -8px -38px;
+        background: asset-url('sprite.png') no-repeat -8px -38px;
         width: 15px;
         height: 15px;
         position: absolute;
         top: 17px;
         left: 2px;
       }
-      &:hover .menu-arrow {
-        background: url('sprite.png') no-repeat -9px -12px;
+      &:hover .menu-arrow,
+      .menu-arrow.active-arrow {
+        background: asset-url('sprite.png') no-repeat -9px -12px;
       }
     }
   }
@@ -642,26 +676,27 @@ select:focus:invalid {
 
 /* Content Area */
 .nav {
-  width: 94%;
-  padding: 0 3%;
-  overflow: hidden;
   font-family: @special;
   font-size: 16px;
-  color: @grayDark;
-  background-color: @offWhite;
-  .border-radius(0 0 0 8px);
-  border-left: 1px solid @offWhite;
-  border-bottom: 1px solid @offWhite;
 }
+.footer-nav{
+  font-family: @special;
+  font-size: 16px;
+  list-style: none;
+  float:left;
+  margin: 15px 0 0 10px;
+}
+
 .nav-item {
   line-height: 24px;
   padding: 8px;
-  border-bottom: 1px solid @grayLight;
+  float:left;
   a {
-    color: @redDark;
+    color: @white;
+    text-decoration: none;
   }
-  a:hover {
-    color: @red;
+  a:hover{
+    background-color: none;
   }
 }
 .nav-item-highlight {
@@ -1061,7 +1096,7 @@ input, textarea, .uneditable-input {
 
 .slider-prev,
 .slider-next{
-  background: url('sprite.png') no-repeat -7px -65px;
+  background: asset-url('sprite.png') no-repeat -7px -65px;
   float: left;
   height: 19px;
   left: 2px;
@@ -1072,7 +1107,7 @@ input, textarea, .uneditable-input {
 }
 
 .slider-next{
-  background: url('sprite.png') no-repeat -7px -134px;
+  background: asset-url('sprite.png') no-repeat -7px -134px;
   left: inherit;
   right: 2px;
 }
@@ -1451,20 +1486,6 @@ input, textarea, .uneditable-input {
   margin: 0 10px 20px;
 }
 
-.modal-line {
-  div{
-    border-left: 1px solid #BDC3C7;
-    height: 115px;
-    margin-left: 5px;
-    margin-top: 5px;
-  }
-  span {
-    color:#BDC3C7;
-  }
-}
-.sign-in-modal .modal-line div {
-  height: 40px;
-}
 .secondary {
   margin:0 20px;
 }
@@ -1799,11 +1820,10 @@ textarea[class*="span"] {
   position: relative;
 }
 #playoff-teaser {
-  position: absolute;
-  top: 60px;
-  right: 345px;
+  color: #FEFEFE;
+  float: right;
   text-align: center;
-  color: #fefefe;
+  margin-right: 14%;
 }
 #sport-teaser {
   position: absolute;

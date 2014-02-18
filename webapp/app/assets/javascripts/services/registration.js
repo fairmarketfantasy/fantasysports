@@ -57,7 +57,7 @@ angular.module('app.services')
               backdrop: true,
               keyboard: true,
               backdropClick: true,
-              dialogClass: 'modal',
+              dialogClass: 'modal forgot-modal',
               templateUrl: '/forgot_password_dialog.html',
               controller: 'ForgotPasswordDialogController',
               resolve: {message: function(){ return message; }},

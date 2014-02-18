@@ -11,6 +11,7 @@ angular.module('app.services')
     return {
       currentUser: window.App.currentUser,
       resetPasswordModal: function(token){
+        dialogOpts.dialogClass = 'modal reset-modal',
         dialogOpts.templateUrl = '/reset_password_dialog.html';
         dialogOpts.controller  = 'ResetPasswordDialogController';
         dialogOpts.resolve     = {token: function(){ return token; }};
@@ -336,8 +337,8 @@ angular.module('app.services')
         show: function(id, view_code) {
           return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + (view_code || '')});
         },
-        getSample: function(reload) {
-          var params = {reload: reload};
+        getSample: function(id, sport) {
+          var params = {id: id, sport: sport};
           return $http({method: 'GET', url: '/rosters/sample', params: params});
         },
         in_contest: function(contest_id, page) {
