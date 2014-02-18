@@ -3,6 +3,7 @@ angular.module("app.controllers")
 
     $scope.marketService = marketService;
 
+
     marketService.fetchUpcoming({type: 'single_elimination', sport: 'NBA'}).then(function() {
         marketService.fetchUpcoming({type: 'regular_season', sport: 'NBA'}).then(function() {
             if ($routeParams.market_id) {
@@ -14,7 +15,7 @@ angular.module("app.controllers")
             }
         });
     });
-
+        console.log(marketService)
     $scope.isCurrent = function(market){
         if (!market) { return; }
         if (!marketService.currentMarket) {

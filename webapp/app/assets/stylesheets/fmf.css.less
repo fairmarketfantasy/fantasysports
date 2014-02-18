@@ -72,7 +72,7 @@ footer {
     text-decoration: underline;
   }
   a:hover {
-    background-color: mix(@info, rgba(255,255,255,0), 70%);
+//    background-color: mix(@info, rgba(255,255,255,0), 70%);
     color: @white;
   }
   p {
@@ -80,6 +80,7 @@ footer {
   }
   .logo-font {
     font-size: 30px;
+    float:left;
   }
 }
 
@@ -675,26 +676,27 @@ select:focus:invalid {
 
 /* Content Area */
 .nav {
-  width: 94%;
-  padding: 0 3%;
-  overflow: hidden;
   font-family: @special;
   font-size: 16px;
-  color: @grayDark;
-  background-color: @offWhite;
-  .border-radius(0 0 0 8px);
-  border-left: 1px solid @offWhite;
-  border-bottom: 1px solid @offWhite;
 }
+.footer-nav{
+  font-family: @special;
+  font-size: 16px;
+  list-style: none;
+  float:left;
+  margin: 15px 0 0 10px;
+}
+
 .nav-item {
   line-height: 24px;
   padding: 8px;
-  border-bottom: 1px solid @grayLight;
+  float:left;
   a {
-    color: @redDark;
+    color: @white;
+    text-decoration: none;
   }
-  a:hover {
-    color: @red;
+  a:hover{
+    background-color: none;
   }
 }
 .nav-item-highlight {
