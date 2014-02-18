@@ -9,7 +9,14 @@
 #endif
 
 #ifdef __OBJC__
-    #import <UIKit/UIKit.h>
-    #import <Foundation/Foundation.h>
-    #import "FFStyle.h"
+#   import <UIKit/UIKit.h>
+#   import <Foundation/Foundation.h>
+#   import "FFStyle.h"
+#   import <UbertestersSDK/Ubertesters.h>
+//  logging via Ubertesters
+#   define LOG_FMT_STR(format, ...) [NSString stringWithFormat: ( @"%s [Line %d] " format ), \
+                                   __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__]
+#   define DLog(format, ...) CFShow( (__bridge CFStringRef) LOG_FMT_STR(format , ##__VA_ARGS__) )
+#   define NSLog(format, ...) { [[Ubertesters shared] UTLog: LOG_FMT_STR(format , ##__VA_ARGS__) level: @"info"]; \
+                                DLog(format , ##__VA_ARGS__); }
 #endif

@@ -17,12 +17,14 @@
 
 @implementation FFAppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+-            (BOOL)application: (UIApplication*)application
+ didFinishLaunchingWithOptions: (NSDictionary*)launchOptions
 {
     [SBModelMeta initDb];
     [FFStyle customizeAppearance];
     [Crashlytics startWithAPIKey:@"cc13321a1651e7db17b8b33743fa177c36f93713"];
     [Flurry startSession:@"N3QXDQP8W4F55GBTM3FX"];
+    [[Ubertesters shared] initialize];
     return YES;
 }
 

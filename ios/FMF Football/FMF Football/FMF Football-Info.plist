@@ -84,6 +84,8 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>ubertesters_project_id</key>
+	<string>1e5725cc-9820-11e3-b7eb-123141017889</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>

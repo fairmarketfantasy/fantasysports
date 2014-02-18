@@ -121,6 +121,16 @@
 		15D756C817F489050080AE4F /* rosterslotempty@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15D756C717F489050080AE4F /* rosterslotempty@2x.png */; };
 		15E06C2217F5048000E8AB4D /* playerselectmask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 15E06C2117F5048000E8AB4D /* playerselectmask@2x.png */; };
 		52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE50D82857A45A1B1A9DFA0 /* libPods.a */; };
+		89DFD28918B37E3D0079F427 /* UbertestersSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD28718B37E3D0079F427 /* UbertestersSDK.framework */; };
+		89DFD28A18B37E3D0079F427 /* UbertestersSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD28718B37E3D0079F427 /* UbertestersSDK.framework */; };
+		89DFD28B18B37E3D0079F427 /* UbertestersSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 89DFD28818B37E3D0079F427 /* UbertestersSDKResources.bundle */; };
+		89DFD28C18B37E3D0079F427 /* UbertestersSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 89DFD28818B37E3D0079F427 /* UbertestersSDKResources.bundle */; };
+		89DFD28E18B37ECC0079F427 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD28D18B37ECC0079F427 /* AdSupport.framework */; };
+		89DFD29018B37EE30079F427 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD28F18B37EE30079F427 /* CoreImage.framework */; };
+		89DFD29218B37F1B0079F427 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD29118B37F1B0079F427 /* CoreTelephony.framework */; };
+		89DFD29418B37F2B0079F427 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD29318B37F2B0079F427 /* CoreLocation.framework */; };
+		89DFD29618B37F3A0079F427 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD29518B37F3A0079F427 /* AudioToolbox.framework */; };
+		89DFD29818B37F420079F427 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD29718B37F420079F427 /* OpenGLES.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -297,6 +307,14 @@
 		15D756C517F485F10080AE4F /* FFRosterSlotCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFRosterSlotCell.m; sourceTree = "<group>"; };
 		15D756C717F489050080AE4F /* rosterslotempty@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rosterslotempty@2x.png"; sourceTree = "<group>"; };
 		15E06C2117F5048000E8AB4D /* playerselectmask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playerselectmask@2x.png"; sourceTree = "<group>"; };
+		89DFD28718B37E3D0079F427 /* UbertestersSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UbertestersSDK.framework; sourceTree = "<group>"; };
+		89DFD28818B37E3D0079F427 /* UbertestersSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UbertestersSDKResources.bundle; sourceTree = "<group>"; };
+		89DFD28D18B37ECC0079F427 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		89DFD28F18B37EE30079F427 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		89DFD29118B37F1B0079F427 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		89DFD29318B37F2B0079F427 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		89DFD29518B37F3A0079F427 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		89DFD29718B37F420079F427 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		CCE50D82857A45A1B1A9DFA0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FACE7B05A54E4AFCA3D2ADB7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -306,17 +324,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89DFD29818B37F420079F427 /* OpenGLES.framework in Frameworks */,
+				89DFD29618B37F3A0079F427 /* AudioToolbox.framework in Frameworks */,
+				89DFD29418B37F2B0079F427 /* CoreLocation.framework in Frameworks */,
+				89DFD29218B37F1B0079F427 /* CoreTelephony.framework in Frameworks */,
+				1527AE3317DFDCFB00D181D7 /* SystemConfiguration.framework in Frameworks */,
+				89DFD29018B37EE30079F427 /* CoreImage.framework in Frameworks */,
+				89DFD28E18B37ECC0079F427 /* AdSupport.framework in Frameworks */,
 				1561B7F317FDFB1E00444F22 /* StoreKit.framework in Frameworks */,
 				15CD295517F7804A0027DFEC /* AddressBook.framework in Frameworks */,
 				1575B363180CB85100822EF9 /* Crashlytics.framework in Frameworks */,
 				15CD295617F7804A0027DFEC /* AddressBookUI.framework in Frameworks */,
 				15A2379F17E2865A00225942 /* QuartzCore.framework in Frameworks */,
-				1527AE3317DFDCFB00D181D7 /* SystemConfiguration.framework in Frameworks */,
 				1527AE3117DFDCEF00D181D7 /* MobileCoreServices.framework in Frameworks */,
 				1527AE2F17DFDCEA00D181D7 /* Security.framework in Frameworks */,
 				1575B367180CBACF00822EF9 /* libFlurry_4.2.4.a in Frameworks */,
 				153BBC3417DFC2E40071E63B /* UIKit.framework in Frameworks */,
 				153BBC3617DFC2E40071E63B /* Foundation.framework in Frameworks */,
+				89DFD28918B37E3D0079F427 /* UbertestersSDK.framework in Frameworks */,
 				153BBC3817DFC2E40071E63B /* CoreGraphics.framework in Frameworks */,
 				52F3ED9090324EB7BA21CF44 /* libPods.a in Frameworks */,
 				15A237AB17E2DBD400225942 /* FacebookSDK.framework in Frameworks */,
@@ -329,6 +354,7 @@
 			files = (
 				153BBC5B17DFC2E40071E63B /* SenTestingKit.framework in Frameworks */,
 				153BBC5C17DFC2E40071E63B /* UIKit.framework in Frameworks */,
+				89DFD28A18B37E3D0079F427 /* UbertestersSDK.framework in Frameworks */,
 				153BBC5D17DFC2E40071E63B /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -378,7 +404,14 @@
 		153BBC3217DFC2E40071E63B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				89DFD29718B37F420079F427 /* OpenGLES.framework */,
+				89DFD29518B37F3A0079F427 /* AudioToolbox.framework */,
+				89DFD29318B37F2B0079F427 /* CoreLocation.framework */,
+				89DFD29118B37F1B0079F427 /* CoreTelephony.framework */,
+				89DFD28F18B37EE30079F427 /* CoreImage.framework */,
+				89DFD28D18B37ECC0079F427 /* AdSupport.framework */,
 				1575B364180CBACF00822EF9 /* Flurry */,
+				89DFD28618B37E3D0079F427 /* UbertestersSDK */,
 				1575B362180CB85100822EF9 /* Crashlytics.framework */,
 				1561B7F217FDFB1E00444F22 /* StoreKit.framework */,
 				15CD295317F7804A0027DFEC /* AddressBook.framework */,
@@ -620,6 +653,16 @@
 			name = Cells;
 			sourceTree = "<group>";
 		};
+		89DFD28618B37E3D0079F427 /* UbertestersSDK */ = {
+			isa = PBXGroup;
+			children = (
+				89DFD28718B37E3D0079F427 /* UbertestersSDK.framework */,
+				89DFD28818B37E3D0079F427 /* UbertestersSDKResources.bundle */,
+			);
+			name = UbertestersSDK;
+			path = "FMF Football/UbertestersSDK";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -730,6 +773,7 @@
 				15CD294717F73D9F0027DFEC /* greendot@2x.png in Resources */,
 				15CD294817F73D9F0027DFEC /* reddot@2x.png in Resources */,
 				15CD294A17F73EA30027DFEC /* bluedot@2x.png in Resources */,
+				89DFD28B18B37E3D0079F427 /* UbertestersSDKResources.bundle in Resources */,
 				15CD294C17F73F890027DFEC /* disclosurelight@2x.png in Resources */,
 				155F64EF17FA3B8000500035 /* checkmark@2x.png in Resources */,
 				1561B7D917FD264500444F22 /* FMF-72.png in Resources */,
@@ -752,6 +796,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				153BBC6517DFC2E40071E63B /* InfoPlist.strings in Resources */,
+				89DFD28C18B37E3D0079F427 /* UbertestersSDKResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -988,6 +1033,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"~/Documents/FacebookSDK",
+					"/Users/netsu/Projects/fantasysports/fantasysports/ios/FMF\\ Football/FMF\\ Football/UbertestersSDK",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
@@ -1012,6 +1058,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"~/Documents/FacebookSDK",
+					"/Users/netsu/Projects/fantasysports/fantasysports/ios/FMF\\ Football/FMF\\ Football/UbertestersSDK",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
@@ -1033,8 +1080,9 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FMF Football.app/FMF Football";
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\\\"$(SDKROOT)/Developer/Library/Frameworks\\\"",
+					"\\\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\\\"",
+					"/Users/netsu/Projects/fantasysports/fantasysports/ios/FMF\\ Football/FMF\\ Football/UbertestersSDK",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
@@ -1050,8 +1098,9 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FMF Football.app/FMF Football";
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\\\"$(SDKROOT)/Developer/Library/Frameworks\\\"",
+					"\\\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\\\"",
+					"/Users/netsu/Projects/fantasysports/fantasysports/ios/FMF\\ Football/FMF\\ Football/UbertestersSDK",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FMF Football/FMF Football-Prefix.pch";
