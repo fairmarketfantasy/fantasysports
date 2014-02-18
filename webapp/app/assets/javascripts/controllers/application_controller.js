@@ -13,18 +13,6 @@ angular.module("app.controllers")
 
   $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;}, true);
 
-
-
-  $scope.reloadRoster = function(id, sport) {
-    console.log(id)
-    console.log(sport)
-    $scope.roster = undefined;
-    fs.rosters.getSample(id, sport).then(function(roster) {
-      $scope.roster = roster;
-    });
-  };
-  $scope.reloadRoster();
-
   $scope.sportHasPlayoffs = function() {
     var sport = _.find(App.sports, function(s) { return s.name == $scope.currentUser.currentSport; } );
     return sport && sport.playoffs_on;

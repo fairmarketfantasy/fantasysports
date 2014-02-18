@@ -67,7 +67,8 @@ class RostersController < ApplicationController
   end
 
   def sample_roster
-    m = Market.where(:sport_id => Sport.where('is_active'), :state => ['published', 'opened'], :game_type => 'regular_season').order("name ilike '%week%' desc").first
+    m = get_market(params)
+    return render_api_response [] unless m
     # Fill the lolla first, if that's full, revert to Top5 contests
     lolla_type = m.contest_types.where("name ilike '%k%'").first
     lolla = lolla_type && lolla_type.contests.first
@@ -77,13 +78,7 @@ class RostersController < ApplicationController
       m.contest_types.where(:name => 'Top5').first || m.contest_types.where(:name => '194').first
     end
 
-    roster = if params[:reload]
-      Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
-    else
-      Rails.cache.fetch("landing_roster_#{contest_type.id}", :expires_in => 5.minutes) do
-        Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
-      end
-    end
+    roster = Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
     render_api_response roster, :scope => SYSTEM_USER
   end
 
@@ -154,5 +149,16 @@ class RostersController < ApplicationController
     end
     render_api_response roster
   end
-end
 
+  private
+
+  def get_market(params)
+    if params[:id] == 'true' || params[:id].nil?
+      sport = params[:sport] ? Sport.where(:name => params[:sport]) : Sport.where('is_active')
+      Market.where(:sport_id => sport, :state => ['published', 'opened'],
+                   :game_type => 'regular_season').order("name ilike '%week%' desc").first
+    else
+      Market.find(params[:id])
+    end
+  end
+end
