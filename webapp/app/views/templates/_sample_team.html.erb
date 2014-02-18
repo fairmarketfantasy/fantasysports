@@ -2,9 +2,9 @@
 
   <ul class="clearfix landing-market-list" ng-show="marketService.upcoming">
     <li class="slider-prev" ng-click="prev()"></li>
-    <li class="landing-market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, slide) in marketService.upcoming" ng-show="i == $slideIndex || i == $slideIndex + 1 || i == $slideIndex + 2">
-      <a class="landing-market-link" ng-class="{ highlightMkt: isCurrent(market) }">
-        <strong>{{slide.name}}</strong>
+    <li class="landing-market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, market) in marketService.upcoming" ng-show="i == $slideIndex || i == $slideIndex + 1 || i == $slideIndex + 2">
+      <a ng-click="reloadRoster(market.id)" class="landing-market-link" ng-class="{'active-market': isCurrent(market) }">
+        <strong>{{market.name}}</strong>
       </a>
     </li>
     <li class="slider-next" ng-click="next()"></li>

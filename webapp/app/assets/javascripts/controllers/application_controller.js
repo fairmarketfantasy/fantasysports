@@ -6,41 +6,24 @@ angular.module("app.controllers")
   $scope.fs = fs;
   $scope.$routeParams = $routeParams;
 
+  $scope.marketService = marketService;
+
   $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;
 
   $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;}, true);
 
-  $scope.marketService = marketService;
 
-    marketService.fetchUpcoming({type: 'single_elimination', sport: 'NBA'}).then(function() {
-        marketService.fetchUpcoming({type: 'regular_season', sport: 'NBA'}).then(function() {
-            if ($routeParams.market_id) {
-                marketService.selectMarketId($routeParams.market_id, 'NBA');
-            } else if ($location.path().match(/\w+\/playoffs/)) {
-                marketService.selectMarketType('single_elimination', 'NBA');
-            } else {
-                marketService.selectMarketType('regular_season', 'NBA');
-            }
-//            reloadMarket();
-        });
+
+  $scope.reloadRoster = function(id, sport) {
+    console.log(id)
+    console.log(sport)
+    $scope.roster = undefined;
+    fs.rosters.getSample(id, sport).then(function(roster) {
+      $scope.roster = roster;
     });
-                console.log($scope)
-//    slider
-    $scope.$slideIndex = 0;
-    $scope.next = function() {
-        var total = $scope.marketService.upcoming.length;
-        if (total > 0) {
-            $scope.$slideIndex = ($scope.$slideIndex < total - 3 ) ? $scope.$slideIndex + 1 : total - 3;
-        }
-    };
-    $scope.prev = function() {
-        var total = $scope.marketService.upcoming.length;
-        if (total > 0) {
-            $scope.$slideIndex = ($scope.$slideIndex > 0) ? $scope.$slideIndex = $scope.$slideIndex - 1: $scope.$slideIndex = 0;
-        }
-        };
-
+  };
+  $scope.reloadRoster();
 
   $scope.sportHasPlayoffs = function() {
     var sport = _.find(App.sports, function(s) { return s.name == $scope.currentUser.currentSport; } );
