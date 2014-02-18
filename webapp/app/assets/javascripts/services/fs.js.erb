@@ -11,6 +11,7 @@ angular.module('app.services')
     return {
       currentUser: window.App.currentUser,
       resetPasswordModal: function(token){
+        dialogOpts.dialogClass = 'modal reset-modal',
         dialogOpts.templateUrl = '/reset_password_dialog.html';
         dialogOpts.controller  = 'ResetPasswordDialogController';
         dialogOpts.resolve     = {token: function(){ return token; }};
