@@ -112,7 +112,8 @@ footer {
 .sign-up-modal{
   width: 650px;
 }
-.sign-in-modal {
+.sign-in-modal,
+.forgot-modal{
   width: 595px;
 }
 .sign-in-modal .modal-body {
@@ -123,11 +124,32 @@ footer {
   height: 335px;
   width: 605px;
 }
+.forgot-modal .modal-body{
+  width: 605px;
+}
 .sing-up-link {
   margin-top: 30px;
   padding:0 5px;
   border-right:1px solid #BDC3C7;
 }
+.modal-line {
+  div{
+    border-left: 1px solid #BDC3C7;
+    height: 115px;
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+  span {
+    color:#BDC3C7;
+  }
+}
+.sign-in-modal .modal-line div {
+  height: 40px;
+}
+.forgot-modal .modal-line div {
+  height: 30px;
+}
+
 .modal-header .close.close-modal{
   font-size: 24px;
   margin-top: 1px;
@@ -1452,20 +1474,6 @@ input, textarea, .uneditable-input {
   margin: 0 10px 20px;
 }
 
-.modal-line {
-  div{
-    border-left: 1px solid #BDC3C7;
-    height: 115px;
-    margin-left: 5px;
-    margin-top: 5px;
-  }
-  span {
-    color:#BDC3C7;
-  }
-}
-.sign-in-modal .modal-line div {
-  height: 40px;
-}
 .secondary {
   margin:0 20px;
 }
