@@ -1,8 +1,8 @@
 angular.module("app.controllers")
-.controller('SampleRosterController', [ '$scope', 'fs', 'registrationService','markets', '$routeParams', '$location', function($scope, fs, registrationService, marketService, $routeParams, $location) {
+.controller('SampleRosterController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService', 'fs', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, currentUserService, fs) {
 
     $scope.marketService = marketService;
-
+    $scope.roster = rosters;
 
     marketService.fetchUpcoming({type: 'single_elimination', sport: 'NBA'}).then(function() {
         marketService.fetchUpcoming({type: 'regular_season', sport: 'NBA'}).then(function() {
@@ -14,16 +14,29 @@ angular.module("app.controllers")
                 marketService.selectMarketType('regular_season', 'NBA');
             }
         });
+        $scope.reloadRoster();
     });
-        console.log(marketService)
+
+        $scope.reloadRoster = function(id, sport) {
+            $scope.roster = undefined;
+            fs.rosters.getSample(id, sport).then(function(roster) {
+                $scope.roster = roster;
+                $scope.isCurrent(roster.market_id)
+            });
+        };
+
+
     $scope.isCurrent = function(market){
         if (!market) { return; }
+        if ($scope.roster == undefined) { return; }
         if (!marketService.currentMarket) {
             flash.error("Oops, we couldn't find that market, pick a different one.");
             return;
         }
-        return (market.id === marketService.currentMarket.id);
+            return (market.id === $scope.roster.market.id);
     };
+
+
 
 //    slider
     $scope.$slideIndex = 0;
