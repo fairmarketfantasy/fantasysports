@@ -257,23 +257,29 @@ CGRect CGRectCopyWithOrigin(CGRect r, CGPoint origin) {
 {
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"]
                                        forBarMetrics:UIBarMetricsDefault];
-    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"]
-                                       forBarMetrics:UIBarMetricsLandscapePhone];
-    [[UINavigationBar appearance] setBarTintColor:[FFStyle darkGreen]];
+    [[UINavigationBar appearance] setBackgroundImage: [UIImage imageNamed:@"darkgreen.png"]
+                                       forBarMetrics: UIBarMetricsLandscapePhone];
+
+    if ([[UINavigationBar appearance] respondsToSelector: @selector(setBarTintColor:)]) {
+        [[UINavigationBar appearance] setBarTintColor: [FFStyle darkGreen]];
+    }
     [[UINavigationBar appearance] setTintColor:[FFStyle white]];
     
-    [[UINavigationBar appearance] setTitleTextAttributes:@{
+    [[UINavigationBar appearance] setTitleTextAttributes: @{
                                 UITextAttributeTextColor: [FFStyle white],
                           UITextAttributeTextShadowColor: [UIColor colorWithWhite:0 alpha:.15],
                          UITextAttributeTextShadowOffset: [NSValue valueWithUIOffset:UIOffsetMake(0, -1)],
                                      UITextAttributeFont: [FFStyle regularFont:22]
      }];
     
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
-    
-    [[UIToolbar appearance] setBarTintColor:[FFStyle darkGreen]];
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment: 0
+                                                       forBarMetrics: UIBarMetricsDefault];
+
+    if ([[UIToolbar appearance] respondsToSelector: @selector(setBarTintColor:)]) {
+        [[UIToolbar appearance] setBarTintColor:[FFStyle darkGreen]];
+    }
     [[UIToolbar appearance] setTintColor:[FFStyle white]];
-    
+
     [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"darkgreen.png"]
                             forToolbarPosition:UIToolbarPositionAny
                                  barMetrics:UIBarMetricsDefault];
