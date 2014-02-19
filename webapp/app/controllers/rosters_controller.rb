@@ -154,9 +154,8 @@ class RostersController < ApplicationController
 
   def get_market(params)
     if params[:id] == 'true' || params[:id].nil?
-      sport = params[:sport] ? Sport.where(:name => params[:sport]) : Sport.where('is_active')
-      Market.where(:sport_id => sport, :state => ['published', 'opened'],
-                   :game_type => 'regular_season').order("name ilike '%week%' desc").first
+      sport = params[:sport] ? Sport.where(:name => params[:sport]).first : Sport.last
+      SportStrategy.for(sport.name).fetch_markets('regular_season').first
     else
       Market.find(params[:id])
     end
