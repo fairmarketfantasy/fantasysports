@@ -37,7 +37,7 @@ class Roster < ActiveRecord::Base
 
   def purchasable_players
     self.class.uncached do
-      Player.purchasable_for_roster(self)
+      Player.purchasable_for_roster(self).with_market(self.market)
     end
   end
 
@@ -81,7 +81,7 @@ class Roster < ActiveRecord::Base
   - submitted, published
   - in_progress, opened
   - submitted, opened
-  Only in the last state are price differentials important.  
+  Only in the last state are price differentials important.
   That also means that in cases 1-3 remaining salary is determined by the buy_price of the roster's players
 =end
   def remaining_salary
@@ -108,7 +108,7 @@ class Roster < ActiveRecord::Base
     end
   end
 
-  #set the state to 'submitted'. If it's in a private contest, increment the number of 
+  #set the state to 'submitted'. If it's in a private contest, increment the number of
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!(charge = true)
     #buy all the players on the roster. This sql function handles all of that.
@@ -377,7 +377,7 @@ class Roster < ActiveRecord::Base
   all highest priced players for each position
 
   remaining picks * lowest prices
-  
+
   3rd highest of all positions, determine if we have to pick from that group by establishing minimum price per players
 
 =end
