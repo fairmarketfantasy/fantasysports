@@ -1,4 +1,4 @@
-<div ng-controller="SampleRosterController" class="roster">
+<div ng-controller="SampleRosterController">
 
   <ul class="clearfix landing-market-list" ng-show="marketService.upcoming">
     <li class="slider-prev" ng-click="prev()"></li>
@@ -14,9 +14,11 @@
       <img src=<%= asset_path 'ajax-throbber.gif' %>/>
       <h4>We're Building you a Custom Roster</h4>
     </div>
+    <div class="loading-message" ng-hide="marketService.currentMarket">
+      <h4>{{gameNotFound}} </h4>
+    </div>
 
     <div class="roster-overflow" ng-show="roster">
-
       <ul class="no-no">
         <li ng-class="{'no-border': $index == 6 || $last }" class="mr-item clearfix" ng-repeat="player in roster.players">
           <div ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
@@ -36,10 +38,10 @@
     </div>
 
   </div>
-    <div class="text-center roster-area-footer">
+    <div class="text-center roster-area-footer" ng-show="roster">
       <p>
         <a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">enter roster to win 100 fanbucks</a>
-        <a href="javascript://" class="btn btn-large btn-danger" ng-click='reloadRoster(true)'>get new lineup</a>
+        <a href="javascript://" class="btn btn-large btn-danger" ng-click='reloadRoster(roster.market.id)'>get new lineup</a>
       </p>
       <p style="text-align: left">You will be able to trade, adjust change your line up at will until the game begins!</p>
     </div>
