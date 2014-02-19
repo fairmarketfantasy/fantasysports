@@ -3,8 +3,8 @@
 Learn it. Love it.  http://guides.rubyonrails.org
 
 
-# Seed basic data
-`rake db:seed`
+# Seed basic data, create oauth client, add functions to database
+`rake deploy:setup`
 
 # Start the Server
 
