@@ -13,7 +13,6 @@
 #import "FFGame.h"
 #import "FFContestType.h"
 #import "FFRoster.h"
-#import "Flurry.h"
 
 
 @implementation FFSession
@@ -105,10 +104,11 @@
                                       success:(void (^)(NSURLRequest *, NSHTTPURLResponse *, id))success
                                       failure:(void (^)(NSURLRequest *, NSHTTPURLResponse *, NSError *, id))failure
 {
-    // wrap all authorized requests so we can log the error to flurry.
+    // wrap all authorized requests so we can log the error to Ubertesters.
     [super authorizedJSONRequestWithRequestBlock:requestBlock success:success failure:
      ^void (NSURLRequest *req, NSHTTPURLResponse *resp, NSError *err, id res) {
-         [Flurry logError:@"AuthorizedRequestError" message:nil error:err];
+         [[Ubertesters shared] UTLog: [NSString stringWithFormat: @"AuthorizedRequestError: %@", err]
+                               level: @"error"];
          failure(req, resp, err, res);
     }];
 }
@@ -119,10 +119,11 @@
                                success:(void (^)(NSURLRequest *, NSHTTPURLResponse *, id))success
                                failure:(void (^)(NSURLRequest *, NSHTTPURLResponse *, NSError *, id))failure
 {
-    // wrap all anonymous requests so we can log the error to flurry.
+    // wrap all anonymous requests so we can log the error to Ubertesters.
     [super anonymousJSONRequestWithMethod:method path:path parameters:params success:success failure:
      ^void (NSURLRequest *req, NSHTTPURLResponse *resp, NSError *err, id ret) {
-         [Flurry logError:@"AnonymousRequestError" message:nil error:err];
+         [[Ubertesters shared] UTLog: [NSString stringWithFormat: @"AnonymousRequestError: %@", err]
+                               level: @"error"];
          failure(req, resp, err, ret);
     }];
 }
