@@ -26,6 +26,7 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def customer_object
+    return unless scope
     scope.id == object.id ? object.customer_object : nil
   end
 

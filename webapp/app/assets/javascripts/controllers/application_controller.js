@@ -10,20 +10,9 @@ angular.module("app.controllers")
 
   $scope.currentUserService = currentUserService;
   $scope.currentUser = currentUserService.currentUser;
+  $scope.currentLandingSport = $routeParams.sport;
 
   $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;}, true);
-
-
-
-  $scope.reloadRoster = function(id, sport) {
-    console.log(id)
-    console.log(sport)
-    $scope.roster = undefined;
-    fs.rosters.getSample(id, sport).then(function(roster) {
-      $scope.roster = roster;
-    });
-  };
-  $scope.reloadRoster();
 
   $scope.sportHasPlayoffs = function() {
     var sport = _.find(App.sports, function(s) { return s.name == $scope.currentUser.currentSport; } );
@@ -36,6 +25,13 @@ angular.module("app.controllers")
     console.log(newSport);
     App.currentUser.currentSport = newSport;
   });
+
+    $scope.reloadRoster = function(id, sport) {
+        $scope.roster = undefined;
+        fs.rosters.getSample(id, sport).then(function(roster) {
+            $scope.roster = roster;
+        });
+    };
 
   $scope.signUpModal = function(msg, opts) {
     registrationService.signUpModal(msg, opts);

@@ -58,7 +58,6 @@ article {
   position: relative;
 }
 footer {
-  height: 176px;
   width: 100%;
   position: absolute;
   bottom: 0;
@@ -522,7 +521,6 @@ select:focus:invalid {
       border-bottom: 2px solid #3A3AC0;
       display: block;
       margin: 0 10px;
-      padding: 15px 10px 15px 25px;
       position: relative;
       cursor:pointer;
       .menu-arrow {
@@ -550,6 +548,10 @@ select:focus:invalid {
     .border-radius(0)
   }
 }
+.user-navigation {
+  float: right;
+  margin: 9px 0 0;
+}
 
 .sub-title {
   font-style: italic;
@@ -568,11 +570,12 @@ select:focus:invalid {
 
 /* User Info Header Pane */
 .user-container {
-  height: 162px;
-  .border-radius(8px 0 0 0);
+  .border-radius(8px 8px 0 0);
+  .box-sizing();
   background-color: rgba(29,29,29,0.5);
-  border-left: 1px solid @white;
-  border-top: 1px solid @white;
+  border: 1px solid @white;
+  border-bottom: none;
+  margin-top: 15px;
 }
 .ie8 .user-container {
   background-color: @grayDark;
@@ -582,10 +585,9 @@ select:focus:invalid {
   margin: 20px 0 10px 0;
 }
 .user-box {
-  width: 90%;
+  width: 95%;
   margin: 15px auto 5px;
   padding-bottom: 12px;
-  border-bottom: 1px solid @offWhite;
   overflow: hidden;
 }
 .user-avatar {
@@ -593,7 +595,7 @@ select:focus:invalid {
   border: 1px solid @gray;
   float: left;
   width: 60px;
-  margin: 0 12px 0 2px;
+  margin: 5px 12px 0 2px;
   max-height: 62px;
 }
 .user-info {
@@ -620,9 +622,9 @@ select:focus:invalid {
   font-size: 14px;
 }
 .user-dash {
-  width: 90%;
+  float:right;
   margin: 0 auto 12px;
-  padding-bottom: 4px;
+  padding:13px 0 4px 0;
 }
 .nmw-info {
   position: absolute;
@@ -644,8 +646,7 @@ select:focus:invalid {
   color: @offWhite;
   font-size: 13px;
   line-height: .8;
-  margin-bottom: 2px;
-  width: 48%;
+  margin: 18px 0 0 40px;
   padding: 0 1%;
   float: left;
   border-right: 1px solid @grayLight;
@@ -661,7 +662,6 @@ select:focus:invalid {
 }
 .no-border {
   border: none !important;
-  margin: 0 auto;
   .user-balance {
     border: none;
   }
@@ -721,11 +721,10 @@ select:focus:invalid {
 .page-content {
   background-color: @white;
   position: relative;
-  top: -178px;
-  left: -30px;
-  .border-radius(8px 8px 0 0); 
   .box-shadow(0 0 3px rgba(0,0,0,.6));
   min-height: 700px;
+  position: relative;
+  top: -84px;
 }
 .padded-content {
   width: 94%;
@@ -1093,7 +1092,6 @@ input, textarea, .uneditable-input {
 .landing-market-link.active-market{
   color:#D2302D;
 }
-
 .slider-prev,
 .slider-next{
   background: asset-url('sprite.png') no-repeat -7px -65px;
@@ -1349,6 +1347,16 @@ input, textarea, .uneditable-input {
   .border-radius(0);
   padding:0 15px 5px;
 }
+.landing-nav .header-drop-menu .landing-nav-link {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+  color: @white;
+  margin: 0;
+  padding: 15px 10px 10px 25px;
+  &:hover{
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
 .roster-area-footer {
   padding: 20px 20px 0 20px;
   .btn-success {
