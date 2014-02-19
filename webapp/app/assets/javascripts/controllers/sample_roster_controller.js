@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('SampleRosterController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService', 'fs', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, currentUserService, fs) {
+.controller('SampleRosterController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'fs', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, fs) {
 
     $scope.marketService = marketService;
     $scope.roster = rosters;
@@ -13,21 +13,24 @@ angular.module("app.controllers")
             } else {
                 marketService.selectMarketType('regular_season', $scope.$routeParams.sport);
             }
+            $scope.reloadRoster(true, $scope.$routeParams.sport);
         });
-        $scope.reloadRoster();
     });
 
-        $scope.reloadRoster = function(id, sport) {
-            $scope.roster = undefined;
-            fs.rosters.getSample(id, sport).then(function(roster) {
-                $scope.roster = roster;
-                $scope.isCurrent(roster.market_id)
-            });
-        };
+    $scope.reloadRoster = function(id, sport) {
+        $scope.roster = undefined;
+        fs.rosters.getSample(id, sport).then(function(roster) {
+            $scope.roster = roster;
+            $scope.isCurrent(roster.market_id)
+        });
+    };
 
 
     $scope.isCurrent = function(market){
-        if (!market) { return; }
+        if (!market) {
+            $scope.gameNotFound = "There are no contents at this moment";
+            return;
+        }
         if ($scope.roster == undefined) { return; }
         if (!marketService.currentMarket) {
             flash.error("Oops, we couldn't find that market, pick a different one.");

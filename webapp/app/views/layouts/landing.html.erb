@@ -85,7 +85,7 @@
               <li>
                 <a class="dropdown-toggle">Sport</a>
                 <ul class="header-drop-menu dropdown-menu">
-                  <li ng-click="reloadRoster(true, choice.name)" ng-class="{'no-border': $last}" ng-repeat="choice in sports" >
+                  <li ng-class="{'no-border': $last}" ng-repeat="choice in sports" >
                     <em class="menu-arrow" ng-class="{'active-arrow': choice.name == $routeParams.sport }"></em>
                     <a class="landing-nav-link" href="/#/{{choice.name}}/external">{{choice.name}}</a>
                   </li>

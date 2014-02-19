@@ -10,7 +10,7 @@
     <li class="slider-next" ng-click="next()"></li>
   </ul>
   <div class="roster-area">
-    <div class="loading-message" ng-hide="roster">
+    <div class="loading-message" ng-hide="!marketService.currentMarket || roster">
       <img src=<%= asset_path 'ajax-throbber.gif' %>/>
       <h4>We're Building you a Custom Roster</h4>
     </div>
