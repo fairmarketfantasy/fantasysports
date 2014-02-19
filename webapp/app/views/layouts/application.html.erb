@@ -102,26 +102,43 @@
   </div>  
   <!-- This is where you work your magic, do your best! -->
   <header class="full">
-    <div class="container">
-    <div class="row top-nav">
-      <div class="span8">
-        <a href="/#"><h1 class="logo-font">Fair Market <span class="logo-slash">Fantasy</span></h1></a> 
-        <!--<span class="sub-title">Only available here, Play the NFL Playoffs!</span>-->
+    <div class="top-nav">
+      <div class="fixed-header">
+        <div class="container clearfix">
+          <div class="span12 nav-span">
+            <h1 class="logo-font">Predict <span class="logo-slash">That</span></h1>
+            <nav class="landing-nav">
+              <ul>
+                <li>
+                  <a class="dropdown-toggle">Sport</a>
+                  <ul class="header-drop-menu dropdown-menu">
+                    <li ng-class="{'no-border': $last}" ng-repeat="sport in sports" >
+                      <em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentSport == sport.name}"></em>
+                      <a class="landing-nav-link" ng-show="sport.is_active" href="/#/{{sport.name}}/home">{{sport.name}}</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="dropdown-toggle">Fantasy Entertainment</a>
+                </li>
+                <li>
+                  <a class="dropdown-toggle">Politics</a>
+                </li>
+              </ul>
+            </nav>
+            <div class="user-navigation">
+              <div class="nav-mobile-app-links">
+                <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="span4">
-        <ul class="nav nav-pills blue-pills modal-pills" ng-cloak>
-          <li ng-repeat="sport in sports" ng-class="{active: currentUser.currentSport == sport.name}">
-            <a ng-show="sport.is_active" href="/#/{{sport.name}}/home">{{sport.name}}</a>
-            <a ng-hide="sport.is_active" href="/#/{{sport.name}}/coming-soon">{{sport.name}}</a>
-          </li>
-        </ul>
-      </div>
-    </div>
   </div>
     <div class="container">
 
     <div class="row header-bottom">
-      <div class="span3 user-container text-center" ng-cloak>
+      <div class="span12 user-container text-center" ng-cloak>
         <div class="clearfix user-box">
           <img ng-src="{{currentUser.image_url}}" class='user-avatar'/>
           <div class="user-info">
@@ -129,20 +146,18 @@
             <a href="javascript://" class='txt-white txt-red-hover' ng-click="settingsModal()">My Account</a><br />
             <%= link_to 'sign out', destroy_user_session_path, class: 'user-logout txt-red-hover' %>
           </div>
-        </div>
-        <div class="user-dash clearfix">
           <div class="user-balance no-border">
             <small>Cash:</small>&nbsp;&nbsp;{{ currentUser.balance | centsToDollars }}
           </div>
           <div class="user-balance no-border">
-            <img class="nmw-info" src="<%= asset_path "info-icon.png" %>" width="17px"
-              popover-trigger="mouseenter" popover="Fanbucks are how much you're up or down this month. Any positive balance is put in your account each month. Check out the FAQs for more info!" popover-placement="right">
+            <!--<img class="nmw-info" src="<%= asset_path "info-icon.png" %>" width="17px"-->
+              <!--popover-trigger="mouseenter" popover="Fanbucks are how much you're up or down this month. Any positive balance is put in your account each month. Check out the FAQs for more info!" popover-placement="right">-->
             <small>FanBucks:</small>&nbsp;&nbsp;{{ currentUser.customer_object.net_monthly_winnings | centsToDollars }}
           </div>
           <div class="user-dash no-border clearfix">
             <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Manage Subscription</a>
           </div>
-       </div>
+        </div>
       </div>
     </div>
     </div>
@@ -151,12 +166,7 @@
   <article>
     <div class="container">
       <div class="row">
-        <div class="span3 user-navigation">
-          <div class="nav-mobile-app-links">
-            <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
-          </div>
-        </div>
-        <div class="span9 page-content">
+        <div class="span12 page-content">
           <div class="padded-content">
             <div class="content">
               <div id="content" ng-view>

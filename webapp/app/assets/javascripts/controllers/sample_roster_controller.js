@@ -1,28 +1,44 @@
 angular.module("app.controllers")
-.controller('SampleRosterController', [ '$scope', 'fs', 'registrationService','markets', '$routeParams', '$location', function($scope, fs, registrationService, marketService, $routeParams, $location) {
+.controller('SampleRosterController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'fs', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, fs) {
 
     $scope.marketService = marketService;
+    $scope.roster = rosters;
 
-
-    marketService.fetchUpcoming({type: 'single_elimination', sport: 'NBA'}).then(function() {
-        marketService.fetchUpcoming({type: 'regular_season', sport: 'NBA'}).then(function() {
+    marketService.fetchUpcoming({type: 'single_elimination', sport: $scope.$routeParams.sport}).then(function() {
+        marketService.fetchUpcoming({type: 'regular_season', sport: $scope.$routeParams.sport}).then(function() {
             if ($routeParams.market_id) {
-                marketService.selectMarketId($routeParams.market_id, 'NBA');
+                marketService.selectMarketId($routeParams.market_id, $scope.$routeParams.sport);
             } else if ($location.path().match(/\w+\/playoffs/)) {
-                marketService.selectMarketType('single_elimination', 'NBA');
+                marketService.selectMarketType('single_elimination', $scope.$routeParams.sport);
             } else {
-                marketService.selectMarketType('regular_season', 'NBA');
+                marketService.selectMarketType('regular_season', $scope.$routeParams.sport);
             }
+            $scope.reloadRoster(true, $scope.$routeParams.sport);
         });
     });
-        console.log(marketService)
+
+    $scope.reloadRoster = function(id, sport) {
+        $scope.roster = undefined;
+        fs.rosters.getSample(id, sport).then(function(roster) {
+            $scope.roster = roster;
+            $scope.isCurrent(roster.market_id)
+        });
+    };
+
+
     $scope.isCurrent = function(market){
-        if (!market) { return; }
-        if (!marketService.currentMarket) {
-            flash.error("Oops, we couldn't find that market, pick a different one.");
+        if (!market) {
+            $scope.gameNotFound = "There are no contents at this moment";
             return;
         }
-        return (market.id === marketService.currentMarket.id);
+        if ($scope.roster == undefined) { return; }
+        if (!marketService.currentMarket) {
+            flash.error("Oops, we couldn't find that market, pick a different one.");
+            $scope.gameNotFound = "There are no contents at this moment";
+            console.log($scope.gameNotFound)
+            return;
+        }
+            return (market.id === $scope.roster.market.id);
     };
 
 //    slider
