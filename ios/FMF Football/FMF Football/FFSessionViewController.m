@@ -17,7 +17,6 @@
 #import "FFWebViewController.h"
 #import "FFNavigationBarItemView.h"
 #import <FacebookSDK/FacebookSDK.h>
-#import "Flurry.h"
 
 
 @interface FFSessionViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate, FFBalanceViewDataSource>
@@ -488,7 +487,8 @@ validate_error:
         [self performSegueWithIdentifier:@"GotoHome" sender:nil];
         NSLog(@"successful login %@", user);
     } failure:^(NSError *err) {
-        [Flurry logError:@"SignInError" message:nil error:err];
+        [[Ubertesters shared] UTLog: [NSString stringWithFormat: @"SignInError: %@", err]
+                              level: @"error"];
         [progressAlert hide];
         [[[FFAlertView alloc] initWithError:err title:nil cancelButtonTitle:nil
                             okayButtonTitle:NSLocalizedString(@"Dismiss", @"dismiss error dialog")
@@ -596,7 +596,8 @@ validate_error:
                             okayButtonTitle:NSLocalizedString(@"Dismiss", @"dismiss error dialog")
                                    autoHide:YES]
          showInView:self.view];
-        [Flurry logError:@"SignUpError" message:nil error:err];
+        [[Ubertesters shared] UTLog: [NSString stringWithFormat: @"SignUpError: %@", err]
+                              level: @"error"];
     };
     
     SBSuccessBlock onSuccess = ^(id user) {
@@ -638,7 +639,8 @@ validate_error:
     }
     
     if (error) {
-        [Flurry logError:@"FBSessionError" message:nil error:error];
+        [[Ubertesters shared] UTLog: [NSString stringWithFormat: @"FBSessionError: %@", error]
+                              level: @"error"];
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"Error"
                                   message:error.localizedDescription
@@ -657,7 +659,8 @@ validate_error:
     
     [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error) {
-            [Flurry logError:@"FBGetMeError" message:nil error:error];
+            [[Ubertesters shared] UTLog: [NSString stringWithFormat: @"FBGetMeError: %@", error]
+                                  level: @"error"];
             [alert hide];
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
@@ -666,7 +669,8 @@ validate_error:
         }
         if (!result[@"email"] || [result[@"email"] isEqual:[NSNull null]]) {
             [alert hide];
-            [Flurry logError:@"FBNoEmailError" message:@"There was no email for a provided account" error:nil];
+            [[Ubertesters shared] UTLog: @"FBNoEmailError: There was no email for a provided account"
+                                  level: @"error"];
             FFAlertView *ealert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
                                                             message:NSLocalizedString(@"The provided Facebook account does not have a verified email address associated with it. It could be a new account, to which Facebook does not yet give us access to the email. For now, you'll have to use a regular username and password to create an account.", nil) cancelButtonTitle:nil okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];
             [ealert showInView:self.view];
@@ -683,7 +687,8 @@ validate_error:
             [self.session syncPushToken];
             [self performSegueWithIdentifier:@"GotoHome" sender:nil];
         } failure:^(NSError *error) {
-            [Flurry logError:@"FBRegisterOAuthError" message:nil error:error];
+            [[Ubertesters shared] UTLog: [NSString stringWithFormat: @"FBRegisterOAuthError: %@", error]
+                                  level: @"error"];
             [alert hide];
             FFAlertView *ealert = [[FFAlertView alloc] initWithError:error title:nil cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil) autoHide:YES];

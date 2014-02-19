@@ -11,8 +11,6 @@
 #import "FFStyle.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "FFSession.h"
-#import <Crashlytics/Crashlytics.h>
-#import "Flurry.h"
 
 
 @implementation FFAppDelegate
@@ -22,16 +20,14 @@
 {
     [SBModelMeta initDb];
     [FFStyle customizeAppearance];
-    [Crashlytics startWithAPIKey:@"cc13321a1651e7db17b8b33743fa177c36f93713"];
-    [Flurry startSession:@"N3QXDQP8W4F55GBTM3FX"];
     [[Ubertesters shared] initialize];
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation
+- (BOOL)application: (UIApplication*)application
+            openURL: (NSURL*)url
+  sourceApplication: (NSString*)sourceApplication
+         annotation: (id)annotation
 {
     return [FBSession.activeSession handleOpenURL:url];
 }
