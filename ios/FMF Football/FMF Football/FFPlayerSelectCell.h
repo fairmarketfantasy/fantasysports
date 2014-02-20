@@ -12,13 +12,13 @@
 
 @protocol FFPlayerSelectCellDelegate <NSObject>
 
-- (void)playerSelectCellDidBuy:(FFPlayerSelectCell *)cell;
+- (void)playerSelectCellDidBuy:(FFPlayerSelectCell*)cell;
 
 @end
 
 @interface FFPlayerSelectCell : UITableViewCell
 
-@property (nonatomic) NSDictionary *player;
-@property (nonatomic) id<FFPlayerSelectCellDelegate> delegate;
+@property(nonatomic) NSDictionary* player;
+@property(nonatomic) id<FFPlayerSelectCellDelegate> delegate;
 
 @end

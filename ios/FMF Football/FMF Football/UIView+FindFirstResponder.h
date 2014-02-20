@@ -10,7 +10,7 @@
 
 @interface UIView (FindFirstResponder)
 
-- (UIView *)findFirstResponder;
-- (UIView *)findFirstResponderOfView:(UIView *)view;
+- (UIView*)findFirstResponder;
+- (UIView*)findFirstResponderOfView:(UIView*)view;
 
 @end

@@ -20,20 +20,19 @@
 
 @interface FFSessionViewController : FFBaseViewController
 
-@property (nonatomic) SBSession *session;
+@property(nonatomic) SBSession* session;
 
 //@property (nonatomic, readonly) UIButton *balanceView;
-- (FFBalanceButton *)balanceView;
+- (FFBalanceButton*)balanceView;
 
 // updates a user immediately (eg the user just bought some tokens, or an in-progress roster changed)
 - (void)updateUserNow;
 
 @end
 
-
 @interface UIViewController (FFSessionController)
 
-- (FFSessionViewController *)sessionController;
-- (SBSession *)session;
+- (FFSessionViewController*)sessionController;
+- (SBSession*)session;
 
 @end

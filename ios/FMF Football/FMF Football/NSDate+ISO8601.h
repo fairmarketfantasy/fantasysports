@@ -10,6 +10,6 @@
 
 @interface NSDate (ISO8601)
 
-+ dateFromISO8601String:(NSString *)str;
++ dateFromISO8601String:(NSString*)str;
 
 @end

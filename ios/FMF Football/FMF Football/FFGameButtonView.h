@@ -17,6 +17,6 @@
 
 @interface FFGameButtonView : UIView
 
-@property (nonatomic, weak) id<FFGameButtonViewDelegate> delegate;
+@property(nonatomic, weak) id<FFGameButtonViewDelegate> delegate;
 
 @end

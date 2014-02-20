@@ -11,6 +11,6 @@
 
 @interface FFInviteViewController : FFBaseViewController
 
-@property (nonatomic) FFRoster *roster;
+@property(nonatomic) FFRoster* roster;
 
 @end

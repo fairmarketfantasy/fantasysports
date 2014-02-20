@@ -8,14 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-
-
 @interface FFWebViewController : UIViewController
 
-@property (nonatomic) NSURL *URL;
-@property (strong, nonatomic) NSArray *activityItems;
-@property (strong, nonatomic) NSArray *applicationActivities;
-@property (strong, nonatomic) NSArray *excludedActivityTypes;
+@property(nonatomic) NSURL* URL;
+@property(strong, nonatomic) NSArray* activityItems;
+@property(strong, nonatomic) NSArray* applicationActivities;
+@property(strong, nonatomic) NSArray* excludedActivityTypes;
 
 - (void)load;
 

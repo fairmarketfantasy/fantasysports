@@ -39,7 +39,7 @@
 ////    } else {
 ////        insets = UIEdgeInsetsZero;
 ////    }
-//    
+//
 //    return insets;
 //}
 //
@@ -47,9 +47,7 @@
 //    return self.frame.origin.x < (self.superview.frame.size.width / 2);
 //}
 
-
 @end
-
 
 @implementation FFNavigationBarItemButton
 
@@ -64,7 +62,7 @@
 //    //    } else {
 //    //        insets = UIEdgeInsetsZero;
 //    //    }
-//    
+//
 //    return insets;
 //}
 //

@@ -12,15 +12,15 @@
 #import "FFTickerDataSource.h"
 
 @interface FFTickerDrawerViewController : FFDrawerViewController
-<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, FFTickerDataSourceDelegate>
+                                          <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, FFTickerDataSourceDelegate>
 
-@property (nonatomic) SBSession *session;
+@property(nonatomic) SBSession* session;
 
-@property (nonatomic) UICollectionView *collectionView;
-@property (nonatomic) UILabel *errorLabel;
-@property (nonatomic) UILabel *loadingLabel;
-@property (nonatomic) UIActivityIndicatorView *activityIndicator;
+@property(nonatomic) UICollectionView* collectionView;
+@property(nonatomic) UILabel* errorLabel;
+@property(nonatomic) UILabel* loadingLabel;
+@property(nonatomic) UIActivityIndicatorView* activityIndicator;
 
-@property (nonatomic) NSArray *tickerData;
+@property(nonatomic) NSArray* tickerData;
 
 @end

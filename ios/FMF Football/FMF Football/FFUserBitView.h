@@ -11,8 +11,8 @@
 
 @interface FFUserBitView : UIView
 
-@property (nonatomic) FFUser *user;
+@property(nonatomic) FFUser* user;
 
-@property (nonatomic) UIButton *finishInProgressRoster;
+@property(nonatomic) UIButton* finishInProgressRoster;
 
 @end

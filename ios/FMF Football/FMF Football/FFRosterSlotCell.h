@@ -14,22 +14,22 @@
 
 @protocol FFRosterSlotCellDelegate <NSObject>
 
-- (void)rosterCellSelectPlayer:(FFRosterSlotCell *)cell;
-- (void)rosterCellReplacePlayer:(FFRosterSlotCell *)cell;
-- (void)rosterCellStatsForPlayer:(FFRosterSlotCell *)cell;
+- (void)rosterCellSelectPlayer:(FFRosterSlotCell*)cell;
+- (void)rosterCellReplacePlayer:(FFRosterSlotCell*)cell;
+- (void)rosterCellStatsForPlayer:(FFRosterSlotCell*)cell;
 
 @end
 
 @interface FFRosterSlotCell : UITableViewCell
 
-@property (nonatomic, readonly) id player;
-@property (nonatomic, readonly) FFRoster *roster;
-@property (nonatomic, readonly) FFMarket *market;
+@property(nonatomic, readonly) id player;
+@property(nonatomic, readonly) FFRoster* roster;
+@property(nonatomic, readonly) FFMarket* market;
 
-- (void)setPlayer:(id)player andRoster:(FFRoster *)roster andMarket:(FFMarket *)market;
+- (void)setPlayer:(id)player andRoster:(FFRoster*)roster andMarket:(FFMarket*)market;
 
-@property (nonatomic, weak) id<FFRosterSlotCellDelegate> delegate;
+@property(nonatomic, weak) id<FFRosterSlotCellDelegate> delegate;
 
-@property (nonatomic) BOOL showButtons;
+@property(nonatomic) BOOL showButtons;
 
 @end

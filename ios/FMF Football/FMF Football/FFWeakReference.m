@@ -8,19 +8,16 @@
 
 #import "FFWeakReference.h"
 
-
-@interface FFWeakReference ()
-{
+@interface FFWeakReference () {
     __weak id nonretainedObjectValue;
     __unsafe_unretained id originalObjectValue;
 }
 
 @end
 
-
 @implementation FFWeakReference
 
-- (id) initWithObject:(id) object
+- (id)initWithObject:(id)object
 {
     if (self = [super init]) {
         nonretainedObjectValue = originalObjectValue = object;
@@ -28,7 +25,7 @@
     return self;
 }
 
-+ (FFWeakReference *)weakReferenceWithObject:(id)object
++ (FFWeakReference*)weakReferenceWithObject:(id)object
 {
     return [[self alloc] initWithObject:object];
 }
@@ -38,13 +35,13 @@
     return nonretainedObjectValue;
 }
 
-- (void *)originalObjectValue
+- (void*)originalObjectValue
 {
-    return (__bridge void *) originalObjectValue;
+    return (__bridge void*)originalObjectValue;
 }
 
 // To work appropriately with NSSet
-- (BOOL)isEqual:(FFWeakReference *)object
+- (BOOL)isEqual:(FFWeakReference*)object
 {
     if (![object isKindOfClass:[FFWeakReference class]]) {
         return NO;

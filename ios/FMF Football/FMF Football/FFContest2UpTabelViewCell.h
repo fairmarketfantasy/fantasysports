@@ -11,13 +11,13 @@
 
 @protocol FFContest2UpTableViewCellDelegate <NSObject>
 
-- (void)didChooseContest:(FFContestType *)contest;
+- (void)didChooseContest:(FFContestType*)contest;
 
 @end
 
 @interface FFContest2UpTabelViewCell : UITableViewCell
 
-@property (nonatomic) NSArray *contests;
-@property (nonatomic, weak) id<FFContest2UpTableViewCellDelegate> delegate;
+@property(nonatomic) NSArray* contests;
+@property(nonatomic, weak) id<FFContest2UpTableViewCellDelegate> delegate;
 
 @end

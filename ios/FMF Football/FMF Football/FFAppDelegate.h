@@ -10,7 +10,7 @@
 
 @interface FFAppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
-@property (nonatomic) NSString *pushToken;
+@property(strong, nonatomic) UIWindow* window;
+@property(nonatomic) NSString* pushToken;
 
 @end

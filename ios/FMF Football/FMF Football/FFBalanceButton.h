@@ -13,13 +13,12 @@
 
 @protocol FFBalanceViewDataSource <NSObject>
 
-- (NSInteger)balanceViewGetBalance:(FFBalanceButton *)view;
+- (NSInteger)balanceViewGetBalance:(FFBalanceButton*)view;
 
 @end
 
-
 @interface FFBalanceButton : FFNavigationBarItemButton
 
-@property (nonatomic, weak) id<FFBalanceViewDataSource> dataSource;
+@property(nonatomic, weak) id<FFBalanceViewDataSource> dataSource;
 
 @end
