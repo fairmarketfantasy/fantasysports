@@ -55,7 +55,7 @@ angular.module("app.controllers")
     $scope.fs.contests.join(contestType.id, rosters.justSubmittedRoster && rosters.justSubmittedRoster.id).then(function(data){
       rosters.selectRoster(data);
         console.log(data)
-//      $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + marketService.currentMarket.id + '/roster/' + data.id);
+      $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + marketService.currentMarket.id + '/roster/' + data.id);
     });
   };
 //  $scope.joinContest($scope.contestClasses);
