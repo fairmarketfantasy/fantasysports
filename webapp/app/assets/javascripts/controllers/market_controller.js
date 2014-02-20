@@ -1,6 +1,7 @@
 angular.module("app.controllers")
 .controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, currentUserService) {
   $scope.marketService = marketService;
+        console.log($scope)
 
 // TODO: Pick up here: UI needs to determine if loaded market is single elim and keep playoff setting when it's clicked
 //----- WE SHOULD ALSO MAKE SURE THE SINGLE ELIMS AHVE A LOLLAPALOOZA
@@ -53,9 +54,11 @@ angular.module("app.controllers")
   $scope.joinContest = function(contestType) {
     $scope.fs.contests.join(contestType.id, rosters.justSubmittedRoster && rosters.justSubmittedRoster.id).then(function(data){
       rosters.selectRoster(data);
-      $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + marketService.currentMarket.id + '/roster/' + data.id);
+        console.log(data)
+//      $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + marketService.currentMarket.id + '/roster/' + data.id);
     });
   };
+//  $scope.joinContest($scope.contestClasses);
 
   $scope.setJustSubmittedRoster = function(roster) {
     $scope.justSubmittedRoster = roster;
