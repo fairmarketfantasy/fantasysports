@@ -20,20 +20,12 @@ class NBAStrategy < SportStrategy
         ).where(['closed_at > ? AND state IN(\'published\', \'opened\', \'closed\')', Time.now]
         ).order('closed_at asc').limit(10).select{|m| m.game_type =~ /single_elimination/ }
     else
-      next_market_day = @sport.markets.where(['closed_at > ?', Time.new]).order('closed_at asc').
-                        all.reject { |m| market_teams_present?(m) }.first.closed_at.beginning_of_day
-      markets = @sport.markets.where(
+      next_market_day = @sport.markets.where(['closed_at > ?', Time.new]).order('closed_at asc').first.closed_at.beginning_of_day
+      @sport.markets.where(
           ["game_type IS NULL OR game_type = 'regular_season'"]
           ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\', \'closed\')', next_market_day, next_market_day + 1.day]
-          ).order('closed_at asc').limit(20)
-      markets.reject { |m| market_teams_present?(m) }
+          ).order('closed_at asc').limit(10)
     end
-  end
-
-  private
-
-  def market_teams_present?(market)
-    market.games.any? { |g| g.teams.count != 2 }
   end
 end
 

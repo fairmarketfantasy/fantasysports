@@ -1,9 +1,9 @@
 <div ng-controller="SampleRosterController">
 
-  <ul class="clearfix landing-market-list" ng-show="marketService.upcoming">
+  <ul class="clearfix market-list" ng-show="marketService.upcoming">
     <li class="slider-prev" ng-click="prev()"></li>
-    <li class="landing-market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, market) in marketService.upcoming" ng-show="i == $slideIndex || i == $slideIndex + 1 || i == $slideIndex + 2">
-      <a ng-click="reloadRoster(market.id)" class="landing-market-link" ng-class="{'active-market': isCurrent(market) }">
+    <li class="market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, market) in marketService.upcoming" ng-show="i == $slideIndex || i == $slideIndex + 1 || i == $slideIndex + 2">
+      <a ng-click="reloadRoster(market.id)" class="market-link" ng-class="{'active-market': isCurrent(market) }">
         <strong>{{market.name}}</strong>
       </a>
     </li>
