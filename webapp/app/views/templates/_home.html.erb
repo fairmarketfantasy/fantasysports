@@ -1,7 +1,7 @@
-<p class="alert alert-success" ng-show="rosters.justSubmittedRoster">
-  Your roster is looking great! Now that it's perfect, should we <a href="javascript://" ng-click="rosters.openInviteFriends(rosters.justSubmittedRoster)">Challenge Friends</a> or enter another contest?
-  <a href="#/" ng-click="rosters.reset()">No thanks, I'm done</a>
-</p>
+<!--<p class="alert alert-success" ng-show="rosters.justSubmittedRoster">-->
+  <!--Your roster is looking great! Now that it's perfect, should we <a href="javascript://" ng-click="rosters.openInviteFriends(rosters.justSubmittedRoster)">Challenge Friends</a> or enter another contest?-->
+  <!--<a href="#/" ng-click="rosters.reset()">No thanks, I'm done</a>-->
+<!--</p>-->
 
 <!-- NFL PLAYOFFS -->
 <!--<div class="alert alert-info " ng-show="currentUser.currentSport == 'NFL' && !rosters.justSubmittedRoster">
@@ -14,94 +14,94 @@
     <p><a href="/#/NFL/playoff_about">Read more about them</a> or <a href="/#/NFL/playoffs">Enter a contest</a></p>
 </div>-->
 
-<div ng-hide="!rosters.mine($routeParams.sport).length" class="entries-container">
-  <div class="roster-title">
-    <h3>Live Entries</h3>
-  </div>
-  <ul class="entries-info-list clearfix">
-    <li class="ei-item">
-      <p class="ei-number">{{rosters.mine($routeParams.sport).length}}</p>
-      <span class="ei-info">Open Entries</span>
-    </li>
-    <li class="ei-item">
-      <p class="ei-number">{{rosters.myLiveStats($routeParams.sport).top}}</p>
-      <span class="ei-info">Top Score</span>
-    </li>
-    <li class="ei-item">
-      <p class="ei-number">{{rosters.myLiveStats($routeParams.sport).avg | number:2}}</p>
-      <span class="ei-info">Average Score</span>
-    </li>
-    <li class="ei-item">
-      <p class="ei-number">{{rosters.myLiveStats($routeParams.sport).total_payout | centsToDollars | number: 2 | zeroIfEmpty}}</p>
-      <span class="ei-info">Current Payout</span>
-    </li>
-  </ul>
+<!--<div ng-hide="!rosters.mine($routeParams.sport).length" class="entries-container">-->
+  <!--<div class="roster-title">-->
+    <!--<h3>Live Entries</h3>-->
+  <!--</div>-->
+  <!--<ul class="entries-info-list clearfix">-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.mine($routeParams.sport).length}}</p>-->
+      <!--<span class="ei-info">Open Entries</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.myLiveStats($routeParams.sport).top}}</p>-->
+      <!--<span class="ei-info">Top Score</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.myLiveStats($routeParams.sport).avg | number:2}}</p>-->
+      <!--<span class="ei-info">Average Score</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.myLiveStats($routeParams.sport).total_payout | centsToDollars | number: 2 | zeroIfEmpty}}</p>-->
+      <!--<span class="ei-info">Current Payout</span>-->
+    <!--</li>-->
+  <!--</ul>-->
 
-  <a class="see-all" href="/#/{{currentUser.currentSport}}/rosters">See All Live {{currentUser.currentSport}} Contests</a>
+  <!--<a class="see-all" href="/#/{{currentUser.currentSport}}/rosters">See All Live {{currentUser.currentSport}} Contests</a>-->
 
-</div>
-<div ng-show="!rosters.mine($routeParams.sport).length && rosters.pastStats().total_entries > 0" class="entries-container">
-  <div class="roster-title">
-    <h3>Past Entries</h3>
-  </div>
+<!--</div>-->
+<!--<div ng-show="!rosters.mine($routeParams.sport).length && rosters.pastStats().total_entries > 0" class="entries-container">-->
+  <!--<div class="roster-title">-->
+    <!--<h3>Past Entries</h3>-->
+  <!--</div>-->
 
-  <ul class="entries-info-list clearfix">
-    <li class="ei-item">
-      <p class="ei-number">{{rosters.pastStats().wins}}/{{rosters.pastStats().total_entries}}</p>
-      <span class="ei-info">Wins/Entries</span>
-    </li>
-    <li class="ei-item">
-      <p class="ei-number">{{rosters.pastStats().top_score}}</p>
-      <span class="ei-info">Top Score</span>
-    </li>
-    <li class="ei-item">
-    <p class="ei-number">{{rosters.pastStats().avg_score | number:2}}</p>
-      <span class="ei-info">Average Score</span>
-    </li>
-    <li class="ei-item">
-      <p class="ei-number">{{rosters.pastStats().total_payout | dividedOneHundred | number:2}}</p>
-      <span class="ei-info">Payout</span>
-    </li>
-  </ul>
+  <!--<ul class="entries-info-list clearfix">-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.pastStats().wins}}/{{rosters.pastStats().total_entries}}</p>-->
+      <!--<span class="ei-info">Wins/Entries</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.pastStats().top_score}}</p>-->
+      <!--<span class="ei-info">Top Score</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+    <!--<p class="ei-number">{{rosters.pastStats().avg_score | number:2}}</p>-->
+      <!--<span class="ei-info">Average Score</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.pastStats().total_payout | dividedOneHundred | number:2}}</p>-->
+      <!--<span class="ei-info">Payout</span>-->
+    <!--</li>-->
+  <!--</ul>-->
 
-  <a class="see-all" href="/#/{{$routeParams.sport}}/history">See All {{$routeParams.sport}} Past Contests</a>
+  <!--<a class="see-all" href="/#/{{$routeParams.sport}}/history">See All {{$routeParams.sport}} Past Contests</a>-->
 
-</div>
-<div ng-show="rosters.pastStats().total_entries == 0 && rosters.mine($routeParams.sport).length == 0" class="entries-container no-entries">
-  <div class="rosters-title clearfix">
-    <h3>Welcome to Fair Market Fantasy!</h3>
-    <p class="about-text">Thanks for joining Fair Market Fantasy! We think you'll find it pretty easy to get started, but just in case you need help:</p>
-    <ul>
-      <li>Select a Market (Weekly or Daily Game) Timeframe.</li>
-      <li>Click to enter a contest. Try out the 194% League, the top half wins 194% of the entry fee!</li>
-      <li>Select players at each position, up to $100,000 total.</li>
-      <li>Sit back and follow your live score while you watch the game!</li>
-    </ul>
-  </div>
-</div>
+<!--</div>-->
+<!--<div ng-show="rosters.pastStats().total_entries == 0 && rosters.mine($routeParams.sport).length == 0" class="entries-container no-entries">-->
+  <!--<div class="rosters-title clearfix">-->
+    <!--<h3>Welcome to Fair Market Fantasy!</h3>-->
+    <!--<p class="about-text">Thanks for joining Fair Market Fantasy! We think you'll find it pretty easy to get started, but just in case you need help:</p>-->
+    <!--<ul>-->
+      <!--<li>Select a Market (Weekly or Daily Game) Timeframe.</li>-->
+      <!--<li>Click to enter a contest. Try out the 194% League, the top half wins 194% of the entry fee!</li>-->
+      <!--<li>Select players at each position, up to $100,000 total.</li>-->
+      <!--<li>Sit back and follow your live score while you watch the game!</li>-->
+    <!--</ul>-->
+  <!--</div>-->
+<!--</div>-->
 
 <div class="market-container">
-  <div class="market-title clearfix">
+  <!--<div class="market-title clearfix">-->
     <!-- Swap these around when playoffs end-->
     <!--<h3>When would you like to play?</h3>-->
-    <h3 style="padding-top: 5px">Play <span ng-hide="sportHasPlayoffs()">This week</span></h3>
-    <ul ng-show="sportHasPlayoffs()"class="market-type-list">
-      <li class="market-type-li" ng-class="{selected: markets.marketType == 'regular_season'}">
-        <a class="market-type-selector" href="/#/{{currentUser.currentSport}}/home"><h3>This week</h3></a>
-      </li>
-      <li><h6>OR</h6></li>
-      <li class="market-type-li" ng-class="{selected: markets.marketType == 'single_elimination'}"><a class="market-type-selector" href="/#/{{currentUser.currentSport}}/playoffs"><h3>The Playoffs</h3></a></li>
-    </ul>
-    <div class="league-selector" ng-show="currentUser.leagues.length == 0">
-      <p>You aren't in any leagues yet. <br/>Create one below.</p>
-    </div>
-    <div class="league-selector" ng-show="currentUser.leagues.length > 0">
-      <p>Or
-      <select ng-model="league" name="league" ng-options="l as l.name for l in currentUser.leagues" ng-change="showNextLeagueRoster(league)">
-        <option value="">Select a League</option>
-      </select>
-      </p>
-    </div>
-  </div>
+    <!--<h3 style="padding-top: 5px">Play <span ng-hide="sportHasPlayoffs()">This week</span></h3>-->
+    <!--<ul ng-show="sportHasPlayoffs()"class="market-type-list">-->
+      <!--<li class="market-type-li" ng-class="{selected: markets.marketType == 'regular_season'}">-->
+        <!--<a class="market-type-selector" href="/#/{{currentUser.currentSport}}/home"><h3>This week</h3></a>-->
+      <!--</li>-->
+      <!--<li><h6>OR</h6></li>-->
+      <!--<li class="market-type-li" ng-class="{selected: markets.marketType == 'single_elimination'}"><a class="market-type-selector" href="/#/{{currentUser.currentSport}}/playoffs"><h3>The Playoffs</h3></a></li>-->
+    <!--</ul>-->
+    <!--<div class="league-selector" ng-show="currentUser.leagues.length == 0">-->
+      <!--<p>You aren't in any leagues yet. <br/>Create one below.</p>-->
+    <!--</div>-->
+    <!--<div class="league-selector" ng-show="currentUser.leagues.length > 0">-->
+      <!--<p>Or-->
+      <!--<select ng-model="league" name="league" ng-options="l as l.name for l in currentUser.leagues" ng-change="showNextLeagueRoster(league)">-->
+        <!--<option value="">Select a League</option>-->
+      <!--</select>-->
+      <!--</p>-->
+    <!--</div>-->
+  <!--</div>-->
   <div ng-include="'/market.html'"></div>
 </div>
