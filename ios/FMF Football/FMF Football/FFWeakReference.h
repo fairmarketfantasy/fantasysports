@@ -10,9 +10,9 @@
 
 @interface FFWeakReference : NSObject
 
-+ (FFWeakReference *)weakReferenceWithObject:(id)object;
++ (FFWeakReference*)weakReferenceWithObject:(id)object;
 
 - (id)nonretainedObjectValue;
-- (void *)originalObjectValue;
+- (void*)originalObjectValue;
 
 @end

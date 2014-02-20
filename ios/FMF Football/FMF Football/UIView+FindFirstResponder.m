@@ -10,16 +10,16 @@
 
 @implementation UIView (FindFirstResponder)
 
-- (UIView *)findFirstResponder
+- (UIView*)findFirstResponder
 {
     return [self findFirstResponderOfView:self];
 }
 
-- (UIView *)findFirstResponderOfView:(UIView *)view
+- (UIView*)findFirstResponderOfView:(UIView*)view
 {
     if (!view.isFirstResponder) {
-        for (UIView *subview in view.subviews) {
-            UIView *subviewFirst = [self findFirstResponderOfView:subview];
+        for (UIView* subview in view.subviews) {
+            UIView* subviewFirst = [self findFirstResponderOfView:subview];
             if (subviewFirst != nil) {
                 return subviewFirst;
             }

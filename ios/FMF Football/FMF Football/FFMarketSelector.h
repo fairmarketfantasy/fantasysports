@@ -11,15 +11,14 @@
 
 @protocol FFMarketSelectorDelegate <NSObject>
 
-- (void)didUpdateToNewMarket:(FFMarket *)market;
+- (void)didUpdateToNewMarket:(FFMarket*)market;
 
 @end
 
-
 @interface FFMarketSelector : UIView
 
-@property (nonatomic) NSArray *markets;
-@property (nonatomic) FFMarket *selectedMarket;
-@property (nonatomic, weak) id<FFMarketSelectorDelegate> delegate;
+@property(nonatomic) NSArray* markets;
+@property(nonatomic) FFMarket* selectedMarket;
+@property(nonatomic, weak) id<FFMarketSelectorDelegate> delegate;
 
 @end

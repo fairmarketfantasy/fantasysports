@@ -9,21 +9,18 @@
 #import "FFBubblePicker.h"
 #import <QuartzCore/QuartzCore.h>
 
-
-@interface FFBubblePicker ()
-{
-    NSMutableArray *_items;
-    NSMutableArray *_buttons; // one for every item
+@interface FFBubblePicker () {
+    NSMutableArray* _items;
+    NSMutableArray* _buttons; // one for every item
     CGFloat _intrinsicHeight;
-    UITapGestureRecognizer *_tapRecognizer;
-    UITextField *_textField;
+    UITapGestureRecognizer* _tapRecognizer;
+    UITextField* _textField;
 }
 
 - (void)layoutBubbleViews:(BOOL)animated;
-- (CGFloat)widthForButton:(UIButton *)b;
+- (CGFloat)widthForButton:(UIButton*)b;
 
 @end
-
 
 #define BUTTON_FONT [FFStyle regularFont:16]
 #define kButtonLeftPadding 5.0f
@@ -35,7 +32,6 @@
 #define kButtonContainerPaddingBottom 0.0f
 #define kButtonHeight 25.0f
 
-
 @implementation FFBubblePicker
 
 - (id)init
@@ -44,7 +40,8 @@
     if (self) {
         _buttons = [NSMutableArray array];
         _items = [NSMutableArray array];
-        _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTap:)];
+        _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                 action:@selector(didTap:)];
         [self addGestureRecognizer:_tapRecognizer];
         _textField = [[FFBubblePicker_TextField alloc] initWithFrame:CGRectMake(0, 0, 100, kButtonHeight)];
         _textField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -53,7 +50,9 @@
         _textField.textColor = [FFStyle black];
         _textField.delegate = self;
         _textField.backgroundColor = [UIColor clearColor];
-        [_textField addTarget:self action:@selector(textFieldChanged:) forControlEvents:UIControlEventEditingChanged];
+        [_textField addTarget:self
+                       action:@selector(textFieldChanged:)
+             forControlEvents:UIControlEventEditingChanged];
         [self addSubview:_textField];
     }
     return self;
@@ -62,7 +61,7 @@
 - (void)clear
 {
     for (int i = 0; i < _buttons.count; i++) {
-        UIButton *b = [_buttons objectAtIndex:i];
+        UIButton* b = [_buttons objectAtIndex:i];
         [b removeFromSuperview];
     }
     [_buttons removeAllObjects];
@@ -73,40 +72,42 @@
     [self layoutBubbleViews:NO];
 }
 
-- (IBAction)didTap:(UITapGestureRecognizer *)sender
+- (IBAction)didTap:(UITapGestureRecognizer*)sender
 {
     NSLog(@"did tap on your face butt");
     [_textField becomeFirstResponder];
 }
 
-- (NSArray *)items
+- (NSArray*)items
 {
     return [_items copy];
 }
 
-- (NSString *)textViewValue
+- (NSString*)textViewValue
 {
     return _textField.text;
 }
 
-- (void)setTextViewValue:(NSString *)value
+- (void)setTextViewValue:(NSString*)value
 {
     _textField.text = value;
 }
 
-- (void)addItem:(id)item title:(NSString *)title animated:(BOOL)animated
+- (void)addItem:(id)item title:(NSString*)title animated:(BOOL)animated
 {
     if ([_items containsObject:item]) {
         return;
     }
-    UIButton *b = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton* b = [UIButton buttonWithType:UIButtonTypeCustom];
     b.layer.backgroundColor = [FFStyle brightBlue].CGColor;
     b.layer.cornerRadius = 2;
-    [b setTitle:title forState:UIControlStateNormal];
+    [b setTitle:title
+        forState:UIControlStateNormal];
     [b setShowsTouchWhenHighlighted:NO];
-    [b setTitleColor:[FFStyle white] forState:UIControlStateNormal];
-//    [b setTitleShadowColor:[UIColor colorWithWhite:0 alpha:.25] forState:UIControlStateNormal];
-//    [b.titleLabel setShadowOffset:CGSizeMake(0, -.5)];
+    [b setTitleColor:[FFStyle white]
+             forState:UIControlStateNormal];
+    //    [b setTitleShadowColor:[UIColor colorWithWhite:0 alpha:.25] forState:UIControlStateNormal];
+    //    [b.titleLabel setShadowOffset:CGSizeMake(0, -.5)];
     [b setTitleEdgeInsets:UIEdgeInsetsMake(2, 0, 0, 0)];
     [b.titleLabel setFont:BUTTON_FONT];
     CGFloat width;
@@ -121,16 +122,20 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePickerDidUpdateItems:)]) {
         [self.delegate bubblePickerDidUpdateItems:self];
     }
-    [b addTarget:self action:@selector(didTouchButton:) forControlEvents:UIControlEventTouchUpInside];
+    [b addTarget:self
+                  action:@selector(didTouchButton:)
+        forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:b];
     [self layoutBubbleViews:animated];
 }
 
-- (void)didTouchButton:(UIButton *)sender
+- (void)didTouchButton:(UIButton*)sender
 {
     int i = [_buttons indexOfObject:sender];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePicker:didSelectItem:)]) {
-        [self.delegate bubblePicker:self didSelectItem:_items[i]];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePicker:
+                                                                    didSelectItem:)]) {
+        [self.delegate bubblePicker:self
+                      didSelectItem:_items[i]];
     }
 }
 
@@ -141,14 +146,14 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePickerDidUpdateItems:)]) {
         [self.delegate bubblePickerDidUpdateItems:self];
     }
-    UIButton *b = _buttons[i];
+    UIButton* b = _buttons[i];
     [_buttons removeObjectAtIndex:i];
     [b removeFromSuperview];
     [self layoutBubbleViews:YES];
     return item;
 }
 
-- (CGFloat)widthForButton:(UIButton *)b
+- (CGFloat)widthForButton:(UIButton*)b
 {
     return [[b currentTitle] sizeWithFont:BUTTON_FONT].width + 15.0f;
 }
@@ -172,7 +177,7 @@
         return CGRectMake(left, top, 6, kButtonHeight + 4);
     }
     CGFloat width = [_textField.text sizeWithFont:_textField.font].width;
-    
+
     if ((width + left + kButtonRightPadding) > CGRectGetMaxX(self.bounds)) {
         // text field should go on new row
         left = kButtonLeftPadding;
@@ -187,9 +192,9 @@
     NSUInteger i = 0;
     CGFloat rowWidth = 0;
     CGFloat buttonWidth = 0.0f;
-    CGRect *changes = (CGRect *)malloc(sizeof(CGRect) * _buttons.count);
-    
-    for (UIButton *b in _buttons) {
+    CGRect* changes = (CGRect*)malloc(sizeof(CGRect) * _buttons.count);
+
+    for (UIButton* b in _buttons) {
         buttonWidth = [self widthForButton:b];
         CGFloat newRowWidth = rowWidth + buttonWidth + kButtonLeftPadding + kButtonRightPadding;
         if (newRowWidth > CGRectGetMaxX(self.bounds)) {
@@ -199,31 +204,35 @@
         } else {
             newRowWidth -= kButtonRightPadding;
         }
-        changes[i] = CGRectMake(rowWidth + kButtonLeftPadding,  // x
+        changes[i] = CGRectMake(rowWidth + kButtonLeftPadding, // x
                                 (row * (kButtonHeight + kButtonTopPadding)) + kButtonContainerPaddingTop, // y
                                 buttonWidth, // width
                                 kButtonHeight); // height
         rowWidth = newRowWidth;
         i++;
     }
-    
-    CGRect textViewFrame = [self _textViewFrameForRow:row rowWidth:rowWidth];
+
+    CGRect textViewFrame = [self _textViewFrameForRow:row
+                                             rowWidth:rowWidth];
     textViewFrame.size.height -= 4;
     // use the bottom of the bottom-most button if there is no text, otherwise just use the bottom of the text view
     if (_buttons.count || _textField.isFirstResponder) {
         _intrinsicHeight = (CGRectGetMaxY(_textField.text.length || _textField.isFirstResponder
-                                          ? textViewFrame
-                                          : changes[i - 1]) + kButtonContainerPaddingBottom);
+                                              ? textViewFrame
+                                              : changes[i - 1]) + kButtonContainerPaddingBottom);
     } else {
         _intrinsicHeight = 25;
     }
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePicker:willUpdateHeight:)]) {
-        [self.delegate bubblePicker:self willUpdateHeight:_intrinsicHeight];
+
+    if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePicker:
+                                                                 willUpdateHeight:)]) {
+        [self.delegate bubblePicker:self
+                   willUpdateHeight:_intrinsicHeight];
     }
-    
+
     if (animated) {
-        [UIView beginAnimations:nil context:nil];
+        [UIView beginAnimations:nil
+                        context:nil];
         [UIView setAnimationDuration:.2f];
         [self invalidateIntrinsicContentSize];
         for (int j = 0; j < _buttons.count; j++) {
@@ -257,16 +266,18 @@
     [_textField resignFirstResponder];
 }
 
-- (IBAction)textFieldChanged:(UITextField *)sender
+- (IBAction)textFieldChanged:(UITextField*)sender
 {
     NSLog(@"text field changed to %@", sender.text);
     [self setNeedsLayout];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePicker:didUpdateText:)]) {
-        [self.delegate bubblePicker:self didUpdateText:sender.text];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePicker:
+                                                                    didUpdateText:)]) {
+        [self.delegate bubblePicker:self
+                      didUpdateText:sender.text];
     }
 }
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+- (BOOL)textFieldShouldBeginEditing:(UITextField*)textField
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePickerWillBeginEditing:)]) {
         [self.delegate bubblePickerWillBeginEditing:self];
@@ -275,18 +286,18 @@
     return YES;
 }
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField
+- (void)textFieldDidBeginEditing:(UITextField*)textField
 {
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+- (BOOL)textFieldShouldEndEditing:(UITextField*)textField
 {
     NSLog(@"text field will end");
     [self setNeedsLayout];
     return YES;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField
+- (void)textFieldDidEndEditing:(UITextField*)textField
 {
     textField.text = @"";
     if (self.delegate && [self.delegate respondsToSelector:@selector(bubblePickerDidEndEditing:)]) {
@@ -295,7 +306,6 @@
 }
 
 @end
-
 
 // custom UITextField implementation that works with Myriad Pro
 @implementation FFBubblePicker_TextField
@@ -329,4 +339,3 @@
 }
 
 @end
-

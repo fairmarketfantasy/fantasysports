@@ -11,6 +11,6 @@
 
 @interface FFContestEntrantsViewController : FFBaseViewController
 
-@property (nonatomic) NSDictionary *contest;
+@property(nonatomic) NSDictionary* contest;
 
 @end

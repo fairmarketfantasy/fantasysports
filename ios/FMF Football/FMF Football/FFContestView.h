@@ -13,8 +13,8 @@
 
 @interface FFContestView : UIView
 
-@property (nonatomic) FFContestType *contest;
-@property (nonatomic) FFMarket *market;
-@property (nonatomic) FFRoster *roster; // for live games
+@property(nonatomic) FFContestType* contest;
+@property(nonatomic) FFMarket* market;
+@property(nonatomic) FFRoster* roster; // for live games
 
 @end

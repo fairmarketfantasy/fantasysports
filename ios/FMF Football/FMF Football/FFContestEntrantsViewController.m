@@ -14,22 +14,21 @@
 #import "FFContestViewController.h"
 #import "FFAlertView.h"
 
-
 @interface FFContestEntrantsViewController ()
-<UITableViewDataSource, UITableViewDelegate, SBDataObjectResultSetDelegate>
+    <UITableViewDataSource, UITableViewDelegate, SBDataObjectResultSetDelegate>
 
-@property (nonatomic) UITableView *tableView;
-@property (nonatomic) SBDataObjectResultSet *rosters;
-@property (nonatomic) BOOL disappeared;
+@property(nonatomic) UITableView* tableView;
+@property(nonatomic) SBDataObjectResultSet* rosters;
+@property(nonatomic) BOOL disappeared;
 
 @end
 
-
 @implementation FFContestEntrantsViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super initWithNibName:nibNameOrNil
+                           bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
     }
@@ -44,7 +43,7 @@
     if ([self respondsToSelector:@selector(topLayoutGuide)]) {
         [_tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
         id topGuide = self.topLayoutGuide;
-        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_tableView, topGuide);
+        NSDictionary* viewsDictionary = NSDictionaryOfVariableBindings(_tableView, topGuide);
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topGuide][_tableView]|"
                                                                           options:0
                                                                           metrics:nil
@@ -60,10 +59,13 @@
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
-    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-    
-    UIButton *balanceView = [self.sessionController balanceView];
-    [balanceView addTarget:self action:@selector(showBalance:) forControlEvents:UIControlEventTouchUpInside];
+    [_tableView registerClass:[UITableViewCell class]
+        forCellReuseIdentifier:@"Cell"];
+
+    UIButton* balanceView = [self.sessionController balanceView];
+    [balanceView addTarget:self
+                    action:@selector(showBalance:)
+          forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:balanceView];
 }
 
@@ -76,24 +78,29 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    NSString *path = [NSString stringWithFormat:@"/rosters/in_contest/%@", _contest[@"id"]];
-    SBModelQuery *query = [[[[[self.session queryBuilderForClass:[FFRoster class]]
-                              property:@"contestId" isEqualTo:_contest[@"id"]]
-                             orderByProperties:@[@"contestRank"]]
-                            sort:SBModelAscending]
-                           query];
-    _rosters = [FFRoster getBulkPath:path cacheQuery:query withSession:self.session authorized:YES];
+
+    NSString* path = [NSString stringWithFormat:@"/rosters/in_contest/%@", _contest[@"id"]];
+    SBModelQuery* query = [[[[[self.session queryBuilderForClass:[FFRoster class]]
+                                  property:@"contestId"
+                                 isEqualTo:_contest[@"id"]]
+                                orderByProperties:@[
+                                                      @"contestRank"
+                                                  ]]
+                               sort:SBModelAscending] query];
+    _rosters = [FFRoster getBulkPath:path
+                          cacheQuery:query
+                         withSession:self.session
+                          authorized:YES];
     _rosters.delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
+
     self.disappeared = NO;
     [self refreshLiveData];
-    
+
     [self.tableView reloadData];
 }
 
@@ -108,49 +115,49 @@
     [super viewDidDisappear:animated];
 }
 
-- (void)showBalance:(UIButton *)seder
+- (void)showBalance:(UIButton*)seder
 {
-    [self performSegueWithIdentifier:@"GotoTokenPurchase" sender:nil];
+    [self performSegueWithIdentifier:@"GotoTokenPurchase"
+                              sender:nil];
 }
-
 
 - (void)refreshLiveData
 {
     [_rosters refresh];
     double delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
         if (!self.disappeared) {
             [self refreshLiveData];
         }
     });
 }
 
-- (void)resultSetDidReload:(SBDataObjectResultSet *)resultSet
+- (void)resultSetDidReload:(SBDataObjectResultSet*)resultSet
 {
     [self.tableView reloadData];
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
 {
     return 1;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     return 60;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView*)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 50;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView*)tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
+    UIView* header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
     header.backgroundColor = [FFStyle white];
-    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 290, 50)];
+    UILabel* lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 290, 50)];
     lab.backgroundColor = [UIColor clearColor];
     lab.font = [FFStyle lightFont:26];
     lab.textColor = [FFStyle tableViewSectionHeaderColor];
@@ -159,96 +166,103 @@
     return header;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [_rosters count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"
+                                                            forIndexPath:indexPath];
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    UIImageView *disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 22.5, 10, 15)];
+
+    UIImageView* disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 22.5, 10, 15)];
     disclosure.image = [UIImage imageNamed:@"disclosurelight.png"];
     disclosure.backgroundColor = [UIColor clearColor];
     [cell.contentView addSubview:disclosure];
-    
-    UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(cell.contentView.frame), 290, 1)];
+
+    UIView* sep = [[UIView alloc] initWithFrame:CGRectMake(15, CGRectGetMaxY(cell.contentView.frame), 290, 1)];
     sep.backgroundColor = [FFStyle tableViewSeparatorColor];
     sep.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [cell.contentView addSubview:sep];
-    
-    FFRoster *roster = [_rosters objectAtIndex:indexPath.row];
-//    FFContestType *cType = roster.contestType;
-    
-    NSString *tit = [NSString stringWithFormat:@"#%@ %@", roster.contestRank,
-                     (roster.ownerName != nil && roster.ownerName.length
-                      ? roster.ownerName
-                      : NSLocalizedString(@"Entrant", nil))];
-    
+
+    FFRoster* roster = [_rosters objectAtIndex:indexPath.row];
+    //    FFContestType *cType = roster.contestType;
+
+    NSString* tit = [NSString stringWithFormat:@"#%@ %@", roster.contestRank,
+                                               (roster.ownerName != nil && roster.ownerName.length
+                                                    ? roster.ownerName
+                                                    : NSLocalizedString(@"Entrant", nil))];
+
     CGFloat labw = [tit sizeWithFont:[FFStyle mediumFont:19]].width;
-    
-    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, labw, 60)];
+
+    UILabel* lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, labw, 60)];
     lab.backgroundColor = [UIColor clearColor];
     lab.font = [FFStyle mediumFont:19];
     lab.text = tit;
     [cell.contentView addSubview:lab];
-    
-//    UILabel *entry = [[UILabel alloc] initWithFrame:CGRectMake(15, 32, 170, 20)];
-//    entry.backgroundColor = [UIColor clearColor];
-//    entry.font = [FFStyle regularFont:13];
-//    entry.textColor = [FFStyle greyTextColor];
-//    entry.text = [NSString stringWithFormat:@"%@ %@",
-//                  NSLocalizedString(@"Entrant:", 0), roster.ownerName];
-//    [cell.contentView addSubview:entry];
-    
-    UILabel *rankLab = [[UILabel alloc] initWithFrame:CGRectMake(160, 5, 50, 30)];
+
+    //    UILabel *entry = [[UILabel alloc] initWithFrame:CGRectMake(15, 32, 170, 20)];
+    //    entry.backgroundColor = [UIColor clearColor];
+    //    entry.font = [FFStyle regularFont:13];
+    //    entry.textColor = [FFStyle greyTextColor];
+    //    entry.text = [NSString stringWithFormat:@"%@ %@",
+    //                  NSLocalizedString(@"Entrant:", 0), roster.ownerName];
+    //    [cell.contentView addSubview:entry];
+
+    UILabel* rankLab = [[UILabel alloc] initWithFrame:CGRectMake(160, 5, 50, 30)];
     rankLab.backgroundColor = [UIColor clearColor];
     rankLab.font = [FFStyle regularFont:15];
     rankLab.textColor = [FFStyle darkerColorForColor:[FFStyle lightGrey]];
     rankLab.text = NSLocalizedString(@"Score:", 0);
     [cell.contentView addSubview:rankLab];
-    
-    UILabel *scoreLab = [[UILabel alloc] initWithFrame:CGRectMake(160, 32, 50, 20)];
+
+    UILabel* scoreLab = [[UILabel alloc] initWithFrame:CGRectMake(160, 32, 50, 20)];
     scoreLab.backgroundColor = [UIColor clearColor];
     scoreLab.font = [FFStyle regularFont:14];
     scoreLab.text = NSLocalizedString(@"Payout:", 0);
     scoreLab.textColor = [FFStyle darkerColorForColor:[FFStyle lightGrey]];
     [cell.contentView addSubview:scoreLab];
-    
-    UILabel *rank = [[UILabel alloc] initWithFrame:CGRectMake(210, 5, 65, 30)];
+
+    UILabel* rank = [[UILabel alloc] initWithFrame:CGRectMake(210, 5, 65, 30)];
     rank.backgroundColor = [UIColor clearColor];
     rank.font = [FFStyle mediumFont:15];
     rank.textColor = [FFStyle darkGreyTextColor];
     rank.text = [NSString stringWithFormat:@"%@ %@", roster.score, NSLocalizedString(@"points", nil)];
     [cell.contentView addSubview:rank];
-    
-    UILabel *score = [[UILabel alloc] initWithFrame:CGRectMake(210, 32, 65, 20)];
+
+    UILabel* score = [[UILabel alloc] initWithFrame:CGRectMake(210, 32, 65, 20)];
     score.backgroundColor = [UIColor clearColor];
     score.font = [FFStyle mediumFont:14];
     score.textColor = [FFStyle darkGreyTextColor];
     score.text = [NSString stringWithFormat:@"%@", (roster.amountPaid != nil ? roster.amountPaid : @"0")];
     [cell.contentView addSubview:score];
-    
+
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    FFRoster *roster = [_rosters objectAtIndex:indexPath.row];
+    FFRoster* roster = [_rosters objectAtIndex:indexPath.row];
     if (!roster.market) {
-        FFAlertView *alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
+        FFAlertView* alert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Loading...", nil)
                                                        messsage:nil
                                                    loadingStyle:FFAlertViewLoadingStylePlain];
         [alert showInView:self.navigationController.view];
-        [FFMarket get:roster.marketId session:self.session success:^(id successObj) {
+        [FFMarket get:roster.marketId session:self.session success:^(id successObj)
+        {
             roster.market = successObj;
             [roster save];
             [alert hide];
-            [self performSegueWithIdentifier:@"GotoContestRoster" sender:nil context:roster];
-        } failure:^(NSError *error) {
-            FFAlertView *ealert = [[FFAlertView alloc] initWithError:error
+            [self performSegueWithIdentifier:@"GotoContestRoster"
+                                      sender:nil
+                                     context:roster];
+        }
+    failure:
+        ^(NSError * error)
+        {
+            FFAlertView* ealert = [[FFAlertView alloc] initWithError:error
                                                                title:nil
                                                    cancelButtonTitle:nil
                                                      okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
@@ -256,15 +270,18 @@
             [ealert showInView:self.navigationController.view];
         }];
     } else {
-        [self performSegueWithIdentifier:@"GotoContestRoster" sender:self context:roster];
+        [self performSegueWithIdentifier:@"GotoContestRoster"
+                                  sender:self
+                                 context:roster];
     }
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath
+                             animated:YES];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue*)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"GotoContestRoster"]) {
-        FFContestViewController *c = (FFContestViewController *)segue.destinationViewController;
+        FFContestViewController* c = (FFContestViewController*)segue.destinationViewController;
         c.roster = segue.context;
         c.notMine = YES;
     }

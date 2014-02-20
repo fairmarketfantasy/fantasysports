@@ -10,8 +10,8 @@
 
 @interface FFMarketSelector () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
-@property (nonatomic) UICollectionView *collectionView;
-@property (nonatomic) UICollectionViewFlowLayout *flowLayout;
+@property(nonatomic) UICollectionView* collectionView;
+@property(nonatomic) UICollectionViewFlowLayout* flowLayout;
 
 @end
 
@@ -26,8 +26,8 @@
         _flowLayout.sectionInset = UIEdgeInsetsZero;
         _flowLayout.minimumInteritemSpacing = 0;
         _flowLayout.minimumLineSpacing = 0;
-        
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(45, 0, frame.size.width-90, frame.size.height)
+
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(45, 0, frame.size.width - 90, frame.size.height)
                                              collectionViewLayout:_flowLayout];
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
@@ -36,59 +36,70 @@
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _collectionView.alwaysBounceHorizontal = YES;
         _collectionView.showsHorizontalScrollIndicator = NO;
-        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"MarketCell"];
+        [_collectionView registerClass:[UICollectionViewCell class]
+            forCellWithReuseIdentifier:@"MarketCell"];
         [self addSubview:_collectionView];
-        
-        UIButton *left = [UIButton buttonWithType:UIButtonTypeCustom];
-        [left setImage:[UIImage imageNamed:@"leftshuttle.png"] forState:UIControlStateNormal];
+
+        UIButton* left = [UIButton buttonWithType:UIButtonTypeCustom];
+        [left setImage:[UIImage imageNamed:@"leftshuttle.png"]
+              forState:UIControlStateNormal];
         left.frame = CGRectMake(10, 0, 35, frame.size.height);
         left.autoresizingMask = UIViewAutoresizingNone;
-        [left addTarget:self action:@selector(left:) forControlEvents:UIControlEventTouchUpInside];
+        [left addTarget:self
+                      action:@selector(left:)
+            forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:left];
-        
-        UIButton *right = [UIButton buttonWithType:UIButtonTypeCustom];
-        [right setImage:[UIImage imageNamed:@"rightshuttle.png"] forState:UIControlStateNormal];
-        right.frame = CGRectMake(frame.size.width-35-10, 0, 35, frame.size.height);
+
+        UIButton* right = [UIButton buttonWithType:UIButtonTypeCustom];
+        [right setImage:[UIImage imageNamed:@"rightshuttle.png"]
+               forState:UIControlStateNormal];
+        right.frame = CGRectMake(frame.size.width - 35 - 10, 0, 35, frame.size.height);
         right.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-        [right addTarget:self action:@selector(right:) forControlEvents:UIControlEventTouchUpInside];
+        [right addTarget:self
+                      action:@selector(right:)
+            forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:right];
     }
     return self;
 }
 
-- (void)left:(UIButton *)sender
+- (void)left:(UIButton*)sender
 {
-    NSArray *selected = [self.collectionView indexPathsForVisibleItems];
+    NSArray* selected = [self.collectionView indexPathsForVisibleItems];
     if (selected && selected.count) {
-        NSIndexPath *path = [selected objectAtIndex:0];
-        if (path.item == 0) return; // already at the first item
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:path.item-1 inSection:0]
+        NSIndexPath* path = [selected objectAtIndex:0];
+        if (path.item == 0)
+            return; // already at the first item
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:path.item - 1
+                                                                         inSection:0]
                                     atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                             animated:YES];
-        _selectedMarket = self.markets[path.item-1];
+        _selectedMarket = self.markets[path.item - 1];
         if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
             [self.delegate didUpdateToNewMarket:_selectedMarket];
         }
     }
 }
 
-- (void)right:(UIButton *)sender
+- (void)right:(UIButton*)sender
 {
-    NSArray *selected = [self.collectionView indexPathsForVisibleItems];
+    NSArray* selected = [self.collectionView indexPathsForVisibleItems];
     if (selected && selected.count) {
-        NSIndexPath *path = [selected lastObject];
-        if (path.item == (self.markets.count - 1)) return; // already at last item
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:path.item+1 inSection:0]
+        NSIndexPath* path = [selected lastObject];
+        if (path.item == (self.markets.count - 1))
+            return; // already at last item
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:path.item + 1
+                                                                         inSection:0]
                                     atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                             animated:YES];
-        _selectedMarket = self.markets[path.item+1];
+        _selectedMarket = self.markets[path.item + 1];
         if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
             [self.delegate didUpdateToNewMarket:_selectedMarket];
         }
     }
 }
 
-- (void)setMarkets:(NSArray *)markets
+- (void)setMarkets:(NSArray*)markets
 {
     _markets = markets;
     [self.collectionView reloadData];
@@ -101,107 +112,108 @@
         self.selectedMarket = nil;
     }
     // try to carry over the selected network...
-//    if (_selectedMarket) {
-//        // if it exists...
-//        if ([_markets containsObject:_selectedMarket]) {
-//            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:
-//                                                          [_markets indexOfObject:_selectedMarket] inSection:0]
-//                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
-//                                                animated:YES];
-//        } else if (_markets.count) {
-//            // otherwise select the first one
-//            _selectedMarket = _markets[0];
-//            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
-//                [self.delegate didUpdateToNewMarket:_selectedMarket];
-//            }
-//        } else {
-//            // or if there are no markets at all set it to nil
-//            _selectedMarket = nil;
-//            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
-//                [self.delegate didUpdateToNewMarket:_selectedMarket];
-//            }
-//        }
-//    } else if (_markets.count) {
-//        // if nothing was selected just select the first
-//        self.selectedMarket = _markets[0];
-//        if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
-//            [self.delegate didUpdateToNewMarket:_selectedMarket];
-//        }
-//    }
+    //    if (_selectedMarket) {
+    //        // if it exists...
+    //        if ([_markets containsObject:_selectedMarket]) {
+    //            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:
+    //                                                          [_markets indexOfObject:_selectedMarket] inSection:0]
+    //                                        atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
+    //                                                animated:YES];
+    //        } else if (_markets.count) {
+    //            // otherwise select the first one
+    //            _selectedMarket = _markets[0];
+    //            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+    //                [self.delegate didUpdateToNewMarket:_selectedMarket];
+    //            }
+    //        } else {
+    //            // or if there are no markets at all set it to nil
+    //            _selectedMarket = nil;
+    //            if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+    //                [self.delegate didUpdateToNewMarket:_selectedMarket];
+    //            }
+    //        }
+    //    } else if (_markets.count) {
+    //        // if nothing was selected just select the first
+    //        self.selectedMarket = _markets[0];
+    //        if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
+    //            [self.delegate didUpdateToNewMarket:_selectedMarket];
+    //        }
+    //    }
 }
 
-- (void)setSelectedMarket:(FFMarket *)selectedMarket
+- (void)setSelectedMarket:(FFMarket*)selectedMarket
 {
     _selectedMarket = selectedMarket;
-    
+
     NSInteger loc = [_markets indexOfObject:selectedMarket];
     if (loc != NSNotFound) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:loc inSection:0]
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:loc
+                                                                         inSection:0]
                                     atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                             animated:YES];
     }
 }
 
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView*)collectionView
 {
     return 1;
 }
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+- (NSInteger)collectionView:(UICollectionView*)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return [self.markets count];
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView
-                  layout:(UICollectionViewLayout *)collectionViewLayout
-  sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+- (CGSize)collectionView:(UICollectionView*)collectionView
+                    layout:(UICollectionViewLayout*)collectionViewLayout
+    sizeForItemAtIndexPath:(NSIndexPath*)indexPath
 {
     return CGSizeMake(self.collectionView.frame.size.width, self.collectionView.frame.size.height);
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+- (UICollectionViewCell*)collectionView:(UICollectionView*)collectionView cellForItemAtIndexPath:(NSIndexPath*)indexPath
 {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MarketCell"
+    UICollectionViewCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MarketCell"
                                                                            forIndexPath:indexPath];
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    FFMarket *market = self.markets[indexPath.item];
-    
-    UILabel *marketLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 30)];
+
+    FFMarket* market = self.markets[indexPath.item];
+
+    UILabel* marketLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 30)];
     marketLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     marketLabel.font = [FFStyle boldFont:17];
     marketLabel.textColor = [FFStyle darkGreyTextColor];
     marketLabel.backgroundColor = [UIColor clearColor];
     marketLabel.textAlignment = NSTextAlignmentCenter;
-    
+
     if (market.name && market.name.length) {
         marketLabel.text = market.name;
     } else {
         marketLabel.text = NSLocalizedString(@"Market", nil);
     }
-    
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"E d @ h:mm a"];
-    
-    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, cell.contentView.frame.size.width, 25)];
+
+    UILabel* timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, cell.contentView.frame.size.width, 25)];
     timeLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
     timeLabel.font = [FFStyle regularFont:16];
     timeLabel.textColor = [FFStyle black];
     timeLabel.textAlignment = NSTextAlignmentCenter;
     timeLabel.backgroundColor = [UIColor clearColor];
     timeLabel.text = [dateFormatter stringFromDate:market.startedAt];
-    
+
     [cell.contentView addSubview:timeLabel];
     [cell.contentView addSubview:marketLabel];
-    
+
     return cell;
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView
 {
-    NSArray *visible = [self.collectionView indexPathsForVisibleItems];
+    NSArray* visible = [self.collectionView indexPathsForVisibleItems];
     if (visible && visible.count) {
-        NSIndexPath *path = visible[0];
+        NSIndexPath* path = visible[0];
         if (self.delegate && [self.delegate respondsToSelector:@selector(didUpdateToNewMarket:)]) {
             [self.delegate didUpdateToNewMarket:self.markets[path.item]];
         }

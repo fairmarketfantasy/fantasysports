@@ -13,20 +13,20 @@
 
 @protocol FFTickerDataSourceDelegate <NSObject>
 
-- (void)tickerShowLoading:(FFTickerDataSource *)source;
-- (void)ticker:(FFTickerDataSource *)ticker showError:(NSString *)err;
-- (void)tickerGotData:(FFTickerDataSource *)ticker;
+- (void)tickerShowLoading:(FFTickerDataSource*)source;
+- (void)ticker:(FFTickerDataSource*)ticker showError:(NSString*)err;
+- (void)tickerGotData:(FFTickerDataSource*)ticker;
 
 @end
 
 @interface FFTickerDataSource : NSObject
 
-@property (nonatomic) FFSession *session;
-@property (nonatomic) NSArray *tickerData;
-@property (nonatomic) NSDate *lastFetch;
+@property(nonatomic) FFSession* session;
+@property(nonatomic) NSArray* tickerData;
+@property(nonatomic) NSDate* lastFetch;
 
-- (void)addDelegate:(NSObject<FFTickerDataSourceDelegate> *)delegate;
-- (void)removeDelete:(NSObject<FFTickerDataSourceDelegate> *)delegate;
+- (void)addDelegate:(NSObject<FFTickerDataSourceDelegate>*)delegate;
+- (void)removeDelete:(NSObject<FFTickerDataSourceDelegate>*)delegate;
 
 - (void)refresh;
 

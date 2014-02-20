@@ -10,7 +10,7 @@
 
 @implementation FFTextField
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (id)initWithCoder:(NSCoder*)aDecoder
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
@@ -69,7 +69,7 @@
         subtractedWidth = self.rightView.frame.size.width + 5;
     }
     return CGRectMake(self.textInsetX + addedWidth,
-                      self.textInsetY+1,
+                      self.textInsetY + 1,
                       bounds.size.width - self.textInsetX - addedWidth - subtractedWidth,
                       bounds.size.height - self.textInsetY);
 }
@@ -111,7 +111,8 @@
 - (void)drawPlaceholderInRect:(CGRect)rect
 {
     [self.placeholderColor setFill];
-    [self.placeholder drawInRect:rect withFont:[FFStyle italicFont:16]];
+    [self.placeholder drawInRect:rect
+                        withFont:[FFStyle italicFont:16]];
 }
 
 @end

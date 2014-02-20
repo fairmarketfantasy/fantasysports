@@ -14,37 +14,34 @@
 #import "FFRoster.h"
 #import "FFAlertView.h"
 
-
 #define SALARYCAP @"salarycap"
 #define ENTRYFEE @"entryfee"
 #define ENTRYFEE_UNDEFINED @(-1)
 
-
 @interface FFCreateGameViewController ()
-<UITableViewDataSource, UITableViewDelegate, SBDataObjectResultSetDelegate,
-FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
+    <UITableViewDataSource, UITableViewDelegate, SBDataObjectResultSetDelegate,
+     FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 
-@property (nonatomic) UITableView *tableView;
-@property (nonatomic) SBDataObjectResultSet *markets;
-@property (nonatomic) NSArray *filteredMarkets;
-@property (nonatomic) FFMarket *selectedMarket;
-@property (nonatomic) NSArray *contestTypes;
-@property (nonatomic) NSDictionary *contestTypeDesc;
-@property (nonatomic) NSString *selectedContestType;
-@property (nonatomic) NSUInteger selectedSalaryCap;
-@property (nonatomic) NSUInteger selectedEntryFee;
-@property (nonatomic) NSUInteger chosenEntryFee;
+@property(nonatomic) UITableView* tableView;
+@property(nonatomic) SBDataObjectResultSet* markets;
+@property(nonatomic) NSArray* filteredMarkets;
+@property(nonatomic) FFMarket* selectedMarket;
+@property(nonatomic) NSArray* contestTypes;
+@property(nonatomic) NSDictionary* contestTypeDesc;
+@property(nonatomic) NSString* selectedContestType;
+@property(nonatomic) NSUInteger selectedSalaryCap;
+@property(nonatomic) NSUInteger selectedEntryFee;
+@property(nonatomic) NSUInteger chosenEntryFee;
 
 @end
 
-
 @implementation FFCreateGameViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super initWithNibName:nibNameOrNil
+                           bundle:nibBundleOrNil];
     if (self) {
-
     }
     return self;
 }
@@ -52,37 +49,39 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-//    UIButton *cancel = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Cancel", nil) borderColor:[FFStyle white]];
-//    cancel.frame = CGRectMake(0, 0, 70, 30);
-//    [cancel addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
-//    
-//    UIButton *create = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Create!", nil) borderColor:[FFStyle white]];
-//    create.frame = CGRectMake(0, 0, 70, 30);
-//    [create addTarget:self action:@selector(create:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
+
+    //    UIButton *cancel = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Cancel", nil) borderColor:[FFStyle white]];
+    //    cancel.frame = CGRectMake(0, 0, 70, 30);
+    //    [cancel addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
+    //
+    //    UIButton *create = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Create!", nil) borderColor:[FFStyle white]];
+    //    create.frame = CGRectMake(0, 0, 70, 30);
+    //    [create addTarget:self action:@selector(create:) forControlEvents:UIControlEventTouchUpInside];
+
+    UIImageView* logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fmf-logo.png"]];
     logo.contentMode = UIViewContentModeCenter;
-//    logo.frame = CGRectMake(0, 0, 320, 44);
-    
-//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancel];
-//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:create];
+    //    logo.frame = CGRectMake(0, 0, 320, 44);
+
+    //    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancel];
+    //    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:create];
     self.navigationItem.leftBarButtonItems = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Cancel", nil)
                                                                            borderColor:[FFStyle white]
-                                                                                target:self selector:@selector(cancel:)
+                                                                                target:self
+                                                                              selector:@selector(cancel:)
                                                                          leftElseRight:YES];
     self.navigationItem.rightBarButtonItems = [FFStyle clearNavigationBarButtonWithText:NSLocalizedString(@"Create!", nil)
                                                                             borderColor:[FFStyle white]
-                                                                                 target:self selector:@selector(create:)
+                                                                                 target:self
+                                                                               selector:@selector(create:)
                                                                           leftElseRight:NO];
     self.navigationItem.titleView = logo;
-    
+
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:_tableView];
     if ([self respondsToSelector:@selector(topLayoutGuide)]) {
         [_tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
         id topGuide = self.topLayoutGuide;
-        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_tableView, topGuide);
+        NSDictionary* viewsDictionary = NSDictionaryOfVariableBindings(_tableView, topGuide);
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topGuide][_tableView]|"
                                                                           options:0
                                                                           metrics:nil
@@ -97,29 +96,66 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    [_tableView registerClass:[UITableViewCell class]
+        forCellReuseIdentifier:@"Cell"];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    self.contestTypes = @[@"H2H", @"H2H RR", @"194", @"970"];
-    self.contestTypeDesc = @{@"H2H":    @{SALARYCAP: @[@"$100,000"],
-                                          ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
-                             @"H2H RR": @{SALARYCAP: @[@"$100,000"],
-                                          ENTRYFEE: @[ENTRYFEE_UNDEFINED]},
-                             @"194":    @{SALARYCAP: @[@"$100,000"],
-                                          ENTRYFEE: @[@(0), @(1), @(10)]},
-                             @"970":    @{SALARYCAP: @[@"$100,000"],
-                                          ENTRYFEE: @[@(0), @(1), @(10)]}};
-    
-    _markets = [FFMarket getBulkWithSession:self.session authorized:YES];
+
+    self.contestTypes = @[
+        @"H2H",
+        @"H2H RR",
+        @"194",
+        @"970"
+    ];
+    self.contestTypeDesc = @{
+        @"H2H" : @{
+            SALARYCAP : @[
+                @"$100,000"
+            ],
+            ENTRYFEE : @[
+                ENTRYFEE_UNDEFINED
+            ]
+        },
+        @"H2H RR" : @{
+            SALARYCAP : @[
+                @"$100,000"
+            ],
+            ENTRYFEE : @[
+                ENTRYFEE_UNDEFINED
+            ]
+        },
+        @"194" : @{
+            SALARYCAP : @[
+                @"$100,000"
+            ],
+            ENTRYFEE : @[
+                @(0),
+                @(1),
+                @(10)
+            ]
+        },
+        @"970" : @{
+            SALARYCAP : @[
+                @"$100,000"
+            ],
+            ENTRYFEE : @[
+                @(0),
+                @(1),
+                @(10)
+            ]
+        }
+    };
+
+    _markets = [FFMarket getBulkWithSession:self.session
+                                 authorized:YES];
     _markets.clearsCollectionBeforeSaving = YES;
     _markets.delegate = self;
     _filteredMarkets = [FFMarket filteredMarkets:[_markets allObjects]];
     [_markets refresh];
-    
+
     if (!_selectedContestType) {
         _selectedContestType = _contestTypes[0];
         _selectedSalaryCap = 0;
@@ -145,45 +181,53 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
  
  */
 
-- (void)create:(UIButton *)sender
+- (void)create:(UIButton*)sender
 {
-    NSDictionary *contestType = self.contestTypeDesc[_selectedContestType];
-    NSNumber *buyIn;
+    NSDictionary* contestType = self.contestTypeDesc[_selectedContestType];
+    NSNumber* buyIn;
     if ([contestType[ENTRYFEE][_selectedEntryFee] isEqual:ENTRYFEE_UNDEFINED]) {
         buyIn = @(_chosenEntryFee);
     } else {
         buyIn = contestType[ENTRYFEE][_selectedEntryFee];
     }
-    
-    NSDictionary *params = @{@"market_id": _selectedMarket.objId,
-                             @"invitees": @"",
-                             @"message": @"",
-                             @"type": [_selectedContestType lowercaseString],
-                             @"buy_in": buyIn,
-                             @"salary_cap": @(100000),
-                             @"takes_tokens": [NSNumber numberWithBool:YES]};
-    
-    FFAlertView *alert = [[FFAlertView alloc] initWithTitle:@"Creating Contest"
+
+    // FIXME: crash here
+
+    NSDictionary* params = @{
+        @"market_id" : _selectedMarket.objId,
+        @"invitees" : @"",
+        @"message" : @"",
+        @"type" : [_selectedContestType lowercaseString],
+        @"buy_in" : buyIn,
+        @"salary_cap" : @(100000),
+        @"takes_tokens" : [NSNumber numberWithBool:YES]
+    };
+
+    FFAlertView* alert = [[FFAlertView alloc] initWithTitle:@"Creating Contest"
                                                    messsage:nil
                                                loadingStyle:FFAlertViewLoadingStylePlain];
     [alert showInView:self.navigationController.view];
-    
-    [FFRoster createWithContestDef:params session:self.session success:^(id successObj) {
+
+    [FFRoster createWithContestDef:params session:self.session success:^(id successObj)
+    {
         [alert hide];
-        FFAlertView *salert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Contest Created", nil)
+        FFAlertView* salert = [[FFAlertView alloc] initWithTitle:NSLocalizedString(@"Contest Created", nil)
                                                          message:NSLocalizedString(@"Now invite some friends!", nil)];
         [salert showInView:self.navigationController.view];
         double delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
             [salert hide];
             if (self.delegate && [self.delegate respondsToSelector:@selector(createGameControllerDidCreateGame:)]) {
                 [self.delegate createGameControllerDidCreateGame:successObj];
             }
         });
-    } failure:^(NSError *error) {
+    }
+failure:
+    ^(NSError * error)
+    {
         [alert hide];
-        FFAlertView *ealert = [[FFAlertView alloc] initWithError:error
+        FFAlertView* ealert = [[FFAlertView alloc] initWithError:error
                                                            title:nil
                                                cancelButtonTitle:nil
                                                  okayButtonTitle:NSLocalizedString(@"Dismiss", nil)
@@ -192,9 +236,10 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }];
 }
 
-- (void)cancel:(UIButton *)sender
+- (void)cancel:(UIButton*)sender
 {
-    [self.navigationController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController.presentingViewController dismissViewControllerAnimated:YES
+                                                                           completion:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -205,24 +250,27 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
 
 // result set delegate -------------------------------------------------------------------------------------------------
 
-- (void)resultSetDidReload:(SBDataObjectResultSet *)resultSet
+- (void)resultSetDidReload:(SBDataObjectResultSet*)resultSet
 {
     if (!_selectedMarket && [[resultSet allObjects] count]) {
         _filteredMarkets = [FFMarket filteredMarkets:[resultSet allObjects]];
         _selectedMarket = [[resultSet allObjects] objectAtIndex:0];
-        [_tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:2]]
+        [_tableView reloadRowsAtIndexPaths:@[
+                                               [NSIndexPath indexPathForRow:0
+                                                                  inSection:2]
+                                           ]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
 
 // table view delegate -------------------------------------------------------------------------------------------------
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
 {
     return 5;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 0) {
         return 0;
@@ -230,7 +278,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     return 1;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView*)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
         return 50;
@@ -238,12 +286,12 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     return 35;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (UIView*)tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
+        UIView* header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
         header.backgroundColor = [FFStyle white];
-        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 290, 50)];
+        UILabel* lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 290, 50)];
         lab.backgroundColor = [UIColor clearColor];
         lab.font = [FFStyle lightFont:26];
         lab.textColor = [FFStyle tableViewSectionHeaderColor];
@@ -251,13 +299,15 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         [header addSubview:lab];
         return header;
     } else {
-        UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 35)];
-        header.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
-        UIView *sep = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 1)];
-        sep.backgroundColor = [UIColor colorWithWhite:.8 alpha:1];
+        UIView* header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 35)];
+        header.backgroundColor = [UIColor colorWithWhite:.9
+                                                   alpha:1];
+        UIView* sep = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 1)];
+        sep.backgroundColor = [UIColor colorWithWhite:.8
+                                                alpha:1];
         [header addSubview:sep];
-        
-        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 290, 35)];
+
+        UILabel* lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 290, 35)];
         lab.font = [FFStyle regularFont:14];
         lab.backgroundColor = [UIColor clearColor];
         lab.textColor = [FFStyle darkGreyTextColor];
@@ -275,37 +325,37 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"
+                                                            forIndexPath:indexPath];
     [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
+
     if (indexPath.section == 1) {
-        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, cell.contentView.frame.size.height)];
+        UILabel* lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, cell.contentView.frame.size.height)];
         lab.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         lab.font = [FFStyle regularFont:17];
         lab.textColor = [FFStyle darkGreyTextColor];
         lab.text = _selectedContestType;
         [cell.contentView addSubview:lab];
-        
-        UIImageView *disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 14.5, 10, 15)];
+
+        UIImageView* disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 14.5, 10, 15)];
         disclosure.image = [UIImage imageNamed:@"disclosurelight.png"];
         disclosure.backgroundColor = [UIColor clearColor];
         [cell.contentView addSubview:disclosure];
-    }
-    else if (indexPath.section == 2) {
+    } else if (indexPath.section == 2) {
         if (!_selectedMarket) {
             return cell;
         }
         // date and time market select
-        UILabel *marketLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 50,
+        UILabel* marketLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 50,
                                                                          cell.contentView.frame.size.height)];
         marketLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         marketLabel.font = [FFStyle regularFont:16];
         marketLabel.textColor = [FFStyle darkGreyTextColor];
         marketLabel.backgroundColor = [UIColor clearColor];
         marketLabel.textAlignment = NSTextAlignmentCenter;
-        
+
         if (_selectedMarket.name && _selectedMarket.name.length) {
             marketLabel.text = _selectedMarket.name;
         } else {
@@ -314,11 +364,11 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         CGRect mlr = marketLabel.frame;
         mlr.size.width = [marketLabel.text sizeWithFont:marketLabel.font].width;
         marketLabel.frame = mlr;
-        
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+
+        NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"E d @ h:mm a"];
-        
-        UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(mlr)+6, 0, 250,
+
+        UILabel* timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(mlr) + 6, 0, 250,
                                                                        cell.contentView.frame.size.height)];
         timeLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         timeLabel.font = [FFStyle mediumFont:16];
@@ -326,32 +376,31 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         timeLabel.textAlignment = NSTextAlignmentCenter;
         timeLabel.backgroundColor = [UIColor clearColor];
         timeLabel.text = [dateFormatter stringFromDate:_selectedMarket.startedAt];
-        
+
         CGRect tlr = timeLabel.frame;
         tlr.size.width = [timeLabel.text sizeWithFont:timeLabel.font].width;
         timeLabel.frame = tlr;
-        
+
         [cell.contentView addSubview:timeLabel];
         [cell.contentView addSubview:marketLabel];
-        
-        UIImageView *disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 14.5, 10, 15)];
+
+        UIImageView* disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 14.5, 10, 15)];
         disclosure.image = [UIImage imageNamed:@"disclosurelight.png"];
         disclosure.backgroundColor = [UIColor clearColor];
         [cell.contentView addSubview:disclosure];
-    }
-    else if (indexPath.section == 3) {
+    } else if (indexPath.section == 3) {
         // salary cap
-        NSDictionary *contestType = _contestTypeDesc[_selectedContestType];
-        
-        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, cell.contentView.frame.size.height)];
+        NSDictionary* contestType = _contestTypeDesc[_selectedContestType];
+
+        UILabel* lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, cell.contentView.frame.size.height)];
         lab.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         lab.font = [FFStyle regularFont:17];
         lab.textColor = [FFStyle darkGreyTextColor];
         lab.text = contestType[SALARYCAP][_selectedSalaryCap];
         [cell.contentView addSubview:lab];
-        
+
         if ([contestType[SALARYCAP] count] > 1) {
-            UIImageView *disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 14.5, 10, 15)];
+            UIImageView* disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 14.5, 10, 15)];
             disclosure.image = [UIImage imageNamed:@"disclosurelight.png"];
             disclosure.backgroundColor = [UIColor clearColor];
             [cell.contentView addSubview:disclosure];
@@ -359,26 +408,25 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         } else {
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
-    }
-    else if (indexPath.section == 4) {
+    } else if (indexPath.section == 4) {
         // entry fee
-        NSDictionary *contestType = _contestTypeDesc[_selectedContestType];
-        
-        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, cell.contentView.frame.size.height)];
+        NSDictionary* contestType = _contestTypeDesc[_selectedContestType];
+
+        UILabel* lab = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 320, cell.contentView.frame.size.height)];
         lab.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         lab.font = [FFStyle regularFont:17];
         lab.textColor = [FFStyle darkGreyTextColor];
-        
+
         if ([contestType[ENTRYFEE][_selectedEntryFee] isEqual:ENTRYFEE_UNDEFINED]) {
             lab.text = [NSString stringWithFormat:@"%d %@", _chosenEntryFee, NSLocalizedString(@"FanFrees", nil)];
         } else {
             lab.text = [NSString stringWithFormat:@"%@ %@",
-                        contestType[ENTRYFEE][_selectedEntryFee], NSLocalizedString(@"FanFrees", nil)];
+                                                  contestType[ENTRYFEE][_selectedEntryFee], NSLocalizedString(@"FanFrees", nil)];
         }
         [cell.contentView addSubview:lab];
-        
+
         if ([contestType[ENTRYFEE] count] > 1 || [contestType[ENTRYFEE][_selectedSalaryCap] isEqual:ENTRYFEE_UNDEFINED]) {
-            UIImageView *disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 14.5, 10, 15)];
+            UIImageView* disclosure = [[UIImageView alloc] initWithFrame:CGRectMake(295, 14.5, 10, 15)];
             disclosure.image = [UIImage imageNamed:@"disclosurelight.png"];
             disclosure.backgroundColor = [UIColor clearColor];
             [cell.contentView addSubview:disclosure];
@@ -390,85 +438,85 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+    [tableView deselectRowAtIndexPath:indexPath
+                             animated:YES];
+
     if (indexPath.section == 1) {
         // go to contest type selection
-        [self performSegueWithIdentifier:@"GotoContestTypeSelect" sender:self];
-    }
-    else if (indexPath.section == 2) {
+        [self performSegueWithIdentifier:@"GotoContestTypeSelect"
+                                  sender:self];
+    } else if (indexPath.section == 2) {
         if (!_selectedMarket) {
             return;
         }
         // go to date and time market select
-        [self performSegueWithIdentifier:@"GotoMarketSelect" sender:self];
-    }
-    else if (indexPath.section == 3) {
+        [self performSegueWithIdentifier:@"GotoMarketSelect"
+                                  sender:self];
+    } else if (indexPath.section == 3) {
         // salary cap
-        NSDictionary *contestType = _contestTypeDesc[_selectedContestType];
-        
+        NSDictionary* contestType = _contestTypeDesc[_selectedContestType];
+
         if ([contestType[SALARYCAP] count] > 1) {
             // goto salary cap
-            [self performSegueWithIdentifier:@"GotoSalaryCapSelect" sender:self];
+            [self performSegueWithIdentifier:@"GotoSalaryCapSelect"
+                                      sender:self];
         }
-    }
-    else if (indexPath.section == 4) {
+    } else if (indexPath.section == 4) {
         // entry fee
-        NSDictionary *contestType = _contestTypeDesc[_selectedContestType];
-        
+        NSDictionary* contestType = _contestTypeDesc[_selectedContestType];
+
         if ([contestType[ENTRYFEE][_selectedSalaryCap] isEqual:ENTRYFEE_UNDEFINED]) {
             // goto value entry
-            [self performSegueWithIdentifier:@"GotoEntryFeeEntry" sender:self];
+            [self performSegueWithIdentifier:@"GotoEntryFeeEntry"
+                                      sender:self];
         } else {
             // go to entry fee select
-            [self performSegueWithIdentifier:@"GotoEntryFeeSelect" sender:self];
+            [self performSegueWithIdentifier:@"GotoEntryFeeSelect"
+                                      sender:self];
         }
     }
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue*)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"GotoContestTypeSelect"]) {
-        FFOptionSelectController *c = segue.destinationViewController;
+        FFOptionSelectController* c = segue.destinationViewController;
         c.options = self.contestTypes;
         c.selectedOption = [self.contestTypes indexOfObject:_selectedContestType];
         c.name = segue.identifier;
         c.delegate = self;
         c.sectionTitle = NSLocalizedString(@"Choose Contest Type", nil);
-    }
-    else if ([segue.identifier isEqualToString:@"GotoMarketSelect"]) {
-        FFOptionSelectController *c = segue.destinationViewController;
+    } else if ([segue.identifier isEqualToString:@"GotoMarketSelect"]) {
+        FFOptionSelectController* c = segue.destinationViewController;
         NSUInteger sel = [_filteredMarkets indexOfObject:_selectedMarket];
-        NSMutableArray *opts = [NSMutableArray array];
-        for (FFMarket *market in _filteredMarkets) {
-            NSString *mkt;
+        NSMutableArray* opts = [NSMutableArray array];
+        for (FFMarket* market in _filteredMarkets) {
+            NSString* mkt;
             if (market.name && market.name.length) {
                 mkt = market.name;
             } else {
                 mkt = NSLocalizedString(@"Market", nil);
             }
-            
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+
+            NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"E d @ h:mm a"];
-            
+
             [opts addObject:[NSString stringWithFormat:@"%@ - %@", mkt,
-                             [dateFormatter stringFromDate:market.startedAt]]];
+                                                       [dateFormatter stringFromDate:market.startedAt]]];
         }
         c.options = opts;
         c.selectedOption = sel;
         c.delegate = self;
         c.name = segue.identifier;
         c.sectionTitle = NSLocalizedString(@"Choose Market", nil);
-    }
-    else if ([segue.identifier isEqualToString:@"GotoSalaryCapSelect"]) {
+    } else if ([segue.identifier isEqualToString:@"GotoSalaryCapSelect"]) {
         // we dont handle this yet
-    }
-    else if ([segue.identifier isEqualToString:@"GotoEntryFeeSelect"]) {
-        FFOptionSelectController *c = segue.destinationViewController;
-        NSMutableArray *opts = [NSMutableArray array];
-        for (NSNumber *n in _contestTypeDesc[_selectedContestType][ENTRYFEE]) {
+    } else if ([segue.identifier isEqualToString:@"GotoEntryFeeSelect"]) {
+        FFOptionSelectController* c = segue.destinationViewController;
+        NSMutableArray* opts = [NSMutableArray array];
+        for (NSNumber* n in _contestTypeDesc[_selectedContestType][ENTRYFEE]) {
             [opts addObject:[NSString stringWithFormat:@"%@ %@", n, NSLocalizedString(@"FanFrees", nil)]];
         }
         c.options = opts;
@@ -476,9 +524,8 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
         c.name = segue.identifier;
         c.delegate = self;
         c.sectionTitle = NSLocalizedString(@"Choose Entry Fee", nil);
-    }
-    else if ([segue.identifier isEqualToString:@"GotoEntryFeeEntry"]) {
-        FFValueEntryController *c = segue.destinationViewController;
+    } else if ([segue.identifier isEqualToString:@"GotoEntryFeeEntry"]) {
+        FFValueEntryController* c = segue.destinationViewController;
         c.keyboardType = UIKeyboardTypeDecimalPad;
         c.value = [NSString stringWithFormat:@"%d", _chosenEntryFee];
         c.name = segue.identifier;
@@ -487,7 +534,7 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
     }
 }
 
-- (void)optionSelectController:(FFOptionSelectController *)cont didSelectOption:(NSUInteger)idx
+- (void)optionSelectController:(FFOptionSelectController*)cont didSelectOption:(NSUInteger)idx
 {
     if ([cont.name isEqualToString:@"GotoContestTypeSelect"]) {
         if (![_contestTypes[idx] isEqualToString:_selectedContestType]) {
@@ -498,28 +545,28 @@ FFValueEntryControllerDelegate, FFOptionSelectControllerDelegate>
             _chosenEntryFee = 0;
             [self.tableView reloadData];
         }
-    }
-    else if ([cont.name isEqualToString:@"GotoMarketSelect"]) {
+    } else if ([cont.name isEqualToString:@"GotoMarketSelect"]) {
         _selectedMarket = _markets.allObjects[idx];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:2]
                       withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-    else if ([cont.name isEqualToString:@"GotoEntryFeeSelect"]) {
+    } else if ([cont.name isEqualToString:@"GotoEntryFeeSelect"]) {
         _selectedEntryFee = idx;
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:4]
                       withRowAnimation:UITableViewRowAnimationAutomatic];
     }
-    [self.navigationController popToViewController:self animated:YES];
+    [self.navigationController popToViewController:self
+                                          animated:YES];
 }
 
-- (void)valueEntryController:(FFValueEntryController *)cont didEnterValue:(NSString *)value
+- (void)valueEntryController:(FFValueEntryController*)cont didEnterValue:(NSString*)value
 {
     if ([cont.name isEqualToString:@"GotoEntryFeeEntry"]) {
         _chosenEntryFee = [value integerValue];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:4]
                       withRowAnimation:UITableViewRowAnimationAutomatic];
     }
-    [self.navigationController popToViewController:self animated:YES];
+    [self.navigationController popToViewController:self
+                                          animated:YES];
 }
 
 @end

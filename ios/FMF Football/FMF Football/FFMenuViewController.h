@@ -11,13 +11,13 @@
 
 @protocol FFMenuViewControllerDelegate <NSObject>
 
-- (void)performMenuSegue:(NSString *)ident;
+- (void)performMenuSegue:(NSString*)ident;
 
 @end
 
 @interface FFMenuViewController : UIViewController
 
-@property (nonatomic, weak) id<FFMenuViewControllerDelegate> delegate;
-@property (nonatomic) FFSession *session;
+@property(nonatomic, weak) id<FFMenuViewControllerDelegate> delegate;
+@property(nonatomic) FFSession* session;
 
 @end
