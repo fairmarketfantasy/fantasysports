@@ -51,6 +51,8 @@ class PlayersController < ApplicationController
   # TODO: cache this
   def public
     market = Market.where(['closed_at > ? AND (closed_at - started_at)::interval > \'1 day\'::interval', Time.now]).order('closed_at asc').first
+    return render_api_response [] unless market
+
     players = market.players.with_prices(market, 1000).order_by_ppg('desc').normal_positions(market.sport_id).limit(25)
     render_api_response players
   end
