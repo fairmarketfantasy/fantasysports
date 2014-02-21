@@ -5,6 +5,7 @@ PODS:
   - AFNetworking (1.3.3)
   - AFOAuth2Client (0.1.2):
     - AFNetworking (~> 1.3)
+  - Facebook-iOS-SDK (3.12.0)
   - FMDB (2.2):
     - FMDB/standard
   - FMDB/common (2.2)
@@ -25,58 +26,53 @@ PODS:
   - FormatterKit/TimeIntervalFormatter (1.2.1)
   - FormatterKit/UnitOfInformationFormatter (1.2.1)
   - FormatterKit/URLRequestFormatter (1.2.1)
-  - IAPManager (0.2.2)
-  - ISO8601DateFormatter (0.6)
+  - GCJSONKit (1.5.0)
+  - IAPManager (0.2.3)
+  - ISO8601DateFormatter (0.7)
+  - NSData+Base64 (1.0.0)
   - Reachability (3.0.0)
-  - RHAddressBook (1.0.2)
+  - RHAddressBook (1.0.4)
   - SBData (0.0.1):
-    - AFHTTPRequestOperationLogger (~> 1.0.0)
-    - AFNetworking (~> 1.3.2)
-    - AFOAuth2Client (~> 0.1.1)
-    - FMDB (~> 2.1)
-    - ISO8601DateFormatter (~> 0.6)
-    - SBData/JSONKit
-    - SecureUDID (~> 1.1)
-    - sqlite3 (~> 3.8.0.2)
-  - SBData/JSONKit (0.0.1):
-    - AFHTTPRequestOperationLogger (~> 1.0.0)
-    - AFNetworking (~> 1.3.2)
-    - AFOAuth2Client (~> 0.1.1)
-    - FMDB (~> 2.1)
-    - ISO8601DateFormatter (~> 0.6)
-    - SecureUDID (~> 1.1)
-    - sqlite3 (~> 3.8.0.2)
+    - AFHTTPRequestOperationLogger
+    - AFNetworking (~> 1)
+    - AFOAuth2Client
+    - FMDB
+    - GCJSONKit
+    - ISO8601DateFormatter
+    - SecureUDID
+    - sqlite3
   - SecureUDID (1.1)
-  - sqlite3 (3.8.0.2):
+  - sqlite3 (3.8.1):
     - sqlite3/common
-  - sqlite3/common (3.8.0.2)
+  - sqlite3/common (3.8.1)
 
 DEPENDENCIES:
   - A2StoryboardSegueContext (~> 1.0.1)
+  - Facebook-iOS-SDK
   - FormatterKit (~> 1.2.1)
   - IAPManager (~> 0.2.2)
   - ISO8601DateFormatter (~> 0.6)
+  - NSData+Base64 (~> 1.0.0)
   - Reachability (~> 3.0.0)
   - RHAddressBook (~> 1.0.2)
-  - SBData (from `SBData/SBData.podspec`)
-
-EXTERNAL SOURCES:
-  SBData:
-    :path: SBData/SBData.podspec
+  - SBData (~> 0.0.1)
 
 SPEC CHECKSUMS:
   A2StoryboardSegueContext: c5ee4ebdfcc29ac4e544cbe832f6489cade23213
   AFHTTPRequestOperationLogger: c6ad1f4bfd64fc9a8dbe94c8489420d195f15cb0
   AFNetworking: 61fdd49e2ffe6380378df37b3b6e70630bb9dd66
   AFOAuth2Client: 579d6f298b0047dfd5a6eec6ab5b28c01f6b4547
+  Facebook-iOS-SDK: c09f7d80db5c48170ff834bc03ebe774c49d1f5b
   FMDB: 97472cfacf0d9e445e915704fb43b4b142799c36
   FormatterKit: 43c6567e367a872196747fda0c26395c37bd7dd6
-  IAPManager: fb36017e64524e2ecb9ae2101daaa83165cc5211
-  ISO8601DateFormatter: 72ad8f5b4f51bd8fb317d7284c32fee5f54a6584
+  GCJSONKit: af54b753897015ab02c0f76a01e121f0053426af
+  IAPManager: 457e0007440e6ce81e7a6b16031c860bffac8d82
+  ISO8601DateFormatter: 00944e437ea647f4244454ce8809d313861d08de
+  NSData+Base64: 4819562faee4544e3cf5703f2139820b09732b28
   Reachability: 500bd76bf6cd8ff2c6fb715fc5f44ef6e4c024f2
-  RHAddressBook: 64f78a4058e0a7849275c970bf19fe195edf94d0
-  SBData: 4f9dae8be5a9f9a384e0b0e24cf7e6628fc0445f
+  RHAddressBook: c4f11ae22ba3b2a3152e0dd619e015862bf02d7c
+  SBData: 1e24e03d4aaea50c1387939c037ededa2797a768
   SecureUDID: f29e17c7fc56968b6c42ce328b901a9fec87bb44
-  sqlite3: da2547a00213287224486db2893bb9c181c6f8d2
+  sqlite3: 8f9eb8cd73df9e4dee11c91bfc0e2abee1d9d1d9
 
 COCOAPODS: 0.29.0
