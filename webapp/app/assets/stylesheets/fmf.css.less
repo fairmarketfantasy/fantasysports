@@ -1252,6 +1252,7 @@ input, textarea, .uneditable-input {
   color: @gray;
 }
 .entries-container {
+  margin-top: 10px;
   .border-radius(4px 4px 0 0);
   border: 2px solid @gray;
   border-bottom: 0;
@@ -1301,34 +1302,8 @@ input, textarea, .uneditable-input {
   padding: 10px 4%;
   width: 92%;
 }
-///////////////
-.landing-container .mr-player-cta {
-  margin-top: 14px;
-}
-.landing-container .roster-area{
-  padding: 0;
-  width: 100%;
-}
-.landing-container .mr-item {
-  display: inline-block;
-  width: 50%;
-  padding: 20px 0;
-}
-.landing-container .mr-player-name {
-  width: 150px;
-  color:#000;
-}
-.landing-container .mr-player-image {
-  width: 40px;
-  height: 40px;
-  border:3px solid #2ED02A;
-}
-.landing-container .mr-team,
-.landing-container .mr-stats{
-  color:#000;
-  line-height: 16px;
-}
-.landing-container .roster-overflow{
+
+.roster-overflow{
   .border-radius(0);
   padding:0 15px 5px;
 }
@@ -1535,7 +1510,7 @@ input, textarea, .uneditable-input {
   float: left;
   margin-right: 8px;
   background-color: @offWhite;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
 }
 .defense {
   background-image: asset-url('helmet-filled.png');  
@@ -1571,6 +1546,56 @@ input, textarea, .uneditable-input {
 .mr-player-cta {
   float: right;
 }
+///////////////
+.mr-player-cta {
+  margin-top: 14px;
+}
+.roster-area{
+  padding: 0;
+  width: 100%;
+}
+//////////////////
+
+.home-roster {
+  .roster-area{
+    padding: 2%;
+  }
+  .mr-item {
+    display: inline-block;
+    width: 49%;
+    padding: 10px 0.5%;
+    min-height: 95px;
+  }
+  .mr-player-cta{
+    float:left;
+  }
+}
+
+.mr-item {
+  display: inline-block;
+  width: 50%;
+  padding: 20px 0;
+}
+.mr-player-name {
+  width: 150px;
+  color:#000;
+}
+.mr-player-image {
+  width: 40px;
+  height: 40px;
+  border:3px solid #2ED02A;
+}
+.mr-team,
+.mr-stats{
+  color:#000;
+  line-height: 16px;
+}
+
+.score-list{
+  margin: 10px 0 0 10px;
+  width: 265px;
+}
+
 .players-table .fui-check-inverted, .players-table .fui-cross-inverted {
   margin-left: 3px;
   font-size: 14px !important;

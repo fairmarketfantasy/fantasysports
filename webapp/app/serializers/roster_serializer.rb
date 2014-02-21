@@ -63,7 +63,9 @@ class RosterSerializer < ActiveModel::Serializer
   end
 
   def positions
-    scope.abridged? ? nil : object.contest_type.positions
+    return if scope.abridged?
+
+    object.contest_type ? object.contest_type.positions : Positions.for_sport_id(object.market.sport_id)
   end
 
   def live
@@ -87,7 +89,7 @@ class RosterSerializer < ActiveModel::Serializer
     hash = super
     if scope.abridged?
       #[:players, :positions, :live, :next_game_time, :contest, :contest_type, :market].each{|k| hash.delete(k) }
-    end 
+    end
     hash
   end
 

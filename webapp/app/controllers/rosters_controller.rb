@@ -37,10 +37,25 @@ class RostersController < ApplicationController
 
   # Create a roster for a contest type
   def create
-    contest_type = ContestType.find(params[:contest_type_id])
+    if params[:market_id]
+      market = Market.find(params[:market_id])
+      #Eventing.report(current_user, 'createRoster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
+      raise HttpException.new(403, "This market is closed") unless market.accepting_rosters?
+      current_user.in_progress_roster.destroy if current_user.in_progress_roster
+
+      roster = Roster.create!(:owner_id => current_user.id,
+                              :market_id => market.id,
+                              :takes_tokens => false,
+                              :buy_in => Roster::DEFAULT_BUY_IN,
+                              :remaining_salary => Roster::DEFAULT_REMAINING_SALARY,
+                              :state => 'in_progress')
+    else
+      contest_type = ContestType.find(params[:contest_type_id])
+      Eventing.report(current_user, 'createRoster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
+      roster = Roster.generate(current_user, contest_type)
+    end
+
     existing_roster = Roster.find(params[:copy_roster_id]) if params[:copy_roster_id]
-    Eventing.report(current_user, 'createRoster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
-    roster = Roster.generate(current_user, contest_type)
     roster.build_from_existing(existing_roster) if existing_roster
     render_api_response roster
   end

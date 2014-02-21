@@ -1,6 +1,8 @@
 class Roster < ActiveRecord::Base
   USER_BONUSES = { 'twitter_follow' =>  1}
   ROSTER_BONUSES = { 'twitter_share' => 1, 'facebook_share' => 1}
+  DEFAULT_BUY_IN = 1000
+  DEFAULT_REMAINING_SALARY = 100000
 
   attr_protected
   def perfect_score; self[:perfect_score]; end
@@ -15,7 +17,7 @@ class Roster < ActiveRecord::Base
 
   validates :state, :inclusion => {in: %w( in_progress cancelled submitted finished) }
 
-  validates :owner_id, :market_id, :buy_in, :remaining_salary, :contest_type_id, :state, presence: true
+  validates :owner_id, :market_id, :buy_in, :remaining_salary, :state, presence: true
 
   before_create :set_view_code
   before_destroy :pre_destroy
@@ -85,8 +87,8 @@ class Roster < ActiveRecord::Base
   That also means that in cases 1-3 remaining salary is determined by the buy_price of the roster's players
 =end
   def remaining_salary
-    # Factory girl gets all pissy if you don't check for id here
-    if self.id && (self.state == 'in_progress' || self.market.state == 'published')
+    # Factory girl gets all pissy if you don't check for id heredoi
+    if self.id && self.contest_type_id != 0 && (self.state == 'in_progress' || self.market.state == 'published')
       salary = self.contest_type.salary_cap
       self.players_with_prices.each do |p|
         salary -= p.buy_price
@@ -288,7 +290,9 @@ class Roster < ActiveRecord::Base
     @candidate_players, indexes = fill_candidate_players
     return self unless @candidate_players
     ActiveRecord::Base.transaction do
-      expected = 1.0 * self.contest_type.salary_cap / position_array.length
+      contest_type = self.contest_type
+      salary_cap =  contest_type ? contest_type.salary_cap : DEFAULT_REMAINING_SALARY
+      expected = 1.0 * salary_cap / position_array.length
       begin
         position = remaining_positions.sample # One level of randomization
         players = @candidate_players[position]
@@ -442,7 +446,7 @@ class Roster < ActiveRecord::Base
   end
 
   def position_array
-    @position_list ||= self.contest_type.positions.split(',')
+    @position_list ||= get_position_list
   end
 
   def remaining_positions
@@ -499,6 +503,14 @@ class Roster < ActiveRecord::Base
         self.save!
       end
     end
+  end
+
+  private
+
+  def get_position_list
+    return self.contest_type.positions.split(',') if self.contest_type
+
+    Positions.for_sport_id(self.market.sport_id).split(',')
   end
 
 end

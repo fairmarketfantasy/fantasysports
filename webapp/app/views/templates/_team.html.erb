@@ -1,4 +1,4 @@
-<div class="roster"> 
+<div class="roster home-roster">
   <div class="roster-area">
     <div class="clearfix">
       <h4 class="team-heading inline-heading">Roster</h4>
@@ -18,7 +18,7 @@
     <div class="roster-overflow">
 
       <ul class="no-no" highlight-changes-in-list="roster.players" key-to-watch="score">
-        <li class="mr-item clearfix" ng-repeat="player in roster.players">
+        <li class="mr-item clearfix" ng-repeat="player in roster.players" ng-class="{'no-border': $index == 6 || $last }">
           <div ng-show="showPlayer(roster, player) && player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
           <div ng-show="showPlayer(roster, player) && player.position == 'DEF'" class="mr-player-image defense filled"></div>
           <div ng-hide="showPlayer(roster, player)" class="mr-player-image"></div>

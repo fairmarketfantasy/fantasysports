@@ -1,7 +1,6 @@
 angular.module("app.controllers")
 .controller('MarketController', ['$scope', 'rosters', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService', function($scope, rosters, $routeParams, $location, marketService, flash, $dialog, currentUserService) {
   $scope.marketService = marketService;
-        console.log($scope)
 
 // TODO: Pick up here: UI needs to determine if loaded market is single elim and keep playoff setting when it's clicked
 //----- WE SHOULD ALSO MAKE SURE THE SINGLE ELIMS AHVE A LOLLAPALOOZA
@@ -14,10 +13,14 @@ angular.module("app.controllers")
       } else {
         marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
       }
-      reloadMarket();
+        if(!marketService.currentMarket){
+            return;
+        }else{
+            $scope.marketService.currentMarket.id = marketService.currentMarket.id
+            $scope.startRoster();
+        }
     });
   });
-
   $scope.rosters = rosters;
   $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', 'Top5', '65/25/10', 'h2h', 'h2h rr'];
 
@@ -30,17 +33,24 @@ angular.module("app.controllers")
     }
     return (market.id === marketService.currentMarket.id);
   };
+//    $scope.$watch('marketService.currentMarket.id', function() {
+//        if(!$routeParams.market_id){
+//            $routeParams.market_id = marketService.currentMarket.id
+//        }
+//         $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + $routeParams.market_id);
+//    });
+        $scope.startRoster = function(){
+        if(!$routeParams.market_id){
+            $scope.fs.rosters.roster(marketService.currentMarket.id).then(function(data){
+              $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + marketService.currentMarket.id + '/roster/' + data.id);
+          });
+        } else {
+            $scope.fs.rosters.roster($routeParams.market_id).then(function(data){
+                $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + $routeParams.market_id + '/roster/' + data.id);
 
-  var reloadMarket = function() {
-    if (!marketService.currentMarket) {
-      return;
-    }
-    marketService.contestClassesFor(marketService.currentMarket.id).then(function(contestClasses) {
-      $scope.contestClasses = contestClasses;
-    });
-  };
-
-//  $scope.$watch('marketService.currentMarket.id', reloadMarket);
+            });
+        }
+    };
 
   $scope.hasLollapalooza = function() {
     return _.find(_.keys($scope.contestClasses || {}), function(name) { return name.match(/k/); });
@@ -54,7 +64,6 @@ angular.module("app.controllers")
   $scope.joinContest = function(contestType) {
     $scope.fs.contests.join(contestType.id, rosters.justSubmittedRoster && rosters.justSubmittedRoster.id).then(function(data){
       rosters.selectRoster(data);
-        console.log(data)
       $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + marketService.currentMarket.id + '/roster/' + data.id);
     });
   };
@@ -74,37 +83,6 @@ angular.module("app.controllers")
     $scope.justSubmittedRoster = null;
     $location.path('/' + currentUserService.currentUser.currentSport + '/home');
     flash.success("Awesome, You're IN. Good luck!");
-  };
-
-  $scope.openCreateDialog = function() {
-    var dialogOpts = {
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          dialogClass: 'modal',
-          templateUrl: '/create_contest.html',
-          controller: 'CreateContestController'
-        };
-
-    var d = $dialog.dialog(dialogOpts);
-    d.open().then(function(result) {
-      if (!result) { return; }
-      $scope.fs.contests.create({
-          market_id: marketService.currentMarket.id,
-          invitees: result.invitees,
-          message: result.message,
-          type: result.contest_type,
-          buy_in: result.buy_in * (result.takes_tokens ? 1 : 100),
-          takes_tokens: result.takes_tokens,
-          league_name: result.league_name,
-          salary_cap: 100000}
-      ).then(function(roster) {
-        flash.success("Awesome, your contest is all setup. Now lets create your entry into the contest.");
-        rosters.selectRoster(roster);
-        $location.path('/' + currentUserService.currentUser.currentSport +'/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
-        currentUserService.refreshUser();
-      });
-    });
   };
 
   $scope.showDayDesc = function(market) {
