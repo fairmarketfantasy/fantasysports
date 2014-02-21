@@ -29,6 +29,7 @@ PODS:
   - GCJSONKit (1.5.0)
   - IAPManager (0.2.3)
   - ISO8601DateFormatter (0.7)
+  - NSData+Base64 (1.0.0)
   - Reachability (3.0.0)
   - RHAddressBook (1.0.4)
   - SBData (0.0.1):
@@ -51,6 +52,7 @@ DEPENDENCIES:
   - FormatterKit (~> 1.2.1)
   - IAPManager (~> 0.2.2)
   - ISO8601DateFormatter (~> 0.6)
+  - NSData+Base64 (~> 1.0.0)
   - Reachability (~> 3.0.0)
   - RHAddressBook (~> 1.0.2)
   - SBData (~> 0.0.1)
@@ -66,6 +68,7 @@ SPEC CHECKSUMS:
   GCJSONKit: af54b753897015ab02c0f76a01e121f0053426af
   IAPManager: 457e0007440e6ce81e7a6b16031c860bffac8d82
   ISO8601DateFormatter: 00944e437ea647f4244454ce8809d313861d08de
+  NSData+Base64: 4819562faee4544e3cf5703f2139820b09732b28
   Reachability: 500bd76bf6cd8ff2c6fb715fc5f44ef6e4c024f2
   RHAddressBook: c4f11ae22ba3b2a3152e0dd619e015862bf02d7c
   SBData: 1e24e03d4aaea50c1387939c037ededa2797a768

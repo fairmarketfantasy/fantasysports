@@ -39,8 +39,10 @@
     // not logged in yet, so use an anonymous session
     if (!self.session) {
         FFSession* tempSession = [FFSession anonymousSession];
-        [tempSession anonymousJSONRequestWithMethod:@"GET" path:@"/players/public" parameters:@{} success:
-         ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON)
+        [tempSession anonymousJSONRequestWithMethod: @"GET"
+                                               path: @"/players/public"
+                                         parameters: @{}
+                                            success: ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON)
         {
             if (![JSON isKindOfClass:[NSArray class]]) {
                 [self notifyDelegatesError:NSLocalizedString(@"Error loading ticker data", nil)];
@@ -58,6 +60,7 @@
         }];
         return;
     }
+    // mine
     [self.session authorizedJSONRequestWithMethod:@"GET" path:@"/players/mine" paramters:@{} success:
      ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, id JSON)
     {
