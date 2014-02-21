@@ -29,7 +29,6 @@
 		896ACC5B18B664F5001E9C64 /* FMF-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBBF18B664F5001E9C64 /* FMF-72.png */; };
 		896ACC5D18B664F5001E9C64 /* FMF-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBC018B664F5001E9C64 /* FMF-72@2x.png */; };
 		896ACC5F18B664F5001E9C64 /* FMF-80.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBC118B664F5001E9C64 /* FMF-80.png */; };
-		896ACC6118B664F5001E9C64 /* FMF-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBC218B664F5001E9C64 /* FMF-Small-50.png */; };
 		896ACC6318B664F5001E9C64 /* FMF-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBC318B664F5001E9C64 /* FMF-Small-50@2x.png */; };
 		896ACC6518B664F5001E9C64 /* FMF-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBC418B664F5001E9C64 /* FMF-Small.png */; };
 		896ACC6718B664F5001E9C64 /* FMF-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBC518B664F5001E9C64 /* FMF-Small@2x.png */; };
@@ -61,7 +60,6 @@
 		896ACC9B18B664F5001E9C64 /* leftshuttle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBE018B664F5001E9C64 /* leftshuttle@2x.png */; };
 		896ACC9D18B664F5001E9C64 /* loginbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBE118B664F5001E9C64 /* loginbg@2x.png */; };
 		896ACC9F18B664F5001E9C64 /* player-cutout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBE218B664F5001E9C64 /* player-cutout@2x.png */; };
-		896ACCA118B664F5001E9C64 /* playerselectmask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBE318B664F5001E9C64 /* playerselectmask@2x.png */; };
 		896ACCA318B664F5001E9C64 /* reddot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBE418B664F5001E9C64 /* reddot@2x.png */; };
 		896ACCA518B664F5001E9C64 /* rightshuttle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBE518B664F5001E9C64 /* rightshuttle@2x.png */; };
 		896ACCA718B664F5001E9C64 /* rosterslotempty@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBE618B664F5001E9C64 /* rosterslotempty@2x.png */; };
@@ -87,7 +85,6 @@
 		896ACCCF18B664F5001E9C64 /* FFTokenPurchaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC0E18B664F5001E9C64 /* FFTokenPurchaseViewController.m */; };
 		896ACCD118B664F5001E9C64 /* FFValueEntryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1018B664F5001E9C64 /* FFValueEntryController.m */; };
 		896ACCD318B664F5001E9C64 /* FFWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1218B664F5001E9C64 /* FFWebViewController.m */; };
-		896ACCD518B664F5001E9C64 /* FMF Football-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 896ACC1318B664F5001E9C64 /* FMF Football-Info.plist */; };
 		896ACCD718B664F5001E9C64 /* FFStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1718B664F5001E9C64 /* FFStyle.m */; };
 		896ACCD918B664F5001E9C64 /* FFTickerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1918B664F5001E9C64 /* FFTickerDataSource.m */; };
 		896ACCDB18B664F5001E9C64 /* FFWeakReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1B18B664F5001E9C64 /* FFWeakReference.m */; };
@@ -115,6 +112,8 @@
 		896ACD0918B664F5001E9C64 /* FFUserBitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC4B18B664F5001E9C64 /* FFUserBitView.m */; };
 		896ACD0B18B664F5001E9C64 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 896ACC4D18B664F5001E9C64 /* MainStoryboard_iPad.storyboard */; };
 		896ACD0D18B664F5001E9C64 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 896ACC4E18B664F5001E9C64 /* MainStoryboard_iPhone.storyboard */; };
+		89C3656518B7CBD5003C7A9C /* FMF-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBC218B664F5001E9C64 /* FMF-Small-50.png */; };
+		89C3656618B7CBF2003C7A9C /* playerselectmask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896ACBE318B664F5001E9C64 /* playerselectmask@2x.png */; };
 		89DFD28E18B37ECC0079F427 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD28D18B37ECC0079F427 /* AdSupport.framework */; };
 		89DFD29018B37EE30079F427 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD28F18B37EE30079F427 /* CoreImage.framework */; };
 		89DFD29218B37F1B0079F427 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89DFD29118B37F1B0079F427 /* CoreTelephony.framework */; };
@@ -690,10 +689,9 @@
 				896ACC6318B664F5001E9C64 /* FMF-Small-50@2x.png in Resources */,
 				896ACC5F18B664F5001E9C64 /* FMF-80.png in Resources */,
 				896ACC9918B664F5001E9C64 /* helmet-placeholder@2x.png in Resources */,
+				89C3656518B7CBD5003C7A9C /* FMF-Small-50.png in Resources */,
 				896ACC7918B664F5001E9C64 /* bannerclose@2x.png in Resources */,
 				896ACC8918B664F5001E9C64 /* disclosurelight@2x.png in Resources */,
-				896ACCD518B664F5001E9C64 /* FMF Football-Info.plist in Resources */,
-				896ACCA118B664F5001E9C64 /* playerselectmask@2x.png in Resources */,
 				896ACC8118B664F5001E9C64 /* dailyfantasyfootball@2x.png in Resources */,
 				896ACC6B18B664F5001E9C64 /* FMF@2x.png in Resources */,
 				896ACC5918B664F5001E9C64 /* FMF-58.png in Resources */,
@@ -716,6 +714,7 @@
 				896ACC7F18B664F5001E9C64 /* contestcircle@2x.png in Resources */,
 				896ACC8F18B664F5001E9C64 /* globalmenu-highlighted@2x.png in Resources */,
 				896ACC6518B664F5001E9C64 /* FMF-Small.png in Resources */,
+				89C3656618B7CBF2003C7A9C /* playerselectmask@2x.png in Resources */,
 				896ACC5518B664F5001E9C64 /* Default@2x.png in Resources */,
 				896ACC9D18B664F5001E9C64 /* loginbg@2x.png in Resources */,
 				896ACC6918B664F5001E9C64 /* FMF.png in Resources */,
@@ -726,7 +725,6 @@
 				896ACC6718B664F5001E9C64 /* FMF-Small@2x.png in Resources */,
 				896ACC5718B664F5001E9C64 /* FMF-120.png in Resources */,
 				896ACC5D18B664F5001E9C64 /* FMF-72@2x.png in Resources */,
-				896ACC6118B664F5001E9C64 /* FMF-Small-50.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
