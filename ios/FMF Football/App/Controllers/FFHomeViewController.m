@@ -173,6 +173,7 @@
                                  authorized:YES];
     _markets.clearsCollectionBeforeSaving = YES;
     _markets.delegate = self;
+
     [_markets refresh];
 
     _marketSelector.markets = [FFMarket filteredMarkets:[_markets allObjects]];
@@ -355,8 +356,16 @@
 #pragma mark gamebuttonview delegate
 - (void)gameButtonViewCreateGame
 {
-    [self performSegueWithIdentifier:@"GotoCreateGame"
-                              sender:self];
+    if (self.markets.count > 0) {
+        [self performSegueWithIdentifier:@"GotoCreateGame"
+                                  sender:self];
+        return;
+    }
+    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Sorry", nil)
+                                message:NSLocalizedString(@"There no games available now", nil)
+                               delegate:nil
+                      cancelButtonTitle:NSLocalizedString(@"Ok", nil)
+                      otherButtonTitles:nil] show];
 }
 
 - (void)gameButtonViewJoinGame
