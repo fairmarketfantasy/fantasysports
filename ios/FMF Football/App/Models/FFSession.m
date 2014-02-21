@@ -17,6 +17,12 @@
 
 @implementation FFSession
 
+- (void)clearCredentials
+{
+    [AFOAuthCredential deleteCredentialWithIdentifier:self.identifier];
+    [self.authorizedHttpClient clearAuthorizationHeader];
+}
+
 - (id)deserializeJSON:(id)JSON
 {
     if (JSON[@"data"] && [JSON[@"data"] isKindOfClass:[NSArray class]]) {

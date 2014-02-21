@@ -6,18 +6,20 @@
 //  Copyright (c) 2013 FairMarketFantasy. All rights reserved.
 //
 
-#import "SBSession.h"
-
+#import <SBSession.h>
 
 #define FFDidReceiveRemoteNotificationAuthorization @"gotpushtoken"
 #define FFDidReceiveRemoteNotification @"gotpush"
 
-
 @interface FFSession : SBSession
 
-- (void)registerAndLoginUsingFBAccessToken:(NSString *)accessToken
-                                     fbUid:(NSString *)fbUid
+@property(nonatomic) SBUser* user;
+@property(nonatomic) SBSessionData* sessionData;
+
+- (void)registerAndLoginUsingFBAccessToken:(NSString*)accessToken
+                                     fbUid:(NSString*)fbUid
                                    success:(SBSuccessBlock)success
                                    failure:(SBErrorBlock)failure;
+- (void)clearCredentials;
 
 @end

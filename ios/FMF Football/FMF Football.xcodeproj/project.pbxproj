@@ -91,7 +91,6 @@
 		896ACCD718B664F5001E9C64 /* FFStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1718B664F5001E9C64 /* FFStyle.m */; };
 		896ACCD918B664F5001E9C64 /* FFTickerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1918B664F5001E9C64 /* FFTickerDataSource.m */; };
 		896ACCDB18B664F5001E9C64 /* FFWeakReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1B18B664F5001E9C64 /* FFWeakReference.m */; };
-		896ACCDD18B664F5001E9C64 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1D18B664F5001E9C64 /* NSData+Base64.m */; };
 		896ACCDF18B664F5001E9C64 /* NSDate+ISO8601.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC1F18B664F5001E9C64 /* NSDate+ISO8601.m */; };
 		896ACCE118B664F5001E9C64 /* UIView+FindFirstResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = 896ACC2118B664F5001E9C64 /* UIView+FindFirstResponder.m */; };
 		896ACCE318B664F5001E9C64 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 896ACC2218B664F5001E9C64 /* InfoPlist.strings */; };
@@ -235,8 +234,6 @@
 		896ACC1918B664F5001E9C64 /* FFTickerDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFTickerDataSource.m; sourceTree = "<group>"; };
 		896ACC1A18B664F5001E9C64 /* FFWeakReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFWeakReference.h; sourceTree = "<group>"; };
 		896ACC1B18B664F5001E9C64 /* FFWeakReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFWeakReference.m; sourceTree = "<group>"; };
-		896ACC1C18B664F5001E9C64 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
-		896ACC1D18B664F5001E9C64 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		896ACC1E18B664F5001E9C64 /* NSDate+ISO8601.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+ISO8601.h"; sourceTree = "<group>"; };
 		896ACC1F18B664F5001E9C64 /* NSDate+ISO8601.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+ISO8601.m"; sourceTree = "<group>"; };
 		896ACC2018B664F5001E9C64 /* UIView+FindFirstResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+FindFirstResponder.h"; sourceTree = "<group>"; };
@@ -541,8 +538,6 @@
 				896ACC1918B664F5001E9C64 /* FFTickerDataSource.m */,
 				896ACC1A18B664F5001E9C64 /* FFWeakReference.h */,
 				896ACC1B18B664F5001E9C64 /* FFWeakReference.m */,
-				896ACC1C18B664F5001E9C64 /* NSData+Base64.h */,
-				896ACC1D18B664F5001E9C64 /* NSData+Base64.m */,
 				896ACC1E18B664F5001E9C64 /* NSDate+ISO8601.h */,
 				896ACC1F18B664F5001E9C64 /* NSDate+ISO8601.m */,
 				896ACC2018B664F5001E9C64 /* UIView+FindFirstResponder.h */,
@@ -795,7 +790,6 @@
 				896ACCCD18B664F5001E9C64 /* FFTickerMinimizedDrawerViewController.m in Sources */,
 				896ACCB918B664F5001E9C64 /* FFHomeViewController.m in Sources */,
 				896ACCC118B664F5001E9C64 /* FFNavigationController.m in Sources */,
-				896ACCDD18B664F5001E9C64 /* NSData+Base64.m in Sources */,
 				896ACCF318B664F5001E9C64 /* FFContest2UpTabelViewCell.m in Sources */,
 				896ACCD318B664F5001E9C64 /* FFWebViewController.m in Sources */,
 				896ACCD118B664F5001E9C64 /* FFValueEntryController.m in Sources */,
