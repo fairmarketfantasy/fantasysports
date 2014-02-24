@@ -1,6 +1,6 @@
 //= require vendor/jquery-1.10.2.min
 //= require vendor/underscore-min.js
-//= require vendor/angular-1.0.8.min.js
+//= require vendor/angular-1.2.12.min.js
 //= require vendor/angular-ui-bootstrap-tpls-0.4.0.min.js
 //= require_self
 
