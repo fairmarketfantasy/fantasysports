@@ -23,7 +23,7 @@
     </div>
     <div ng-show="market.state == 'closed' || market.state == 'complete'" class="result-area">
       <div ng-init="noReport = true" ng-controller="TwitterController">
-        <h3>You <span ng-show="rosters.currentRoster.amount_paid">took</span><span ng-hide="rosters.currentRoster.amount_paid"> are in </span>{{rosters.currentRoster.contest_rank | ordinal}} place
+        <h3>You <span ng-show="rosters.currentRoster.amount_paid">took </span><span ng-hide="rosters.currentRoster.amount_paid"> are in </span>{{rosters.currentRoster.contest_rank | ordinal}} place
           <span ng-show="rosters.currentRoster.paid_at">
             <span ng-show="rosters.currentRoster.amount_paid > 0"><br/>and won
               <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | number:0}}FF</span>
