@@ -72,7 +72,7 @@ Fantasysports::Application.routes.draw do
     end
   end
 
-  resources :rosters, only: [:create, :show, :destroy] do
+  resources :rosters, only: [:new, :create, :show, :destroy] do
     collection do
       post 'enter_league/:league_id', :action => 'create_league_entry'
       get 'mine', :action => 'mine'
@@ -175,7 +175,7 @@ Fantasysports::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
+
   # Example resource route with concerns:
   #   concern :toggleable do
   #     post 'toggle'

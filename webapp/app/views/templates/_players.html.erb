@@ -132,12 +132,7 @@
       <a ng-show="market.state == 'published' || market.state == 'opened'" class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-click="enterAgain()">Enter Again</a>
     </div>
 
-    <div class="alert alert-success roster-alert" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
-      <p class="roster-cap-text">
-        Your team&rsquo;s current salary is {{((100000 - rosters.currentRoster.remaining_salary)/100000)*100 | number:0}}% of the $100k salary cap, 
-        but the cap is not fixed. If you are under the cap we'll increase your stats by the percentage you are under $100k up to 3%. 
-        You can also exceed the salary cap and we will reduce your stats by the amount you exceed $100k.
-      </p>
+    <div class="roster-alert" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
 
       <a class="btn btn-large btn-success" ng-click="submitRoster()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
     </div>
