@@ -16,7 +16,7 @@
     </div>
   </div>
   <!-- This is my roster -->
-  <div ng-show="rosters.currentRoster.owner_id == currentUser.id">
+  <div class="roster-height" ng-show="rosters.currentRoster.owner_id == currentUser.id">
     <!-- The market is closed or complete -->
     <div ng-show="market.state == 'closed'" class="result-area">
       <p>This market is closed - no player sales are available.</p>
@@ -39,18 +39,18 @@
     <!-- The market is published or open -->
     <div ng-show="(market.state == 'published' || market.state == 'opened')" class="players-area">
       <div class="clearfix">
-        <input class="players-search" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
-        <div class="dropdown game-dropdown">
-          <div class="btn-group">
-            <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown">Games</button> 
-            <button class="btn btn-small btn-info" dropdown-toggle="game-dropdown"><span class="caret"></span></button> 
-            <ul class="dropdown-menu dropdown-inverse">
-              <li ng-repeat="game in notStartedGames()" ng-model="game">
-                <a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <input class="players-search pull-right" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
+        <!--<div class="dropdown game-dropdown">-->
+          <!--<div class="btn-group">-->
+            <!--<button class="btn btn-small btn-info" dropdown-toggle="game-dropdown">Games</button> -->
+            <!--<button class="btn btn-small btn-info" dropdown-toggle="game-dropdown"><span class="caret"></span></button> -->
+            <!--<ul class="dropdown-menu dropdown-inverse">-->
+              <!--<li ng-repeat="game in notStartedGames()" ng-model="game">-->
+                <!--<a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</div>-->
+        <!--</div>-->
       </div>
       <div class="clearfix relative-parent">
         <label class="checkbox light-check" for="removeLowFilter" ng-click="toggleChecked('removeLow')" ng-class="{'checked': removeLow}">
@@ -132,9 +132,15 @@
       <a ng-show="market.state == 'published' || market.state == 'opened'" class="btn btn-large btn-orange btn-reenter-cta" href="javascript://" ng-click="enterAgain()">Enter Again</a>
     </div>
 
-    <div class="roster-alert" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
-
-      <a class="btn btn-large btn-success" ng-click="submitRoster()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit this roster</a>
+    <div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
+      <div class="pull-right roster-submit">
+        <span ng-show="show" class="roster-submit-hover submit-hth">Enter to win 27 FanBucks on head to head</span>
+        <a ng-mouseenter="show = true" ng-mouseleave="show = false" class="btn btn-large btn-success " ng-click="submitRoster()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit HTH 27FB</a>
+      </div>
+      <div class="pull-right roster-submit">
+        <span ng-show="show_hth" class="roster-submit-hover submit-top">Enter to win 100 FanBucks</span>
+        <a ng-mouseenter="show_hth = true" ng-mouseleave="show_hth = false"  class="btn btn-large btn-orange pull-right" ng-click="submitRoster()" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit 100FB</a>
+      </div>
     </div>
   </div>
 </div>

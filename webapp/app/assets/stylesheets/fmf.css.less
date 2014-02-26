@@ -276,6 +276,7 @@ select:focus:invalid {
 }
 .relative-parent {
   position: relative;
+  margin-top: 10px;
 }
 
 /* Landing Page Styles
@@ -1335,13 +1336,16 @@ input, textarea, .uneditable-input {
   position: relative;
 }
 .ie8 .player-overflow {
-  height: 400px;
+  height: 325px;
 }
 .player-overflow {
-  max-height: 400px;
+  max-height: 325px;
   -ms-overflow-y : scroll; // IE 8, bitches
   overflow-y: scroll;
   overflow-x: none;
+}
+.roster-height .players-area{
+  height: 375px;
 }
 .fixed-table-header {
   position: absolute;
@@ -1403,6 +1407,7 @@ input, textarea, .uneditable-input {
 .team-selection {
   background-color: @gray;  
   .border-radius(0 0 4px 4px);
+  padding: 20px 0;
 }
 .team-heading {
   color: @white;
@@ -1435,7 +1440,7 @@ input, textarea, .uneditable-input {
   font-size: 14px;
   line-height: 18px;
   width: 40%;
-  margin: 0;
+  margin:5px 0;
   background-color: @white;
   color: @greenDark;
 }
@@ -1479,16 +1484,16 @@ input, textarea, .uneditable-input {
 }
 .mr-player-eliminated {
   position: absolute;
-  bottom: -4px;
-  right: 8px;
+  bottom: -3px;
+  right: 97px;
   color: red;
   font-size: 0.7em;
 }
 .mr-player-score {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 500;
-  margin-bottom: 4px;
-  text-align: right;
+  margin: 9px 7px 0 0;
+  text-align: center;
 }
 .mr-item {
   padding: 8px;
@@ -1507,7 +1512,6 @@ input, textarea, .uneditable-input {
   background-image: asset-url('helmet.png');
   .border-radius(35px);
   border: 5px solid @grayLight;
-  float: left;
   margin-right: 8px;
   background-color: @offWhite;
   background-repeat: no-repeat;
@@ -1568,6 +1572,13 @@ input, textarea, .uneditable-input {
   }
   .mr-player-cta{
     float:left;
+    margin-top: 5px;
+  }
+  .roster-avatar {
+    min-height: 90px;
+  }
+  .mr-player-image{
+    float:none;
   }
 }
 
@@ -1583,6 +1594,7 @@ input, textarea, .uneditable-input {
 .mr-player-image {
   width: 40px;
   height: 40px;
+  float:left;
   border:3px solid #2ED02A;
 }
 .mr-team,
@@ -1691,7 +1703,36 @@ input[type="text"].players-search {
   border-left:  #0000FF;
 }
 .roster-alert {
-  margin-top: 14px;
+  margin: 10px 10px 0 16px;
+  height: 150px;
+  .roster-submit{
+    padding: 0 10px;
+    position: relative;
+    top: 95px;
+  }
+  .roster-submit-hover {
+    color:@white;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    .border-radius(4px);
+    display: block;
+    width: 130px;
+    font-size: 12px;
+    padding: 10px 10px 65px;
+    left: 0;
+    top: -51px;
+    position: absolute;
+  }
+  .submit-top {
+    width: 120px;
+  }
+  .submit-hth{
+    width: 140px;
+  }
+  a {
+    position: relative;
+    z-index: 1;
+  }
 }
 .alert .roster-cap-text {
   font-size: 14px;
