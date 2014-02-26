@@ -43,6 +43,7 @@ class RostersController < ApplicationController
       raise HttpException.new(403, "This market is closed") unless market.accepting_rosters?
       current_user.in_progress_roster.destroy if current_user.in_progress_roster
 
+      Eventing.report(current_user, 'createRoster', :buy_in => Roster::DEFAULT_BUY_IN)
       roster = Roster.create!(:owner_id => current_user.id,
                               :market_id => market.id,
                               :takes_tokens => false,
@@ -128,6 +129,12 @@ class RostersController < ApplicationController
 
   def submit
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
+    if params[:contest_type]
+      contest_type = get_contest_type(roster,  params[:contest_type])
+      roster.contest_type = contest_type
+      roster.save
+    end
+
     roster.submit!
     Eventing.report(current_user, 'submitRoster', :contest_type => roster.contest_type.name, :buy_in => roster.contest_type.buy_in)
     render_api_response roster
@@ -188,5 +195,10 @@ class RostersController < ApplicationController
     else
       Market.find(params[:id])
     end
+  end
+
+  def get_contest_type(roster, contest_type_name)
+    types = roster.market.contest_types
+    types.find { |contest_type| contest_type.name == contest_type_name }
   end
 end

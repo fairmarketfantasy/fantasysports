@@ -87,7 +87,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     def remove_shadow_bets
       apply :remove_shadow_bets, "state in ('published', 'opened') and shadow_bets > 0"
     end
-  
+
     def fill_rosters
       apply :fill_rosters, "state IN('opened')"
     end
@@ -95,7 +95,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     def remove_benched_players
       apply :remove_benched_players, "state IN('opened')"
     end
-  
+
     def track_benched_players
       apply :track_benched_players, "state IN('opened', 'published')"
     end
@@ -103,7 +103,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     def lock_players
       apply :lock_players, "state IN('opened', 'closed')"
     end
-    
+
     def tabulate_scores
       apply :tabulate_scores, "state in ('published', 'opened', 'closed')"
     end
@@ -127,7 +127,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     def complete
       apply :complete, <<-EOF
           state = 'closed' AND NOT EXISTS (
-            SELECT 1 FROM games g JOIN games_markets gm ON gm.game_stats_id = g.stats_id 
+            SELECT 1 FROM games g JOIN games_markets gm ON gm.game_stats_id = g.stats_id
              WHERE gm.market_id = markets.id AND (g.status != 'closed' OR gm.finished_at IS NULL))
       EOF
     end
@@ -225,7 +225,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   def fill_rosters
     fill_times = JSON.parse(self.fill_roster_times)
     percent = nil
-    fill_times.each do |ft| 
+    fill_times.each do |ft|
       percent = ft[1] if ft[0].to_i < Time.new.to_i
     end
     if percent
@@ -242,7 +242,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def bad_h2h_type_ids
-    bad_h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).select do |ct| 
+    bad_h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).select do |ct|
       if (ct.name == 'h2h' && [100, 1000].include?(ct.buy_in))# ||  # Fill H2H games of normal amounts
           #(ct.name == 'h2h rr' && [900, 9000].include?(ct.buy_in))
         false
@@ -254,7 +254,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def remove_benched_players
-    # select distinct rosters.* from rosters JOIN rosters_players ON rosters.id=rosters_players.roster_id JOIN players ON rosters_players.player_id=players.id WHERE rosters_players.market_id=326 
+    # select distinct rosters.* from rosters JOIN rosters_players ON rosters.id=rosters_players.roster_id JOIN players ON rosters_players.player_id=players.id WHERE rosters_players.market_id=326
     # AND (players.status = 'IR' OR players.removed);
     affected_rosters = Roster.select('distinct rosters.*'
                  ).joins('JOIN rosters_players ON rosters.id=rosters_players.roster_id JOIN players ON rosters_players.player_id=players.id'
@@ -306,7 +306,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   # close a market. allocates remaining rosters in this manner:
   def close
-    raise "cannot close if state is not open" if state != 'opened' 
+    raise "cannot close if state is not open" if state != 'opened'
     #cancel all un-submitted rosters
     self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
     self.contests.where(
@@ -487,24 +487,24 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       limit: 1
     },
 =end
+#    {
+#      name: '65/25/10',
+#      description: '12 teams, top 3 winners take home $65, $25, $10',
+#      max_entries: 12,
+#      buy_in: 1000,
+#      rake: 2000,
+#      payout_structure: '[6500, 2500, 1000]',
+#      payout_description: "$100 prize purse, 1st: $65, 2nd: $25, 3rd: $10",
+#      takes_tokens: false,
+#    },
     {
-      name: '65/25/10',
-      description: '12 teams, top 3 winners take home $65, $25, $10',
-      max_entries: 12,
-      buy_in: 1000,
-      rake: 2000,
-      payout_structure: '[6500, 2500, 1000]',
-      payout_description: "$100 prize purse, 1st: $65, 2nd: $25, 3rd: $10",
-      takes_tokens: false,
-    },
-    {
-      name: 'Top5',
-      description: '12 teams, top 5 winners take home $20',
+      name: 'Top6',
+      description: '12 teams, top 6 winners take home $20',
       max_entries: 12,
       buy_in: 1000,
       rake: 2000,
       payout_structure: '[2000,2000,2000,2000,2000]',
-      payout_description: "Top five win $20",
+      payout_description: "Top six win $20",
       takes_tokens: false,
     },
     {

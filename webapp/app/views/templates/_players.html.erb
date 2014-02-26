@@ -60,15 +60,15 @@
           </span>
           No Back-ups
         </label>
-      
+
         <input id="removeLowFilter" class="hide" type="checkbox" ng-model="removeLow" ng-change="filterPlayers({removeLow: removeLow})" />
 
         <ul ng-show="filter == 'positions'" class="positions-list clearfix">
           <li class="position-item" ng-repeat="position in rosters.uniqPositionList" >
             <a class="position-link" ng-click="filterPlayers({position: position}, true)" ng-class="{selected: filterPosition == position}" href="javascript://">{{position}}</a>
           </li>
-        </ul> 
-        
+        </ul>
+
         <div class="fixed-table-header">
           <table class="players-table table table-striped">
             <thead>
@@ -106,7 +106,7 @@
           </thead>
           <tbody>
             <tr ng-repeat="player in players | filter:notInRoster">
-              <td class="larger">{{player.name_abbr}} 
+              <td class="larger">{{player.name_abbr}}
                 <span ng-show="player.is_eliminated"><i class="small text-danger">ELIMINATED</i></span>
                 <span ng-hide="player.is_eliminated">
                   <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
@@ -135,11 +135,11 @@
     <div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
       <div class="pull-right roster-submit">
         <span ng-show="show" class="roster-submit-hover submit-hth">Enter to win 27 FanBucks on head to head</span>
-        <a ng-mouseenter="show = true" ng-mouseleave="show = false" class="btn btn-large btn-success " ng-click="submitRoster('hth')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit HTH 27FB</a>
+        <a ng-mouseenter="show = true" ng-mouseleave="show = false" class="btn btn-large btn-success " ng-click="submitRoster('h2h')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit HTH 27FB</a>
       </div>
       <div class="pull-right roster-submit">
         <span ng-show="show_hth" class="roster-submit-hover submit-top">Enter to win 100 FanBucks</span>
-        <a ng-mouseenter="show_hth = true" ng-mouseleave="show_hth = false"  class="btn btn-large btn-orange pull-right" ng-click="submitRoster('top6')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit 100FB</a>
+        <a ng-mouseenter="show_hth = true" ng-mouseleave="show_hth = false"  class="btn btn-large btn-orange pull-right" ng-click="submitRoster('Top6')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit 100FB</a>
       </div>
     </div>
   </div>
