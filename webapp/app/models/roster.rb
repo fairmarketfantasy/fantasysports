@@ -87,9 +87,9 @@ class Roster < ActiveRecord::Base
   That also means that in cases 1-3 remaining salary is determined by the buy_price of the roster's players
 =end
   def remaining_salary
-    # Factory girl gets all pissy if you don't check for id heredoi
-    if self.id && self.contest_type_id != 0 && (self.state == 'in_progress' || self.market.state == 'published')
-      salary = self.contest_type.salary_cap
+    # Factory girl gets all pissy if you don't check for id here
+    if self.id && (self.state == 'in_progress' || self.market.state == 'published')
+      salary = self.contest_type ? self.contest_type.salary_cap : self[:remaining_salary]
       self.players_with_prices.each do |p|
         salary -= p.buy_price
       end
