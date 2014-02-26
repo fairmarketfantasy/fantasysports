@@ -1,6 +1,9 @@
 class RostersController < ApplicationController
   skip_before_filter :authenticate_user!, :only => [:show, :sample_roster]
 
+  DEFAULT_BUY_IN = 1000
+  DEFAULT_REMAINING_SALARY = 100000
+
   def mine
     sport = params[:sport] ? Sport.where(:name => params[:sport]).first : Sport.where('is_active').first
     rosters = current_user.rosters.where.not(state: 'in_progress').
@@ -21,12 +24,38 @@ class RostersController < ApplicationController
     render_api_response contest.rosters.where(:state => ['submitted', 'finished']).order('contest_rank asc').limit((params[:page] || 1).to_i * 10).with_perfect_score(contest.perfect_score), :abridged => true
   end
 
+  # new roster template for android
+  def new
+    sport_id = Sport.where(name: params[:sport]).first.id
+    roster = Roster.new(:owner_id => current_user.id, :takes_tokens => false,
+                       :buy_in => DEFAULT_BUY_IN,
+                       :remaining_salary => DEFAULT_REMAINING_SALARY).as_json
+
+    roster[:positions] = Positions.for_sport_id(sport_id).split(',')
+    render json: roster.to_json
+  end
+
   # Create a roster for a contest type
   def create
-    contest_type = ContestType.find(params[:contest_type_id])
+    if params[:market_id]
+      market = Market.find(params[:market_id])
+      #Eventing.report(current_user, 'createRoster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
+      raise HttpException.new(403, "This market is closed") unless market.accepting_rosters?
+      current_user.in_progress_roster.destroy if current_user.in_progress_roster
+
+      roster = Roster.create!(:owner_id => current_user.id,
+                              :market_id => market.id,
+                              :takes_tokens => false,
+                              :buy_in => Roster::DEFAULT_BUY_IN,
+                              :remaining_salary => Roster::DEFAULT_REMAINING_SALARY,
+                              :state => 'in_progress')
+    else
+      contest_type = ContestType.find(params[:contest_type_id])
+      Eventing.report(current_user, 'createRoster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
+      roster = Roster.generate(current_user, contest_type)
+    end
+
     existing_roster = Roster.find(params[:copy_roster_id]) if params[:copy_roster_id]
-    Eventing.report(current_user, 'createRoster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
-    roster = Roster.generate(current_user, contest_type)
     roster.build_from_existing(existing_roster) if existing_roster
     render_api_response roster
   end

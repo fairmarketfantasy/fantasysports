@@ -1,10 +1,34 @@
 angular.module("app.controllers")
-.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', '$timeout', 'flash', '$templateCache', 'markets',
-            function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache, markets) {
+.controller('RosterController', ['$scope', 'rosters', 'markets', '$routeParams', '$location', '$dialog', '$timeout', 'flash', '$templateCache', 'markets','currentUserService',
+            function($scope, rosters, markets, $routeParams, $location, $dialog, $timeout, flash, $templateCache, marketService, currentUserService) {
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
   $scope.Math = window.Math;
+  console.log(rosters)
+    if(!marketService.upcoming[0]){
+        marketService.fetchUpcoming({type: 'single_elimination', sport: currentUserService.currentUser.currentSport}).then(function() {
+            marketService.fetchUpcoming({type: 'regular_season', sport: currentUserService.currentUser.currentSport}).then(function() {
+                if ($routeParams.market_id) {
+                    marketService.selectMarketId($routeParams.market_id, currentUserService.currentUser.currentSport);
+                } else if ($location.path().match(/\w+\/playoffs/)) {
+                    marketService.selectMarketType('single_elimination', currentUserService.currentUser.currentSport);
+                } else {
+                    marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
+                }
+            });
+        });
+    }
+
+    $scope.isCurrent = function(market){
+        if (!market) { return; }
+        if (!marketService.currentMarket) {
+            flash.error("Oops, we couldn't find that market, pick a different one.");
+            $location.path(currentUserService.currentUser.currentSport + '/home');
+            return;
+        }
+        return (market.id === marketService.currentMarket.id);
+    };
 
   var teamsToGames = {};
   markets.fetch($routeParams.market_id).then(function(market) {
@@ -293,6 +317,37 @@ angular.module("app.controllers")
     }
     return wins + '-' + losses + '-' + ties;
   };
+
+$scope.openCreateDialog = function() {
+    var dialogOpts = {
+        backdrop: true,
+        keyboard: true,
+        backdropClick: true,
+        dialogClass: 'modal',
+        templateUrl: '/create_contest.html',
+        controller: 'CreateContestController'
+    };
+
+    var d = $dialog.dialog(dialogOpts);
+    d.open().then(function(result) {
+        if (!result) { return; }
+        $scope.fs.contests.create({
+                market_id: marketService.currentMarket.id,
+                invitees: result.invitees,
+                message: result.message,
+                type: result.contest_type,
+                buy_in: result.buy_in * (result.takes_tokens ? 1 : 100),
+                takes_tokens: result.takes_tokens,
+                league_name: result.league_name,
+                salary_cap: 100000}
+        ).then(function(roster) {
+                flash.success("Awesome, your contest is all setup. Now lets create your entry into the contest.");
+                rosters.selectRoster(roster);
+                $location.path('/' + currentUserService.currentUser.currentSport +'/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
+                currentUserService.refreshUser();
+            });
+    });
+};
 
 }]);
 
