@@ -187,11 +187,11 @@ angular.module('app.data')
         }
       };
 
-      this.submit = function() {
+      this.submit = function(gameType) {
         var deferred = $q.defer();
 
         var self = this;
-        fs.rosters.submit(this.currentRoster.id).then(function(roster) {
+        fs.rosters.submit(this.currentRoster.id, gameType).then(function(roster) {
           self.reset();
           currentUserService.refreshUser();
           deferred.resolve(roster);

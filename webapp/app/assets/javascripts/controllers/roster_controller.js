@@ -255,8 +255,8 @@ angular.module("app.controllers")
     });
   };
 
-  $scope.submitRoster = function() {
-    rosters.submit().then(function(roster) {
+  $scope.submitRoster = function(gameType) {
+    rosters.submit(gameType).then(function(roster) {
       flash.success("Roster submitted successfully!");
       $location.path('/' + $scope.currentUser.currentSport + '/market/' + roster.market.id);
       $timeout(function() {

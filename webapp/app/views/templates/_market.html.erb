@@ -1,14 +1,14 @@
 <div ng-controller="MarketController">
 
-  <ul class="clearfix market-list .home-market" ng-show="marketService.upcoming">
-    <li class="slider-prev" ng-click="prev()"></li>
-    <li class="market-li .home-market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, market) in marketService.upcoming">
-      <a  href="#/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">
-        <strong>{{market.name}}</strong>
-      </a>
-    </li>
-    <li class="slider-next" ng-click="next()"></li>
-  </ul>
+  <!--<ul class="clearfix market-list .home-market" ng-show="marketService.upcoming">-->
+    <!--<li class="slider-prev" ng-click="prev()"></li>-->
+    <!--<li class="market-li .home-market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, market) in marketService.upcoming">-->
+      <!--<a  href="#/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">-->
+        <!--<strong>{{market.name}}</strong>-->
+      <!--</a>-->
+    <!--</li>-->
+    <!--<li class="slider-next" ng-click="next()"></li>-->
+  <!--</ul>-->
 
   <!--<div class="contest-list">-->
     <!--<h3 class="selected-market" ng-cloak>-->
@@ -18,42 +18,42 @@
       <!--<span ng-hide="!marketService.currentMarket"> Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</span>-->
     <!--</h3>-->
 
-    <ul class="games hide" ng-cloak>
-      <li ng-repeat="game in market.games" ng-class="{started: gameStarted(game)}">
-        {{game.away_team}} @ {{game.home_team}} <br/>  on {{game.game_time | shortFormTime}} <br/> {{game.network}}
-      </li>
-    </ul>
+    <!--<ul class="games hide" ng-cloak>-->
+      <!--<li ng-repeat="game in market.games" ng-class="{started: gameStarted(game)}">-->
+        <!--{{game.away_team}} @ {{game.home_team}} <br/>  on {{game.game_time | shortFormTime}} <br/> {{game.network}}-->
+      <!--</li>-->
+    <!--</ul>-->
 
-    <div>
-      <ul class="clearfix no-no" ng-cloak>
-        <!-- Replace this when we want 5k back-->
-        <li ng-hide="!marketService.currentMarket" class="contest-classes full-row" ng-class="{realfull: !hasLollapalooza()}">
-        <!--<li class="contest-classes full-row realfull">-->
-          <h4>It's More Fun With Friends!</h4>
-          <p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>
-          <a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create your own private contest</a>
-        </li>
-        <!-- Replace this when we want 5k back-->
-        <li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">
-        <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
-          <div ng-class="{'contest-copy': isBigContest(contestClass)}" >
-            <img ng-src="/assets/icon-{{contestClass | slashesToDashes | lowercase}}.png" class="contest-image" />
-            <h2><span ng-show="isBigContest(contestClass)">$</span>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>
-            <p class="tiny-p">{{contestClasses[contestClass][0].max_entries}} Teams<br/> Guaranteed Run</p>
-          </div>
-          <div ng-class="{'contest-copy contest-long': isBigContest(contestClass)}">
-            <p class="small-p">{{contestClasses[contestClass][0].contest_class_desc}}</p>
-            <ul class="contests no-no">
-              <li class="enter-contest" ng-repeat="contestType in contestClasses[contestClass]">
-                <a class="btn btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens, 'btn-small': !isBigContest(contestClass), 'btn-primary': isBigContest(contestClass)}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">
-                  <span >Enter NOW!</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
+    <!--<div>-->
+      <!--<ul class="clearfix no-no" ng-cloak>-->
+        <!--&lt;!&ndash; Replace this when we want 5k back&ndash;&gt;-->
+        <!--<li ng-hide="!marketService.currentMarket" class="contest-classes full-row" ng-class="{realfull: !hasLollapalooza()}">-->
+        <!--&lt;!&ndash;<li class="contest-classes full-row realfull">&ndash;&gt;-->
+          <!--<h4>It's More Fun With Friends!</h4>-->
+          <!--<p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>-->
+          <!--<a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create your own private contest</a>-->
+        <!--</li>-->
+        <!--&lt;!&ndash; Replace this when we want 5k back&ndash;&gt;-->
+        <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
+        <!--&lt;!&ndash;<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">&ndash;&gt;-->
+          <!--<div ng-class="{'contest-copy': isBigContest(contestClass)}" >-->
+            <!--<img ng-src="/assets/icon-{{contestClass | slashesToDashes | lowercase}}.png" class="contest-image" />-->
+            <!--<h2><span ng-show="isBigContest(contestClass)">$</span>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>-->
+            <!--<p class="tiny-p">{{contestClasses[contestClass][0].max_entries}} Teams<br/> Guaranteed Run</p>-->
+          <!--</div>-->
+          <!--<div ng-class="{'contest-copy contest-long': isBigContest(contestClass)}">-->
+            <!--<p class="small-p">{{contestClasses[contestClass][0].contest_class_desc}}</p>-->
+            <!--<ul class="contests no-no">-->
+              <!--<li class="enter-contest" ng-repeat="contestType in contestClasses[contestClass]">-->
+                <!--<a class="btn btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens, 'btn-small': !isBigContest(contestClass), 'btn-primary': isBigContest(contestClass)}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">-->
+                  <!--<span >Enter NOW!</span>-->
+                <!--</a>-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</div>-->
+        <!--</li>-->
+      <!--</ul>-->
+    <!--</div>-->
+  <!--</div>-->
 
 </div>
