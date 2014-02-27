@@ -362,11 +362,11 @@ class Roster < ActiveRecord::Base
         tries -= 1
       end while(self.reload.remaining_salary.abs > max_diff && tries > 0)
       if self.remaining_salary.abs > max_diff
-        self.rosters_players.reload.each{|rp| remove_player(rp.player, false) }
+        self.rosters_players.reload.each{|rp| remove_player(rp.player) }
         roster_players = @rosters.sort_by{|t| t[:remaining].abs }.first[:players]
         players_with_prices = Player.with_prices_for_players(self.market, self.buy_in, roster_players.map(&:player_id))
         players_with_prices.each do |p|
-          add_player(p, roster_players.find{|rp| rp.player_id == p.id }.position, false)
+          add_player(p, roster_players.find{|rp| rp.player_id == p.id }.position)
         end
       end
     end
