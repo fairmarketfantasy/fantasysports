@@ -1,0 +1,26 @@
+<div class='modal-header'>
+    <h3>{{player.name}} <span class="pt">PT25</span></h3>
+</div>
+<div class='modal-body clearfix'>
+   <ul class="no-no prediction-modal-body">
+       <li>
+          <p>re-bounds:3</p>
+          <a href="javascript://" class="btn prediction-less" ng-click="close()">less</a>
+          <a href="javascript://" class="btn prediction-more" ng-click="close()">more</a>
+       </li>
+       <li>
+           <p>points:14</p>
+           <a href="javascript://" class="btn prediction-less" ng-click="close()">less</a>
+           <a href="javascript://" class="btn prediction-more" ng-click="close()">more</a>
+       </li>
+       <li class="border-none">
+           <p>asists:6</p>
+           <a href="javascript://" class="btn prediction-less" ng-click="close()">less</a>
+           <a href="javascript://" class="btn prediction-more" ng-click="close()">more</a>
+       </li>
+   </ul>
+</div>
+<div class='modal-footer'>
+    <p class="pull-left">Predict {{player.name}} more than 13 rebounds?</p>
+    <a href="javascript://" class="btn btn-success" ng-click="close()">Submit</a>
+</div>
