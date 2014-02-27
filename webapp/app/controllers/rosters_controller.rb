@@ -105,7 +105,7 @@ class RostersController < ApplicationController
     contest_type = if lolla && lolla.user_cap - (lolla.num_rosters - lolla.num_generated) > 0
       lolla.contest_type
     else
-      m.contest_types.where(:name => 'Top5').first || m.contest_types.where(:name => '194').first
+      m.contest_types.where(:name => 'Top6').first || m.contest_types.where(:name => 'h2h').first
     end
 
     roster = Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
