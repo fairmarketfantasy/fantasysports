@@ -80,6 +80,7 @@ footer {
   .logo-font {
     font-size: 30px;
     float:left;
+    line-height: 68px;
   }
 }
 
@@ -468,11 +469,13 @@ select:focus:invalid {
 .top-nav {
   height: 54px;
 }
-.logo-font {
+.logo-font,
+.logo-font a{
+  text-decoration: none;
   font-family: @special;
   color: @redDark;
   font-size: 34px;
-  line-height: 68px;
+  line-height: 52px;
   text-shadow: 1px 1px 0 @offWhite, -1px -1px 0 @offWhite, 1px -1px 0 @offWhite,
             -1px 1px 0 @offWhite, 3px 3px 5px @grayDark;
   display: inline-block;
@@ -972,8 +975,10 @@ input, textarea, .uneditable-input {
 }
 .league-selector {
   float: right;
+  width: 100%;
   select{
-    margin: 5px 10px 0 5px;
+    margin: 0 0 10px;
+    width: 98%;
   }
 }
 .roster-title {
@@ -1384,6 +1389,20 @@ input, textarea, .uneditable-input {
     }
   }
 }
+
+.prediction p{
+  color:@red;
+  border: 2px solid #FF0000;
+  .border-radius(4px);
+  display: inline;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0;
+  padding: 4px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
 .btn.btn-small.btn-invisible {
   background-color: @white;
   color: @white;
@@ -1675,7 +1694,7 @@ input[type="text"].players-search {
 }
 .contest-type-pills {
   list-style: none;
-  margin-top: 2em;
+  margin: 2em 0 0 6em;
 }
 .nav-pills {
   padding: 0;
