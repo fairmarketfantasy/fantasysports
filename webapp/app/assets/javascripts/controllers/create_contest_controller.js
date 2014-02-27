@@ -18,6 +18,7 @@ angular.module("app.controllers")
   };
 
   $scope.close = function(result) {
+      console.log(result)
     dialog.close(result);
   };
 

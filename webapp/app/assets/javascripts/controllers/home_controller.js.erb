@@ -24,24 +24,6 @@ angular.module("app.controllers")
     $scope.markets = markets;
   }
 
-  function joinLeague(leagueId) {
-    $scope.fs.contests.join_league(leagueId).then(function(data){
-      // give the server time to save everything
-      $timeout(function() {
-        rosters.selectRoster(data);
-        $location.path('/' + $scope.currentUser.currentSport + '/market/' + data.market.id + '/roster/' + data.id);
-      }, 500);
-    });
-  }
-
-  $scope.showNextLeagueRoster = function(league) {
-    joinLeague(league.id);
-  };
-
-  if (typeof $routeParams.league_id !== 'undefined') {
-    joinLeague($routeParams.league_id);
-  }
-
   //$scope.$watch('league')
 
 }]);

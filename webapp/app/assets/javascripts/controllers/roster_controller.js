@@ -318,6 +318,24 @@ angular.module("app.controllers")
     return wins + '-' + losses + '-' + ties;
   };
 
+    function joinLeague(leagueId) {
+        $scope.fs.contests.join_league(leagueId).then(function(data){
+            // give the server time to save everything
+            $timeout(function() {
+                rosters.selectRoster(data);
+                $location.path('/' + $scope.currentUser.currentSport + '/market/' + data.market.id + '/roster/' + data.id);
+            }, 500);
+        });
+    }
+
+    $scope.showNextLeagueRoster = function(league) {
+        joinLeague(league.id);
+    };
+
+    if (typeof $routeParams.league_id !== 'undefined') {
+        joinLeague($routeParams.league_id);
+    }
+
 $scope.openCreateDialog = function() {
     var dialogOpts = {
         backdrop: true,
@@ -347,6 +365,22 @@ $scope.openCreateDialog = function() {
                 currentUserService.refreshUser();
             });
     });
+};
+$scope.openPredictionDialog = function(player) {
+    var player = player
+    var dialogOpts = {
+        backdrop: true,
+        keyboard: true,
+        backdropClick: true,
+        dialogClass: 'modal',
+        templateUrl: '/create_prediction.html',
+        controller: 'CreatePredictionController',
+        resolve: {
+            player: function() { return player; },
+            market: function() {  return rosters.currentRoster.market; }
+        }
+    };
+    return $dialog.dialog(dialogOpts).open();
 };
 
 }]);

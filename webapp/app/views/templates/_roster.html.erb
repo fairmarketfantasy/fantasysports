@@ -10,7 +10,6 @@
     <li class="slider-next" ng-click="next()"></li>
   </ul>
 
-
   <div class="alert alert-info hide" ng-show="!rosters.justSubmittedRoster && false">
   </div>
   <!--<p class="alert alert-info" ng-show="market.state == 'published'">
@@ -78,6 +77,11 @@
       </div>
     </div>
     <div class="pull-left score-list">
+      <div class="league-selector" ng-show="currentUser.leagues.length > 0">
+        <select ng-model="league" name="league" ng-options="l as l.name for l in currentUser.leagues" ng-change="showNextLeagueRoster(league)">
+          <option value="">Select a League</option>
+        </select>
+      </div>
       <ul class="clearfix no-no" ng-cloak>
         <!-- Replace this when we want 5k back-->
         <li ng-hide="!marketService.currentMarket" class="contest-classes full-row" ng-class="{realfull: !hasLollapalooza()}">
