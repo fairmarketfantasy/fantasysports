@@ -275,6 +275,9 @@ select:focus:invalid {
   padding: 0;
   margin: 0;
 }
+.no-no li {
+  list-style: none;
+}
 .relative-parent {
   position: relative;
   margin-top: 10px;
@@ -1401,6 +1404,50 @@ input, textarea, .uneditable-input {
   padding: 4px;
   vertical-align: middle;
   cursor: pointer;
+}
+
+.pt {
+  color:@red;
+}
+.modal-prediction{
+  width: 550px;
+  .modal-header{
+    background-color: #EBEDEF;
+  }
+  .modal-body {
+    width: 552px;
+    padding: 20px 0;
+  }
+  .modal-footer{
+    padding: 14px 22px;
+    p {
+      margin: 9px 0 0 0;
+    }
+  }
+  .prediction-modal-body {
+    li{
+      border-right: 1px solid #CCCCCC;
+      float: left;
+      text-align: center;
+      width: 97px;
+      padding: 0 42px 5px;
+    }
+    p {
+      font-size: 16px;
+      margin: 0;
+    }
+    a {
+      float:left;
+      padding: 6px 9px 5px;
+    }
+    .prediction-less{
+      .border-radius(6px 0 0 6px);
+      margin-right: 1px;
+    }
+    .prediction-more {
+      .border-radius(0 6px 6px 0);
+    }
+  }
 }
 
 .btn.btn-small.btn-invisible {

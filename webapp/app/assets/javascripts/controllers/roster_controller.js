@@ -372,7 +372,7 @@ $scope.openPredictionDialog = function(player) {
         backdrop: true,
         keyboard: true,
         backdropClick: true,
-        dialogClass: 'modal',
+        dialogClass: 'modal modal-prediction',
         templateUrl: '/create_prediction.html',
         controller: 'CreatePredictionController',
         resolve: {
