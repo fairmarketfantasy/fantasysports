@@ -4,19 +4,19 @@
 <div class='modal-body clearfix'>
    <ul class="no-no prediction-modal-body">
        <li>
-          <p>rebounds:3</p>
+          <p>rebounds: {{point.rebounds}}</p>
           <a href="javascript://" class="btn prediction-less" ng-click="difference.bound = 'less'">less</a>
           <a href="javascript://" class="btn prediction-more" ng-click="difference.bound = 'more'">more</a>
           <p>{{difference.bound}}</p>
        </li>
        <li>
-           <p>points:14</p>
+           <p>points: {{point.points}}</p>
            <a href="javascript://" class="btn prediction-less" ng-click="difference.point = 'less'">less</a>
            <a href="javascript://" class="btn prediction-more" ng-click="difference.point = 'more'">more</a>
            <p>{{difference.point}}</p>
        </li>
        <li class="border-none">
-           <p>asists:6</p>
+           <p>assists: {{point.assists}}</p>
            <a href="javascript://" class="btn prediction-less" ng-click="difference.assist = 'less'">less</a>
            <a href="javascript://" class="btn prediction-more" ng-click="difference.assist = 'more'">more</a>
            <p>{{difference.assist}}</p>
