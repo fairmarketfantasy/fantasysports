@@ -2,12 +2,15 @@ angular.module("app.controllers")
 .controller('CreatePredictionController', ['$scope', 'dialog', 'fs', 'market', 'player','flash', function($scope, dialog, fs, market, player, flash) {
     $scope.market = market;
     $scope.player = player;
-        console.log(player.stats_id)
     $scope.difference = '';
+    $scope.point='';
 
-    fs.prediction.show(player.stats_id).then(function(data){
-       console.log(data)
-    });
+    $scope.playerStats = function(){
+        fs.prediction.show(player.stats_id).then(function(data){
+           $scope.point = data;
+        });
+    }
+
 
     $scope.predictionSubmit = function(){
         if(!$scope.difference.bound || !$scope.difference.point || !$scope.difference.assist){
@@ -15,7 +18,11 @@ angular.module("app.controllers")
             return;
         }
 
-       fs.prediction.submit($scope.difference.bound, $scope.difference.point, $scope.difference.assist).then(function(data){
+        var bound = [$scope.difference.bound, $scope.point.rebounds];
+        var point = [$scope.difference.bound, $scope.point.points];
+        var assist = [$scope.difference.bound, $scope.point.assists];
+
+       fs.prediction.submit(player.stats_id, bound, point, assist).then(function(data){
            flash.success("Individual prediction submitted successfully!")
            dialog.close();
        });
@@ -25,5 +32,6 @@ angular.module("app.controllers")
         dialog.close();
     };
 
+    $scope.playerStats();
 }]);
 

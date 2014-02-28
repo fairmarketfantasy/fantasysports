@@ -137,6 +137,8 @@ Fantasysports::Application.routes.draw do
 
   resources :push_devices, :only => [:create]
 
+  resources :individual_predictions, :only => [:create, :show, :update]
+
   #Stripe webhooks
   post '/webhooks', to: "webhooks#new"
 
