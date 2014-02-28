@@ -370,6 +370,14 @@ angular.module('app.services')
         roster: function(market_id){
           return $http({method: 'POST', url: '/rosters/', data: {market_id: market_id}});
         }
+      },
+      prediction: {
+        submit: function(bound, point, assist) {
+          return $http({method: 'POST', url: '/prediction/', data: {bound: bound, point: point, assist: assist}});
+        },
+        show: function(stats_id) {
+          return $http({method: 'GET', url: '/events/for_players?player_ids='+ stats_id + '&average=true' });
+        }
       }
     }
   }])
