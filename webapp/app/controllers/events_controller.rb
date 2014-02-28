@@ -46,7 +46,8 @@ class EventsController < ApplicationController
   end
 
   def render_average(params)
-    events = StatEvent.where(:player_stats_id => params[:player_ids])
+    events = StatEvent.where(:player_stats_id => params[:player_ids],
+                             :activity => ["rebounds", "assists", "points"])
     total_stats = {}
     events_by_activity_counter = {}
     events.each do |event|
@@ -55,13 +56,13 @@ class EventsController < ApplicationController
         events_by_activity_counter[event.activity] += 1
       else
         total_stats[event.activity] = event.point_value
-        events_by_activity_counter[event.activity] = 0
+        events_by_activity_counter[event.activity] = 1
       end
     end
 
     total_stats.each do |k, v|
       value = v / BigDecimal(events_by_activity_counter[k])
-      total_stats[k] = value.round(0)
+      total_stats[k] = value.round(0).to_i
     end
 
     render json: total_stats.to_json
