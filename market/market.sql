@@ -347,6 +347,7 @@ DECLARE
 	_games numeric;
   _price_multiplier numeric;
 	_bets numeric;
+	_market_default market_defaults;
 BEGIN
 	--ensure that the market exists and may be published
 	SELECT * FROM markets WHERE id = _market_id AND published_at < CURRENT_TIMESTAMP AND
@@ -354,6 +355,12 @@ BEGIN
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % is not publishable', _market_id;
 	END IF;
+
+	SELECT * FROM market_defaults WHERE sport_id = _market.sport_id into _market_default;
+	IF NOT FOUND THEN
+	  SELECT * FROM market_defaults WHERE sport_id = 0 INTO _market_default; -- Default values
+	END IF;
+
 
 	--update player points and stuff in preparation for shadow bets
 	WITH 
@@ -378,7 +385,7 @@ BEGIN
 
 	--just to be safe, re-set the total bets to shadow bets
 	UPDATE markets SET 
-		total_bets = shadow_bets, initial_shadow_bets = shadow_bets, price_multiplier = 1 
+		total_bets = shadow_bets, initial_shadow_bets = shadow_bets, price_multiplier = 1
 		WHERE id = _market_id;
 
 	--ensure that the market has at least 1 game that has not yet started
@@ -428,10 +435,11 @@ BEGIN
   -- Get the total number of games in the market, calculate price multiplier
   SELECT count(id) FROM games_markets WHERE market_id = _market_id INTO _games;
   IF _games > 1 THEN
-    _price_multiplier = 10;
+    _price_multiplier = _market_default.multiple_game_multiplier;
   ELSE
-    _price_multiplier = 2;
+    _price_multiplier = _market_default.single_game_multiplier;
   END IF;
+  RAISE NOTICE 'price multiplier %', _price_multiplier;
 
 	--set market to published. reset closed_at time, in case the game time has moved since the market was created
 	WITH game_times as ( 
