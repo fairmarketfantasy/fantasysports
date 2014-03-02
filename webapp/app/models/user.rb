@@ -132,6 +132,11 @@ class User < ActiveRecord::Base
     false
   end
 
+  def last_sent_digest_at
+    se = SentEmail.where(:user_id => self.id).order('created_at desc').first
+    se ? se.created_at : Time.new(1900) # long ago
+  end
+
   SYSTEM_USERNAMES = [
 "teetriceps",
 "basegear",

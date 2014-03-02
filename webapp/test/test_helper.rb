@@ -61,6 +61,7 @@ class ActiveSupport::TestCase
   def create_team1
     @team1 ||= create(:team1)
   end
+
   def create_team2
     @team2 ||= create(:team2)
   end
@@ -308,6 +309,7 @@ FactoryGirl.define do
     game_time Time.now.tomorrow
     home_team 'GB'
     away_team 'SF'
+    network 'PBS'
   end
 
   factory :open_market, class: Market  do
