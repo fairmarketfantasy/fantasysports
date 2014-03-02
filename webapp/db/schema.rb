@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140228092344) do
+ActiveRecord::Schema.define(version: 20140302020912) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -198,6 +198,12 @@ ActiveRecord::Schema.define(version: 20140228092344) do
     t.integer  "start_day"
     t.string   "duration"
     t.string   "identifier"
+  end
+
+  create_table "market_defaults", force: true do |t|
+    t.integer "sport_id",                 null: false
+    t.decimal "single_game_multiplier",   null: false
+    t.decimal "multiple_game_multiplier", null: false
   end
 
   create_table "market_orders", force: true do |t|
