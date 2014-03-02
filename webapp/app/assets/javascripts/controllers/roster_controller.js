@@ -5,7 +5,6 @@ angular.module("app.controllers")
   $scope.rosters = rosters;
   $scope.markets = markets;
   $scope.Math = window.Math;
-  console.log(rosters)
     if(!marketService.upcoming[0]){
         marketService.fetchUpcoming({type: 'single_elimination', sport: currentUserService.currentUser.currentSport}).then(function() {
             marketService.fetchUpcoming({type: 'regular_season', sport: currentUserService.currentUser.currentSport}).then(function() {
