@@ -4,23 +4,26 @@
 <div class='modal-body clearfix'>
    <ul class="no-no prediction-modal-body">
        <li>
-          <p>re-bounds:3</p>
-          <a href="javascript://" class="btn prediction-less" ng-click="close()">less</a>
-          <a href="javascript://" class="btn prediction-more" ng-click="close()">more</a>
+          <p>rebounds: {{point.rebounds}}</p>
+          <a href="javascript://" class="btn prediction-less" ng-click="difference.bound = 'less'">less</a>
+          <a href="javascript://" class="btn prediction-more" ng-click="difference.bound = 'more'">more</a>
+          <p>{{difference.bound}}</p>
        </li>
        <li>
-           <p>points:14</p>
-           <a href="javascript://" class="btn prediction-less" ng-click="close()">less</a>
-           <a href="javascript://" class="btn prediction-more" ng-click="close()">more</a>
+           <p>points: {{point.points}}</p>
+           <a href="javascript://" class="btn prediction-less" ng-click="difference.point = 'less'">less</a>
+           <a href="javascript://" class="btn prediction-more" ng-click="difference.point = 'more'">more</a>
+           <p>{{difference.point}}</p>
        </li>
        <li class="border-none">
-           <p>asists:6</p>
-           <a href="javascript://" class="btn prediction-less" ng-click="close()">less</a>
-           <a href="javascript://" class="btn prediction-more" ng-click="close()">more</a>
+           <p>assists: {{point.assists}}</p>
+           <a href="javascript://" class="btn prediction-less" ng-click="difference.assist = 'less'">less</a>
+           <a href="javascript://" class="btn prediction-more" ng-click="difference.assist = 'more'">more</a>
+           <p>{{difference.assist}}</p>
        </li>
    </ul>
 </div>
 <div class='modal-footer'>
     <p class="pull-left">Predict {{player.name}} more than 13 rebounds?</p>
-    <a href="javascript://" class="btn btn-success" ng-click="close()">Submit</a>
+    <a href="javascript://" class="btn btn-success" ng-click="predictionSubmit()">Submit</a>
 </div>
