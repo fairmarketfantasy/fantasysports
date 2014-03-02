@@ -2,11 +2,12 @@ class WeeklyDigestMailer < ActionMailer::Base
   default from: "Fair Market Fantasy <no-reply@fairmarketfantasy.com>"
 
   def digest_email(user)
+    return nil if user.last_sent_digest_at > 6.days.ago
     @base_url = url_for controller: 'pages', action: 'index'
     @user = user
-    weekly_digest = WeeklyDigest.new(user: user)
-    @rosters = weekly_digest.rosters
-    @markets = weekly_digest.markets
+    @sport_digests = Sport.active.map do |s|
+      WeeklyDigest.new(user: user, sport: s)
+    end
 
     mail(to: @user.email, subject: 'Your Weekly Digest')
   end

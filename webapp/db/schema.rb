@@ -417,6 +417,18 @@ ActiveRecord::Schema.define(version: 20140205234335) do
   add_index "rosters_players", ["market_id"], name: "index_rosters_players_on_market_id", using: :btree
   add_index "rosters_players", ["roster_id", "player_id"], name: "index_rosters_players_on_roster_id_and_player_id", unique: true, using: :btree
 
+  create_table "sent_emails", force: true do |t|
+    t.integer  "user_id",       null: false
+    t.string   "email_type",    null: false
+    t.text     "email_content", null: false
+    t.datetime "sent_at",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sent_emails", ["sent_at"], name: "index_sent_emails_on_sent_at", using: :btree
+  add_index "sent_emails", ["user_id", "email_type"], name: "index_sent_emails_on_user_id_and_email_type", using: :btree
+
   create_table "sports", force: true do |t|
     t.string   "name",                        null: false
     t.datetime "created_at"

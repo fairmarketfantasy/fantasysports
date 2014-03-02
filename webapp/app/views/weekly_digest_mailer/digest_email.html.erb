@@ -1,53 +1,56 @@
-<h1>Hello, <%= @user.name %>!</h1>
+<h3>Hello, <%= @user.name %>!</h3>
 
-<% if @rosters.present? %>
-<h2>Your Recent Contests</h2>
-<ul>
-  <% @rosters.each do |roster| -%>
-  <li>
-    <% if roster.state == 'cancelled' -%>
-      <span style="color: #808000;">CANCELLED:</span>
-    <% end -%>
-    <strong><%= roster.market.name %></strong>
-    <%= roster.market.nice_description %>
-    (<%= roster.contest_type.name.upcase %>, <%= roster.contest_type.takes_tokens ? (roster.contest_type.buy_in + ' FF') : number_to_currency(roster.contest_type.buy_in / 100) %>):
-    Rank <%= roster.contest_rank %> of <%= roster.contest_type.max_entries == 0 ? 'Unlimited' : roster.contest_type.max_entries %>,
-    Points <%= roster.score %>
-    <% if roster.amount_paid > 0 -%>
-      ,
-      <strong>
-        WON
-        <% if roster.contest_type.takes_tokens -%>
-          <%= roster.amount_paid -%> FF
-        <% else -%>
-          <%= number_to_currency roster.amount_paid / 100 %>
-        <% end -%>
-      </strong>
-    <% end -%>
-    <% if roster.contest.league %>
-      <em>(<%= roster.contest.league.name %> League Game)</em>
-    <% end %>
-  </li>
-  <% end -%>
-</ul>
-<% end %>
-
-<h2>This Week's Games</h2>
-
-<p>Don't miss the action! <a href="<%= @base_url %>">Sign in to Fair Market Fantasy</a> to submit a roster for one of these exciting events.</p>
-
-<ul>
-  <% @markets.each do |market| %>
-    <li><a href="<%= @base_url %>#/#{market.sport.name}/market/<%= market.id %>"><em><%= market.name %></em>: <%= market.nice_description %></a></li>
-  <% end %>
-</ul>
-
-<% if @user.leagues.count > 0 %>
-  <h2>Your Leagues</h2>
-  <p>These are your leagues. <a href="<%= @base_url %>">Sign in to continue playing!</a></p>
+<% @sport_digests.each do |sport_digest| %>
+  <h1><%= sport_digest.sport.name %></h1>
+  <% if sport_digest.rosters.present? %>
+  <h2>Your Recent Contests</h2>
   <ul>
-  <% @user.leagues.each do |league| %>
-    <li><a href="<%= @base_url %>#/league/<%= league.id %>"><%= league.name %></a></li>
-  <% end %>
+    <% sport_digest.rosters.each do |roster| -%>
+    <li>
+      <% if roster.state == 'cancelled' -%>
+        <span style="color: #808000;">CANCELLED:</span>
+      <% end -%>
+      <strong><%= roster.market.name %></strong>
+      <%= roster.market.nice_description %>
+      (<%= roster.contest_type.name.upcase %>, <%= roster.contest_type.takes_tokens ? (roster.contest_type.buy_in + ' FF') : number_to_currency(roster.contest_type.buy_in / 100) %>):
+      Rank <%= roster.contest_rank %> of <%= roster.contest_type.max_entries == 0 ? 'Unlimited' : roster.contest_type.max_entries %>,
+      Points <%= roster.score %>
+      <% if roster.amount_paid > 0 -%>
+        ,
+        <strong>
+          WON
+          <% if roster.contest_type.takes_tokens -%>
+            <%= roster.amount_paid -%> FF
+          <% else -%>
+            <%= number_to_currency roster.amount_paid / 100 %>
+          <% end -%>
+        </strong>
+      <% end -%>
+      <% if roster.contest.league %>
+        <em>(<%= roster.contest.league.name %> League Game)</em>
+      <% end %>
+    </li>
+    <% end -%>
   </ul>
+  <% end %>
+  
+  <h2>This Week's Games</h2>
+  
+  <p>Don't miss the action! <a href="<%= @base_url %>">Sign in to Fair Market Fantasy</a> to submit a roster for one of these exciting events.</p>
+  
+  <ul>
+    <% sport_digest.markets.each do |market| %>
+      <li><a href="<%= @base_url %>#/#{market.sport.name}/market/<%= market.id %>"><em><%= market.name %></em>: <%= market.nice_description %></a></li>
+    <% end %>
+  </ul>
+  
+  <% if sport_digest.user.leagues.count > 0 %>
+    <h2>Your Leagues</h2>
+    <p>These are your leagues. <a href="<%= @base_url %>">Sign in to continue playing!</a></p>
+    <ul>
+    <% @user.leagues.each do |league| %>
+      <li><a href="<%= @base_url %>#/league/<%= league.id %>"><%= league.name %></a></li>
+    <% end %>
+    </ul>
+  <% end %>
 <% end %>
