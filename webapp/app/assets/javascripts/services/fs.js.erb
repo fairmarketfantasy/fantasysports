@@ -377,6 +377,10 @@ angular.module('app.services')
         },
         show: function(stats_id) {
           return $http({method: 'GET', url: '/events/for_players?player_ids='+ stats_id + '&average=true' });
+        },
+        mine: function(opts) {
+            opts = opts || {};
+            return $http({method: 'GET', url: '/predictions/mine?' + $.param(opts)});
         }
       }
     }

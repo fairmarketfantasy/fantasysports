@@ -84,6 +84,16 @@ angular.module('app.data')
         });
       };
 
+      this.fetchMinePrediction = function(opts) {
+        return fs.rosters.mine(opts).then(function(rosters) {
+          _.each(rosters, function(roster) {
+            rosterData[roster.id] = roster;
+            $.extend(rosterData[roster.id], opts)
+          });
+          return rosters;
+        });
+      };
+
       var pastStats;
       this.fetchPastStats = function(opts) {
         // TODO: add throttle, effectively a cache TTL
