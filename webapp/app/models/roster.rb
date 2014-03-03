@@ -9,6 +9,7 @@ class Roster < ActiveRecord::Base
 
   has_and_belongs_to_many :players, -> { select(Player.with_purchase_price.select_values) }, join_table: 'rosters_players'
   has_many :rosters_players
+  has_many :individual_predictions
   belongs_to :market
   belongs_to :contest
   belongs_to :contest_type

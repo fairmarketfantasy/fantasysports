@@ -1,5 +1,8 @@
 class IndividualPrediction < ActiveRecord::Base
-  belongs_to :roster_player
-  validates_presence_of :roster_player_id, :event_type, :value, :less_or_more
+  belongs_to :roster
+  belongs_to :player
+  belongs_to :user
+  has_many :event_predictions
+  validates_presence_of :user_id, :player_id, :roster_id
   attr_protected
 end

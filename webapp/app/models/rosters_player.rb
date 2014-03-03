@@ -2,7 +2,6 @@ class RostersPlayer < ActiveRecord::Base
   attr_protected
   belongs_to :roster
   belongs_to :player
-  has_many :individual_predictions
 
   validates_presence_of :position
 

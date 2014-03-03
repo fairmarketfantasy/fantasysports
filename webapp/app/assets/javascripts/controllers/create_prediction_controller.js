@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('CreatePredictionController', ['$scope', 'dialog', 'fs', 'market', 'player','flash', function($scope, dialog, fs, market, player, flash) {
+.controller('CreatePredictionController', ['$scope', 'dialog', 'fs', 'market', 'player','flash', '$routeParams', function($scope, dialog, fs, market, player, flash, $routeParams) {
     $scope.market = market;
     $scope.player = player;
     $scope.difference = '';
@@ -11,8 +11,8 @@ angular.module("app.controllers")
         });
     }
 
-
     $scope.predictionSubmit = function(){
+
         if(!$scope.difference.bound || !$scope.difference.point || !$scope.difference.assist){
             flash.error("All buttons are required");
             return;
@@ -22,7 +22,7 @@ angular.module("app.controllers")
         var point = [$scope.difference.bound, $scope.point.points];
         var assist = [$scope.difference.bound, $scope.point.assists];
 
-       fs.prediction.submit(player.stats_id, bound, point, assist).then(function(data){
+       fs.prediction.submit($routeParams.roster_id,player.stats_id, bound, point, assist).then(function(data){
            flash.success("Individual prediction submitted successfully!")
            dialog.close();
        });

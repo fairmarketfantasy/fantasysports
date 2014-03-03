@@ -16,6 +16,7 @@ class Player < ActiveRecord::Base
   # This bullshit doesn't work if the foreign key isn't an id column
   has_many :stat_events, :foreign_key => 'player_stats_id', :inverse_of => :player
   has_many :positions, :class_name => 'PlayerPosition'
+  has_many :individual_predictions
 
   def purchase_price; self[:purchase_price]; end
   def buy_price; self[:buy_price]; end
@@ -61,13 +62,13 @@ class Player < ActiveRecord::Base
     where("status = 'ACT' AND NOT removed AND benched_games < 3")
   }
 
-  scope :purchasable_for_roster, -> (roster) { 
+  scope :purchasable_for_roster, -> (roster) {
     select(
       "players.*, player_positions.position, buy_prices.buy_price as buy_price, buy_prices.is_eliminated"
     ).joins("JOIN buy_prices(#{roster.id}) as buy_prices on buy_prices.player_id = players.id JOIN player_positions ON players.id=player_positions.player_id")
   }
 
-  scope :with_sell_prices, -> (roster) { 
+  scope :with_sell_prices, -> (roster) {
     select(
       "players.*, sell_prices.locked, sell_prices.score, sell_prices.purchase_price as purchase_price, sell_prices.sell_price as sell_price"
     ).joins( "JOIN sell_prices(#{roster.id}) as sell_prices on sell_prices.player_id = players.id" )
