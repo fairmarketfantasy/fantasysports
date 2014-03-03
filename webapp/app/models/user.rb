@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
-  devise :oauth2_providable, 
+  devise :oauth2_providable,
          :oauth2_facebook_grantable,
          :oauth2_password_grantable,
          :oauth2_refresh_token_grantable,
@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
   has_many :rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner_id
   has_many :push_devices
+  has_many :individual_predictions
   has_many :transaction_records
   has_many :league_memberships
   has_many :leagues, :through => :league_memberships

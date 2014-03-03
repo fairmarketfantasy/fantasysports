@@ -372,15 +372,15 @@ angular.module('app.services')
         }
       },
       prediction: {
-        submit: function(player_id, bound, point, assist) {
-          return $http({method: 'POST', url: '/individual_predictions/', data: {roster_player_id: player_id, bound: bound, point: point, assist: assist}});
+        submit: function(roster_id, player_id, bound, point, assist) {
+          return $http({method: 'POST', url: '/individual_predictions/', data: {roster_id:roster_id, player_id: player_id, bound: bound, point: point, assist: assist}});
         },
         show: function(stats_id) {
           return $http({method: 'GET', url: '/events/for_players?player_ids='+ stats_id + '&average=true' });
         },
         mine: function(opts) {
             opts = opts || {};
-            return $http({method: 'GET', url: '/predictions/mine?' + $.param(opts)});
+            return $http({method: 'GET', url: '/individual_predictions/mine?' + $.param(opts)});
         }
       }
     }
