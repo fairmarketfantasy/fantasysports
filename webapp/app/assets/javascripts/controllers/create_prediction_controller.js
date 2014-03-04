@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('CreatePredictionController', ['$scope', 'dialog', 'fs', 'market', 'player','flash', '$routeParams', function($scope, dialog, fs, market, player, flash, $routeParams) {
+.controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'market', 'player','flash', '$routeParams', function($scope, dialog, fs, market, player, flash, $routeParams) {
     $scope.market = market;
     $scope.player = player;
     $scope.difference = '';
