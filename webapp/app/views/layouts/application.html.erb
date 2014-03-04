@@ -165,6 +165,7 @@
             <!--<img class="nmw-info" src="<%= asset_path "info-icon.png" %>" width="17px"-->
               <!--popover-trigger="mouseenter" popover="Fanbucks are how much you're up or down this month. Any positive balance is put in your account each month. Check out the FAQs for more info!" popover-placement="right">-->
             <small>FanBucks:</small>&nbsp;&nbsp;{{ currentUser.customer_object.net_monthly_winnings | centsToDollars }}
+            <a style="margin-left:15px;" class="btn btn-small btn-success" href="/#/{{currentUser.currentSport}}/rosters">My Predictions</a>
           </div>
           <div class="user-dash no-border clearfix">
             <a class="btn btn-small btn-success" href="javascript://" ng-click="addFundsModal()">Manage Subscription</a>
@@ -197,7 +198,6 @@
                 <ul class="footer-nav">
                   <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/home">Home</a></li>
                   <li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>
-                  <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rosters">My Predictions</a></li>
                   <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>
                   <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
                   <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rules" >Rules and Scoring</a></li>
