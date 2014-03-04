@@ -82,21 +82,33 @@
         <h1 class="logo-font">Predict <span class="logo-slash">That</span></h1>
         <nav class="landing-nav">
           <ul>
-              <li>
-                <a class="dropdown-toggle">Sport</a>
-                <ul class="header-drop-menu dropdown-menu">
-                  <li ng-class="{'no-border': $last}" ng-repeat="choice in sports" ng-show="choice.is_active">
-                    <em class="menu-arrow" ng-class="{'active-arrow': choice.name == $routeParams.sport }"></em>
-                    <a class="landing-nav-link" href="/#/{{choice.name}}/external">{{choice.name}}</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a class="dropdown-toggle">Fantasy Entertainment</a>
-              </li>
-              <li>
-                <a class="dropdown-toggle">Politics</a>
-              </li>
+            <li>
+              <a ng-show="sports" class="dropdown-toggle">Sport</a>
+              <ul class="header-drop-menu dropdown-menu">
+                <li ng-class="{'no-border': $last}" ng-repeat="sport in sports" ng-show="sport.is_active" >
+                  <em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentSport == sport.name}"></em>
+                  <a class="landing-nav-link"  href="/#/{{sport.name}}/external">{{sport.name}}</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a ng-show="entertainment" class="dropdown-toggle">Fantasy Entertainment</a>
+              <ul class="header-drop-menu dropdown-menu">
+                <li ng-class="{'no-border': $last}" ng-repeat="entertainment in entertainments" ng-show="entertainment.is_active" >
+                  <em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentEntertainment == entertainment.name}"></em>
+                  <a class="landing-nav-link"  href="/#/{{entertainment.name}}/external">{{entertainment.name}}</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a ng-show="politics" class="dropdown-toggle">Politics</a>
+              <ul class="header-drop-menu dropdown-menu">
+                <li ng-class="{'no-border': $last}" ng-repeat="politic in politics" ng-show="politic.is_active" >
+                  <em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentPolitic == politic.name}"></em>
+                  <a class="landing-nav-link"  href="/#/{{politic.name}}/external">{{politic.name}}</a>
+                </li>
+              </ul>
+            </li>
           </ul>
         </nav>
       </div>

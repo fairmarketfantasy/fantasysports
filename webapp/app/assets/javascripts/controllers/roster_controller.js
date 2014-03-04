@@ -364,8 +364,8 @@ $scope.openPredictionDialog = function(player) {
         keyboard: true,
         backdropClick: true,
         dialogClass: 'modal modal-prediction',
-        templateUrl: '/create_prediction.html',
-        controller: 'CreatePredictionController',
+        templateUrl: '/create_individual_prediction.html',
+        controller: 'CreateIndividualPredictionController',
         resolve: {
             player: function() { return player; },
             market: function() {  return rosters.currentRoster.market; }

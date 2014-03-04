@@ -27,7 +27,7 @@ angular.module('app', [
       when('/:sport/league/:league_id', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/:sport/rosters', {templateUrl: '/roster_list.html', controller: 'RosterListController'}).
       when('/:sport/history', {templateUrl: '/roster_list.html', controller: 'RosterHistoryController'}).
-      when('/:sport/predictions', {templateUrl: '/prediction_list.html', controller: 'PredictionListController'}).
+      when('/:sport/individual_predictions', {templateUrl: '/individual_prediction_list.html', controller: 'IndividualPredictionListController'}).
       when('/:sport/leaderboard', {templateUrl: '/leaderboard.html', controller: 'LeaderboardController'}).
       when('/:sport/rules', {templateUrl: '/rules.html', controller: 'RulesController'}).
       when('/terms', {templateUrl: '/terms.html', controller: 'RulesController'}).
