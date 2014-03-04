@@ -1,6 +1,7 @@
 angular.module('app.data')
   .factory('rosters', ['fs', '$q', '$location', 'flash', 'currentUserService', '$dialog', function(fs, $q, $location, flash, currentUserService, $dialog) {
     var rosterData = {};
+    var predictionData = {};
     return new function() {
       var fetchRoster = function(id) {
       };
@@ -86,9 +87,9 @@ angular.module('app.data')
 
       this.fetchMinePrediction = function(opts) {
         return fs.prediction.mine(opts).then(function(rosters) {
-          _.each(rosters, function(roster) {
-            rosterData[roster.id] = roster;
-            $.extend(rosterData[roster.id], opts)
+          _.each(rosters, function(prediction) {
+              predictionData[prediction.id] = prediction;
+            $.extend(predictionData[prediction.id], opts)
           });
           return rosters;
         });
