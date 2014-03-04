@@ -2,7 +2,7 @@ class IndividualPredictionsController < ApplicationController
   def create
     prediction = current_user.individual_predictions.create(player_id: params[:player_id],
                                                             roster_id: params[:roster_id],
-                                                            market_id: params[:roster_id])
+                                                            market_id: params[:market_id])
     params.each do |k, v|
       event_types = ['assists', 'turnovers', 'rebounds', 'points', '3pt made',
                      'steals', 'blocks']
