@@ -6,52 +6,32 @@
 <table class="table table-striped">
   <thead>
     <th>Contest</th>
-    <th ng-hide="history">Next Game</th>
-    <th ng-show="history">State</th>
-    <th>Rebounds</th>
-    <th>Points</th>
-    <th>Assists</th>
-    <!--<th ng-hide="history">Payout</th>-->
-    <!--<th ng-show="history">Paid</th>-->
-    <th>Roster</th>
+    <th>Player Name</th>
+    <th>Prediction</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
   </thead>
   <tbody>
-    <tr ng-repeat="roster in predictionList">
+    <tr ng-repeat="prediction in predictionList">
       <td>
-        <div>{{roster.market.name}}
-          <span class="finished-time">{{roster.market.closed_at | longFormDate}}</span>
-        </div>
-        <div class="league-roster" ng-show="roster.league">{{ roster.league.name }} League Game</div>
         <div>
-          <span ng-show="roster.contest_type.takes_tokens">{{ roster.contest_type.buy_in }} FF</span>
-          <span ng-hide="roster.contest_type.takes_tokens">{{ roster.contest_type.buy_in | centsToDollars }}</span>
-          {{ roster.contest_type.name | allCaps }}
+            {{prediction.market_name}}
         </div>
       </td>
-      <td ng-hide="history"><span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span></td>
-      <td ng-show="history">{{roster.state}} <span ng-show="roster.cancelled_reason">{{roster.cancelled_reason}}</span></td>
       <td>
-        <span ng-show="roster.contest_rank && inThePast(roster.started_at) && roster.state != 'cancelled'">{{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries | unlimitedIfZero}}</span>
-        <span ng-show="!inThePast(roster.started_at)">Not started yet</span>
-        <span ng-show="roster.state == 'cancelled'">N/A</span>
+        <div>
+            {{prediction.player_name}}
+        </div>
       </td>
-      <td>
-        <span ng-show="inThePast(roster.started_at)">{{roster.score || 0}}</span>
-        <span ng-show="!inThePast(roster.started_at)">N/A</span>
-      </td>
-      <td ng-show="history">
-        <span ng-show="roster.state == 'cancelled'">Refunded on {{roster.cancelled_at | longFormDate}}</span>
-        <span ng-show="roster.state == 'finished'">
-          <span ng-show="roster.contest_type.takes_tokens">{{roster.amount_paid | number:0}} FanFrees</span>
-          <span ng-hide="roster.contest_type.takes_tokens">{{roster.amount_paid | centsToDollars }} </span>
-            on {{roster.paid_at | longFormDate}}
+      <td colspan="5" class="list-statistic">
+        <span ng-repeat="statistic in prediction.event_predictions">
+            {{statistic.less_or_more | allCaps}} then
+            {{statistic.value}}
+            {{statistic.event_type}},
         </span>
       </td>
-      <td ng-hide="history">
-        <span ng-show="inThePast(roster.started_at) && roster.state == 'finished'">{{roster.contest_rank_payout || 0}}</span>
-        <span ng-hide="inThePast(roster.started_at) && roster.state == 'finished'">N/A</span>
-      </td>
-      <td><a href="#/{{currentUser.currentSport}}/market/{{roster.market.id}}/roster/{{roster.id}}">view</a></td>
     </tr>
   </tbody>
 </table>
