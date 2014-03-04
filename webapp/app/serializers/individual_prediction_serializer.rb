@@ -3,7 +3,7 @@ class IndividualPredictionSerializer < ActiveModel::Serializer
   has_many :event_predictions
 
   def market_name
-    object.roster.market.name
+    Market.find(object.market_id).name
   end
 
   def player_name
