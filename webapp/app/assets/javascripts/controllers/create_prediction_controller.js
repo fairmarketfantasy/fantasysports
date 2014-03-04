@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'market', 'player','flash', '$routeParams', function($scope, dialog, fs, market, player, flash, $routeParams) {
+.controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'market', 'player','flash', '$routeParams', '$dialog', function($scope, dialog, fs, market, player, flash, $routeParams, $dialog) {
     $scope.market = market;
     $scope.player = player;
     $scope.difference = '';
@@ -22,7 +22,7 @@ angular.module("app.controllers")
         var point = [$scope.difference.bound, $scope.point.points];
         var assist = [$scope.difference.bound, $scope.point.assists];
 
-       fs.prediction.submit($routeParams.roster_id,player.stats_id, bound, point, assist).then(function(data){
+       fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, bound, point, assist).then(function(data){
            flash.success("Individual prediction submitted successfully!")
            dialog.close();
        });
@@ -33,5 +33,22 @@ angular.module("app.controllers")
     };
 
     $scope.playerStats();
+
+    $scope.openConfirmPredictionDialog = function() {
+//        var player = player
+        var dialogOpts = {
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            dialogClass: 'modal modal-confirm-prediction',
+            templateUrl: '/confirm_prediction.html',
+            controller: 'ConfirmPredictionController'
+//            resolve: {
+//                player: function() { return player; },
+//                market: function() {  return rosters.currentRoster.market; }
+//            }
+        };
+        return $dialog.dialog(dialogOpts).open();
+    };
 }]);
 
