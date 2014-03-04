@@ -22,9 +22,7 @@ class IndividualPredictionsController < ApplicationController
   end
 
   def mine
-    render json: current_user.individual_predictions.to_json(:include => {:event_predictions => {
-                                                               :only => [:event_type, :value, :less_or_more] }
-                                                             })
+    render_api_response current_user.individual_predictions
   end
 
   def update
