@@ -76,7 +76,7 @@
         <div ng-hide="rosters.opponentRoster" ng-include="'/players.html'"></div>
       </div>
     </div>
-    <div class="pull-left score-list">
+    <div class="pull-left score-list" ng-hide="marketService.currentMarket.state == 'closed' || marketService.currentMarket.state == 'complete'">
       <div class="league-selector" ng-show="currentUser.leagues.length > 0">
         <select ng-model="league" name="league" ng-options="l as l.name for l in currentUser.leagues" ng-change="showNextLeagueRoster(league)">
           <option value="">Select a League</option>

@@ -4,20 +4,8 @@ angular.module("app.controllers")
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
+
   $scope.Math = window.Math;
-    if(!marketService.upcoming[0]){
-        marketService.fetchUpcoming({type: 'single_elimination', sport: currentUserService.currentUser.currentSport}).then(function() {
-            marketService.fetchUpcoming({type: 'regular_season', sport: currentUserService.currentUser.currentSport}).then(function() {
-                if ($routeParams.market_id) {
-                    marketService.selectMarketId($routeParams.market_id, currentUserService.currentUser.currentSport);
-                } else if ($location.path().match(/\w+\/playoffs/)) {
-                    marketService.selectMarketType('single_elimination', currentUserService.currentUser.currentSport);
-                } else {
-                    marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
-                }
-            });
-        });
-    }
 
     $scope.isCurrent = function(market){
         if (!market) { return; }
@@ -30,17 +18,21 @@ angular.module("app.controllers")
     };
 
   var teamsToGames = {};
-  markets.fetch($routeParams.market_id).then(function(market) {
-    $scope.market = market;
-    markets.selectMarket(market);
-    markets.gamesFor(market.id).then(function(games) {
-      $scope.games = games;
-      _.each(games, function(game) {
-        teamsToGames[game.home_team] = game;
-        teamsToGames[game.away_team] = game;
-      });
+  $scope.startMarket = function(){
+    markets.fetch($routeParams.market_id).then(function(market) {
+      $scope.market = market;
+      markets.selectMarket(market);
+      markets.gamesFor(market.id).then(function(games) {
+        $scope.games = games;
+        _.each(games, function(game) {
+          teamsToGames[game.home_team] = game;
+          teamsToGames[game.away_team] = game;
+        });
+       });
     });
-  });
+  }
+
+    $scope.startMarket();
 
   $scope.removeLow = true;
   var filterOpts = {position: rosters.uniqPositionList && rosters.uniqPositionList[0], removeLow: true, sort: 'buy_price', dir: 'desc'};

@@ -3,7 +3,7 @@
 </div>
 <div class='modal-body clearfix'>
    <ul class="no-no prediction-modal-body">
-       <li>
+       <li ng-show="point.rebounds">
           <p>rebounds: {{point.rebounds}}</p>
           <a href="javascript://" class="btn prediction-less" ng-click="difference.bound = 'less'">less</a>
           <a href="javascript://" class="btn prediction-more" ng-click="difference.bound = 'more'">more</a>
