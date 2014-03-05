@@ -1442,6 +1442,7 @@ input, textarea, .uneditable-input {
       padding: 0 30px 5px;
       text-align: center;
       width: 122px;
+      min-height: 90px;
       div{
         margin: 0 0 0 15px;
       }
@@ -1462,17 +1463,6 @@ input, textarea, .uneditable-input {
       .border-radius(0 6px 6px 0);
     }
   }
-}
-
-.confirm-backdrop {
-  background-color: #243342;
-  height: 100%;
-  left: 0;
-  opacity: 0.15;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 0;
 }
 
 .btn.btn-small.btn-invisible {
@@ -1806,7 +1796,21 @@ input[type="text"].players-search {
   .border-radius(6px);
   .modal-body {
     padding: 15px;
+    h4{
+      font-size:23px;
+    }
   }
+}
+
+.confirm-backdrop {
+  background-color: #243342;
+  height: 100%;
+  left: 0;
+  opacity: 0.55;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 0;
 }
 
 .roster-alert {
