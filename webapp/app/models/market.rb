@@ -499,12 +499,12 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 #    },
     {
       name: 'Top6',
-      description: '12 teams, top 6 winners take home $20',
+      description: '12 teams, top 3 winners take home 100 FB, 30 FB, 30 FB',
       max_entries: 12,
       buy_in: 1000,
       rake: 2000,
-      payout_structure: '[2000,2000,2000,2000,2000]',
-      payout_description: "Top six win $20",
+      payout_structure: '[100, 30, 30]',
+      payout_description: "FB130 prize purse, 1st: FB100, 2nd: FB30, 3rd: FB30",
       takes_tokens: false,
     },
     {
@@ -513,8 +513,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       max_entries: 2,
       buy_in: 1000,
       rake: 100,
-      payout_structure: '[1900]',
-      payout_description: "$19 prize purse, winner takes all",
+      payout_structure: '[27]',
+      payout_description: "FB27 prize purse, winner takes all",
       takes_tokens: false,
     },
 =begin
