@@ -6,17 +6,17 @@
 <div class='modal-body clearfix'>
    <ul class="no-no prediction-modal-body">
        <li ng-repeat="point in points">
-          <p>rebounds: {{point}}</p>
+          <p>{{point.name | capitalize}} : {{point.value}}</p>
            <div>
-              <a href="javascript://" class="btn prediction-less" ng-click="confirmModal('less', point)">less</a>
-              <a href="javascript://" class="btn prediction-more" ng-click="confirmModal('more', point)">more</a>
+              <a href="javascript://" class="btn prediction-less" ng-click="confirmModal('less', point.value, point.name)">less</a>
+              <a href="javascript://" class="btn prediction-more" ng-click="confirmModal('more', point.value, point.name)">more</a>
            </div>
-          <p>Your bid {{confirm.diff}} {{confirm.point}}</p>
        </li>
+       <!--<p ng-repeat="event in events">Your bid {{events.name}}</p>-->
    </ul>
 </div>
 <div class='modal-footer'>
-    <a href="javascript://" class="btn btn-success" ng-click="predictionSubmit()">Submit</a>
+    <a href="javascript://" class="btn btn-success" ng-show="events" ng-click="predictionSubmit()">Submit</a>
 </div>
 
 <div class="confirm-modal" ng-show="confirmShow">
@@ -24,7 +24,7 @@
         <h4 class="pull-left">Predict {{player.name}} {{confirm.diff}} than {{confirm.point}} rebounds?</h4>
     </div>
     <div class='modal-footer'>
-        <a href="javascript://" class="btn btn-success" ng-click="confirmSubmit()">Submit</a>
+        <a href="javascript://" class="btn btn-success" ng-click="confirmSubmit(confirm.name)">Submit</a>
         <a href="javascript://" class="btn" ng-click="confirmShow = false">Cancel</a>
     </div>
 </div>
