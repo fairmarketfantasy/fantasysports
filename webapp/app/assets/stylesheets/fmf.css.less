@@ -629,9 +629,14 @@ select:focus:invalid {
   font-size: 14px;
 }
 .user-dash {
-  float:right;
+  float: right;
   margin: 0 auto 12px;
-  padding:13px 0 4px 0;
+  padding: 0 0 4px;
+  width: 160px;
+  .prediction-header-btn {
+    margin-top: 7px;
+    width: 112px;
+  }
 }
 .nmw-info {
   position: absolute;
@@ -1434,9 +1439,12 @@ input, textarea, .uneditable-input {
     li{
       border-right: 1px solid #CCCCCC;
       float: left;
+      padding: 0 30px 5px;
       text-align: center;
-      width: 97px;
-      padding: 0 42px 5px;
+      width: 122px;
+      div{
+        margin: 0 0 0 15px;
+      }
     }
     p {
       font-size: 16px;
@@ -1454,6 +1462,17 @@ input, textarea, .uneditable-input {
       .border-radius(0 6px 6px 0);
     }
   }
+}
+
+.confirm-backdrop {
+  background-color: #243342;
+  height: 100%;
+  left: 0;
+  opacity: 0.15;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 0;
 }
 
 .btn.btn-small.btn-invisible {
@@ -1775,6 +1794,21 @@ input[type="text"].players-search {
   background-color: #0000FF;
   border-left:  #0000FF;
 }
+
+.confirm-modal {
+  background-color: #F9FAFB;
+  left: 50%;
+  margin-left: -370px;
+  position: fixed;
+  top: 36px;
+  width: 545px;
+  z-index: 1045;
+  .border-radius(6px);
+  .modal-body {
+    padding: 15px;
+  }
+}
+
 .roster-alert {
   margin: 10px 10px 0 16px;
   height: 150px;

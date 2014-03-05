@@ -5,27 +5,27 @@
 </div>
 <div class='modal-body clearfix'>
    <ul class="no-no prediction-modal-body">
-       <li ng-show="point.rebounds">
-          <p>rebounds: {{point.rebounds}}</p>
-          <a href="javascript://" class="btn prediction-less" ng-click="difference.bound = 'less'">less</a>
-          <a href="javascript://" class="btn prediction-more" ng-click="difference.bound = 'more'">more</a>
-          <p>{{difference.bound}}</p>
-       </li>
-       <li>
-           <p>points: {{point.points}}</p>
-           <a href="javascript://" class="btn prediction-less" ng-click="difference.point = 'less'">less</a>
-           <a href="javascript://" class="btn prediction-more" ng-click="difference.point = 'more'">more</a>
-           <p>{{difference.point}}</p>
-       </li>
-       <li class="border-none">
-           <p>assists: {{point.assists}}</p>
-           <a href="javascript://" class="btn prediction-less" ng-click="difference.assist = 'less'">less</a>
-           <a href="javascript://" class="btn prediction-more" ng-click="difference.assist = 'more'">more</a>
-           <p>{{difference.assist}}</p>
+       <li ng-repeat="point in points">
+          <p>rebounds: {{point}}</p>
+           <div>
+              <a href="javascript://" class="btn prediction-less" ng-click="confirmModal('less', point)">less</a>
+              <a href="javascript://" class="btn prediction-more" ng-click="confirmModal('more', point)">more</a>
+           </div>
+          <p>Your bid {{confirm.diff}} {{confirm.point}}</p>
        </li>
    </ul>
 </div>
 <div class='modal-footer'>
-    <p class="pull-left">Predict {{player.name}} more than 13 rebounds?</p>
     <a href="javascript://" class="btn btn-success" ng-click="predictionSubmit()">Submit</a>
 </div>
+
+<div class="confirm-modal" ng-show="confirmShow">
+    <div class="modal-body clearfix">
+        <h4 class="pull-left">Predict {{player.name}} {{confirm.diff}} than {{confirm.point}} rebounds?</h4>
+    </div>
+    <div class='modal-footer'>
+        <a href="javascript://" class="btn btn-success" ng-click="confirmSubmit()">Submit</a>
+        <a href="javascript://" class="btn" ng-click="confirmShow = false">Cancel</a>
+    </div>
+</div>
+<div class="confirm-backdrop" ng-show="confirmShow" ng-click="confirmShow = false"></div>

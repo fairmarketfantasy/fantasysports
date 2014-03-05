@@ -1,16 +1,16 @@
 <div class="roster-title">  
-  <h3>Your <span ng-show="history">Past {{currentUser.currentSport}} </span>Predictions Entries
+  <h3>Your <span ng-show="history">Past {{currentUser.currentSport}} </span>Predictions
     <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/individual_predictions">My Individual Predictions</a>
   </h3>
 </div>
 <table class="table table-striped">
   <thead>
-    <th>Contest</th>
-    <th ng-hide="history">Next Game</th>
+    <th>Prediction</th>
     <th ng-show="history">State</th>
+    <th>Day</th>
     <th>Rank</th>
     <th>Points</th>
-    <th ng-hide="history">Payout</th>
+    <th ng-hide="history">Award</th>
     <th ng-show="history">Paid</th>
     <th>Roster</th>
   </thead>
@@ -29,6 +29,7 @@
       </td>
       <td ng-hide="history"><span ng-show="roster.live">LIVE</span><span ng-hide="roster.live">{{roster.next_game_time | shortFormTime }}</span></td>
       <td ng-show="history">{{roster.state}} <span ng-show="roster.cancelled_reason">{{roster.cancelled_reason}}</span></td>
+      <td> </td>
       <td>
         <span ng-show="roster.contest_rank && inThePast(roster.started_at) && roster.state != 'cancelled'">{{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries | unlimitedIfZero}}</span>
         <span ng-show="!inThePast(roster.started_at)">Not started yet</span>
