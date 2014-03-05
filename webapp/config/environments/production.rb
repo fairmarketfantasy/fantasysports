@@ -1,5 +1,5 @@
 Fantasysports::Application.configure do
-  SITE = "https://fairmarketfantasy.com"
+  SITE = "https://predictthat.com"
   SPORTS_DATA_API_KEY = "dmefnmpwjn7nk6uhbhgsnxd6"
   SPORTS_DATA_IMAGES_API_KEY = "yq9uk9qu774eygre2vg2jafe"
   FACEBOOK_APP_ID = "517379538328159"
@@ -67,7 +67,7 @@ Fantasysports::Application.configure do
 
 
   #devise told me to: #TODO, set it as the real host
-  config.action_mailer.default_url_options = { :host => 'fairmarketfantasy.com' }
+  config.action_mailer.default_url_options = { :host => 'predictthat.com' }
   config.action_mailer.delivery_method = :sendmail
 
   # Prepend all log lines with the following tags.

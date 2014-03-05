@@ -1,5 +1,5 @@
 Fantasysports::Application.configure do
-  SITE = "https://staging.fairmarketfantasy.com"
+  SITE = "https://staging.predictthat.com"
   SPORTS_DATA_API_KEY = "dmefnmpwjn7nk6uhbhgsnxd6"
   SPORTS_DATA_IMAGES_API_KEY = "yq9uk9qu774eygre2vg2jafe"
   FACEBOOK_APP_ID = "436114143174192"
@@ -82,7 +82,7 @@ Fantasysports::Application.configure do
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { :host => 'staging.fairmarketfantasy.com' }
+  config.action_mailer.default_url_options = { :host => 'staging.predictthat.com' }
   config.action_mailer.delivery_method = :sendmail
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

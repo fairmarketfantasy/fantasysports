@@ -1,5 +1,5 @@
 class WeeklyDigestMailer < ActionMailer::Base
-  default from: "Fair Market Fantasy <no-reply@fairmarketfantasy.com>"
+  default from: "Predict That <no-reply@predictthat.com>"
 
   def digest_email(user)
     return nil if user.last_sent_digest_at > 6.days.ago

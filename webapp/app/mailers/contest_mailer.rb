@@ -3,7 +3,7 @@ class BlockedEmail
   end
 end
 class ContestMailer < ActionMailer::Base
-  default from: "Fair Market Fantasy <no-reply@fairmarketfantasy.com>"
+  default from: "Fair Market Fantasy <no-reply@predictthat.com>"
 
   def invite_to_contest(invitation, inviter, contest, email, message)
     return BlockedEmail.new if EmailUnsubscribe.has_unsubscribed?(email, 'all') # TODO: generalize this, put it in mail.deliver?
@@ -13,7 +13,7 @@ class ContestMailer < ActionMailer::Base
     @contest = contest
     @message = message
     subject = contest.private? ?
-        "#{inviter.name} invited you to their league on FairMarketFantasy.com" : "#{inviter.name} challenged you on FairMarketFantasy.com"
+        "#{inviter.name} invited you to their league on PredictThat.com" : "#{inviter.name} challenged you on PredictThat.com"
     envelope = {
       to: email,
       subject: subject
