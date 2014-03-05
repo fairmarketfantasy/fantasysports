@@ -63,7 +63,7 @@ class EventsController < ApplicationController
       data << { name: k, value: value.round(1) }
     end
 
-    render json: data.to_json
+    render json: { events: data }.to_json
   end
 
   def collect_stats(events)
