@@ -11,8 +11,9 @@
               <a href="javascript://" class="btn prediction-less" ng-click="confirmModal('less', point.value, point.name)">less</a>
               <a href="javascript://" class="btn prediction-more" ng-click="confirmModal('more', point.value, point.name)">more</a>
            </div>
+           <p ng-repeat="event in events">Your bid {{events.name}}</p>
        </li>
-       <!--<p ng-repeat="event in events">Your bid {{events.name}}</p>-->
+
    </ul>
 </div>
 <div class='modal-footer'>
