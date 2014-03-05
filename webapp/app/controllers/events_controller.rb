@@ -46,25 +46,36 @@ class EventsController < ApplicationController
   end
 
   def render_average(params)
-    events = StatEvent.where(:player_stats_id => params[:player_ids],
-                             :activity => ["rebounds", "assists", "points"])
-    total_stats = {}
-    events_by_activity_counter = {}
+    player = Player.where(:stats_id => params[:player_ids]).first
+    events = StatEvent.where(:player_stats_id => params[:player_ids])
+    past_player_games_ids = Game.where("game_time < now()").
+                              where("(home_team = '#{player[:team] }' OR away_team = '#{player[:team] }')").
+                              order("game_time DESC").first(5).map(&:id)
+    recent_events = events.where(game_stats_id: past_player_games_ids)
+
+    recent_stats = collect_stats(recent_events)
+    total_stats = collect_stats(events)
+
+    data = []
+    total_stats.each do |k, v|
+      value = v / BigDecimal(events.count)
+      value = value * 0.7 + (recent_stats[k] || 0)/recent_events.count * 0.3 if recent_stats[k]
+      data << { name: k, value: value.round(1) }
+    end
+
+    render json: { events: data }.to_json
+  end
+
+  def collect_stats(events)
+    result = {}
     events.each do |event|
-      if total_stats[event.activity]
-        total_stats[event.activity] += event.point_value
-        events_by_activity_counter[event.activity] += 1
+      if result[event.activity]
+        result[event.activity] += event.point_value
       else
-        total_stats[event.activity] = event.point_value
-        events_by_activity_counter[event.activity] = 1
+        result[event.activity] = event.point_value
       end
     end
 
-    total_stats.each do |k, v|
-      value = v / BigDecimal(events_by_activity_counter[k])
-      total_stats[k] = value.round(0).to_i
-    end
-
-    render json: total_stats.to_json
+    result
   end
 end
