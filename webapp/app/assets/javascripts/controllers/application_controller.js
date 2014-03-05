@@ -5,6 +5,7 @@ angular.module("app.controllers")
   $scope.sports = window.App.sports;
   $scope.fs = fs;
   $scope.$routeParams = $routeParams;
+                console.log($scope.sports)
 
   $scope.marketService = marketService;
 
