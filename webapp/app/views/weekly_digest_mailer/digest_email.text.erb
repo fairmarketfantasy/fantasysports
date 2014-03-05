@@ -24,7 +24,7 @@ FOR THE <%= sport_digest.sport.name.upcase %>
   Don't miss the action!
 
   Sign in to Fair Market Fantasy to submit a roster:
-  http://fairmarketfantasy.com/
+  http://predictthat.com/
 
   <% sport_digest.markets.each do |market| %>
   <%= market.name %>: <%= market.nice_description %>
@@ -36,11 +36,10 @@ FOR THE <%= sport_digest.sport.name.upcase %>
 
   These are your leagues.
   Sign in to continue playing:
-  http://fairmarketfantasy.com/
+  http://predictthat.com/
 
   <% @user.leagues.each do |league| %>
   <%= league.name %>
   <% end %>
   <% end %>
 <% end %>
-
