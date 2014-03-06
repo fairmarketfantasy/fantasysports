@@ -58,7 +58,7 @@ class EventsController < ApplicationController
 
     data = []
     total_stats.each do |k, v|
-      value = v / BigDecimal(events.count)
+      value = v / BigDecimal.new(events.count)
       value = value * 0.7 + (recent_stats[k] || 0)/recent_events.count * 0.3 if recent_stats[k]
       data << { name: k, value: value.round(1) }
     end

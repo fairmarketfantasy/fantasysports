@@ -4,10 +4,11 @@ class IndividualPredictionsController < ApplicationController
     prediction = current_user.individual_predictions.create(player_id: player.id,
                                                             roster_id: params[:roster_id],
                                                             market_id: params[:market_id])
-    params[:events].each do |k, v|
-      event_prediction = prediction.event_predictions.create(event_type: k,
-                                                             value: v[:point],
-                                                             less_or_more: v[:diff])
+    params[:events].each do |event|
+      event_prediction = prediction.event_predictions.create(event_type: event[:name],
+                                                             value: event[:value],
+                                                             diff: event[:diff]
+                                                             pt: IndividualPrediction::PT)
       if event_prediction.errors.any?
         return render :text => k + ' ' + event_prediction.errors.full_messages.join(', '),
           status: :unprocessable_entity
