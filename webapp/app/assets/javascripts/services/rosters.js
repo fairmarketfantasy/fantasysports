@@ -16,7 +16,7 @@ angular.module('app.data')
       // TODO: memoize this and myLiveStats
       this.mine = function(opts) {
         return _.filter(rosterData, function(roster) {
-            if(roster.sport == opts && roster.state != 'finished'){
+            if(roster.sport == opts){
                 return roster.owner_id === window.App.currentUser.id;
             }
         });
