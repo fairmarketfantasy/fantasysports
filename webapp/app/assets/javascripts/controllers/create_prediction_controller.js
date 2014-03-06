@@ -8,11 +8,10 @@ angular.module("app.controllers")
     $scope.playerStats = function(){
         fs.prediction.show(player.stats_id).then(function(data){
            $scope.points = data.events;
-//            $scope.eventData();
         });
     }
 
-    $scope.confirmModal = function(text, point, name) {
+    $scope.confirmModal = function(text, point, name, index) {
         $scope.confirmShow = true;
         $scope.confirm = {
             point: point,
@@ -21,14 +20,10 @@ angular.module("app.controllers")
         }
     }
 
-    $scope.confirmSubmit = function(event){
-
+    $scope.confirmSubmit = function(name){
         $scope.confirmShow = false;
-
-        eventData[event] = $scope.confirm;
-         $scope.events =  eventData;
-
-        console.log($scope.events)
+        eventData[name] = $scope.confirm;
+        $scope.events =  eventData;
      }
 
     $scope.predictionSubmit = function(){
