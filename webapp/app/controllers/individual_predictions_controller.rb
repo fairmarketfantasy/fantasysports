@@ -7,7 +7,7 @@ class IndividualPredictionsController < ApplicationController
     params[:events].each do |event|
       event_prediction = prediction.event_predictions.create(event_type: event[:name],
                                                              value: event[:value],
-                                                             diff: event[:diff]
+                                                             diff: event[:diff],
                                                              pt: IndividualPrediction::PT)
       if event_prediction.errors.any?
         return render :text => k + ' ' + event_prediction.errors.full_messages.join(', '),
