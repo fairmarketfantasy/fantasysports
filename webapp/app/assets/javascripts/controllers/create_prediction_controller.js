@@ -4,6 +4,7 @@ angular.module("app.controllers")
     $scope.player = player;
     $scope.confirmShow = false;
     var eventData = {};
+    var eventSubmit = [];
 
     $scope.playerStats = function(){
         fs.prediction.show(player.stats_id).then(function(data){
@@ -14,7 +15,7 @@ angular.module("app.controllers")
     $scope.confirmModal = function(text, point, name, index) {
         $scope.confirmShow = true;
         $scope.confirm = {
-            point: point,
+            value: point,
             diff: text,
             name: name
         }
@@ -28,7 +29,11 @@ angular.module("app.controllers")
 
     $scope.predictionSubmit = function(){
 
-       fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, $scope.events).then(function(data){
+        _.each($scope.events, function(event){
+            eventSubmit.push(event)
+        });
+
+       fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, eventSubmit).then(function(data){
            flash.success("Individual prediction submitted successfully!");
            dialog.close();
        });
