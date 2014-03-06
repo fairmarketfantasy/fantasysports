@@ -26,9 +26,9 @@
             {{prediction.player_name}}
         </div>
       </td>
-      <td colspan="3" class="list-statistic">
+      <td colspan="4" class="list-statistic">
         <span ng-repeat="statistic in prediction.event_predictions">
-            {{statistic.less_or_more | allCaps}} then
+            {{statistic.less_or_more | allCaps}}
             {{statistic.value}}
             {{statistic.event_type}},
         </span>

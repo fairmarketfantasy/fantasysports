@@ -8,12 +8,12 @@
        <li ng-repeat="point in points" ng-class="{'border-none': $index == 2 || $index == 5}">
           <p>{{point.name | capitalize}} : {{point.value}}</p>
            <div>
-              <a href="javascript://" class="btn prediction-less" ng-click="confirmModal('less', point.value, point.name, $index)">less</a>
-              <a href="javascript://" class="btn prediction-more" ng-click="confirmModal('more', point.value, point.name, $index)">more</a>
+              <a href="javascript://" class="btn prediction-less" ng-click="confirmModal('less', point.value, point.name)">less</a>
+              <a href="javascript://" class="btn prediction-more" ng-click="confirmModal('more', point.value, point.name)">more</a>
            </div>
        </li>
    </ul>
-    <p class="pull-left bit" ng-repeat="event in events" ng-show="events">Your bid {{event.diff}} {{event.point}}: {{event.name | capitalize}}</p>
+    <p class="pull-left bit" ng-repeat="event in events" ng-show="events">Your bid {{event.diff}} {{event.value}}: {{event.name | capitalize}}</p>
 </div>
 <div class='modal-footer'>
     <a href="javascript://" class="btn btn-success" ng-show="events" ng-click="predictionSubmit()">Submit</a>
