@@ -141,11 +141,11 @@
     <div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
       <div class="pull-right roster-submit">
         <span ng-show="show" class="roster-submit-hover submit-hth">Enter to win 27 FanBucks on head to head</span>
-        <a ng-mouseenter="show = true" ng-mouseleave="show = false" class="btn btn-large btn-success " ng-click="submitRoster('h2h')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit HTH 27FB</a>
+        <a ng-mouseenter="show = true" ng-mouseleave="show = false" class="btn btn-large btn-success " ng-click="submitRoster('27 H2H')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit HTH 27FB</a>
       </div>
       <div class="pull-right roster-submit">
         <span ng-show="show_hth" class="roster-submit-hover submit-top">Compete with 11 others to win 100FB first and 30FB second and third</span>
-        <a ng-mouseenter="show_hth = true" ng-mouseleave="show_hth = false"  class="btn btn-large btn-orange pull-right" ng-click="submitRoster('Top6')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit 100FB</a>
+        <a ng-mouseenter="show_hth = true" ng-mouseleave="show_hth = false"  class="btn btn-large btn-orange pull-right" ng-click="submitRoster('100/30/30')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit 100FB</a>
       </div>
     </div>
   </div>

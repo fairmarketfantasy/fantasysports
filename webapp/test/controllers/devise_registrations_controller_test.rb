@@ -47,7 +47,7 @@ class Users::RegistrationsControllerTest < ActionController::TestCase
     @user = create(:paid_user)
     contest = Contest.create_private_contest(
       :market_id => @market.id,
-      :type => 'h2h',
+      :type => '27 H2H',
       :buy_in => 100,
       :user_id => @user.id,
     )

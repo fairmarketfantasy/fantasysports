@@ -13,7 +13,7 @@ class ContestsControllerTest < ActionController::TestCase
     sign_in @user
     assert_difference 'Contest.count', 1 do
       assert_difference 'Invitation.count', 3 do
-        post :create, :market_id => @market.id, 
+        post :create, :market_id => @market.id,
             :type => @public_contest_type.name,
             :buy_in => @public_contest_type.buy_in,
             :invitees => "bob@my-jollies.com, fredrickson@withoutpajamas.uk.co\nwhoami@lostconsciousness.com"
@@ -31,7 +31,7 @@ class ContestsControllerTest < ActionController::TestCase
   test "new user private contest invitation redirected" do
     contest = Contest.create_private_contest(
       :market_id => @market.id,
-      :type => 'h2h',
+      :type => '27 H2H',
       :buy_in => 100,
       :user_id => @user.id,
     )
@@ -53,7 +53,7 @@ class ContestsControllerTest < ActionController::TestCase
     @bob = create(:paid_user, :email => 'bob@there.com')
     contest = Contest.create_private_contest(
       :market_id => @market.id,
-      :type => 'h2h',
+      :type => '27 H2H',
       :buy_in => 100,
       :user_id => @user.id,
     )

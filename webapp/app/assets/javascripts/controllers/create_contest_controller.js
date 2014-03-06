@@ -1,6 +1,6 @@
 angular.module("app.controllers")
 .controller('CreateContestController', ['$scope', 'dialog', function($scope, dialog) {
-  $scope.contest_type = 'h2h';
+  $scope.contest_type = '27 H2H';
   $scope.buy_in = 1;
   $scope.takes_tokens = false;
   $scope.invitees = '';

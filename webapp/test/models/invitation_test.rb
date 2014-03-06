@@ -6,7 +6,7 @@ class InvitationTest < ActiveSupport::TestCase
     u1 = create(:user)
     contest = Contest.create_private_contest(
       :market_id => @market.id,
-      :type => 'h2h',
+      :type => '27 H2H',
       :buy_in => 1000,
       :user_id => u1.id,
     )
@@ -42,7 +42,7 @@ class InvitationTest < ActiveSupport::TestCase
     u1 = create(:user)
     contest = Contest.create_private_contest(
       :market_id => @market.id,
-      :type => 'h2h',
+      :type => '27 H2H',
       :buy_in => 1000,
       :user_id => u1.id,
     )

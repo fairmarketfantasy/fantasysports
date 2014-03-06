@@ -498,7 +498,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 #      takes_tokens: false,
 #    },
     {
-      name: 'Top6',
+      name: '100/30/30',
       description: '12 teams, top 3 winners take home 100 FB, 30 FB, 30 FB',
       max_entries: 12,
       buy_in: 15,
@@ -508,7 +508,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       takes_tokens: false,
     },
     {
-      name: 'h2h',
+      name: '27 H2H',
       description: 'h2h contest, winner takes home $19',
       max_entries: 2,
       buy_in: 15,
