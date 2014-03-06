@@ -1,6 +1,7 @@
 class IndividualPredictionsController < ApplicationController
   def create
-    prediction = current_user.individual_predictions.create(player_id: params[:player_id],
+    player = Player.where(stats_id: params[:player_id]).first
+    prediction = current_user.individual_predictions.create(player_id: player.id,
                                                             roster_id: params[:roster_id],
                                                             market_id: params[:market_id])
     params[:events].each do |k, v|
