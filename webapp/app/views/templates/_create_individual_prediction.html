@@ -4,7 +4,7 @@
     </h3>
 </div>
 <div class='modal-body clearfix'>
-   <ul class="no-no prediction-modal-body">
+   <ul class="no-no prediction-modal-body clearfix">
        <li ng-repeat="point in points" ng-class="{'border-none': $index == 2 || $index == 5}">
           <p>{{point.name | capitalize}} : {{point.value}}</p>
            <div>
