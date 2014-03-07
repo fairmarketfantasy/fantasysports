@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140304171238) do
+ActiveRecord::Schema.define(version: 20140306151457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -112,10 +112,10 @@ ActiveRecord::Schema.define(version: 20140304171238) do
   create_table "event_predictions", force: true do |t|
     t.integer  "individual_prediction_id"
     t.string   "event_type"
-    t.integer  "value"
-    t.string   "less_or_more"
+    t.string   "diff"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "value"
   end
 
   create_table "game_events", force: true do |t|
@@ -170,12 +170,14 @@ ActiveRecord::Schema.define(version: 20140304171238) do
   add_index "games_markets", ["market_id", "game_stats_id"], name: "index_games_markets_on_market_id_and_game_stats_id", unique: true, using: :btree
 
   create_table "individual_predictions", force: true do |t|
-    t.integer  "roster_id",  null: false
+    t.integer  "roster_id",                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "player_id"
     t.integer  "user_id"
     t.integer  "market_id"
+    t.decimal  "pt",         default: 0.0, null: false
+    t.decimal  "award",      default: 0.0, null: false
   end
 
   create_table "invitations", force: true do |t|
