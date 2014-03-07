@@ -19,6 +19,24 @@ class IndividualPredictionsController < ApplicationController
   end
 
   def show
+    prediction = IndividualPrediction.find(params[:id])
+
+    render_api_response individual_prediction
+  end
+
+  def update
+    params[:events].each do |event|
+      event_prediction = EventPrediction.find(event.id)
+      event_prediction.update_attributes(event_type: event[:name],
+                                         value: event[:value],
+                                         diff: event[:diff])
+      if event_prediction.errors.any?
+        return render :text => k + ' ' + event_prediction.errors.full_messages.join(', '),
+          status: :unprocessable_entity
+      end
+    end
+
+    render :text => 'Individual prediction updated successfully!', :status => :ok
   end
 
   def mine
