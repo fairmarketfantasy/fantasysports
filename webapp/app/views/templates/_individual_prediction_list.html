@@ -13,6 +13,7 @@
     <th></th>
     <th>PT</th>
     <th>Award</th>
+    <th></th>
   </thead>
   <tbody>
     <tr ng-repeat="prediction in predictionList">
@@ -42,6 +43,9 @@
             <div>
                 {{prediction.award}}
             </div>
+        </td>
+        <td>
+           <btn class="btn" ng-click="openPredictionDialog(player)">Edit prediction</btn>
         </td>
     </tr>
   </tbody>
