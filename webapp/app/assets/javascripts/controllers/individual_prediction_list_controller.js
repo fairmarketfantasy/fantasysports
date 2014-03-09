@@ -17,15 +17,15 @@ angular.module("app.controllers")
 
   rosterService.setPoller(function() { rosterService.fetchMinePrediction({sport: $scope.currentUser.currentSport}); }, 10000);
 
-    $scope.openPredictionDialog = function(player) {
-        var player = player
+    $scope.openPredictionDialog = function(event_id, stats_id, name) {
+        var player = {event_id:event_id, stats_id:stats_id, name:name}
         var dialogOpts = {
             backdrop: true,
             keyboard: true,
             backdropClick: true,
             dialogClass: 'modal modal-prediction',
             templateUrl: '/create_individual_prediction.html',
-            controller: 'CreateIndividualPredictionController',
+            controller: 'UpdateIndividualPredictionController',
             resolve: {
                 player: function() { return player; }
             }
