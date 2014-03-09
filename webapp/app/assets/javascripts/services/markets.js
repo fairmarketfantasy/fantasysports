@@ -1,5 +1,5 @@
 angular.module('app.data')
-  .factory('markets', ['fs', '$q', function(fs, $q) {
+  .factory('markets', ['fs', '$q','$location','$routeParams', function(fs, $q, $location, $routeParams) {
     var marketData = {}
       , gameData = {}
       , sportsToIds = _.object(_.map(App.sports, function(s) { return s.name; }), _.map(App.sports, function(s) { return s.id; }))
@@ -26,6 +26,10 @@ angular.module('app.data')
       };
 
       this.selectMarketId = function(id, sport) {
+        if(!marketData[id]){
+            $location.path('/' + $routeParams.sport + '/home');
+
+        }
         var type = marketData[id].game_type == 'regular_season' ? 'regular_season' : 'single_elimination'; // Hacky
         this.selectMarketType(type, idsToSports[marketData[id].sport_id]);
         this.currentMarket = marketData[id];

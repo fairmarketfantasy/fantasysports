@@ -1,6 +1,5 @@
 angular.module("app.controllers")
-.controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'market', 'player','flash', '$routeParams', '$dialog', function($scope, dialog, fs, market, player, flash, $routeParams, $dialog) {
-    $scope.market = market;
+.controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'player','flash', '$routeParams', '$dialog', function($scope, dialog, fs, player, flash, $routeParams, $dialog) {
     $scope.player = player;
     $scope.confirmShow = false;
     var eventData = {};
@@ -12,7 +11,7 @@ angular.module("app.controllers")
         });
     }
 
-    $scope.confirmModal = function(text, point, name, index) {
+    $scope.confirmModal = function(text, point, name) {
         $scope.confirmShow = true;
         $scope.confirm = {
             value: point,
