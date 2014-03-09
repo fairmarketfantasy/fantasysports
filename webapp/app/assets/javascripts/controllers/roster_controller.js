@@ -7,6 +7,20 @@ angular.module("app.controllers")
 
   $scope.Math = window.Math;
 
+    if(!marketService.upcoming[0]){
+        marketService.fetchUpcoming({type: 'single_elimination', sport: currentUserService.currentUser.currentSport}).then(function() {
+            marketService.fetchUpcoming({type: 'regular_season', sport: currentUserService.currentUser.currentSport}).then(function() {
+                if ($routeParams.market_id) {
+                    marketService.selectMarketId($routeParams.market_id, currentUserService.currentUser.currentSport);
+                } else if ($location.path().match(/\w+\/playoffs/)) {
+                    marketService.selectMarketType('single_elimination', currentUserService.currentUser.currentSport);
+                } else {
+                    marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
+                }
+            });
+        });
+    }
+
     $scope.isCurrent = function(market){
         if (!market) { return; }
         if (!marketService.currentMarket) {
@@ -93,7 +107,7 @@ angular.module("app.controllers")
   };
 
   var counter = 0
-    , fetchContest = function() {
+  fetchContest = function() {
     if (!rosters.currentRoster.contest_id) { return null; }
     counter++; // Only fetch the contest ever other time.
     if (counter % 2 == 0 && !rosters.currentRoster.contest_id || !$scope.currentUser) { return; }
