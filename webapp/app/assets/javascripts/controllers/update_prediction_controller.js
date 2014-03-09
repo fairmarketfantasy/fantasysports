@@ -1,7 +1,6 @@
 angular.module("app.controllers")
-.controller('UpdateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'player','flash', '$routeParams', '$dialog', function($scope, dialog, fs, player, flash, $routeParams, $dialog) {
+.controller('UpdateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'player','flash', '$routeParams', '$dialog', '$location', '$route', function($scope, dialog, fs, player, flash, $routeParams, $dialog, $location, $route) {
     $scope.player = player;
-        console.log(player)
     $scope.confirmShow = false;
     var eventData = {};
     var eventSubmit = [];
@@ -9,7 +8,6 @@ angular.module("app.controllers")
     $scope.playerStats = function(){
         fs.prediction.show(player.stats_id).then(function(data){
            $scope.points = data.events;
-            console.log($scope.points)
         });
     }
 
@@ -35,6 +33,7 @@ angular.module("app.controllers")
 
        fs.prediction.update($scope.player.event_id, eventSubmit).then(function(data){
            flash.success("Individual prediction submitted successfully!");
+           $route.reload();
            dialog.close();
        });
     }
