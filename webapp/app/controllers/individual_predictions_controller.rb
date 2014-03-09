@@ -32,10 +32,9 @@ class IndividualPredictionsController < ApplicationController
     end
 
     params[:events].each do |event|
-      event_prediction = prediction.event_predictions.first_or_initialize(event_type: event[:name])
-      event_prediction.update_attributes(event_type: event[:name],
-                                          value: event[:value],
-                                          diff: event[:diff])
+      event_prediction = prediction.event_predictions.find_or_initialize_by(event_type: event[:name])
+      event_prediction.update(event_type: event[:name], value: event[:value],
+                              diff: event[:diff])
       if event_prediction.errors.any?
         return render :text => k + ' ' + event_prediction.errors.full_messages.join(', '),
           status: :unprocessable_entity
