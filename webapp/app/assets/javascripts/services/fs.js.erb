@@ -375,6 +375,9 @@ angular.module('app.services')
         submit: function(roster_id, market_id, player_id, events) {
           return $http({method: 'POST', url: '/individual_predictions/', data: {roster_id:roster_id, market_id:market_id, player_id: player_id, events: events}});
         },
+				update: function(prediction_id, events) {
+          return $http({method: 'PUT', url: '/individual_predictions/'+prediction_id, data: {events: events}});
+        },
         show: function(stats_id) {
           return $http({method: 'GET', url: '/events/for_players?player_ids='+ stats_id + '&average=true' });
         },

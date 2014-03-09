@@ -264,23 +264,23 @@ angular.module("app.controllers")
     rosters.submit(gameType).then(function(roster) {
       flash.success("Roster submitted successfully!");
       $location.path('/' + $scope.currentUser.currentSport + '/market/' + roster.market.id);
-      $timeout(function() {
-        joinContestModal('submitRoster', roster).then(function(result) {
-          if (result && result.contestType) {
-            joinContest($scope.fs, result.contestType, roster);
-          }
-        });
-      }, 100);
+//      $timeout(function() {
+//        joinContestModal('submitRoster', roster).then(function(result) {
+//          if (result && result.contestType) {
+//            joinContest($scope.fs, result.contestType, roster);
+//          }
+//        });
+//      }, 100);
     });
   };
 
-  $scope.enterAgain = function() {
-    joinContestModal('enterAgain', rosters.currentRoster).then(function(result) {
-      if (result && result.contestType) {
-        joinContest($scope.fs, result.contestType, rosters.currentRoster);
-      }
-    });
-  };
+//  $scope.enterAgain = function() {
+//    joinContestModal('enterAgain', rosters.currentRoster).then(function(result) {
+//      if (result && result.contestType) {
+//        joinContest($scope.fs, result.contestType, rosters.currentRoster);
+//      }
+//    });
+//  };
 
   $scope.finish = function() {
     rosters.reset('/market/' + rosters.currentRoster.market.id);
