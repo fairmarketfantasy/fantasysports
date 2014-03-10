@@ -1,6 +1,6 @@
 class IndividualPredictionSerializer < ActiveModel::Serializer
   attributes :id, :player_id, :player_stat_id, :market_name, :event_predictions,
-             :player_name, :pt, :award
+             :player_name, :pt, :award, :finished
   has_many :event_predictions
 
   def market_name
