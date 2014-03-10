@@ -45,6 +45,12 @@ class IndividualPredictionsController < ApplicationController
   end
 
   def mine
-    render_api_response current_user.individual_predictions
+    sport = Sport.where(:name => params[:sport]).first if params[:sport]
+    sport ||= Sport.where('is_active').first
+    predictions = current_user.individual_predictions
+    predictions = predictions.joins('JOIN markets m ON individual_predictions.market_id=m.id').
+                              where(['m.sport_id = ?', sport.id]).
+                              order('created_at desc')
+    render_api_response predictions
   end
 end
