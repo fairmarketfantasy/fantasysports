@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140309173355) do
+ActiveRecord::Schema.define(version: 20140310121611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,7 +97,7 @@ ActiveRecord::Schema.define(version: 20140309173355) do
     t.boolean  "has_agreed_terms",        default: false
     t.boolean  "is_active",               default: false
     t.integer  "monthly_winnings",        default: 0
-    t.integer  "monthly_contest_entries", default: 0
+    t.decimal  "monthly_contest_entries", default: 0.0
     t.decimal  "contest_entries_deficit", default: 0.0
     t.datetime "last_activated_at"
   end
@@ -507,7 +507,7 @@ ActiveRecord::Schema.define(version: 20140309173355) do
     t.string   "event",                                   null: false
     t.integer  "user_id"
     t.integer  "roster_id"
-    t.integer  "amount"
+    t.decimal  "amount"
     t.integer  "contest_id"
     t.boolean  "is_tokens",               default: false
     t.string   "ios_transaction_id"
