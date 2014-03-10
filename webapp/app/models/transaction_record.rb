@@ -29,9 +29,10 @@ class TransactionRecord < ActiveRecord::Base
 
   def self.validate_contest(contest)
     return if contest.contest_type.max_entries == 0
-    debugger if contest.transaction_records.where("event != 'contest_payout_bonus'").reduce(0){|total, tr| total +=  tr.is_monthly_entry? ? -1000 * tr.amount : tr.amount } != 0
+
     sum = contest.transaction_records.where("event != 'contest_payout_bonus'").reduce(0){|total, tr| total +=  tr.is_monthly_entry? ? -1000 * tr.amount : tr.amount }
     if sum != 0
+      debugger
       raise "Contest #{contest.id} sums to #{sum}. Should Zero. Fucking check yo-self."
     end
   end
