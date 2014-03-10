@@ -10,24 +10,24 @@ class RosterTest < ActiveSupport::TestCase
 
   #make sure that you can't play a 27 H2H against yourself
   test "no self 27 H2H or other contests" do
-    27 H2H = @market.contest_types.where("max_entries = 2 and not takes_tokens").first
+    h2h = @market.contest_types.where("max_entries = 2 and not takes_tokens").first
     user1 = create(:paid_user)
     user2 = create(:paid_user)
-    roster1 = Roster.generate(user1, 27 H2H).submit!
+    roster1 = Roster.generate(user1, h2h).submit!
     roster1.reload
-    #should be in 27 H2H contest
+    #should be in H2H contest
     contest1 = roster1.contest
     assert_equal roster1.contest_id, contest1.id
     refute_nil contest1.rosters.first, "#{contest1.rosters.explain}"
 
     #same user, same contest type
-    roster2 = Roster.generate(user1, 27 H2H).submit!
+    roster2 = Roster.generate(user1, h2h).submit!
     #rosters should be in different contests
     refute_equal roster1.contest, roster2.contest
 
-    roster3 = Roster.generate(user2, 27 H2H).submit!
-    roster4 = Roster.generate(user2, 27 H2H).submit!
-    roster5 = Roster.generate(user2, 27 H2H).submit!
+    roster3 = Roster.generate(user2, h2h).submit!
+    roster4 = Roster.generate(user2, h2h).submit!
+    roster5 = Roster.generate(user2, h2h).submit!
 
     #rosters 3 and 4 should have been allocated to the contests created by 1 and 2
     assert_equal 2, roster1.contest.rosters.size
@@ -58,8 +58,8 @@ class RosterTest < ActiveSupport::TestCase
 
   test "submit puts roster in contest" do
     #find head to head
-    27 H2H_type = @market.contest_types.where("max_entries = 2").first
-    roster = create(:roster, :market => @market, :contest_type => 27 H2H_type)
+    h2h_type = @market.contest_types.where("max_entries = 2").first
+    roster = create(:roster, :market => @market, :contest_type => h2h_type)
     roster.submit!
     contest = roster.contest
 
@@ -67,28 +67,28 @@ class RosterTest < ActiveSupport::TestCase
     assert_equal 1, contest.num_rosters
 
     #submit another roster to the same contest. should succeed as well.
-    create(:roster, :market => @market, :contest_type => 27 H2H_type).submit!
+    create(:roster, :market => @market, :contest_type => h2h_type).submit!
     assert_equal 2, contest.rosters.length
 
     #submitting a third should it to create a new one
-    create(:roster, :market => @market, :contest_type => 27 H2H_type).submit!
+    create(:roster, :market => @market, :contest_type => h2h_type).submit!
     assert_equal 2, contest.rosters.length
     assert_equal 2, @market.contests.length
 
     #private contests
-    contest = create(:contest, :user_cap => 2, :market => @market, :contest_type => 27 H2H_type, :invitation_code => "asdfasdfasdf", :private => true)
-    roster = create(:roster, :contest => contest, :market => @market, :contest_type => 27 H2H_type)
+    contest = create(:contest, :user_cap => 2, :market => @market, :contest_type => h2h_type, :invitation_code => "asdfasdfasdf", :private => true)
+    roster = create(:roster, :contest => contest, :market => @market, :contest_type => h2h_type)
     roster.submit!
     assert_equal contest, roster.contest
     assert_equal "submitted", roster.state
 
     #another joins the private contest
-    create(:roster, :contest => contest, :market => @market, :contest_type => 27 H2H_type).submit!
+    create(:roster, :contest => contest, :market => @market, :contest_type => h2h_type).submit!
     assert_equal 2, contest.rosters.length
 
     #a third tries to join. should get booted
     begin
-      create(:roster, :contest => contest, :market => @market, :contest_type => 27 H2H_type).submit!
+      create(:roster, :contest => contest, :market => @market, :contest_type => h2h_type).submit!
       flunk("should have failed. #{contest.rosters.length} rosters. #{roster.contest}")
     rescue
       #good
