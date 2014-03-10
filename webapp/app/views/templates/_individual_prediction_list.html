@@ -42,9 +42,9 @@
             </div>
         </td>
         <td>
-           <a href="javascript://" ng-click="openPredictionDialog(prediction.id, prediction.player_stat_id, prediction.player_name)">Edit</a>
+           <a href="javascript://" ng-hide="!finished" ng-click="openPredictionDialog(prediction.id, prediction.player_stat_id, prediction.player_name)">Edit</a>
         </td>
     </tr>
   </tbody>
 </table>
-<btn class="btn" ng-show="showMore" ng-click="fetchMore()">Show More</btn>
+<!--<btn class="btn" ng-show="showMore" ng-click="fetchMore()">Show More</btn>-->
