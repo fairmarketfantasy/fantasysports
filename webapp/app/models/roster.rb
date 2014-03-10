@@ -3,6 +3,7 @@ class Roster < ActiveRecord::Base
   ROSTER_BONUSES = { 'twitter_share' => 1, 'facebook_share' => 1}
   DEFAULT_BUY_IN = 1000
   DEFAULT_REMAINING_SALARY = 100000
+  FB_CHARGE = 1.5.to_d
 
   attr_protected
   def perfect_score; self[:perfect_score]; end
@@ -163,7 +164,7 @@ class Roster < ActiveRecord::Base
 
         #charge account
         if contest_type.buy_in > 0 && charge
-          self.owner.charge(:monthly_entry, 1, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
+          self.owner.charge(:monthly_entry, FB_CHARGE, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
           #SYSTEM_USER.payout(:monthly_entry, 1, :event => 'rake', :roster_id => nil, :contest_id => self.id) unless self.owner.id == SYSTEM_USER.id
         end
       end
