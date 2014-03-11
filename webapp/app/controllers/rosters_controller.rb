@@ -40,6 +40,9 @@ class RostersController < ApplicationController
 
   # Create a roster for a contest type
   def create
+    raise HttpException.new(402, "Agree to terms!") unless current_user.customer_object.has_agreed_terms?
+    raise HttpException.new(402, "Unpaid subscription!") unless current_user.active_account?
+
     if params[:market_id]
       market = Market.find(params[:market_id])
       #Eventing.report(current_user, 'createRoster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
