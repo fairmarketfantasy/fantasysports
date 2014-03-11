@@ -63,7 +63,6 @@ angular.module("app.controllers")
         players = _.select(players, function(player) { return player.benched_games < 3 && player.status == 'ACT'; });
       }
       $scope.players = players;
-        console.log($scope.players)
     });
   };
 
