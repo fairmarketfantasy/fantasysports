@@ -116,7 +116,7 @@ class UsersController < ApplicationController
   end
 
   def activate_trial
-    if current_user.trial_started_at
+    if current_user.customer_object.trial_started_at
       return render :json => {error: "Trial was already activated!" }, status: :unprocessable_entity
     end
 
