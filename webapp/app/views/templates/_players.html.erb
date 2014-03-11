@@ -108,13 +108,10 @@
           <tbody>
             <tr ng-repeat="player in players | filter:notInRoster">
               <td class="larger">{{player.name_abbr}}
-                <span ng-show="player.is_eliminated"><i class="small text-danger">ELIMINATED</i></span>
-                <span ng-hide="player.is_eliminated">
-                  <i ng-show="player.status == 'ACT'" class="fui-check-inverted text-success" title="Active"></i>
-                  <i ng-show="player.status != 'ACT'" class="fui-cross-inverted text-danger" title="Inactive"></i>
-                </span>
+                  <i ng-show="!player.benched" class="fui-check-inverted text-success" title="Active"></i>
+                  <i ng-show="player.benched" class="fui-cross-inverted text-danger" title="Inactive"></i>
               </td>
-              <td class="tiny prediction"><p ng-hide="!player.ppg" ng-click="openPredictionDialog(player)">PT25</p></td>
+              <td class="tiny prediction"><p ng-hide="player.ppg" ng-click="openPredictionDialog(player)">PT25</p></td>
               <td class="tiny" ng-hide="getFilterOpts().position">{{player.position | dashIfDEF}}</td>
               <td class="tiny">{{player.team | truncate:8}}</td>
               <td class="tiny" ng-show="getFilterOpts().position"><span ng-hide="isHomeTeam(player.team)">@</span>{{opponentFor(player) | truncate:8}}</td>
