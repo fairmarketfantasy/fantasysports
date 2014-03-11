@@ -11,7 +11,7 @@
   <li ng-repeat="transaction in transactions" ng-class="{gain: transaction.amount > 0, loss: transaction.amount < 0}">
     <div class="transaction-amount transaction-part">{{transaction.created_at | longFormDate }}</div>
     <div ng-show="transaction.is_tokens" class="transaction-amount transaction-part">{{transaction.amount}}FF</div>
-    <div ng-hide="transaction.is_tokens" class="transaction-amount transaction-part">{{transaction.amount | centsToDollars }}</div>
+    <div ng-hide="transaction.is_tokens" class="transaction-amount transaction-part">{{transaction.amount}}</div>
     <div class="transaction-part transaction-event">{{transaction.event}}</div>
     <div class="transaction-part transaction-info" ng-show="transaction.roster">
       <div class="transaction-detail">
