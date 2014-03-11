@@ -11,4 +11,17 @@ class StatEvent < ActiveRecord::Base
   #def player
   #  Player.where(['stats_id = ?', self.player_stats_id])
   #end
+
+  def self.collect_stats(events)
+    result = {}
+    events.each do |event|
+      if result[event.activity]
+        result[event.activity] += event.point_value
+      else
+        result[event.activity] = event.point_value
+      end
+    end
+
+    result
+  end
 end

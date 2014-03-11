@@ -53,8 +53,8 @@ class EventsController < ApplicationController
                               order("game_time DESC").first(5).map(&:id)
     recent_events = events.where(game_stats_id: past_player_games_ids)
 
-    recent_stats = collect_stats(recent_events)
-    total_stats = collect_stats(events)
+    recent_stats = StatEvent.collect_stats(recent_events)
+    total_stats = StatEvent.collect_stats(events)
 
     data = []
     total_stats.each do |k, v|
@@ -64,18 +64,5 @@ class EventsController < ApplicationController
     end
 
     render json: { events: data }.to_json
-  end
-
-  def collect_stats(events)
-    result = {}
-    events.each do |event|
-      if result[event.activity]
-        result[event.activity] += event.point_value
-      else
-        result[event.activity] = event.point_value
-      end
-    end
-
-    result
   end
 end
