@@ -21,7 +21,8 @@ class PlayerSerializer < ActiveModel::Serializer
       :headshot_url,
       :is_eliminated,
       :benched_games,
-      :next_game_at
+      :next_game_at,
+      :benched
 
   def team
     Team.find_by_identifier(object[:team]).name
@@ -34,5 +35,8 @@ class PlayerSerializer < ActiveModel::Serializer
   def headshot_url
     object.headshot_url
   end
-end
 
+  def benched
+    object.benched? ? true : false
+  end
+end
