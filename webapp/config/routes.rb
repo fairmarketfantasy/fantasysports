@@ -55,6 +55,7 @@ Fantasysports::Application.routes.draw do
       post  'reset_password', action: :reset_password
       post 'add_tokens',     action: :add_tokens
       post 'withdraw_money', action: :withdraw_money
+      post 'activate_trial', action: :activate_trial
     end
   end
 

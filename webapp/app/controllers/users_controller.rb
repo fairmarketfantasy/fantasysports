@@ -115,4 +115,13 @@ class UsersController < ApplicationController
     render_api_response current_user
   end
 
+  def activate_trial
+    if current_user.trial_started_at
+      return render :json => {error: "Trial was already activated!" }, status: :unprocessable_entity
+    end
+
+    current_user.customer_object.update_attributes(trial_started_at: Date.today, is_active: true)
+    render_api_response current_user
+  end
+
 end
