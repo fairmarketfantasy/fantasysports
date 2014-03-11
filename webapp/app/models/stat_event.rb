@@ -14,14 +14,17 @@ class StatEvent < ActiveRecord::Base
 
   def self.collect_stats(events)
     result = {}
+    counter_hash = {}
     events.each do |event|
       if result[event.activity]
-        result[event.activity] += event.point_value
+        result[event.activity] += event.point_value.abs
+        counter_hash[event.activity] += 1
       else
-        result[event.activity] = event.point_value
+        result[event.activity] = event.point_value.abs
+        counter_hash[event.activity] = 1
       end
     end
 
-    result
+    [result, counter_hash]
   end
 end

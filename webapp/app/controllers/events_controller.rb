@@ -53,13 +53,13 @@ class EventsController < ApplicationController
                               order("game_time DESC").first(5).map(&:id)
     recent_events = events.where(game_stats_id: past_player_games_ids)
 
-    recent_stats = StatEvent.collect_stats(recent_events)
-    total_stats = StatEvent.collect_stats(events)
+    recent_stats, recent_counter = StatEvent.collect_stats(recent_events)
+    total_stats, total_counter = StatEvent.collect_stats(events)
 
     data = []
     total_stats.each do |k, v|
-      value = v / BigDecimal.new(events.count)
-      value = value * 0.7 + (recent_stats[k] || 0)/recent_events.count * 0.3 if recent_stats[k]
+      value = v / BigDecimal.new(total_counter[k])
+      value = value * 0.7 + recent_stats[k]/recent_counter[k] * 0.3 if recent_stats[k]
       data << { name: k, value: value.round(1) }
     end
 
