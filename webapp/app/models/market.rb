@@ -7,6 +7,7 @@ class Market < ActiveRecord::Base
   has_many :contests
   has_many :contest_types
   has_many :rosters
+  has_many :individual_predictions
   belongs_to :sport
   belongs_to :linked_market, :class_name => 'Market'
 
@@ -372,8 +373,23 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       self.contests.where('cancelled_at IS NULL').find_each do |contest|
         contest.payday!
       end
+      self.process_individual_predictions
       self.state = 'complete'
       self.save!
+    end
+  end
+
+  def process_individual_predictions
+    self.individual_predictions.where.not(finished: true).each do |prediction|
+      next unless prediction.won?
+
+      customer_object = prediction.user.customer_object
+      ActiveRecord::Base.transaction do
+        customer_object.monthly_winnings += amount
+        customer_object.save!
+      end
+
+      prediction.update_attributes(finished: true)
     end
   end
 
