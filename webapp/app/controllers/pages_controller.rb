@@ -23,6 +23,10 @@ class PagesController < ApplicationController
     render layout: nil
   end
 
+  def conditions
+    render layout: nil
+  end
+
   def about
   end
 

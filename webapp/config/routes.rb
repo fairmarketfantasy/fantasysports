@@ -26,6 +26,7 @@ Fantasysports::Application.routes.draw do
   post '/support' => 'pages#support'
   get '/public' => 'pages#public'
   get '/terms' => 'pages#terms'
+  get '/conditions' => 'pages#conditions'
   get '/guide' => 'pages#guide'
   get '/landing' => 'pages#landing'
   get '/about' => 'pages#about'

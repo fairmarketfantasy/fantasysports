@@ -86,7 +86,7 @@
               <a ng-show="sports" class="dropdown-toggle">Sport</a>
               <ul class="header-drop-menu dropdown-menu">
                 <li ng-class="{'no-border': $last}" ng-repeat="sport in sports" ng-show="sport.is_active" >
-                  <em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentSport == sport.name}"></em>
+                  <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name}"></em>
                   <a class="landing-nav-link"  href="/#/{{sport.name}}/external">{{sport.name}}</a>
                 </li>
               </ul>
@@ -124,9 +124,8 @@
     </div>
   </div>
   <div class="landing-container">
-    <div class="span6 offset1 sign-up-content">
+    <div class="span6 sign-up-content">
       <div class="login-buttons" ng-controller="LoginController">
-
         <!--<div class="sample-team clearfix" ng-include="'/sample_team.html'"></div>-->
         <div id="content" ng-view>
         </div>
@@ -146,9 +145,30 @@
         <p><a href="javascript://" class="btn btn-large btn-success" ng-click='signUpModal()'>Sign up Now!</a></p>
         <h4>$10 mounthly fee allows <br /> unlimited free predictions <br /> to win contest prizes</h4>
         <p>15 day free trial</p>
-        <p class="individual-predict">or you can make individual predictions</p>
-        <p><i>Steph Curry more or less than 2.8 3pters</i></p>
-
+				<p class="individual-predict">or you can make individual predictions</p>
+				<p><i>Steph Curry more or less than 2.8 3pters</i></p>
+				<!--<div class="landing-ind-prediction">-->
+					<!--<p class="individual-predict">or you can make individual predictions</p>-->
+					<!--<div ng-show="player.position != 'DEF'">-->
+						<!--<div class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>-->
+						<!--<p><i>Steph Curry <br /> more or less than 2.8 3pters</i></p>-->
+   				<!--</div>-->
+					<!--<div ng-show="player.position == 'DEF'">-->
+						<!--<p><i>Steph Curry <br /> more or less than 2.8 3pters</i></p>-->
+						<!--<div class="mr-player-image defense filled"></div>-->
+					<!--</div>-->
+					<!--<div>-->
+						<!--<ul class="no-no clearfix">-->
+							<!--<li>-->
+								<!--<p class="pull-left">Rebounds : 3</p>-->
+								<!--<div class="pull-right">-->
+									<!--<a href="javascript://" class="btn prediction-less">less</a>-->
+									<!--<a href="javascript://" class="btn prediction-more">more</a>-->
+								<!--</div>-->
+							<!--</li>-->
+						<!--</ul>-->
+					<!--</div>-->
+				<!--</div>-->
       </div>
     </div>
 
