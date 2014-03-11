@@ -136,7 +136,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def accepting_rosters?
-    ['published', 'opened'].include?(self.state) || Market.override_close
+    ['published', 'opened'].include?(self.state) #|| Market.override_close
   end
 
   def clean_publish

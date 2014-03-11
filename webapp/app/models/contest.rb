@@ -55,7 +55,7 @@ class Contest < ActiveRecord::Base
       total += 1
     end
     score = 0
-    # TODO: now that players can have multiple positions, this is approximate.  Making it correct is still probably worthwhile.  
+    # TODO: now that players can have multiple positions, this is approximate.  Making it correct is still probably worthwhile.
     # This is acually an NP complete Set Covering problem with small sets, so it should be brute forceable without much trouble.
     # http://en.wikipedia.org/wiki/Set_cover_problem
     players = []
@@ -105,7 +105,7 @@ class Contest < ActiveRecord::Base
   #pays owners of rosters according to their place in the contest
   def payday!
     self.with_lock do
-      return if self.paid_at && Market.override_close
+      return if self.paid_at #&& Market.override_close
       raise if self.paid_at || self.cancelled_at
       puts "Payday! for contest #{self.id}"
       Rails.logger.debug("Payday! for contest #{self.id}")
