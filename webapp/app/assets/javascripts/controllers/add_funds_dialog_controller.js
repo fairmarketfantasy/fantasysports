@@ -159,5 +159,8 @@ angular.module("app.controllers")
     });
   };
 
+  $scope.submitTrial = function(){
+      fs.user.activeTrial();
+  }
 
 }]);
