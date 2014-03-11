@@ -56,17 +56,26 @@
   <div ng-hide="currentUser.customer_object.is_active">
     <h4>Looks like you need to pay your subscription this month</h4>
     <div class="payment-info">
-      <a href="javsacript://" popover-trigger="mouseenter" popover="FairMarketFantasy now has a $10 monthly entry fee. That $10 is ALL YOU CAN LOSE! Winnings are still yours. Check out the FAQs for more info!" 
+      <a href="/conditions" target="_blank" popover-trigger="mouseenter" popover="Predict That now has a $10 monthly entry fee. That $10 is ALL YOU CAN LOSE! Winnings are still yours. Check out the FAQs for more info!"
         popover-placement="right">What is this?<img src="<%= asset_path "info-icon.png" %>" width="17px"></a>
     </div>
-    <ul class="nav nav-pills modal-pills">
-      <li ng-class="{active: payment_type == 'credit-card'}">
-        <a href="javascript://" ng-click="payment_type = 'credit-card'">Pay with Credit Card</a>
-      </li>
-      <li ng-class="{active: payment_type == 'paypal'}">
-        <a href="javascript://" ng-click="payment_type = 'paypal'; showCardForm = false">Pay with PayPal</a>
-      </li>
-    </ul>
+		<div class="clearfix">
+			<ul class="nav nav-pills modal-pills pull-left">
+				<li ng-class="{active: payment_type == 'credit-card'}">
+					<a href="javascript://" ng-click="payment_type = 'credit-card'">Pay with Credit Card</a>
+				</li>
+				<li ng-class="{active: payment_type == 'paypal'}">
+					<a href="javascript://" ng-click="payment_type = 'paypal'; showCardForm = false">Pay with PayPal</a>
+				</li>
+
+			</ul>
+			<ul class="no-no pull-left">
+				<li>OR</li>
+				<li>
+					<a class="btn" href="javascript://" ng-click="payment_type = 'paypal'; showCardForm = false">15 day free trial</a>
+				</li>
+			</ul>
+		</div>
     <div ng-show="payment_type == 'credit-card'">
       <div class='clearfix'>
         <div class="add-funds-container">
