@@ -15,8 +15,8 @@ angular.module("app.controllers")
 
    fs.cards.list().then(function(resp){
      $scope.cards = resp.cards || [];
-     $scope.user_info = resp.user_info || [];
-     if(!$scope.cards.length){
+     $scope.user_info = resp;
+     if(!$scope.user_info.is_active ){
        flash.error("You don't have any cards, add one.");
      } else {
        $scope.focusAmount = true;
