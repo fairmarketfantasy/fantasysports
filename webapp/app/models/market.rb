@@ -385,11 +385,11 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
       customer_object = prediction.user.customer_object
       ActiveRecord::Base.transaction do
-        customer_object.monthly_winnings += amount
+        customer_object.monthly_winnings += prediction.pt/10
         customer_object.save!
       end
 
-      prediction.update_attributes(finished: true)
+      prediction.update_attributes(finished: true, award: prediction.pt)
     end
   end
 
