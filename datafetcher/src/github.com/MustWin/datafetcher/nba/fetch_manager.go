@@ -35,11 +35,11 @@ func (mgr *FetchManager) createMarket(name string, games lib.Games) {
 	market.GameType = "regular_season"
 	market.ShadowBetRate = 0.75
 	// publish 2 days before game day
-	market.PublishedAt = games[0].GameDay.Add(-2 * 24 * time.Hour)
-	market.StartedAt = games[0].GameTime.Add(-5 * time.Minute)           // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
-	market.ClosedAt = games[len(games)-1].GameTime.Add(-5 * time.Minute) // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
+	market.PublishedAt = games[0].GameDay.Add(-2 * 24 * time.Hour).Add(-6 * time.Hour)
+	market.StartedAt = games[0].GameTime.Add(-5 * time.Minute).Add(-6 * time.Hour)            // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
+	market.ClosedAt = games[len(games)-1].GameTime.Add(-5 * time.Minute).Add(-6 * time.Hour)  // DO NOT CHANGE THIS WITHOUT REMOVING ALREADY CREATED BUT UNUSED MARKETS
 	// publish 2 days before game time
-	market.OpenedAt = market.StartedAt.Add(-2 * 24 * time.Hour)
+	market.OpenedAt = market.StartedAt.Add(-2 * 24 * time.Hour).Add(-6 * time.Hour)
 
 	beforeStart := strconv.Itoa(int(market.StartedAt.Add(-12 * time.Hour).Unix()))
 	twoHoursBeforeUnix := strconv.Itoa(int(market.ClosedAt.Add(-2 * time.Hour).Unix()))
