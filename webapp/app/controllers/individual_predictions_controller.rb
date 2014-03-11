@@ -1,5 +1,8 @@
 class IndividualPredictionsController < ApplicationController
   def create
+    raise HttpException.new(402, "Agree to terms!") unless current_user.customer_object.has_agreed_terms?
+    raise HttpException.new(402, "Unpaid subscription!") unless current_user.active_account?
+
     player = Player.where(stats_id: params[:player_id]).first
     prediction = current_user.individual_predictions.create(player_id: player.id,
                                                             roster_id: params[:roster_id],
