@@ -42,7 +42,7 @@
             </div>
         </td>
         <td>
-           <a href="javascript://" ng-hide="!finished" ng-click="openPredictionDialog(prediction.id, prediction.player_stat_id, prediction.player_name)">Edit</a>
+           <a href="javascript://" ng-hide="finished != null" ng-click="openPredictionDialog(prediction.id, prediction.player_stat_id, prediction.player_name)">Edit</a>
         </td>
     </tr>
   </tbody>
