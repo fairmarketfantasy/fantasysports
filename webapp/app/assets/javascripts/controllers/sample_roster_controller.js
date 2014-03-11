@@ -21,7 +21,6 @@ angular.module("app.controllers")
         $scope.roster = undefined;
         fs.rosters.getSample(id, sport).then(function(roster) {
             $scope.roster = roster;
-            console.log($scope.roster)
             $scope.isCurrent(roster.market_id);
         });
     };

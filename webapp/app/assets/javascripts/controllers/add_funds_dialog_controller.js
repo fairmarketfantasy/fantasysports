@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', '$timeout', function($scope, dialog, fs, flash, currentUserService, $timeout) {
+.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', '$timeout','$route', function($scope, dialog, fs, flash, currentUserService, $timeout, $route) {
 
   $scope.showSpinner = false;
    $scope.currentUser = currentUserService.currentUser;
@@ -15,6 +15,7 @@ angular.module("app.controllers")
 
    fs.cards.list().then(function(resp){
      $scope.cards = resp.cards || [];
+     $scope.user_info = resp.user_info || [];
      if(!$scope.cards.length){
        flash.error("You don't have any cards, add one.");
      } else {
@@ -160,7 +161,11 @@ angular.module("app.controllers")
   };
 
   $scope.submitTrial = function(){
-      fs.user.activeTrial();
+      fs.user.activeTrial().then(function() {
+          flash.success("You have activated free trial!");
+          dialog.close();
+          $route.reload();
+      });
   }
 
 }]);
