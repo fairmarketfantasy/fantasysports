@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'player','flash', '$routeParams', '$dialog', function($scope, dialog, fs, player, flash, $routeParams, $dialog) {
+.controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'player','flash', '$routeParams', '$dialog','$route', function($scope, dialog, fs, player, flash, $routeParams, $dialog, $route) {
     $scope.player = player;
     $scope.confirmShow = false;
     var eventData = {};
@@ -34,6 +34,7 @@ angular.module("app.controllers")
 
        fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, eventSubmit).then(function(data){
            flash.success("Individual prediction submitted successfully!");
+           $route.reload();
            dialog.close();
        });
     }
