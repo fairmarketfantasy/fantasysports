@@ -21,7 +21,7 @@
     <div class="roster-overflow" ng-show="roster">
       <ul class="no-no">
         <li ng-class="{'no-border': $index == 6 || $last }" class="mr-item clearfix" ng-repeat="player in roster.players">
-          <div ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
+          <div ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': benched}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"><span ng-show="benched" class="benched-icon">B</span></div>
           <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled"></div>
 
           <div class="mr-player-info">

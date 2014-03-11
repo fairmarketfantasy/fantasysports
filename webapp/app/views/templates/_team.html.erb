@@ -20,7 +20,7 @@
       <ul class="no-no" highlight-changes-in-list="roster.players" key-to-watch="score">
         <li class="mr-item clearfix" ng-repeat="player in roster.players" ng-class="{'no-border': $index == 6 || $last }">
           <div class="clearfix pull-left roster-avatar">
-              <div ng-show="showPlayer(roster, player) && player.position != 'DEF'" class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
+              <div ng-show="showPlayer(roster, player) && player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': benched}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"><span ng-show="benched" class="benched-icon">B</span></div>
               <div ng-show="showPlayer(roster, player) && player.position == 'DEF'" class="mr-player-image defense filled"></div>
               <div ng-hide="showPlayer(roster, player)" class="mr-player-image"></div>
             <p class="mr-player-score clearfix" ng-show="roster.state != 'in_progress' && inThePast(market.started_at)"><a href="javascript://" ng-click="openStatsDialog(player)">{{player.score | number:1}}</a></p>
@@ -43,16 +43,16 @@
                 </span>)
               </span>
             </span>
-          </div>
+					</div>
 
           <div class="mr-player-cta">
             <span ng-show="roster.owner_id == currentUser.id">
               <a class="btn btn-small btn-orange" ng-show="player.id && (market.state == 'published' || market.state == 'opened' && !player.locked)" href="javascript://" ng-click="removePlayer(player)">Trade</a>
               <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
             </span>
-          </div>
-          <div class="mr-player-eliminated" ng-show="player.is_eliminated">
-            ELIMINATED
+						<div class="prediction" style="margin-top: 10px;">
+							<p  ng-hide="!player.ppg" ng-click="openPredictionDialog(player)">PT25</p>
+						</div>
           </div>
         </li>
       </ul>
