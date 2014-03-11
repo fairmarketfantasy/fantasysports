@@ -44,7 +44,7 @@ namespace :deploy do
    task :precompile do ; end
  end
 end
-
+=begin
 require './config/boot'
 require 'honeybadger/capistrano'
 
@@ -77,3 +77,4 @@ end
 
 after 'deploy', 'deploy:alert_honeybadger'
 #after 'deploy:migrations', 'deploy:alert_honeybadger'
+=end
