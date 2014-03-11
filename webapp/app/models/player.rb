@@ -79,6 +79,10 @@ class Player < ActiveRecord::Base
     "(players.status = 'IR' OR players.removed OR players.benched_games >= 3)"
   end
 
+  def benched?
+    self.status == 'IR' || self.removed || self.benched_games >= 3
+  end
+
   def headshot_url(size = 65) # or 195
     return nil if position == 'DEF'
     return "https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/#{stats_id}/#{size}.jpg"

@@ -5,9 +5,6 @@ class RostersController < ApplicationController
   DEFAULT_REMAINING_SALARY = 100000
 
   def mine
-    raise HttpException.new(402, "Agree to terms!") unless current_user.customer_object.has_agreed_terms?
-    raise HttpException.new(402, "Unpaid subscription!") unless current_user.active_account?
-
     sport = params[:sport] ? Sport.where(:name => params[:sport]).first : Sport.where('is_active').first
     rosters = current_user.rosters.where.not(state: 'in_progress').
                                    joins('JOIN markets m ON rosters.market_id=m.id').
