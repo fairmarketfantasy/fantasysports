@@ -23,8 +23,8 @@ class NBAStrategy < SportStrategy
       next_market_day = @sport.markets.where(['closed_at > ?', Time.new]).order('closed_at asc').first.closed_at.beginning_of_day
       @sport.markets.where(
           ["game_type IS NULL OR game_type = 'regular_season'"]
-          ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', next_market_day, next_market_day + 1.day]
-          ).order('closed_at asc').limit(10)
+          ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', next_market_day, next_market_day + 1.day + 8.hours]
+          ).order('closed_at asc').limit(20)
     end
   end
 end
