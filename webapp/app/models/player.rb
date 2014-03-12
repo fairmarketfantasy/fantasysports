@@ -112,6 +112,8 @@ class Player < ActiveRecord::Base
     ).first['points'].to_f / 5
     # set expected ppg
     # TODO: HANDLE INACTIVE
+    return self.total_points / self.total_games if recent_exp == 0
+
     0.7 * total_exp + 0.3 * recent_exp
   end
 end
