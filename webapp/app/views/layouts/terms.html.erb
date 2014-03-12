@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <!--<![endif]-->
+<head>
+	<!-- http://docs.angularjs.org/guide/ie -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- CSS DIFF -->
+	<meta name="viewport" content="width=1200">
+
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+
+	<meta name="apple-itunes-app" content="app-id=719879920">
+
+	<%
+		 title = @page_title || 'Predict That'
+		 description = @page_description || 'Predict That is the fairest Predict That sports gaming website out there'
+		 keywords = @page_keywords || ''
+		 tagline = "The fair market fantasy game!"
+	%>
+	<title><%= title %></title>
+
+	<!-- TODO: Fill in the og goodness -->
+	<!-- og: == 'Open Graph Protocol' - Makes you Facebook "Like" Button & Sharing Friendly -->
+	<meta name="title" content="<%= title %>" property="og:title" />
+	<meta name="og:type" content="<%= @og_type || '' %>" property="og:type" />
+	<meta name="og:url" content="<%= @og_url || '' %>" property="og:url" />
+	<meta name="og:image" content="<%= @og_image || '' %>" property="og:image" />
+	<meta name="og:site_name" content="<%= @og_site || '' %>" property="og:site_name" />
+	<meta name="fb:app_id" content="<%= nil %>" property="fb:app_id" />
+	<meta name="fb:admins" content="" property="fb:admins" />
+	<meta name="description" content="<%= description %>" property="og:description" />
+	<meta name="copyright" content="Predict That, LLC" />
+	<meta name="author" content="Predict That, LLC" />
+
+	<!-- SEO -->
+	<meta name="description" content="<%= description %>"/>
+	<meta name="keywords" content="<%= keywords %>"/>
+
+	<%= csrf_meta_tags %>
+	<%= stylesheet_link_tag "bootstrap_and_overrides", "terms", :media => "all" %>
+
+	<!-- TODO: make these icons -->
+	<link rel="shortcut icon" href="<%= asset_path 'favicon.png' %>"/>
+	<link rel="apple-touch-icon" href="<%= asset_path 'favicon.png' %>"/>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+
+<%= yield %>
+
+<%= javascript_include_tag "terms" %>
+
+</body>
+</html>

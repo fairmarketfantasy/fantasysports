@@ -1,7 +1,8 @@
 angular.module("app.controllers")
 .controller('SupportController', ["$scope", "fs", "flash", function($scope, fs, flash) {
+
   var reset = function() {
-    $scope.email = $scope.currentUser.email;
+    $scope.email = "";
     $scope.title = "";
     $scope.message = "";
     $scope.working = false;

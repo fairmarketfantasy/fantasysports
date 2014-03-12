@@ -1,21 +1,41 @@
-<div class="alert alert-error" ng-controller="SupportController">
-  <h3>Need Some Help?</h3>
-  <p>The fastest way to find help is our FAQ. If you can't find an answer please feel free to submit a support request and a representative will respond ASAP.</p>
 
-  <form class="clearfix no-no">
-    <div flash-alert active-class="alert in" class="flash fade" >
-      <strong class="alert-heading"></strong>
-      <span class="alert-message">{{flash.message}}</span>
-    </div>
-    <div>
-      <input type='text' placeholder='Message Title' class='mvm span7' ng-model="title"/><br />
-      <input type='email' placeholder='Email' class='mvm span7' ng-model="email"/><br />
-      <textarea class="mvm span7" placeholder="Your Message Here" ng-model="message"></textarea>
-      
-      <p><a href="javascript://" class="btn btn-danger btn-create-contest" ng-click="send()" ng-disabled="working">Submit Support Request</a></p>
-    </div>
-  </form>
+	<h3>How it Works</h3>
 
-</div>
+	<p>PredictThat has many different events to Predict. They fall into two types,  Fantasy and non-Fantasy. The Fantasy events will have a Salary Cap, typically $100,000 and each of the players will have a salary that is based on their expected fantasy point production. In non-Fantasy, choices will be made without any consideration of salary or other constraints other than positional requirements.</p>
+	<h3>On PredictThat we have predictions in two formats, Rosters and Individual predictions</h3>
+	<p>Roster Predictions <br />	In a roster prediction, you pick from among the choices given to you a roster of predictions. The predictions might have to fit a positional requirement like qb rb wr for football or p 1b 3b for baseball or best picture, best actor, best actress for the oscars. In a roster prediction you are competing against other users for fanbuck prediction prizes and the winner is based on which roster scores the most fantasy points. In Fantasy, the fantasy points will be based on the statistics the players on your roster produced and the rules in effect for that sport. In non-fantasy, the fantasy points will be assigned up front as the PT value for that choice.</p>
+	<h3>Individual Predictions PT Values</h3>
+	<p>With each set of choices available, each choice will be available for an individual Prediction. In non-Fantasy there will be a stated PT Value for each choice and if you Predict That choice and are correct then that is the number of Fanbucks you will be awarded. In Fantasy, all PT Values will be the same at 25 Fanbucks. To predict an individual performance, you press the PT 25 button next to the player and it will show you various statistics with a  plus and a minus symbol next to it. You can Predict that the player will exceed (+) or fall short (-) of the stated statistic. In each case, if you are right, you will be awarded the PT value or 25 Fanbucks.</p>
+	<h3>Prediction Charge</h3>
+	<p>For every Prediction that you make, roster or individual, you are charged 15 Fanbucks when the event happens.</p>
+	<h3>Fanbucks</h3>
+	<p>Fanbucks are a virtual currency with no value outside of the PredictThat website. They are used to accumulate awards and prediction charges. If at the end of the calendar month, your account has a positive Fanbuck balance, we will deposit the same amount as that balance in dollars into your PredictThat account balance and set your Fanbuck balance back to zero. If your Fanbuck balance is negative for the calendar month, it will be rolled over into the following month, but only to a  maximum of negative 50 Fanbucks.</p>
+	<h3>Roster Predictions and Auto Fill</h3>
+	<p>Roster Predictions will have a fixed number of users competing for the awards. If there are less than the fixed number of users, the site will generate random rosters from the choices available to fill out the required number of users. This auto fill function is the same one as if you were to hit the autofill button for your own roster.</p>
+	<h3>Fantasy Salaries , Market Pricing, and Trading</h3>
+	<p>Fantasy salaries are initially set based on a projection of what the player's statistics are likely to be in the  event being predicted. The salaries will then adjust based on the demand of users for each player. Once you have selected a player, you “own” him for that salary. You can trade (exchange) the player back for another player at any time up until the event begins. If the player salary has increased, you will record a “profit” and your salary cap will be increased by the difference. Similarly, if the player's salary has decreased, you will record a “loss” and your salary cap will be decreased by the difference.</p>
+	<p>Trading in non-Fantasy roster events will be allowed at any time up until the event happens. Individual predictions will not have any trading, once a prediction is made it is final.</p>
+	<h3>Prestige</h3>
+	<p>Prestige is a viutal currency that has no value except on PredictThat.When you correctly make a Prediction, you are awarded a certain amount of Fanbucks and the same amount will be added to your Prestige. PredictThat will regularly recognize and reward users with high levels of Prestige.</p>
+	<h3>Creating a League</h3>
+	<p>Instead of participating in a roster prediction against other public users on the site, you can create a league with your friends who will all make predictions in the same event. If you don't fill the league to the fixed number of users, PredictThat will add autofilled rosters to fill the league. </p>
 
-<%= render partial: 'templates/faq' %>
+	<div class="alert alert-error" ng-controller="SupportController">
+		<h3>Need Some Help?</h3>
+		<p>The fastest way to find help is our FAQ. If you can't find an answer please feel free to submit a support request and a representative will respond ASAP.</p>
+
+		<form class="clearfix no-no support">
+			<div flash-alert active-class="alert in" class="flash fade" >
+				<strong class="alert-heading"></strong>
+				<span class="alert-message">{{flash.message}}</span>
+			</div>
+			<div>
+				<input type='text' placeholder='Message Title' class='mvm span12' ng-model="title"/>
+				<input type='email' placeholder='Email' class='mvm span12' ng-model="email"/>
+				<textarea class="mvm span12" placeholder="Your Message Here" ng-model="message"></textarea>
+
+				<p><a href="javascript://" class="btn btn-danger btn-create-contest" ng-click="send()" ng-disabled="working">Submit Support Request</a></p>
+			</div>
+		</form>
+	</div>
+
