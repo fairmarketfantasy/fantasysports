@@ -17,7 +17,7 @@
       <span class="first-icon fui-checkbox-unchecked"></span>
       <span class="second-icon fui-checkbox-checked"></span>
     </span>
-    Agree to terms
+		<a href="/conditions" target="_blank">Agree to the subscriptions terms</a>
   </label>
   <input id="agree-terms" class="hide" type="checkbox" ng-model="currentUser.customer_object.has_agreed_terms" ng-change="agreeToTerms()" />
 </div>
@@ -55,10 +55,6 @@
 <!-- UnPaid subscription -->
   <div ng-hide="currentUser.customer_object.is_active">
     <h4>Looks like you need to pay your subscription this month</h4>
-    <div class="payment-info">
-      <a href="/conditions" target="_blank" popover-trigger="mouseenter" popover="Predict That now has a $10 monthly entry fee. That $10 is ALL YOU CAN LOSE! Winnings are still yours. Check out the FAQs for more info!"
-        popover-placement="right">What is this?<img src="<%= asset_path "info-icon.png" %>" width="17px"></a>
-    </div>
 		<div class="clearfix">
 			<ul class="nav nav-pills modal-pills pull-left">
 				<li ng-class="{active: payment_type == 'credit-card'}">
