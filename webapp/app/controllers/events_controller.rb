@@ -60,6 +60,7 @@ class EventsController < ApplicationController
     total_stats.each do |k, v|
       value = v / BigDecimal.new(total_counter[k])
       value = value * 0.7 + recent_stats[k]/recent_counter[k] * 0.3 if recent_stats[k]
+      value = player.calculate_expected_points if k == "points"
       data << { name: k, value: value.round(1) }
     end
 
