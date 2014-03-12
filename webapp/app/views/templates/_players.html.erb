@@ -111,7 +111,7 @@
                   <i ng-show="!player.benched" class="fui-check-inverted text-success" title="Active"></i>
                   <i ng-show="player.benched" class="fui-cross-inverted text-danger" title="Inactive"></i>
               </td>
-              <td class="tiny prediction"><p ng-hide="!player.ppg" ng-click="openPredictionDialog(player)">PT25</p></td>
+              <td class="tiny prediction"><p ng-hide="player.benched || !player.ppg" ng-click="openPredictionDialog(player)">PT25</p></td>
               <td class="tiny" ng-hide="getFilterOpts().position">{{player.position | dashIfDEF}}</td>
               <td class="tiny">{{player.team | truncate:8}}</td>
               <td class="tiny" ng-show="getFilterOpts().position"><span ng-hide="isHomeTeam(player.team)">@</span>{{opponentFor(player) | truncate:8}}</td>
