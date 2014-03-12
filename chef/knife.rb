@@ -11,7 +11,7 @@ chef_server_url          "https://api.opscode.com/organizations/easternpeak"
 chef_client_path 'chef-client -l debug'
 cache_type               'BasicFile'
 cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
-cookbook_path            ["#{current_dir}/../cookbooks"]
+cookbook_path            ["#{current_dir}/cookbooks"]
 
 # TODO: figure out how to set these up per project
 
