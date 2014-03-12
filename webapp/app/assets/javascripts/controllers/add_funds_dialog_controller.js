@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', '$timeout','$route', function($scope, dialog, fs, flash, currentUserService, $timeout, $route) {
+.controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', '$timeout', function($scope, dialog, fs, flash, currentUserService, $timeout) {
 
   $scope.showSpinner = false;
    $scope.currentUser = currentUserService.currentUser;
@@ -163,8 +163,8 @@ angular.module("app.controllers")
   $scope.submitTrial = function(){
       fs.user.activeTrial().then(function() {
           flash.success("You have activated free trial!");
+          location.reload();
           dialog.close();
-          $route.reload();
       });
   }
 
