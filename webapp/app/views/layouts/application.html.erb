@@ -35,8 +35,8 @@
   <meta name="fb:app_id" content="<%= nil %>" property="fb:app_id" />
   <meta name="fb:admins" content="" property="fb:admins" />
   <meta name="description" content="<%= description %>" property="og:description" />
-  <meta name="copyright" content="MustWin, LLC" />
-  <meta name="author" content="MustWin, LLC" />
+  <meta name="copyright" content="Predict That, LLC" />
+  <meta name="author" content="Predict That, LLC" />
 
   <!-- SEO -->
   <meta name="description" content="<%= description %>"/>
@@ -192,29 +192,24 @@
     <footer>
       <div class="container">
         <div class="row">
-          <div class="span9">
+          <div class="span12">
             <div class="clearfix">
                 <h4 class="logo-font">Predict <span class="logo-slash">That</span></h4>
                 <ul class="footer-nav">
                   <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/home">Home</a></li>
                   <li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>
-                  <!--<li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>-->
+                  <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>
                   <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
                   <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rules" >Rules and Scoring</a></li>
-                  <li class="nav-item"><a href="/#/legal" >Legal Info</a></li>
-                  <li class="nav-item"><a href="/#/support">Support</a></li>
+                  <li class="nav-item"><a href="/support" target="_blank" >How it works/support</a></li>
+                  <li class="nav-item"><a href="/conditions" target="_blank">Subcription terms</a></li>
+                  <!--<li class="nav-item"><a href="/#/legal" >Legal Info</a></li>-->
+                  <!--<li class="nav-item"><a href="/#/support">Support</a></li>-->
                   <li class="nav-item end"><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></li>
                 </ul>
             </div>
             <p>Copyright 2013, Fair Market Fantasy, LLC. All Rights Reserved.</p>
             <p>Based in San Francisco, CA</p>
-          </div>
-          <div class="span3 tos-padding">
-            <p><a href="#/terms">Terms and Conditions</a></p>
-            <p><a href="#/legal">US &amp; Canada Legality</a></p>
-            <p><a href="#/support">Customer Support / Contact</a></p>
-            <p><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></p>
-
           </div>
         </div>
       </div>

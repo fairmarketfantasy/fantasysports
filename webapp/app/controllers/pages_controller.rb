@@ -19,12 +19,12 @@ class PagesController < ApplicationController
     render layout: "landing"
   end
 
-  def terms
-    render layout: nil
+  def supports
+    render layout: "terms"
   end
 
   def conditions
-    render layout: nil
+    render layout: "terms"
   end
 
   def about
