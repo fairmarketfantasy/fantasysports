@@ -50,7 +50,7 @@
               <a class="btn btn-small btn-orange" ng-show="player.id && (market.state == 'published' || market.state == 'opened' && !player.locked)" href="javascript://" ng-click="removePlayer(player)">Trade</a>
               <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
             </span>
-						<div class="prediction" style="margin-top: 10px;">
+						<div class="prediction pull-right" style="margin: 3px 0 0 5px;">
 							<p  ng-hide="player.benched || !player.ppg" ng-click="openPredictionDialog(player)">PT</p>
 						</div>
           </div>
