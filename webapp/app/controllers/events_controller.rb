@@ -47,20 +47,22 @@ class EventsController < ApplicationController
 
   def render_average(params)
     player = Player.where(:stats_id => params[:player_ids]).first
-    events = StatEvent.where(:player_stats_id => params[:player_ids])
-    past_player_games_ids = Game.where("game_time < now()").
-                              where("(home_team = '#{player[:team] }' OR away_team = '#{player[:team] }')").
-                              order("game_time DESC").first(5).map(&:id)
-    recent_events = events.where(game_stats_id: past_player_games_ids)
+    events =
+    games_ids = Game.where("game_time < now()").
+                            where("(home_team = '#{player[:team] }' OR away_team = '#{player[:team] }')").
+                            order("game_time DESC").map(&:id).uniq
+    events = StatEvent.where(:player_stats_id => params[:player_ids], game_stats_id: games_ids)
+    recent_events = events.where(game_stats_id: games_ids.first(5))
 
     recent_stats, recent_counter = StatEvent.collect_stats(recent_events)
     total_stats, total_counter = StatEvent.collect_stats(events)
 
     data = []
     total_stats.each do |k, v|
-      value = v / BigDecimal.new(total_counter[k])
-      value = value * 0.7 + recent_stats[k]/recent_counter[k] * 0.3 if recent_stats[k]
-      value = player.calculate_expected_points if k == "points"
+      value = k == "points" ? player.total_points : v
+      value = value.to_d / BigDecimal.new(games_ids.count)
+      value = value * 0.7 + recent_stats[k]/games_ids.first(5).count * 0.3 if recent_stats[k]
+      #value = player.calculate_expected_points if k == "points"
       data << { name: k, value: value.round(1) }
     end
 
