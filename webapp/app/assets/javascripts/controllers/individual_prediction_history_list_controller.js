@@ -8,9 +8,16 @@ angular.module("app.controllers")
   $scope.predictionList = [];
 
   $scope.fetchMore = function() {
-    $scope.showMore = false
+    $scope.showMore = false;
     page++;
+
     rosterService.fetchMinePrediction({sport: $routeParams.sport, historical: true, page: page}).then(function(data) {
+
+      if (data.length > 24) {
+        $scope.showMore = true;
+      }
+      $scope.predictionList = $scope.predictionList.concat(data);
+
       _.each($scope.predictionList, function(list){
         _.each(list.event_predictions, function(data){
           if(data.diff == 'more'){
@@ -20,12 +27,7 @@ angular.module("app.controllers")
           }
         })
       });
-
-      if (data.length > 24) {
-        $scope.showMore = true;
-      }
-        $scope.predictionList = $scope.predictionList.concat(data);
-      });
+    });
   };
   $scope.fetchMore();
 

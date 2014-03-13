@@ -136,6 +136,8 @@ angular.module('app.services')
             d.open();
           };
           openLoginModal();*/
+          $injector.get('$location');
+          $location.path('/')
         } else if (resp.data && resp.data.error) {
           flash.error(resp.data.error);
         } else {

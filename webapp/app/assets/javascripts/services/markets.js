@@ -26,10 +26,7 @@ angular.module('app.data')
       };
 
       this.selectMarketId = function(id, sport) {
-        if(!marketData[id]){
-            $location.path('/' + $routeParams.sport + '/home');
-
-        }
+        if(!marketData[id]){ return; }
         var type = marketData[id].game_type == 'regular_season' ? 'regular_season' : 'single_elimination'; // Hacky
         this.selectMarketType(type, idsToSports[marketData[id].sport_id]);
         this.currentMarket = marketData[id];
