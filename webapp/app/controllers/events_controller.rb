@@ -47,7 +47,6 @@ class EventsController < ApplicationController
 
   def render_average(params)
     player = Player.where(:stats_id => params[:player_ids]).first
-    events =
     games_ids = Game.where("game_time < now()").
                             where("(home_team = '#{player[:team] }' OR away_team = '#{player[:team] }')").
                             order("game_time DESC").map(&:id).uniq
