@@ -53,12 +53,12 @@ class IndividualPredictionsController < ApplicationController
     sport ||= Sport.where('is_active').first
     predictions = current_user.individual_predictions
     predictions = predictions.joins('JOIN markets m ON individual_predictions.market_id=m.id').
-                              where(['m.sport_id = ?', sport.id])
+                              where(['m.sport_id = ?', sport.id]).order('created_at desc')
     if params[:historical]
       page = params[:page] || 1
-      predictions = predictions.where(finished: true).over.page(page)
+      predictions = predictions.where(finished: true).page(page)
     end
 
-    render_api_response predictions.order('created_at desc')
+    render_api_response predictions
   end
 end
