@@ -1,12 +1,14 @@
 <div class="roster-title">
   <h3>Your <span ng-show="pt_history">Past {{currentUser.currentSport}} </span>Individual Prediction
-      <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/rosters">My Predictions</a>
+      <a ng-show="!pt_history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/rosters">My Predictions</a>
+      <a ng-show="pt_history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/history">My Predictions History</a>
   </h3>
 </div>
 <table class="table table-striped">
   <thead>
     <th>Event</th>
     <th>Choice</th>
+    <th>Day</th>
     <th>Prediction</th>
     <th colspan="3">PT</th>
     <th>Award</th>
@@ -24,6 +26,7 @@
             {{prediction.player_name}}
         </div>
       </td>
+        <td><span>{{prediction.market.closed_at | longFormDate}}</span></span></td>
       <td colspan="3" class="list-statistic">
         <span ng-repeat="statistic in prediction.event_predictions">
             {{statistic.diff | capitalize}}:
