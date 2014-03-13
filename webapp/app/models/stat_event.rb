@@ -15,10 +15,11 @@ class StatEvent < ActiveRecord::Base
   def self.collect_stats(events)
     result = {}
     events.each do |event|
-      if result[event.activity]
-        result[event.activity] += event.point_value.abs
+      key = event.activity.to_sym
+      if result[key]
+        result[key] += event.quantity.abs
       else
-        result[event.activity] = event.point_value.abs
+        result[key] = event.quantity.abs
       end
     end
 
