@@ -380,7 +380,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def process_individual_predictions
-    self.individual_predictions.where.not(finished: true).each do |prediction|
+    self.individual_predictions.where(finished: nil).each do |prediction|
       next unless prediction.won?
 
       customer_object = prediction.user.customer_object
