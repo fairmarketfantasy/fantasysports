@@ -5,7 +5,7 @@ angular.module("app.controllers")
   $scope.pt_history = true;
   $scope.showMore = false;
   var page = 0;
-  $scope.rosterList = [];
+  $scope.predictionList = [];
 
   $scope.fetchMore = function() {
     $scope.showMore = false
@@ -24,7 +24,7 @@ angular.module("app.controllers")
       if (data.length > 24) {
         $scope.showMore = true;
       }
-        $scope.rosterList = $scope.rosterList.concat(data);
+        $scope.predictionList = $scope.predictionList.concat(data);
       });
   };
   $scope.fetchMore();
