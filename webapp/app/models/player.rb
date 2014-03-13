@@ -97,23 +97,4 @@ class Player < ActiveRecord::Base
   def benched_games
     self.removed? ? 100 : super
   end
-
-  def calculate_expected_points
-    # calculate total ppg # TODO: this should be YTD
-    return 0 if self.status != 'ACT'
-
-    total_exp = self.total_points / (self.total_games + 0.0001)
-    # calculate ppg in last 5 games
-    recent_exp = ActiveRecord::Base.connection.execute(
-      "SELECT sum(point_value) points FROM stat_events
-        WHERE player_stats_id = '#{self.stats_id}' AND game_stats_id IN(
-          select stats_id from games where game_time < now() and (home_team = '#{self[:team] }' OR away_team = '#{self[:team] }')
-      order by game_time desc limit 5)"
-    ).first['points'].to_f / 5
-    # set expected ppg
-    # TODO: HANDLE INACTIVE
-    return self.total_points / self.total_games if recent_exp == 0
-
-    0.7 * total_exp + 0.3 * recent_exp
-  end
 end

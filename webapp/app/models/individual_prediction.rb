@@ -19,8 +19,8 @@ class IndividualPrediction < ActiveRecord::Base
 
   def won?
     game_ids = GamesMarket.where(:market_id => self.market.id).map(&:game_stats_id)
-    events = StatEvent.where(:player_stats_id => self.player.id, :game_stats_id => game_ids)
-    game_stats = StatEvent.collect_stats(events).first
+    events = StatEvent.where(:player_stats_id => self.player.stats_id, :game_stats_id => game_ids)
+    game_stats = StatEvent.collect_stats(events)
     self.event_predictions.each do |prediction|
       game_result = game_stats[prediction.event_type] || 0
       if prediction.diff == 'more'
