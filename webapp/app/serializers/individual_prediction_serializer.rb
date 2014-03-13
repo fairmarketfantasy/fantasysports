@@ -14,4 +14,12 @@ class IndividualPredictionSerializer < ActiveModel::Serializer
   def player_stat_id
     Player.find(object.player_id).stats_id
   end
+
+  def game_time
+    object.market.games.first.game_time
+  end
+
+   def game_day
+    object.market.closed_at
+  end
 end
