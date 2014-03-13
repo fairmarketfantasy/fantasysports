@@ -87,6 +87,14 @@ angular.module('app.filters')
       return moment(input).format("ddd DD @ h:mma");
     };
   })
+  .filter('onlyFormTime', function() {
+    return function(input, scope) {
+      if (!input) {
+        return '';
+      }
+      return moment(input).format("hh:mma");
+    };
+  })
   .filter('centsToDollars', function() {
     return function(input) {
       var retVal = '';
