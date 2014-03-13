@@ -3,14 +3,16 @@ angular.module("app.controllers")
   rosterService.setPoller(null);
   $scope.rosterService = rosterService;
   $scope.history = true;
-  $scope.showMore = true;
+  $scope.showMore = false;
   var page = 0;
   $scope.rosterList = [];
   $scope.fetchMore = function() {
+    $scope.showMore = false;
     page++;
     rosterService.fetchMine({sport: $routeParams.sport, historical: true, page: page}).then(function(rosters) {
-      if (rosters.length == 0) {
-        $scope.showMore = false;
+
+      if (rosters.length > 24) {
+        $scope.showMore = true;
       }
       $scope.rosterList = $scope.rosterList.concat(rosters);
     });
