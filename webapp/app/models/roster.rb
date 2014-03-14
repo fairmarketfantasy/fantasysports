@@ -333,7 +333,7 @@ class Roster < ActiveRecord::Base
         else
           @candidate_players[position].first
         end
-        debugger if player.nil?
+        #debugger if player.nil?
         add_player(player, position, place_bets)
         @candidate_players = remove_from_candidate_players(@candidate_players, player)
       end while(remaining_positions.length > 0)

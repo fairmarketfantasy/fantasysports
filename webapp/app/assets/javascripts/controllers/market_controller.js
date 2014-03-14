@@ -101,4 +101,5 @@ angular.module("app.controllers")
     return !!contestClass.match(/\d+k/);
   };
 
+
 }]);
