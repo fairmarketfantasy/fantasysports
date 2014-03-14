@@ -220,6 +220,7 @@ func ParseRoster(state *lib.ParseState) *models.Player {
 		state.CurrentPlayer = player
 		return player
 	case "injury":
+		state.CurrentPlayer.Out = parsers.FindAttrByName(state.CurrentElement().Attr, "status")
 		err := parsers.InitFromAttrs(*state.CurrentElement(), &state.CurrentPlayer.PlayerStatus)
 		if err != nil {
 			log.Println(err)

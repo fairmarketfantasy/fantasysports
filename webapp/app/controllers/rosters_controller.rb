@@ -122,6 +122,7 @@ class RostersController < ApplicationController
       Roster.where(:id => params[:id], :view_code => params[:view_code]).first
     end
     raise HttpException.new(404, "Roster not found or code not included") unless roster
+    roster.swap_benched_players! if roster.remove_benched
     render_api_response roster
   end
 
@@ -174,6 +175,7 @@ class RostersController < ApplicationController
   def toggle_remove_bench
     roster = current_user.rosters.where(:id => params[:id]).first
     roster.update_attribute(:remove_benched, !roster.remove_benched)
+    roster.swap_benched_players! if roster.remove_benched
     render_api_response roster
   end
 
