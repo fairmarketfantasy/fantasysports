@@ -26,6 +26,8 @@
 //= require vendor/angulartics.js
 //= require vendor/angulartics-google-analytics.js
 //= require vendor/autofill-event.js
+//= require vendor/jquery.flexslider.js
+//= require vendor/angular-flexslider.js
 //= require skeuocard
 
 // Our angular app
