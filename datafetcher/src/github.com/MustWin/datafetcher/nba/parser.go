@@ -251,7 +251,7 @@ func buildBreakdownStatEvent(state *lib.ParseState, quantity int, activity strin
 
 func statsParser(state *lib.ParseState) []*models.StatEvent {
 	points, _ := strconv.Atoi(state.CurrentElementAttr("points"))
-	fieldgoal, _ := strconv.Atoi(state.CurrentElementAttr("field_goals_made"))
+	three_points_made, _ := strconv.Atoi(state.CurrentElementAttr("three_points_made"))
 	rebound, _ := strconv.Atoi(state.CurrentElementAttr("rebounds"))
 	assist, _ := strconv.Atoi(state.CurrentElementAttr("assists"))
 	steal, _ := strconv.Atoi(state.CurrentElementAttr("steals"))
@@ -260,7 +260,7 @@ func statsParser(state *lib.ParseState) []*models.StatEvent {
 
 	events := parsers.FilterNils([]*models.StatEvent{
 		buildBreakdownStatEvent(state, points, "points", 1.0),
-		buildBreakdownStatEvent(state, fieldgoal, "3pt made", 0.5),
+		buildBreakdownStatEvent(state, three_points_made, "3pt made", 0.5),
 		buildBreakdownStatEvent(state, rebound, "rebounds", 1.2),
 		buildBreakdownStatEvent(state, assist, "assists", 1.5),
 		buildBreakdownStatEvent(state, steal, "steals", 2.0),
