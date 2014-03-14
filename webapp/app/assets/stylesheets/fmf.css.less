@@ -1074,15 +1074,22 @@ input, textarea, .uneditable-input {
 .market-list{
   list-style-type: none;
   margin: 0;
-  padding: 0 18px;
+  padding: 0;
   position: relative;
+}
+
+.flex-viewport {
+  margin: 0 18px;
+}
+.flex-control-nav {
+  display:none;
 }
 
 .market-li{
   border-left: 1px solid #686D6F;
   float: left;
   margin-bottom: 4px;
-  max-height: 35px;
+  height: 50px;
   padding: 5px 10px;
   text-align: center;
   width: 130px;
@@ -1090,10 +1097,15 @@ input, textarea, .uneditable-input {
 .market-link{
   color:#cccccc;
   cursor:pointer;
+  p{
+    font-size: 11px;
+    margin: 0;
+  }
 }
 .home-market-li{
   border-left: 1px solid #E0E0E0;
   padding: 5px 3px;
+  height: 50px;
 }
 .home-market-link{
   color:#666;
@@ -1102,22 +1114,32 @@ input, textarea, .uneditable-input {
 .market-link.active-market{
   color:#D2302D;
 }
-.slider-prev,
-.slider-next{
+.flex-prev,
+.flex-next{
   background: asset-url('sprite.png') no-repeat -7px -65px;
   float: left;
   height: 19px;
   left: 2px;
   position: absolute;
-  top: 16%;
+  top: 28%;
   width: 11px;
   cursor: pointer;
+  text-indent: -9999px;
 }
 
-.slider-next{
+.flex-next{
   background: asset-url('sprite.png') no-repeat -7px -134px;
   left: inherit;
   right: 2px;
+}
+
+.flex-direction-nav {
+  height: 0;
+  margin: 0;
+  height: 0;
+  li {
+    list-style-type: none;
+  }
 }
 
 .landing-border {
