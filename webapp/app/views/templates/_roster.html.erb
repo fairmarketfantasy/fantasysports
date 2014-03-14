@@ -1,14 +1,24 @@
 <div ng-show="rosters.currentRoster">
 
-  <ul class="clearfix market-list home-market" ng-show="marketService.upcoming">
-    <!--<li class="slider-prev" ng-click="prev()"></li>-->
-    <li class="market-li home-market-li" ng-class="{'home-market-border': $last }" ng-repeat="(i, market) in marketService.upcoming">
+  <flex-slider class="carousel home-market" repeat="market in marketService.upcoming track by market.id | orderBy:'id':reverse=false"animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="160" item-margin="0">
+    <li class="market-li home-market-li" ng-class="{'landing-border': $last }">
       <a  href="#/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">
         <strong>{{market.name}}</strong>
+        <p>{{market.games[0].game_time | onlyFormTime}}</p>
       </a>
     </li>
+  </flex-slider>
+
+  <!--<ul class="clearfix market-list home-market" ng-show="marketService.upcoming">-->
+    <!--<li class="slider-prev" ng-click="prev()"></li>-->
+    <!--<li class="market-li home-market-li" ng-class="{'home-market-border': $last }" ng-repeat="(i, market) in marketService.upcoming">-->
+      <!--<a  href="#/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">-->
+        <!--<strong>{{market.name}}</strong>-->
+        <!--<p>{{market.games[0].game_time | onlyFormTime}}</p>-->
+      <!--</a>-->
+    <!--</li>-->
     <!--<li class="slider-next" ng-click="next()"></li>-->
-  </ul>
+  <!--</ul>-->
 
   <div class="alert alert-info hide" ng-show="!rosters.justSubmittedRoster && false">
   </div>

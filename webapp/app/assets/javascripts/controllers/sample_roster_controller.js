@@ -17,6 +17,7 @@ angular.module("app.controllers")
         });
     });
 
+
     $scope.reloadRoster = function(id, sport) {
         $scope.roster = undefined;
         fs.rosters.getSample(id, sport).then(function(roster) {
@@ -41,19 +42,5 @@ angular.module("app.controllers")
             return (market.id === $scope.roster.market.id);
     };
 
-//    slider
-    $scope.$slideIndex = 0;
-    $scope.next = function() {
-        var total = $scope.marketService.upcoming.length;
-        if (total > 0) {
-            $scope.$slideIndex = ($scope.$slideIndex < total - 3 ) ? $scope.$slideIndex + 1 : total - 3;
-        }
-    };
-    $scope.prev = function() {
-        var total = $scope.marketService.upcoming.length;
-        if (total > 0) {
-            $scope.$slideIndex = ($scope.$slideIndex > 0) ? $scope.$slideIndex = $scope.$slideIndex - 1: $scope.$slideIndex = 0;
-        }
-    };
 }]);
 

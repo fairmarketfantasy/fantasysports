@@ -1,14 +1,14 @@
 <div ng-controller="SampleRosterController">
 
-  <ul class="clearfix market-list" ng-show="marketService.upcoming">
-    <li class="slider-prev" ng-click="prev()"></li>
-    <li class="market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, market) in marketService.upcoming | orderBy:'id':reverse=false" ng-show="i == $slideIndex || i == $slideIndex + 1 || i == $slideIndex + 2">
+  <flex-slider class="carousel" repeat="market in marketService.upcoming track by market.id | orderBy:market.id:reverse=false" animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="151" item-margin="0">
+    <li class="market-li" ng-class="{'landing-border': $last }">
       <a ng-click="reloadRoster(market.id)" class="market-link" ng-class="{'active-market': isCurrent(market) }">
         <strong>{{market.name}}</strong>
+        <p>{{market.games[0].game_time | onlyFormTime}}</p>
       </a>
     </li>
-    <li class="slider-next" ng-click="next()"></li>
-  </ul>
+  </flex-slider>
+
   <div class="roster-area">
     <div class="loading-message" ng-hide="!marketService.currentMarket || roster">
       <img src=<%= asset_path 'ajax-throbber.gif' %>/>
