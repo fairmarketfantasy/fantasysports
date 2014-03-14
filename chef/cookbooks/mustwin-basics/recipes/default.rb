@@ -27,11 +27,9 @@ end
 execute "Install rvm" do
   command "curl -L https://get.rvm.io | sudo bash --login -s stable --ruby=1.9.3"
   not_if "which rvm | grep rvm"
+  returns [0, 1] # warning about 1.9.3 EOL breaks deploy procedure with code 1
 end
-execute "Install rvm" do
-  command "curl -L https://get.rvm.io | sudo bash --login -s stable --ruby=1.9.3"
-  not_if "which rvm | grep rvm"
-end
+
 # Wrap rvm for some things
 cookbook_file "/home/ubuntu/wrap-rvm.sh" do
   source "wrap-rvm.sh"
