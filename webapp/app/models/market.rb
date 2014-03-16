@@ -243,8 +243,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def bad_h2h_type_ids
-    bad_h2h_types = self.contest_types.where(:name => ['h2h', 'h2h rr']).select do |ct|
-      if (ct.name == 'h2h' && [100, 1000].include?(ct.buy_in))# ||  # Fill H2H games of normal amounts
+    bad_h2h_types = self.contest_types.where(:name => ['27 H2H', 'h2h rr']).select do |ct|
+      if (ct.name == '27 H2H' && [100, 1500].include?(ct.buy_in))# ||  # Fill H2H games of normal amounts
           #(ct.name == 'h2h rr' && [900, 9000].include?(ct.buy_in))
         false
       else
@@ -311,7 +311,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     #cancel all un-submitted rosters
     self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
     self.contests.where(
-        :contest_type_id => self.contest_types.where(:name => ['h2h', 'h2h rr']).map(&:id)
+        :contest_type_id => self.contest_types.where(:name => ['27 H2H', 'h2h rr']).map(&:id)
         ).where(:num_rosters => 1).each do |contest|
       contest.cancel!
     end

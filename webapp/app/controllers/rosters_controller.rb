@@ -1,7 +1,7 @@
 class RostersController < ApplicationController
   skip_before_filter :authenticate_user!, :only => [:show, :sample_roster]
 
-  DEFAULT_BUY_IN = 1000
+  DEFAULT_BUY_IN = 1500
   DEFAULT_REMAINING_SALARY = 100000
 
   def mine
