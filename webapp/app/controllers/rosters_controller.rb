@@ -44,7 +44,7 @@ class RostersController < ApplicationController
       market = Market.find(params[:market_id])
       #Eventing.report(current_user, 'createRoster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
       raise HttpException.new(403, "This market is closed") unless market.accepting_rosters?
-      current_user.in_progress_roster.destroy if current_user.in_progress_roster
+      current_user.in_progress_roster.destroy if current_user.rosters.where(:state => 'in_progress').count > 5
 
       Eventing.report(current_user, 'createRoster', :buy_in => Roster::DEFAULT_BUY_IN)
       roster = Roster.create!(:owner_id => current_user.id,
