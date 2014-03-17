@@ -2,7 +2,7 @@
   <div class="roster-area">
     <div class="clearfix">
       <h4 class="team-heading inline-heading">Roster</h4>
-      <a class="btn btn-small btn-info pull-right" href="javascript://" ng-show="roster.owner_id == currentUser.id && roster.state == 'in_progress'" ng-click="rosters.autoFill()">AutoFill</a>
+      <a class="btn btn-small btn-info pull-right autofill" href="javascript://" ng-show="roster.owner_id == currentUser.id && roster.state == 'in_progress'" ng-click="rosters.autoFill()">AutoFill</a>
       <span class="remaining-salary" ng-show="rosters.opponentRoster">${{totalSalary(roster) | number:0}} total</span>
       <span class="salary-cap score" ng-show="inThePast(market.started_at)" highlight-changes="roster.score">Team Score: {{roster.score | zeroIfEmpty}}</span>
       <label class="remove-benched checkbox light-check" for="removeBenched" ng-click="rosters.currentRoster.remove_benched = !rosters.currentRosters.remove_benched" ng-class="{'checked': rosters.currentRoster.remove_benched}">
