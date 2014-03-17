@@ -720,17 +720,20 @@ select:focus:invalid {
   font-style: italic;
 }
 .nav-mobile-app-links {
-  display:none;
   margin-top: -5px;
   text-align: center;
 }
 
-.ios-app-link {
+.ios-app-link,
+.android-app-link{
   display: inline-block;
   overflow: hidden;
-  background: url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;
-  width: 135px;
-  height: 40px;
+  background: asset-url('appstore_up.png') no-repeat;
+  width: 160px;
+  height: 46px;
+}
+.android-app-link {
+  background: asset-url('googleplay_up.png') no-repeat;
 }
 
 .end {
@@ -1550,6 +1553,10 @@ input, textarea, .uneditable-input {
   margin: 0 0 8px;
   width: 210px;
 }
+.autofill{
+  color: @white;
+}
+
 .remaining-salary {
   color: #fefefe;
 }
