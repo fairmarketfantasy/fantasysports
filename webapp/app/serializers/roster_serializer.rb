@@ -65,7 +65,7 @@ class RosterSerializer < ActiveModel::Serializer
   def positions
     return if scope.abridged?
 
-    object.contest_type ? object.contest_type.positions : Positions.for_sport_id(object.market.sport_id)
+    Positions.for_sport_id(object.market.sport_id)
   end
 
   def live
