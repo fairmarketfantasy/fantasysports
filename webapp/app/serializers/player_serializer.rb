@@ -35,9 +35,10 @@ class PlayerSerializer < ActiveModel::Serializer
     events = StatEvent.where(player_stats_id: object[:stats_id],
                              game_stats_id: games_ids, activity: 'points')
     total_stats = StatEvent.collect_stats(events)[:points]
-    return 0 if object[:total_games].nil? || object[:total_games] == 0
+    return if total_stats.nil? || object[:total_games] == 0
 
-    total_stats || 0 / object[:total_games]
+    value = total_stats / object[:total_games]
+    value.round == 0 ? nil : value
   end
 
   def headshot_url
