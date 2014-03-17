@@ -35,7 +35,7 @@ body {
   background-color: @white;  
 }
 a {
-  color: @blue;
+  color: @info;
 }
 body.guide {
   background-color: @white;
@@ -79,7 +79,6 @@ footer {
   .logo-font {
     font-size: 30px;
     float:left;
-    line-height: 68px;
   }
 }
 
@@ -471,11 +470,17 @@ select:focus:invalid {
 .top-nav {
   height: 54px;
 }
+
+.logo-font {
+  padding-left: 45px;
+  background: asset-url('pt.png') no-repeat 0 4px;
+}
+
 .logo-font,
 .logo-font a{
   text-decoration: none;
   font-family: @special;
-  color: @redDark;
+  color: @info;
   font-size: 34px;
   line-height: 52px;
   text-shadow: 1px 1px 0 @offWhite, -1px -1px 0 @offWhite, 1px -1px 0 @offWhite,
@@ -492,7 +497,7 @@ select:focus:invalid {
 }
 .logo-slash {
   font-family: @specialItalic;
-  color: @red;  
+  color: @info;
 }
 
 .landing-nav {
@@ -530,7 +535,7 @@ select:focus:invalid {
       position: relative;
       cursor:pointer;
       .menu-arrow {
-        background: asset-url('sprite.png') no-repeat -8px -38px;
+        background: asset-url('sprite.png') no-repeat -36px -39px;
         width: 15px;
         height: 15px;
         position: absolute;
@@ -696,7 +701,7 @@ select:focus:invalid {
   font-size: 16px;
   list-style: none;
   float:left;
-  margin: 15px 0 0 10px;
+  margin: 7px 0 0 10px;
 }
 
 .nav-item {
@@ -715,6 +720,7 @@ select:focus:invalid {
   font-style: italic;
 }
 .nav-mobile-app-links {
+  display:none;
   margin-top: -5px;
   text-align: center;
 }
@@ -1109,7 +1115,7 @@ input, textarea, .uneditable-input {
   width: 153px !important;
 }
 .home-market-link{
-  color:#666;
+  color:@info;
 }
 
 .market-link.active-market{
@@ -1117,7 +1123,7 @@ input, textarea, .uneditable-input {
 }
 .flex-prev,
 .flex-next{
-  background: asset-url('sprite.png') no-repeat -7px -65px;
+  background: asset-url('sprite.png') no-repeat -7px -82px;
   float: left;
   height: 19px;
   left: 2px;
@@ -1324,11 +1330,10 @@ input, textarea, .uneditable-input {
 .positions-list {
   margin: 10px 0 0;
   padding: 0;
-  width: 65%;
   float: right;
 }
 .position-link.selected {
-  background-color: @peter-river;
+  background-color: @info;
 }
 .position-item {
   float: left;
@@ -1336,8 +1341,8 @@ input, textarea, .uneditable-input {
   list-style-type: none;
 }
 .position-link {
-  border: @gray;
-  background-color: @success;
+  border: @green;
+  background-color: @green;
   display: block;
   .border-radius(4px 4px 0 0);
   color: @white;  
@@ -1493,8 +1498,12 @@ input, textarea, .uneditable-input {
       margin: 0;
     }
     a {
+      background-color: @info;
       float:left;
       padding: 6px 9px 5px;
+      &:hover {
+        background-color: @blue;
+      }
     }
   }
 }
@@ -1629,9 +1638,7 @@ input, textarea, .uneditable-input {
   text-align: left;
   width: 62%;
 }
-.landing-container .prediction p{
-  cursor: default;
-}
+
 .mr-player-image {
   height: 50px;
   width: 50px;
