@@ -29,7 +29,13 @@ class PlayerSerializer < ActiveModel::Serializer
   end
 
   def ppg
-    1.0 * object[:total_points] / object[:total_games]
+    games_ids = Game.where("game_time < now()").
+                     where("(home_team = '#{object[:team] }' OR away_team = '#{object[:team] }')").
+                     order("game_time DESC").map(&:id).uniq
+    events = StatEvent.where(player_stats_id: object[:stats_id],
+                             game_stats_id: games_ids, activity: 'points')
+    total_stats = StatEvent.collect_stats(events)[:points]
+    total_stats / object[:total_games]
   end
 
   def headshot_url
