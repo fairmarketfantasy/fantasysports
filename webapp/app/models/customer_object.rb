@@ -7,7 +7,8 @@ class CustomerObject < ActiveRecord::Base
   has_many :credit_cards
 
   def self.monthly_accounting!
-    CustomerObject.where(['is_active AND has_agreed_terms AND last_activated_at < ?', Time.new.beginning_of_month]).each do |co|
+    condition = 'is_active AND has_agreed_terms AND last_activated_at < ?'
+    CustomerObject.where([condition, Time.new.beginning_of_month]).each do |co|
       co.do_monthly_accounting!
     end
   end
@@ -22,7 +23,7 @@ class CustomerObject < ActiveRecord::Base
       decrease_monthly_winnings(user_earnings, :event => 'monthly_user_balance')
       decrease_monthly_winnings(deficit_entries * 1000, :event => 'monthly_user_entries') if deficit_entries > 0
       decrease_monthly_winnings(tax_earnings, :event => 'monthly_taxes') if tax_earnings > 0
-      increase_account_balance(user_earnings, :event => 'monthly_user_balance')
+      increase_account_balance(user_earnings, :event => 'monthly_user_balance') if user_earnings > 0
       puts "--Accounting #{self.user.id}"
       if self.balance > 1000
         do_monthly_activation!
