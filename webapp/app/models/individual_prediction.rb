@@ -17,6 +17,15 @@ class IndividualPrediction < ActiveRecord::Base
     end
   end
 
+  def cancel!
+    ActiveRecord::Base.transaction do
+      customer_object = self.user.customer_object
+      customer_object.monthly_contest_entries -= Roster::FB_CHARGE
+      customer_object.save!
+    end
+    self.update_attribute(:cancelled, true)
+  end
+
   def won?
     game_ids = GamesMarket.where(:market_id => self.market.id).map(&:game_stats_id)
     events = StatEvent.where(:player_stats_id => self.player.stats_id, :game_stats_id => game_ids)
