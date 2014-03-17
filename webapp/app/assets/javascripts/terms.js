@@ -19,6 +19,7 @@
 //= require vendor/angular-flash.js
 //= require vendor/angulartics.js
 //= require vendor/angulartics-google-analytics.js
+//= require vendor/angular-flexslider.js
 
 
 // Our angular app
