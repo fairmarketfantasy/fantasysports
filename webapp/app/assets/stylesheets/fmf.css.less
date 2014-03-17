@@ -289,7 +289,7 @@ select:focus:invalid {
   -webkit-background-size: contain;
   -moz-background-size: contain;
   background-size: contain;
-  height: 870px;
+  min-height: 600px;
   width: 100%;
   background-position: top right;
   background-repeat: no-repeat;
@@ -403,13 +403,13 @@ select:focus:invalid {
 }
 
 .sign-up-nav {
-  background-color: mix(@green, rgba(0,0,0,0), 30%);
+  background-color: @green;
 }
 .ie8 .sign-up-nav {
   background-color: @green;
 }
 .sign-in-nav {
-  background-color: mix(@info, rgba(0,0,0,0), 30%);
+  background-color:@info;
 }
 .ie8 .sign-in-nav {
   background-color: @info;
@@ -515,16 +515,16 @@ select:focus:invalid {
     padding: 14.5px 11px;
     display:block;
       &:hover{
-        background-color: #1C1BA3;
+        background-color: @info;
       }
     }
   .open{
     a{
-      background-color: #1C1BA3;
+      background-color: @info;
     }
     li{
       display:block;
-      border-bottom: 2px solid #3A3AC0;
+      border-bottom: 2px solid #4A6E9F;
       display: block;
       margin: 0 10px;
       position: relative;
@@ -547,7 +547,7 @@ select:focus:invalid {
     position: absolute;
     left: 0;
     top: 51px;
-    background-color: #1C1BA3;
+    background-color: @info;
     margin-top: 0;
     min-width: 20px;
     width: inherit;
@@ -1113,7 +1113,7 @@ input, textarea, .uneditable-input {
 }
 
 .market-link.active-market{
-  color:#D2302D;
+  color:@green;
 }
 .flex-prev,
 .flex-next{
@@ -1440,8 +1440,8 @@ input, textarea, .uneditable-input {
 }
 
 .prediction p{
-  color:@red;
-  border: 2px solid #FF0000;
+  color:@info;
+  border: 2px solid @info;
   .border-radius(4px);
   display: inline;
   font-size: 12px;
@@ -1453,7 +1453,7 @@ input, textarea, .uneditable-input {
 }
 
 .pt {
-  color:@red;
+  color:@info;
 }
 .bit{
   font-size: 12px;
@@ -1638,7 +1638,7 @@ input, textarea, .uneditable-input {
   background-position: center center;
   background-image: asset-url('helmet.png');
   .border-radius(35px);
-  border: 5px solid @grayLight;
+  border: 5px solid @green;
   margin-right: 8px;
   background-color: @offWhite;
   background-repeat: no-repeat;
@@ -1736,7 +1736,7 @@ input, textarea, .uneditable-input {
   width: 40px;
   height: 40px;
   float:left;
-  border:3px solid #2ED02A;
+  border:3px solid @green;
 }
 .mr-team,
 .mr-stats{
@@ -1937,7 +1937,7 @@ input[type="text"].players-search {
   background-color: @blueDark;
 }
 .btn.btn-primary, .label-primary {
-  background-color: @greenDark;
+  background-color: @green;
 }
 .btn.btn-success, .label-success {
   background-color: @green;
@@ -1947,7 +1947,7 @@ input[type="text"].players-search {
   color: @black;
 }
 .btn.btn-danger, .label-danger {
-  background-color: @red;
+  background-color: @info;
 }
 .btn {
   padding: 9px 12px 8px;
@@ -2035,7 +2035,7 @@ textarea[class*="span"] {
 .individual-predict {
   font-size: 14px;
   font-weight: bold;
-  color:#30D12B;
+  color:@green;
   text-transform: uppercase;
   border-bottom:1px solid #ddd;
   padding-bottom: 10px;
