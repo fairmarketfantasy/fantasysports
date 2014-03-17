@@ -104,6 +104,15 @@ angular.module('app.filters')
       return retVal + '$' + (Math.abs(input) / 100);
     };
   })
+  .filter('centsToFanbucks', function() {
+    return function(input) {
+      var retVal = '';
+      if (input < 0) {
+        retVal += '-'
+      }
+      return retVal + (Math.abs(input) / 100);
+    };
+  })
   .filter('ordinal', function() {
     return function(input) {
       var s=["th","st","nd","rd"],
