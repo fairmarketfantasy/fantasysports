@@ -112,6 +112,7 @@ class RostersController < ApplicationController
     end
 
     roster = Roster.generate(SYSTEM_USER, contest_type).fill_pseudo_randomly5(false)
+    roster.swap_benched_players!
     render_api_response roster, :scope => SYSTEM_USER
   end
 
@@ -169,6 +170,7 @@ class RostersController < ApplicationController
   def autofill
     roster = current_user.rosters.where(:id => params[:id]).first
     roster.fill_pseudo_randomly5
+    roster.swap_benched_players!
     render_api_response roster
   end
 
