@@ -381,15 +381,18 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def process_individual_predictions
     self.individual_predictions.where(finished: nil).each do |prediction|
-      next unless prediction.won?
-
-      customer_object = prediction.user.customer_object
-      ActiveRecord::Base.transaction do
-        customer_object.monthly_winnings += prediction.pt/10
-        customer_object.save!
+      if prediction.player.benched?
+        prediction.cancel!
+      elsif prediction.won?
+        customer_object = prediction.user.customer_object
+        ActiveRecord::Base.transaction do
+          customer_object.monthly_winnings += prediction.pt/10
+          customer_object.save!
+        end
+        prediction.update_attribute(:award, prediction.pt)
       end
 
-      prediction.update_attributes(finished: true, award: prediction.pt)
+      prediction.update_attribute(:finished, true)
     end
   end
 
