@@ -58,8 +58,7 @@ class EventsController < ApplicationController
 
     data = []
     total_stats.each do |k, v|
-      value = (k == :points ? player.total_points : v)
-      value = value.to_d / BigDecimal.new(games_ids.count)
+      value = v.to_d / BigDecimal.new(player.total_games)
       value = value * 0.7 + recent_stats[k]/games_ids.first(5).count * 0.3 if recent_stats[k]
 
       data << { name: k, value: value.round(1) }
