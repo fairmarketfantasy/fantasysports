@@ -1007,6 +1007,10 @@ input, textarea, .uneditable-input {
 .market-title h3 {
   float: left;
 }
+
+.market-loader {
+  margin-top: 300px;
+}
 .league-selector {
   float: right;
   width: 100%;
@@ -1477,7 +1481,7 @@ input, textarea, .uneditable-input {
 }
 .bit{
   font-size: 12px;
-  padding: 5px 10px;
+  padding: 0 10px;
   text-align: center;
   width: 160px;
 }
@@ -1890,7 +1894,8 @@ input[type="text"].players-search {
   }
 }
 
-.confirm-backdrop {
+.confirm-backdrop,
+.individual-prediction-backdrop{
   background-color: #243342;
   height: 100%;
   left: 0;
@@ -1898,7 +1903,12 @@ input[type="text"].players-search {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 0;
+  z-index: 1;
+}
+
+.individual-prediction-backdrop {
+  opacity: 0;
+  z-index: -1;
 }
 
 .roster-alert {
@@ -1908,6 +1918,9 @@ input[type="text"].players-search {
     padding: 0 10px;
     position: relative;
     top: 95px;
+  }
+  .roster-submit-center{
+    text-align: center;
   }
   .roster-submit-hover {
     color:@white;
