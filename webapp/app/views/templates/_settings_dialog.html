@@ -16,7 +16,8 @@
       <span class='user-info-label'>Name:</span>{{ currentUser.name }}<br />
       <span class='user-info-label'>Username:</span>{{ currentUser.username }}<br />
       <span class='user-info-label'>Password:</span> <span class='bold'>*****</span><br />
-      <a href='javascript://' ng-click='editUser()' class='btn btn-mini'>Edit</a> <a href='javascript://' ng-click='showPasswordForm = true' class='btn btn-mini'>Change My Password</a>
+      <a href='javascript://' ng-click='editUser()' class='btn btn-mini btn-info'>Edit</a> <a href='javascript://' ng-click='showPasswordForm = true' class='btn btn-mini btn-info'>Change My Password</a>
+      <a class="btn btn-mini btn-info" href="javascript://" ng-click="addFundsModal()">Manage Subscription</a>
     </div>
     <form ng-show='showUserForm'>
       <span class='user-info-label'>Email:</span><input type='text'  class='user-info-input' ng-model='userInfo.email' placeholder='Email' /><br />
@@ -42,5 +43,6 @@
   </div>
 </div>
 <div class='modal-footer'>
-  <a href="javascript://" class="btn" ng-click="close()">close</a>
+  <a href="javascript://" class="btn btn-info" ng-click="close()">close</a>
 </div>
+
