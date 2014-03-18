@@ -14,7 +14,7 @@ class EventsController < ApplicationController
   def for_players
     return render_average(params) if params[:average]
 
-    games = GamesMarket.where(:market_id => params[:market_id]).map(&:game_stats_id)
+    games = GamesMarket.where(:market_id => params[:market_id]).pluck('DISTINCT game_stats_id')
     events = StatEvent.where(:player_stats_id => params[:player_ids], :game_stats_id => games)
     render_api_response events
   end
@@ -49,7 +49,7 @@ class EventsController < ApplicationController
     player = Player.where(:stats_id => params[:player_ids]).first
     games_ids = Game.where("game_time < now()").
                             where("(home_team = '#{player[:team] }' OR away_team = '#{player[:team] }')").
-                            order("game_time DESC").map(&:id).uniq
+                            order("game_time DESC").pluck('DISTINCT game_stats_id')
     events = StatEvent.where(:player_stats_id => params[:player_ids], game_stats_id: games_ids)
     recent_events = events.where(game_stats_id: games_ids.first(5))
 
