@@ -127,12 +127,12 @@
       </div>
     </div>
     <div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">
-      <div class="pull-right roster-submit">
-         <a class="btn btn-large btn-contest-cta btn-success" ng-click="finish()" href="javascript://" >Back to Contests</a>
+      <div class="roster-submit-center roster-submit">
+        <a class="btn btn-large btn-contest-cta btn-success"  ng-click="finish()" href="javascript://" >Back to Contests</a>
       </div>
-      <div class="pull-right roster-submit">
-        <a ng-show="market.state == 'published' || market.state == 'opened'" class="btn btn-large btn-orange" href="javascript://" ng-click="enterAgain()">Enter Again</a>
-      </div>
+      <!--<div class="pull-right roster-submit">-->
+        <!--<a ng-show="market.state == 'published' || market.state == 'opened'" class="btn btn-large btn-orange" href="javascript://" ng-click="enterAgain()">Enter Again</a>-->
+      <!--</div>-->
     </div>
 
     <div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
