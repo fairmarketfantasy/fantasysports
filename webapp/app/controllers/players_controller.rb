@@ -9,7 +9,7 @@ class PlayersController < ApplicationController
       h
     end
     @players = roster.market.players.normal_positions(roster.market.sport_id)
-    @players = @players.where.not(Player.bench_conditions) if params[:removeLow] == 'true'
+    @players = @players.where("players.id NOT IN(#{Player.benched.pluck(:id).join(',')})") if params[:removeLow] == 'true'
     @players = @players.autocomplete(params[:autocomplete]) if params[:autocomplete]
 
     game = params[:game] ? Game.find(params[:game]) : nil

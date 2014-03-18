@@ -1,3 +1,5 @@
+require 'data_fetcher'
+
 class Market < ActiveRecord::Base
   attr_protected
   has_many :games_markets, :inverse_of => :market
@@ -39,6 +41,7 @@ class Market < ActiveRecord::Base
       remove_shadow_bets
       track_benched_players
       fill_rosters
+      DataFetcher.update_benched
       remove_benched_players
       close
       lock_players
