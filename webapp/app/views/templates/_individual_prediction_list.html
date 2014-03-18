@@ -13,7 +13,7 @@
     <th>Prediction</th>
     <th colspan="3">PT</th>
     <th>Award</th>
-    <th ng-hide="pt_history"></th>
+    <!--<th ng-hide="pt_history"></th>-->
   </thead>
   <tbody>
     <tr ng-repeat="prediction in predictionList | orderBy:'id':reverse=true" >
@@ -50,9 +50,9 @@
                 {{prediction.award}}
             </div>
         </td>
-        <td ng-hide="pt_history">
-           <a href="javascript://" ng-hide="prediction.finished" ng-click="openPredictionDialog(prediction.id, prediction.player_stat_id, prediction.player_name)">Edit</a>
-        </td>
+        <!--<td ng-hide="pt_history">-->
+           <!--<a href="javascript://" ng-hide="prediction.finished" ng-click="openPredictionDialog(prediction.id, prediction.player_stat_id, prediction.player_name)">Edit</a>-->
+        <!--</td>-->
     </tr>
   </tbody>
 </table>
