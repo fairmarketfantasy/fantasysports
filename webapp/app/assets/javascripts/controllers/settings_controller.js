@@ -79,5 +79,8 @@
     dialog.close();
   };
 
-
+  $scope.addFundsModal = function(){
+      $scope.close();
+      currentUserService.addFundsModal();
+  };
 }]);
