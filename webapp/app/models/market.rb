@@ -46,6 +46,7 @@ class Market < ActiveRecord::Base
       set_payouts # this is used for leaderboards
       deliver_bonuses
       finish_games
+      remove_duplicated_games!
       complete
     end
 
@@ -79,6 +80,19 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
     def publish
       apply :publish, "published_at <= ? AND (state is null or state='' or state='unpublished')", Time.now
+    end
+
+    def remove_duplicated_games!
+      Market.where(state: 'closed').each do |m|
+        game_ids = m.games_markets.where.not(finished_at: nil).map do |gm|
+          game = gm.game
+          game.stats_id if game.status == 'closed'
+        end
+
+        game_ids.compact.each do |game_id|
+          Game.where(stats_id: game_id).each { |game| game.destroy if game.status != 'closed' }
+        end
+      end
     end
 
     def open
