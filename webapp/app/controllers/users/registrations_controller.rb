@@ -1,6 +1,7 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   include Referrals
   prepend_before_filter :require_no_authentication, :only => [ :new, :create, :cancel ]
+  before_filter :process_base64_image, :only => [ :update ]
   # POST /resource
   def sign_up_from_html
     build_resource(sign_up_params)
@@ -116,6 +117,29 @@ class Users::RegistrationsController < Devise::RegistrationsController
     #     render :status => 200, :partial => 'common/user_or_contact', :locals => {:user_or_contact => current_user}
     #   }
     # end
+    @uploaded_file.delete if @uploaded_file
+  end
+
+  def process_base64_image
+    return params[:user][:avatar].class == ActionDispatch::Http::UploadedFile
+
+    #check if file is within picture_path
+    if params[:user][:avatar]["file"]
+      picture_path_params = params[:user][:avatar]
+      #create a new tempfile named fileupload
+      tempfile = Tempfile.new("fileupload")
+      tempfile.binmode
+      #get the file and decode it with base64 then write it to the tempfile
+      tempfile.write(Base64.decode64(picture_path_params["file"]))
+
+      #create a new uploaded file
+      @uploaded_file = ActionDispatch::Http::UploadedFile.new(:tempfile => tempfile,
+                                                              :filename => picture_path_params["filename"],
+                                                              :original_filename => picture_path_params["original_filename"])
+
+      #replace picture_path with the new uploaded file
+      params[:user][:avatar] = @uploaded_file
+    end
   end
 
   protected
