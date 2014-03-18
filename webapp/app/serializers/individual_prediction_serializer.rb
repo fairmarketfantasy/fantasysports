@@ -16,7 +16,7 @@ class IndividualPredictionSerializer < ActiveModel::Serializer
   end
 
   def game_time
-    object.market.games.first.game_time
+    object.market.closed_at + 5.minutes
   end
 
    def game_day
