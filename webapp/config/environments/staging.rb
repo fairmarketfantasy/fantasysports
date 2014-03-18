@@ -2,8 +2,8 @@ Fantasysports::Application.configure do
   SITE = "https://staging.predictthat.com"
   SPORTS_DATA_API_KEY = "dmefnmpwjn7nk6uhbhgsnxd6"
   SPORTS_DATA_IMAGES_API_KEY = "yq9uk9qu774eygre2vg2jafe"
-  FACEBOOK_APP_ID = "436114143174192"
-  FACEBOOK_APP_SECRET = "0f99d3d28ef7d84d6b55cdb78c238b61"
+  FACEBOOK_APP_ID = "380919122046469"
+  FACEBOOK_APP_SECRET = "3fd8aed4901ca0a22b642f32a580c841"
   AWS_ACCESS_KEY="AKIAJXV4UPD3IV4JK6DA"
   AWS_SECRET_KEY="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"
   S3_BUCKET = 'fairmarketfantasy-dev'
