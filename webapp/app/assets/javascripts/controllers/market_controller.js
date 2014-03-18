@@ -39,18 +39,18 @@ angular.module("app.controllers")
 //        }
 //         $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + $routeParams.market_id);
 //    });
-        $scope.startRoster = function(){
-        if(!$routeParams.market_id){
-            $scope.fs.rosters.roster(marketService.currentMarket.id).then(function(data){
-              $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + marketService.currentMarket.id + '/roster/' + data.id);
-          });
-        } else {
-            $scope.fs.rosters.roster($routeParams.market_id).then(function(data){
-                $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + $routeParams.market_id + '/roster/' + data.id);
+    $scope.startRoster = function(){
+    if(!$routeParams.market_id){
+        $scope.fs.rosters.roster(marketService.currentMarket.id).then(function(data){
+          $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + marketService.currentMarket.id + '/roster/' + data.id);
+      });
+    } else {
+        $scope.fs.rosters.roster($routeParams.market_id).then(function(data){
+            $location.path('/' + currentUserService.currentUser.currentSport + '/market/' + $routeParams.market_id + '/roster/' + data.id);
 
-            });
-        }
-    };
+        });
+    }
+};
 
   $scope.hasLollapalooza = function() {
     return _.find(_.keys($scope.contestClasses || {}), function(name) { return name.match(/k/); });

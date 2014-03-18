@@ -2,8 +2,8 @@ angular.module("app.controllers")
 .controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'player','flash', '$routeParams', function($scope, dialog, fs, player, flash, $routeParams) {
     $scope.player = player;
     $scope.confirmShow = false;
-    var eventData = {};
-    var eventSubmit = [];
+    $scope.eventData = {};
+
 
     $scope.playerStats = function(){
         fs.prediction.show(player.stats_id).then(function(data){
@@ -19,27 +19,24 @@ angular.module("app.controllers")
             name: name
         }
     }
+    $scope.count = 0;
+    $scope.confirmSubmit = function(){
 
-    $scope.confirmSubmit = function(name){
+        $scope.eventSubmit = [];
         $scope.confirmShow = false;
-        eventData[name] = $scope.confirm;
-        $scope.events =  eventData;
-     }
+        $scope.eventData[$scope.count] = $scope.confirm;
+        $scope.count++;
+        $scope.events =  $scope.eventData;
 
-    $scope.predictionSubmit = function(){
+        $scope.eventSubmit.push($scope.confirm);
 
-        _.each($scope.events, function(event){
-            eventSubmit.push(event)
-        });
-
-       fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, eventSubmit).then(function(data){
+    fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, $scope.eventSubmit).then(function(data){
            flash.success("Individual prediction submitted successfully!");
-           location.reload();
-           dialog.close();
        });
-    }
+    };
 
     $scope.close = function(){
+        location.reload();
         dialog.close();
     };
 
