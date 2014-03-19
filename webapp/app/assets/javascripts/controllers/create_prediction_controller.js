@@ -3,24 +3,25 @@ angular.module("app.controllers")
     $scope.player = player;
     $scope.confirmShow = false;
     $scope.eventData = {};
+    $scope.reloadBackdrop = false;
 
 
     $scope.playerStats = function(){
         fs.prediction.show(player.stats_id, $routeParams.market_id).then(function(data){
            $scope.points = data.events;
-            console.log($scope.points)
         });
     }
 
-    $scope.confirmModal = function(text, point, name) {
+    $scope.confirmModal = function(text, point, name, current_bid) {
+        console.log(current_bid)
+        if(current_bid){return}
         $scope.confirmShow = true;
         $scope.confirm = {
             value: point,
             diff: text,
-            name: name
+            name: name,
+            current_bit : text
         }
-
-
     }
     $scope.count = 0;
     $scope.confirmSubmit = function(){
@@ -28,9 +29,16 @@ angular.module("app.controllers")
         $scope.confirmShow = false;
         $scope.eventSubmit.push($scope.confirm);
 
-    fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, $scope.eventSubmit).then(function(data){
-           flash.success("Individual prediction submitted successfully!");
-       });
+        fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, $scope.eventSubmit).then(function(data){
+            $scope.reloadBackdrop = true;
+            flash.success("Individual prediction submitted successfully!");
+            _.each($scope.points, function(events){
+                if(events.name == $scope.confirm.name){
+                    $scope.confirm.current_bit == 'less' ?  events.bid_less = true : events.bid_more = true;
+                    console.log(events)
+                }
+            });
+        });
     };
 
     $scope.close = function(){
