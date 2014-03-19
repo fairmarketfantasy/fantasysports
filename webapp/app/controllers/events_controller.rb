@@ -56,26 +56,30 @@ class EventsController < ApplicationController
 
     recent_stats = StatEvent.collect_stats(recent_events)
     total_stats = StatEvent.collect_stats(events)
-    current_bid = get_current_bid(params[:market_id], player.id)
+    bid_ids = current_bid_ids(params[:market_id], player.id)
 
     data = []
     total_stats.each do |k, v|
       value = v.to_d / BigDecimal.new(player.total_games)
       value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_games.count * 0.3
-      bid_exists = false
-      bid_exists = true if current_bid && current_bid.event_predictions.where(event_type: k.to_s).first
+      bid_less = false
+      bid_more = false
+      if bid_ids.any?
+        bid_less = true if EventPrediction.where(event_type: k.to_s, diff: 'less', individual_prediction_id: bid_ids).first
+        bid_more = true if EventPrediction.where(event_type: k.to_s, diff: 'more', individual_prediction_id: bid_ids).first
+      end
 
-      data << { name: k, value: value.round(1), current_bid: bid_exists }
+      data << { name: k, value: value.round(1), bid_less: bid_less, bid_more: bid_more }
     end
 
     render json: { events: data }.to_json
   end
 
-  def get_current_bid(market_id, player_id)
+  def current_bid_ids(market_id, player_id)
     return unless current_user
 
-    IndividualPrediction.where(user_id: current_user.id,
+    IndividualPrediction.where(user_id: current_user,
                                market_id: market_id,
-                               player_id: player_id).first
+                               player_id: player_id).pluck(:id)
   end
 end
