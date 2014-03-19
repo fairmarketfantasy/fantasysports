@@ -9,6 +9,9 @@ class IndividualPredictionsController < ApplicationController
                                                             market_id: params[:market_id],
                                                             pt: IndividualPrediction::PT)
     params[:events].each do |event|
+      if prediction.event_predictions.where(event_type: event[:name], value: event[:value], diff: event[:diff]).first
+        return render 'You already have such prediction!', status: :unprocessable_entity
+      end
       event_prediction = prediction.event_predictions.create(event_type: event[:name],
                                                              value: event[:value],
                                                              diff: event[:diff])
