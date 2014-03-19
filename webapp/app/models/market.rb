@@ -180,9 +180,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
                    where("(home_team = '#{mp.player[:team] }' OR away_team = '#{mp.player[:team] }')")
 
       events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: games.pluck('DISTINCT stats_id'), activity: 'points')
-      recent_events = events.where(game_stats_id: games.order("game_time DESC").first(5).pluck('DISTINCT stats_id'))
+      recent_games = games.order("game_time DESC").first(5)
+      recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
 
-      recent_exp = StatEvent.collect_stats(recent_events)[:points].to_d/games_ids.first(5)
+      recent_exp = StatEvent.collect_stats(recent_events)[:points].to_d/recent_games.count
       total_exp = StatEvent.collect_stats(events)[:points].to_d / BigDecimal.new(mp.player.total_games)
 
       # set expected ppg
@@ -190,7 +191,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       if mp.player.status != 'ACT'
         mp.expected_points = 0
       else
-        mp.expected_points = total_exp * 0.7 + recent_exp.count * 0.3
+        mp.expected_points = total_exp * 0.7 + recent_exp * 0.3
       end
       total_expected += mp.expected_points
     end
