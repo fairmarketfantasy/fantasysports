@@ -47,12 +47,14 @@ class EventsController < ApplicationController
 
   def render_average(params)
     player = Player.where(:stats_id => params[:player_ids]).first
-    games = Game.where("game_time < now()").
-                 where("(home_team = '#{player[:team] }' OR away_team = '#{player[:team] }')")
+    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}' AND activity='points' AND quantity != 0" ).
+                                 pluck('DISTINCT game_stats_id')
+    games = Game.where(stats_id: played_games_ids)
     events = StatEvent.where(player_stats_id: params[:player_ids],
-                             game_stats_id: games.pluck('DISTINCT stats_id'))
+                             game_stats_id: played_games_ids)
     recent_games = games.order("game_time DESC").first(5)
-    recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
+    recent_ids = recent_games.map(&:stats_id)
+    recent_events = events.where(game_stats_id: recent_ids)
 
     recent_stats = StatEvent.collect_stats(recent_events)
     total_stats = StatEvent.collect_stats(events)
@@ -60,8 +62,8 @@ class EventsController < ApplicationController
 
     data = []
     total_stats.each do |k, v|
-      value = v.to_d / BigDecimal.new(player.total_games)
-      value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_games.count * 0.3
+      value = v.to_d / BigDecimal.new(played_games_ids.count)
+      value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
       bid_less = false
       bid_more = false
       if bid_ids.any?
