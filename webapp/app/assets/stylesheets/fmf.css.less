@@ -510,19 +510,19 @@ select:focus:invalid {
     }
   li{
     display:inline-block;
-    font:18px/1.2em 'Prohibition-Round','Arial Black',Helvetica,sans-serif;;
+    font:15px/1.2em 'Prohibition-Round','Arial Black',Helvetica,sans-serif;;
     text-transform: uppercase;
     position: relative;
     }
   a {
     color:#fff;
     cursor:pointer;
-    padding: 14.5px 11px;
+    padding: 16.5px 11px;
     display:block;
-      &:hover{
-        background-color: @info;
-      }
     }
+  .fantasy-sports:hover{
+    background-color: @info;
+  }
   .open{
     a{
       background-color: @info;
@@ -531,7 +531,6 @@ select:focus:invalid {
       display:block;
       border-bottom: 2px solid #4A6E9F;
       display: block;
-      margin: 0 10px;
       position: relative;
       cursor:pointer;
       .menu-arrow {
@@ -540,7 +539,7 @@ select:focus:invalid {
         height: 15px;
         position: absolute;
         top: 17px;
-        left: 2px;
+        left: 12px;
       }
       &:hover .menu-arrow,
       .menu-arrow.active-arrow {
@@ -658,6 +657,27 @@ select:focus:invalid {
   color: @grayDark;
   line-height: 1.1em;
 }
+.landing-nav .popover {
+  width: 120px;
+  padding-bottom: 2px;
+
+}
+.landing-nav .popover.bottom {
+  background-color: @black;
+  border-color:@black;
+  color: @white;
+}
+.landing-nav .popover.right {
+  border-color:#ccc;
+}
+
+.landing-nav .popover.bottom .arrow {
+  border-bottom-color: @black;
+}
+.landing-nav .popover.right .arrow {
+  border-right-color: @white;
+}
+
 .popover.right .arrow {
   border-right-color: #777;
 }
@@ -1385,7 +1405,7 @@ input, textarea, .uneditable-input {
   background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
   color: @white;
   margin: 0;
-  padding: 15px 10px 10px 25px;
+  padding: 15px 20px 10px 35px;
   &:hover{
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
   }
