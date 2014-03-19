@@ -56,7 +56,7 @@ class EventsController < ApplicationController
 
     recent_stats = StatEvent.collect_stats(recent_events)
     total_stats = StatEvent.collect_stats(events)
-    current_bid = get_current_bid(params)
+    current_bid = get_current_bid(params[:market_id], player.id)
 
     data = []
     total_stats.each do |k, v|
@@ -71,11 +71,11 @@ class EventsController < ApplicationController
     render json: { events: data }.to_json
   end
 
-  def get_current_bid(params)
+  def get_current_bid(market_id, player_id)
     return unless current_user
 
     IndividualPrediction.where(user_id: current_user.id,
-                               market_id: params[:market_id],
-                               player_id: params[:player_id]).first
+                               market_id: market_id,
+                               player_id: player_id).first
   end
 end
