@@ -183,12 +183,14 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       recent_games = games.order("game_time DESC").first(5)
       recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
 
-      recent_exp = StatEvent.collect_stats(recent_events)[:points].to_d/recent_games.count
-      total_exp = StatEvent.collect_stats(events)[:points].to_d / BigDecimal.new(mp.player.total_games)
+      if events.any?
+        recent_exp = (StatEvent.collect_stats(recent_events)[:points] || 0 ).to_d/recent_games.count
+        total_exp = (StatEvent.collect_stats(events)[:points] || 0 ).to_d / BigDecimal.new(mp.player.total_games)
+      end
 
       # set expected ppg
       # TODO: HANDLE INACTIVE
-      if mp.player.status != 'ACT'
+      if mp.player.status != 'ACT' || events.count == 0
         mp.expected_points = 0
       else
         mp.expected_points = total_exp * 0.7 + recent_exp * 0.3
