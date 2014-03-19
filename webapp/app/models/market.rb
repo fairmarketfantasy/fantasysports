@@ -70,11 +70,11 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
             puts "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
             Rails.logger.error "Exception raised for method #{method} on market #{market.id}: #{e}\n#{e.backtrace.slice(0..5).pretty_inspect}..."
             raise e if Rails.env == 'test'
-            #Honeybadger.notify(
-            #  :error_class   => "MarketTender Error",
-            #  :error_message => "MarketTenderError in #{method} for #{market.id}: #{e.message}",
-            #  :backtrace => e.backtrace
-            #)
+            Honeybadger.notify(
+              :error_class   => "MarketTender Error",
+              :error_message => "MarketTenderError in #{method} for #{market.id}: #{e.message}",
+              :backtrace => e.backtrace
+            )
           end
         #end
       end
@@ -173,19 +173,18 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     market_players = self.market_players
     market_players.each do |mp|
       # calculate total ppg # TODO: this should be YTD
-      total_exp = mp.player.total_points / (mp.player.total_games + 0.0001)
-      # calculate ppg in last 5 games
+      played_games_ids = StatEvent.where("player_stats_id='#{mp.player.stats_id}' AND activity='points' AND quantity != 0" ).
+                                   pluck('DISTINCT game_stats_id')
+      games = Game.where(stats_id: played_games_ids)
 
-      games = Game.where("game_time < now()").
-                   where("(home_team = '#{mp.player[:team] }' OR away_team = '#{mp.player[:team] }')")
-
-      events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: games.pluck('DISTINCT stats_id'), activity: 'points')
+      events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: played_games_ids, activity: 'points')
       recent_games = games.order("game_time DESC").first(5)
+      # calculate ppg in last 5 games
       recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
 
       if events.any?
         recent_exp = (StatEvent.collect_stats(recent_events)[:points] || 0 ).to_d/recent_games.count
-        total_exp = (StatEvent.collect_stats(events)[:points] || 0 ).to_d / BigDecimal.new(mp.player.total_games)
+        total_exp = (StatEvent.collect_stats(events)[:points] || 0 ).to_d / BigDecimal.new(played_games_ids.count)
       end
 
       # set expected ppg

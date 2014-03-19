@@ -29,15 +29,14 @@ class PlayerSerializer < ActiveModel::Serializer
   end
 
   def ppg
-    games_ids = Game.where("game_time < now()").
-                     where("(home_team = '#{object[:team] }' OR away_team = '#{object[:team] }')").
-                     pluck('DISTINCT stats_id')
+    played_games_ids = StatEvent.where("player_stats_id='#{object.stats_id}' AND activity='points' AND quantity != 0" ).
+                                 pluck('DISTINCT game_stats_id')
     events = StatEvent.where(player_stats_id: object[:stats_id],
-                             game_stats_id: games_ids, activity: 'points')
+                             game_stats_id: played_games_ids, activity: 'points')
     total_stats = StatEvent.collect_stats(events)[:points]
     return if total_stats.nil? || object[:total_games] == 0
 
-    value = total_stats / object[:total_games]
+    value = total_stats / played_games_ids.count
     value.round == 0 ? nil : value
   end
 
