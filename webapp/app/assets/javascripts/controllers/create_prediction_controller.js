@@ -6,8 +6,9 @@ angular.module("app.controllers")
 
 
     $scope.playerStats = function(){
-        fs.prediction.show(player.stats_id).then(function(data){
+        fs.prediction.show(player.stats_id, $routeParams.market_id).then(function(data){
            $scope.points = data.events;
+            console.log($scope.points)
         });
     }
 
@@ -18,16 +19,13 @@ angular.module("app.controllers")
             diff: text,
             name: name
         }
+
+
     }
     $scope.count = 0;
     $scope.confirmSubmit = function(){
-
         $scope.eventSubmit = [];
         $scope.confirmShow = false;
-        $scope.eventData[$scope.count] = $scope.confirm;
-        $scope.count++;
-        $scope.events =  $scope.eventData;
-
         $scope.eventSubmit.push($scope.confirm);
 
     fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, $scope.eventSubmit).then(function(data){
