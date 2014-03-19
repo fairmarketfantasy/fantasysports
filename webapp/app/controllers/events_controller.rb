@@ -49,21 +49,33 @@ class EventsController < ApplicationController
     player = Player.where(:stats_id => params[:player_ids]).first
     games = Game.where("game_time < now()").
                  where("(home_team = '#{player[:team] }' OR away_team = '#{player[:team] }')")
-    events = StatEvent.where(:player_stats_id => params[:player_ids], game_stats_id: games.pluck('DISTINCT stats_id'))
+    events = StatEvent.where(player_stats_id: params[:player_ids],
+                             game_stats_id: games.pluck('DISTINCT stats_id'))
     recent_games = games.order("game_time DESC").first(5)
     recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
 
     recent_stats = StatEvent.collect_stats(recent_events)
     total_stats = StatEvent.collect_stats(events)
+    current_bid = get_current_bid(params)
 
     data = []
     total_stats.each do |k, v|
       value = v.to_d / BigDecimal.new(player.total_games)
       value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_games.count * 0.3
+      bid_exists = false
+      bid_exists = true if current_bid && current_bid.event_predictions.where(event_type: k.to_s).first
 
-      data << { name: k, value: value.round(1) }
+      data << { name: k, value: value.round(1), current_bid: bid_exists }
     end
 
     render json: { events: data }.to_json
+  end
+
+  def get_current_bid(params)
+    return unless current_user
+
+    IndividualPrediction.where(user_id: current_user.id,
+                               market_id: params[:market_id],
+                               player_id: params[:player_id]).first
   end
 end
