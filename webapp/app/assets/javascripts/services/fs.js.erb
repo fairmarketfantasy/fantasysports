@@ -383,8 +383,8 @@ angular.module('app.services')
 				update: function(prediction_id, events) {
           return $http({method: 'PUT', url: '/individual_predictions/'+prediction_id, data: {events: events}});
         },
-        show: function(stats_id) {
-          return $http({method: 'GET', url: '/events/for_players?player_ids='+ stats_id + '&average=true' });
+        show: function(stats_id, market_id) {
+          return $http({method: 'GET', url: '/events/for_players?player_ids='+ stats_id + '&average=true' + '&market_id=' + market_id});
         },
         mine: function(opts) {
             opts = opts || {};
