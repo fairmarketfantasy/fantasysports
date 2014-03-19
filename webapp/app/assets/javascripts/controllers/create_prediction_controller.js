@@ -35,7 +35,6 @@ angular.module("app.controllers")
             _.each($scope.points, function(events){
                 if(events.name == $scope.confirm.name){
                     $scope.confirm.current_bit == 'less' ?  events.bid_less = true : events.bid_more = true;
-                    console.log(events)
                 }
             });
         });
