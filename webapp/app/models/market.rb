@@ -175,18 +175,22 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       # calculate total ppg # TODO: this should be YTD
       total_exp = mp.player.total_points / (mp.player.total_games + 0.0001)
       # calculate ppg in last 5 games
-      recent_exp = ActiveRecord::Base.connection.execute(
-        "SELECT sum(point_value) points FROM stat_events
-          WHERE player_stats_id = '#{mp.player.stats_id}' AND game_stats_id IN(
-            select stats_id from games where game_time < now() and (home_team = '#{mp.player[:team] }' OR away_team = '#{mp.player[:team] }')
-        order by game_time desc limit 5)"
-      ).first['points'].to_f / 5
+
+      games = Game.where("game_time < now()").
+                   where("(home_team = '#{mp.player[:team] }' OR away_team = '#{mp.player[:team] }')")
+
+      events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: games.pluck('DISTINCT stats_id'), activity: 'points')
+      recent_events = events.where(game_stats_id: games.order("game_time DESC").first(5).pluck('DISTINCT stats_id'))
+
+      recent_exp = StatEvent.collect_stats(recent_events)[:points].to_d/games_ids.first(5)
+      total_exp = StatEvent.collect_stats(events)[:points].to_d / BigDecimal.new(mp.player.total_games)
+
       # set expected ppg
       # TODO: HANDLE INACTIVE
       if mp.player.status != 'ACT'
         mp.expected_points = 0
       else
-        mp.expected_points = 0.7 * total_exp + 0.3 * recent_exp
+        mp.expected_points = total_exp * 0.7 + recent_exp.count * 0.3
       end
       total_expected += mp.expected_points
     end
