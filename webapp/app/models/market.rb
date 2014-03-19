@@ -173,14 +173,13 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     market_players = self.market_players
     market_players.each do |mp|
       # calculate total ppg # TODO: this should be YTD
-      total_exp = mp.player.total_points / (mp.player.total_games + 0.0001)
-      # calculate ppg in last 5 games
-
-      games = Game.where("game_time < now()").
+      played_games_ids = StatEvent.where("activity='points' AND quantity != 0" ).pluck(:game_stats_id)
+      games = Game.where("game_time < now()").where(stats_id: played_games_ids).
                    where("(home_team = '#{mp.player[:team] }' OR away_team = '#{mp.player[:team] }')")
 
       events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: games.pluck('DISTINCT stats_id'), activity: 'points')
       recent_games = games.order("game_time DESC").first(5)
+      # calculate ppg in last 5 games
       recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
 
       if events.any?
