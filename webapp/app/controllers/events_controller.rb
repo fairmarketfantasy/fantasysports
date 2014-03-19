@@ -47,11 +47,10 @@ class EventsController < ApplicationController
 
   def render_average(params)
     player = Player.where(:stats_id => params[:player_ids]).first
-    games_ids = Game.where("game_time < now()").
-                            where("(home_team = '#{player[:team] }' OR away_team = '#{player[:team] }')").
-                            order("game_time DESC").pluck('DISTINCT game_stats_id')
-    events = StatEvent.where(:player_stats_id => params[:player_ids], game_stats_id: games_ids)
-    recent_events = events.where(game_stats_id: games_ids.first(5))
+    games = Game.where("game_time < now()").
+                 where("(home_team = '#{player[:team] }' OR away_team = '#{player[:team] }')")
+    events = StatEvent.where(:player_stats_id => params[:player_ids], game_stats_id: games.pluck('DISTINCT stats_id'))
+    recent_events = events.where(game_stats_id: games.order("game_time DESC").first(5).pluck('DISTINCT stats_id'))
 
     recent_stats = StatEvent.collect_stats(recent_events)
     total_stats = StatEvent.collect_stats(events)
