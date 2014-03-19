@@ -185,6 +185,7 @@ class Contest < ActiveRecord::Base
       roster.fill_pseudo_randomly5(false)
       roster.submit!
     end
+    raise "Not enough rosters!" if self.rosters.count != contest_cap
   end
 
   def fill_reinforced_rosters
