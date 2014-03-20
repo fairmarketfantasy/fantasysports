@@ -46,7 +46,8 @@ class User < ActiveRecord::Base
   end
 
   def active_account?
-    customer_object.has_agreed_terms? && customer_object.is_active? && !customer_object.locked? || self.id == SYSTEM_USER.id
+    customer_object.has_agreed_terms? && customer_object.is_active? &&
+      !customer_object.locked? || self.id == SYSTEM_USER.id || customer_object.trial_started_at + 15 <= Date.today
   end
 
   def create_customer_object
