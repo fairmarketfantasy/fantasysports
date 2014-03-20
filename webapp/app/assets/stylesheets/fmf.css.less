@@ -519,10 +519,10 @@ select:focus:invalid {
     cursor:pointer;
     padding: 16.5px 11px;
     display:block;
+    &:hover{
+      background-color: @info;
     }
-  .fantasy-sports:hover{
-    background-color: @info;
-  }
+    }
   .open{
     a{
       background-color: @info;
@@ -650,6 +650,13 @@ select:focus:invalid {
   right: 0;
   color: black;
 }
+.header-popover {
+  left: -32px;
+  padding: 5px;
+  text-align: center;
+  top: 50px;
+}
+
 .popover {
   width: 300px;
   border: 1px solid #777;
