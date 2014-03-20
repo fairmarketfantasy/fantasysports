@@ -9,7 +9,22 @@ class DataFetcher
     url = NBA_BASE_URL + "league/injuries.xml" + NBA_API_KEY_PARAMS
     xml = Nokogiri::XML(open(url))
     players = xml.search("player")
-    benched_ids = players.map { |node| node.xpath("@id").first.value }
+    benched_ids = []
+    players.each do |node|
+      id = node.xpath("@id").first.value
+      status = node.at('injury').at_xpath("@status").value
+      if status =~ /^Out/
+        benched_ids << id
+      elsif status == "Day To Day"
+        match = node.at('injury').at_xpath("@comment").value[/\((?<date>\d+\/\d+)\)/, :date]
+        if match
+          date = Date.strptime("#{match}/#{Date.today.year}", "%m/%d/%Y")
+          benched_ids << id if (Time.now.utc - 4.hours).to_date <= date
+        else
+          benched_ids << id
+        end
+      end
+    end
     sport_id = Sport.where(name: 'NBA').first.id
 
     Player.where(out: true, sport_id: sport_id).each do |player|
