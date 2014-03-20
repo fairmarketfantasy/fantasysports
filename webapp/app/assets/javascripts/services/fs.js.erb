@@ -70,6 +70,16 @@ angular.module('app.services')
         });
       },
 
+      addUnsubscribeModal: function() {
+        dialogOpts.templateUrl = '/unsubscribe_dialog.html';
+        dialogOpts.controller  = 'UnsubscribeDialogController';
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
+      },
+
       refreshUser: function() {
         var self = this;
         fs.user.refresh().then(function(user) {
@@ -279,6 +289,9 @@ angular.module('app.services')
         },
         destroy: function(cardId){
           return $http({method: 'DELETE', url: '/cards/' + cardId});
+        },
+        unsubscribe: function(){
+          return $http({method: 'DELETE', url: '/users/deactivate_account'});
         }
       },
       markets: {

@@ -83,4 +83,8 @@
       $scope.close();
       currentUserService.addFundsModal();
   };
+  $scope.addUnsubscribeModal = function(){
+      $scope.close();
+      currentUserService.addUnsubscribeModal();
+  };
 }]);
