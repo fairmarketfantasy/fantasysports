@@ -1,13 +1,17 @@
 angular.module("app.controllers")
 .controller('AddFundsDialogController', ['$scope', 'dialog', 'fs', 'flash', 'currentUserService', '$timeout', function($scope, dialog, fs, flash, currentUserService, $timeout) {
 
-  $scope.showSpinner = false;
+   $scope.showSpinner = false;
    $scope.currentUser = currentUserService.currentUser;
    $scope.cardInfo    = $scope.cardInfo     || {};
    $scope.cards       = $scope.cards        || [];
-  $scope.payment_type = 'credit-card';
+   $scope.payment_type = '';
 
   $scope.close = function(){
+    dialog.close();
+  };
+  $scope.close_reload = function(){
+    location.reload();
     dialog.close();
   };
 
