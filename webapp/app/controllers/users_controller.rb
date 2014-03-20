@@ -127,7 +127,7 @@ class UsersController < ApplicationController
   def deactivate_account
     current_user.customer_object.deactivate_account
 
-    render text: "Account deactivated sucsessfully!", status: :ok
+    redirect_to destroy_user_session_path, status: :ok
   end
 
 end
