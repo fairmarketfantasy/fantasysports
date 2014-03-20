@@ -11,13 +11,13 @@
 <!-- New Terms -->
 <div ng-show="!currentUser.customer_object.has_agreed_terms">
   <h4>Predict That has new terms and conditions</h4>
-  <p>Instead of paying for every contest entry, you'll pay only a $10 monthly subscription at the beginning of the month. Unlimited contest entries are FREE!  You can <a href="/support" target="_blank">read more about how it works</a></p>
+  <p>Predict That requires a subscription to view content, but you can choose a 15 day free trial.  After subscribing, you will also be able to make unlimited predictions for free.<a href="/support" target="_blank">Read more about how it works</a></p>
   <label class="checkbox " for="agree-terms" ng-click="agreeToTerms()" ng-class="{'checked': currentUser.customer_object.has_agreed_terms}">
     <span class="icons">
       <span class="first-icon fui-checkbox-unchecked"></span>
       <span class="second-icon fui-checkbox-checked"></span>
     </span>
-		<a href="/conditions" target="_blank">Agree to the subscriptions terms</a>
+		<a href="/conditions" target="_blank">Agree to subscription terms</a>
   </label>
   <input id="agree-terms" class="hide" type="checkbox" ng-model="currentUser.customer_object.has_agreed_terms" ng-change="agreeToTerms()" />
 </div>
