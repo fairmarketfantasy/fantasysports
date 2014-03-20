@@ -56,6 +56,7 @@ Fantasysports::Application.routes.draw do
       post 'add_tokens',     action: :add_tokens
       post 'withdraw_money', action: :withdraw_money
       post 'activate_trial', action: :activate_trial
+      delete 'deactivate_account', action: :deactivate_account
     end
   end
 

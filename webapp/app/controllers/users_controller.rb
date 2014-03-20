@@ -124,4 +124,10 @@ class UsersController < ApplicationController
     render_api_response current_user
   end
 
+  def deactivate_account
+    current_user.customer_object.deactivate_account
+
+    render text: "Account deactivated sucsessfully!", status: :ok
+  end
+
 end
