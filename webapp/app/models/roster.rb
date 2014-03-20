@@ -248,7 +248,8 @@ class Roster < ActiveRecord::Base
         target_price = player.purchase_price
         replacement_player = candidate_players[player.position].reduce(nil) do |closest_player, candidate|
           closest_player ||= candidate
-          closest_player = candidate if (closest_player.buy_price - target_price).abs > (candidate.buy_price - target_price).abs
+          closest_player = candidate if !candidate.benched? &&
+            (closest_player.buy_price - target_price).abs > (candidate.buy_price - target_price).abs
           closest_player
         end
         remove_from_candidate_players(candidate_players, replacement_player)

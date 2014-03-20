@@ -89,6 +89,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       Market.where(state: 'closed').each do |m|
         game_ids = m.games_markets.where.not(finished_at: nil).map do |gm|
           game = gm.game
+          next unless game
+
           game.stats_id if game.status == 'closed'
         end
 
