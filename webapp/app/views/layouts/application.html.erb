@@ -111,7 +111,7 @@
               <ul>
                 <li>
                   <a class="dropdown-toggle" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">Sports</a>
-                  <div ng-show="popover_sports" class="popover bottom fade in header-popover">coming very soon <div class="arrow"></div></div>
+                  <div ng-show="popover_sports" ng-class="{in : popover_sports}" class="popover bottom fade header-popover">coming very soon <div class="arrow"></div></div>
                   <!--<ul class="header-drop-menu dropdown-menu">-->
                   <!--<li ng-class="{'no-border': $last}" ng-repeat="sport in sports" ng-show="sport.is_active" >-->
                   <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentSport == sport.name}"></em>-->
@@ -164,7 +164,7 @@
                 </li>
                 <li>
                   <a class="dropdown-toggle" ng-mouseleave="popover_entertainment = false" ng-mouseenter="popover_entertainment = true">Entertainment</a>
-                  <div style="left:-4px;" ng-show="popover_entertainment" class="popover bottom fade in header-popover">coming soon <div class="arrow"></div></div>
+                  <div style="left:-4px;" ng-class="{in : popover_entertainment}" ng-show="popover_entertainment" class="popover bottom fade header-popover">coming soon <div class="arrow"></div></div>
                   <!--<ul class="header-drop-menu dropdown-menu">-->
                   <!--<li ng-class="{'no-border': $last}" ng-repeat="entertainment in entertainments" ng-show="entertainment.is_active" >-->
                   <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentEntertainment == entertainment.name}"></em>-->
@@ -196,7 +196,7 @@
                 </li>
                 <li>
                   <a class="dropdown-toggle" ng-mouseleave="popover_politics = false" ng-mouseenter="popover_politics = true">Politics</a>
-                  <div ng-show="popover_politics" class="popover bottom fade in header-popover">coming soon <div class="arrow"></div></div>
+                  <div ng-show="popover_politics" ng-class="{in : popover_politics}"  class="popover bottom fade header-popover">coming soon <div class="arrow"></div></div>
                   <!--<ul class="header-drop-menu dropdown-menu">-->
                   <!--<li ng-class="{'no-border': $last}" ng-repeat="politic in politics" ng-show="politic.is_active" >-->
                   <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentPolitic == politic.name}"></em>-->

@@ -667,22 +667,24 @@ select:focus:invalid {
 .landing-nav .popover {
   width: 120px;
   padding-bottom: 2px;
+  color: @white;
 
 }
-.landing-nav .popover.bottom {
+.landing-nav .popover.bottom,
+.landing-nav .popover.right{
   background-color: @black;
   border-color:@black;
-  color: @white;
+
 }
 .landing-nav .popover.right {
-  border-color:#ccc;
+  border-color:@black;
 }
 
 .landing-nav .popover.bottom .arrow {
   border-bottom-color: @black;
 }
 .landing-nav .popover.right .arrow {
-  border-right-color: @white;
+  border-right-color: @black;
 }
 
 .popover.right .arrow {
@@ -1570,6 +1572,9 @@ input, textarea, .uneditable-input {
   cursor: default;
 }
 .btn {
+  background-color: @info;
+}
+.modal-prediction .prediction-modal-body .btn[disabled]:hover {
   background-color: @info;
 }
 .player-heading {

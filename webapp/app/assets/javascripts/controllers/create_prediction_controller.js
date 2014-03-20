@@ -41,7 +41,9 @@ angular.module("app.controllers")
     };
 
     $scope.close = function(){
-        location.reload();
+        if($scope.reloadBackdrop){
+            location.reload();
+        }
         dialog.close();
     };
 
