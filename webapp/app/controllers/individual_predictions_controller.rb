@@ -36,13 +36,15 @@ class IndividualPredictionsController < ApplicationController
     sport ||= Sport.where('is_active').first
     predictions = current_user.individual_predictions
 
+    page = params[:page] || 1
     if params[:historical]
-      page = params[:page] || 1
       predictions = predictions.where(finished: true)
+    elsif params[:all]
+      predictions = predictions
     else
       predictions = predictions.where(finished: nil)
     end
 
-    render_api_response predictions
+    render_api_response predictions.page(page)
   end
 end
