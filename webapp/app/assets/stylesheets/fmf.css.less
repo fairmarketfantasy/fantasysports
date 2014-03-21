@@ -45,13 +45,14 @@ p {
   line-height: 1.3;
 }
 header {
-  height: 246px;
+  height: 195px;
   background-image: asset-url('bg-blur-big.jpg');
   background-repeat: no-repeat;
   border-bottom: 3px solid @grayLight;
   position: relative;
   width: 100%;
   padding: 0;
+  top:51px;
 }
 article {
   position: relative;
@@ -467,10 +468,6 @@ select:focus:invalid {
   --------------------------------------------------------------------------- */
 
 /* Header, Logo Font, Top Nav */
-.top-nav {
-  height: 54px;
-}
-
 .logo-font {
   padding-left: 45px;
   background: asset-url('pt.png') no-repeat 0 4px;
@@ -701,6 +698,12 @@ select:focus:invalid {
   border-right: 1px solid @grayLight;
   text-align: center;
 }
+.user-balance a {
+  color:@white;
+  &:hover{
+    color:@turquoise;
+  }
+}
 .user-bonus {
   color: @orange;
   font-size: 16px;
@@ -777,7 +780,7 @@ select:focus:invalid {
   .box-shadow(0 0 3px rgba(0,0,0,.6));
   min-height: 700px;
   position: relative;
-  top: -84px;
+  top: -25px;
   padding: 15px;
 }
 .padded-content {
