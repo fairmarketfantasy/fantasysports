@@ -371,7 +371,7 @@ angular.module('app.services')
         },
         mine: function(opts) {
           opts = opts || {};
-          return $http({method: 'GET', url: '/rosters/mine?' + $.param(opts)});
+          return $http({method: 'GET', url: '/rosters/mine?all=true&' + $.param(opts)});
         },
         submit: function(roster_id, gameType) {
           return $http({method: 'POST', url: '/rosters/' + roster_id + '/submit', data: {contest_type: gameType}});
