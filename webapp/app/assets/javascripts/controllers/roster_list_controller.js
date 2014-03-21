@@ -1,10 +1,22 @@
 angular.module("app.controllers")
 .controller('RosterListController', ['$scope', 'rosters', 'markets', 'flash', '$routeParams', function($scope, rosterService, markets, flash, $routeParams) {
+  rosterService.setPoller(null);
   $scope.rosterService = rosterService;
-
-  rosterService.fetchMine({sport: $routeParams.sport}).then(function() {
-    $scope.rosterList = rosterService.top($routeParams.sport);
-  });
-  rosterService.setPoller(function() { rosterService.fetchMine({sport: $scope.currentUser.currentSport}); }, 10000);
+  $scope.history = true;
+  $scope.showMore = false;
+  var page = 0;
+  $scope.rosterList = [];
+  $scope.fetchMore = function() {
+    $scope.showMore = false;
+    page++;
+    rosterService.fetchMine({sport: $routeParams.sport, page: page}).then(function(rosters) {
+      console.log(rosters)
+      if (rosters.length > 24) {
+          $scope.showMore = true;
+      }
+      $scope.rosterList = $scope.rosterList.concat(rosters);
+    });
+  };
+  $scope.fetchMore();
 }]);
 
