@@ -10,6 +10,7 @@
     <th>Choice</th>
     <th>Game time</th>
     <th>Day</th>
+    <th>State</th>
     <th>Prediction</th>
     <th>PT</th>
     <th>Award</th>
@@ -19,12 +20,12 @@
     <tr ng-repeat="prediction in predictionList | orderBy:'id':reverse=true" >
       <td>
         <div>
-            {{prediction.market_name}}
+            <span>{{prediction.market_name}}</span>
         </div>
       </td>
       <td>
         <div>
-            {{prediction.player_name}}
+            <span>{{prediction.player_name}}</span>
         </div>
       </td>
       <td>
@@ -33,6 +34,14 @@
       <td>
         <span>{{prediction.game_day | longFormDate}}</span>
       </td>
+      <td>
+        <span ng-show="prediction.finished">
+           Finished
+        </span>
+        <span ng-show="!prediction.finished">
+           Submitted
+        </span>
+      </td>
       <td class="list-statistic">
         <span ng-repeat="statistic in prediction.event_predictions">
             {{statistic.diff | capitalize}}:
@@ -40,17 +49,22 @@
             {{statistic.event_type}}
         </span>
       </td>
+      <td>
+        <div>
+            <span>{{prediction.pt}}</span>
+        </div>
+      </td>
         <td>
-            <div>
-                {{prediction.pt}}
+          <div>
+            <span ng-show="prediction.finished">
+               {{prediction.award}}
+            </span>
+            <span ng-show="!prediction.finished">
+               N/A
+            </span>
             </div>
         </td>
-        <td>
-            <div>
-                {{prediction.award}}
-            </div>
-        </td>
-        <!--<td ng-hide="pt_history">-->
+        <!--<td>-->
            <!--<a href="javascript://" ng-hide="prediction.finished" ng-click="openPredictionDialog(prediction.id, prediction.player_stat_id, prediction.player_name)">Edit</a>-->
         <!--</td>-->
     </tr>

@@ -40,6 +40,7 @@
         <span ng-show="!inThePast(roster.started_at)">N/A</span>
       </td>
       <td>
+        <span ng-show="roster.state == 'submitted'">N/A</span>
         <span ng-show="roster.state == 'cancelled'">Refunded on {{roster.cancelled_at | longFormDate}}</span>
         <span ng-show="roster.state == 'finished'">
             <span ng-show="inThePast(roster.started_at) && roster.state == 'finished'">{{roster.contest_rank_payout || 0 | centsToFanbucks}}</span>
