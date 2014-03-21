@@ -9,15 +9,16 @@ class RostersController < ApplicationController
     rosters = current_user.rosters.where.not(state: 'in_progress').
                                    joins('JOIN markets m ON rosters.market_id=m.id').
                                    where(['m.sport_id = ?', sport.id]).order('closed_at desc')
-
-    rosters = if params[:historical] || params[:all]
-      page = params[:page] || 1
-      rosters.over.page(page)
+    page = params[:page] || 1
+    rosters = if params[:historical]
+      rosters.where(state: 'finished')
+    elsif params[:all]
+      rosters
     else
       # Don't paginate active rosters
       rosters.active
     end
-    render_api_response rosters # This is slow too, maybe make abridging smarter
+    render_api_response rosters.page(page) # This is slow too, maybe make abridging smarter
   end
 
   def in_contest
