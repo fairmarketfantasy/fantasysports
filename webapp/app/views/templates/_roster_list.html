@@ -1,18 +1,18 @@
 <div class="roster-title">  
-  <h3>Your <span ng-show="history">Past {{currentUser.currentSport}} </span>Predictions
-    <a ng-show="!history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/individual_predictions">My Individual Predictions</a>
-    <a ng-show="history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/individual_predictions_history">My Individual Predictions History</a>
+  <h3>Your {{currentUser.currentSport}} Predictions
+    <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/individual_predictions">My Individual Predictions</a>
+    <!--<a ng-show="history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/individual_predictions_history">My Individual Predictions History</a>-->
   </h3>
 </div>
 <table class="table table-striped">
   <thead>
     <th>Prediction</th>
-    <th ng-show="!history">Game time</th>
+    <th>Game time</th>
     <th>Day</th>
     <th>State</th>
     <th>Rank</th>
     <th>Points</th>
-    <th ng-show="history">Award</th>
+    <th>Award</th>
     <th>Roster</th>
   </thead>
   <tbody>
@@ -25,7 +25,7 @@
           {{ roster.contest_type.name | allCaps }}
         </div>
       </td>
-      <td ng-show="!history">
+      <td>
           <span>{{roster.market.games[0].game_time | onlyFormTime}}</span>
       </td>
       <td ><span ng-show="roster.live">LIVE</span><span ng-hide="roster.live"><span>{{roster.market.closed_at | longFormDate}}</span></span></td>
@@ -39,7 +39,7 @@
         <span ng-show="inThePast(roster.started_at)">{{roster.score || 0}}</span>
         <span ng-show="!inThePast(roster.started_at)">N/A</span>
       </td>
-      <td ng-show="history">
+      <td>
         <span ng-show="roster.state == 'cancelled'">Refunded on {{roster.cancelled_at | longFormDate}}</span>
         <span ng-show="roster.state == 'finished'">
             <span ng-show="inThePast(roster.started_at) && roster.state == 'finished'">{{roster.contest_rank_payout || 0 | centsToFanbucks}}</span>

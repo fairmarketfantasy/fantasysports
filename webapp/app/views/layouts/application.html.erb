@@ -244,10 +244,12 @@
           <div class="user-balance no-border">
             <small>Cash:</small>&nbsp;&nbsp;{{ currentUser.balance | centsToDollars }}
           </div>
-          <div class="user-balance no-border">
-            <!--<img class="nmw-info" src="<%= asset_path "info-icon.png" %>" width="17px"-->
-              <!--popover-trigger="mouseenter" popover="Fanbucks are how much you're up or down this month. Any positive balance is put in your account each month. Check out the FAQs for more info!" popover-placement="right">-->
-            <small>FanBucks:</small>&nbsp;&nbsp;{{ currentUser.customer_object.net_monthly_winnings | centsToFanbucks }}
+          <div class="user-balance no-border" ng-click="addFundsModal()">
+            <a href="javascript://">
+              <!--<img class="nmw-info" src="<%= asset_path "info-icon.png" %>" width="17px"-->
+                <!--popover-trigger="mouseenter" popover="Fanbucks are how much you're up or down this month. Any positive balance is put in your account each month. Check out the FAQs for more info!" popover-placement="right">-->
+              <small>FanBucks:</small>&nbsp;&nbsp;{{ currentUser.customer_object.net_monthly_winnings | centsToFanbucks }}
+            </a>
           </div>
           <div class="user-dash no-border clearfix">
             <a class="btn btn-small btn-success home-header-btn" href="/#/{{currentUser.currentSport}}/home">Home</a>
