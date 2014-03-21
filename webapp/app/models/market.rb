@@ -258,6 +258,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       self.fill_rosters_to_percent(percent)
     end
     self.fill_unfilled_rosters
+    self.reload
+    raise "Not enough rosters!" if self.rosters.count != self.contest_cap
   end
 
   def fill_rosters_to_percent(percent)

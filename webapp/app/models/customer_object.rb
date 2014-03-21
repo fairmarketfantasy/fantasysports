@@ -202,6 +202,6 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def trial_active?
-    self.trial_started_at && self.trial_started_at + 15 <= Date.today
+    self.trial_started_at && self.trial_started_at + 15 >= Date.today
   end
 end
