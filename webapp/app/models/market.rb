@@ -37,6 +37,7 @@ class Market < ActiveRecord::Base
 
     def tend
       publish
+      update_market_players
       open
       remove_shadow_bets
       track_benched_players
@@ -83,6 +84,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
     def publish
       apply :publish, "published_at <= ? AND (state is null or state='' or state='unpublished')", Time.now
+    end
+
+    def update_market_players
+      apply :update_market_players, "state='published'"
     end
 
     def remove_duplicated_games!
@@ -172,8 +177,16 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     reload
     total_expected = 0
     total_bets = 0
-    market_players = self.market_players
-    market_players.each do |mp|
+    self.update_market_players
+
+    if self.state == 'published'
+      self.add_default_contests
+    end
+    self
+  end
+
+  def update_market_players
+    self.market_playersmarket_players.each do |mp|
       # calculate total ppg # TODO: this should be YTD
       played_games_ids = StatEvent.where("player_stats_id='#{mp.player.stats_id}' AND activity='points' AND quantity != 0" ).
                                    pluck('DISTINCT game_stats_id')
@@ -207,10 +220,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     self.expected_total_points = total_expected
     self.total_bets = self.shadow_bets = self.initial_shadow_bets = total_bets
     save!
-    if self.state == 'published'
-      self.add_default_contests
-    end
-    self
   end
 
   def open
