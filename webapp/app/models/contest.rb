@@ -149,7 +149,7 @@ class Contest < ActiveRecord::Base
   end
 
   def cancel! # Only used for unfilled h2h contests
-    raise "Not a h2h or h2h has players, can't cancel" unless contest_type.name =~ /h2h/ && num_rosters == 1
+    raise "Not a h2h or h2h has players, can't cancel" unless contest_type.name =~ /h2h/i && num_rosters == 1
     self.rosters.each{|r| r.cancel!("No opponent found for H2H") }
     self.cancelled_at = Time.new
     self.save!
@@ -185,6 +185,7 @@ class Contest < ActiveRecord::Base
       roster.fill_pseudo_randomly5(false)
       roster.submit!
     end
+
     raise "Not enough rosters!" if self.rosters.count != contest_cap
   end
 
