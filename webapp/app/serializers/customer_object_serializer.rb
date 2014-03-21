@@ -23,7 +23,7 @@ class CustomerObjectSerializer < ActiveModel::Serializer
   end
 
   def contest_winnings_multiplier
-    object.contest_winnings_multiplier.round(2)
+    object.contest_winnings_multiplier
   end
 
 end
