@@ -175,8 +175,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   def publish
     Market.find_by_sql("select * from publish_market(#{self.id})")
     reload
-    total_expected = 0
-    total_bets = 0
     self.update_market_players
 
     if self.state == 'published'
@@ -186,7 +184,9 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def update_market_players
-    self.market_playersmarket_players.each do |mp|
+    total_expected = 0
+    total_bets = 0
+    self.market_players.each do |mp|
       # calculate total ppg # TODO: this should be YTD
       played_games_ids = StatEvent.where("player_stats_id='#{mp.player.stats_id}' AND activity='points' AND quantity != 0" ).
                                    pluck('DISTINCT game_stats_id')
@@ -268,7 +268,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
     self.fill_unfilled_rosters
     self.reload
-    raise "Not enough rosters!" if self.rosters.count != self.contest_cap
   end
 
   def fill_rosters_to_percent(percent)
@@ -280,7 +279,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def fill_unfilled_rosters
-    contests.where("(num_rosters < user_cap").find_each do |contest|
+    contests.where("num_rosters < user_cap").find_each do |contest|
       contest.fill_with_roster
     end
   end
