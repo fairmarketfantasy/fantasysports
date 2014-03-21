@@ -10,9 +10,7 @@ class RostersController < ApplicationController
                                    joins('JOIN markets m ON rosters.market_id=m.id').
                                    where(['m.sport_id = ?', sport.id]).order('closed_at desc')
 
-    return render_api_response rosters if params[:all]
-
-    rosters = if params[:historical]
+    rosters = if params[:historical] || params[:all]
       page = params[:page] || 1
       rosters.over.page(page)
     else
