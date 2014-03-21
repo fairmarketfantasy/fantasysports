@@ -38,7 +38,8 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def do_monthly_activation!
-    return if self.is_active && self.last_activated_at && self.last_activated_at > Time.new.beginning_of_month
+    return if (self.is_active && self.last_activated_at && self.last_activated_at > Time.new.beginning_of_month) ||
+      trial_active?
     self.is_active = false
     if self.balance >= 1000
       self.balance -= 1000
@@ -198,5 +199,9 @@ class CustomerObject < ActiveRecord::Base
     card_ids = self.credit_cards.pluck(:id)
     card_ids.each { |id| self.delete_card(id) }
     self.reload
+  end
+
+  def trial_active?
+    self.trial_started_at && self.trial_started_at + 15 <= Date.today
   end
 end
