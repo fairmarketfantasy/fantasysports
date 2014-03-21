@@ -1,14 +1,14 @@
 <div class="roster-title">
-  <h3>Your <span ng-show="pt_history">Past {{currentUser.currentSport}} </span>Individual Prediction
-      <a ng-show="!pt_history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/rosters">My Predictions</a>
-      <a ng-show="pt_history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/history">My Predictions History</a>
+  <h3>Your {{currentUser.currentSport}} Individual Prediction
+      <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/rosters">My Predictions</a>
+      <!--<a ng-show="pt_history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/history">My Predictions History</a>-->
   </h3>
 </div>
 <table class="table table-striped">
   <thead>
     <th>Event</th>
     <th>Choice</th>
-    <th ng-show="!pt_history">Game time</th>
+    <th>Game time</th>
     <th>Day</th>
     <th>Prediction</th>
     <th>PT</th>
@@ -27,7 +27,7 @@
             {{prediction.player_name}}
         </div>
       </td>
-      <td ng-show="!pt_history">
+      <td>
         <span>{{prediction.game_time | onlyFormTime}}</span>
       </td>
       <td>
