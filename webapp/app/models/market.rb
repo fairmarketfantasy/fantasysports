@@ -257,6 +257,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     if percent
       self.fill_rosters_to_percent(percent)
     end
+    self.fill_unfilled_rosters
   end
 
   def fill_rosters_to_percent(percent)
@@ -264,6 +265,12 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     contests = self.contests.where("contest_type_id NOT IN(#{bad_h2h_type_ids.join(',')})")
     contests.where("(num_rosters < user_cap OR user_cap = 0) AND num_rosters != 0").find_each do |contest|
       contest.fill_with_rosters(percent)
+    end
+  end
+
+  def fill_unfilled_rosters
+    contests.where("(num_rosters < user_cap").find_each do |contest|
+      contest.fill_with_roster
     end
   end
 
