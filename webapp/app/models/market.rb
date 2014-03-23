@@ -37,7 +37,6 @@ class Market < ActiveRecord::Base
 
     def tend
       publish
-      update_market_players
       open
       remove_shadow_bets
       track_benched_players
@@ -84,10 +83,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
     def publish
       apply :publish, "published_at <= ? AND (state is null or state='' or state='unpublished')", Time.now
-    end
-
-    def update_market_players
-      apply :update_market_players, "state='published'"
     end
 
     def remove_duplicated_games!
