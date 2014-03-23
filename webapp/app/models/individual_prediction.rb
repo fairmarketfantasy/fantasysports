@@ -32,6 +32,7 @@ class IndividualPrediction < ActiveRecord::Base
     game_stats = StatEvent.collect_stats(events)
     self.event_predictions.each do |prediction|
       game_result = game_stats[prediction.event_type] || 0
+      self.update_attribute(:game_result, game_result.to_i)
       if prediction.diff == 'more'
         return false if prediction.value > game_result
       elsif prediction.diff == 'less'
