@@ -4,10 +4,12 @@ class IndividualPredictionsController < ApplicationController
     raise HttpException.new(402, "Unpaid subscription!") if !current_user.active_account? && !current_user.customer_object.trial_active?
 
     player = Player.where(stats_id: params[:player_id]).first
+    event = params[:events].first
+    pt = IndividualPrediction.get_pt_value(event[:value].to_d, event[:diff])
     prediction = current_user.individual_predictions.create(player_id: player.id,
                                                             roster_id: params[:roster_id],
                                                             market_id: params[:market_id],
-                                                            pt: IndividualPrediction::PT)
+                                                            pt: pt)
     params[:events].each do |event|
       if prediction.event_predictions.where(event_type: event[:name], value: event[:value], diff: event[:diff]).first
         return render 'You already have such prediction!', status: :unprocessable_entity

@@ -64,6 +64,8 @@ class EventsController < ApplicationController
     total_stats.each do |k, v|
       value = v.to_d / BigDecimal.new(played_games_ids.count)
       value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
+      next if value.round(1) == 0
+
       bid_less = false
       bid_more = false
       if bid_ids.any?

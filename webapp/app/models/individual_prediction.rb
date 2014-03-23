@@ -9,6 +9,22 @@ class IndividualPrediction < ActiveRecord::Base
 
   PT = BigDecimal.new(25)
 
+  def self.get_pt_value(value, diff)
+    if value < 0.5
+      if diff == "less"
+        chance =(1/(1 - value)-1)
+      elsif diff == "more"
+        chance =(1/value-1)
+      else
+        raise "Unknow diff value"
+      end
+      pt = (chance * 0.7 + 1) * Roster::FB_CHARGE * 10
+      pt.round(2).to_d
+    else
+      PT
+    end
+  end
+
   def submit!
     ActiveRecord::Base.transaction do
       customer_object = self.user.customer_object
