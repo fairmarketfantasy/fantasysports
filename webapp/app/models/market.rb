@@ -43,6 +43,7 @@ class Market < ActiveRecord::Base
       fill_rosters
       DataFetcher.update_benched
       remove_benched_players
+      update_players_for_market
       close
       lock_players
       tabulate_scores
@@ -116,6 +117,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       apply :remove_benched_players, "state IN('opened')"
     end
 
+    def update_players_for_market
+      apply :update_players_for_market, "state = 'closed'"
+    end
+
     def track_benched_players
       apply :track_benched_players, "state IN('opened', 'published')"
     end
@@ -168,6 +173,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
   #publish the market. returns the published market.
   def publish
+    arr = Market.all.select { |m| (m.name =~ /\w+\s+@\s+\w+/).nil? }
+    arr.each { |m| m.destroy }
     Market.find_by_sql("select * from publish_market(#{self.id})")
     reload
     self.update_market_players
@@ -215,6 +222,11 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     self.expected_total_points = total_expected
     self.total_bets = self.shadow_bets = self.initial_shadow_bets = total_bets
     save!
+  end
+
+  def update_players_for_market
+    games = self.games.where("game_time < ? AND status != 'closed'", Time.now.utc)
+    games.each { |game| DataFetcher.update_game_players(game.stats_id) }
   end
 
   def open
@@ -408,6 +420,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       raise "market must be closed before it can be completed" if self.state != 'closed'
       raise "all games must be closed before market can be completed" if self.games.where("status != 'closed'").any?
 
+      self.rosters.each { |r| r.swap_benched_players! }
       self.tabulate_scores
       #for each contest, allocate funds by rank
       self.contests.where('cancelled_at IS NULL').find_each do |contest|
@@ -424,13 +437,14 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       if prediction.player.benched?
         prediction.cancel!
       elsif prediction.won?
-        customer_object = prediction.user.customer_object
+        user = prediction.user
+        customer_object = user.customer_object
         ActiveRecord::Base.transaction do
           customer_object.monthly_winnings += prediction.pt/10
           customer_object.save!
         end
-        TransactionRecord.create!(:user => current_user, :event => 'individual_prediction_win', :amount => prediction.pt * 100)
-        Eventing.report(current_user, 'IndividualPredictionWin', :amount => prediction.pt * 100)
+        TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => prediction.pt * 100)
+        Eventing.report(user, 'IndividualPredictionWin', :amount => prediction.pt * 100)
         prediction.update_attribute(:award, prediction.pt)
       end
 
