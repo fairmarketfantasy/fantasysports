@@ -27,7 +27,7 @@
           <span ng-show="rosters.currentRoster.paid_at">
             <span ng-show="rosters.currentRoster.amount_paid > 0"><br/>and won
               <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | number:0}}FF</span>
-              <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | centsToDollars}}</span>
+              <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | centsToFanbucks}}</span>
             </span>
             <span ng-hide="rosters.currentRoster.amount_paid > 0">didn't win this time.</span>
           </span>
