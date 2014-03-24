@@ -277,6 +277,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     contests.where("num_rosters < user_cap").find_each do |contest|
       contest.fill_with_roster
     end
+
+    raise "Not enough rosters" if contests.where("num_rosters < user_cap").count != 0
   end
 
   def bad_h2h_type_ids
@@ -298,6 +300,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
                  ).joins('JOIN rosters_players ON rosters.id=rosters_players.roster_id JOIN players ON rosters_players.player_id=players.id'
                  ).where(["rosters_players.market_id = ? AND #{Player.bench_conditions}", self.id])
     affected_rosters.each{|r| r.swap_benched_players! }
+    reload
   end
 
   def track_benched_players

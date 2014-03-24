@@ -241,20 +241,22 @@ class Roster < ActiveRecord::Base
   end
 
   def swap_benched_players!
-    players = self.players_with_prices.benched
-    candidate_players, _ = fill_candidate_players(players.map(&:position))
-    players.each do |player|
-      if candidate_players[player.position].length > 0
-        target_price = player.purchase_price
-        replacement_player = candidate_players[player.position].reduce(nil) do |closest_player, candidate|
-          closest_player ||= candidate
-          closest_player = candidate if !candidate.benched? &&
-            (closest_player.buy_price - target_price).abs > (candidate.buy_price - target_price).abs
-          closest_player
+    ActiveRecord::Base.transaction do
+      players = self.players_with_prices.benched
+      candidate_players, _ = fill_candidate_players(players.map(&:position))
+      players.each do |player|
+        if candidate_players[player.position].length > 0
+          target_price = player.purchase_price
+          replacement_player = candidate_players[player.position].reduce(nil) do |closest_player, candidate|
+            closest_player ||= candidate
+            closest_player = candidate if !candidate.benched? &&
+              (closest_player.buy_price - target_price).abs > (candidate.buy_price - target_price).abs
+            closest_player
+          end
+          remove_from_candidate_players(candidate_players, replacement_player)
+          remove_player(player, !self.is_generated?)
+          add_player(replacement_player, player.position, !self.is_generated?)
         end
-        remove_from_candidate_players(candidate_players, replacement_player)
-        remove_player(player, !self.is_generated?)
-        add_player(replacement_player, player.position, !self.is_generated?)
       end
     end
   end
