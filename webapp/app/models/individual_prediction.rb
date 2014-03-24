@@ -9,19 +9,35 @@ class IndividualPrediction < ActiveRecord::Base
 
   PT = BigDecimal.new(25)
 
-  def self.get_pt_value(value, diff)
-    if value < 0.5
-      if diff == "less"
-        chance =(1/(1 - value)-1)
-      elsif diff == "more"
-        chance =(1/value-1)
+  class << self
+
+    def get_pt_value(value, diff)
+      if value < 0.5
+        if diff == "less"
+          chance =(1/(1 - value)-1)
+        elsif diff == "more"
+          chance =(1/value-1)
+        else
+          raise "Unknow diff value"
+        end
+        pt = (chance * 0.7 + 1) * Roster::FB_CHARGE * 10
+        pt.round(2).to_d
       else
-        raise "Unknow diff value"
+        PT
       end
-      pt = (chance * 0.7 + 1) * Roster::FB_CHARGE * 10
-      pt.round(2).to_d
-    else
-      PT
+    end
+
+    def create_individual_prediction(params, user)
+      player = Player.where(stats_id: params[:player_id]).first
+      event = params[:events].first
+      pt = IndividualPrediction.get_pt_value(event[:value].to_d, event[:diff])
+      prediction = user.individual_predictions.create(player_id: player.id,
+                                                              roster_id: params[:roster_id],
+                                                              market_id: params[:market_id],
+                                                              pt: pt)
+      TransactionRecord.create!(:user => user, :event => 'create_individual_prediction', :amount => pt * 100)
+      Eventing.report(user, 'CreateIndividualPrediction', :amount => pt * 100)
+      prediction
     end
   end
 
@@ -39,6 +55,8 @@ class IndividualPrediction < ActiveRecord::Base
       customer_object.monthly_contest_entries -= Roster::FB_CHARGE
       customer_object.save!
     end
+    TransactionRecord.create!(:user => current_user, :event => 'cancel_individual_prediction', :amount => self.pt * 100)
+    Eventing.report(current_user, 'CancelIndividualPrediction', :amount => self.pt * 100)
     self.update_attribute(:cancelled, true)
   end
 
