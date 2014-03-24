@@ -27,7 +27,7 @@
     <div class="account-states">
       <div class="account-state">
         <div class="account-state-header">FanBucks</div>
-        {{currentUser.customer_object.net_monthly_winnings | centsToDollars }}
+        {{currentUser.customer_object.net_monthly_winnings | centsToFanbucks }}
         <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
         popover-trigger="mouseenter" popover="Fanbucks are how much you're up or down this month. It's your winnings total - $10 per entry. Any positive balance is moved to your account at the end of the month. Check out the FAQs for more info." popover-placement="right">
       </div>
