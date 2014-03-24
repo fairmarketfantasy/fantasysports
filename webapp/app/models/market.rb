@@ -275,7 +275,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def fill_unfilled_rosters
     contests.where("num_rosters < user_cap").find_each do |contest|
-      contest.fill_with_roster
+      contest.fill_with_rosters
     end
 
     raise "Not enough rosters" if contests.where("num_rosters < user_cap").count != 0
