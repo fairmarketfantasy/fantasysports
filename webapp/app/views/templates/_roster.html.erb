@@ -32,7 +32,7 @@
         <th ng-show="rosters.contest_type.name == 'h2h rr'">Record</th>
         <th ng-hide="rosters.contest_type.name == 'h2h rr'">Rank</th>
         <th>User</th>
-        <th>Payout</th>
+        <th>Award</th>
         <th>Points&nbsp;&nbsp;of: {{leaderboard[0].perfect_score | number:1}}</th>
         <th>Roster</th>
       </thead>
@@ -49,7 +49,7 @@
           <td>{{roster.owner_name}}</td>
           <td>
             <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{roster.contest_rank_payout || 0}} FanFrees</span>
-            <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{(roster.contest_rank_payout || 0) | centsToDollars}}</span>
+            <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{(roster.contest_rank_payout || 0) | centsToFanbucks}}</span>
           </td>
           <td>{{roster.score | number:2}}</td>
           <td>

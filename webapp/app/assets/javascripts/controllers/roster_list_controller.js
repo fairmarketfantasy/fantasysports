@@ -10,7 +10,6 @@ angular.module("app.controllers")
     $scope.showMore = false;
     page++;
     rosterService.fetchMine({sport: $routeParams.sport, page: page}).then(function(rosters) {
-      console.log(rosters)
       if (rosters.length > 24) {
           $scope.showMore = true;
       }
