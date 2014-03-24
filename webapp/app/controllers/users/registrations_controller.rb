@@ -117,11 +117,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
     #     render :status => 200, :partial => 'common/user_or_contact', :locals => {:user_or_contact => current_user}
     #   }
     # end
-    @uploaded_file.delete if @uploaded_file
+    @uploaded_file.close if @uploaded_file
   end
 
   def process_base64_image
-    return params[:user][:avatar].class == ActionDispatch::Http::UploadedFile
+    return if params[:user][:avatar].class == ActionDispatch::Http::UploadedFile
 
     #check if file is within picture_path
     if params[:user][:avatar]["file"]
