@@ -3,6 +3,8 @@ class BlockedEmail
   end
 end
 class ContestMailer < ActionMailer::Base
+  include SendGrid
+
   default from: "Fair Market Fantasy <no-reply@predictthat.com>"
 
   def invite_to_contest(invitation, inviter, contest, email, message)

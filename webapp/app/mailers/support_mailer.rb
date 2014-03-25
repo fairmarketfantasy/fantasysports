@@ -1,4 +1,6 @@
 class SupportMailer < ActionMailer::Base
+  include SendGrid
+
   default from: "Fair Market Fantasy <no-reply@predictthat.com>"
 
   def support_mail(title, email, message)

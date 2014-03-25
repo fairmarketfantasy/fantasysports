@@ -1,4 +1,6 @@
 class WeeklyDigestMailer < ActionMailer::Base
+  include SendGrid
+
   default from: "Predict That <no-reply@predictthat.com>"
 
   def digest_email(user)
