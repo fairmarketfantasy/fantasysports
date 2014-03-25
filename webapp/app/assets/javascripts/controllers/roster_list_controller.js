@@ -4,6 +4,7 @@ angular.module("app.controllers")
   $scope.rosterService = rosterService;
   $scope.history = true;
   $scope.showMore = false;
+  $scope.landingShow = false;
   var page = 0;
   $scope.rosterList = [];
   $scope.fetchMore = function() {

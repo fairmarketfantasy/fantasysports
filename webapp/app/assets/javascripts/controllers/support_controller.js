@@ -1,6 +1,6 @@
 angular.module("app.controllers")
 .controller('SupportController', ["$scope", "fs", "flash", function($scope, fs, flash) {
-
+  $scope.landingShow = false;
   var reset = function() {
     $scope.email = "";
     $scope.title = "";

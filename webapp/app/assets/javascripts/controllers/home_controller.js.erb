@@ -1,6 +1,7 @@
 angular.module("app.controllers")
 .controller('HomeController', ['$scope', 'rosters', 'markets', '$dialog', '$location', '$routeParams', '$timeout', function($scope, rosters, markets, $dialog, $location, $routeParams, $timeout) {
   $scope.rosters = rosters;
+  $scope.landingShow = false;
 
   if ($scope.currentUser) {
     rosters.fetchMine({sport: $routeParams.sport});
