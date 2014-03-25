@@ -209,7 +209,7 @@
     <div class="span6 sign-up-content">
       <div class="login-buttons" ng-controller="LoginController">
         <!--<div class="sample-team clearfix" ng-include="'/sample_team.html'"></div>-->
-        <div id="content" ng-view>
+        <div ng-hide="!landingShow" id="content" ng-view>
         </div>
         <p class="terms">
           <span>*No purchase necessary</span>
