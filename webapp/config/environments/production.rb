@@ -67,8 +67,17 @@ Fantasysports::Application.configure do
 
 
   #devise told me to: #TODO, set it as the real host
-  config.action_mailer.default_url_options = { :host => 'predictthat.com' }
-  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.default_url_options = { :host => 'staging.predictthat.com' }
+  config.action_mailer.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {
+    :user_name => 'predictthat',
+    :password => 'Fa1rmarketfantasy',
+    :domain => 'staging.predictthat.com',
+    :address => 'smtp.sendgrid.net',
+    :port => 587,
+    :authentication => :plain,
+    :enable_starttls_auto => true
+  }
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
