@@ -32,16 +32,16 @@
         popover-trigger="mouseenter" popover="Fanbucks are how much you're up or down this month. It's your winnings total - $10 per entry. Any positive balance is moved to your account at the end of the month. Check out the FAQs for more info." popover-placement="right">
       </div>
       <div class="account-state">
-        <div class="account-state-header">Contests Entered</div>
+        <div class="account-state-header">Awards</div>
+        {{currentUser.customer_object.monthly_award }}
+        <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+             popover-trigger="mouseenter" popover="Your monthly award. Check out the FAQs for more info." popover-placement="right">
+      </div>
+      <div class="account-state">
+        <div class="account-state-header">Predictions made</div>
         {{currentUser.customer_object.monthly_contest_entries }}
         <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
           popover-trigger="mouseenter" popover="Monthly Contest Entries is the number of contests you've entered this month. Check out the FAQs for more info." popover-placement="right">
-      </div>
-      <div class="account-state">
-        <div class="account-state-header">Total Entry Deficit</div>
-        {{currentUser.customer_object.contest_entries_deficit }}
-        <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
-          popover-trigger="mouseenter" popover="Total Entry Deficit is the rolling total of monthly contest entries that haven't been paid for by winnings. Check out the FAQs for more info." popover-placement="right">
       </div>
       <div class="account-state">
         <div class="account-state-header">Winnings Multiplier</div>
