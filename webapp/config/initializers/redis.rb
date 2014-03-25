@@ -1,8 +1,8 @@
 config = {
-  'test' => 'redis://:@localhost:1234/',
-  'development' => 'redis://:@localhost:1234/',
-  'staging' => 'redis://:@54.186.50.173:1234/',
-  'production' => 'redis://:@54.201.72.28:1234/', # This will be problematic with multiple workers
+  'test' => 'redis://:@localhost:6379/',
+  'development' => 'redis://:@localhost:6379/',
+  'staging' => 'redis://:@172.31.32.224:6379/',
+  'production' => 'redis://:@172.31.32.56:6379/', # This will be problematic with multiple workers
 }
 uri = URI.parse(config[Rails.env])
 $redis = Redis.new(:host => uri.host, :port => uri.port, :thread_safe => true)
