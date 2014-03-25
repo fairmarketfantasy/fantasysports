@@ -29,6 +29,6 @@ class TransactionRecordSerializer < ActiveModel::Serializer
 
   def amount
     value = object.amount
-    value == Roster::FB_CHARGE ? value * 1000 : value
+    (value == Roster::FB_CHARGE ? value * 1000 : value).round(2)
   end
 end
