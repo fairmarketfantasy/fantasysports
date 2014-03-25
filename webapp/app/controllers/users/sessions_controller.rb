@@ -11,7 +11,11 @@ class Users::SessionsController < Devise::SessionsController
 
   def destroy
     signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
-    redirect_to root_url
+
+    respond_to do |format|
+      format.json  { render :json => {} }
+      format.html { redirect_to root_url }
+    end
   end
 
   def sign_in_params
