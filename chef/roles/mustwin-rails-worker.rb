@@ -17,4 +17,6 @@ run_list(
   'recipe[openssl]',
   'recipe[golang]', # Worker specific
   'recipe[mustwin-basics]',
+  'recipe[redis]',
+  'recipe[redis::server]',
 )
