@@ -4,6 +4,7 @@ class BlockedEmail
 end
 class ContestMailer < ActionMailer::Base
   include SendGrid
+  sendgrid_category :contest_mailer
 
   default from: "Fair Market Fantasy <no-reply@predictthat.com>"
 

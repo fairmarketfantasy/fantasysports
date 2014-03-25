@@ -28,14 +28,24 @@ Fantasysports::Application.configure do
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   #devise told me to:
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
-  config.action_mailer.delivery_method = :file
-  config.action_mailer.file_settings = {
-    location: Rails.root.join('log/mail')
+  config.action_mailer.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {
+    :user_name => 'predictthat',
+    :password => 'Fa1rmarketfantasy',
+    :domain => 'localhost',
+    :address => 'smtp.sendgrid.net',
+    :port => 25,
+    :authentication => :plain,
+    :enable_starttls_auto => true
   }
+
+  #config.action_mailer.file_settings = {
+  #  location: Rails.root.join('log/mail')
+  #}
 
   config.cache_store = :file_store, File.join(Rails.root, 'tmp', 'cache')
 
