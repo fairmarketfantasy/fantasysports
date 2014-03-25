@@ -23,7 +23,7 @@ class CustomerObjectSerializer < ActiveModel::Serializer
   end
 
   def monthly_award
-    object.monthly_winnings
+    object.monthly_winnings/100
   end
 
   def contest_winnings_multiplier
