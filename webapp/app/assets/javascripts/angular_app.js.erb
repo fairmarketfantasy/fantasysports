@@ -17,7 +17,7 @@ angular.module('app', [
       when('/', {redirectTo: function(){ return window.App.currentUser ? '/home' : '/external' }, reloadOnSearch: false}).
       when('/external', { redirectTo: function() { return _.find(App.sports, function(s) { return s.is_active; }).name + '/external' } }).
       when('/home', { redirectTo: function() { return _.find(App.sports, function(s) { return s.is_active; }).name + '/home' } }).
-      when('/:sport/external', {templateUrl: '/sample_team.html', controller: 'HomeController'}).
+      when('/:sport/external', {templateUrl: '/sample_team.html'}).
       when('/:sport/home', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/:sport/playoffs', {templateUrl: '/home.html', controller: 'HomeController'}).
       when('/:sport/playoff_about', {templateUrl: '/playoff_about.html', controller: 'DummyController'}).
