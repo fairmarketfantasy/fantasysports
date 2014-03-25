@@ -4,6 +4,7 @@ angular.module("app.controllers")
   $scope.rosterService = rosterService;
   $scope.pt_history = true;
   $scope.showMore = false;
+  $scope.landingShow = false;
   var page = 0;
   $scope.predictionList = [];
 

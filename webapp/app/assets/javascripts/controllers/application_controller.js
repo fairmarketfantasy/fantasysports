@@ -6,6 +6,8 @@ angular.module("app.controllers")
     $location.path('/')
   }
 
+  $scope.landingShow = true;
+
   $scope.sports = window.App.sports;
   $scope.fs = fs;
   $scope.$routeParams = $routeParams;
