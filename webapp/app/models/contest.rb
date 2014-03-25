@@ -85,7 +85,7 @@ class Contest < ActiveRecord::Base
     #for each rank, make payments
     rosters_by_rank.each_pair do |rank, ranked_rosters|
       payment = rank_payment[rank]
-      payment_per_roster = Float(payment) / ranked_rosters.length
+      payment_per_roster = payment.to_d / ranked_rosters.length.to_d
       payments_for_rosters = rounded_payouts(payment_per_roster, ranked_rosters.length)
 
       ranked_rosters.each_with_index do |roster, i|
