@@ -1,5 +1,6 @@
 class WeeklyDigestMailer < ActionMailer::Base
   include SendGrid
+  sendgrid_category :weekly_digest_mailer
 
   default from: "Predict That <no-reply@predictthat.com>"
 
