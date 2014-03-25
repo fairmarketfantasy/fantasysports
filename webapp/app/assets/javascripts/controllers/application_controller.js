@@ -2,6 +2,10 @@ angular.module("app.controllers")
 .controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'registrationService', 'rosters', '$location', 'flash', '$dialog', '$timeout', '$route', '$routeParams','markets',
             function($scope, fs, currentUserService, registrationService, rosters, $location, flash, $dialog, $timeout, $route, $routeParams, marketService) {
 
+  if(!currentUserService.currentUser){
+    $location.path('/')
+  }
+
   $scope.sports = window.App.sports;
   $scope.fs = fs;
   $scope.$routeParams = $routeParams;
@@ -26,12 +30,12 @@ angular.module("app.controllers")
     App.currentUser.currentSport = newSport;
   });
 
-    $scope.reloadRoster = function(id, sport) {
-        $scope.roster = undefined;
-        fs.rosters.getSample(id, sport).then(function(roster) {
-            $scope.roster = roster;
-        });
-    };
+//    $scope.reloadRoster = function(id, sport) {
+//        $scope.roster = undefined;
+//        fs.rosters.getSample(id, sport).then(function(roster) {
+//            $scope.roster = roster;
+//        });
+//    };
 
   $scope.signUpModal = function(msg, opts) {
     registrationService.signUpModal(msg, opts);
