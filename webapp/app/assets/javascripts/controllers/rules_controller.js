@@ -1,4 +1,4 @@
 angular.module("app.controllers")
-.controller('RulesController', [ function() {
-
+.controller('RulesController', ["$scope", function($scope) {
+    $scope.landingShow = false;
 }]);

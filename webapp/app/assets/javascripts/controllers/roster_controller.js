@@ -4,6 +4,7 @@ angular.module("app.controllers")
   $scope.filter = 'positions';
   $scope.rosters = rosters;
   $scope.markets = markets;
+  $scope.landingShow = false;
 
   $scope.Math = window.Math;
 
