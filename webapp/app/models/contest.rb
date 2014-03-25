@@ -120,7 +120,8 @@ class Contest < ActiveRecord::Base
         end
         # puts "roster #{roster.id} won #{payment_per_roster}!"
         roster.owner.payout(:monthly_winnings, payment, :event => 'contest_payout', :roster_id => roster.id, :contest_id => self.id)
-        roster.owner.payout(:monthly_winnings, payment * (roster.owner.customer_object.contest_winnings_multiplier - 1), :event => 'contest_payout_bonus', :roster_id => roster.id, :contest_id => self.id)
+        bonus = (payment * (roster.owner.customer_object.contest_winnings_multiplier - 1)).round(2)
+        roster.owner.payout(:monthly_winnings, bonus, :event => 'contest_payout_bonus', :roster_id => roster.id, :contest_id => self.id) if bonus != 0
         roster.amount_paid = payment
         roster.save!
       end
