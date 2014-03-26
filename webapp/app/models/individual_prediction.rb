@@ -45,6 +45,7 @@ class IndividualPrediction < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       customer_object = self.user.customer_object
       customer_object.monthly_contest_entries += Roster::FB_CHARGE
+      customer_object.monthly_entries_counter += 1
       customer_object.save!
     end
   end
@@ -53,6 +54,7 @@ class IndividualPrediction < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       customer_object = self.user.customer_object
       customer_object.monthly_contest_entries -= Roster::FB_CHARGE
+      customer_object.monthly_entries_counter -= 1
       customer_object.save!
     end
     TransactionRecord.create!(:user => current_user, :event => 'cancel_individual_prediction', :amount => self.pt * 100)
