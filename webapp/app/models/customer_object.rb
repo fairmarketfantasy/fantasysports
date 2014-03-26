@@ -14,22 +14,23 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def do_monthly_accounting!
-    deficit_entries = self.entries_in_the_hole
+    #deficit_entries = self.entries_in_the_hole
     #self.update_attributes(:monthly_contest_entries => 0, :contest_entries_deficit => self.entries_in_the_hole)
     user_earnings = taxed_net_monthly_winnings
     tax_earnings = self.net_monthly_winnings - user_earnings
-    raise "Monthly accounting doesn't add up" unless deficit_entries * 1000 + user_earnings + tax_earnings - self.monthly_winnings == 0
+    condition = user_earnings + tax_earnings - self.monthly_winnings - self.monthly_contest_entries * 1000 == 0
+    raise "Monthly accounting doesn't add up" unless condition
     self.class.transaction do
       decrease_monthly_winnings(user_earnings, :event => 'monthly_user_balance')
-      decrease_monthly_winnings(deficit_entries * 1000, :event => 'monthly_user_entries') if deficit_entries > 0
+      #decrease_monthly_winnings(deficit_entries * 1000, :event => 'monthly_user_entries') if deficit_entries > 0
       decrease_monthly_winnings(tax_earnings, :event => 'monthly_taxes') if tax_earnings > 0
       if user_earnings > 0
         increase_account_balance(user_earnings, :event => 'monthly_user_balance')
-        self.update_attributes(:contest_entries_deficit => 0)
+        self.update_attributes(:monthly_contest_entries => 0)
       else
-        self.update_attributes(:contest_entries_deficit => 5.to_d) if self.net_monthly_winnings < -5000
+        self.update_attributes(:monthly_contest_entries => -5) if self.net_monthly_winnings < -5000
       end
-      self.update_attributes(:monthly_winnings => 0, :monthly_contest_entries => 0)
+      self.update_attributes(:monthly_winnings => 0, :monthly_entries_counter => 0)
       puts "--Accounting #{self.user.id}"
       if self.balance > 1000
         do_monthly_activation!
@@ -61,11 +62,11 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def net_monthly_winnings
-    self.monthly_winnings - self.entries_in_the_hole * 1000
+    self.monthly_winnings - self.monthly_contest_entries * 1000
   end
 
   def entries_in_the_hole
-    self.monthly_contest_entries + self.contest_entries_deficit
+    self.monthly_contest_entries + self.contest_entries_deficit * 1.5
   end
 
   def contest_winnings_multiplier
@@ -148,6 +149,7 @@ class CustomerObject < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       TransactionRecord.create!(opts.merge({:user => self.user, :amount => amount, :is_monthly_entry => true}))
       self.monthly_contest_entries += amount
+      self.monthly_entries_counter += 1
       self.save!
     end
   end
@@ -156,6 +158,7 @@ class CustomerObject < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       TransactionRecord.create!(opts.merge({:user => self.user, :amount => -amount, :is_monthly_entry => true}))
       self.monthly_contest_entries -= amount
+      self.monthly_entries_counter -= 1
       self.save!
     end
   end

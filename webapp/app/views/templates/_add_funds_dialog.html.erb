@@ -167,8 +167,8 @@
   </div>
 </div>
 <div class='modal-footer'>
-  <a href="javascript://" ng-show="currentUser.customer_object.is_active" class="btn btn-info" ng-click="close()">close</a>
-  <a href="javascript://" ng-hide="currentUser.customer_object.is_active" class="btn btn-info" ng-click="close_reload()">close</a>
+  <a href="javascript://" ng-show="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" ng-click="close()">close</a>
+  <a href="javascript://" ng-hide="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" ng-click="close_reload()">close</a>
 </div>
-<div class="subscription-backdrop" ng-hide="currentUser.customer_object.is_active"></div>
+<div class="subscription-backdrop" ng-hide="currentUser.customer_object.is_active && !agreeReload"></div>
 

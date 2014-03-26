@@ -7,6 +7,12 @@ angular.module("app.controllers")
    $scope.cards       = $scope.cards        || [];
    $scope.payment_type = '';
 
+
+  $scope.agreeReload = true;
+  if($scope.currentUser.customer_object.has_agreed_terms){
+    $scope.agreeReload = false;
+  }
+
   $scope.close = function(){
     dialog.close();
   };
@@ -121,6 +127,7 @@ angular.module("app.controllers")
         });
         $scope.addMoneySpinner = false;
         flash.success("Funds deposited successfully");
+        location.reload();
         $scope.close();
       }, function(err) {
         console && console.log(err);

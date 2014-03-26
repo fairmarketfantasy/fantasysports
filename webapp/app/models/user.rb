@@ -131,7 +131,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def abridged? # Used in api serializer
+  def abridged? # Used in api serializer as scope
     false
   end
 
