@@ -42,7 +42,6 @@ class Market < ActiveRecord::Base
       track_benched_players
       fill_rosters
       DataFetcher.update_benched
-      remove_benched_players
       update_players_for_market
       close
       lock_players
@@ -111,10 +110,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
     def fill_rosters
       apply :fill_rosters, "state IN('opened')"
-    end
-
-    def remove_benched_players
-      apply :remove_benched_players, "state IN('opened')"
     end
 
     def update_players_for_market
@@ -226,7 +221,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def update_players_for_market
     games = self.games.where("game_time < ? AND status != 'closed'", Time.now.utc)
-    games.each { |game| DataFetcher.update_game_players(game.stats_id) }
+    games.each { |game| DataFetcher.update_game_players(game) }
   end
 
   def open
@@ -359,6 +354,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   # close a market. allocates remaining rosters in this manner:
   def close
+    remove_benched_players
     raise "cannot close if state is not open" if state != 'opened'
     #cancel all un-submitted rosters
     self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
@@ -429,6 +425,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       self.process_individual_predictions
       self.state = 'complete'
       self.save!
+      self.games.each { |game| game.unbench_players }
     end
   end
 

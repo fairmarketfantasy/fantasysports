@@ -172,7 +172,7 @@ class RostersController < ApplicationController
   def autofill
     roster = current_user.rosters.where(:id => params[:id]).first
     roster.fill_pseudo_randomly5
-    roster.swap_benched_players!
+    roster.swap_benched_players! if roster.remove_benched
     render_api_response roster
   end
 

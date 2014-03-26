@@ -76,11 +76,11 @@ class Player < ActiveRecord::Base
   scope :sellable, -> { where('sell_prices.locked != true' ) }
 
   def self.bench_conditions
-    "(players.out = true OR players.status = 'IR' OR players.removed OR players.benched_games >= 3)"
+    "(players.out = true OR players.status = 'IR' OR players.removed)"
   end
 
   def benched?
-    self.out || self.status == 'IR' || self.removed || self.benched_games >= 3
+    self.out || self.status == 'IR' || self.removed
   end
 
   def headshot_url(size = 65) # or 195

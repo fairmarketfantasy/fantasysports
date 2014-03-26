@@ -36,19 +36,33 @@ class DataFetcher
       end
     end
 
-    def update_game_players(game_id)
-      url = NBA_BASE_URL + "games/#{game_id}/summary.xml" + NBA_API_KEY_PARAMS
+    def update_game_players(game)
+      puts "Update game players"
+      return if game.checked
+
+      url = NBA_BASE_URL + "games/#{game.stats_id}/summary.xml" + NBA_API_KEY_PARAMS
       xml = Nokogiri::XML(open(url))
+      second_half_started = xml.search("quarter").find { |node| node.at_xpath("@number").value == "3" }
+      return unless second_half_started
+
+      benched_ids = []
       players = xml.search("player")
       players.each do |node|
         id = node.xpath("@id").first.value
         played = node.at_xpath("@played")
-        next unless played
 
-        if played.value != "true"
-          Player.where(stats_id: id).first.update_attribute(:out, true)
+        benched_ids << id if played.nil? || played.value != "true"
+      end
+
+      game.players.each do |player|
+        if benched_ids.include?(player.stats_id)
+          Player.where(stats_id: id).first.update_attribute(:out, true) unless player.out
+        else
+          Player.where(stats_id: id).first.update_attribute(:out, false) if player.out
         end
       end
+
+      game.update_attribute(:checked, true)
     end
 
   end
