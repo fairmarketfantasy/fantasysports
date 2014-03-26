@@ -8,7 +8,8 @@ class UsersController < ApplicationController
 
   def show
     user = User.find(params[:id])
-    render_api_response user
+    opts = params['abridged'] ? { :abridged => true } : {}
+    render_api_response user, opts
   end
 
   def unsubscribe
