@@ -29,7 +29,7 @@ class CustomerObject < ActiveRecord::Base
       else
         self.update_attributes(:contest_entries_deficit => 5.to_d) if self.net_monthly_winnings < -5000
       end
-      self.update_attributes(:monthly_winnings => 0, :monthly_contest_entries => 0)
+      self.update_attributes(:monthly_winnings => 0, :monthly_contest_entries => 0, :monthly_entries_counter => 0)
       puts "--Accounting #{self.user.id}"
       if self.balance > 1000
         do_monthly_activation!
@@ -148,6 +148,7 @@ class CustomerObject < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       TransactionRecord.create!(opts.merge({:user => self.user, :amount => amount, :is_monthly_entry => true}))
       self.monthly_contest_entries += amount
+      self.monthly_entries_counter += 1
       self.save!
     end
   end
@@ -156,6 +157,7 @@ class CustomerObject < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       TransactionRecord.create!(opts.merge({:user => self.user, :amount => -amount, :is_monthly_entry => true}))
       self.monthly_contest_entries -= amount
+      self.monthly_entries_counter -= 1
       self.save!
     end
   end
