@@ -27,7 +27,7 @@ class CustomerObject < ActiveRecord::Base
         increase_account_balance(user_earnings, :event => 'monthly_user_balance')
         self.update_attributes(:contest_entries_deficit => 0)
       else
-        self.update_attributes(:contest_entries_deficit => 5.to_d) if self.net_monthly_winnings < -5000
+        self.update_attributes(:contest_entries_deficit => 5.to_d/1.5) if self.net_monthly_winnings < -5000
       end
       self.update_attributes(:monthly_winnings => 0, :monthly_contest_entries => 0, :monthly_entries_counter => 0)
       puts "--Accounting #{self.user.id}"
@@ -61,11 +61,11 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def net_monthly_winnings
-    self.monthly_winnings - self.entries_in_the_hole * 1000
+    self.monthly_winnings - self.monthly_contest_entries * 1000
   end
 
   def entries_in_the_hole
-    self.monthly_contest_entries + self.contest_entries_deficit
+    self.monthly_contest_entries + self.contest_entries_deficit * 1.5
   end
 
   def contest_winnings_multiplier
