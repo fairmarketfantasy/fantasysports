@@ -21,7 +21,9 @@ Fantasysports::Application.routes.draw do
     post "users/uploads", :to => "users/registrations#update"
   end
 
-  mount Sidekiq::Monitor::Engine => '/sidekiq'
+  constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
+
+  mount Sidekiq::Monitor::Engine => '/sidekiq', :constraints => constraint
 
   # You can have the root of your site routed with "root"
   get '/healthcheck' => 'application#healthcheck'
