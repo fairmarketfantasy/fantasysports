@@ -42,7 +42,9 @@ gem 'protected_attributes'
 gem 'activeadmin', github: 'gregbell/active_admin', branch: 'master'
 
 # work queue
-gem "resque", "~> 1.25.1"
+gem 'sidekiq'
+gem 'sidekiq_monitor'
+gem 'sidekiq-scheduler'
 
 # data processing
 gem 'nokogiri'

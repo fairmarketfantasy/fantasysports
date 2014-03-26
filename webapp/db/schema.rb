@@ -11,10 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140323162243) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 20140326150200) do
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -461,6 +458,29 @@ ActiveRecord::Schema.define(version: 20140323162243) do
   add_index "sent_emails", ["sent_at"], name: "index_sent_emails_on_sent_at", using: :btree
   add_index "sent_emails", ["user_id", "email_type"], name: "index_sent_emails_on_user_id_and_email_type", using: :btree
 
+  create_table "sidekiq_jobs", force: true do |t|
+    t.string   "jid"
+    t.string   "queue"
+    t.string   "class_name"
+    t.text     "args"
+    t.boolean  "retry"
+    t.datetime "enqueued_at"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.string   "status"
+    t.string   "name"
+    t.text     "result"
+  end
+
+  add_index "sidekiq_jobs", ["class_name"], name: "index_sidekiq_jobs_on_class_name", using: :btree
+  add_index "sidekiq_jobs", ["enqueued_at"], name: "index_sidekiq_jobs_on_enqueued_at", using: :btree
+  add_index "sidekiq_jobs", ["finished_at"], name: "index_sidekiq_jobs_on_finished_at", using: :btree
+  add_index "sidekiq_jobs", ["jid"], name: "index_sidekiq_jobs_on_jid", using: :btree
+  add_index "sidekiq_jobs", ["queue"], name: "index_sidekiq_jobs_on_queue", using: :btree
+  add_index "sidekiq_jobs", ["retry"], name: "index_sidekiq_jobs_on_retry", using: :btree
+  add_index "sidekiq_jobs", ["started_at"], name: "index_sidekiq_jobs_on_started_at", using: :btree
+  add_index "sidekiq_jobs", ["status"], name: "index_sidekiq_jobs_on_status", using: :btree
+
   create_table "sports", force: true do |t|
     t.string   "name",                        null: false
     t.datetime "created_at"
@@ -490,8 +510,8 @@ ActiveRecord::Schema.define(version: 20140323162243) do
     t.integer  "sport_id",                null: false
     t.string   "abbrev",                  null: false
     t.string   "name",                    null: false
-    t.string   "conference",              null: false
-    t.string   "division",                null: false
+    t.string   "conference"
+    t.string   "division"
     t.string   "market"
     t.string   "state"
     t.string   "country"
@@ -503,7 +523,6 @@ ActiveRecord::Schema.define(version: 20140323162243) do
     t.string   "stats_id",   default: ""
   end
 
-  add_index "teams", ["abbrev", "sport_id"], name: "index_teams_on_abbrev_and_sport_id", unique: true, using: :btree
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
   add_index "teams", ["stats_id"], name: "index_teams_on_stats_id", using: :btree
 

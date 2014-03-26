@@ -1,0 +1,10 @@
+:concurrency: 5
+:verbose: false
+:pidfile: ./tmp/pids/sidekiq.pid
+:logfile: ./log/sidekiq.log
+:queues:
+  - [weekly_digest, 1]
+staging:
+  :concurrency: 10
+production:
+  :concurrency: 25

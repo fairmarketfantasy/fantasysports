@@ -21,6 +21,8 @@ Fantasysports::Application.routes.draw do
     post "users/uploads", :to => "users/registrations#update"
   end
 
+  mount Sidekiq::Monitor::Engine => '/sidekiq'
+
   # You can have the root of your site routed with "root"
   get '/healthcheck' => 'application#healthcheck'
   post '/support' => 'pages#support'
