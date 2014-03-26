@@ -101,7 +101,7 @@ class User < ActiveRecord::Base
   end
 
   def in_progress_roster
-    rosters.where(:state => 'in_progress').first
+    rosters.where(:state => 'in_progress').last
   end
 
   # NOENTRY TODO: change to count entries
