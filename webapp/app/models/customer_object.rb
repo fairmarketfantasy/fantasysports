@@ -195,7 +195,7 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def deactivate_account
-    self.update_attributes(is_active: false, trial_started_at: Date.today + 16)
+    self.update_attributes(is_active: false, trial_started_at: Date.today - 16)
     card_ids = self.credit_cards.pluck(:id)
     card_ids.each { |id| self.delete_card(id) }
     self.reload
