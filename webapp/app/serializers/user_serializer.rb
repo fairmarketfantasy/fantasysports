@@ -1,13 +1,17 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :name, :admin, :username, :email, :balance, :image_url, :win_percentile, :total_points, :joined_at, :token_balance, :provider,
-    :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses, :referral_code, :inviter_id, :currentSport # Leaderboard keys
-
+    :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses, :referral_code, :inviter_id, :currentSport, # Leaderboard keys
+    :abridged
 
   has_one :customer_object
   has_one :in_progress_roster
   has_many :leagues
 
   attribute :confirmed?, key: :confirmed
+
+  def abridged
+    scope.abridged? ? true : false
+  end
 
   def currentSport
     Sport.where('is_active').first.name
@@ -26,8 +30,16 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def customer_object
-    return unless scope
+    return if scope.nil? || scope.abridged?
     scope.id == object.id ? object.customer_object : nil
+  end
+
+  def admin
+    scope.abridged? ? nil : object.admin
+  end
+
+  def total_losses
+    scope.abridged? ? nil : object.total_losses
   end
 
 end
