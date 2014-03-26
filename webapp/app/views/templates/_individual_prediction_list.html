@@ -59,6 +59,9 @@
             <span ng-show="prediction.finished">
                {{prediction.award}}
             </span>
+            <span ng-show="prediction.cancelled">
+               Canceled
+            </span>
             <span ng-show="!prediction.finished">
                N/A
             </span>
