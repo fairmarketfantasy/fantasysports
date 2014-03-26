@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140323162243) do
+ActiveRecord::Schema.define(version: 20140326133109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,6 +101,7 @@ ActiveRecord::Schema.define(version: 20140323162243) do
     t.decimal  "contest_entries_deficit", default: 0.0
     t.datetime "last_activated_at"
     t.date     "trial_started_at"
+    t.integer  "monthly_entries_counter", default: 0,     null: false
   end
 
   create_table "email_unsubscribes", force: true do |t|

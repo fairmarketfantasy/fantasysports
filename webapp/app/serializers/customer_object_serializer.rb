@@ -19,11 +19,11 @@ class CustomerObjectSerializer < ActiveModel::Serializer
   end
 
   def monthly_contest_entries
-    object.monthly_contest_entries / Roster::FB_CHARGE
+    object.monthly_entries_counter
   end
 
   def monthly_award
-    object.monthly_winnings/100
+    object.monthly_winnings.to_d/100
   end
 
   def contest_winnings_multiplier
