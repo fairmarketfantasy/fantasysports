@@ -60,4 +60,8 @@ class Game < ActiveRecord::Base
   def losing_team
     [self.home_team, self.away_team].find{|team| team != winning_team }
   end
+
+  def unbench_players
+    self.players.each { |p| p.update_attribute(:out, false) }
+  end
 end
