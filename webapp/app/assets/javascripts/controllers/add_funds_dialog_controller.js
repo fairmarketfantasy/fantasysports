@@ -121,6 +121,7 @@ angular.module("app.controllers")
         });
         $scope.addMoneySpinner = false;
         flash.success("Funds deposited successfully");
+        location.reload();
         $scope.close();
       }, function(err) {
         console && console.log(err);

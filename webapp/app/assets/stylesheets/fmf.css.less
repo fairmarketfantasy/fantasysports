@@ -1719,7 +1719,11 @@ input, textarea, .uneditable-input {
 .mr-item .benched-image {
   border-color:#FFA701;
 }
-.benched-icon {
+.mr-item .swapped-image {
+  border-color:@info;
+}
+.benched-icon,
+.swapped-icon {
   background-color: #FFA701;
   .border-radius(10px);
   bottom: -8px;
@@ -1729,6 +1733,9 @@ input, textarea, .uneditable-input {
   position: absolute;
   right: -3px;
   color:@white;
+}
+.swapped-icon{
+  background-color: @info;
 }
 .defense {
   background-image: asset-url('helmet-filled.png');  
