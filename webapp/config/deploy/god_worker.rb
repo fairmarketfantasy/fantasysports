@@ -50,13 +50,13 @@ God.watch do |w|
 end
 
 God.watch do |w|
-  pid_file = PID_PATH + "/resque-1.pid"
-  w.name = "resque1"
-  w.start = "bundle exec rake resque:work"
+  pid_file = PID_PATH + '/sidekiq-1.pid'
+  w.name = 'sidekiq1'
+  w.start = 'bundle exec sidekiq'
   w.dir = BASE_DIR + '/current/webapp'
-  w.log = BASE_DIR + '/shared/log/resque-1.log'
-  w.env = {"RAILS_ENV" => ENV['RAILS_ENV'],
-           "PIDFILE" => pid_file}
+  w.log = BASE_DIR + '/shared/log/sidekiq-1.log'
+  w.env = {'RAILS_ENV' => ENV['RAILS_ENV'],
+           'PIDFILE' => pid_file}
   w.stop          = -> { `kill -s KILL #{IO.read(pid_file)}` }
   w.start_grace   = 5.seconds
   w.restart_grace = 5.seconds
@@ -64,13 +64,13 @@ God.watch do |w|
 end
 
 God.watch do |w|
-  pid_file = PID_PATH + "/resque-2.pid"
-  w.name = "resque2"
-  w.start = "bundle exec rake resque:work"
+  pid_file = PID_PATH + '/sidekiq-2.pid'
+  w.name = 'sidekiq2'
+  w.start = 'bundle exec sidekiq'
   w.dir = BASE_DIR + '/current/webapp'
-  w.log = BASE_DIR + '/shared/log/resque-2.log'
-  w.env = {"RAILS_ENV" => ENV['RAILS_ENV'],
-           "PIDFILE" => pid_file}
+  w.log = BASE_DIR + '/shared/log/sidekiq-2.log'
+  w.env = {'RAILS_ENV' => ENV['RAILS_ENV'],
+           'PIDFILE' => pid_file}
   w.stop          = -> { `kill -s KILL #{IO.read(pid_file)}` }
   w.start_grace   = 5.seconds
   w.restart_grace = 5.seconds
