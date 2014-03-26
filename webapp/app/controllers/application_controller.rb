@@ -43,8 +43,6 @@ class ApplicationController < ActionController::Base
     end
     if opts[:abridged]
       opts[:scope] = AbridgedScope.new
-    else
-      opts[:scope] = current_user
     end
     opts[:json] = data
     render opts

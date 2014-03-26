@@ -10,7 +10,7 @@
     <th>Choice</th>
     <th>Game time</th>
     <th>Day</th>
-    <th>State</th>
+    <th>Result</th>
     <th>Prediction</th>
     <th>PT</th>
     <th>Award</th>
@@ -36,10 +36,10 @@
       </td>
       <td>
         <span ng-show="prediction.finished">
-           Finished
+          {{prediction.game_result}}
         </span>
         <span ng-show="!prediction.finished">
-           Submitted
+          N/A
         </span>
       </td>
       <td class="list-statistic">

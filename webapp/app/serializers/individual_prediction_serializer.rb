@@ -1,6 +1,6 @@
 class IndividualPredictionSerializer < ActiveModel::Serializer
   attributes :id, :player_id, :player_stat_id, :market_name, :event_predictions,
-             :player_name, :pt, :award, :finished, :game_time, :game_day
+             :player_name, :pt, :award, :finished, :game_time, :game_day, :game_result
   has_many :event_predictions
 
   def market_name
@@ -19,7 +19,7 @@ class IndividualPredictionSerializer < ActiveModel::Serializer
     object.market.closed_at + 5.minutes
   end
 
-   def game_day
+  def game_day
     object.market.closed_at
   end
 end
