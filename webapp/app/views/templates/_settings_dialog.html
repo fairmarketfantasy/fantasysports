@@ -17,7 +17,7 @@
       <span class='user-info-label'>Username:</span>{{ currentUser.username }}<br />
       <span class='user-info-label'>Password:</span> <span class='bold'>*****</span><br />
       <a href='javascript://' ng-click='editUser()' class='btn btn-mini btn-info'>Edit</a> <a href='javascript://' ng-click='showPasswordForm = true' class='btn btn-mini btn-info'>Change My Password</a>
-     <a class="btn btn-mini btn-success" href="javascript://" ng-click="addUnsubscribeModal()">Unsubscribe</a>
+      <a class="btn btn-mini btn-success" href="javascript://" ng-click="addUnsubscribeModal()">Unsubscribe</a>
     </div>
     <form ng-show='showUserForm'>
       <span class='user-info-label'>Email:</span><input type='text'  class='user-info-input' ng-model='userInfo.email' placeholder='Email' /><br />
@@ -36,6 +36,7 @@
   </div>
   <div class="mtm mtm-facebook" ng-show="isAuthedWithFacebook">
     <span class='user-info-label'>Email:</span>{{ currentUser.email }} &nbsp<span ng-show='currentUser.confirmed'><span class='fui-check txt-green'></span> Confirmed</span><a href="javascript://" ng-hide='currentUser.confirmed' ng-click="resendConfirmation()">Resend confirmation Email</a><br />
+    <a class="btn btn-mini btn-success" href="javascript://" ng-click="addUnsubscribeModal()">Unsubscribe</a>
   </div>
 
   <div ng-controller="TransactionHistoryController">
