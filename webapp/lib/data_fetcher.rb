@@ -56,9 +56,9 @@ class DataFetcher
 
       game.players.each do |player|
         if benched_ids.include?(player.stats_id)
-          Player.where(stats_id: id).first.update_attribute(:out, true) unless player.out
+          player.update_attribute(:out, true) unless player.out
         else
-          Player.where(stats_id: id).first.update_attribute(:out, false) if player.out
+          player.update_attribute(:out, false) if player.out
         end
       end
 
