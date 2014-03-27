@@ -25,6 +25,7 @@
 // Our angular app
 //= require angular_deps.js
 //= require controllers/support_controller.js
+//= require controllers/unsubscribe.js
 //= require services/fs.js
 //= require angular_app.js
 
