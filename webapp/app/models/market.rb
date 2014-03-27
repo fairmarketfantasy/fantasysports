@@ -430,7 +430,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def process_individual_predictions
-    self.individual_predictions.where(finished: nil).each do |prediction|
+    self.individual_predictions.where.not(state: ['finished', 'canceled']).each do |prediction|
       if prediction.player.benched?
         prediction.cancel!
       elsif prediction.won?
@@ -445,7 +445,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         prediction.update_attribute(:award, prediction.pt)
       end
 
-      prediction.update_attribute(:finished, true)
+      prediction.update_attribute(:state, 'finished')
     end
   end
 
