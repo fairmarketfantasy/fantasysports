@@ -2,6 +2,7 @@
 :verbose: false
 :queues:
   - [weekly_digest, 1]
+  - [mlb_teams_fetcher, 1]
 staging:
   :concurrency: 10
 production:

@@ -66,4 +66,21 @@ class MLBStrategy < SportStrategy
 
     @sport = Sport.where(:name => 'MLB').first
   end
+
+  def fetch_markets(type)
+    if type == 'single_elimination'
+      @sport.markets.where(
+          "game_type IS NULL OR game_type ILIKE '%single_elimination'"
+      ).where(['closed_at > ? AND state IN(\'published\', \'opened\', \'closed\')', Time.now]
+      ).order('closed_at asc').limit(10).select{|m| m.game_type =~ /single_elimination/ }
+    else
+      week_market = @sport.markets.where(['closed_at > ? AND name ILIKE \'%week%\' AND state IN(\'published\', \'opened\', \'closed\')', Time.now]).order('closed_at asc').first
+      markets =  @sport.markets.where(
+          ["game_type IS NULL OR game_type = 'regular_season'"]
+      ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\', \'closed\')', Time.now, (week_market && week_market.closed_at) || Time.now + 1.week]
+      ).order('closed_at asc').limit(10)
+      markets = markets.select{|m| m.id != week_market.id}.unshift(week_market) if week_market
+      markets
+    end
+  end
 end
