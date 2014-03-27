@@ -20,6 +20,7 @@ class Player < ActiveRecord::Base
 
   def purchase_price; self[:purchase_price]; end
   def buy_price; self[:buy_price]; end
+  def swapped_player_name; self[:swapped_player_name]; end
   def sell_price; self[:sell_price]; end
   def score; self[:score]; end
   def locked; self[:locked]; end
