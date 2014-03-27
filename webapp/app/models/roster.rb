@@ -261,6 +261,10 @@ class Roster < ActiveRecord::Base
     end
   end
 
+  def swapped_players
+    self.rosters_players.where.not(swapped_player_name: nil).select('player_id', 'swapped_player_name')
+  end
+
   # THIS IS ONLY USED FOR TESTING
   def fill_randomly
     #find which positions to fill

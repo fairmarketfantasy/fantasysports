@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140326163503) do
+ActiveRecord::Schema.define(version: 20140327145212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -174,17 +174,16 @@ ActiveRecord::Schema.define(version: 20140326163503) do
   add_index "games_markets", ["market_id", "game_stats_id"], name: "index_games_markets_on_market_id_and_game_stats_id", unique: true, using: :btree
 
   create_table "individual_predictions", force: true do |t|
-    t.integer  "roster_id",                 null: false
+    t.integer  "roster_id",                         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "player_id"
     t.integer  "user_id"
     t.integer  "market_id"
-    t.decimal  "pt",          default: 0.0, null: false
-    t.decimal  "award",       default: 0.0, null: false
-    t.boolean  "finished"
-    t.boolean  "cancelled"
+    t.decimal  "pt",          default: 0.0,         null: false
+    t.decimal  "award",       default: 0.0,         null: false
     t.integer  "game_result"
+    t.string   "state",       default: "submitted"
   end
 
   create_table "invitations", force: true do |t|
@@ -353,14 +352,15 @@ ActiveRecord::Schema.define(version: 20140326163503) do
     t.string   "college"
     t.integer  "jersey_number"
     t.string   "status"
-    t.integer  "total_games",   default: 0,     null: false
-    t.integer  "total_points",  default: 0,     null: false
+    t.integer  "total_games",         default: 0,     null: false
+    t.integer  "total_points",        default: 0,     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "team",                          null: false
-    t.integer  "benched_games", default: 0
-    t.boolean  "removed",       default: false
+    t.string   "team",                                null: false
+    t.integer  "benched_games",       default: 0
+    t.boolean  "removed",             default: false
     t.boolean  "out"
+    t.string   "swapped_player_name"
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
@@ -403,6 +403,14 @@ ActiveRecord::Schema.define(version: 20140326163503) do
     t.string  "paypal_email", null: false
   end
 
+  create_table "roster_players", force: true do |t|
+    t.integer  "player_id"
+    t.integer  "roster_id"
+    t.string   "swapped_player_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "rosters", force: true do |t|
     t.integer  "owner_id",                         null: false
     t.datetime "created_at"
@@ -440,12 +448,13 @@ ActiveRecord::Schema.define(version: 20140326163503) do
   add_index "rosters", ["submitted_at"], name: "index_rosters_on_submitted_at", using: :btree
 
   create_table "rosters_players", force: true do |t|
-    t.integer "player_id",                        null: false
-    t.integer "roster_id",                        null: false
-    t.decimal "purchase_price",  default: 1000.0, null: false
+    t.integer "player_id",                            null: false
+    t.integer "roster_id",                            null: false
+    t.decimal "purchase_price",      default: 1000.0, null: false
     t.string  "player_stats_id"
-    t.integer "market_id",                        null: false
+    t.integer "market_id",                            null: false
     t.string  "position"
+    t.string  "swapped_player_name"
   end
 
   add_index "rosters_players", ["market_id"], name: "index_rosters_players_on_market_id", using: :btree
@@ -515,8 +524,8 @@ ActiveRecord::Schema.define(version: 20140326163503) do
     t.integer  "sport_id",                null: false
     t.string   "abbrev",                  null: false
     t.string   "name",                    null: false
-    t.string   "conference"
-    t.string   "division"
+    t.string   "conference",              null: false
+    t.string   "division",                null: false
     t.string   "market"
     t.string   "state"
     t.string   "country"
@@ -528,6 +537,7 @@ ActiveRecord::Schema.define(version: 20140326163503) do
     t.string   "stats_id",   default: ""
   end
 
+  add_index "teams", ["abbrev", "sport_id"], name: "index_teams_on_abbrev_and_sport_id", unique: true, using: :btree
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
   add_index "teams", ["stats_id"], name: "index_teams_on_stats_id", using: :btree
 
