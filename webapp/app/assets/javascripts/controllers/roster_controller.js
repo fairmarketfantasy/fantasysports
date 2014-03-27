@@ -49,8 +49,8 @@ angular.module("app.controllers")
 
     $scope.startMarket();
 
-  $scope.removeLow = true;
-  var filterOpts = {position: rosters.uniqPositionList && rosters.uniqPositionList[0], removeLow: true, sort: 'buy_price', dir: 'desc'};
+  $scope.removeLow = false;
+  var filterOpts = {position: rosters.uniqPositionList && rosters.uniqPositionList[0], removeLow: false, sort: 'buy_price', dir: 'desc'};
   $scope.getFilterOpts = function() {
     return angular.extend({}, filterOpts);
   };
