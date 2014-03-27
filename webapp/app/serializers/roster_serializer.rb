@@ -64,7 +64,7 @@ class RosterSerializer < ActiveModel::Serializer
   end
 
   def swapped_players
-    scope.abridged? ? [] : @players ||= object.swapped_players
+    (scope.abridged? || object.state != 'finished') ? [] : @swapped_players ||= object.swapped_players
   end
 
   def positions
