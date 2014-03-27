@@ -19,6 +19,7 @@ angular.module("app.controllers")
       }
 
       $scope.predictionList = $scope.predictionList.concat(data);
+      console.log($scope.predictionList)
       _.each($scope.predictionList, function(list){
         _.each(list.event_predictions, function(data){
           if(data.diff == 'more'){
