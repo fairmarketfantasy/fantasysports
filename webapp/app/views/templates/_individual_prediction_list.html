@@ -35,10 +35,13 @@
         <span>{{prediction.game_day | longFormDate}}</span>
       </td>
       <td>
-        <span ng-show="prediction.finished">
+        <span ng-show="prediction.finished && !prediction.cancelled">
           {{prediction.game_result}}
         </span>
-        <span ng-show="!prediction.finished">
+        <span ng-show="prediction.cancelled">
+          Game Canceled
+        </span>
+        <span ng-show="!prediction.finished && !prediction.cancelled">
           N/A
         </span>
       </td>
@@ -56,13 +59,13 @@
       </td>
         <td>
           <div>
-            <span ng-show="prediction.finished">
+            <span ng-show="prediction.finished && !prediction.cancelled">
                {{prediction.award}}
             </span>
             <span ng-show="prediction.cancelled">
                Canceled
             </span>
-            <span ng-show="!prediction.finished">
+            <span ng-show="!prediction.finished && !prediction.cancelled">
                N/A
             </span>
             </div>
