@@ -59,7 +59,7 @@ class IndividualPrediction < ActiveRecord::Base
     end
     TransactionRecord.create!(:user => current_user, :event => 'cancel_individual_prediction', :amount => self.pt * 100)
     Eventing.report(current_user, 'CancelIndividualPrediction', :amount => self.pt * 100)
-    self.update_attribute(:cancelled, true)
+    self.update_attribute(:state, 'canceled')
   end
 
   def won?
