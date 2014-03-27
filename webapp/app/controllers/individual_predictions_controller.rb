@@ -34,11 +34,11 @@ class IndividualPredictionsController < ApplicationController
 
     page = params[:page] || 1
     if params[:historical]
-      predictions = predictions.where(finished: true)
+      predictions = predictions.where(state: ['finished', 'canceled'])
     elsif params[:all]
       predictions = predictions
     else
-      predictions = predictions.where(finished: nil)
+      predictions = predictions.where(state: 'submitted')
     end
 
     render_api_response predictions.page(page)
