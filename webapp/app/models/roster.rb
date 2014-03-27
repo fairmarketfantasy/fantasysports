@@ -247,7 +247,8 @@ class Roster < ActiveRecord::Base
       players.each do |player|
         if candidate_players[player.position].length > 0
           target_price = player.purchase_price
-          replacement_player = candidate_players[player.position].reduce(nil) do |closest_player, candidate|
+          candidates = candidate_players[player.position].select { |p| !p.benched? }
+          replacement_player = candidates.reduce(nil) do |closest_player, candidate|
             closest_player ||= candidate
             closest_player = candidate if player.id != candidate.id && !candidate.benched? &&
               (closest_player.buy_price - target_price).abs > (candidate.buy_price - target_price).abs
