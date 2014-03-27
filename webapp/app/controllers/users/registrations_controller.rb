@@ -121,7 +121,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def process_base64_image
-    return if params[:user][:avatar].class == ActionDispatch::Http::UploadedFile
+    return if params[:user][:avatar].nil? || params[:user][:avatar].class == ActionDispatch::Http::UploadedFile
 
     #check if file is within picture_path
     if params[:user][:avatar]["file"]
