@@ -22,7 +22,8 @@ class RosterSerializer < ActiveModel::Serializer
       :perfect_score,
       :remove_benched,
       :view_code,
-      :abridged
+      :abridged,
+      :swapped_players
 
   has_one  :league # abridged
   has_one  :contest # abridged
@@ -60,6 +61,10 @@ class RosterSerializer < ActiveModel::Serializer
 
   def players
     scope.abridged? ? [] : @players ||= object.players_with_prices
+  end
+
+  def swapped_players
+    scope.abridged? ? [] : @players ||= object.swapped_players
   end
 
   def positions
