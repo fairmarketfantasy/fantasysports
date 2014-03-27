@@ -19,12 +19,11 @@ angular.module("app.controllers")
       }
 
       $scope.predictionList = $scope.predictionList.concat(data);
-
       _.each($scope.predictionList, function(list){
         _.each(list.event_predictions, function(data){
           if(data.diff == 'more'){
               data.diff = 'over';
-          } else{
+          } else if(data.diff == 'less'){
               data.diff = 'under';
           }
         })
