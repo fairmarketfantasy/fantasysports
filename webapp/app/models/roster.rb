@@ -240,7 +240,7 @@ class Roster < ActiveRecord::Base
     MarketPlayer.next_game_time_for_roster_players(self)
   end
 
-  def swap_benched_players!
+  def swap_benched_players!(mark_swapped = false)
     ActiveRecord::Base.transaction do
       players = self.players_with_prices.benched
       candidate_players, _ = fill_candidate_players(players.map(&:position))
@@ -256,6 +256,11 @@ class Roster < ActiveRecord::Base
           remove_from_candidate_players(candidate_players, replacement_player)
           remove_player(player, !self.is_generated?)
           add_player(replacement_player, player.position, !self.is_generated?)
+          if mark_swapped
+            roster_player = RostersPlayer.where(:player_id => replacement_player.id, :roster_id => self.id,
+                                                :market_id => self.market_id).first
+            roster_player.update_attribute(:swapped_player_name, player.name)
+          end
         end
       end
     end
