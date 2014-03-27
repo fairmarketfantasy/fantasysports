@@ -22,7 +22,8 @@ class PlayerSerializer < ActiveModel::Serializer
       :is_eliminated,
       :benched_games,
       :next_game_at,
-      :benched
+      :benched,
+      :swapped_player_name
 
   def team
     Team.find_by_identifier(object[:team]).name

@@ -32,7 +32,7 @@ class Roster < ActiveRecord::Base
 
   def players_with_prices
     self.class.uncached do
-      self.players.select('players.*, rosters_players.position, rosters_players.purchase_price, mp.*').joins(
+      self.players.select('players.*, rosters_players.position, rosters_players.swapped_player_name, rosters_players.purchase_price, mp.*').joins(
         # Not user input params
         "JOIN market_prices_for_players(#{self.market_id}, #{self.buy_in}, #{self.rosters_players.map(&:player_id).unshift(-1).join(', ') }) mp ON mp.player_id=players.id")
       #Player.find_by_sql("select * from roster_prices(#{self.id})")
@@ -265,10 +265,6 @@ class Roster < ActiveRecord::Base
         end
       end
     end
-  end
-
-  def swapped_players
-    self.rosters_players.where.not(swapped_player_name: nil).select('player_id', 'swapped_player_name')
   end
 
   # THIS IS ONLY USED FOR TESTING
