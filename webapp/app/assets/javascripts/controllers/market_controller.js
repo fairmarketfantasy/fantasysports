@@ -14,7 +14,8 @@ angular.module("app.controllers")
         marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
       }
         if(!marketService.currentMarket){
-            return;
+          $scope.gameNotFound = "There are no contents at this moment";
+          return;
         }else{
             $scope.marketService.currentMarket.id = marketService.currentMarket.id
             $scope.startRoster();
@@ -25,7 +26,9 @@ angular.module("app.controllers")
   $scope.contestTypeOrder = ['100k', '10k', '5k', '194', '970', '100/30/30', '65/25/10', '27 H2H','h2h', 'h2h rr'];
 
   $scope.isCurrent = function(market){
-    if (!market) { return; }
+    if (!market) {
+      return;
+    }
     if (!marketService.currentMarket) {
       flash.error("Oops, we couldn't find that market, pick a different one.");
       $location.path(currentUserService.currentUser.currentSport + '/home');
