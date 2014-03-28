@@ -6,6 +6,7 @@ angular.module("app.controllers")
   $scope.markets = markets;
   $scope.landingShow = false;
 
+
   $scope.Math = window.Math;
 
     if(!marketService.upcoming[0]){
@@ -65,6 +66,7 @@ angular.module("app.controllers")
       }
       $scope.players = players;
     });
+
   };
 
   $scope.$watch('$routeParams.roster_id', function() {
@@ -118,10 +120,10 @@ angular.module("app.controllers")
   };
 
   rosters.setPoller(function() {
-      fetchPlayers();
-      fetchRosters();
-      fetchContest();
-    }, 20000);
+    fetchPlayers();
+    fetchRosters();
+    fetchContest();
+  }, 20000);
 
     // Override isn't really an override anymore...this could be better
   $scope.filterPlayers = function(opts, override) {

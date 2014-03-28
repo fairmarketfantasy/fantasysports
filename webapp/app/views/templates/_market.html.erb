@@ -1,7 +1,11 @@
 <div ng-controller="MarketController">
-  <div class='market-loader centered'>
+  <div ng-hide="gameNotFound" class='market-loader centered'>
     <img src='/assets/ajax-loader-big.gif'>
   </div>
+  <div class="market-loader centered">
+    <h4>{{gameNotFound}}</h4>
+  </div>
+
   <!--<ul class="clearfix market-list home-market" ng-show="marketService.upcoming">-->
     <!--<li class="slider-prev" ng-click="prev()"></li>-->
     <!--<li class="market-li home-market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, market) in marketService.upcoming">-->
