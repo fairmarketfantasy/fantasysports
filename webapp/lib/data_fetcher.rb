@@ -21,7 +21,7 @@ class DataFetcher
           match = node.at('injury').at_xpath("@comment").value[/\((?<date>\d+\/\d+)\)/, :date]
           if match
             date = Date.strptime("#{match}/#{Date.today.year}", "%m/%d/%Y")
-            benched_ids << id if (Time.now.utc - 4.hours).to_date <= date
+            benched_ids << id if (Time.now.utc - 4.hours).to_date == date
           else
             benched_ids << id
           end
