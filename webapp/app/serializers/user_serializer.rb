@@ -48,7 +48,11 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def total_losses
-    scope.abridged? ? nil : object.total_losses
+    object.total_loses
+  end
+
+  def win_percentile
+    object.total_wins.to_d * 100 / object.total_loses.to_d
   end
 
 end

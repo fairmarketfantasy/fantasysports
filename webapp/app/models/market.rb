@@ -442,7 +442,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         end
         TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => prediction.pt * 100)
         Eventing.report(user, 'IndividualPredictionWin', :amount => prediction.pt * 100)
+        user.update_attribute(:total_wins, user.total_wins.to_i + 1)
         prediction.update_attribute(:award, prediction.pt)
+      elsif !prediction.won?
+        user.update_attribute(:total_loses, user.total_loses.to_i + 1)
       end
 
       prediction.update_attribute(:state, 'finished')

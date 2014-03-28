@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140327145212) do
+ActiveRecord::Schema.define(version: 20140328163604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -352,15 +352,14 @@ ActiveRecord::Schema.define(version: 20140327145212) do
     t.string   "college"
     t.integer  "jersey_number"
     t.string   "status"
-    t.integer  "total_games",         default: 0,     null: false
-    t.integer  "total_points",        default: 0,     null: false
+    t.integer  "total_games",   default: 0,     null: false
+    t.integer  "total_points",  default: 0,     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "team",                                null: false
-    t.integer  "benched_games",       default: 0
-    t.boolean  "removed",             default: false
+    t.string   "team",                          null: false
+    t.integer  "benched_games", default: 0
+    t.boolean  "removed",       default: false
     t.boolean  "out"
-    t.string   "swapped_player_name"
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
@@ -401,14 +400,6 @@ ActiveRecord::Schema.define(version: 20140327145212) do
   create_table "recipients", force: true do |t|
     t.integer "user_id",      null: false
     t.string  "paypal_email", null: false
-  end
-
-  create_table "roster_players", force: true do |t|
-    t.integer  "player_id"
-    t.integer  "roster_id"
-    t.string   "swapped_player_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "rosters", force: true do |t|
@@ -595,6 +586,7 @@ ActiveRecord::Schema.define(version: 20140327145212) do
     t.string   "avatar"
     t.text     "bonuses"
     t.string   "referral_code"
+    t.integer  "total_loses",            default: 0
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

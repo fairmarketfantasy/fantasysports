@@ -113,15 +113,19 @@ class Contest < ActiveRecord::Base
         roster.set_records!
         roster.paid_at = Time.new
         roster.state = 'finished'
+        roster_owner = roster.owner
         if payment.nil?
           roster.amount_paid = 0
           roster.save!
+          roster_owner.update_attribute(:total_loses, roster_owner.total_loses.to_i + 1)
           next
         end
         # puts "roster #{roster.id} won #{payment_per_roster}!"
-        roster.owner.payout(:monthly_winnings, payment, :event => 'contest_payout', :roster_id => roster.id, :contest_id => self.id)
-        bonus = (payment * (roster.owner.customer_object.contest_winnings_multiplier - 1)).round(2)
-        roster.owner.payout(:monthly_winnings, bonus, :event => 'contest_payout_bonus', :roster_id => roster.id, :contest_id => self.id) if bonus != 0
+        roster_owner.payout(:monthly_winnings, payment, :event => 'contest_payout', :roster_id => roster.id, :contest_id => self.id)
+        roster_owner.update_attribute(:total_wins, roster_owner.total_wins.to_i + 1)
+        roster_owner.update_attribute(:total_points, roster_owner.total_points.to_i + roster.score)
+        bonus = (payment * (roster_owner.customer_object.contest_winnings_multiplier - 1)).round(2)
+        roster_owner.payout(:monthly_winnings, bonus, :event => 'contest_payout_bonus', :roster_id => roster.id, :contest_id => self.id) if bonus != 0
         roster.amount_paid = payment + bonus
         roster.save!
       end
