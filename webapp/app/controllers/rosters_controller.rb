@@ -1,5 +1,6 @@
 class RostersController < ApplicationController
   skip_before_filter :authenticate_user!, :only => [:show, :sample_roster]
+  before_filter :check_open_market, :only => [:create, :autofill, :add_player, :remove_player]
 
   DEFAULT_BUY_IN = 1500
   DEFAULT_REMAINING_SALARY = 100000
@@ -45,7 +46,6 @@ class RostersController < ApplicationController
     if params[:market_id]
       market = Market.find(params[:market_id])
       #Eventing.report(current_user, 'createRoster', :contest_type => contest_type.name, :buy_in => contest_type.buy_in)
-      raise HttpException.new(403, "This market is closed") unless market.accepting_rosters?
       in_progress_rosters = current_user.rosters.where(:state => 'in_progress')
       in_progress_rosters.first.destroy if in_progress_rosters.count > 5
       Eventing.report(current_user, 'createRoster', :buy_in => Roster::DEFAULT_BUY_IN)
@@ -209,5 +209,11 @@ class RostersController < ApplicationController
   def get_contest_type(roster, contest_type_name)
     types = roster.market.contest_types
     types.find { |contest_type| contest_type.name == contest_type_name }
+  end
+
+  def check_open_market
+    if params[:market_id]
+      raise HttpException.new(403, "This market is closed") unless Market.find(params[:market_id]).accepting_rosters?
+    end
   end
 end
