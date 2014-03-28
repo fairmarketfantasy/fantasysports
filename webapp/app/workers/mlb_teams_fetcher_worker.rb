@@ -62,6 +62,9 @@ class MLBTeamsFetcherWorker
 
       end
       puts "#{counter} unprocessed teams"
+
+      # enqueue fetching players for teams
+      @matched_abbrevs.each { |abbr| PlayersFetcherWorker.perform_async abbr }
     end
   end
 

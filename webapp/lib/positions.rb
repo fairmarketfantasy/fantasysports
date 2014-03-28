@@ -17,4 +17,8 @@ class Positions
   def self.default_NBA
     'PG,SG,PF,SF,C,G,F,UTIL'
   end
+
+  def self.default_MLB
+    'P,RP,SP,C,1B,2B,3B,SS,CF,LF,OF,RF,DH,PH'
+  end
 end
