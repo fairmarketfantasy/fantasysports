@@ -119,7 +119,8 @@ class Roster < ActiveRecord::Base
     if self.owner.id != SYSTEM_USER.id
       raise HttpException.new(402, "Agree to terms!") if charge && !owner.customer_object.has_agreed_terms?
       raise HttpException.new(402, "Unpaid subscription!") if charge && !owner.active_account?
-      raise HttpException.new(409, "Rosters must have <$20k remaining salary!") if remaining_salary > 20000 && Rails.env != 'test' # Doing this in test will make everything way slow
+      raise HttpException.new(409, "Rosters must have less than $20k remaining salary!") if
+        remaining_salary > 20000 && Rails.env != 'test' # Doing this in test will make everything way slow
     end
       #purchase all the players and update roster state to submitted
 
