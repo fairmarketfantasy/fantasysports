@@ -27,6 +27,8 @@ class MLBTeamsFetcherWorker
       end
 
       @sport = Sport.where(:name => 'MLB').first
+
+      @matched_abbrevs = []
       
       doc = Nokogiri::XML open('http://www.sportsnetwork.com/teams3.asp').read
       nodes = doc.xpath('//teams/Listing')
@@ -42,12 +44,13 @@ class MLBTeamsFetcherWorker
           basenode = basenode.next
         end
 
-        if data['sportcode'] == SPORT_CODE and data['TeamID'].to_i <= 60 and data['TeamID'].to_i > 0 # parse 1-60 items
+        if !(@matched_abbrevs.include? data['Abbr']) and data['sportcode'] == SPORT_CODE and data['TeamID'].to_i <= 60 and data['TeamID'].to_i > 0 # parse 1-60 items
           name = data['Fullname'] ? data['Fullname'] : data['Name']
           begin
             t = Team.find_by_sport_id_and_abbrev(@sport.id, data['Abbr']) || Team.new
             t.assign_attributes sport: @sport, market: data['Label'], division: data['division'], state: data['State'],
                                 abbrev: data['Abbr'], name: name, country: data['Country'], stats_id: data['TeamID']
+            @matched_abbrevs << data['Abbr']
             t.save!
           rescue
             puts 'UNPROCESSED:'
