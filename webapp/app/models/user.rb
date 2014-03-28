@@ -21,11 +21,12 @@ class User < ActiveRecord::Base
   devise :omniauthable, :omniauth_providers => [:facebook, :facebook_access_token]
 
   attr_accessor :current_password
-  attr_accessor :amount, :bets, :winnings, :total_wins, :total_losses # Leaderboard keys
+  attr_accessor :amount, :bets, :winnings, :total_losses # Leaderboard keys
 
   attr_accessible :name, :username, :provider, :uid, :fb_token, :unconfirmed_email, :image_url, :takes_tokens,
       :email, :current_password, :password, :password_confirmation, :remember_me, :first_name,
-      :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync, :inviter_id, :avatar, :avatar_cache, :remove_avatar
+      :last_name, :privacy, :accepted_privacy_at, :agreed_to_sync, :inviter_id, :avatar, :avatar_cache, :remove_avatar,
+      :total_wins
 
   has_many :rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner_id
