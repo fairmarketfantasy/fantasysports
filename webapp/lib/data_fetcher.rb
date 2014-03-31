@@ -51,7 +51,8 @@ class DataFetcher
         id = node.xpath("@id").first.value
         played = node.at_xpath("@played")
 
-        benched_ids << id if played.nil? || played.value != "true"
+        benched_ids << id if played.nil? || played.value != "true" || less_then_1_min(node)
+
       end
 
       game.players.each do |player|
@@ -76,6 +77,15 @@ class DataFetcher
         attempts += 1
         retry if attempts <= 5
       end
+    end
+
+    def less_then_1_min(node)
+      minutes = node.search("statistics").at_xpath("@minutes")
+      points = node.search("statistics").at_xpath("@points")
+
+      min_val = minutes.value[/(?<minutes>^\d{2}):\d{2}$/, :minutes] if minutes
+      min_val = min_val.to_i if min_val
+      min_val && min_val == 0 && points.value.to_i == 0
     end
 
   end
