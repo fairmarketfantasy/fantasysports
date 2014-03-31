@@ -83,7 +83,7 @@ class DataFetcher
       minutes = node.search("statistics").at_xpath("@minutes")
       points = node.search("statistics").at_xpath("@points")
 
-      min_val = minutes.value[/(?<minutes>^\d{2}):\d{2}$/, :minutes] if minutes
+      min_val = minutes.value[/^(?<minutes>\d{2}):\d{2}$/, :minutes] if minutes
       min_val = min_val.to_i if min_val
       min_val && min_val == 0 && points.value.to_i == 0
     end
