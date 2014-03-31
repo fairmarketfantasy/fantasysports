@@ -51,14 +51,16 @@ class IndividualPrediction < ActiveRecord::Base
   end
 
   def cancel!
+    user = self.user
     ActiveRecord::Base.transaction do
-      customer_object = self.user.customer_object
+      customer_object = user.customer_object
       customer_object.monthly_contest_entries -= Roster::FB_CHARGE
       customer_object.monthly_entries_counter -= 1
       customer_object.save!
+      customer_object.update_attribute(:monthly_entries_counter, customer_object.monthly_entries_counter - 1)
     end
-    TransactionRecord.create!(:user => current_user, :event => 'cancel_individual_prediction', :amount => self.pt * 100)
-    Eventing.report(current_user, 'CancelIndividualPrediction', :amount => self.pt * 100)
+    TransactionRecord.create!(:user => user, :event => 'cancel_individual_prediction', :amount => self.pt * 100)
+    Eventing.report(user, 'CancelIndividualPrediction', :amount => self.pt * 100)
     self.update_attribute(:state, 'canceled')
   end
 

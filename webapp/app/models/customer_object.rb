@@ -14,12 +14,13 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def do_monthly_accounting!
-    #deficit_entries = self.entries_in_the_hole
-    #self.update_attributes(:monthly_contest_entries => 0, :contest_entries_deficit => self.entries_in_the_hole)
+    return unless user.active_account?
+
     user_earnings = taxed_net_monthly_winnings
     tax_earnings = self.net_monthly_winnings - user_earnings
-    condition = user_earnings + tax_earnings - self.monthly_winnings - self.monthly_contest_entries * 1000 == 0
+    condition = (user_earnings + tax_earnings) - (self.monthly_winnings - self.monthly_contest_entries * 1000) == 0
     raise "Monthly accounting doesn't add up" unless condition
+
     self.class.transaction do
       decrease_monthly_winnings(user_earnings, :event => 'monthly_user_balance')
       #decrease_monthly_winnings(deficit_entries * 1000, :event => 'monthly_user_entries') if deficit_entries > 0
@@ -52,12 +53,13 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def taxed_net_monthly_winnings
-    tiers = [[10000, 0], [50000, 0.25], [100000, 0.5], [Float::MAX, 0.75]]
-    sum = 0
-    tiers.each_with_index do |tier, i|
-      previous_tier = i == 0 ? 0 : tiers[i-1][0]
-      sum += ([net_monthly_winnings, tier[0]].min - previous_tier ) * (1 - tier[1])
+    return net_monthly_winnings if net_monthly_winnings <= 10000
+
+    sum = net_monthly_winnings
+    [10000, 30000, 50000].each do |tier|
+      sum -= 0.25.to_d * (net_monthly_winnings - tier) if net_monthly_winnings >= tier
     end
+
     sum
   end
 
