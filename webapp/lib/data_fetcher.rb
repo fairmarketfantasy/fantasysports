@@ -9,7 +9,7 @@ class DataFetcher
     def update_benched
       puts "Update benched players"
       url = NBA_BASE_URL + "league/injuries.xml" + NBA_API_KEY_PARAMS
-      xml = Nokogiri::XML(open(url))
+      xml = get_xml(url)
       players = xml.search("player")
       benched_ids = []
       players.each do |node|
@@ -41,7 +41,7 @@ class DataFetcher
       return if game.checked
 
       url = NBA_BASE_URL + "games/#{game.stats_id}/summary.xml" + NBA_API_KEY_PARAMS
-      xml = Nokogiri::XML(open(url))
+      xml = get_xml(url)
       second_half_started = xml.search("quarter").find { |node| node.at_xpath("@number").value == "3" }
       return unless second_half_started
 
@@ -63,6 +63,19 @@ class DataFetcher
       end
 
       game.update_attribute(:checked, true)
+    end
+
+    private
+
+    def get_xml(url)
+      attempts = 0
+      begin
+        Nokogiri::XML(open(url))
+      rescue
+        sleep(1)
+        attempts += 1
+        retry if attempts <= 5
+      end
     end
 
   end
