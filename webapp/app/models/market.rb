@@ -431,10 +431,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   def process_individual_predictions
     self.individual_predictions.where.not(state: ['finished', 'canceled']).each do |prediction|
+      user = prediction.user
       if prediction.player.benched?
         prediction.cancel!
       elsif prediction.won?
-        user = prediction.user
         customer_object = user.customer_object
         ActiveRecord::Base.transaction do
           customer_object.monthly_winnings += prediction.pt/10
