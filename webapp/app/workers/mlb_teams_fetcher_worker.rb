@@ -45,7 +45,7 @@ class MLBTeamsFetcherWorker
         end
 
         if !(@matched_abbrevs.include? data['Abbr']) and data['sportcode'] == SPORT_CODE and data['TeamID'].to_i <= 60 and data['TeamID'].to_i > 0 # parse 1-60 items
-          name = data['Fullname'] ? data['Fullname'] : data['Name']
+          name = data['Label']
           begin
             t = Team.find_by_sport_id_and_abbrev(@sport.id, data['Abbr']) || Team.new
             t.assign_attributes sport: @sport, market: data['Label'], division: data['division'], state: data['State'],
