@@ -1,5 +1,5 @@
 class Team < ActiveRecord::Base
-  self.primary_key = "abbrev"
+  self.primary_key = 'stats_id'
   has_many :players, :foreign_key => 'team'
   belongs_to :sport
 
