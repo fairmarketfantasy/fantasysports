@@ -64,4 +64,8 @@ class Game < ActiveRecord::Base
   def unbench_players
     self.players.each { |p| p.update_attribute(:out, false) }
   end
+
+  def calculate_ppg
+    self.players.each { |p| p.calculate_ppg }
+  end
 end

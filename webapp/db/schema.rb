@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140328163604) do
+ActiveRecord::Schema.define(version: 20140401121317) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -360,6 +360,7 @@ ActiveRecord::Schema.define(version: 20140328163604) do
     t.integer  "benched_games", default: 0
     t.boolean  "removed",       default: false
     t.boolean  "out"
+    t.decimal  "ppg",           default: 0.0
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree

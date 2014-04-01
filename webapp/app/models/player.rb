@@ -98,4 +98,17 @@ class Player < ActiveRecord::Base
   def benched_games
     self.removed? ? 100 : super
   end
+
+  def calculate_ppg
+    played_games_ids = StatEvent.where("player_stats_id='#{self.stats_id}' AND activity='points' AND quantity != 0" ).
+                                 pluck('DISTINCT game_stats_id')
+    events = StatEvent.where(player_stats_id: self.stats_id,
+                             game_stats_id: played_games_ids, activity: 'points')
+    total_stats = StatEvent.collect_stats(events)[:points]
+    return if total_stats.nil? || played_games_ids.count == 0
+
+    value = total_stats / played_games_ids.count
+    value = value.round == 0 ? nil : value
+    self.update_attribute(:ppg, value)
+  end
 end
