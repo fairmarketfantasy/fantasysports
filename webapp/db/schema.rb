@@ -529,6 +529,7 @@ ActiveRecord::Schema.define(version: 20140401121317) do
     t.string   "stats_id",   default: ""
   end
 
+  add_index "teams", ["abbrev", "sport_id"], name: "index_teams_on_abbrev_and_sport_id", unique: true, using: :btree
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
   add_index "teams", ["stats_id"], name: "index_teams_on_stats_id", using: :btree
 
