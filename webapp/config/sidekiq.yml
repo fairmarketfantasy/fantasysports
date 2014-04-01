@@ -5,6 +5,7 @@
   - [mlb_teams_fetcher, 1]
   - [players_fetcher, 1]
   - [daily_schedule_fetcher, 1]
+  - [team_schedule_fetcher, 1]
 staging:
   :concurrency: 10
 production:

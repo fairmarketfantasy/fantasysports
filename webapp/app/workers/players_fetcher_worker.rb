@@ -3,11 +3,10 @@ class PlayersFetcherWorker
 
   sidekiq_options :queue => :players_fetcher
 
-  def perform(team_abbrev)
+  def perform(team_stats_id)
 
-    @team = Team.find team_abbrev
-    team_id = @team.stats_id
-    data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/roster?team_id=#{team_id}&year=#{Time.now.year}&api_token=#{TSN_API_KEY}").read
+    @team = Team.find_by_stats_id team_stats_id
+    data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/roster?team_id=#{team_stats_id}&year=#{Time.now.year}&api_token=#{TSN_API_KEY}").read
 
     recent_update_time = Time.parse data['updated_at']
     @recent_players_fetch = Sidekiq::Monitor::Job.where(:queue => :players_fetcher).last
@@ -36,8 +35,8 @@ class PlayersFetcherWorker
     end
   end
 
-  def self.job_name(team_abbrev)
-    @team = Team.find team_abbrev
+  def self.job_name(team_stats_id)
+    @team = Team.find_by_stats_id team_stats_id
     return 'No team found' unless @team
 
     "Fetch team players for team #{@team.name}"

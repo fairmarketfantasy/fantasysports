@@ -44,13 +44,13 @@ class MLBTeamsFetcherWorker
           basenode = basenode.next
         end
 
-        if !(@matched_abbrevs.include? data['Abbr']) and data['sportcode'] == SPORT_CODE and data['TeamID'].to_i <= 60 and data['TeamID'].to_i > 0 # parse 1-60 items
-          name = data['Label']
+        if !(@matched_abbrevs.flatten.include? data['Abbr']) and data['sportcode'] == SPORT_CODE and data['TeamID'].to_i <= 60 and data['TeamID'].to_i > 0 # parse 1-60 items
+          name = data['Name'].downcase.capitalize
           begin
             t = Team.find_by_sport_id_and_abbrev(@sport.id, data['Abbr']) || Team.new
             t.assign_attributes sport: @sport, market: data['Label'], division: data['division'], state: data['State'],
                                 abbrev: data['Abbr'], name: name, country: data['Country'], stats_id: data['TeamID']
-            @matched_abbrevs << data['Abbr']
+            @matched_abbrevs << [ data['Abbr'], data['TeamID']]
             t.save!
           rescue
             puts 'UNPROCESSED:'
@@ -64,7 +64,7 @@ class MLBTeamsFetcherWorker
       puts "#{counter} unprocessed teams"
 
       # enqueue fetching players for teams
-      @matched_abbrevs.each { |abbr| PlayersFetcherWorker.perform_async abbr }
+      @matched_abbrevs.each { |abbr| PlayersFetcherWorker.perform_async abbr[1] }
     end
   end
 

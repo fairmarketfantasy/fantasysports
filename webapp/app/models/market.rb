@@ -492,7 +492,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
           :status => 'ACT',
           :total_games => 0,
           :total_points => 0,
-          :team => Team.find(team.abbrev),
+          :team => Team.find_by_sport_id_and_abbrev(sport_id, team.abbrev),
           :benched_games => 0
         )
         PlayerPosition.create!(:player_id => p.id, :position => "TEAM")
