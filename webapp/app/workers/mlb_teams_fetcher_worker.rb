@@ -49,8 +49,8 @@ class MLBTeamsFetcherWorker
           begin
             t = Team.find_by_sport_id_and_abbrev(@sport.id, data['Abbr']) || Team.new
             t.assign_attributes sport: @sport, market: data['Label'], division: data['division'], state: data['State'],
-                                abbrev: data['Abbr'], name: name, country: data['Country'], stats_id: data['TeamID']
-            @matched_abbrevs << [ data['Abbr'], data['TeamID']]
+                                abbrev: data['Abbr'], name: name, country: data['Country'], stats_id: data['TeamID'].to_i.to_s
+            @matched_abbrevs << [ data['Abbr'], data['TeamID'].to_i.to_s]
             t.save!
           rescue
             puts 'UNPROCESSED:'
@@ -64,7 +64,10 @@ class MLBTeamsFetcherWorker
       puts "#{counter} unprocessed teams"
 
       # enqueue fetching players for teams
-      @matched_abbrevs.each { |abbr| PlayersFetcherWorker.perform_async abbr[1] }
+      @matched_abbrevs.each do |abbr|
+        PlayersFetcherWorker.perform_async abbr[1]
+        TeamScheduleFetcherWorker.perform_async abbr[1]
+      end
     end
   end
 
