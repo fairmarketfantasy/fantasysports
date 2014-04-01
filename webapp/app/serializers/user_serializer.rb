@@ -52,7 +52,7 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def win_percentile
-    object.total_wins.to_d * 100 / object.customer_object.monthly_entries_counter.to_d
+    object.total_wins.to_d * 100 / (object.total_loses + object.total_wins)
   end
 
 end
