@@ -19,23 +19,3 @@
 	<p>Prestige is a viutal currency that has no value except on PredictThat.When you correctly make a Prediction, you are awarded a certain amount of Fanbucks and the same amount will be added to your Prestige. PredictThat will regularly recognize and reward users with high levels of Prestige.</p>
 	<h3>Creating a League</h3>
 	<p>Instead of participating in a roster prediction against other public users on the site, you can create a league with your friends who will all make predictions in the same event. If you don't fill the league to the fixed number of users, PredictThat will add autofilled rosters to fill the league. </p>
-
-	<div class="alert alert-error" ng-controller="SupportController">
-		<h3>Need Some Help?</h3>
-		<p>The fastest way to find help is our FAQ. If you can't find an answer please feel free to submit a support request and a representative will respond ASAP.</p>
-
-		<form class="clearfix no-no support">
-			<div flash-alert active-class="alert in" class="flash fade" >
-				<strong class="alert-heading"></strong>
-				<span class="alert-message">{{flash.message}}</span>
-			</div>
-			<div>
-				<input type='text' placeholder='Message Title' class='mvm span12' ng-model="title"/>
-				<input type='email' placeholder='Email' class='mvm span12' ng-model="email"/>
-				<textarea class="mvm span12" placeholder="Your Message Here" ng-model="message"></textarea>
-
-				<p><a href="javascript://" class="btn btn-danger btn-create-contest" ng-click="send()" ng-disabled="working">Submit Support Request</a></p>
-			</div>
-		</form>
-	</div>
-
