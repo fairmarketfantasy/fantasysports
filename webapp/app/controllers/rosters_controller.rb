@@ -6,7 +6,7 @@ class RostersController < ApplicationController
 
   def mine
     sport = params[:sport] ? Sport.where(:name => params[:sport]).first : Sport.where('is_active').first
-    rosters = current_user.rosters.where.not(state: 'in_progress').
+    rosters = current_user.rosters.where(state: ["finished", "cancelled", "submitted"]).
                                    joins('JOIN markets m ON rosters.market_id=m.id').
                                    where(['m.sport_id = ?', sport.id]).order('closed_at desc')
     page = params[:page] || 1
