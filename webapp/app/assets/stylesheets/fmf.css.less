@@ -46,13 +46,14 @@ p {
 }
 header {
   height: 195px;
-  background-image: asset-url('bg-blur-big.jpg');
+  background-image: asset-url('bg-blur-nba.jpg');
   background-repeat: no-repeat;
   border-bottom: 3px solid @grayLight;
   position: relative;
   width: 100%;
   padding: 0;
   top:51px;
+  background-position: center 0;
 }
 article {
   position: relative;
@@ -82,6 +83,28 @@ footer {
     float:left;
   }
 }
+
+//GAME TYPE
+
+.NBA {
+  .landing-container {
+    background-image: asset-url('bg-landing-nba.jpg');
+  }
+  header {
+    background-image: asset-url('bg-blur-nba.jpg');
+  }
+}
+.NFL {
+  .landing-container {
+    background-image: asset-url('bg-landing-nfl.jpg');
+  }
+  header {
+    background-image: asset-url('bg-blur-nfl.png');
+  }
+}
+
+//END GAME TYPE
+
 
 .tos-padding {
   padding-top: 24px;

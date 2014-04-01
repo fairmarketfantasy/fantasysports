@@ -131,6 +131,11 @@ angular.module('app.filters')
       return input.toUpperCase();
     };
   }])
+  .filter('allLower', ['$filter', function($filter) {
+    return function(input) {
+      return input.toLowerCase();
+    };
+  }])
   .filter('niceMarketDesc', ['$filter', function($filter) {
     return function(market) {
       // Playoff Desc
