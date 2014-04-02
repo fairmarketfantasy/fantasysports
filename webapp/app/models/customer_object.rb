@@ -14,8 +14,6 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def do_monthly_accounting!
-    return unless user.active_account?
-
     user_earnings = taxed_net_monthly_winnings
     tax_earnings = self.net_monthly_winnings - user_earnings
     condition = (user_earnings + tax_earnings) - (self.monthly_winnings - self.monthly_contest_entries * 1000) == 0
