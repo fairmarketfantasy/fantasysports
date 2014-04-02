@@ -105,7 +105,7 @@ angular.module("app.controllers")
   $scope.addPaypalFunds = function(){
     $scope.addMoneySpinner = true;
     var w = window.open('/users/paypal_waiting');
-    fs.user.addMoney().then(function(resp){
+    fs.user.addMoney(10).then(function(resp){
       // window.App.currentUser.balance = resp.balance;
       // $scope.close();
        //flash.success("Success, $" + $scope.chargeAmt + " added your your account.");
