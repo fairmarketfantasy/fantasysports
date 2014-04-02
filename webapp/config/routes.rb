@@ -38,7 +38,7 @@ Fantasysports::Application.routes.draw do
   get '/leaderboard' => 'leaderboard#index'
 
   get '/pages/mobile/forgot_password' => 'mobile_pages#forgot_password'
-  get '/pages/mobile/support' => 'mobile_pages#support'
+  get '/pages/mobile/conditions' => 'mobile_pages#conditions'
   get '/pages/mobile/terms' => 'mobile_pages#terms'
   get '/pages/mobile/rules' => 'mobile_pages#rules'
 

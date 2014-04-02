@@ -5,7 +5,7 @@ class MobilePagesController < ApplicationController
   def forgot_password
   end
 
-  def support
+  def conditions
   end
 
   def terms
