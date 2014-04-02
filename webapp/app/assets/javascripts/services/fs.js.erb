@@ -40,6 +40,7 @@ angular.module('app.services')
           $rootScope.$apply(function() {
             d.close();
             flash.success("Paypal payment deposited successfully!");
+            location.reload();
           });
         });
       },
