@@ -67,7 +67,7 @@ Fantasysports::Application.configure do
 
 
   #devise told me to: #TODO, set it as the real host
-  config.action_mailer.default_url_options = { :host => 'staging.predictthat.com' }
+  config.action_mailer.default_url_options = { :host => 'predictthat.com' }
   config.action_mailer.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
     :user_name => 'predictthat',
