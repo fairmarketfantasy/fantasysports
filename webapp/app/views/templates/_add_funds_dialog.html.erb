@@ -32,6 +32,12 @@
         popover-trigger="mouseenter" popover="Your Fanbuck balance is the amount of awards you have received less 15 Fanbucks per prediction made" popover-placement="right">
       </div>
       <div class="account-state">
+        <div class="account-state-header">PresTige:</div>
+        {{currentUser.customer_object.contest_winnings_multiplier }}
+        <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
+             popover-trigger="mouseenter" popover="The Awards Multiplier is the multiplier we use to increase your awards when you have a negative Fanbuck balance. We increase your awards by 5% times any negative Fanbuck balance you have." popover-placement="right">
+      </div>
+      <div class="account-state">
         <div class="account-state-header">Awards</div>
         {{currentUser.customer_object.monthly_award }}
         <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
