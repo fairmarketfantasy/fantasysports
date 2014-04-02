@@ -1,7 +1,7 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :name, :admin, :username, :email, :balance, :image_url, :win_percentile, :total_points, :joined_at, :token_balance, :provider,
     :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses, :referral_code, :inviter_id, :currentSport, :in_progress_roster_id, # Leaderboard keys
-    :abridged
+    :abridged, :prestige
 
   has_one :customer_object
   has_one :in_progress_roster
@@ -53,6 +53,12 @@ class UserSerializer < ActiveModel::Serializer
 
   def win_percentile
     object.total_wins.to_d * 100 / (object.total_loses + object.total_wins)
+  end
+
+  def prestige
+    val = object.transaction_records.where(event: ["contest_payout", "contest_payout_bonus", "individual_prediction_win"]).
+                                     select(:amount).map(&:amount).reduce(0){|sum, p| sum += p }/100
+    val.round
   end
 
 end
