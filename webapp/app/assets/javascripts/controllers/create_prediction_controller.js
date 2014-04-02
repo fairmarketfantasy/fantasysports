@@ -13,7 +13,6 @@ angular.module("app.controllers")
     }
 
     $scope.confirmModal = function(text, point, name, current_bid) {
-        console.log(current_bid)
         if(current_bid){return}
         $scope.confirmShow = true;
         $scope.confirm = {
