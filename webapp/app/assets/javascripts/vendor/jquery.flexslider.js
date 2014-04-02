@@ -924,7 +924,9 @@
           minItems = slider.vars.minItems,
           maxItems = slider.vars.maxItems;
 
-      slider.w = (slider.viewport===undefined) ? slider.width() : slider.viewport.width();
+      //VERY BAD HACK!!! when you update the roster width equal to zero and the slider broke
+      slider.w = $('#content').width() - 36;
+//    slider.w = (slider.viewport===undefined ) ? slider.width() : slider.viewport.width();
       slider.h = slide.height();
       slider.boxPadding = slide.outerWidth() - slide.width();
 
