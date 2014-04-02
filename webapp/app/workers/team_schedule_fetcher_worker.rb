@@ -4,6 +4,8 @@ class TeamScheduleFetcherWorker
   sidekiq_options :queue => :team_schedule_fetcher
 
   def perform(team_stats_id)
+    @team = Team.find team_stats_id
+
     data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/schedule?team_id=#{team_stats_id}&api_token=#{TSN_API_KEY}").read
     data['listings'].each do |listing|
       game = Game.find(listing['game_id']) rescue Game.new
@@ -13,7 +15,9 @@ class TeamScheduleFetcherWorker
       game.game_day = Date.strptime listing['gamedate'], '%m/%d/%Y'
       game.game_time = Time.zone.parse(game.game_day.to_s + ' ' + listing['gametime'])
       game.status = listing['status'].present? ? listing['status'] : 'scheduled'
+      game.sport = @team.sport
       game.save!
+      game.create_market
     end
   end
 

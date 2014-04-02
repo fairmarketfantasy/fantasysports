@@ -55,15 +55,6 @@ end
 class MLBStrategy < SportStrategy
 
   def initialize
-    begin
-      s = Sport.new
-      s.name = 'MLB'
-      s.is_active = true
-      s.playoffs_on = true
-      s.save
-    rescue
-    end
-
     @sport = Sport.where(:name => 'MLB').first
   end
 

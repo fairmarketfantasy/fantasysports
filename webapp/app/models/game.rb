@@ -68,4 +68,17 @@ class Game < ActiveRecord::Base
   def calculate_ppg
     self.players.each { |p| p.calculate_ppg }
   end
+
+  def create_market
+    market = Market.new
+    market.sport = self.sport
+    market.name = Team.find(self.away_team).name + ' @ ' + Team.find(self.home_team).name
+    market.shadow_bet_rate = 0.75
+    market.shadow_bets = 0.0
+    market.game_type = 'regular_season'
+    #market.state = 'open'
+    market.save!
+    market.reload
+    self.markets << market
+  end
 end
