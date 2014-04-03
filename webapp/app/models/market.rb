@@ -438,7 +438,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       elsif prediction.won?
         customer_object = user.customer_object
         ActiveRecord::Base.transaction do
-          customer_object.monthly_winnings += prediction.pt/10
+          customer_object.monthly_winnings += prediction.pt * 100
           customer_object.save!
         end
         TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => prediction.pt * 100)
