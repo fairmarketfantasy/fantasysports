@@ -38,10 +38,9 @@ angular.module("app.controllers")
 
 
     $scope.playerStats = function(player){
-      console.log(player)
+      $scope.player = player;
       fs.prediction.show(player.stats_id).then(function(data){
-        $scope.points = data.events;
-        console.log(data)
+        $scope.events = data.events;
       });
     }
 

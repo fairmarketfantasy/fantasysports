@@ -55,17 +55,17 @@
     <div class="landing-player-pos clearfix">
       <div class="clearfix inline-block" ng-show="player.position != 'DEF'">
         <div class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
-        <p><i>Steph Curry</i></p>
+        <p><i>{{player.name}}</i></p>
       </div>
       <div ng-show="player.position == 'DEF'">
-        <p><i>Steph Curry</i></p>
+        <p><i>{{player.name}}</i></p>
         <div class="mr-player-image defense filled"></div>
       </div>
     </div>
     <div>
       <ul class="no-no landing-ind-list clearfix">
-        <li ng-repeat="player in roster.players">
-          <p class="pull-left">Rebounds : 3</p>
+        <li ng-repeat="stat in events">
+          <p class="pull-left">{{stat.name}} : {{stat.value}}</p>
           <div class="pull-right">
             <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less">less</a>
             <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more">more</a>
