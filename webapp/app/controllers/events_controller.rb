@@ -5,6 +5,8 @@ class EventsController < ApplicationController
   a dump of all game data every time it polls.
   TODO: consider pagination
 =end
+  skip_before_filter :authenticate_user!, :only => :for_players
+
   def for_game
     game = Game.find(params[:id])
     render_api_response eventsFromIndexes([game], params[:indexes])
@@ -58,7 +60,7 @@ class EventsController < ApplicationController
 
     recent_stats = StatEvent.collect_stats(recent_events)
     total_stats = StatEvent.collect_stats(events)
-    bid_ids = params[:market_id] ? current_bid_ids(params[:market_id], player.id) : []
+    bid_ids = params[:market_id] == 'undefined' ? [] : current_bid_ids(params[:market_id], player.id)
 
     data = []
     total_stats.each do |k, v|
