@@ -70,15 +70,30 @@ class Game < ActiveRecord::Base
   end
 
   def create_market
+    home_team = Team.find(self.home_team)
+    away_team = Team.find(self.away_team)
+
     market = Market.new
     market.sport = self.sport
-    market.name = Team.find(self.away_team).name + ' @ ' + Team.find(self.home_team).name
+    market.name = away_team.name + ' @ ' + home_team.name
     market.shadow_bet_rate = 0.75
     market.shadow_bets = 0.0
     market.game_type = 'regular_season'
-    #market.state = 'open'
+    market.state = 'opened'
+    market.opened_at = Time.now - 2.days
+    market.started_at = self.game_time - 5.minutes
+    market.closed_at = self.game_time - 5.minutes
+    market.published_at = self.game_time - 2.days
     market.save!
     market.reload
+    (home_team.players + away_team.players).each do |player|
+      market_player = market.market_players.new
+      market_player.player = player
+      market_player.shadow_bets = 150.0 # temp val
+      market_player.bets = 150.0 # temp val
+      market_player.player_stats_id = player.stats_id
+      market_player.save!
+    end
     self.markets << market
   end
 end
