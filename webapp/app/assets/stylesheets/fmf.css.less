@@ -83,6 +83,9 @@ footer {
     float:left;
   }
 }
+.inline-block{
+  display: inline-block;
+}
 
 //GAME TYPE
 
@@ -2187,8 +2190,11 @@ textarea[class*="span"] {
 .landing-ind-prediction {
   border:1px solid #fdfdfd ;
   .border-radius(6px);
-  padding: 8%;
+  padding: 2%;
+  position: absolute;
+  right: 9%;
   text-align: left;
+  top: 285px;
   ul{
     margin-top: 20px;
     p{
@@ -2196,11 +2202,22 @@ textarea[class*="span"] {
       margin: 8px 0 0;
     }
     a {
-      &:hover, &:focus, &:active{
-        background-color: #1B1BA3;
-        cursor: default;
+      background-color: @info;
+      float:left;
+      padding: 6px 9px 5px;
+      &:hover {
+        background-color: @blue;
       }
-
+    }
+  }
+  .landing-ind-list li{
+    height: 45px;
+  }
+  .landing-player-pos{
+    text-align: center;
+    p{
+      float: left;
+      margin-top: 12px;
     }
   }
 }
