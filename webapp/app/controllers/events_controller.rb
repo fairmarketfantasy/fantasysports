@@ -58,7 +58,7 @@ class EventsController < ApplicationController
 
     recent_stats = StatEvent.collect_stats(recent_events)
     total_stats = StatEvent.collect_stats(events)
-    bid_ids = current_bid_ids(params[:market_id], player.id)
+    bid_ids = params[:market_id] ? current_bid_ids(params[:market_id], player.id) : []
 
     data = []
     total_stats.each do |k, v|
