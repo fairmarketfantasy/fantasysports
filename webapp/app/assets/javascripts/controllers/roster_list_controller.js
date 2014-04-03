@@ -3,8 +3,8 @@ angular.module("app.controllers")
   rosterService.setPoller(null);
   $scope.rosterService = rosterService;
   $scope.history = true;
+  $scope.landingShow = true;
   $scope.showMore = false;
-  $scope.landingShow = false;
   var page = 0;
   $scope.rosterList = [];
   $scope.fetchMore = function() {
@@ -15,6 +15,7 @@ angular.module("app.controllers")
           $scope.showMore = true;
       }
       $scope.rosterList = $scope.rosterList.concat(rosters);
+      $scope.landingShow = false;
     });
   };
   $scope.fetchMore();

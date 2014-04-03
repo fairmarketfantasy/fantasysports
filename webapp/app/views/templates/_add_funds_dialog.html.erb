@@ -169,6 +169,7 @@
 <div class='modal-footer'>
   <a href="javascript://" ng-show="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" ng-click="close()">close</a>
   <a href="javascript://" ng-hide="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" ng-click="close_reload()">close</a>
+  <a class="user-logout txt-red-hover pull-left" style="margin-top:10px;" ng-hide="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" href="/users/sign_out">sign out</a>
 </div>
 <div class="subscription-backdrop" ng-hide="currentUser.customer_object.is_active && !agreeReload"></div>
 

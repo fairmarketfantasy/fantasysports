@@ -1,5 +1,5 @@
 <div class='modal-header'>
-    <h3>{{player.name}} <span class="pt">PT25</span>
+    <h3 class="clearfix"> <div class="mr-player-image" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div><span>{{player.name}} / {{player.team}}</span><span class="pt">PT25</span>
         <button class="close close-modal" ng-click="close()">×</button>
     </h3>
 </div>
