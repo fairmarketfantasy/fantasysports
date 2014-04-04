@@ -32,16 +32,17 @@ class IndividualPrediction < ActiveRecord::Base
       event = params[:events].first
       pt = IndividualPrediction.get_pt_value(event[:value].to_d, event[:diff])
       prediction = user.individual_predictions.create(player_id: player.id,
-                                                              roster_id: params[:roster_id],
-                                                              market_id: params[:market_id],
-                                                              pt: pt)
-      TransactionRecord.create!(:user => user, :event => 'create_individual_prediction', :amount => pt * 100)
+                                                      roster_id: params[:roster_id],
+                                                      market_id: params[:market_id],
+                                                      pt: pt)
+      TransactionRecord.create!(:user => user, :event => 'create_individual_prediction',
+                                :amount => pt * 100, roster_id: params[:roster_id])
       Eventing.report(user, 'CreateIndividualPrediction', :amount => pt * 100)
       prediction
     end
   end
 
-  def submit!
+  def charge_owner
     ActiveRecord::Base.transaction do
       customer_object = self.user.customer_object
       customer_object.monthly_contest_entries += Roster::FB_CHARGE

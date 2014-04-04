@@ -162,15 +162,18 @@ class Roster < ActiveRecord::Base
         end
         self.contest = set_contest
         self.save!
-
-        #charge account
-        if contest_type.buy_in > 0 && charge
-          self.owner.charge(:monthly_entry, FB_CHARGE, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
-          #SYSTEM_USER.payout(:monthly_entry, 1, :event => 'rake', :roster_id => nil, :contest_id => self.id) unless self.owner.id == SYSTEM_USER.id
-        end
       end
 
     return self
+  end
+
+  def charge_account
+    condition = self.contest_type.buy_in > 0 &&
+      TransactionRecord.where(event: 'buy_in', user_id: self.owner_id, roster_id: self.id).first.nil?
+    if condition
+      self.owner.charge(:monthly_entry, FB_CHARGE, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
+      #SYSTEM_USER.payout(:monthly_entry, 1, :event => 'rake', :roster_id => nil, :contest_id => self.id) unless self.owner.id == SYSTEM_USER.id
+    end
   end
 
   def add_player(player, position, place_bets = true)
