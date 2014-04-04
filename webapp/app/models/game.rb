@@ -79,7 +79,7 @@ class Game < ActiveRecord::Base
     market.shadow_bet_rate = 0.75
     market.shadow_bets = 0.0
     market.game_type = 'regular_season'
-    market.state = 'opened'
+    #market.state = 'opened'
     market.opened_at = Time.now - 2.days
     market.started_at = self.game_time - 5.minutes
     market.closed_at = self.game_time - 5.minutes
