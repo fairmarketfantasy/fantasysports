@@ -12,5 +12,6 @@ class MobilePagesController < ApplicationController
   end
 
   def rules
+    @sport = params[:sport]
   end
 end
