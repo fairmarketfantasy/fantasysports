@@ -67,8 +67,8 @@
         <li ng-repeat="stat in events">
           <p class="pull-left">{{stat.name}} : {{stat.value}}</p>
           <div class="pull-right">
-            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less">less</a>
-            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more">more</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less" popover-trigger="mouseenter" popover="PT{{stat.less_pt | toFixed}}, predict correctly and win {{stat.less_pt | toFixed}}FB" popover-placement="top">less</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more" popover-trigger="mouseenter" popover="PT{{stat.more_pt | toFixed}}, predict correctly and win {{stat.more_pt | toFixed}}FB" popover-placement="top">more</a>
           </div>
         </li>
       </ul>
