@@ -20,7 +20,7 @@ class PlayersFetcherWorker
         player.team = @team
         player.sport = @team.sport
         player.name = listing['first_name'] + ' ' + listing['last_name']
-        player.name_abbr = listing['first_name']
+        player.name_abbr = listing['last_name']
         player.birthdate = listing['dob']
         player.jersey_number = listing['jersey_number']
         player.status = listing['status']
