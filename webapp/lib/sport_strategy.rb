@@ -53,9 +53,12 @@ class NFLStrategy < SportStrategy
 end
 
 class MLBStrategy < SportStrategy
+  attr_accessor :positions_mapper
 
   def initialize
     @sport = Sport.where(:name => 'MLB').first
+    @positions_mapper = {'P'=>'P', 'RP'=>'P', 'SP'=>'P', 'C'=> 'C', '1B'=> '1B/DH', '2B'=> '2B',
+                         '3B'=> '3B', 'SS'=> 'SS', 'CF'=> 'OF', 'LF'=> 'OF', 'OF'=> 'OF', 'RF'=> 'OF', 'DH'=> '1B/DH', 'PH'=> '1B/DH'}
   end
 
   def fetch_markets(type)

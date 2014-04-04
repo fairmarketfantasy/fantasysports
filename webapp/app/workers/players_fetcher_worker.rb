@@ -10,7 +10,7 @@ class PlayersFetcherWorker
 
     recent_update_time = Time.parse data['updated_at']
     @recent_players_fetch = Sidekiq::Monitor::Job.where(:queue => :players_fetcher).last
-    return if @team.players.count > 0 and Sidekiq::Monitor::Job.where(:queue => :players_fetcher).count > 1 and @recent_players_fetch.started_at > recent_update_time
+    return if @team.players.count > 0 and Sidekiq::Monitor::Job.where(:queue => :players_fetcher).count > 1 and @recent_players_fetch.started_at and @recent_players_fetch.started_at > recent_update_time
 
     categories_arr = data['position_categories']
     categories_arr.each do |position_category|
@@ -30,7 +30,13 @@ class PlayersFetcherWorker
 
         # recreate positions
         player.positions.map(&:destroy)
-        PlayerPosition.create! player_id: player.id, position: listing['position']
+        strategy = SportStrategy.for(@team.sport.name)
+        if strategy.respond_to? :positions_mapper
+          players_position = strategy.positions_mapper[listing['position']]
+        else
+          players_position = listing['position']
+        end
+        PlayerPosition.create! player_id: player.id, position: players_position
       end
     end
   end

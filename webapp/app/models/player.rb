@@ -4,7 +4,7 @@ class Player < ActiveRecord::Base
   #belongs_to :team, :foreign_key => 'team' # THe sportsdata data model is so bad taht sometimes this is an abbrev, sometimes its a stats id
   def team
     return self[:team] if self[:team].is_a? Team
-    team = if self[:team].split('-').count > 2
+    team = if self[:team].split('-').count > 2 or self[:team].to_i > 0
       Team.where(:stats_id => self[:team])
     else
       Team.where(:abbrev => self[:team])
@@ -60,7 +60,7 @@ class Player < ActiveRecord::Base
 
   scope :benched,   -> { where(Player.bench_conditions) }
   scope :active, -> () {
-    where("status = 'ACT' AND NOT removed AND benched_games < 3")
+    where("status = 'ACT' OR status = 'A' AND NOT removed AND benched_games < 3")
   }
 
   scope :purchasable_for_roster, -> (roster) {

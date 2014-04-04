@@ -13,7 +13,7 @@ class MLBTeamsFetcherWorker
     @recent_mlb_teams_fetch = Sidekiq::Monitor::Job.where(:queue => :mlb_teams_fetcher).last
 
     # teams info update since the latest fetch time
-    if Sidekiq::Monitor::Job.where(:queue => :mlb_teams_fetcher).count == 1 or @recent_mlb_teams_fetch.started_at < recent_update_time
+    if Sidekiq::Monitor::Job.where(:queue => :mlb_teams_fetcher).count == 1 or (@recent_mlb_teams_fetch.started_at and @recent_mlb_teams_fetch.started_at < recent_update_time)
       # this var may be shared
 
       # TODO: delete this when release, we mustn`t keep sport without markets
@@ -44,13 +44,13 @@ class MLBTeamsFetcherWorker
           basenode = basenode.next
         end
 
-        if !(@matched_abbrevs.flatten.include? data['Abbr']) and data['sportcode'] == SPORT_CODE and data['TeamID'].to_i <= 60 and data['TeamID'].to_i > 0 # parse 1-60 items
+        if !(@matched_abbrevs.include? data['Abbr']) and data['sportcode'] == SPORT_CODE and data['TeamID'].to_i <= 60 and data['TeamID'].to_i > 0 # parse 1-60 items
           name = data['Name'].downcase.capitalize
           begin
             t = Team.find_by_sport_id_and_abbrev(@sport.id, data['Abbr']) || Team.new
             t.assign_attributes sport: @sport, market: data['Label'], division: data['division'], state: data['State'],
                                 abbrev: data['Abbr'], name: name, country: data['Country'], stats_id: data['TeamID'].to_i.to_s
-            @matched_abbrevs << [ data['Abbr'], data['TeamID'].to_i.to_s]
+            @matched_abbrevs << data['Abbr']
             t.save!
           rescue
             puts 'UNPROCESSED:'
@@ -62,12 +62,12 @@ class MLBTeamsFetcherWorker
 
       end
       puts "#{counter} unprocessed teams"
+    end
 
-      # enqueue fetching players for teams
-      @matched_abbrevs.each do |abbr|
-        PlayersFetcherWorker.perform_async abbr[1]
-        TeamScheduleFetcherWorker.perform_async abbr[1]
-      end
+    # enqueue fetching players for teams
+    Sport.where(:name => 'MLB').first.teams.each do |team|
+      PlayersFetcherWorker.perform_async team.stats_id
+      TeamScheduleFetcherWorker.perform_async team.stats_id
     end
   end
 
