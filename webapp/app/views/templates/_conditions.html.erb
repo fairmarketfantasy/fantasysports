@@ -3,7 +3,7 @@
   <h3>Terms and Conditions of Subscription</h3>
 
   <%= render :partial => 'templates/paying_terms' %>
-  <a class="btn btn-mini btn-success" ng-show="currentUser" href="javascript://" ng-click="confirmShow = true">Unsubscribe</a>
+  <a class="btn btn-mini btn-success" ng-show="currentUser && currentUser.customer_object.is_active" href="javascript://" ng-click="confirmShow = true">Unsubscribe</a>
   <%= render :partial => 'templates/purchase_terms' %>
   <div  class="confirm-modal display-none" ng-class="{'display-block' : confirmShow}">
     <div class="modal-body clearfix">
