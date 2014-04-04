@@ -281,10 +281,11 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def fill_unfilled_rosters
+    reload
     contests.where("num_rosters < user_cap").find_each do |contest|
       contest.fill_with_rosters
     end
-
+    reload
     raise "Not enough rosters" if contests.where("num_rosters < user_cap").count != 0
   end
 
@@ -416,6 +417,9 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       raise "market must be closed before it can be completed" if self.state != 'closed'
       raise "all games must be closed before market can be completed" if self.games.where("status != 'closed'").any?
 
+      self.rosters.where(state: 'in_progress').each { |r| r.destroy }
+      system_user_id = User.where(name: 'SYSTEM USER').first.id
+      self.rosters.where.not(owner_id: system_user_id).each { |r| r.charge_account }
       self.rosters.each { |r| r.swap_benched_players!(true) }
       self.tabulate_scores
       #for each contest, allocate funds by rank
@@ -433,6 +437,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   def process_individual_predictions
     self.individual_predictions.where.not(state: ['finished', 'canceled']).each do |prediction|
       user = prediction.user
+      prediction.charge_owner
       if prediction.player.benched?
         prediction.cancel!
       elsif prediction.won?
