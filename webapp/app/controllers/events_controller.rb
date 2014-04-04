@@ -66,7 +66,8 @@ class EventsController < ApplicationController
     total_stats.each do |k, v|
       value = v.to_d / BigDecimal.new(played_games_ids.count)
       value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
-      next if value.round(1) == 0
+      value = value.round(1)
+      next if value == 0
 
       bid_less = false
       bid_more = false
@@ -74,8 +75,10 @@ class EventsController < ApplicationController
         bid_less = true if EventPrediction.where(event_type: k.to_s, diff: 'less', individual_prediction_id: bid_ids).first
         bid_more = true if EventPrediction.where(event_type: k.to_s, diff: 'more', individual_prediction_id: bid_ids).first
       end
+      less_pt = IndividualPrediction.get_pt_value(value, 'less')
+      more_pt = IndividualPrediction.get_pt_value(value, 'more')
 
-      data << { name: k, value: value.round(1), bid_less: bid_less, bid_more: bid_more }
+      data << { name: k, value: value, bid_less: bid_less, bid_more: bid_more, less_pt: less_pt, more_pt: more_pt }
     end
 
     render json: { events: data }.to_json
