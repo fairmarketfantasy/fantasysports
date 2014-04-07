@@ -83,6 +83,9 @@ footer {
     float:left;
   }
 }
+.inline-block{
+  display: inline-block;
+}
 
 //GAME TYPE
 
@@ -321,10 +324,10 @@ select:focus:invalid {
   background-image: asset-url('bg-landing-nba.jpg');
   -webkit-background-size: contain;
   -moz-background-size: contain;
-  background-size: contain;
-  min-height: 600px;
+  background-size: cover;
+  min-height: 900px;
   width: 100%;
-  background-position: top right;
+  background-position: center top;
   background-repeat: no-repeat;
 }
 .ie8 .landing-container {
@@ -687,24 +690,42 @@ select:focus:invalid {
   top: 50px;
 }
 
-.popover {
+.popover{
   width: 300px;
   border: 1px solid #777;
   background-color: #FFF;
   color: @grayDark;
   line-height: 1.1em;
+  padding: 5px;
+  text-align: center;
+  div{
+    margin: 0;
+    padding: 0;
+  }
 }
 .landing-nav .popover {
   width: 120px;
-  padding-bottom: 2px;
   color: @white;
-
+  padding-top: 7px;
+  text-align: center;
+}
+.prediction-modal-body .popover.top {
+  text-align: center;
+  padding: 5px ;
+  margin:0 ;
+  div{
+    padding: 0;
+    margin:0;
+    font-family: 'Lato','Helvetica Nueue',Arial,sans-serif;
+  }
+}
+.prediction-modal-body .popover.top .arrow  {
+  margin-left: -7px;
 }
 .landing-nav .popover.bottom,
 .landing-nav .popover.right{
   background-color: @black;
   border-color:@black;
-
 }
 .landing-nav .popover.right {
   border-color:@black;
@@ -716,8 +737,8 @@ select:focus:invalid {
 .landing-nav .popover.right .arrow {
   border-right-color: @black;
 }
-
-.popover.right .arrow {
+.popover.right .arrow
+{
   border-right-color: #777;
 }
 .user-balance {
@@ -857,7 +878,7 @@ select:focus:invalid {
 }
 .account-state {
   float: left;
-  width: 20%;
+  width: 25%;
   text-align: center;
   min-height: 100px;
 }
@@ -1546,6 +1567,12 @@ input, textarea, .uneditable-input {
   border: 3px solid @info;
   .border-radius(6px);
   padding: 2px 4px 1px;
+  margin:4px 0 0 0;
+  display: inline-block;
+}
+.ind-player-title{
+  margin-top: 8px;
+  display: inline-block;
 }
 .bit{
   font-size: 12px;
@@ -1588,6 +1615,7 @@ input, textarea, .uneditable-input {
       background-color: @info;
       float:left;
       padding: 6px 9px 5px;
+      position: relative;
       &:hover {
         background-color: @blue;
       }
@@ -1597,9 +1625,25 @@ input, textarea, .uneditable-input {
 .prediction-less{
   .border-radius(6px 0 0 6px);
   margin-right: 1px;
+  span {
+    display: block;
+    height: 34px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 45px;
+  }
 }
 .prediction-more {
   .border-radius(0 6px 6px 0);
+  span {
+    display: block;
+    height: 34px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 49px;
+  }
 }
 
 .btn.btn-small.btn-invisible {
@@ -1993,8 +2037,8 @@ input[type="text"].players-search {
 }
 
 .roster-alert {
-  margin: 10px 10px 0 16px;
-  height: 150px;
+  margin: 15px 10px 0 16px;
+  height: 155px;
   .roster-submit{
     padding: 0 10px;
     position: relative;
@@ -2194,8 +2238,11 @@ textarea[class*="span"] {
 .landing-ind-prediction {
   border:1px solid #fdfdfd ;
   .border-radius(6px);
-  padding: 8%;
+  padding: 2%;
+  position: absolute;
+  right: 9%;
   text-align: left;
+  top: 285px;
   ul{
     margin-top: 20px;
     p{
@@ -2203,13 +2250,29 @@ textarea[class*="span"] {
       margin: 8px 0 0;
     }
     a {
-      &:hover, &:focus, &:active{
-        background-color: #1B1BA3;
-        cursor: default;
+      background-color: @info;
+      float:left;
+      padding: 6px 9px 5px;
+      &:hover {
+        background-color: @blue;
       }
-
     }
   }
+  .landing-ind-list li{
+    height: 45px;
+  }
+  .landing-player-pos{
+    text-align: center;
+    p{
+      float: left;
+      margin-top: 12px;
+    }
+  }
+}
+
+.home-prediction-info{
+  color: #FEFEFE;
+  text-align: center;
 }
 
 /* Media Queries: 980-1199px
@@ -2217,7 +2280,6 @@ textarea[class*="span"] {
 @media (min-width: 1400px) {
   .landing-container {
     background-size: auto;
-    height: 900px;
     width: 100%;
     background-position: center top;
     background-repeat: no-repeat;

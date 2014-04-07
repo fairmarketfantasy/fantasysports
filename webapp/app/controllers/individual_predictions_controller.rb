@@ -17,7 +17,6 @@ class IndividualPredictionsController < ApplicationController
       end
     end
 
-    prediction.submit!
     render :text => 'Individual prediction submitted successfully!', :status => :ok
   end
 

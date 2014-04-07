@@ -20,6 +20,11 @@ angular.module('app.filters')
       return input.substring(0,1).toUpperCase()+input.substring(1);
     };
   })
+  .filter('toFixed', function() {
+    return function(input, scope) {
+      return parseInt(input).toFixed();
+    };
+  })
   .filter('freeIfZero', function() {
     return function(input, scope) {
       if (input === 0) {
