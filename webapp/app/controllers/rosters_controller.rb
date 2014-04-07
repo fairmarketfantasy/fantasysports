@@ -139,7 +139,6 @@ class RostersController < ApplicationController
   end
 
   def submit
-    binding.pry
     roster = Roster.where(['owner_id = ? AND id = ?', current_user.id, params[:id]]).first
     if params[:contest_type]
       contest_type = get_contest_type(roster,  params[:contest_type])
