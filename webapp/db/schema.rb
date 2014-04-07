@@ -513,8 +513,8 @@ ActiveRecord::Schema.define(version: 20140401121317) do
     t.integer  "sport_id",                null: false
     t.string   "abbrev",                  null: false
     t.string   "name",                    null: false
-    t.string   "conference",              null: false
-    t.string   "division",                null: false
+    t.string   "conference"
+    t.string   "division"
     t.string   "market"
     t.string   "state"
     t.string   "country"

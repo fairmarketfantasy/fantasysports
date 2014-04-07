@@ -92,7 +92,7 @@ Fantasysports::Application.routes.draw do
       post 'submit', :action => 'submit'
       post 'toggle_remove_bench', :action => 'toggle_remove_bench'
       post 'autofill', :action => 'autofill'
-      post 'add_player/:player_id/:position', :action => 'add_player'
+      post 'add_player/:player_id/*position', :action => 'add_player' # allow '/' in position by using '*'
       post 'remove_player/:player_id', :action => 'remove_player'
       post 'share', :action => 'share'
     end

@@ -1,9 +1,11 @@
 class Team < ActiveRecord::Base
-  self.primary_key = "abbrev"
+  self.primary_key = 'stats_id'
   has_many :players, :foreign_key => 'team'
   belongs_to :sport
 
-  validates :sport_id, :abbrev, :name, :conference, :division, presence: true
+  attr_accessible *(%i(abbrev sport name market division state country stats_id conference))
+
+  validates :sport_id, :abbrev, :name, presence: true # :conference, :division for NFL
 
   def games
     Game.where("home_team = #{self.id} OR away_team_id = #{self.id}")
