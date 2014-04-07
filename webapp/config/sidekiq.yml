@@ -6,6 +6,7 @@
   - [players_fetcher, 1]
   - [daily_schedule_fetcher, 1]
   - [team_schedule_fetcher, 1]
+  - [game_stat_fetcher, 1]
 staging:
   :concurrency: 10
 production:
