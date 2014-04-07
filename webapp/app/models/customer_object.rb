@@ -14,7 +14,7 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def do_monthly_accounting!
-    return unless user.active_account?
+    return if !self.last_activated_at && trial_active?
 
     user_earnings = taxed_net_monthly_winnings
     tax_earnings = self.net_monthly_winnings - user_earnings

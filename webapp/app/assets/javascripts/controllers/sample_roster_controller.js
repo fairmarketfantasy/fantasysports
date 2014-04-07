@@ -3,6 +3,7 @@ angular.module("app.controllers")
 
     $scope.marketService = marketService;
     $scope.roster = rosters;
+    $scope.player_price = {};
 
     marketService.fetchUpcoming({type: 'single_elimination', sport: $scope.$routeParams.sport}).then(function() {
       marketService.fetchUpcoming({type: 'regular_season', sport: $scope.$routeParams.sport}).then(function() {
@@ -23,8 +24,25 @@ angular.module("app.controllers")
             $scope.roster = roster;
             $scope.isCurrent(roster.market_id);
 
+          $scope.mostExpencive = function() {
+            return _.max(roster.players, function(top_price){
+              return parseInt(top_price.buy_price)
+            })
+          }
+
+          $scope.playerStats($scope.mostExpencive());
         });
-    };
+    }
+
+
+
+
+    $scope.playerStats = function(player){
+      $scope.player = player;
+      fs.prediction.show(player.stats_id).then(function(data){
+        $scope.events = data.events;
+      });
+    }
 
 
     $scope.isCurrent = function(market){

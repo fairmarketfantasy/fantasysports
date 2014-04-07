@@ -70,8 +70,8 @@
       $scope.setUserInfo();
       $scope.showUserForm = false;
       $scope.showPasswordForm = false;
-    }, function() {
-      flash.error("Error saving user info");
+    }, function(data) {
+      flash.error(data.error);
     });
   };
 

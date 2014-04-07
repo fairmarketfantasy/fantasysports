@@ -99,3 +99,4 @@ gem 'knife-ec2'
 gem 'capistrano', '= 2.15.5', group: :development
 
 gem 'typhoeus'
+gem 'sendgrid'

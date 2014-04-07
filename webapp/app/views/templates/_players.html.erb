@@ -75,7 +75,7 @@
               <tr>
                 <th class="less-larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
                 <th class="tiny" ng-hide="getFilterOpts().position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
-                <th class="tiny">Ind. Pred.</th>
+                <th class="tiny">Ind. Pred.**</th>
                 <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
                 <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
                 <th class="tiny">
@@ -125,6 +125,7 @@
           </tbody>
         </table>
       </div>
+      <div class="home-prediction-info">**Click on the PT icon to submit your individual player predictions for the selected player</div>
     </div>
     <div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">
       <div class="roster-submit-center roster-submit">
@@ -134,7 +135,6 @@
         <!--<a ng-show="market.state == 'published' || market.state == 'opened'" class="btn btn-large btn-orange" href="javascript://" ng-click="enterAgain()">Enter Again</a>-->
       <!--</div>-->
     </div>
-
     <div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
       <div class="pull-right roster-submit">
         <span ng-show="show" class="roster-submit-hover submit-hth">Enter to win 27 FanBucks on head to head</span>

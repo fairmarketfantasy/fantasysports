@@ -32,12 +32,6 @@
         popover-trigger="mouseenter" popover="Your Fanbuck balance is the amount of awards you have received less 15 Fanbucks per prediction made" popover-placement="right">
       </div>
       <div class="account-state">
-        <div class="account-state-header">PresTige:</div>
-        {{currentUser.prestige }}
-        <!--<img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"-->
-             <!--popover-trigger="mouseenter" popover="The Awards Multiplier is the multiplier we use to increase your awards when you have a negative Fanbuck balance. We increase your awards by 5% times any negative Fanbuck balance you have." popover-placement="right">-->
-      </div>
-      <div class="account-state">
         <div class="account-state-header">Awards</div>
         {{currentUser.customer_object.monthly_award }}
         <img class="state-info" src="<%= asset_path "info-icon.png" %>" width="17px"
@@ -175,6 +169,7 @@
 <div class='modal-footer'>
   <a href="javascript://" ng-show="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" ng-click="close()">close</a>
   <a href="javascript://" ng-hide="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" ng-click="close_reload()">close</a>
+  <a class="user-logout txt-red-hover pull-left" style="margin-top:10px;" ng-hide="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" href="/users/sign_out">sign out</a>
 </div>
 <div class="subscription-backdrop" ng-hide="currentUser.customer_object.is_active && !agreeReload"></div>
 
