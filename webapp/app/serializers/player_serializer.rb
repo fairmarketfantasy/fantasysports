@@ -25,8 +25,9 @@ class PlayerSerializer < ActiveModel::Serializer
       :benched,
       :swapped_player_name
 
+  # TODO: fix for NFL when no stats_id
   def team
-    Team.find_by_identifier(object[:team]).name
+    Team.find(object[:team]).name
   end
 
   def headshot_url
