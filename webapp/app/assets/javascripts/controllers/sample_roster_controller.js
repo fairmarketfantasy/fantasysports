@@ -31,6 +31,7 @@ angular.module("app.controllers")
           }
 
           $scope.playerStats($scope.mostExpencive());
+          $scope.$emit('enableNavBar')
         });
     }
 
