@@ -32,9 +32,9 @@ class PlayersFetcherWorker
         player.positions.map(&:destroy)
         strategy = SportStrategy.for(@team.sport.name)
         if strategy.respond_to? :positions_mapper
-          players_position = strategy.positions_mapper[listing['position']]
+          players_position = strategy.positions_mapper[listing['position'].upcase]
         else
-          players_position = listing['position']
+          players_position = listing['position'].upcase
         end
         PlayerPosition.create! player_id: player.id, position: players_position
       end

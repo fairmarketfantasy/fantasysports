@@ -58,7 +58,7 @@ class Game < ActiveRecord::Base
   end
 
   def losing_team
-    [self.home_team, self.away_team].find{|team| team != winning_team }
+    [self.home_team, self.away_team].find { |team| team != winning_team }
   end
 
   def unbench_players
@@ -92,7 +92,10 @@ class Game < ActiveRecord::Base
       market_player.shadow_bets = 150.0 # temp val
       market_player.bets = 150.0 # temp val
       market_player.player_stats_id = player.stats_id
-      market_player.save!
+      begin
+        market_player.save!
+      rescue ActiveRecord::RecordNotUnique
+      end
     end
     self.markets << market
   end
