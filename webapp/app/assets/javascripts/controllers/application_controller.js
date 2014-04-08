@@ -1,12 +1,16 @@
 angular.module("app.controllers")
-.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'registrationService', 'rosters', '$location', 'flash', '$dialog', '$timeout', '$route', '$routeParams','markets',
-            function($scope, fs, currentUserService, registrationService, rosters, $location, flash, $dialog, $timeout, $route, $routeParams, marketService) {
+.controller('ApplicationController', ['$scope', 'fs', 'currentUserService', 'registrationService', 'rosters', '$location', 'flash', '$dialog', '$timeout', '$route', '$routeParams','markets','$timeout',
+            function($scope, fs, currentUserService, registrationService, rosters, $location, flash, $dialog, $timeout, $route, $routeParams, marketService, $timeout) {
 
   if(!currentUserService.currentUser){
     $location.path('/')
   }
 
   $scope.landingShow = true;
+  $scope.disable = false;
+  $scope.$on('enableNavBar', function() {
+    $scope.disable = false;
+  });
 
   $scope.sports = window.App.sports;
   $scope.fs = fs;
@@ -27,6 +31,7 @@ angular.module("app.controllers")
 
   // Watch the sport scope
   $scope.$watch(function() { return $route.current && $route.current.params.sport; }, function(newSport, oldSport) {
+    $scope.disable = true;
     if (!App.currentUser || !newSport) { return; }
     console.log(newSport);
     App.currentUser.currentSport = newSport;
