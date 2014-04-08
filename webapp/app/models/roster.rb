@@ -122,49 +122,66 @@ class Roster < ActiveRecord::Base
       raise HttpException.new(409, "Rosters must have less than $20k remaining salary!") if
         remaining_salary > 20000 && Rails.env != 'test' # Doing this in test will make everything way slow
     end
-      #purchase all the players and update roster state to submitted
+    #purchase all the players and update roster state to submitted
 
-      set_contest = contest
-      #enter contest
-      contest_type.with_lock do #prevents creation of contests of the same type at the same time
-        Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
-        reload
+    set_contest = contest
+    #enter contest
+    contest_type.with_lock do #prevents creation of contests of the same type at the same time
+      Roster.find_by_sql("SELECT * FROM submit_roster(#{self.id})")
+      reload
+      if set_contest.nil?
+        #enter roster into public contest
+        set_contest = Contest.where("contest_type_id = ?
+          AND (user_cap = 0 OR user_cap > 12
+              OR (num_rosters - num_generated < user_cap
+                  AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
+          AND NOT private", contest_type.id).order('id asc').first
         if set_contest.nil?
-          #enter roster into public contest
-          set_contest = Contest.where("contest_type_id = ?
-            AND (user_cap = 0 OR user_cap > 12
-                OR (num_rosters - num_generated < user_cap
-                    AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
-            AND NOT private", contest_type.id).order('id asc').first
-          if set_contest.nil?
-            if contest_type.limit.nil? || Contest.where(contest_type_id: contest_type.id).count < contest_type.limit
-              set_contest = Contest.create!(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
-                  market_id: self.market_id, contest_type_id: contest_type.id)
-            else
-              raise HttpException.new(403, "Contest is full")
-            end
-          end
-        else #contest not nil. enter private contest
-          if set_contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => set_contest.league_id).first.nil?
-            LeagueMembership.create!(:league_id => set_contest.league_id, :user_id => self.owner_id)
+          if contest_type.limit.nil? || Contest.where(contest_type_id: contest_type.id).count < contest_type.limit
+            set_contest = Contest.create!(owner_id: 0, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
+                market_id: self.market_id, contest_type_id: contest_type.id)
+          else
+            raise HttpException.new(403, "Contest is full")
           end
         end
-        set_contest.num_generated += 1 if self.is_generated?
-        set_contest.num_rosters += 1
-        set_contest.save!
-        if set_contest.num_rosters > set_contest.user_cap && set_contest.user_cap != 0
-          removed_roster = set_contest.rosters.where('is_generated = true AND NOT cancelled').first
-          raise HttpException.new(403, "Contest #{set_contest.id} is full") if removed_roster.nil?
-          removed_roster.cancel!("Removed for a real player")
-          set_contest.num_rosters -= 1
-          set_contest.num_generated -= 1
-          set_contest.save!
+      else #contest not nil. enter private contest
+        if set_contest.league_id && LeagueMembership.where(:user_id => self.owner_id, :league_id => set_contest.league_id).first.nil?
+          LeagueMembership.create!(:league_id => set_contest.league_id, :user_id => self.owner_id)
         end
-        self.contest = set_contest
-        self.save!
       end
+      set_contest.num_generated += 1 if self.is_generated?
+      set_contest.num_rosters += 1
+      set_contest.save!
+      if set_contest.num_rosters > set_contest.user_cap && set_contest.user_cap != 0
+        removed_roster = set_contest.rosters.where('is_generated = true AND NOT cancelled').first
+        raise HttpException.new(403, "Contest #{set_contest.id} is full") if removed_roster.nil?
+        removed_roster.cancel!("Removed for a real player")
+        set_contest.num_rosters -= 1
+        set_contest.num_generated -= 1
+        set_contest.save!
+      end
+      self.contest = set_contest
+      self.save!
+    end
 
     return self
+  end
+
+  def salary_percent
+    (self.remaining_salary/DEFAULT_REMAINING_SALARY * 100).round(1)
+  end
+
+  def salary_message
+    percent = self.salary_percent
+    if percent > 0
+      "Your salary is #{percent}% below the cap, your stats " +
+        "will be increased by the percent less than the cap up to a max of 3%."
+    elsif salary_percent < 0
+      "Your salary is #{percent}% above the cap, your stats " +
+        "will be decreased by the percent you are over the cap."
+    else
+      'Roster submitted successfully!'
+    end
   end
 
   def charge_account
