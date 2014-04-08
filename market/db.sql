@@ -9,14 +9,14 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -44,7 +44,7 @@ BEGIN
 
 	--if the roster is in progress, we can just add the player to the roster without locking on the market
 	IF _roster.state = 'in_progress' THEN
-		INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id)
+		INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id) 
 			values (_player_id, _roster_id, 0, _market_player.player_stats_id, _roster.market_id);
 		RETURN;
 	END IF;
@@ -58,7 +58,7 @@ BEGIN
 
 	-- TODO: test positional requirements here
 	-- Get price, test salary cap
-	SELECT * from markets WHERE id = _roster.market_id and state in ('published', 'opened')
+	SELECT * from markets WHERE id = _roster.market_id and state in ('published', 'opened') 
 		INTO _market FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % is unavailable', _roster.market_id;
@@ -73,7 +73,7 @@ BEGIN
 	SELECT price(_market_player.bets, _market.total_bets, _roster.buy_in, _market.price_multiplier) INTO _price;
 
 	--perform the updates.
-	INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id)
+	INSERT INTO rosters_players(player_id, roster_id, purchase_price, player_stats_id, market_id) 
 		values  (_player_id, _roster_id, _price, _market_player.player_stats_id, _market.id);
 	UPDATE markets SET total_bets = total_bets + _roster.buy_in WHERE id = _roster.market_id;
 	UPDATE market_players SET bets = bets + _roster.buy_in WHERE market_id = _roster.market_id and player_id = _player_id;
@@ -111,7 +111,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: markets; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: markets; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE markets (
@@ -156,7 +156,7 @@ BEGIN
 	select CURRENT_TIMESTAMP INTO _now;
 
 	select sum(bets) from market_players
-		WHERE market_id = _market_id and locked_at < _now and locked = false
+		WHERE market_id = _market_id and locked_at < _now and locked = false 
 		INTO _locked_bets;
 
 	update market_players set locked = true
@@ -164,12 +164,12 @@ BEGIN
 
 	IF _locked_bets > 0 THEN
 		--update the price multiplier
-		update markets set
-			total_bets = total_bets - _locked_bets,
+		update markets set 
+			total_bets = total_bets - _locked_bets, 
 			price_multiplier = price_multiplier * (total_bets - _locked_bets) / total_bets
 			WHERE id = _market_id returning * into _market;
 	END IF;
-
+	
 END;
 $$;
 
@@ -236,8 +236,8 @@ BEGIN
 	    END LOOP;
 
 	    --update the remaining salary for all rosters in the market
-	    UPDATE rosters set remaining_salary = 100000 -
-	    	(SELECT sum(purchase_price) FROM rosters_players WHERE roster_id = rosters.id)
+	    UPDATE rosters set remaining_salary = 100000 - 
+	    	(SELECT sum(purchase_price) FROM rosters_players WHERE roster_id = rosters.id) 
 	    	WHERE market_id = _market_id;
 
 	ELSE
@@ -302,8 +302,8 @@ BEGIN
 	END IF;
 
 	--just to be safe, re-set the total bets to shadow bets
-	UPDATE markets SET
-		total_bets = shadow_bets, initial_shadow_bets = shadow_bets, price_multiplier = 1
+	UPDATE markets SET 
+		total_bets = shadow_bets, initial_shadow_bets = shadow_bets, price_multiplier = 1 
 		WHERE id = _market_id;
 
 	--ensure that the market has at least 1 game that has not yet started
@@ -336,9 +336,9 @@ BEGIN
 			_market_id, p.id,
 			(((p.total_points + .01) / (p.total_games + .1)) / _total_ppg) * _market.shadow_bets,
 			min(g.game_time), p.stats_id
-		FROM
-			players p, games g, games_markets gm
-		WHERE
+		FROM 
+			players p, games g, games_markets gm 
+		WHERE 
 			gm.market_id = _market_id AND
 			g.stats_id = gm.game_stats_id AND
 			(p.team = g.home_team OR p.team = g.away_team)
@@ -349,9 +349,9 @@ BEGIN
 
 	--set market to published. reset closed_at time, in case the game time has moved since the market was created
 	UPDATE markets SET state = 'published', published_at = CURRENT_TIMESTAMP, price_multiplier = 1,
-	 	closed_at =
-	 		(select max(g.game_time) - INTERVAL '5m' from games g
- 			JOIN games_markets gm on g.stats_id = gm.game_stats_id
+	 	closed_at = 
+	 		(select max(g.game_time) - INTERVAL '5m' from games g 
+ 			JOIN games_markets gm on g.stats_id = gm.game_stats_id 
  			where gm.market_id = _market_id)
 		WHERE id = _market_id returning * into _market;
 
@@ -472,27 +472,27 @@ BEGIN
 	--remove players that are now locked (edge case)
 	WITH locked_out AS (
 		SELECT rp.id from rosters_players rp, market_players mp
-		WHERE
+		WHERE 
 			rp.roster_id = _roster_id AND
 			mp.market_id = _roster.market_id AND
 			mp.player_id = rp.player_id AND
 			mp.locked_at < CURRENT_TIMESTAMP)
-		DELETE FROM rosters_players using locked_out
+		DELETE FROM rosters_players using locked_out 
 		WHERE rosters_players.id = locked_out.id;
 
 	-- increment bets for all market players in roster by buy_in amount
-	UPDATE market_players SET bets = bets + _roster.buy_in
+	UPDATE market_players SET bets = bets + _roster.buy_in 
 		WHERE market_id = _roster.market_id AND player_id IN
-			(SELECT player_id from rosters_players where roster_id = _roster_id);
+			(SELECT player_id from rosters_players where roster_id = _roster_id); 
 
 	-- increment total_bets by buy_in times number of players bought
-	update markets set total_bets = total_bets +
+	update markets set total_bets = total_bets + 
 		_roster.buy_in * (select count(*) from rosters_players where roster_id  = _roster.id)
 		where id = _roster.market_id;
 
 	-- update rosters_players with current sell prices of players
-	WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id))
-		UPDATE rosters_players set purchase_price = prices.sell_price FROM prices
+	WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id)) 
+		UPDATE rosters_players set purchase_price = prices.sell_price FROM prices 
 		WHERE id = prices.roster_player_id;
 
 	-- insert into market_orders
@@ -501,9 +501,9 @@ BEGIN
 	   FROM rosters_players where roster_id = _roster_id;
 
 	--update roster's remaining salary and state
-	--update rosters set remaining_salary = 100000 -
-	--	GREATEST(0, (select sum(purchase_price) from rosters_players where roster_id = _roster.id)),
-	update rosters set state = 'submitted', updated_at = CURRENT_TIMESTAMP
+	update rosters set remaining_salary = 100000 - 
+		GREATEST(0, (select sum(purchase_price) from rosters_players where roster_id = _roster.id)),
+		state = 'submitted', updated_at = CURRENT_TIMESTAMP
 		where id = _roster_id;
 
 END;
@@ -520,19 +520,19 @@ CREATE FUNCTION tabulate_scores(_market_id integer) RETURNS void
     LANGUAGE sql
     AS $_$
 
-	UPDATE market_players set score =
-		(select Greatest(0, sum(point_value)) FROM stat_events
-			WHERE player_stats_id = market_players.player_stats_id and game_stats_id in
+	UPDATE market_players set score = 
+		(select Greatest(0, sum(point_value)) FROM stat_events 
+			WHERE player_stats_id = market_players.player_stats_id and game_stats_id in 
 				(select game_stats_id from games_markets where market_id = $1)
 		) where market_id = $1;
 
-	UPDATE rosters set score =
-		(select sum(score) from market_players where player_stats_id in
+	UPDATE rosters set score = 
+		(select sum(score) from market_players where player_stats_id in 
 			(select player_stats_id from rosters_players where roster_id = rosters.id)
 		) where market_id = $1;
 
-	WITH ranks as
-		(SELECT id, rank() OVER (PARTITION BY contest_id ORDER BY score DESC) FROM rosters WHERE market_id = $1)
+	WITH ranks as 
+		(SELECT id, rank() OVER (PARTITION BY contest_id ORDER BY score DESC) FROM rosters WHERE market_id = $1) 
 		UPDATE rosters set contest_rank = rank FROM ranks where rosters.id = ranks.id;
 
 $_$;
@@ -541,7 +541,7 @@ $_$;
 ALTER FUNCTION public.tabulate_scores(_market_id integer) OWNER TO fantasysports;
 
 --
--- Name: contest_types; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: contest_types; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE contest_types (
@@ -582,7 +582,7 @@ ALTER SEQUENCE contest_types_id_seq OWNED BY contest_types.id;
 
 
 --
--- Name: contests; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: contests; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE contests (
@@ -625,7 +625,7 @@ ALTER SEQUENCE contests_id_seq OWNED BY contests.id;
 
 
 --
--- Name: customer_objects; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: customer_objects; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE customer_objects (
@@ -664,7 +664,7 @@ ALTER SEQUENCE customer_objects_id_seq OWNED BY customer_objects.id;
 
 
 --
--- Name: game_events; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: game_events; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE game_events (
@@ -706,7 +706,7 @@ ALTER SEQUENCE game_events_id_seq OWNED BY game_events.id;
 
 
 --
--- Name: games; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: games; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE games (
@@ -750,7 +750,7 @@ ALTER SEQUENCE games_id_seq OWNED BY games.id;
 
 
 --
--- Name: games_markets; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: games_markets; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE games_markets (
@@ -784,7 +784,7 @@ ALTER SEQUENCE games_markets_id_seq OWNED BY games_markets.id;
 
 
 --
--- Name: market_orders; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: market_orders; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE market_orders (
@@ -825,7 +825,7 @@ ALTER SEQUENCE market_orders_id_seq OWNED BY market_orders.id;
 
 
 --
--- Name: market_players; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: market_players; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE market_players (
@@ -887,7 +887,7 @@ ALTER SEQUENCE markets_id_seq OWNED BY markets.id;
 
 
 --
--- Name: players; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: players; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE players (
@@ -935,7 +935,7 @@ ALTER SEQUENCE players_id_seq OWNED BY players.id;
 
 
 --
--- Name: recipients; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: recipients; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE recipients (
@@ -969,7 +969,7 @@ ALTER SEQUENCE recipients_id_seq OWNED BY recipients.id;
 
 
 --
--- Name: rosters; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: rosters; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE rosters (
@@ -1019,7 +1019,7 @@ ALTER SEQUENCE rosters_id_seq OWNED BY rosters.id;
 
 
 --
--- Name: rosters_players; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: rosters_players; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE rosters_players (
@@ -1056,7 +1056,7 @@ ALTER SEQUENCE rosters_players_id_seq OWNED BY rosters_players.id;
 
 
 --
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE schema_migrations (
@@ -1067,7 +1067,7 @@ CREATE TABLE schema_migrations (
 ALTER TABLE public.schema_migrations OWNER TO fantasysports;
 
 --
--- Name: sports; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: sports; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE sports (
@@ -1102,7 +1102,7 @@ ALTER SEQUENCE sports_id_seq OWNED BY sports.id;
 
 
 --
--- Name: stat_events; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: stat_events; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE stat_events (
@@ -1141,7 +1141,7 @@ ALTER SEQUENCE stat_events_id_seq OWNED BY stat_events.id;
 
 
 --
--- Name: teams; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: teams; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE teams (
@@ -1186,7 +1186,7 @@ ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
 
 
 --
--- Name: transaction_records; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: transaction_records; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE transaction_records (
@@ -1222,7 +1222,7 @@ ALTER SEQUENCE transaction_records_id_seq OWNED BY transaction_records.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: users; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE users (
@@ -1275,7 +1275,7 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: venues; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: venues; Type: TABLE; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE TABLE venues (
@@ -1512,70 +1512,70 @@ SELECT pg_catalog.setval('game_events_id_seq', 1, false);
 
 COPY games (id, stats_id, status, game_day, game_time, created_at, updated_at, home_team, away_team, season_type, season_week, season_year, network) FROM stdin;
 1	7049af11-be32-463a-b291-017601a041f0	closed	2013-08-04	2013-08-05 00:00:00	2013-09-14 23:47:54.62845	2013-09-14 23:47:54.628452	DAL	MIA	PRE	0	2013	NBC
-2	2158cc5b-8a73-4b57-b94e-11d4924653f6	closed	2013-08-08	2013-08-08 23:30:00	2013-09-14 23:47:54.634409	2013-09-14 23:47:54.634412	TB	BAL	PRE	1	2013
+2	2158cc5b-8a73-4b57-b94e-11d4924653f6	closed	2013-08-08	2013-08-08 23:30:00	2013-09-14 23:47:54.634409	2013-09-14 23:47:54.634412	TB	BAL	PRE	1	2013	
 3	48b1b6b3-9cd3-4ba9-994e-6e683c0835ab	closed	2013-08-08	2013-08-09 00:00:00	2013-09-14 23:47:54.638386	2013-09-14 23:47:54.638389	ATL	CIN	PRE	1	2013	ESPN
-4	947526b4-ef31-4f90-bf40-798b762b2d14	closed	2013-08-08	2013-08-09 00:00:00	2013-09-14 23:47:54.642403	2013-09-14 23:47:54.642406	TEN	WAS	PRE	1	2013
-5	f62832ca-ae40-4665-b656-8cc1d505fab4	closed	2013-08-08	2013-08-09 00:00:00	2013-09-14 23:47:54.646279	2013-09-14 23:47:54.646281	CLE	STL	PRE	1	2013
-6	77b8b88e-340a-41bf-a168-66ae8e7f1942	closed	2013-08-08	2013-08-09 01:00:00	2013-09-14 23:47:54.649535	2013-09-14 23:47:54.649537	SF	DEN	PRE	1	2013
+4	947526b4-ef31-4f90-bf40-798b762b2d14	closed	2013-08-08	2013-08-09 00:00:00	2013-09-14 23:47:54.642403	2013-09-14 23:47:54.642406	TEN	WAS	PRE	1	2013	
+5	f62832ca-ae40-4665-b656-8cc1d505fab4	closed	2013-08-08	2013-08-09 00:00:00	2013-09-14 23:47:54.646279	2013-09-14 23:47:54.646281	CLE	STL	PRE	1	2013	
+6	77b8b88e-340a-41bf-a168-66ae8e7f1942	closed	2013-08-08	2013-08-09 01:00:00	2013-09-14 23:47:54.649535	2013-09-14 23:47:54.649537	SF	DEN	PRE	1	2013	
 7	f74c5b3e-417e-46f3-a9ff-2ec9d54e2596	closed	2013-08-08	2013-08-09 02:00:00	2013-09-14 23:47:54.653136	2013-09-14 23:47:54.653139	SD	SEA	PRE	1	2013	NFL
-8	35568bb9-513b-4d8d-b863-0275683fbf9d	closed	2013-08-09	2013-08-09 23:30:00	2013-09-14 23:47:54.656991	2013-09-14 23:47:54.656994	JAC	MIA	PRE	1	2013
-9	1137b780-b2a8-41b9-8748-ac2fc51c2af4	closed	2013-08-09	2013-08-09 23:30:00	2013-09-14 23:47:54.660595	2013-09-14 23:47:54.660598	DET	NYJ	PRE	1	2013
+8	35568bb9-513b-4d8d-b863-0275683fbf9d	closed	2013-08-09	2013-08-09 23:30:00	2013-09-14 23:47:54.656991	2013-09-14 23:47:54.656994	JAC	MIA	PRE	1	2013	
+9	1137b780-b2a8-41b9-8748-ac2fc51c2af4	closed	2013-08-09	2013-08-09 23:30:00	2013-09-14 23:47:54.660595	2013-09-14 23:47:54.660598	DET	NYJ	PRE	1	2013	
 10	ec2c4504-0722-4e81-8680-6eaae821deaf	closed	2013-08-09	2013-08-09 23:30:00	2013-09-14 23:47:54.663981	2013-09-14 23:47:54.663983	PHI	NE	PRE	1	2013	NFL
-11	f6703798-2d38-423b-b4ea-ea7a786f994f	closed	2013-08-09	2013-08-10 00:00:00	2013-09-14 23:47:54.667037	2013-09-14 23:47:54.667039	GB	ARI	PRE	1	2013
-12	69632ae5-db8b-40e7-a858-a8cadbdec767	closed	2013-08-09	2013-08-10 00:00:00	2013-09-14 23:47:54.670302	2013-09-14 23:47:54.670305	CAR	CHI	PRE	1	2013
-13	87faa628-2d0c-4cf5-9271-500715bf79f8	closed	2013-08-09	2013-08-10 00:00:00	2013-09-14 23:47:54.673983	2013-09-14 23:47:54.673985	NO	KC	PRE	1	2013
-14	e1fdd7c9-02c2-4b25-8c83-6325970768d8	closed	2013-08-09	2013-08-10 00:00:00	2013-09-14 23:47:54.677439	2013-09-14 23:47:54.677443	MIN	HOU	PRE	1	2013
+11	f6703798-2d38-423b-b4ea-ea7a786f994f	closed	2013-08-09	2013-08-10 00:00:00	2013-09-14 23:47:54.667037	2013-09-14 23:47:54.667039	GB	ARI	PRE	1	2013	
+12	69632ae5-db8b-40e7-a858-a8cadbdec767	closed	2013-08-09	2013-08-10 00:00:00	2013-09-14 23:47:54.670302	2013-09-14 23:47:54.670305	CAR	CHI	PRE	1	2013	
+13	87faa628-2d0c-4cf5-9271-500715bf79f8	closed	2013-08-09	2013-08-10 00:00:00	2013-09-14 23:47:54.673983	2013-09-14 23:47:54.673985	NO	KC	PRE	1	2013	
+14	e1fdd7c9-02c2-4b25-8c83-6325970768d8	closed	2013-08-09	2013-08-10 00:00:00	2013-09-14 23:47:54.677439	2013-09-14 23:47:54.677443	MIN	HOU	PRE	1	2013	
 15	0a5ad96c-53f9-477e-95f0-cd456176b00a	closed	2013-08-09	2013-08-10 02:00:00	2013-09-14 23:47:54.680667	2013-09-14 23:47:54.680669	OAK	DAL	PRE	1	2013	NFL
-16	e24fff4c-a509-4fb5-80bc-bc95aa9ab09a	closed	2013-08-10	2013-08-10 23:30:00	2013-09-14 23:47:54.683718	2013-09-14 23:47:54.683721	PIT	NYG	PRE	1	2013
-17	ccab4c86-922c-4dd2-9edd-ed6b6bf29239	closed	2013-08-11	2013-08-11 17:30:00	2013-09-14 23:47:54.686805	2013-09-14 23:47:54.686806	IND	BUF	PRE	1	2013
-18	03af509b-cf23-4131-a930-e2128a7c4ca2	closed	2013-08-15	2013-08-15 23:30:00	2013-09-14 23:47:54.689398	2013-09-14 23:47:54.689401	BAL	ATL	PRE	2	2013
-19	bfebb3e2-44fc-42d2-8791-024e9ecacbcc	closed	2013-08-15	2013-08-15 23:30:00	2013-09-14 23:47:54.695402	2013-09-14 23:47:54.695404	PHI	CAR	PRE	2	2013
-20	612a7635-75d2-49c4-ba49-39dd48931f7f	closed	2013-08-15	2013-08-15 23:30:00	2013-09-14 23:47:54.698875	2013-09-14 23:47:54.698877	CLE	DET	PRE	2	2013
+16	e24fff4c-a509-4fb5-80bc-bc95aa9ab09a	closed	2013-08-10	2013-08-10 23:30:00	2013-09-14 23:47:54.683718	2013-09-14 23:47:54.683721	PIT	NYG	PRE	1	2013	
+17	ccab4c86-922c-4dd2-9edd-ed6b6bf29239	closed	2013-08-11	2013-08-11 17:30:00	2013-09-14 23:47:54.686805	2013-09-14 23:47:54.686806	IND	BUF	PRE	1	2013	
+18	03af509b-cf23-4131-a930-e2128a7c4ca2	closed	2013-08-15	2013-08-15 23:30:00	2013-09-14 23:47:54.689398	2013-09-14 23:47:54.689401	BAL	ATL	PRE	2	2013	
+19	bfebb3e2-44fc-42d2-8791-024e9ecacbcc	closed	2013-08-15	2013-08-15 23:30:00	2013-09-14 23:47:54.695402	2013-09-14 23:47:54.695404	PHI	CAR	PRE	2	2013	
+20	612a7635-75d2-49c4-ba49-39dd48931f7f	closed	2013-08-15	2013-08-15 23:30:00	2013-09-14 23:47:54.698875	2013-09-14 23:47:54.698877	CLE	DET	PRE	2	2013	
 21	bb702d78-7f58-4599-a40a-c396dccfdd6b	closed	2013-08-15	2013-08-16 00:00:00	2013-09-14 23:47:54.701732	2013-09-14 23:47:54.701734	CHI	SD	PRE	2	2013	ESPN
-22	16c73abc-acca-41ac-bf05-56ddff423e03	closed	2013-08-16	2013-08-16 23:00:00	2013-09-14 23:47:54.705038	2013-09-14 23:47:54.70504	BUF	MIN	PRE	2	2013
-23	e88cf3c6-43c5-4837-984f-bb9a1138ed92	closed	2013-08-16	2013-08-17 00:00:00	2013-09-14 23:47:54.708362	2013-09-14 23:47:54.708364	NO	OAK	PRE	2	2013
+22	16c73abc-acca-41ac-bf05-56ddff423e03	closed	2013-08-16	2013-08-16 23:00:00	2013-09-14 23:47:54.705038	2013-09-14 23:47:54.70504	BUF	MIN	PRE	2	2013	
+23	e88cf3c6-43c5-4837-984f-bb9a1138ed92	closed	2013-08-16	2013-08-17 00:00:00	2013-09-14 23:47:54.708362	2013-09-14 23:47:54.708364	NO	OAK	PRE	2	2013	
 24	378a3ecf-fb9a-4d7c-87a5-c3abd75c996a	closed	2013-08-16	2013-08-17 00:00:00	2013-09-14 23:47:54.711262	2013-09-14 23:47:54.711264	NE	TB	PRE	2	2013	FOX
-25	afe21447-7588-48a7-b5f8-f7bfbe161133	closed	2013-08-16	2013-08-17 00:00:00	2013-09-14 23:47:54.714023	2013-09-14 23:47:54.714026	KC	SF	PRE	2	2013
+25	afe21447-7588-48a7-b5f8-f7bfbe161133	closed	2013-08-16	2013-08-17 00:00:00	2013-09-14 23:47:54.714023	2013-09-14 23:47:54.714026	KC	SF	PRE	2	2013	
 26	76da5490-a99d-49c8-a3b7-d21ed86622f5	closed	2013-08-17	2013-08-17 20:30:00	2013-09-14 23:47:54.717201	2013-09-14 23:47:54.717204	ARI	DAL	PRE	2	2013	NFL
-27	3f83ccab-a11c-419d-bb9d-caa9bec2066c	closed	2013-08-17	2013-08-17 23:00:00	2013-09-14 23:47:54.720365	2013-09-14 23:47:54.720369	CIN	TEN	PRE	2	2013
+27	3f83ccab-a11c-419d-bb9d-caa9bec2066c	closed	2013-08-17	2013-08-17 23:00:00	2013-09-14 23:47:54.720365	2013-09-14 23:47:54.720369	CIN	TEN	PRE	2	2013	
 28	c4b01fc6-cf01-4a37-9ad5-243624426ace	closed	2013-08-17	2013-08-17 23:30:00	2013-09-14 23:47:54.723899	2013-09-14 23:47:54.723901	NYJ	JAC	PRE	2	2013	NFL
-29	9379c390-daa9-4533-acfd-25f0a27cfebb	closed	2013-08-17	2013-08-18 00:00:00	2013-09-14 23:47:54.727062	2013-09-14 23:47:54.727064	HOU	MIA	PRE	2	2013
-30	25995327-329d-4cca-8b5d-36e8fb4ff870	closed	2013-08-17	2013-08-18 00:00:00	2013-09-14 23:47:54.730275	2013-09-14 23:47:54.730277	STL	GB	PRE	2	2013
+29	9379c390-daa9-4533-acfd-25f0a27cfebb	closed	2013-08-17	2013-08-18 00:00:00	2013-09-14 23:47:54.727062	2013-09-14 23:47:54.727064	HOU	MIA	PRE	2	2013	
+30	25995327-329d-4cca-8b5d-36e8fb4ff870	closed	2013-08-17	2013-08-18 00:00:00	2013-09-14 23:47:54.730275	2013-09-14 23:47:54.730277	STL	GB	PRE	2	2013	
 31	ced27f3b-3a28-44dd-a617-9c6366dc0ef2	closed	2013-08-17	2013-08-18 02:00:00	2013-09-14 23:47:54.733394	2013-09-14 23:47:54.733396	SEA	DEN	PRE	2	2013	NFL
 32	c5c86073-c8c1-4ea8-b6d0-182e0518e447	closed	2013-08-18	2013-08-18 23:00:00	2013-09-14 23:47:54.736504	2013-09-14 23:47:54.736507	NYG	IND	PRE	2	2013	FOX
 33	10c6bb82-53fc-4bc8-bc89-166adeeee26b	closed	2013-08-19	2013-08-20 00:00:00	2013-09-14 23:47:54.739815	2013-09-14 23:47:54.739817	WAS	PIT	PRE	2	2013	ESPN
-34	2b5e3daf-719f-4ded-87ee-097b0f99f86d	closed	2013-08-22	2013-08-22 23:30:00	2013-09-14 23:47:54.743024	2013-09-14 23:47:54.743026	DET	NE	PRE	3	2013
+34	2b5e3daf-719f-4ded-87ee-097b0f99f86d	closed	2013-08-22	2013-08-22 23:30:00	2013-09-14 23:47:54.743024	2013-09-14 23:47:54.743026	DET	NE	PRE	3	2013	
 35	57df450a-5125-483b-953d-b2e71b1859dc	closed	2013-08-22	2013-08-23 00:00:00	2013-09-14 23:47:54.746167	2013-09-14 23:47:54.74617	BAL	CAR	PRE	3	2013	ESPN
 36	5123bb8a-d2af-420d-9156-6b2735d44850	closed	2013-08-23	2013-08-24 00:00:00	2013-09-14 23:47:54.749266	2013-09-14 23:47:54.749269	GB	SEA	PRE	3	2013	CBS
 37	011419f4-1a16-45f1-b308-105f7b673090	closed	2013-08-23	2013-08-24 02:00:00	2013-09-14 23:47:54.752483	2013-09-14 23:47:54.752486	OAK	CHI	PRE	3	2013	NFL
 38	8f8f93f2-46af-4142-ac13-7dc534fb5891	closed	2013-08-24	2013-08-24 20:30:00	2013-09-14 23:47:54.755559	2013-09-14 23:47:54.755561	WAS	BUF	PRE	3	2013	NFL
-39	28be6c50-b1f4-4ce6-9860-86901a3d3d9d	closed	2013-08-24	2013-08-24 23:00:00	2013-09-14 23:47:54.758616	2013-09-14 23:47:54.758618	IND	CLE	PRE	3	2013
-40	cd5be605-b6f3-43f5-83f2-cbd48895a0fc	closed	2013-08-24	2013-08-24 23:00:00	2013-09-14 23:47:54.762068	2013-09-14 23:47:54.762072	NYG	NYJ	PRE	3	2013
-41	349984d3-a858-4756-ad63-f77dd97c81ea	closed	2013-08-24	2013-08-24 23:30:00	2013-09-14 23:47:54.765022	2013-09-14 23:47:54.765026	PIT	KC	PRE	3	2013
-42	c50c4944-f00b-4207-b7e9-fe2fcd89da26	closed	2013-08-24	2013-08-24 23:30:00	2013-09-14 23:47:54.76842	2013-09-14 23:47:54.768424	JAC	PHI	PRE	3	2013
-43	21c73b6a-bb6e-43e5-a58a-8ccdb50c5d2d	closed	2013-08-24	2013-08-24 23:30:00	2013-09-14 23:47:54.771479	2013-09-14 23:47:54.771481	MIA	TB	PRE	3	2013
+39	28be6c50-b1f4-4ce6-9860-86901a3d3d9d	closed	2013-08-24	2013-08-24 23:00:00	2013-09-14 23:47:54.758616	2013-09-14 23:47:54.758618	IND	CLE	PRE	3	2013	
+40	cd5be605-b6f3-43f5-83f2-cbd48895a0fc	closed	2013-08-24	2013-08-24 23:00:00	2013-09-14 23:47:54.762068	2013-09-14 23:47:54.762072	NYG	NYJ	PRE	3	2013	
+41	349984d3-a858-4756-ad63-f77dd97c81ea	closed	2013-08-24	2013-08-24 23:30:00	2013-09-14 23:47:54.765022	2013-09-14 23:47:54.765026	PIT	KC	PRE	3	2013	
+42	c50c4944-f00b-4207-b7e9-fe2fcd89da26	closed	2013-08-24	2013-08-24 23:30:00	2013-09-14 23:47:54.76842	2013-09-14 23:47:54.768424	JAC	PHI	PRE	3	2013	
+43	21c73b6a-bb6e-43e5-a58a-8ccdb50c5d2d	closed	2013-08-24	2013-08-24 23:30:00	2013-09-14 23:47:54.771479	2013-09-14 23:47:54.771481	MIA	TB	PRE	3	2013	
 44	a2eea7a6-4779-402d-9968-897b616131df	closed	2013-08-24	2013-08-25 00:00:00	2013-09-14 23:47:54.774247	2013-09-14 23:47:54.774249	DEN	STL	PRE	3	2013	CBS
-45	98e0bf4a-dad8-4817-8ece-05f1d5f943c0	closed	2013-08-24	2013-08-25 00:00:00	2013-09-14 23:47:54.777174	2013-09-14 23:47:54.777177	DAL	CIN	PRE	3	2013
-46	dd92b86d-813c-4fd3-8286-680614001cfe	closed	2013-08-24	2013-08-25 00:00:00	2013-09-14 23:47:54.780271	2013-09-14 23:47:54.780275	TEN	ATL	PRE	3	2013
+45	98e0bf4a-dad8-4817-8ece-05f1d5f943c0	closed	2013-08-24	2013-08-25 00:00:00	2013-09-14 23:47:54.777174	2013-09-14 23:47:54.777177	DAL	CIN	PRE	3	2013	
+46	dd92b86d-813c-4fd3-8286-680614001cfe	closed	2013-08-24	2013-08-25 00:00:00	2013-09-14 23:47:54.780271	2013-09-14 23:47:54.780275	TEN	ATL	PRE	3	2013	
 47	5386936c-0fb7-4484-8f2e-d2e4394dadcf	closed	2013-08-24	2013-08-25 02:00:00	2013-09-14 23:47:54.783449	2013-09-14 23:47:54.783452	ARI	SD	PRE	3	2013	NFL
 48	e10d2ccf-f68e-4df8-af5e-1382c4031644	closed	2013-08-25	2013-08-25 20:00:00	2013-09-14 23:47:54.786856	2013-09-14 23:47:54.786859	HOU	NO	PRE	3	2013	FOX
 49	31b47f4a-7a5e-4251-af88-f77a9f5bf0bc	closed	2013-08-25	2013-08-26 00:00:00	2013-09-14 23:47:54.790101	2013-09-14 23:47:54.790104	SF	MIN	PRE	3	2013	NBC
-50	048f8eb7-e72e-4ac0-8943-6eada5e4d632	closed	2013-08-29	2013-08-29 23:00:00	2013-09-14 23:47:54.793051	2013-09-14 23:47:54.793053	CIN	IND	PRE	4	2013
-51	eda4612d-d965-4d82-a1a1-c4a610d60374	closed	2013-08-29	2013-08-29 23:00:00	2013-09-14 23:47:54.796136	2013-09-14 23:47:54.796139	BUF	DET	PRE	4	2013
-52	c5bb17cb-bbd9-4b05-b203-dfb871562633	closed	2013-08-29	2013-08-29 23:00:00	2013-09-14 23:47:54.799025	2013-09-14 23:47:54.799028	NYJ	PHI	PRE	4	2013
-53	a18db579-188c-4d9e-aadd-f52a3cc39794	closed	2013-08-29	2013-08-29 23:30:00	2013-09-14 23:47:54.802087	2013-09-14 23:47:54.80209	MIA	NO	PRE	4	2013
+50	048f8eb7-e72e-4ac0-8943-6eada5e4d632	closed	2013-08-29	2013-08-29 23:00:00	2013-09-14 23:47:54.793051	2013-09-14 23:47:54.793053	CIN	IND	PRE	4	2013	
+51	eda4612d-d965-4d82-a1a1-c4a610d60374	closed	2013-08-29	2013-08-29 23:00:00	2013-09-14 23:47:54.796136	2013-09-14 23:47:54.796139	BUF	DET	PRE	4	2013	
+52	c5bb17cb-bbd9-4b05-b203-dfb871562633	closed	2013-08-29	2013-08-29 23:00:00	2013-09-14 23:47:54.799025	2013-09-14 23:47:54.799028	NYJ	PHI	PRE	4	2013	
+53	a18db579-188c-4d9e-aadd-f52a3cc39794	closed	2013-08-29	2013-08-29 23:30:00	2013-09-14 23:47:54.802087	2013-09-14 23:47:54.80209	MIA	NO	PRE	4	2013	
 54	9efef726-f9e2-44fb-bfd8-5be420f0865e	closed	2013-08-29	2013-08-29 23:30:00	2013-09-14 23:47:54.805277	2013-09-14 23:47:54.805279	NE	NYG	PRE	4	2013	NFL
-55	186c59c5-769f-4987-9262-56078cc0c206	closed	2013-08-29	2013-08-29 23:30:00	2013-09-14 23:47:54.808792	2013-09-14 23:47:54.808794	CAR	PIT	PRE	4	2013
-56	178bd8e4-ba66-4fee-a364-70a34798a7b3	closed	2013-08-29	2013-08-29 23:30:00	2013-09-14 23:47:54.812239	2013-09-14 23:47:54.812243	TB	WAS	PRE	4	2013
-57	b9f0be14-c9c9-40c4-8b2c-c5838a4372c8	closed	2013-08-29	2013-08-29 23:30:00	2013-09-14 23:47:54.815356	2013-09-14 23:47:54.815358	ATL	JAC	PRE	4	2013
-58	2b32188f-56d9-478c-aae2-25400c25e5ed	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.818379	2013-09-14 23:47:54.818381	MIN	TEN	PRE	4	2013
-59	76f0307e-b990-4fb6-88d5-e3b9a0391a2c	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.821537	2013-09-14 23:47:54.821539	CHI	CLE	PRE	4	2013
-60	c4272052-ad4d-4ce1-be07-150f77ffcabe	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.824663	2013-09-14 23:47:54.824666	DAL	HOU	PRE	4	2013
-61	dd203bfb-f799-4066-8dba-eb3ab2c093bf	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.830227	2013-09-14 23:47:54.83023	STL	BAL	PRE	4	2013
-62	83072ef1-438b-44d1-b4e7-9b58cf15fb38	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.833629	2013-09-14 23:47:54.833631	KC	GB	PRE	4	2013
-63	c8323919-77ca-4609-af6a-79e2b69b96fa	closed	2013-08-29	2013-08-30 01:00:00	2013-09-14 23:47:54.836727	2013-09-14 23:47:54.836729	DEN	ARI	PRE	4	2013
+55	186c59c5-769f-4987-9262-56078cc0c206	closed	2013-08-29	2013-08-29 23:30:00	2013-09-14 23:47:54.808792	2013-09-14 23:47:54.808794	CAR	PIT	PRE	4	2013	
+56	178bd8e4-ba66-4fee-a364-70a34798a7b3	closed	2013-08-29	2013-08-29 23:30:00	2013-09-14 23:47:54.812239	2013-09-14 23:47:54.812243	TB	WAS	PRE	4	2013	
+57	b9f0be14-c9c9-40c4-8b2c-c5838a4372c8	closed	2013-08-29	2013-08-29 23:30:00	2013-09-14 23:47:54.815356	2013-09-14 23:47:54.815358	ATL	JAC	PRE	4	2013	
+58	2b32188f-56d9-478c-aae2-25400c25e5ed	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.818379	2013-09-14 23:47:54.818381	MIN	TEN	PRE	4	2013	
+59	76f0307e-b990-4fb6-88d5-e3b9a0391a2c	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.821537	2013-09-14 23:47:54.821539	CHI	CLE	PRE	4	2013	
+60	c4272052-ad4d-4ce1-be07-150f77ffcabe	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.824663	2013-09-14 23:47:54.824666	DAL	HOU	PRE	4	2013	
+61	dd203bfb-f799-4066-8dba-eb3ab2c093bf	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.830227	2013-09-14 23:47:54.83023	STL	BAL	PRE	4	2013	
+62	83072ef1-438b-44d1-b4e7-9b58cf15fb38	closed	2013-08-29	2013-08-30 00:00:00	2013-09-14 23:47:54.833629	2013-09-14 23:47:54.833631	KC	GB	PRE	4	2013	
+63	c8323919-77ca-4609-af6a-79e2b69b96fa	closed	2013-08-29	2013-08-30 01:00:00	2013-09-14 23:47:54.836727	2013-09-14 23:47:54.836729	DEN	ARI	PRE	4	2013	
 64	abbda9df-5e9f-4400-80da-5a3e4b611cec	closed	2013-08-29	2013-08-30 02:00:00	2013-09-14 23:47:54.839573	2013-09-14 23:47:54.839575	SD	SF	PRE	4	2013	NFL
-65	7dfa72f9-f587-4ec3-bff0-0fba0195a271	closed	2013-08-29	2013-08-30 02:00:00	2013-09-14 23:47:54.842497	2013-09-14 23:47:54.842499	SEA	OAK	PRE	4	2013
+65	7dfa72f9-f587-4ec3-bff0-0fba0195a271	closed	2013-08-29	2013-08-30 02:00:00	2013-09-14 23:47:54.842497	2013-09-14 23:47:54.842499	SEA	OAK	PRE	4	2013	
 66	880d99e7-8c18-4a1a-882c-e0d96e8ecf15	closed	2013-09-05	2013-09-06 00:30:00	2013-09-14 23:47:56.087975	2013-09-14 23:47:56.087976	DEN	BAL	REG	1	2013	NBC
 67	e036a429-1be6-4547-a99d-26602db584f9	closed	2013-09-08	2013-09-08 17:00:00	2013-09-14 23:47:56.091447	2013-09-14 23:47:56.09145	NO	ATL	REG	1	2013	FOX
 68	77c4d7dc-6196-4d58-864d-5e70e06e9070	closed	2013-09-08	2013-09-08 17:00:00	2013-09-14 23:47:56.094744	2013-09-14 23:47:56.094747	PIT	TEN	REG	1	2013	CBS
@@ -3935,7 +3935,7 @@ SELECT pg_catalog.setval('venues_id_seq', 1, false);
 
 
 --
--- Name: contest_rosters_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: contest_rosters_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY rosters
@@ -3943,7 +3943,7 @@ ALTER TABLE ONLY rosters
 
 
 --
--- Name: contest_rosters_players_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: contest_rosters_players_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY rosters_players
@@ -3951,7 +3951,7 @@ ALTER TABLE ONLY rosters_players
 
 
 --
--- Name: contest_types_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: contest_types_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY contest_types
@@ -3959,7 +3959,7 @@ ALTER TABLE ONLY contest_types
 
 
 --
--- Name: contests_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: contests_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY contests
@@ -3967,7 +3967,7 @@ ALTER TABLE ONLY contests
 
 
 --
--- Name: customer_objects_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: customer_objects_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY customer_objects
@@ -3975,7 +3975,7 @@ ALTER TABLE ONLY customer_objects
 
 
 --
--- Name: game_events_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: game_events_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY game_events
@@ -3983,7 +3983,7 @@ ALTER TABLE ONLY game_events
 
 
 --
--- Name: games_markets_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: games_markets_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY games_markets
@@ -3991,7 +3991,7 @@ ALTER TABLE ONLY games_markets
 
 
 --
--- Name: games_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: games_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY games
@@ -3999,7 +3999,7 @@ ALTER TABLE ONLY games
 
 
 --
--- Name: market_orders_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: market_orders_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY market_orders
@@ -4007,7 +4007,7 @@ ALTER TABLE ONLY market_orders
 
 
 --
--- Name: market_players_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: market_players_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY market_players
@@ -4015,7 +4015,7 @@ ALTER TABLE ONLY market_players
 
 
 --
--- Name: markets_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: markets_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY markets
@@ -4023,7 +4023,7 @@ ALTER TABLE ONLY markets
 
 
 --
--- Name: players_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: players_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY players
@@ -4031,7 +4031,7 @@ ALTER TABLE ONLY players
 
 
 --
--- Name: recipients_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: recipients_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY recipients
@@ -4039,7 +4039,7 @@ ALTER TABLE ONLY recipients
 
 
 --
--- Name: sports_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: sports_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY sports
@@ -4047,7 +4047,7 @@ ALTER TABLE ONLY sports
 
 
 --
--- Name: stat_events_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: stat_events_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY stat_events
@@ -4055,7 +4055,7 @@ ALTER TABLE ONLY stat_events
 
 
 --
--- Name: teams_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: teams_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY teams
@@ -4063,7 +4063,7 @@ ALTER TABLE ONLY teams
 
 
 --
--- Name: transaction_records_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: transaction_records_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY transaction_records
@@ -4071,7 +4071,7 @@ ALTER TABLE ONLY transaction_records
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY users
@@ -4079,7 +4079,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: venues_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: venues_pkey; Type: CONSTRAINT; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 ALTER TABLE ONLY venues
@@ -4087,203 +4087,203 @@ ALTER TABLE ONLY venues
 
 
 --
--- Name: contest_rosters_players_index; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: contest_rosters_players_index; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX contest_rosters_players_index ON rosters_players USING btree (player_id, roster_id);
 
 
 --
--- Name: index_contest_types_on_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_contest_types_on_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_contest_types_on_market_id ON contest_types USING btree (market_id);
 
 
 --
--- Name: index_contests_on_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_contests_on_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_contests_on_market_id ON contests USING btree (market_id);
 
 
 --
--- Name: index_game_events_on_game_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_game_events_on_game_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_game_events_on_game_stats_id ON game_events USING btree (game_stats_id);
 
 
 --
--- Name: index_game_events_on_game_stats_id_and_sequence_number; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_game_events_on_game_stats_id_and_sequence_number; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_game_events_on_game_stats_id_and_sequence_number ON game_events USING btree (game_stats_id, sequence_number);
 
 
 --
--- Name: index_game_events_on_sequence_number; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_game_events_on_sequence_number; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_game_events_on_sequence_number ON game_events USING btree (sequence_number);
 
 
 --
--- Name: index_games_markets_on_market_id_and_game_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_games_markets_on_market_id_and_game_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_games_markets_on_market_id_and_game_stats_id ON games_markets USING btree (market_id, game_stats_id);
 
 
 --
--- Name: index_games_on_game_day; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_games_on_game_day; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_games_on_game_day ON games USING btree (game_day);
 
 
 --
--- Name: index_games_on_game_time; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_games_on_game_time; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_games_on_game_time ON games USING btree (game_time);
 
 
 --
--- Name: index_games_on_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_games_on_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_games_on_stats_id ON games USING btree (stats_id);
 
 
 --
--- Name: index_market_players_on_player_id_and_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_market_players_on_player_id_and_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_market_players_on_player_id_and_market_id ON market_players USING btree (player_id, market_id);
 
 
 --
--- Name: index_players_on_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_players_on_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_players_on_stats_id ON players USING btree (stats_id);
 
 
 --
--- Name: index_players_on_team; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_players_on_team; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_players_on_team ON players USING btree (team);
 
 
 --
--- Name: index_rosters_on_contest_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_rosters_on_contest_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_rosters_on_contest_id ON rosters USING btree (contest_id);
 
 
 --
--- Name: index_rosters_on_contest_type_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_rosters_on_contest_type_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_rosters_on_contest_type_id ON rosters USING btree (contest_type_id);
 
 
 --
--- Name: index_rosters_on_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_rosters_on_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_rosters_on_market_id ON rosters USING btree (market_id);
 
 
 --
--- Name: index_rosters_on_submitted_at; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_rosters_on_submitted_at; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_rosters_on_submitted_at ON rosters USING btree (submitted_at);
 
 
 --
--- Name: index_rosters_players_on_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_rosters_players_on_market_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_rosters_players_on_market_id ON rosters_players USING btree (market_id);
 
 
 --
--- Name: index_sports_on_name; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_sports_on_name; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_sports_on_name ON sports USING btree (name);
 
 
 --
--- Name: index_stat_events_on_game_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_stat_events_on_game_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_stat_events_on_game_stats_id ON stat_events USING btree (game_stats_id);
 
 
 --
--- Name: index_teams_on_abbrev; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_teams_on_abbrev; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_teams_on_abbrev ON teams USING btree (abbrev);
 
 
 --
--- Name: index_teams_on_abbrev_and_sport_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_teams_on_abbrev_and_sport_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_teams_on_abbrev_and_sport_id ON teams USING btree (abbrev, sport_id);
 
 
 --
--- Name: index_transaction_records_on_roster_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_transaction_records_on_roster_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_transaction_records_on_roster_id ON transaction_records USING btree (roster_id);
 
 
 --
--- Name: index_transaction_records_on_user_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_transaction_records_on_user_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_transaction_records_on_user_id ON transaction_records USING btree (user_id);
 
 
 --
--- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_users_on_confirmation_token ON users USING btree (confirmation_token);
 
 
 --
--- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
 
 
 --
--- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
 
 
 --
--- Name: index_venues_on_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: index_venues_on_stats_id; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE INDEX index_venues_on_stats_id ON venues USING btree (stats_id);
 
 
 --
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace:
+-- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: fantasysports; Tablespace: 
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
