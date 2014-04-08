@@ -10,8 +10,8 @@ class TeamScheduleFetcherWorker
     data['listings'].each do |listing|
       game = Game.find(listing['game_id']) rescue Game.new
       game.stats_id = listing['game_id'].to_s
-      game.home_team = Team.find_by_sport_id_and_market(872,listing['home_team']).stats_id
-      game.away_team = Team.find_by_sport_id_and_market(872,listing['away_team']).stats_id
+      game.home_team = Team.find_by_sport_id_and_market(@team.sport_id,listing['home_team']).stats_id
+      game.away_team = Team.find_by_sport_id_and_market(@team.sport_id,listing['away_team']).stats_id
       game.game_day = Date.strptime listing['gamedate'], '%m/%d/%Y'
       game.game_time = Time.zone.parse(game.game_day.to_s + ' ' + listing['gametime'])
       game.status = listing['status'].present? ? listing['status'] : 'scheduled'
