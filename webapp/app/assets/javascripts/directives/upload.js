@@ -1,5 +1,5 @@
 angular.module('app.directives')
-    .directive('uploadSubmit', ['$parse', function($parse) {
+    .directive('uploadSubmit', ['$parse', 'flash', function($parse, flash) {
         // Utility function to get the closest parent element with a given tag
         function getParentNodeByTagName(element, tagName) {
             element = angular.element(element);
@@ -62,7 +62,7 @@ angular.module('app.directives')
 
                     // attach function to load event of the iframe
                     iframe.bind('load', function () {
-                        // get content using native DOM. use of jQuery to retrieve content triggers IE bug 
+                        // get content using native DOM. use of jQuery to retrieve content triggers IE bug
                         // http://bugs.jquery.com/ticket/13936
                         var nativeIframe = iframe[0];
                         var iFrameDoc = nativeIframe.contentDocument || nativeIframe.contentWindow.document;
@@ -70,6 +70,9 @@ angular.module('app.directives')
                         try {
                             content = JSON.parse(content);
                         } catch (e) {
+                            if (content.indexOf('allowed types: jpg, jpeg, png') != -1) {
+                              flash.error('Allowed types to upload: jpg, jpeg, png');
+                            };
                             if (console) { console.log('WARN: XHR response is not valid json'); }
                         }
                         // if outside a digest cycle, execute the upload response function in the active scope
