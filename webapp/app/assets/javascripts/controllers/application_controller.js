@@ -8,6 +8,9 @@ angular.module("app.controllers")
 
   $scope.landingShow = true;
   $scope.disable = false;
+  $scope.$on('enableNavBar', function() {
+    $scope.disable = false;
+  });
 
   $scope.sports = window.App.sports;
   $scope.fs = fs;
@@ -29,7 +32,6 @@ angular.module("app.controllers")
   // Watch the sport scope
   $scope.$watch(function() { return $route.current && $route.current.params.sport; }, function(newSport, oldSport) {
     $scope.disable = true;
-    $timeout(function(){$scope.disable = false},5000);
     if (!App.currentUser || !newSport) { return; }
     console.log(newSport);
     App.currentUser.currentSport = newSport;
