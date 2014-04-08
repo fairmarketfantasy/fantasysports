@@ -148,7 +148,7 @@ class RostersController < ApplicationController
 
     roster.submit!
     Eventing.report(current_user, 'submitRoster', :contest_type => roster.contest_type.name, :buy_in => roster.contest_type.buy_in)
-    render_api_response roster
+    render_api_response roster, :flash => roster.salary_message
   end
 
   def destroy
