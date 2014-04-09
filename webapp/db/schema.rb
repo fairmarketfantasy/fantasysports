@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140401121317) do
+ActiveRecord::Schema.define(version: 20140408155651) do
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -350,7 +350,7 @@ ActiveRecord::Schema.define(version: 20140401121317) do
     t.integer  "jersey_number"
     t.string   "status"
     t.integer  "total_games",   default: 0,     null: false
-    t.integer  "total_points",  default: 0,     null: false
+    t.decimal  "total_points",  default: 0.0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "team",                          null: false

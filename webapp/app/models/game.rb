@@ -58,7 +58,7 @@ class Game < ActiveRecord::Base
   end
 
   def losing_team
-    [self.home_team, self.away_team].find{|team| team != winning_team }
+    [self.home_team, self.away_team].find { |team| team != winning_team }
   end
 
   def unbench_players
@@ -79,21 +79,29 @@ class Game < ActiveRecord::Base
     market.shadow_bet_rate = 0.75
     market.shadow_bets = 0.0
     market.game_type = 'regular_season'
-    #market.state = 'opened'
     market.opened_at = Time.now - 2.days
     market.started_at = self.game_time - 5.minutes
     market.closed_at = self.game_time - 5.minutes
     market.published_at = self.game_time - 2.days
-    market.save!
-    market.reload
-    (home_team.players + away_team.players).each do |player|
-      market_player = market.market_players.new
-      market_player.player = player
-      market_player.shadow_bets = 150.0 # temp val
-      market_player.bets = 150.0 # temp val
-      market_player.player_stats_id = player.stats_id
-      market_player.save!
+    begin
+      market.save!
+    rescue ActiveRecord::RecordNotUnique
     end
-    self.markets << market
+    @market = Market.find_by_started_at_and_name(self.game_time - 5.minutes, away_team.name + ' @ ' + home_team.name)
+    (home_team.players + away_team.players).each do |player|
+      market_player = @market.market_players.new
+      market_player.player = player
+      market_player.shadow_bets = 0.0 # temp val
+      market_player.bets = 0.0 # temp val
+      market_player.player_stats_id = player.stats_id
+      begin
+        market_player.save!
+      rescue ActiveRecord::RecordNotUnique
+      end
+    end
+    begin
+      self.markets << @market unless self.markets.any?
+    rescue ActiveRecord::RecordNotUnique
+    end
   end
 end
