@@ -67,7 +67,6 @@ class MLBTeamsFetcherWorker
     # enqueue fetching players for teams
     Sport.where(:name => 'MLB').first.teams.each do |team|
       PlayersFetcherWorker.perform_async team.stats_id
-      TeamScheduleFetcherWorker.perform_async team.stats_id
     end
   end
 

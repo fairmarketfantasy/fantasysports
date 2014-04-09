@@ -87,9 +87,9 @@ class Game < ActiveRecord::Base
       market.save!
     rescue ActiveRecord::RecordNotUnique
     end
-    market.reload
+    @market = Market.find_by_started_at_and_name(self.game_time - 5.minutes, away_team.name + ' @ ' + home_team.name)
     (home_team.players + away_team.players).each do |player|
-      market_player = market.market_players.new
+      market_player = @market.market_players.new
       market_player.player = player
       market_player.shadow_bets = 0.0 # temp val
       market_player.bets = 0.0 # temp val
@@ -99,6 +99,9 @@ class Game < ActiveRecord::Base
       rescue ActiveRecord::RecordNotUnique
       end
     end
-    self.markets << market
+    begin
+      self.markets << @market unless self.markets.any?
+    rescue ActiveRecord::RecordNotUnique
+    end
   end
 end
