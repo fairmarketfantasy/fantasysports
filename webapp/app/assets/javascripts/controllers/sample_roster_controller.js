@@ -28,12 +28,12 @@ angular.module("app.controllers")
             return _.max(roster.players, function(top_price){
               return parseInt(top_price.buy_price)
             })
-          }
+          };
 
           $scope.playerStats($scope.mostExpencive());
-          $scope.$emit('enableNavBar')
+          $scope.$emit('enableNavBar');
         });
-    }
+    };
 
 
 
