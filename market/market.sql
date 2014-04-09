@@ -17,7 +17,7 @@ $$ LANGUAGE SQL IMMUTABLE;
 -- /* The pricing function. Right now, it's a straight linear shot and assumes a 100k salary cap with a 1k minimum price */
 DROP FUNCTION price(numeric, numeric, numeric, numeric);
 
-CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric) 
+CREATE OR REPLACE FUNCTION price(bets numeric, total_bets numeric, buy_in numeric, multiplier numeric)
 	RETURNS numeric AS $$
 	SELECT CASE ($2 + $3) WHEN 0 THEN 1000 ELSE
 		ROUND(LEAST(100000, GREATEST(1000, ($1 + $3) * 100000 * $4 / ($2 + $3))))
@@ -61,7 +61,7 @@ $$ LANGUAGE SQL;
 
 ------------------------------------- OLD PRICE SCRIPTS --------------------------------------
 
--- select mp.*, p.*, rp.purchase_price from market_prices(20, 1000) mp 
+-- select mp.*, p.*, rp.purchase_price from market_prices(20, 1000) mp
 -- join players p on p.id = mp.player_id
 -- left join rosters_players rp on rp.player_id = mp.player_id and rp.roster_id = 8;
 
@@ -77,7 +77,7 @@ RETURNS TABLE(player_id integer, buy_price numeric, is_eliminated boolean) AS $$
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
 		(is_session_variable_set('override_market_close') OR NOT (mp.locked)) AND
-		mp.player_id NOT IN (SELECT rosters_players.player_id 
+		mp.player_id NOT IN (SELECT rosters_players.player_id
 			FROM rosters_players WHERE roster_id = $1);
 $$ LANGUAGE SQL;
 
@@ -86,9 +86,9 @@ $$ LANGUAGE SQL;
 DROP FUNCTION sell_prices(integer);
 
 CREATE OR REPLACE FUNCTION sell_prices(_roster_id integer)
-RETURNS TABLE(roster_player_id integer, player_id integer, sell_price numeric, 
+RETURNS TABLE(roster_player_id integer, player_id integer, sell_price numeric,
 		purchase_price numeric, locked boolean, score integer) AS $$
-	SELECT rp.id, mp.player_id, price(mp.bets, m.total_bets, 0, m.price_multiplier), 
+	SELECT rp.id, mp.player_id, price(mp.bets, m.total_bets, 0, m.price_multiplier),
 		rp.purchase_price, mp.locked, mp.score
 	FROM market_players mp, markets m, rosters_players rp, rosters r
 	WHERE
@@ -125,12 +125,12 @@ BEGIN
   IF NOT is_session_variable_set('override_market_close') THEN
 	  WITH locked_out AS (
 	  	SELECT rp.id from rosters_players rp, market_players mp
-	  	WHERE 
+	  	WHERE
 	  		rp.roster_id = _roster_id AND
 	  		mp.market_id = _roster.market_id AND
 	  		mp.player_id = rp.player_id AND
 	  		mp.locked_at < CURRENT_TIMESTAMP)
-	  	DELETE FROM rosters_players using locked_out 
+	  	DELETE FROM rosters_players using locked_out
 	  	WHERE rosters_players.id = locked_out.id;
   END IF;
 
@@ -138,17 +138,17 @@ BEGIN
 	  -- increment bets for all market players in roster by buy_in amount
 	  UPDATE market_players SET bets = bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
 	  	WHERE market_id = _roster.market_id AND player_id IN
-	  		(SELECT player_id from rosters_players where roster_id = _roster_id); 
+	  		(SELECT player_id from rosters_players where roster_id = _roster_id);
 
 	  -- increment total_bets by buy_in times number of players bought
-	  update markets set total_bets = total_bets + 
+	  update markets set total_bets = total_bets +
 	  	_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
 	  	where id = _roster.market_id;
 
 	  -- update rosters_players with current sell prices of players
-	  WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id)) 
-	  	UPDATE rosters_players set purchase_price = prices.sell_price FROM prices 
-	  	WHERE id = prices.roster_player_id;
+	  --WITH prices as (select roster_player_id, sell_price from sell_prices(_roster_id))
+	  --	UPDATE rosters_players set purchase_price = prices.sell_price FROM prices
+	  --	WHERE id = prices.roster_player_id;
 
 	  -- insert into market_orders
 	  INSERT INTO market_orders (market_id, roster_id, action, player_id, price, created_at, updated_at)
@@ -188,7 +188,7 @@ BEGIN
 	-- decrement bets for all market players in roster by buy_in amount
 	UPDATE market_players SET bets = bets - _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
 		WHERE market_id = _roster.market_id AND player_id IN
-		(SELECT player_id from rosters_players where roster_id = _roster_id); 
+		(SELECT player_id from rosters_players where roster_id = _roster_id);
 
 	-- decrement total_bets by buy_in times number of players bought
 	update markets set total_bets = total_bets -
@@ -363,13 +363,13 @@ BEGIN
 
 
 	--update player points and stuff in preparation for shadow bets
-	WITH 
+	WITH
 		total_points as (select player_stats_id, sum(point_value) as points from stat_events group by player_stats_id),
 		total_games as (select player_stats_id, count(distinct(game_stats_id)) as games from stat_events group by player_stats_id)
 		UPDATE players SET total_games = total_games.games, total_points = total_points.points
 		FROM total_points, total_games
-		WHERE 
-			players.stats_id = total_points.player_stats_id AND 
+		WHERE
+			players.stats_id = total_points.player_stats_id AND
 			players.stats_id = total_games.player_stats_id;
 
 	--check that shadow_bets is something reasonable
@@ -384,7 +384,7 @@ BEGIN
 	END IF;
 
 	--just to be safe, re-set the total bets to shadow bets
-	UPDATE markets SET 
+	UPDATE markets SET
 		total_bets = shadow_bets, initial_shadow_bets = shadow_bets, price_multiplier = 1
 		WHERE id = _market_id;
 
@@ -403,9 +403,9 @@ BEGIN
 	  	SELECT
 	  		_market_id, p.id, 0, 0, 0,
 	  		min(g.game_time), p.stats_id, NOW(), NOW()
-	  	FROM 
-	  		players p, games g, games_markets gm 
-	  	WHERE 
+	  	FROM
+	  		players p, games g, games_markets gm
+	  	WHERE
 	  		NOT EXISTS (select 1 from market_players where market_id=_market_id AND player_id=p.id) AND
         gm.market_id = _market_id AND
 	  		g.stats_id = gm.game_stats_id AND
@@ -416,9 +416,9 @@ BEGIN
 	  	SELECT
 	  		_market_id, p.id, 0, 0, 0,
 	  		min(g.game_time), p.stats_id, NOW(), NOW()
-	  	FROM 
+	  	FROM
 	  		players p, games g, games_markets gm, player_positions pp
-	  	WHERE 
+	  	WHERE
 	  		NOT EXISTS (select 1 from market_players where market_id=_market_id AND player_id=p.id) AND
         gm.market_id = _market_id AND
 	  		g.stats_id = gm.game_stats_id AND
@@ -442,12 +442,12 @@ BEGIN
   RAISE NOTICE 'price multiplier %', _price_multiplier;
 
 	--set market to published. reset closed_at time, in case the game time has moved since the market was created
-	WITH game_times as ( 
-		SELECT 
+	WITH game_times as (
+		SELECT
 			min(g.game_time) - INTERVAL '24h' as min_time,
 			max(g.game_time) - INTERVAL '5m' as max_time
-		FROM games g 
-		JOIN games_markets gm on g.stats_id = gm.game_stats_id 
+		FROM games g
+		JOIN games_markets gm on g.stats_id = gm.game_stats_id
 		WHERE gm.market_id = _market_id
 	) UPDATE markets SET opened_at = COALESCE(_market.opened_at, min_time), closed_at = max_time,
 		state = 'published', price_multiplier = _price_multiplier
@@ -470,7 +470,7 @@ DECLARE
 	_market_player market_players;
 BEGIN
 	--ensure that the market exists and may be opened
-	SELECT * FROM markets WHERE id = _market_id AND state = 'published' 
+	SELECT * FROM markets WHERE id = _market_id AND state = 'published'
 		AND (shadow_bets = 0 OR opened_at < CURRENT_TIMESTAMP) FOR UPDATE into _market;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % is not openable', _market_id;
@@ -486,8 +486,8 @@ BEGIN
     END LOOP;
 
     --update the remaining salary for all rosters in the market
-    UPDATE rosters set remaining_salary = 100000 - 
-    	(SELECT COALESCE(sum(purchase_price), 0) FROM rosters_players WHERE roster_id = rosters.id) 
+    UPDATE rosters set remaining_salary = 100000 -
+    	(SELECT COALESCE(sum(purchase_price), 0) FROM rosters_players WHERE roster_id = rosters.id)
     	WHERE market_id = _market_id;
 
 	UPDATE markets SET state='opened', opened_at = CURRENT_TIMESTAMP WHERE id = _market_id;
@@ -526,7 +526,7 @@ BEGIN
 		RETURN;
 	END IF;
 
-	UPDATE markets SET shadow_bets = _new_shadow_bets, total_bets = _real_bets + _new_shadow_bets 
+	UPDATE markets SET shadow_bets = _new_shadow_bets, total_bets = _real_bets + _new_shadow_bets
 		WHERE id = _market_id;
 	UPDATE market_players SET
 		bets = bets - shadow_bets + (initial_shadow_bets / _market.initial_shadow_bets) * _new_shadow_bets,
@@ -554,7 +554,7 @@ BEGIN
 
   UPDATE players SET benched_games = 0 WHERE stats_id IN(
     SELECT player_stats_id FROM stat_events WHERE game_stats_id = _game.stats_id GROUP BY player_stats_id);
-  UPDATE players SET benched_games = benched_games + 1 WHERE stats_id 
+  UPDATE players SET benched_games = benched_games + 1 WHERE stats_id
     NOT IN(SELECT player_stats_id FROM stat_events WHERE game_stats_id = _game.stats_id GROUP BY player_stats_id)
     AND players.team IN(_game.home_team, _game.away_team)
     AND 'TEAM' NOT IN(SELECT position from player_positions where player_id=players.id);
@@ -649,8 +649,8 @@ BEGIN
 
 
   -- Update the winners bets and locked state
-  SELECT INTO _next_game_time  game_time FROM games 
-    WHERE game_time > _now 
+  SELECT INTO _next_game_time  game_time FROM games
+    WHERE game_time > _now
       AND stats_id IN(SELECT game_stats_id FROM games_markets WHERE market_id = _games_market.market_id)
       AND (home_team = _winning_team OR away_team = _winning_team);
 
@@ -727,9 +727,9 @@ DROP FUNCTION tabulate_scores(integer);
 
 CREATE OR REPLACE FUNCTION tabulate_scores(_market_id integer) RETURNS VOID AS $$
 begin
-	UPDATE market_players set score = 
-		(select coalesce(sum(point_value), 0) FROM stat_events 
-			WHERE player_stats_id = market_players.player_stats_id and game_stats_id in 
+	UPDATE market_players set score =
+		(select coalesce(sum(point_value), 0) FROM stat_events
+			WHERE player_stats_id = market_players.player_stats_id and game_stats_id in
 				(select game_stats_id from games_markets where market_id = $1)
 		) where market_id = $1;
 
