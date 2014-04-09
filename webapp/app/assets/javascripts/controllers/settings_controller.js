@@ -40,7 +40,7 @@
     if (completed)
       // the response includes the updated user, but it's simpler to get it straight from $http rather than ng-upload
       fs.user.refresh().then(function(data){
-        flash.success("Success, avatar saved");
+        //flash.success("Success, avatar saved");
         currentUserService.setUser(data);
         $scope.setUserInfo();
         $scope.showUpload  = false;
