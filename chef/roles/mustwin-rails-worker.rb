@@ -18,5 +18,5 @@ run_list(
   'recipe[golang]', # Worker specific
   'recipe[mustwin-basics]',
   'recipe[redis]',
-  'recipe[redis::server]',
+  'recipe[redis::server]'
 )
