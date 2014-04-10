@@ -1,7 +1,5 @@
 <div ng-controller="UnsubscribeController">
 
-  <h3>Terms and Conditions of Subscription</h3>
-
   <%= render :partial => 'templates/paying_terms' %>
   <a class="btn btn-mini btn-success" ng-show="currentUser && currentUser.customer_object.is_active" href="javascript://" ng-click="confirmShow = true">Unsubscribe</a>
   <%= render :partial => 'templates/purchase_terms' %>
