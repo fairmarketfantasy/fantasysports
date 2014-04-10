@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('LoginDialogController', ['$scope', 'dialog', 'flash', 'fs', '$timeout', 'registrationService', 'message', function($scope, dialog, flash, fs, $timeout, registrationService, message) {
+.controller('LoginDialogController', ['$scope', 'dialog', 'flash', 'fs', '$timeout', 'registrationService', 'message','$routeParams', function($scope, dialog, flash, fs, $timeout, registrationService, message, $routeParams) {
   $scope.message = message;
   $scope.user = $scope.user || {};
 
@@ -9,7 +9,7 @@ angular.module("app.controllers")
 
   $scope.submit = function() {
     if (! $scope.isValid()) return;
-    fs.user.login($scope.user).then(function(resp){
+    fs.user.login($scope.user, $routeParams.sport).then(function(resp){
       // window.setCurrentUser(resp);
       $timeout(function() {
         window.location.reload(true);
