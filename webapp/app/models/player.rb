@@ -43,7 +43,7 @@ class Player < ActiveRecord::Base
   scope :normal_positions,      ->(sport_id) { select('players.*, player_positions.position'
                                     ).joins('JOIN player_positions ON players.id=player_positions.player_id'
                                     ).where("player_positions.position IN( '#{Positions.for_sport_id(sport_id).split(',').join("','") }')") }
-  scope :order_by_ppg,          ->(dir = 'desc') { order("(total_points / (total_games + .001)) #{dir}") }
+  scope :order_by_ppg,          ->(dir = 'desc') { order("ppg #{dir}") }
   scope :with_purchase_price,   -> { select('players.*, rosters_players.purchase_price') } # Must also join rosters_players
   scope :with_market,           ->(market) { select('players.*').select(
                                              "#{market.id} as market_id, mp.is_eliminated, mp.score, mp.locked"
