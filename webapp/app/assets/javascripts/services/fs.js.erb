@@ -209,16 +209,16 @@ angular.module('app.services')
         applyPromo: function(code) {
           return $http({method: 'POST', url: '/promo', params: {code: code}});
         },
-        create: function(user_attrs, params){
+        create: function(user_attrs, params, sport){
           params = params || {};
-          return $http({method: 'POST', url: '/users.json', params: params, data: {user: user_attrs}});
+          return $http({method: 'POST', url: '/users.json', params: params, data: {user: user_attrs, sport: sport}});
         },
         update: function(user_attrs) {
           return $http({method: 'PUT', url: '/users.json', data: {user: user_attrs}});
         },
-        login: function(user_attrs, params){
+        login: function(user_attrs, sport, params){
           params = params || {};
-          return $http({method: 'POST', url: '/users/sign_in', params: {sport: params}, data: {user: user_attrs}});
+          return $http({method: 'POST', url: '/users/sign_in',params: params, data: {user: user_attrs, sport: sport}});
         },
         addMoney: function(amount){
           return $http({method: 'POST', url: '/users/add_money', data: {amount: amount} });

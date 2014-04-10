@@ -1,5 +1,5 @@
 angular.module('app.services')
-  .factory('registrationService', ['$dialog', '$timeout', function($dialog, $timeout) {
+  .factory('registrationService', ['$dialog', '$timeout', '$routeParams', function($dialog, $timeout, $routeParams) {
     var loginOpts = {},
         addLoginOpts = function(opts) {
           for (var key in opts) {
@@ -46,7 +46,7 @@ angular.module('app.services')
               resolve: {message: function(){ return message; }},
             };
 
-        var d = $dialog.dialog(dialogOpts);
+        var d = $dialog.dialog(dialogOpts)
         d.open();
         $timeout(function() {
             $.placeholder.shim();
@@ -71,12 +71,12 @@ angular.module('app.services')
       },
       login: function(service) {
         var serviceSizes = {
-          facebook: 'height=460,width=730',
+          facebook: 'height=460,width=730'
           /*  linkedin: 'height=260,width=630', // customize these
             google: 'height=260,width=630'*/
         };
         if(service === 'email'){
-          fs.user.login($scope.user, loginOpts).then(function(resp){
+          fs.user.login($scope.user, $routeParams.sport, loginOpts).then(function(resp){
             // window.setCurrentUser(resp);
             window.location.reload(true);
           });
