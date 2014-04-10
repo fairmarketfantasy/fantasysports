@@ -5,7 +5,7 @@ angular.module('app.services')
           backdrop: true,
           keyboard: true,
           backdropClick: true,
-          dialogClass: 'modal',
+          dialogClass: 'modal'
     }, loginOpts = {};
 
     return {
@@ -247,7 +247,7 @@ angular.module('app.services')
         },
 				activeTrial: function() {
           return $http({method: 'POST', url: '/users/activate_trial'})
-        },
+        }
       },
       recipients: {
         list: function(){
@@ -278,7 +278,7 @@ angular.module('app.services')
           return $http({method: 'GET', url: '/cards/charge_url', params: {
             callback: callbackName,
             amount: amount,
-            card_id: cardId,
+            card_id: cardId
           }});
         },
         charge: function(url, respCallback) {
@@ -317,7 +317,7 @@ angular.module('app.services')
         },
         invite: function(contest_id, invitees, message, invitation_code) {
           return $http({method: 'POST', url: '/contests/' + contest_id + '/invite', data: {invitees: invitees, message: message, invitation_code: invitation_code}});
-        },
+        }
       },
       games: {
         list: function(market_id) {
@@ -333,17 +333,17 @@ angular.module('app.services')
       events: {
         for_players: function(market_id, players) {
           return $http({method: 'GET', url: '/events/for_players', params: {player_ids: _.map(players, function(elt) { return elt.stats_id}).join(','), market_id: market_id} });
-        },
+        }
       },
       leaderboard: {
         fetch: function(timeframe) {
           return $http({method: 'GET', url: '/leaderboard', params: {timeframe: timeframe}});
-        },
+        }
       },
       transactions: {
         list: function(page) {
           return $http({method: 'GET', url: '/transactions', params: {page: page}});
-        },
+        }
       },
       rosters: {
         add_player: function(roster_id, player_id, position) {
