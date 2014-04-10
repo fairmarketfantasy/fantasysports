@@ -30,7 +30,7 @@ class IndividualPredictionsController < ApplicationController
     sport = Sport.where(:name => params[:sport]).first if params[:sport]
     sport ||= Sport.where('is_active').first
     predictions = current_user.individual_predictions.joins('JOIN markets m ON individual_predictions.market_id=m.id').
-                                                      where(['m.sport_id = ?', sport.id])
+                                                      where(['m.sport_id = ?', sport.id]).order('closed_at desc')
 
     page = params[:page] || 1
     if params[:historical]
