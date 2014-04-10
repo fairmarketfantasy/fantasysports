@@ -218,7 +218,7 @@ angular.module('app.services')
         },
         login: function(user_attrs, params){
           params = params || {};
-          return $http({method: 'POST', url: '/users/sign_in', params: params, data: {user: user_attrs}});
+          return $http({method: 'POST', url: '/users/sign_in', params: {sport: params}, data: {user: user_attrs}});
         },
         addMoney: function(amount){
           return $http({method: 'POST', url: '/users/add_money', data: {amount: amount} });
