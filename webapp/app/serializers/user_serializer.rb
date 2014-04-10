@@ -1,6 +1,6 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :name, :admin, :username, :email, :balance, :image_url, :win_percentile, :total_points, :joined_at, :token_balance, :provider,
-    :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses, :referral_code, :inviter_id, :currentSport, :in_progress_roster_id, # Leaderboard keys
+    :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses, :referral_code, :inviter_id, :in_progress_roster_id, # Leaderboard keys
     :abridged, :prestige
 
   has_one :customer_object
@@ -11,10 +11,6 @@ class UserSerializer < ActiveModel::Serializer
 
   def abridged
     scope.abridged? ? true : false
-  end
-
-  def currentSport
-    Sport.where('is_active').first.name
   end
 
   def balance
