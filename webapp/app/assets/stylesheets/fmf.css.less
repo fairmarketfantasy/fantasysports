@@ -1517,13 +1517,12 @@ input, textarea, .uneditable-input {
 }
 .fixed-table-header {
   position: absolute;
-  bottom: -34px;
+  bottom: -33px;
   left: 0;
   z-index: 10;
   background-color: @white;
-  height: 34px;
-  padding: 0 5px;
-  width: 96%;
+  height: 33px;
+  width: 100%;
   .border-radius(6px 6px 0 0);
 }
 .players-table, .roster-table {
@@ -1536,16 +1535,23 @@ input, textarea, .uneditable-input {
     width: 16%;
     text-align: center;
     &.larger {
-      width: 31%;
+      width: 29%;
       text-align: left;
     }
     &.less-larger {
-      width: 30%;
+      width: 28%;
       text-align: left;
     }
     &.tiny {
-      width: 16%;
+      width: 15%;
       text-align: center;
+    }
+    &.tiny-ind {
+      width: 12%;
+      text-align: center;
+    } 
+    &.tiny-last {
+      padding: 0 15px;
     }
     &.tiny-btn {
       width: 54px;
@@ -1835,8 +1841,8 @@ input, textarea, .uneditable-input {
   font-family: @base-font-family;
   margin-bottom: 0;
 }
-.not-selected {
-  color: @grayLight;
+.mr-player-name.not-selected {
+  font-weight: 200;
 }
 .mr-team, .mr-stats {
   display: block;
@@ -1896,6 +1902,7 @@ input, textarea, .uneditable-input {
 }
 .mr-player-name {
   color:#000;
+  font-weight: bold;
 }
 .mr-player-image {
   width: 40px;
