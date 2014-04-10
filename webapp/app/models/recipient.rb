@@ -44,7 +44,7 @@ class Recipient < ActiveRecord::Base
       response.payKey
       api.payment_url(response)  # Url to complete payment
     else
-      raise HttpResponse.new 409, response.error[0].message
+      raise HttpException.new(409, response.error[0].message)
     end
     customer_object.decrease_account_balance(amount.to_i, { event: "withdrawal", :transaction_data => {:paypal_transaction_id => response.payKey}.to_json })
   end
