@@ -41,13 +41,17 @@ module Referrals
     end
   end
 
-  def handle_referrals
+  def handle_referrals(sport_name = nil)
     resp = {}
     handle_promos(resp)
     handle_referral(resp)
     handle_roster_claiming(resp)
     handle_contest_joining(resp)
-    resp[:redirect] = "/#{Sport.where('is_active').first.name }/home" unless resp[:redirect]
+    unless resp[:redirect]
+      sport_name ||= Sport.where('is_active').first.name
+      resp[:redirect] = "/#{sport_name}/home"
+    end
+
     resp
   end
 
