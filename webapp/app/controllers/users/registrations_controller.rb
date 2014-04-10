@@ -8,7 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     if resource.save
       if resource.active_for_authentication?
         sign_up(resource_name, resource)
-        render_api_response resource, handle_referrals.merge({status: :created})
+        render_api_response resource, handle_referrals(params[:sport]).merge({status: :created})
       else
         expire_session_data_after_sign_in!
         render :json => {error: resource.errors.full_messages.first}, status: :unprocessable_entity
@@ -27,7 +27,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       r = user
     end
     if r.save
-      opts = handle_referrals
+      opts = handle_referrals(params[:sport])
       render_api_response r.reload, opts
     else
       render :json => {:error => resource.errors.values.join(', ')}, :status => :unprocessable_entity
