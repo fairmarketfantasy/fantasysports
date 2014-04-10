@@ -3,11 +3,13 @@ require 'chef'
 require 'chef/rest'
 require 'chef/search/query'
 require 'honeybadger'
+require 'honeybadger/capistrano'
 
 
 set :user, "ubuntu"             # The server's user for deploys
 set :application, "fantasysports"
 set :repository, "fairmarketfantasy"
+set :honeybadger_deploy_task, 'honeybadger:deploy_with_environment'
 #set :stages, %w(production staging)
 #require 'capistrano/ext/multistage'
 
