@@ -117,6 +117,9 @@ footer {
   .stats-headshot{
     background-image: asset-url('mlb-icon.png');
   }
+  .player-overflow {
+    max-height: 425px;
+  }
 }
 
 //END GAME TYPE
@@ -1504,16 +1507,13 @@ input, textarea, .uneditable-input {
   position: relative;
 }
 .ie8 .player-overflow {
-  height: 325px;
+  height: 315px;
 }
 .player-overflow {
-  max-height: 325px;
+  max-height: 315px;
   -ms-overflow-y : scroll; // IE 8, bitches
   overflow-y: auto;
   overflow-x: none;
-}
-.roster-height .players-area{
-  height: 375px;
 }
 .fixed-table-header {
   position: absolute;
@@ -1695,6 +1695,7 @@ input, textarea, .uneditable-input {
   .border-radius(0 0 4px 4px);
   padding: 20px 0 0 0;
   margin-bottom: 15px;
+  position: relative;
 }
 .team-heading {
   color: @white;
@@ -2056,12 +2057,13 @@ input[type="text"].players-search {
 }
 
 .roster-alert {
-  margin: 15px 10px 0 16px;
-  height: 155px;
+  bottom: 0;
+  position: absolute;
+  right: 0;
   .roster-submit{
+    margin-bottom: 15px;
     padding: 0 10px;
     position: relative;
-    top: 95px;
   }
   .roster-submit-center{
     text-align: center;
