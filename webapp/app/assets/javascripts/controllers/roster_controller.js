@@ -72,6 +72,7 @@ angular.module("app.controllers")
   $scope.$watch('$routeParams.roster_id', function() {
     rosters.fetch($routeParams.roster_id, $routeParams.view_code).then(function(roster) {
       rosters.selectRoster(roster);
+      filterOpts = {position: rosters.uniqPositionList && rosters.uniqPositionList[0], removeLow: false, sort: 'buy_price', dir: 'desc'};
       fetchPlayers();
       fetchContest();
     });

@@ -1,5 +1,5 @@
 angular.module("app.controllers")
-.controller('UserNameController', ['$scope', 'dialog', 'fs', function($scope, dialog, fs) {
+.controller('UserNameController', ['$scope', 'dialog', 'fs','flash', function($scope, dialog, fs, flash) {
   $scope.enabled = false;
   $scope.working = false;
   $scope.checkUsername = function() {
@@ -19,10 +19,13 @@ angular.module("app.controllers")
     fs.user.setUsername($scope.username).then(function(resp) {
       if (resp.result) {
         window.App.currentUser.username = $scope.username;
+        flash.success("Success, username saved");
         dialog.close();
       } else {
         $scope.enabled = false;
       }
+    },function(){
+      flash.error("This username is taken");
     });
   };
 }]);
