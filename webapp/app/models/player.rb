@@ -111,4 +111,62 @@ class Player < ActiveRecord::Base
     value = value.round == 0 ? nil : value
     self.update_attribute(:ppg, value)
   end
+
+  def calculate_average(params, current_user)
+    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}' AND activity='points' AND quantity != 0" ).
+                                 pluck('DISTINCT game_stats_id')
+    games = Game.where(stats_id: played_games_ids)
+    events = StatEvent.where(player_stats_id: params[:player_ids],
+                             game_stats_id: played_games_ids)
+    recent_games = games.order("game_time DESC").first(5)
+    recent_ids = recent_games.map(&:stats_id)
+    recent_events = events.where(game_stats_id: recent_ids)
+
+    recent_stats = StatEvent.collect_stats(recent_events)
+    total_stats = StatEvent.collect_stats(events)
+
+    if params[:market_id] == 'undefined'
+    else
+       bid_ids = current_bid_ids(params[:market_id], self.id, current_user.id) if current_user
+       bid_ids ||= []
+    end
+
+    data = []
+    total_stats.each do |k, v|
+      value = v.to_d / BigDecimal.new(played_games_ids.count)
+      value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
+      value = value.round(1)
+      next if value == 0
+
+      bid_less = false
+      bid_more = false
+      if bid_ids.any?
+        less = EventPrediction.where(event_type: k.to_s, diff: 'less', individual_prediction_id: bid_ids).count
+        more = EventPrediction.where(event_type: k.to_s, diff: 'more', individual_prediction_id: bid_ids).count
+        value = with_formula_value(value, bid_ids.count, more, less)
+        bid_less = true if less != 0
+        bid_more = true if more != 0
+      end
+
+      less_pt = IndividualPrediction.get_pt_value(value, 'less')
+      more_pt = IndividualPrediction.get_pt_value(value, 'more')
+
+      data << { name: k, value: value, bid_less: bid_less, bid_more: bid_more, less_pt: less_pt, more_pt: more_pt }
+    end
+
+    data
+  end
+
+  private
+
+  def current_bid_ids(market_id, player_id, current_user_id)
+    IndividualPrediction.where(user_id: current_user_id,
+                               market_id: market_id,
+                               player_id: player_id).pluck(:id)
+  end
+
+  def with_formula_value(value, total, more, less)
+    value = value * (20 + total + (more - less)).to_d / (20 + total).to_d
+    value.round(1)
+  end
 end

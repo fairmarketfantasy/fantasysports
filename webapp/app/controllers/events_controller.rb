@@ -14,7 +14,10 @@ class EventsController < ApplicationController
 
   # Takes an array of player_stat_ids and a market
   def for_players
-    return render_average(params) if params[:average]
+    if params[:average]
+      data = Player.where(:stats_id => params[:player_ids]).first.calculate_average(params, current_user)
+      return render json: { events: data }.to_json
+    end
 
     games = GamesMarket.where(:market_id => params[:market_id]).pluck('DISTINCT game_stats_id')
     events = StatEvent.where(:player_stats_id => params[:player_ids], :game_stats_id => games)
@@ -45,50 +48,5 @@ class EventsController < ApplicationController
       end.join(' ')
     end
     GameEvent.where(:game_stats_id => games.map(&:stats_id)).where([conditions] + args)
-  end
-
-  def render_average(params)
-    player = Player.where(:stats_id => params[:player_ids]).first
-    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}' AND activity='points' AND quantity != 0" ).
-                                 pluck('DISTINCT game_stats_id')
-    games = Game.where(stats_id: played_games_ids)
-    events = StatEvent.where(player_stats_id: params[:player_ids],
-                             game_stats_id: played_games_ids)
-    recent_games = games.order("game_time DESC").first(5)
-    recent_ids = recent_games.map(&:stats_id)
-    recent_events = events.where(game_stats_id: recent_ids)
-
-    recent_stats = StatEvent.collect_stats(recent_events)
-    total_stats = StatEvent.collect_stats(events)
-    bid_ids = params[:market_id] == 'undefined' ? [] : current_bid_ids(params[:market_id], player.id)
-
-    data = []
-    total_stats.each do |k, v|
-      value = v.to_d / BigDecimal.new(played_games_ids.count)
-      value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
-      value = value.round(1)
-      next if value == 0
-
-      bid_less = false
-      bid_more = false
-      if bid_ids.any?
-        bid_less = true if EventPrediction.where(event_type: k.to_s, diff: 'less', individual_prediction_id: bid_ids).first
-        bid_more = true if EventPrediction.where(event_type: k.to_s, diff: 'more', individual_prediction_id: bid_ids).first
-      end
-      less_pt = IndividualPrediction.get_pt_value(value, 'less')
-      more_pt = IndividualPrediction.get_pt_value(value, 'more')
-
-      data << { name: k, value: value, bid_less: bid_less, bid_more: bid_more, less_pt: less_pt, more_pt: more_pt }
-    end
-
-    render json: { events: data }.to_json
-  end
-
-  def current_bid_ids(market_id, player_id)
-    return unless current_user
-
-    IndividualPrediction.where(user_id: current_user,
-                               market_id: market_id,
-                               player_id: player_id).pluck(:id)
   end
 end
