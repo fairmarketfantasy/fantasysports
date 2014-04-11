@@ -126,7 +126,7 @@ class Player < ActiveRecord::Base
     total_stats = StatEvent.collect_stats(events)
 
     if params[:market_id] == 'undefined'
-       bid_ids ||= []
+       bid_ids = []
     else
        bid_ids = current_bid_ids(params[:market_id], self.id, current_user.id) if current_user
        bid_ids ||= []
