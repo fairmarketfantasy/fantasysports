@@ -44,25 +44,25 @@ angular.module('app.directives')
       $($(elm).children()[index]).addClass('changed');
     }, 0);
   };
-  return {
-   scope: false,
-   link: function(scope, elm, attrs, ctrl) {
-     var keyToWatch = attrs.keyToWatch;
-     scope.$watch(attrs.highlightChangesInList, function(newVal, oldVal, scope) {
-      if (!newVal || !oldVal || oldVal == newVal) { return; } // Don't highlight the first time.
-         $timeout(function() { $(elm).children().addClass('highlight-on-change'); }, 0);
-         for (var i = 0; i < newVal.length; i++) {
-            delete newVal[i]['$$hashKey'];  // Random key inserted by angular
-            if (keyToWatch) {
-              if (newVal[i][keyToWatch] != oldVal[i][keyToWatch] && oldVal[i][keyToWatch] != undefined) {
-                clearElement(elm, i);
-              }
-            } else if (!_.isEqual(newVal[i], oldVal[i])) {
-              clearElement(elm, i);
-            }
-         }
-         setTimeout(function() { $(elm).children().removeClass('changed'); }, 1000);
-      }, true);
-    }
-  };
+//  return {
+//   scope: false,
+//   link: function(scope, elm, attrs, ctrl) {
+//     var keyToWatch = attrs.keyToWatch;
+//     scope.$watch(attrs.highlightChangesInList, function(newVal, oldVal, scope) {
+//      if (!newVal || !oldVal || oldVal == newVal) { return; } // Don't highlight the first time.
+//         $timeout(function() { $(elm).children().addClass('highlight-on-change'); }, 0);
+//         for (var i = 0; i < newVal.length; i++) {
+//            delete newVal[i]['$$hashKey'];  // Random key inserted by angular
+//            if (keyToWatch) {
+//              if (newVal[i][keyToWatch] != oldVal[i][keyToWatch] && oldVal[i][keyToWatch] != undefined) {
+//                clearElement(elm, i);
+//              }
+//            } else if (!_.isEqual(newVal[i], oldVal[i])) {
+//              clearElement(elm, i);
+//            }
+//         }
+//         setTimeout(function() { $(elm).children().removeClass('changed'); }, 1000);
+//      }, true);
+//    }
+//  };
 }]);
