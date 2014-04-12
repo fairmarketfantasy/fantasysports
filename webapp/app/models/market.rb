@@ -418,8 +418,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       raise "all games must be closed before market can be completed" if self.games.where("status != 'closed'").any?
 
       self.rosters.where(state: 'in_progress').each { |r| r.destroy }
-      system_user_id = User.where(name: 'SYSTEM USER').first.id
-      self.rosters.where.not(owner_id: system_user_id).each { |r| r.charge_account }
+      self.rosters.each { |r| r.charge_account }
       self.rosters.each { |r| r.swap_benched_players!(true) }
       self.tabulate_scores
       #for each contest, allocate funds by rank
