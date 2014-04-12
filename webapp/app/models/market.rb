@@ -260,8 +260,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def fill_rosters
-    fill_times = JSON.parse(self.fill_roster_times) if self.fill_roster_times
-    fill_times ||= []
+    fill_times = JSON.parse(self.fill_roster_times)
     percent = nil
     fill_times.each do |ft|
       percent = ft[1] if ft[0].to_i < Time.new.to_i
