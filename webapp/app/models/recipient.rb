@@ -28,7 +28,7 @@ class Recipient < ActiveRecord::Base
       :senderEmail => PAYPAL_OWNER,
       :feesPayer => "EACHRECEIVER", #"SENDER",
       :ipnNotificationUrl => "#{ SITE }/samples/adaptive_payments/ipn_notify",
-      :memo => "Withdrawal from FairMarketFantasy.com",
+      :memo => "Withdrawal from PredictThat.com",
       :receiverList => {
         :receiver => [{
           :amount => amount.to_i/100.0, # TODO: validate this
