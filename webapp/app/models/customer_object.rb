@@ -121,7 +121,7 @@ class CustomerObject < ActiveRecord::Base
             total: amount / 100,
             currency: "USD",
           },
-          description: "Purchase on FairMarketFantasy.com"
+          description: "Purchase on PredictThat.com"
         }
       ]
     })
