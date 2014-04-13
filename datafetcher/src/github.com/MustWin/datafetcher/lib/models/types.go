@@ -142,7 +142,7 @@ type Player struct {
 	Status       string
 	PlayerStatus PlayerStatus
 	TotalGames   int
-	TotalPoints  int
+	TotalPoints  float64
 	//BenchedGames int
 	CreatedAt time.Time
 	UpdatedAt time.Time
