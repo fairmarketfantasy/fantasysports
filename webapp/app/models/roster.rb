@@ -122,6 +122,10 @@ class Roster < ActiveRecord::Base
       raise HttpException.new(402, "Unpaid subscription!") if charge && !owner.active_account?
       raise HttpException.new(409, "Rosters must have less than $20k remaining salary!") if
         remaining_salary > 20000 && Rails.env != 'test' # Doing this in test will make everything way slow
+
+      customer_object = self.owner.customer_object
+      customer_object.monthly_entries_counter += 1
+      customer_object.save!
     end
     #purchase all the players and update roster state to submitted
 
