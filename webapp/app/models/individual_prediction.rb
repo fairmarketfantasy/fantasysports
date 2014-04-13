@@ -38,6 +38,9 @@ class IndividualPrediction < ActiveRecord::Base
       TransactionRecord.create!(:user => user, :event => 'create_individual_prediction',
                                 :amount => pt * 100, roster_id: params[:roster_id])
       Eventing.report(user, 'CreateIndividualPrediction', :amount => pt * 100)
+      customer_object = user.customer_object
+      customer_object.monthly_entries_counter += 1
+      customer_object.save!
       prediction
     end
   end
@@ -46,7 +49,6 @@ class IndividualPrediction < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       customer_object = self.user.customer_object
       customer_object.monthly_contest_entries += Roster::FB_CHARGE
-      customer_object.monthly_entries_counter += 1
       customer_object.save!
     end
   end
@@ -58,7 +60,6 @@ class IndividualPrediction < ActiveRecord::Base
       customer_object.monthly_contest_entries -= Roster::FB_CHARGE
       customer_object.monthly_entries_counter -= 1
       customer_object.save!
-      customer_object.update_attribute(:monthly_entries_counter, customer_object.monthly_entries_counter - 1)
     end
     TransactionRecord.create!(:user => user, :event => 'cancel_individual_prediction', :amount => self.pt * 100)
     Eventing.report(user, 'CancelIndividualPrediction', :amount => self.pt * 100)

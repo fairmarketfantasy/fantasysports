@@ -24,6 +24,53 @@ namespace :seed do
       end
       threadpool.shutdown
     end
+
+    task :fix_broken_stats => :environment do
+      threadpool = ThreadPool.new(16)
+      ids = Roster.where(state: 'finished', score: 0).map { |r| r.market if r.market }.compact.
+                                                      map(&:games).flatten.map(&:stats_id)
+      games = Game.where(stats_id: ids,
+                         sport_id: Sport.where(:name => 'NBA').first,
+                         season_type: 'REG', :season_year => 2013,
+                         status: 'closed')
+      games.each do |g|
+        next if g.stat_events.length > 0
+
+        run_fetcher "-year 2013 -fetch stats -sport " + g.sport.name + " -statsId " + g.stats_id, false
+      end
+      threadpool.shutdown
+      games.map(&:markets).flatten.map(&:id).uniq.each do |id|
+        market = Market.find(id)
+        market.games.each { |game| DataFetcher.update_game_players(game) }
+        market.update_attribute(:state, 'closed')
+        market.rosters.each do |roster|
+          roster.update_attribute(:state, 'submitted') if roster.state == 'finished'
+          next if roster.amount_paid.nil? || roster.state != 'submitted'
+
+          customer_object = roster.owner.customer_object
+          customer_object.monthly_contest_entries -= roster.amount_paid/1000
+          customer_object.save!
+        end
+        market.tabulate_scores
+        market.contests.each do |c|
+          c.set_payouts!
+          c.update_attribute(:paid_at, nil)
+          c.transaction_records.where(event: ['contest_payout', 'rake']).each { |tr| tr.destroy }
+        end
+        market.reload
+        market.individual_predictions.each do |ip|
+          next if ip.state == 'canceled'
+
+          ip.update_attribute(:state, 'submitted')
+          customer_object = ip.user.customer_object
+          customer_object.monthly_contest_entries += Roster::FB_CHARGE
+          customer_object.save!
+        end
+
+        market.complete
+        market.reload
+      end
+    end
   end
 
   desc 'reload the seeds in the database'
@@ -126,7 +173,7 @@ namespace :seed do
           next unless attr
           player_stats_id = attr.value
           asset.css('link').each do |link|
-            href = link.attributes['href'].value # "/headshot/23c9e491-bf62-48e2-abc3-057b50dc1142/195.jpg" 
+            href = link.attributes['href'].value # "/headshot/23c9e491-bf62-48e2-abc3-057b50dc1142/195.jpg"
             href = href.gsub("/headshot/", "")
             s3_key = "headshots/" + player_stats_id + '/' + href.split('/')[1]
             next if uploaded.include?(s3_key)
