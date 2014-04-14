@@ -488,6 +488,7 @@ select:focus:invalid {
   background-color: @black;
 }
 .about-section {
+  word-wrap: break-word;
   padding: 30px 0 60px;
   &.first-section {
     padding-top: 60px;
@@ -604,8 +605,7 @@ select:focus:invalid {
   }
 }
 .user-navigation {
-  float: right;
-  margin: 9px 0 0;
+  margin: 5px 0 0;
 }
 
 .sub-title {
@@ -626,12 +626,11 @@ select:focus:invalid {
 /* User Info Header Pane */
 .user-container {
   .border-radius(8px 8px 0 0);
-  .box-sizing();
   background-color: rgba(29,29,29,0.5);
   border: 1px solid @white;
   border-bottom: none;
   margin-top: 15px;
-  width: 1200px;
+  padding: 0 14px;
 }
 .ie8 .user-container {
   background-color: @grayDark;
@@ -1498,6 +1497,7 @@ input, textarea, .uneditable-input {
   padding: 20px 20px 0 20px;
   .btn-success {
     padding: 12px 35px 13px;
+    margin-bottom: 5px;
   }
 }
 .result-area {
@@ -2234,6 +2234,7 @@ textarea[class*="span"] {
   text-transform: uppercase;
   border-bottom:1px solid #ddd;
   padding-bottom: 10px;
+  text-align: center;
 }
 .ind-pred-th{
   display: inline-block;
@@ -2322,6 +2323,9 @@ textarea[class*="span"] {
   .contest-copy .contest-image {
     width: 98%;
   }
+  .span6.sign-up-content{
+    width: 580px;
+  }
   .btn.btn-small {
     padding: 4px 7px 3px;
   }
@@ -2363,6 +2367,9 @@ textarea[class*="span"] {
   .table th, .table td {
     font-size: 11px;
   }
+  .nav-menu{
+    width: 625px;
+  }
 }
 @media (min-width: 980px) and (max-width: 1100px) {
   .landing-container {
@@ -2370,6 +2377,9 @@ textarea[class*="span"] {
   }
   .sign-up-content {
     padding-top: 10%;
+  }
+  .span6.sign-up-content{
+    width: 545px;
   }
   .table th, .table td {
     font-size: 11px;
@@ -2382,13 +2392,18 @@ textarea[class*="span"] {
   .sign-up-content {
     padding-top: 9%;
   }
+  .span6.sign-up-content{
+    width: 455px;
+  }
   .sign-up-heading {
     font-size: 24px;
   }
   .sign-up-text {
     font-size: 16px;
   }
-
+  .user-navigation {
+    margin: 10px 0 0;
+  }
   .difference {
     font-size: 20px;
     margin-bottom: 16px;
@@ -2396,13 +2411,52 @@ textarea[class*="span"] {
   .table th, .table td {
     font-size: 10px;
   }
+  .nav-menu,
+  .top-nav{
+    width: 500px;
+    .logo-font{
+      line-height: 28px;
+     a{
+      font-size: 24px;
+      line-height: 44px;
+     }
+    }
+    .landing-nav{
+      margin: 0 0 0 10px;
+      a{
+        padding: 16.5px 8px;
+      }
+      li{
+        font-size: 13px;
+      }
+    }
+  }
+  .top-nav {
+    .landing-nav{
+      li{
+        font-size: 14px;
+      }
+      a {
+        padding: 16.5px 6px;
+      }
+    }
+  }
+  .top-nav .fixed-header .logo-font a{
+    font-size: 20px;
+    line-height: 48px;
+  }
 }
-@media (max-width: 889px) {
+@media (min-width: 767px) and (max-width: 889px) {
   .landing-container {
     height: 538px;
   }
   .sign-up-content {
     padding-top: 8%;
+
+  }
+  .span6.sign-up-content{
+    max-width: 410px;
+    min-width: 352px;
   }
   .sign-up-heading {
     font-size: 20px;
@@ -2414,4 +2468,108 @@ textarea[class*="span"] {
     font-size: 18px;
     margin-bottom: 16px;
   }
+  .nav-menu,
+  .top-nav{
+    width: 500px;
+    .logo-font{
+      line-height: 28px;
+      a{
+        font-size: 24px;
+        line-height: 44px;
+      }
+    }
+    .landing-nav{
+      margin: 0 0 0 10px;
+      a{
+        padding: 16.5px 8px;
+      }
+      li{
+        font-size: 13px;
+      }
+    }
+  }
+  .top-nav {
+    .landing-nav{
+       li{
+        font-size: 14px;
+       }
+      a {
+        padding: 16.5px 6px;
+      }
+    }
+  }
+  .top-nav .fixed-header .logo-font a{
+    font-size: 20px;
+    line-height: 48px;
+  }
 }
+
+//@media (min-width: 420px) and (max-width: 766px) {
+//  .modal {
+//    margin-left: 15px;
+//  }
+//  .span6.sign-up-content{
+//    width: 100%;
+//    padding-top: 175px;
+//    .landing-ind-prediction{
+//      position: relative;
+//      right: inherit;
+//      top: inherit;
+//    }
+//  }
+//  .landing-mobile-app-links {
+//    padding-top: 10px;
+//  }
+//  .sign-up-content.clearfix{
+//    padding: 0 0 50px 0;
+//    #playoff-teaser {
+//      float: none;
+//      margin: 0;
+//    }
+//  }
+//  .about-section.first-section{
+//    width: 310px;
+//  }
+//  .about-container .span5 {
+//    text-align: center;
+//    width: 170px;
+//    img {
+//      margin: 50px 2%;
+//      max-width: 250px;
+//      width: 56%;
+//    }
+//  }
+//  .fixed-header {
+//    width: 98%;
+//  }
+//  .nav-menu{
+//    width: 500px;
+//    .logo-font{
+//      line-height: 28px;
+//      a{
+//        font-size: 24px;
+//        line-height: 44px;
+//      }
+//    }
+//    .landing-nav{
+//      margin: 0 0 0 10px;
+//      a{
+//        padding: 16.5px 8px;
+//      }
+//      li{
+//        font-size: 13px;
+//      }
+//    }
+//  }
+//  body {
+//    padding-left: 1%;
+//    padding-right: 1%;
+//  }
+//  [class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"] {
+//    -moz-box-sizing: border-box;
+//    display: block;
+//    float: left;
+//    margin-left: 0;
+//  }
+//}
+
