@@ -48,7 +48,8 @@ namespace :seed do
           next if roster.amount_paid.nil? || roster.state != 'submitted'
 
           customer_object = roster.owner.customer_object
-          customer_object.monthly_contest_entries -= roster.amount_paid/1000
+          customer_object.monthly_contest_entries -= Roster::FB_CHARGE
+          customer_object.monthly_winnings -= roster.amount_paid/1000
           customer_object.save!
         end
         market.tabulate_scores
@@ -63,7 +64,8 @@ namespace :seed do
 
           ip.update_attribute(:state, 'submitted')
           customer_object = ip.user.customer_object
-          customer_object.monthly_contest_entries += Roster::FB_CHARGE
+          customer_object.monthly_contest_entries -= Roster::FB_CHARGE
+          customer_object.monthly_winnings -= ip.award
           customer_object.save!
         end
 
