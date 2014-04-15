@@ -228,12 +228,14 @@ class Roster < ActiveRecord::Base
 
   def remove_player(player, place_bets = true)
     if place_bets
-      order = exec_price("SELECT * from sell(#{self.id}, #{player.id})")
+      value = self.remaining_salary
+      exec_price("SELECT * from sell(#{self.id}, #{player.id})")
       self.class.uncached do
         self.players.reload
         self.rosters_players.reload
       end
-      order
+
+      self.remaining_salary - value
     else
       # This is okay because it's only used for autogen and doesn't affect the market
       rp = RostersPlayer.where(:player_id => player.id, :roster_id => self.id, :market_id => self.market_id).first
