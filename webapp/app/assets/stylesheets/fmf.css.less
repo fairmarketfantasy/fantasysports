@@ -30,6 +30,7 @@ h5 {
 body {
   background-color: @grayDark;
   color: @black;
+  min-width: 767px;
 }
 .landing-body {
   background-color: @white;
@@ -2379,132 +2380,101 @@ textarea[class*="span"] {
     padding-top: 10%;
   }
   .span6.sign-up-content{
-    width: 545px;
+    width: 540px;
   }
   .table th, .table td {
     font-size: 11px;
   }
 }
 @media (min-width: 890px) and (max-width: 979px) {
-  .landing-container {
-    height: 594px;
+  .modal {
+    margin-left: -333px !important;
   }
-  .sign-up-content {
-    padding-top: 9%;
-  }
-  .span6.sign-up-content{
-    width: 455px;
-  }
-  .sign-up-heading {
-    font-size: 24px;
-  }
-  .sign-up-text {
-    font-size: 16px;
-  }
-  .user-navigation {
-    margin: 10px 0 0;
-  }
-  .difference {
-    font-size: 20px;
-    margin-bottom: 16px;
-  }
-  .table th, .table td {
-    font-size: 10px;
-  }
-  .nav-menu,
-  .top-nav{
-    width: 500px;
-    .logo-font{
-      line-height: 28px;
-     a{
-      font-size: 24px;
-      line-height: 44px;
-     }
-    }
-    .landing-nav{
-      margin: 0 0 0 10px;
-      a{
-        padding: 16.5px 8px;
-      }
-      li{
-        font-size: 13px;
-      }
-    }
-  }
-  .top-nav {
-    .landing-nav{
-      li{
-        font-size: 14px;
-      }
-      a {
-        padding: 16.5px 6px;
-      }
-    }
-  }
-  .top-nav .fixed-header .logo-font a{
-    font-size: 20px;
-    line-height: 48px;
+  .confirm-modal {
+    left: 50% !important;
   }
 }
 @media (min-width: 767px) and (max-width: 889px) {
-  .landing-container {
-    height: 538px;
+  .modal {
+    margin-left: -333px !important;
   }
-  .sign-up-content {
-    padding-top: 8%;
-
-  }
-  .span6.sign-up-content{
-    max-width: 410px;
-    min-width: 352px;
-  }
-  .sign-up-heading {
-    font-size: 20px;
-  }
-  .sign-up-text {
-    font-size: 14px;
-  }
-  .difference {
-    font-size: 18px;
-    margin-bottom: 16px;
-  }
-  .nav-menu,
-  .top-nav{
-    width: 500px;
-    .logo-font{
-      line-height: 28px;
-      a{
-        font-size: 24px;
-        line-height: 44px;
-      }
-    }
-    .landing-nav{
-      margin: 0 0 0 10px;
-      a{
-        padding: 16.5px 8px;
-      }
-      li{
-        font-size: 13px;
-      }
-    }
-  }
-  .top-nav {
-    .landing-nav{
-       li{
-        font-size: 14px;
-       }
-      a {
-        padding: 16.5px 6px;
-      }
-    }
-  }
-  .top-nav .fixed-header .logo-font a{
-    font-size: 20px;
-    line-height: 48px;
+  .confirm-modal {
+    left: 50% !important;
   }
 }
 
-//@media (min-width: 420px) and (max-width: 766px) {
+@media (max-width: 979px) {
+  .modal{
+    margin-left: 0;
+    position: absolute;
+  }
+  .confirm-modal {
+    left: 65%;
+    position: absolute;
+  }
+  .row{
+    margin-left: 0;
+  }
+  body{
+    padding: 0;
+  }
+  footer,
+  header {
+    width: 972px;
+  }
+  .table {
+    display: table;
+  }
+  .team-selection
+  {
+    width: 940px;
+  }
+  .entries-container{
+    width: 936px;
+  }
+  .span12, .row-fluid .span12,
+  .span8, .row-fluid .span8,
+  .span7, .row-fluid .span7,
+  .span6, .row-fluid .span6,
+  .span5, .row-fluid .span5,
+  .span2, .row-fluid .span2  {
+    float: left ;
+    margin-left: 0 ;
+    width: 972px ;
+  }
+  .span8, .row-fluid .span8,{
+    width: 655px;
+  }
+  .span7, .row-fluid .span7,{
+    width: 615px;
+  }
+  .span6, .row-fluid .span6,{
+    width: 550px;
+  }
+  .span5, .row-fluid .span5,{
+    width: 360px;
+  }
+  .span2, .row-fluid .span2,{
+    width: 130px;
+  }
+
+  .container {
+    width: auto;
+  }
+
+  .landing-container,
+  .about-container,
+  .land-nav{
+    width: 985px;
+  }
+  .top-nav .fixed-header,
+  .fixed-header{
+    position: absolute;
+    top: -51px;
+  }
+  .fixed-header {
+    top: 0px;
+  }
 //  .modal {
 //    margin-left: 15px;
 //  }
@@ -2542,7 +2512,8 @@ textarea[class*="span"] {
 //  .fixed-header {
 //    width: 98%;
 //  }
-//  .nav-menu{
+//  .nav-menu,
+//  .top-nav{
 //    width: 500px;
 //    .logo-font{
 //      line-height: 28px;
@@ -2561,15 +2532,29 @@ textarea[class*="span"] {
 //      }
 //    }
 //  }
+//  .top-nav {
+//    .landing-nav{
+//      li{
+//        font-size: 14px;
+//      }
+//      a {
+//        padding: 16.5px 6px;
+//      }
+//    }
+//  }
+//  .top-nav .fixed-header .logo-font a{
+//    font-size: 20px;
+//    line-height: 48px;
+//  }
 //  body {
 //    padding-left: 1%;
 //    padding-right: 1%;
 //  }
-//  [class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"] {
-//    -moz-box-sizing: border-box;
-//    display: block;
-//    float: left;
-//    margin-left: 0;
-//  }
-//}
+  [class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"] {
+    -moz-box-sizing: border-box;
+    display: block;
+    float: left;
+    margin-left: 0;
+  }
+}
 
