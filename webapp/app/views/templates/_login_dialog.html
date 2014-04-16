@@ -8,7 +8,7 @@
     <p ng-show="message">{{message}}</p>
     <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
     <div class='modal-form-container'>
-      <input type='text' name="email" required placeholder='Email' ng-model="user.email" class='mvm' focus-me="loginForm.email.$error.required" /><br />
+      <input type='text' name="email" required placeholder='Email' ng-model="user.email" class='mvm' /><br />
       <input type='password' name="password" required placeholder='Password' ng-model="user.password" class='mvm'><br />
       <div class='mvm pull-left sing-up-link'>
         Not a member?&nbsp;<a href="javascript://" ng-click="close('signUp')">Sign Up</a>
