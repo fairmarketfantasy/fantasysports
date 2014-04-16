@@ -170,6 +170,16 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   def publish
     arr = Market.all.select { |m| (m.name =~ /\w+\s+@\s+\w+/).nil? }
     arr.each { |m| m.destroy }
+    arr = []
+    Market.all.each do |m|
+      markets = Market.where(name: m.name, closed_at: m.closed_at)
+      arr.concat(markets[1..-1]) if markets.count > 1
+    end
+    arr.each do |m|
+      m.rosters.each { |r| r.destroy }
+      m.destroy
+    end
+
     Market.find_by_sql("select * from publish_market(#{self.id})")
     reload
     self.update_market_players
