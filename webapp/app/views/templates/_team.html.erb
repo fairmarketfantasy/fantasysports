@@ -20,7 +20,7 @@
       <ul class="no-no" highlight-changes-in-list="roster.players" key-to-watch="score">
         <li class="mr-item clearfix" ng-repeat="player in roster.players" ng-class="{'no-border': $index == roster.players.length-2 || $last }">
           <div class="clearfix pull-left roster-avatar">
-              <div ng-show="showPlayer(roster, player) && player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched , 'swapped-image' : player.swapped_player_name}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')') || $routeParams.sport == 'NBA' }">
+              <div ng-show="showPlayer(roster, player) && player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched , 'swapped-image' : player.swapped_player_name}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')') }">
                 <span ng-show="player.benched" class="benched-icon">B</span>
                 <span ng-show="player.swapped_player_name" class="swapped-icon">S</span>
               </div>
