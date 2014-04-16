@@ -48,6 +48,8 @@ class Game < ActiveRecord::Base
   def winning_team
     home = get_home_team_status
     away = get_away_team_status
+    return unless home['points']
+
     if home['points'] > away['points']
       home_team
     elsif away['points'] > home['points']
