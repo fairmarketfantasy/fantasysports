@@ -33,7 +33,7 @@ class RostersController < ApplicationController
                        :buy_in => DEFAULT_BUY_IN,
                        :remaining_salary => DEFAULT_REMAINING_SALARY).as_json
 
-    roster[:positions] = Positions.for_sport_id(sport_id).split(',')
+    roster[:positions] = Positions.for_sport_id(sport_id).split(',').each_with_index.map { |item,i| { :acronym => item, :name => Positions.names_for_sport_id(sport_id).split(',')[i] } }
     render json: roster.to_json
   end
 
