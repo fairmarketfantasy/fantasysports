@@ -117,8 +117,7 @@ ActiveRecord::Schema.define(version: 20140408155651) do
     t.decimal  "value"
   end
 
-  create_table "game_events", id: false, force: true do |t|
-    t.integer  "id",              null: false
+  create_table "game_events", force: true do |t|
     t.string   "stats_id"
     t.integer  "sequence_number", null: false
     t.string   "type",            null: false
@@ -135,8 +134,7 @@ ActiveRecord::Schema.define(version: 20140408155651) do
   add_index "game_events", ["game_stats_id"], name: "index_game_events_on_game_stats_id", using: :btree
   add_index "game_events", ["sequence_number"], name: "index_game_events_on_sequence_number", using: :btree
 
-  create_table "games", id: false, force: true do |t|
-    t.integer  "id",               null: false
+  create_table "games", force: true do |t|
     t.string   "stats_id",         null: false
     t.string   "status",           null: false
     t.date     "game_day",         null: false
@@ -160,6 +158,7 @@ ActiveRecord::Schema.define(version: 20140408155651) do
   add_index "games", ["bench_counted_at"], name: "index_games_on_bench_counted_at", using: :btree
   add_index "games", ["game_day"], name: "index_games_on_game_day", using: :btree
   add_index "games", ["game_time"], name: "index_games_on_game_time", using: :btree
+  add_index "games", ["stats_id"], name: "index_games_on_stats_id", unique: true, using: :btree
 
   create_table "games_markets", force: true do |t|
     t.string   "game_stats_id",                  null: false
@@ -578,10 +577,10 @@ ActiveRecord::Schema.define(version: 20140408155651) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
+    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
-    t.string   "avatar"
     t.text     "bonuses"
     t.string   "referral_code"
     t.integer  "total_loses",            default: 0
