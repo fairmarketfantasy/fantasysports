@@ -151,7 +151,7 @@ angular.module('app.services')
         } else if (resp.data && resp.data.error) {
           flash.error(resp.data.error);
         } else {
-          flash.error("Oops, something went wrong, try again later");
+          //flash.error("Oops, something went wrong, try again later");
         }
         console && console.log('API Error: ');
         console.log(resp);
