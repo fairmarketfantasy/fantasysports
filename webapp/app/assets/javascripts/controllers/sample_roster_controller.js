@@ -25,6 +25,7 @@ angular.module("app.controllers")
             $scope.isCurrent(roster.market_id);
 
           $scope.mostExpencive = function() {
+            if(!roster.players){return;}
             return _.max(roster.players, function(top_price){
               return parseInt(top_price.buy_price)
             })
@@ -37,10 +38,8 @@ angular.module("app.controllers")
         });
     };
 
-
-
-
     $scope.playerStats = function(player){
+      if(!player){return;}
       $scope.player = player;
       fs.prediction.show(player.stats_id).then(function(data){
         $scope.events = data.events;
@@ -50,7 +49,7 @@ angular.module("app.controllers")
 
     $scope.isCurrent = function(market){
         if (!market) {
-            $scope.gameNotFound = "There are no contents at this moment";
+            $scope.gameNotFound = "There are no " + $routeParams.sport + " games scheduled";
             return;
         }
     };
