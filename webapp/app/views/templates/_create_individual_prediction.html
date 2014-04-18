@@ -8,7 +8,7 @@
 <div class='modal-body clearfix'>
    <ul class="no-no prediction-modal-body clearfix">
        <li ng-repeat="point in points" ng-class="{'border-none': $index == 2 || $index == 5}">
-          <p>{{point.name | capitalize}} : {{point.value}}</p>
+          <p>{{point.name | capitalize}} : {{point.value | toFixed}}</p>
            <div class="clearfix">
               <a href="javascript://" ng-disabled="point.bid_less" class="btn prediction-less" ng-click="confirmModal('less', point.value, point.name, point.bid_less, point.less_pt)" >
                   less
