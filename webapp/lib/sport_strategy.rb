@@ -20,7 +20,7 @@ class NBAStrategy < SportStrategy
         ).where(['closed_at > ? AND state IN(\'published\', \'opened\')', Time.now.utc]
         ).order('closed_at asc').limit(10).select{|m| m.game_type =~ /single_elimination/ }
     else
-      next_market_day = @sport.markets.where(['closed_at > ?', Time.now.utc]).order('closed_at asc').first.closed_at.beginning_of_day
+      # next_market_day = @sport.markets.where(['closed_at > ?', Time.now.utc]).order('closed_at asc').first.closed_at.beginning_of_day
       @sport.markets.where(
           ["game_type IS NULL OR game_type = 'regular_season'"]
           ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', Time.now.utc, Time.now.utc.end_of_day + 6.hours]
