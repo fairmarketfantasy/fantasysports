@@ -22,7 +22,7 @@ angular.module('app.filters')
   })
   .filter('toFixed', function() {
     return function(input, scope) {
-      return parseInt(input).toFixed();
+      return parseFloat(input);
     };
   })
   .filter('freeIfZero', function() {
