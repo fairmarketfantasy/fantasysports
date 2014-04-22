@@ -14,7 +14,7 @@ angular.module("app.controllers")
         marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
       }
         if(!marketService.currentMarket){
-          $scope.gameNotFound = "There are no contents at this moment";
+          $scope.gameNotFound = "There are no 	" + $routeParams.sport + " games scheduled";
           return;
         }else{
             $scope.marketService.currentMarket.id = marketService.currentMarket.id

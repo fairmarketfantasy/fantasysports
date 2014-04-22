@@ -15,15 +15,24 @@ class PlayersController < ApplicationController
     @players = @players.autocomplete(params[:autocomplete]) if params[:autocomplete]
 
     game = params[:game] ? Game.find(params[:game]) : nil
-    scopes = { in_game: game, in_contest: params[:contest].presence, in_position: params[:position].presence, on_team: params[:team].presence}
+
+    scopes = { in_game: game, in_contest: params[:contest].presence, on_team: params[:team].presence}
+
+    if roster.market.sport.name == 'MLB'
+      scopes.merge! in_position_by_market_id: [roster.market_id, params[:position].presence]
+    else
+      scopes.merge! in_position: params[:position].presence
+    end
+
     sort = params[:sort] || 'id'
     order = params[:dir] || 'asc'
 
     scopes.each do |s, val|
       if val
-        @players = @players.public_send(s, val)
+        @players = @players.public_send(s, *val)
       end
     end
+
     # TODO: add positional exclusion using uniq roster remaining_positions
     @players = @players.where("players.id NOT IN(#{roster.rosters_players.map(&:player_id).push(-1).join(',')})")
                       #.where("player_positions.position IN('#{roster.remaining_positions.uniq.join("','")}')")

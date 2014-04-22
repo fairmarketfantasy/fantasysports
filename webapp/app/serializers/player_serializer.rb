@@ -37,4 +37,10 @@ class PlayerSerializer < ActiveModel::Serializer
   def benched
     object.benched? ? true : false
   end
+
+  def ppg
+    return unless object.ppg
+
+    !object.ppg.zero? ? object.ppg : nil
+  end
 end

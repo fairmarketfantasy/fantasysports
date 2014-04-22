@@ -15,8 +15,6 @@
 
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
 
-  <meta name="apple-itunes-app" content="app-id=719879920">
-
   <%
     title = @page_title || 'Predict That'
     description = @page_description || 'Predict That is the fairest Predict That sports gaming website out there'
@@ -156,6 +154,10 @@
                       <em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentSport == sport.name}"></em>
                       <a class="landing-nav-link"  href="/#/{{sport.name}}/home">{{sport.name}}</a>
                     </li>
+                    <li class="no-border">
+                      <em class="menu-arrow"></em>
+                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">MLB</a>
+                    </li>
                   </ul>
                 </li>
                 <li>
@@ -223,8 +225,8 @@
             </a>
           </div>
           <div class="span2 nav-span user-navigation">
-            <a href="javascript://">
-              <%= image_tag 'googleplay_up.png' %>
+            <a target="_blank" href="https://play.google.com/store/apps/details?id=com.fantasysport">
+              <%= image_tag 'googleplay.png' %>
             </a>
           </div>
 

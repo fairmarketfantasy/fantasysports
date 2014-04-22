@@ -37,7 +37,7 @@ class Positions
   end
 
   def self.default_MLB
-    'P,P,C,1B/DH,2B,3B,SS,OF,OF,OF'
+    'SP,RP,C,1B/DH,2B,3B,SS,OF,OF,OF'
   end
 
   def self.default_MLB_names

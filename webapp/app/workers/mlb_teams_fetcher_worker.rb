@@ -13,23 +13,14 @@ class MLBTeamsFetcherWorker
     @recent_mlb_teams_fetch = Sidekiq::Monitor::Job.where(:queue => :mlb_teams_fetcher).last
 
     # teams info update since the latest fetch time
-    if Sidekiq::Monitor::Job.where(:queue => :mlb_teams_fetcher).count == 1 or (@recent_mlb_teams_fetch.started_at and @recent_mlb_teams_fetch.started_at < recent_update_time)
+    if Sidekiq::Monitor::Job.where(:queue => :mlb_teams_fetcher).count == 1 or (@recent_mlb_teams_fetch.started_at and @recent_mlb_teams_fetch.started_at < recent_update_time) or (Team.where(:sport_id => Sport.find_by_name('MLB').id).count == 0)
       # this var may be shared
 
       # TODO: delete this when release, we mustn`t keep sport without markets
-      begin
-        s = Sport.new
-        s.name = 'MLB'
-        s.is_active = true
-        s.playoffs_on = true
-        s.save
-      rescue
-      end
-
       @sport = Sport.where(:name => 'MLB').first
 
       @matched_abbrevs = []
-      
+
       doc = Nokogiri::XML open('http://www.sportsnetwork.com/teams3.asp').read
       nodes = doc.xpath('//teams/Listing')
       counter = 0

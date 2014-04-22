@@ -40,6 +40,8 @@ class Player < ActiveRecord::Base
   scope :in_market,    ->(market)     { where(team: market.games.map{|g| g.teams.map{|t| [t.abbrev, t.stats_id]} }.flatten) }
   scope :in_game,      ->(game)       { where(team: game.teams.map{|t| [t.abbrev, t.stats_id]}.flatten ) }
   scope :in_position,  ->(position)   { select('players.*, player_positions.position').joins('JOIN player_positions ON players.id=player_positions.player_id').where(["player_positions.position = ?", position]) }
+  scope :in_position_by_market_id, -> (market_id, position) { select('players.*, market_players.position').
+      where(['market_players.position = ? AND market_players.market_id = ?', position, market_id]) }
   scope :normal_positions,      ->(sport_id) { select('players.*, player_positions.position'
                                     ).joins('JOIN player_positions ON players.id=player_positions.player_id'
                                     ).where("player_positions.position IN( '#{Positions.for_sport_id(sport_id).split(',').join("','") }')") }
@@ -86,6 +88,14 @@ class Player < ActiveRecord::Base
 
   def headshot_url(size = 65) # or 195
     return nil if position == 'DEF'
+    if sport.name == 'MLB'
+      if (positions.first.try(:position) =~ /(P|SP|RP)/).present?
+        return '/assets/pitcher_icon.png'
+      else
+        return '/assets/hitter_icon.png'
+      end
+    end
+
     return "https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/#{stats_id}/#{size}.jpg"
   end
 
@@ -100,30 +110,56 @@ class Player < ActiveRecord::Base
   end
 
   def calculate_ppg
-    played_games_ids = StatEvent.where("player_stats_id='#{self.stats_id}' AND activity='points' AND quantity != 0" ).
-                                 pluck('DISTINCT game_stats_id')
-    events = StatEvent.where(player_stats_id: self.stats_id,
-                             game_stats_id: played_games_ids, activity: 'points')
-    total_stats = StatEvent.collect_stats(events)[:points]
-    return if total_stats.nil? || played_games_ids.count == 0
+    if self.sport.name == 'MLB'
+      played_games_ids = StatEvent.where(player_stats_id: self.stats_id).pluck('DISTINCT game_stats_id')
+      games = Game.where(stats_id: played_games_ids).order("game_time DESC")
+      this_year_games = games.select { |g| g.game_day.year == Time.now.year }
+      if this_year_games.count >= 40
+        games = this_year_games
+      else
+        games = games.last(40)
+      end
+      played_games_ids = games.map(&:id).uniq
+      events = StatEvent.where(player_stats_id: self.stats_id, game_stats_id: played_games_ids)
+      return if events.count == 0 || self.total_games.to_i == 0
 
-    value = total_stats / played_games_ids.count
+      value = events.map(&:point_value).reduce(0) { |value, sum| sum + value } / self.total_games.to_i
+    else
+      played_games_ids = StatEvent.where("player_stats_id='#{self.stats_id}' AND activity='points' AND quantity != 0" ).
+                                   pluck('DISTINCT game_stats_id')
+      events = StatEvent.where(player_stats_id: self.stats_id,
+                               game_stats_id: played_games_ids, activity: 'points')
+      total_stats = StatEvent.collect_stats(events)[:points]
+      return if total_stats.nil? || played_games_ids.count == 0
+
+      value = total_stats / played_games_ids.count
+    end
     value = value.round == 0 ? nil : value
     self.update_attribute(:ppg, value)
   end
 
   def calculate_average(params, current_user)
-    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}' AND activity='points' AND quantity != 0" ).
+    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}' AND quantity != 0" ).
                                  pluck('DISTINCT game_stats_id')
     games = Game.where(stats_id: played_games_ids)
+    last_year_ids = games.where(season_year: (Time.now.utc - 4).year - 1).map(&:stats_id)
+    this_year_ids = games.where(season_year: (Time.now.utc - 4).year).map(&:stats_id)
     events = StatEvent.where(player_stats_id: params[:player_ids],
                              game_stats_id: played_games_ids)
-    recent_games = games.order("game_time DESC").first(5)
+    if games.last.sport.name == 'MLB'
+      recent_games = games.order("game_time DESC").first(50)
+    else
+      recent_games = games.order("game_time DESC").first(5)
+    end
     recent_ids = recent_games.map(&:stats_id)
     recent_events = events.where(game_stats_id: recent_ids)
+    last_year_events = events.where(game_stats_id: last_year_ids)
+    this_year_events = events.where(game_stats_id: this_year_ids)
 
-    recent_stats = StatEvent.collect_stats(recent_events)
-    total_stats = StatEvent.collect_stats(events)
+    recent_stats = StatEvent.collect_stats(recent_events, params[:position])
+    last_year_stats = StatEvent.collect_stats(last_year_events, params[:position])
+    this_year_stats = StatEvent.collect_stats(this_year_events, params[:position])
+    total_stats = StatEvent.collect_stats(events, params[:position])
 
     if params[:market_id] == 'undefined'
        bid_ids = []
@@ -135,9 +171,18 @@ class Player < ActiveRecord::Base
     data = []
     total_stats.each do |k, v|
       value = v.to_d / BigDecimal.new(played_games_ids.count)
-      value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
+      if games.last.sport.name == 'MLB'
+        last_year = last_year_stats[k]/events.first.player.total_games || 0.to_d
+        this_year = this_year_stats[k]/this_year_ids.count
+        history = last_year * (last_year - 2 * this_year)/last_year + this_year
+        recent = (recent_stats[k] || 0.to_d)/recent_ids.count
+        value = 0.2.to_d * recent + 0.8.to_d * history
+      else
+        value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
+      end
+
       value = value.round(1)
-      next if value == 0
+      next if value == 0 or value.nan?
 
       bid_less = false
       bid_more = false
