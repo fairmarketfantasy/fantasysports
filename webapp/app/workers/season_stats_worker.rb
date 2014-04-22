@@ -3,34 +3,92 @@ class SeasonStatsWorker
 
   sidekiq_options :queue => :season_stat_worker
 
+  EVENT_POINTS = { 'Ground Out' => 0.0,
+                   'Dropped 3rd strike, batter out' => 0.0,
+                   'Struck Out Looking' => 0.0,
+                   'Singled' => 1.0, # Single = +1 PTs
+                   'Doubled' => 2.0, # Double = +2 PTs
+                   'Struck Out Swinging' => 0.0,
+                   'Fly Out' => 0.0,
+                   'Fouled Out' => 0.0,
+                   'Advanced on dropped wild pitch' => 0.0,
+                   'Home Run' => 4.0, # Home Run = +4 Pts
+                   'Bunt Foul Strikeout' => 0.0,
+                   'Batter reached on Fielding Error' => 0.0,
+                   'Lined out' => 0.0,
+                   'Singled, but batter was thrown out trying to advance to second' => 0.0,
+                   'Fielder`s Choice' => 0.0,
+                   'Hit By Pitch' => 1.0,
+                   'Tripled' => 3.0, # 3B = 3pts,
+                   'Run Batted In' => 1.0, # RBI = 1pt
+                   'Run' => 1.0, # R = 1pt
+                   'Walked' => 1.0, # BB = 1pt
+                   'Stolen Base' => 2.0, # SB = 2pts
+                   'Out' => -0.25, # Out (calculated as at bats - hits) = -.25pt
+                   'none' => 0.0,
+                    # and this is for pitchers
+                   'Strike Out' => 1.0,
+                   'Earned run' => -1.0,
+                   'Inning Pitched' => 1.0,
+                   'Wins' => 4.0 } # W = 4pts
+
   def perform(team_stats_id, year, season_type = 'reg')
     @team = Team.find_by_stats_id team_stats_id
-    data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/stats?team_id=#{team_stats_id}&season=#{season_type}&year=#{year}&api_token=#{TSN_API_KEY}").read
-
+    url = "http://api.sportsnetwork.com/v1/mlb/stats?team_id=#{team_stats_id}&season=#{season_type}&year=#{year}&api_token=#{TSN_API_KEY}"
+    data = JSON.parse open(url).read
+    game = Game.where(:sport_id => @team.sport_id, home_team: team_stats_id + year.to_s + '1').first
+    game ||= Game.create!(status: 'closed', sport_id: Sport.where(name: 'MLB').first.id,
+                                 game_day: Date.parse("#{year}-01-01"), stats_id: team_stats_id + year.to_s,
+                                 home_team: team_stats_id + year.to_s,
+                                 away_team: year.to_s + team_stats_id,
+                                 season_year: year.to_i,
+                                 game_time: Date.parse("#{year}-01-01").to_time)
     data['batting_stats'].each do |batting_stat|
-      player = Player.find_by_stats_id  batting_stat['player_id'].to_s
+      player_stats_id = batting_stat['player_id'].to_s
+      total_games  = batting_stat['games']
+      # EPIC TODO: batting_stat['']*1.0 # First Base (1B) = 1pt
+      # Second base, or double(2B) = 2pts
+      create_stat_event(player_stats_id, batting_stat['doubles'], game, 'Doubled')
+      # Third base, or triple(3B) = 3pts
+      create_stat_event(player_stats_id, batting_stat['triples'], game, 'Tripled')
+      # Home Runs(HR) = 4pts
+      create_stat_event(player_stats_id, batting_stat['homeruns'], game, 'Home Run')
+      # Run Batted In (RBI) = 1pt
+      create_stat_event(player_stats_id, batting_stat['rbi'], game, 'Run Batted In')
+      # Runs(R) = 1pt
+      create_stat_event(player_stats_id, batting_stat['runs'], game, 'Run')
+      # Base On Balls(BB) or Walks (term from Wiki) = 1pt
+      create_stat_event(player_stats_id, batting_stat['walks'], game, 'Walked')
+      # Stolen Base (SB) = 2pts
+      create_stat_event(player_stats_id, batting_stat['sb'], game, 'Stolen Base')
+      # Hit By Pitch (HBP) = 1pt
+      create_stat_event(player_stats_id, batting_stat['hbp'], game, 'Hit By Pitch')
+      # Out (calculated as at bats - hits) = -.25pt
+      create_stat_event(player_stats_id, (batting_stat['at_bats'] - batting_stat['hits']), game, 'Out')
+      player = Player.where(stats_id: player_stats_id).first
       next unless player
-      #player.total_points += batting_stat['']*1.0 # First Base (1B) = 1pt
-      player.total_points += batting_stat['doubles']*2.0  # Second base, or double(2B) = 2pts
-      player.total_points += batting_stat['triples']*3.0  # Third base, or triple(3B) = 3pts
-      player.total_points += batting_stat['homeruns']*4.0 # Home Runs(HR) = 4pts
-      player.total_points += batting_stat['rbi']*1.0      # Run Batted In (RBI) = 1pt
-      player.total_points += batting_stat['runs']*1.0     # Runs(R) = 1pt
-      player.total_points += batting_stat['walks']*1.0    # Base On Balls(BB) or Walks (term from Wiki) = 1pt
-      player.total_points += batting_stat['sb']*2.0       # Stolen Base (SB) = 2pts
-      player.total_points += batting_stat['hbp']*1.0      # Hit By Pitch (HBP) = 1pt
-      player.total_points += (batting_stat['at_bats'] - batting_stat['hits'])*-0.25 # Out (calculated as at bats - hits) = -.25pt
-      player.save!
+
+      player.update_attribute(:total_games, player.total_games.to_i + total_games.to_i)
     end
 
     data['pitching_stats'].each do |pitching_stat|
-      player = Player.find_by_stats_id  pitching_stat['player_id'].to_s
+      player_stats_id = pitching_stat['player_id'].to_s
+      total_games = pitching_stat['appearances']
+
+      # Win (W) = 4pts
+      create_stat_event(player_stats_id, pitching_stat['wins'], game, 'Wins')
+      # Earned Run (ER) = -1pt
+      create_stat_event(player_stats_id, pitching_stat['earned_runs'], game, 'Earned run')
+      # Strike Out (SO) = 1pt
+      create_stat_event(player_stats_id, pitching_stat['total_outs'], game, 'Strike Out')
+      # Inning Pitched (IP) = 1pt
+      create_stat_event(player_stats_id, pitching_stat['ip'], game, 'Inning Pitched')
+
+      player = Player.where(stats_id: player_stats_id).first
+
       next unless player
-      player.total_points += pitching_stat['wins'].to_i*4.0       # Win (W) = 4pts
-      player.total_points += pitching_stat['earned_runs']*-1.0    # Earned Run (ER) = -1pt
-      player.total_points += pitching_stat['total_outs']*1.0      # Strike Out (SO) = 1pt
-      player.total_points += pitching_stat['ip']*1.0              # Inning Pitched (IP) = 1pt
-      player.save!
+
+      player.update_attribute(:total_games, player.total_games.to_i + total_games.to_i)
     end
   end
 
@@ -39,5 +97,18 @@ class SeasonStatsWorker
     return 'No team found' unless @team
 
     "Fetch team stats for team: #{@team.name}, season: #{year}, season_type: #{season_type}"
+  end
+
+  private
+
+  def create_stat_event(player_stats_id, value, game, key)
+    item = StatEvent.new(player_stats_id: player_stats_id,
+                         point_value: value.to_f * EVENT_POINTS[key],
+                         game_stats_id: game.stats_id,
+                         activity: key,
+                         quantity: value,
+                         points_per: EVENT_POINTS[key],
+                         data: '')
+    item.save!
   end
 end

@@ -8,7 +8,7 @@ angular.module("app.controllers")
 
 
     $scope.playerStats = function(){
-        fs.prediction.show(player.stats_id, $routeParams.market_id).then(function(data){
+        fs.prediction.show(player.stats_id, $routeParams.market_id, player.position).then(function(data){
            $scope.points = data.events;
         });
     }

@@ -7,11 +7,13 @@ window.twttr = (function (d,s,id) {
 
 angular.module("app.controllers")
 // TODO: change the name of this to ShareController, or split them up
-.controller('TwitterController', ['$scope', '$timeout', 'fs', function($scope, $timeout, fs) {
-  $scope.shareUrl = 'https://predictthat.com/public/#/' + $scope.currentUser.currentSport + '/market/' +
+.controller('TwitterController', ['$scope', '$timeout', 'fs','rosters', function($scope, $timeout, fs, rosters) {
+  $scope.shareUrl = 'https://predictthat.com/#/' + $scope.currentUser.currentSport + '/market/' +
               (($scope.$routeParams && $scope.$routeParams.market_id) || $scope.roster.market_id)  + '/roster/' +
               (($scope.$routeParams && $scope.$routeParams.roster_id) || $scope.roster.id) + '?view_code=' +
               (($scope.$routeParams && $scope.$routeParams.view_code) || ($scope.roster && $scope.roster.view_code ));
+
+  $scope.rosters = rosters;
 
   // Facebook
   $scope.fbShare = function() {
@@ -37,6 +39,11 @@ angular.module("app.controllers")
   };
 
   var highestPrize = $scope.roster && JSON.parse($scope.roster.contest_type.payout_structure)[0];
+    $timeout(function(){
+      $scope.away_team = $scope.rosters.currentRoster.market.games[0].away_team;
+      $scope.home_team = $scope.rosters.currentRoster.market.games[0].home_team;
+    },1500);   // hacky.  Should really wait for roster
+
   // Twitter
   twttr.ready(function(twttr) {
     $timeout(function() {
@@ -49,14 +56,14 @@ angular.module("app.controllers")
           },
           {
             count: 'none',
-            text: 'I built an epic roster ' + (highestPrize  && highestPrize > 8000 ? 'to win $' + highestPrize / 100 : '') + ' on FairMarketFantasy. Check it out! #fantasyfootball #dfs',
+            text: 'I built an epic roster ' + (highestPrize  && highestPrize > 8000 ? 'to win $' + highestPrize / 100 : '') + ' on Predict That. Check it out! #'+ $scope.$routeParams.sport +' #'+ $scope.away_team +' #'+ $scope.home_team +' @predictthatnow',
             size: 'large'
           }
         );
       })
 
       twttr.widgets.createFollowButton(
-        'FairMktFantasy',
+        'Predict That',
         $('.twitter-follow').get(0),
         function (el) {
           console.log("Follow button created.")
@@ -76,7 +83,7 @@ angular.module("app.controllers")
         $('.twitter-share').parent().find('h3').addClass('success');
         $scope.addBonus('twitter_share');
       });
-    }, 100); // hacky.  Should really wait for roster
+    }, 1600); // hacky.  Should really wait for roster
   });
 }]);
 

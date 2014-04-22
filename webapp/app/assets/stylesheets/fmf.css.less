@@ -121,6 +121,11 @@ footer {
   .player-overflow {
     max-height: 425px;
   }
+  .modal-prediction{
+    .prediction-modal-body p{
+      min-height: 37px;
+    }
+  }
 }
 
 //END GAME TYPE
@@ -834,7 +839,7 @@ select:focus:invalid {
   height: 46px;
 }
 .android-app-link {
-  background: asset-url('googleplay_up.png') no-repeat;
+  background: asset-url('googleplay.png') no-repeat;
 }
 
 .end {
@@ -1555,7 +1560,7 @@ input, textarea, .uneditable-input {
     &.tiny-ind {
       width: 12%;
       text-align: center;
-    } 
+    }
     &.tiny-last {
       padding: 0 15px;
       a{
@@ -1623,9 +1628,9 @@ input, textarea, .uneditable-input {
     li{
       border-right: 1px solid #CCCCCC;
       float: left;
-      padding: 0 30px 5px;
+      padding: 0 25px 10px;
       text-align: center;
-      width: 122px;
+      width: 132px;
       min-height: 90px;
       div{
         margin: 0 0 0 15px;
@@ -1633,7 +1638,8 @@ input, textarea, .uneditable-input {
     }
     p {
       font-size: 16px;
-      margin: 0;
+      margin: 0 0 5px 0;
+      line-height: 18px;
     }
     a {
       background-color: @info;
@@ -1849,6 +1855,8 @@ input, textarea, .uneditable-input {
   font-size: 16px;
   font-weight: 200;
   font-family: @base-font-family;
+  color: #000000;
+  font-weight:bold;
   margin-bottom: 0;
 }
 .mr-player-name.not-selected {
@@ -2272,7 +2280,7 @@ textarea[class*="span"] {
 .landing-ind-prediction {
   border:1px solid #fdfdfd ;
   .border-radius(6px);
-  padding: 2%;
+  padding: 1.5%;
   position: absolute;
   right: 9%;
   text-align: left;
@@ -2446,13 +2454,13 @@ textarea[class*="span"] {
     width: 655px;
   }
   .span7, .row-fluid .span7,{
-    width: 615px;
+    width: 650px;
   }
   .span6, .row-fluid .span6,{
     width: 550px;
   }
   .span5, .row-fluid .span5,{
-    width: 360px;
+    width: 325px;
   }
   .span2, .row-fluid .span2,{
     width: 130px;

@@ -15,8 +15,6 @@
 
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
 
-  <meta name="apple-itunes-app" content="app-id=719879920">
-
   <%
     title = @page_title || 'Predict That'
     description = @page_description || 'Predict That is the fairest fantasy sports gaming website out there'
@@ -75,77 +73,177 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div>
   <!-- This is where you work your magic, do your best! -->
-  <header class="full">
-    <div class="container">
-    <div class="row top-nav">
-      <div class="span9">
-        <a href="/#"><h1 class="logo-font">Predict <span class="logo-slash">That</span></h1></a> <span class="sub-title">Advanced market-driven pricing and the highest payouts in the industry!</span>
-      </div>
-      <div class="span3">
-        <div class="links text-right">
-
-          <a class="sub-title txt-green-hover" href="javascript://" ng-click="signUpModal()">Sign Up</a>
-          <a class="sub-title txt-green-hover" href="javascript://" ng-click="loginModal()">Sign In</a>
-        </div>
-      </div>
+<div class="fixed-header land-nav">
+  <div class="container clearfix">
+    <div class="span7 nav-span nav-menu">
+      <h1 class="logo-font"><a href="/#/external">Predict <span class="logo-slash">That</span></a></h1>
+      <nav ng-class="{true :'disable-nav'}[disable]" class="landing-nav">
+        <ul>
+          <li>
+            <a class="dropdown-toggle" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">Sports</a>
+            <div ng-show="popover_sports" class="popover bottom fade in header-popover">coming very soon <div class="arrow"></div></div>
+            <!--<ul class="header-drop-menu dropdown-menu">-->
+            <!--<li ng-class="{'no-border': $last}" ng-repeat="sport in sports" ng-show="sport.is_active" >-->
+            <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentSport == sport.name}"></em>-->
+            <!--<a class="landing-nav-link"  href="/#/{{sport.name}}/home">{{sport.name}}</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <ul class="header-drop-menu dropdown-menu">
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">mlb</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nba</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nfl</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nhl</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nascar</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">golf</a>
+              </li>
+              <li class="no-border">
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">tennis</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a ng-show="sports" class="dropdown-toggle">Fantasy Sports</a>
+            <ul class="header-drop-menu dropdown-menu">
+              <li  ng-repeat="sport in sports" ng-show="sport.is_active" >
+                <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name}"></em>
+                <a class="landing-nav-link"  href="/#/{{sport.name}}/external">{{sport.name}}</a>
+              </li>
+              <li class="no-border">
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">MLB</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a class="dropdown-toggle" ng-mouseleave="popover_entertainment = false" ng-mouseenter="popover_entertainment = true">Entertainment</a>
+            <div style="left:-4px;" ng-show="popover_entertainment" class="popover bottom fade in header-popover">coming soon <div class="arrow"></div></div>
+            <!--<ul class="header-drop-menu dropdown-menu">-->
+            <!--<li ng-class="{'no-border': $last}" ng-repeat="entertainment in entertainments" ng-show="entertainment.is_active" >-->
+            <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentEntertainment == entertainment.name}"></em>-->
+            <!--<a class="landing-nav-link"  href="/#/{{entertainment.name}}/home">{{entertainment.name}}</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <ul class="header-drop-menu dropdown-menu">
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">music</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">reality shows</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">oscars</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">grammys</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">celebrity propositions</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a class="dropdown-toggle" ng-mouseleave="popover_politics = false" ng-mouseenter="popover_politics = true">Politics</a>
+            <div ng-show="popover_politics" class="popover bottom fade in header-popover">coming soon <div class="arrow"></div></div>
+            <!--<ul class="header-drop-menu dropdown-menu">-->
+            <!--<li ng-class="{'no-border': $last}" ng-repeat="politic in politics" ng-show="politic.is_active" >-->
+            <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentPolitic == politic.name}"></em>-->
+            <!--<a class="landing-nav-link"  href="/#/{{politic.name}}/home">{{politic.name}}</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <ul class="header-drop-menu dropdown-menu">
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">presidential candidates</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">congressional races</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">senate races</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <!--<div class="span2 nav-span">-->
+    <!--<a class="coming-soon-nav"><span>New Daily NBA Games</span></a>-->
+    <!--</div>-->
+    <div class="span2 nav-span">
+      <a class="sign-in-nav" href="javascript://" ng-click="loginModal()">Sign In</a>
+    </div>
+    <div class="span2 nav-span">
+      <a href="javascript://" class="sign-up-nav" ng-click='signUpModal()'>Sign Up</a>
     </div>
   </div>
-    <div class="container">
-      <div class="row header-bottom" ng-cloak>
-        <div class="span3 user-container text-center" ng-hide="currentUser">
-          <h3 class="public-user-cta">Join the Fun!</h3>
-          <div class="btn btn-success"><h3><a href="javascript://" style="color: #fefefe" ng-click="signUpModal()">Sign up!</a></h3></div>
-        </div>
-      </div>
-    </div>
-  </header>
-  
-  <article>
-    <div class="container">
-      <div class="row">
-        <div class="span3 user-navigation">
-          <ul class="nav">
-            <li class="nav-item"><a href="/#/">Home</a></li>
-            <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
-            <li class="nav-item"><a href="#/rules" >Rules and Scoring</a></li>
-            <li class="nav-item"><a href="#/legal" >Legal Info</a></li>
-            <li class="nav-item end"><a href="#/support">Support</a></li>
-          </ul>
-          <div class="nav-mobile-app-links">
-            <a href="https://itunes.apple.com/us/app/fmf-football/id719879920?mt=8&uo=4" target="itunes_store" class="ios-app-link" style=""></a>
-          </div>
-        </div>
-        <div class="span9 page-content">
-          <div class="padded-content">
-            <div class="content">
-              <div id="content" ng-view>
-              </div>
+</div>
+
+<article>
+  <div class="container">
+    <div class="row">
+      <div class="span12 page-content">
+        <div class="padded-content">
+          <div class="content">
+            <div id="content" ng-view>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <footer>
-      <div class="container">
-        <div class="row">
-          <div class="span4">
+  </div>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <div class="clearfix">
             <h4 class="logo-font">Predict <span class="logo-slash">That</span></h4>
-            <p>Copyright 2013, Fair Market Fantasy, LLC. All Rights Reserved.</p>
-            <p>Based in San Francisco, CA</p>
+            <ul class="footer-nav">
+              <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/home">Home</a></li>
+              <!--<li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>-->
+              <!--<li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>-->
+              <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
+              <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rules" >Rules and Scoring</a></li>
+              <li class="nav-item"><a href="/support" target="_blank" >How it works/support</a></li>
+              <li class="nav-item"><a href="/conditions" target="_blank">Subcription terms</a></li>
+              <!--<li class="nav-item"><a href="/#/legal" >Legal Info</a></li>-->
+              <!--<li class="nav-item"><a href="/#/support">Support</a></li>-->
+              <li class="nav-item end"><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></li>
+            </ul>
           </div>
-          <div class="span3 offset5 tos-padding">
-            <p><a href="/conditions">Terms and Conditions</a></p>
-            <p><a href="#/legal">US &amp; Canada Legality</a></p>
-            <p><a href="#/support">Customer Support / Contact</a></p>
-            <p><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></p>
-
-          </div>
+          <p>Copyright 2013, Fair Market Fantasy, LLC. All Rights Reserved.</p>
+          <p>Based in San Francisco, CA</p>
         </div>
       </div>
-    </footer>
-  </article>
+    </div>
+  </footer>
+</article>
 
 
 <!-- Setup some handy globals -->
@@ -178,5 +276,5 @@
 
 </body>
 </html>
-<!-- Another #winning product brought to you by MustWin! http://mustw.in -->
+
 

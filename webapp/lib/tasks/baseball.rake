@@ -8,6 +8,7 @@ namespace :baseball do
     Team.where(:sport_id => Sport.find_by_name('MLB').id).each { |t| SeasonStatsWorker.perform_async(t.stats_id, (Date.today - 1.year).year)}
   end
 
+  desc 'Fetch team schedule'
   task :fetch_schedule => :environment do
     Team.where(:sport_id => Sport.find_by_name('MLB').id).each { |t| TeamScheduleFetcherWorker.perform_async t.stats_id }
   end
