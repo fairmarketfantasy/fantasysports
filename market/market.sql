@@ -249,9 +249,9 @@ BEGIN
 
 	IF _roster.state = 'submitted' THEN
 		--perform the updates.
-		UPDATE markets SET total_bets = total_bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens) WHERE id = _roster.market_id;
-		UPDATE market_players SET bets = bets + _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE market_id = _roster.market_id and player_id = _player_id;
-    UPDATE rosters SET remaining_salary = remaining_salary - _price WHERE id = _roster_id;
+		--UPDATE markets SET total_bets = total_bets + _roster.buy_in * buy_in_ratio(_roster.takes_tokens) WHERE id = _roster.market_id;
+		--UPDATE market_players SET bets = bets + _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE market_id = _roster.market_id and player_id = _player_id;
+        UPDATE rosters SET remaining_salary = remaining_salary - _price WHERE id = _roster_id;
 		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 			   VALUES (_roster.market_id, _roster_id, 'buy', _player_id, _price);
 	END IF;
@@ -306,8 +306,8 @@ BEGIN
 
 	IF _roster.state = 'submitted' THEN
 		--perform the updates.
-		UPDATE markets SET total_bets = total_bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE id = _roster.market_id;
-		UPDATE market_players SET bets = bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE market_id = _roster.market_id and player_id = _player_id;
+		--UPDATE markets SET total_bets = total_bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE id = _roster.market_id;
+		--UPDATE market_players SET bets = bets - _roster.buy_in  * buy_in_ratio(_roster.takes_tokens) WHERE market_id = _roster.market_id and player_id = _player_id;
 		UPDATE rosters set remaining_salary = remaining_salary + _price where id = _roster_id;
 		INSERT INTO market_orders (market_id, roster_id, action, player_id, price)
 		  	VALUES (_roster.market_id, _roster_id, 'sell', _player_id, _price);
