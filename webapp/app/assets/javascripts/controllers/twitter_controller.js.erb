@@ -42,7 +42,6 @@ angular.module("app.controllers")
     $timeout(function(){
       $scope.away_team = $scope.rosters.currentRoster.market.games[0].away_team;
       $scope.home_team = $scope.rosters.currentRoster.market.games[0].home_team;
-      console.log($scope.market.games[0])
     },1500);   // hacky.  Should really wait for roster
 
   // Twitter
