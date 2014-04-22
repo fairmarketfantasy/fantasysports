@@ -198,12 +198,13 @@ class Roster < ActiveRecord::Base
     end
   end
 
-  def add_player(player, position, place_bets = true)
+  def add_player(player, position, place_bets = true, update_market = false)
     begin
       raise HttpException.new(409, "There is no room for another #{position} in your roster") unless remaining_positions.include?(position)
       if place_bets
         order = exec_price("SELECT * from buy(#{self.id}, #{player.id}, '#{position}')")
         self.class.uncached do
+          self.update_market_player(self.market.id, player.id, :add) if update_market
           self.players.reload
           self.rosters_players.reload
         end
@@ -226,11 +227,12 @@ class Roster < ActiveRecord::Base
     end
   end
 
-  def remove_player(player, place_bets = true)
+  def remove_player(player, place_bets = true, update_market = false)
     if place_bets
       value = self.remaining_salary
       exec_price("SELECT * from sell(#{self.id}, #{player.id})")
       self.class.uncached do
+        self.update_market_player(self.market.id, player.id, :remove) if update_market
         self.players.reload
         self.rosters_players.reload
       end
@@ -247,6 +249,15 @@ class Roster < ActiveRecord::Base
       end
       self.save!
     end
+  end
+
+  def update_market_player(market_id, player_id, action)
+    market = self.market
+    value = action == :add ? market.total_bets + self.buy_in : market.total_bets - self.buy_in
+    market.update_attribute(:total_bets, value)
+    market_player = MarketPlayer.where(market_id: market_id, player_id: player_id ).first
+    bets = action == :add ? market_player.bets + self.buy_in : market_player.bets - self.buy_in
+    market_player.update_attribute(:bets, bets)
   end
 
   def exec_price(sql)
