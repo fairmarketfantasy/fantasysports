@@ -130,7 +130,6 @@ footer {
 
 //END GAME TYPE
 
-
 .tos-padding {
   padding-top: 24px;
   p {
@@ -383,7 +382,7 @@ select:focus:invalid {
   padding-top: 0;
 }
 .landing-mobile-app-links {
-  padding-top: 40px;
+  padding-top: 20px;
 }
 .sign-up-heading {
   font-size: 26px;
@@ -2242,7 +2241,7 @@ textarea[class*="span"] {
   color:@green;
   text-transform: uppercase;
   border-bottom:1px solid #ddd;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
   text-align: center;
 }
 .ind-pred-th{
@@ -2261,12 +2260,15 @@ textarea[class*="span"] {
   .roster-area{
     width: 100%;
   }
+  .landing-roster-header {
+    padding: 10px 0 20px 0;
+  }
 }
 #playoff-teaser {
   color: #FEFEFE;
   float: right;
   text-align: center;
-  margin-right: 11%;
+  margin-right: 10%;
 }
 #sport-teaser {
   position: absolute;
@@ -2282,9 +2284,9 @@ textarea[class*="span"] {
   .border-radius(6px);
   padding: 1.5%;
   position: absolute;
-  right: 9%;
+  right: 10%;
   text-align: left;
-  top: 285px;
+  top: 200px;
   ul{
     margin-top: 20px;
     p{
@@ -2379,19 +2381,26 @@ textarea[class*="span"] {
   .nav-menu{
     width: 625px;
   }
+
 }
 @media (min-width: 980px) and (max-width: 1100px) {
   .landing-container {
     height: 666px;
   }
   .sign-up-content {
-    padding-top: 10%;
+    padding-top: 8%;
   }
   .span6.sign-up-content{
     width: 540px;
   }
   .table th, .table td {
     font-size: 11px;
+  }
+  #playoff-teaser {
+    margin-right:3%;
+  }
+  .landing-ind-prediction{
+    right: 6%;
   }
 }
 @media (min-width: 890px) and (max-width: 979px) {
@@ -2483,81 +2492,12 @@ textarea[class*="span"] {
   .fixed-header {
     top: 0px;
   }
-//  .modal {
-//    margin-left: 15px;
-//  }
-//  .span6.sign-up-content{
-//    width: 100%;
-//    padding-top: 175px;
-//    .landing-ind-prediction{
-//      position: relative;
-//      right: inherit;
-//      top: inherit;
-//    }
-//  }
-//  .landing-mobile-app-links {
-//    padding-top: 10px;
-//  }
-//  .sign-up-content.clearfix{
-//    padding: 0 0 50px 0;
-//    #playoff-teaser {
-//      float: none;
-//      margin: 0;
-//    }
-//  }
-//  .about-section.first-section{
-//    width: 310px;
-//  }
-//  .about-container .span5 {
-//    text-align: center;
-//    width: 170px;
-//    img {
-//      margin: 50px 2%;
-//      max-width: 250px;
-//      width: 56%;
-//    }
-//  }
-//  .fixed-header {
-//    width: 98%;
-//  }
-//  .nav-menu,
-//  .top-nav{
-//    width: 500px;
-//    .logo-font{
-//      line-height: 28px;
-//      a{
-//        font-size: 24px;
-//        line-height: 44px;
-//      }
-//    }
-//    .landing-nav{
-//      margin: 0 0 0 10px;
-//      a{
-//        padding: 16.5px 8px;
-//      }
-//      li{
-//        font-size: 13px;
-//      }
-//    }
-//  }
-//  .top-nav {
-//    .landing-nav{
-//      li{
-//        font-size: 14px;
-//      }
-//      a {
-//        padding: 16.5px 6px;
-//      }
-//    }
-//  }
-//  .top-nav .fixed-header .logo-font a{
-//    font-size: 20px;
-//    line-height: 48px;
-//  }
-//  body {
-//    padding-left: 1%;
-//    padding-right: 1%;
-//  }
+  #playoff-teaser {
+    margin-right:3%;
+  }
+  .landing-ind-prediction{
+    right: 6%;
+  }
   [class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"] {
     -moz-box-sizing: border-box;
     display: block;

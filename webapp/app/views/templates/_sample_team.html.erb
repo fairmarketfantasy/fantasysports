@@ -1,5 +1,10 @@
 <div ng-controller="SampleRosterController">
 
+  <div ng-hide="!marketService.currentMarket" class="landing-roster-header">
+    <h4>
+      Create a Fantasy Team and compete against others to win 100 Fanbucks
+    </h4>
+  </div>
 
   <flex-slider class="carousel" repeat="market in marketService.upcoming track by market.id | orderBy:market.id:reverse=false" animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="151" item-margin="0">
     <li class="market-li" ng-class="{'landing-border': $last }">
@@ -43,15 +48,15 @@
 
   </div>
     <div class="text-center roster-area-footer" ng-show="roster">
-      <p>
-        <a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">enter roster to win 100 fanbucks</a>
-        <a href="javascript://" class="btn btn-large btn-info" ng-click='reloadRoster(roster.market.id)'>get new lineup</a>
-      </p>
-      <p style="text-align: left">You will be able to trade, adjust, and change your lineup at will until the game begins.</p>
+      <!--<p>-->
+        <!--<a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">enter roster to win 100 fanbucks</a>-->
+        <!--<a href="javascript://" class="btn btn-large btn-info" ng-click='reloadRoster(roster.market.id)'>get new lineup</a>-->
+      <!--</p>-->
+      <!--<p style="text-align: left">You will be able to trade, adjust, and change your lineup at will until the game begins.</p>-->
     </div>
 
   <div ng-show="roster" class="landing-ind-prediction">
-    <p class="individual-predict">or you can make individual predictions</p>
+    <p class="individual-predict">OR Predict Individual Perfomances </br> and win Fanbucks</p>
     <div class="landing-player-pos clearfix">
       <div class="clearfix inline-block" ng-show="player.position != 'DEF'">
         <div class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
@@ -73,6 +78,6 @@
         </li>
       </ul>
     </div>
-    <div style="margin-top: 10px;">Click on the PT icon to change the player to predict</div>
+    <div style="margin-top: 10px; text-align: center;">Click on the PT icon to change the player to predict</div>
   </div>
 </div>
