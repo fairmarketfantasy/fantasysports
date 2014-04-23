@@ -143,7 +143,7 @@ class Player < ActiveRecord::Base
                                  pluck('DISTINCT game_stats_id')
     games = Game.where(stats_id: played_games_ids)
     last_year_ids = games.where(season_year: (Time.now.utc - 4).year - 1).map(&:stats_id)
-    this_year_ids = games.where(season_year: (Time.now.utc - 4).year).map(&:stats_id)
+    this_year_ids = games.where(season_year: (Time.now.utc - 4).year).select { |i| i.stat_events.any? }.map(&:stats_id)
     events = StatEvent.where(player_stats_id: params[:player_ids],
                              game_stats_id: played_games_ids)
     if games.last.sport.name == 'MLB'
@@ -173,7 +173,8 @@ class Player < ActiveRecord::Base
       value = v.to_d / BigDecimal.new(played_games_ids.count)
       if games.last.sport.name == 'MLB'
         last_year = last_year_stats[k]/events.first.player.total_games || 0.to_d
-        this_year = this_year_stats[k]/this_year_ids.count
+        this_year = this_year_stats[k].to_f/this_year_ids.count
+        this_year = 0 if this_year.try(:nan?)
         history = last_year * (last_year - 2 * this_year)/last_year + this_year
         recent = (recent_stats[k] || 0.to_d)/recent_ids.count
         value = 0.2.to_d * recent + 0.8.to_d * history
