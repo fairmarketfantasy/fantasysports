@@ -44,7 +44,7 @@ angular.module("app.controllers")
       fs.prediction.show(player.stats_id).then(function(data){
         $scope.events = data.events;
       });
-    }
+    };
 
 
     $scope.isCurrent = function(market){

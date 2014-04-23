@@ -8,7 +8,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       sign_in @user, event: :authentication #this will throw if @user is not activated
       #if the user is not "confirmed", defined as a not-null confirmed_at timestamp, then this will fail
       # set_flash_message(:notice, :success, :kind => "Facebook") if is_navigational_format?
-      resp = handle_referrals(params[:sport])
+      resp = handle_referrals(request.env["omniauth.params"]["sport"])
       @redirect = resp[:redirect] || ''
       @flash = resp[:flash] || ''
       render '/users/create_close', :layout => false
@@ -20,7 +20,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def facebook_access_token
-
     @user = User.find_for_facebook_oauth(request.env["omniauth.auth"])
 
     if @user.persisted?

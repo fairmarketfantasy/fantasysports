@@ -81,7 +81,7 @@ angular.module('app.services')
             window.location.reload(true);
           });
         } else {
-          window.open('/users/auth/' + service, '', serviceSizes[service]);
+          window.open('/users/auth/' + service + '?sport=' + $routeParams.sport, '', serviceSizes[service]);
         }
       }
     };

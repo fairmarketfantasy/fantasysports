@@ -100,3 +100,6 @@ gem 'capistrano', '= 2.15.5', group: :development
 
 gem 'typhoeus'
 gem 'sendgrid'
+gem 'faye-websocket'
+gem 'trollop'
+gem 'eventmachine'

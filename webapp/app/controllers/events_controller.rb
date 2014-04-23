@@ -5,6 +5,8 @@ class EventsController < ApplicationController
   a dump of all game data every time it polls.
   TODO: consider pagination
 =end
+
+  EVENT_LIMIT = 9
   skip_before_filter :authenticate_user!, :only => :for_players
 
   def for_game
@@ -16,6 +18,7 @@ class EventsController < ApplicationController
   def for_players
     if params[:average]
       data = Player.where(:stats_id => params[:player_ids]).first.calculate_average(params, current_user)
+      data = data[0..(EVENT_LIMIT - 1)] if params[:market_id] == 'undefined'
       return render json: { events: data }.to_json
     end
 

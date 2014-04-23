@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140408155651) do
+ActiveRecord::Schema.define(version: 20140414133513) do
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -245,6 +245,7 @@ ActiveRecord::Schema.define(version: 20140408155651) do
     t.datetime "updated_at"
     t.boolean  "is_eliminated",       default: false
     t.decimal  "expected_points",     default: 0.0
+    t.string   "position"
   end
 
   add_index "market_players", ["market_id", "player_id"], name: "index_market_players_on_market_id_and_player_id", unique: true, using: :btree
