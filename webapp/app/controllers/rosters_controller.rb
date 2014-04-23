@@ -90,7 +90,7 @@ class RostersController < ApplicationController
     raise HttpException.new(403, "This market is closed") unless roster.market.accepting_rosters?
 
     player = Player.find(params[:player_id])
-    price = roster.add_player(player, params[:position])
+    price = roster.add_player(player, params[:position], true, true)
     Eventing.report(current_user, 'addPlayer', :player_id => player.id)
     render_api_response({:price => price})
   end
@@ -101,7 +101,7 @@ class RostersController < ApplicationController
 
     player = Player.find(params[:player_id])
     Eventing.report(current_user, 'removePlayer', :player_id => player.id)
-    price = roster.remove_player(player)
+    price = roster.remove_player(player, true, true)
     render_api_response({:price => price})
   end
 
