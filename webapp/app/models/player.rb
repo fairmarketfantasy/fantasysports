@@ -139,7 +139,7 @@ class Player < ActiveRecord::Base
   end
 
   def calculate_average(params, current_user)
-    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}' AND quantity != 0" ).
+    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}'" ).
                                  pluck('DISTINCT game_stats_id')
     games = Game.where(stats_id: played_games_ids)
     last_year_ids = games.where(season_year: (Time.now.utc - 4).year - 1).map(&:stats_id)
@@ -170,20 +170,21 @@ class Player < ActiveRecord::Base
 
     data = []
     total_stats.each do |k, v|
-      value = v.to_d / BigDecimal.new(played_games_ids.count)
       if games.last.sport.name == 'MLB'
-        last_year = last_year_stats[k]/events.first.player.total_games || 0.to_d
-        this_year = this_year_stats[k].to_f/this_year_ids.count
-        this_year = 0 if this_year.try(:nan?)
-        history = last_year * (last_year - 2 * this_year)/last_year + this_year
-        recent = (recent_stats[k] || 0.to_d)/recent_ids.count
+        last_year = last_year_stats[k] || 0.to_d
+        this_year = (this_year_stats[k] || 0).to_d/this_year_ids.count if this_year_ids.count != 0
+        this_year ||= 0
+        history = last_year != 0 ? [last_year * (last_year - 2 * this_year)/last_year + this_year, 0].max : this_year
+        recent = (recent_stats[k] || 0.to_d)/recent_ids.count if recent_ids.count != 0
+        recent ||= 0
         value = 0.2.to_d * recent + 0.8.to_d * history
       else
+        value = v.to_d / BigDecimal.new(played_games_ids.count)
         value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
       end
 
       value = value.round(1)
-      next if value == 0 or value.nan?
+      next if value == 0
 
       bid_less = false
       bid_more = false
