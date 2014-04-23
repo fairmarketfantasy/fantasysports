@@ -38,15 +38,16 @@ class MLBTeamsFetcherWorker
         if !(@matched_abbrevs.include? data['Abbr']) and data['sportcode'] == SPORT_CODE and data['TeamID'].to_i <= 60 and data['TeamID'].to_i > 0 # parse 1-60 items
           name = data['Name'].downcase.capitalize
           begin
-            t = Team.find_by_sport_id_and_abbrev(@sport.id, data['Abbr']) || Team.new
+            t = Team.where(sport_id: @sport.id, abbrev: data['Abbr']).first || Team.new
             t.assign_attributes sport: @sport, market: data['Label'], division: data['division'], state: data['State'],
                                 abbrev: data['Abbr'], name: name, country: data['Country'], stats_id: data['TeamID'].to_i.to_s
             @matched_abbrevs << data['Abbr']
             t.save!
-          rescue
+          rescue => e
             puts 'UNPROCESSED:'
             puts data
-            puts t.errors.full_messages
+            puts e.message
+            puts e.backtrace
             counter += 1
           end
         end
