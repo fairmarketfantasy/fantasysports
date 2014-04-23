@@ -90,9 +90,9 @@ class Player < ActiveRecord::Base
     return nil if position == 'DEF'
     if sport.name == 'MLB'
       if (positions.first.try(:position) =~ /(P|SP|RP)/).present?
-        return '/assets/pitcher_icon.png'
+        return ActionController::Base.helpers.asset_path 'pitcher_icon.png'
       else
-        return '/assets/hitter_icon.png'
+        return ActionController::Base.helpers.asset_path 'hitter_icon.png'
       end
     end
 
