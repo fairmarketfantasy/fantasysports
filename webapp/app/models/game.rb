@@ -82,6 +82,7 @@ class Game < ActiveRecord::Base
     market.shadow_bets = 0.0
     market.game_type = 'regular_season'
     market.opened_at = Time.now - 2.days
+    market.price_multiplier = 2.3
     market.started_at = self.game_time - 5.minutes
     market.closed_at = self.game_time - 5.minutes
     market.published_at = self.game_time - 2.days
@@ -89,18 +90,9 @@ class Game < ActiveRecord::Base
       market.save!
     rescue ActiveRecord::RecordNotUnique
     end
+    # price(mp.bets, m.total_bets, r.buy_in, m.price_multiplier)
     @market = Market.find_by_started_at_and_name(self.game_time - 5.minutes, away_team.name + ' @ ' + home_team.name)
-    (home_team.players + away_team.players).each do |player|
-      market_player = @market.market_players.new
-      market_player.player = player
-      market_player.shadow_bets = 0.0 # temp val
-      market_player.bets = 0.0 # temp val
-      market_player.player_stats_id = player.stats_id
-      begin
-        market_player.save!
-      rescue ActiveRecord::RecordNotUnique
-      end
-    end
+
     begin
       self.markets << @market unless self.markets.any?
     rescue ActiveRecord::RecordNotUnique

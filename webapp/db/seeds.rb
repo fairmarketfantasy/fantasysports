@@ -21,8 +21,9 @@ if co.nil?
   end
 end
 
-#add NFL to sports
+#adds sports
 Sport.where(:name => "NFL").first_or_create.save
 Sport.where(:name => "NBA").first_or_create.save
+Sport.where(:name => "MLB").first_or_create.save
 
 MarketDefaults.where(:sport_id => 0).first_or_create(:single_game_multiplier => 2.3, :multiple_game_multiplier => 10).save

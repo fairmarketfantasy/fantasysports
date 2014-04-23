@@ -14,8 +14,6 @@ Fantasysports::Application.configure do
   CLYNG_SECRET = "pk-63b8e4ef-7233-4556-9e70-90810641c134"
   CLYNG_PUBLISHABLE = "d09f6229-1538-459c-8013-fe437bc974f6"
 
-  TSN_API_KEY = 'DgwWTPEQMoQNT-YxtxFB'
-
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.

@@ -12,8 +12,6 @@ Fantasysports::Application.configure do
   CLYNG_SECRET = "pk-18d8a70d-3f69-455f-ab2c-0dbd8c0d8685"
   CLYNG_PUBLISHABLE = "84bc73ca-5947-4357-b37b-aa5692289113"
 
-  TSN_API_KEY = 'DgwWTPEQMoQNT-YxtxFB'
-
   # Settings specified here will take precedence over those in config/application.rb.
 
   # The test environment is used exclusively to run your application's
@@ -45,7 +43,7 @@ Fantasysports::Application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
-  #devise told me to: 
+  #devise told me to:
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
   # Print deprecation notices to the stderr.
