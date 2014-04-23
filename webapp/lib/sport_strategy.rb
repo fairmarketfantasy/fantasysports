@@ -119,7 +119,7 @@ class MLBStrategy < SportStrategy
         #next unless pos
         market_player = market.market_players.where(:player_stats_id => player.stats_id).first || market.market_players.new # player is already added
         market_player.player = player
-        market_player.expected_points = 0
+        market_player.expected_points = player.ppg
         market_player.shadow_bets = 0.0 # temp val
         market_player.bets = 0.0 # temp val
         market_player.player_stats_id = player.stats_id
@@ -151,7 +151,7 @@ class MLBStrategy < SportStrategy
       # calculate total ppg # TODO: this should be YTD
       # set expected ppg
       # TODO: HANDLE INACTIVE
-      if (mp.player.status != 'ACT' or mp.player.status != 'A') || events.count == 0
+      if (mp.player.status != 'ACT' and mp.player.status != 'A') || events.count == 0
         mp.expected_points = 0
       else
         mp.expected_points = expected_points = 0.2 * (recent_points || 0) + 0.8 * history

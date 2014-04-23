@@ -363,14 +363,14 @@ BEGIN
 
 
 	--update player points and stuff in preparation for shadow bets
-	WITH
-		total_points as (select player_stats_id, sum(point_value) as points from stat_events group by player_stats_id),
-		total_games as (select player_stats_id, count(distinct(game_stats_id)) as games from stat_events group by player_stats_id)
-		UPDATE players SET total_games = total_games.games, total_points = total_points.points
-		FROM total_points, total_games
-		WHERE
-			players.stats_id = total_points.player_stats_id AND
-			players.stats_id = total_games.player_stats_id;
+	--WITH
+		--total_points as (select player_stats_id, sum(point_value) as points from stat_events group by player_stats_id),
+		--total_games as (select player_stats_id, count(distinct(game_stats_id)) as games from stat_events group by player_stats_id)
+		--UPDATE players SET total_games = total_games.games, total_points = total_points.points
+		--FROM total_points, total_games
+		--WHERE
+		--	players.stats_id = total_points.player_stats_id AND
+		--	players.stats_id = total_games.player_stats_id;
 
 	--check that shadow_bets is something reasonable
 	IF _market.shadow_bets <= 1000 THEN
