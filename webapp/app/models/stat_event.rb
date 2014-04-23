@@ -15,6 +15,11 @@ class StatEvent < ActiveRecord::Base
   def self.collect_stats(events, position = nil)
     result = {}
     player = events.first.player if events.any?
+    if player && player.sport.name == 'MLB' && events.last.game.season_year == Time.now.year - 1
+      events_games_count = player.total_games
+    else
+      events_games_count = events.map(&:game_stats_id).uniq.count
+    end
     events.each do |event|
       hitters_types = ['Hit By Pitch', 'Doubled', 'Tripled', 'Home Run',
                        'Run Batted In', 'Stolen Base']
@@ -26,7 +31,8 @@ class StatEvent < ActiveRecord::Base
       key = key.to_sym
 
       val = event.quantity.abs
-      val = val / player.total_games.to_i if player && player.sport.name == 'MLB'
+      val = val / events_games_count if player && player.sport.name == 'MLB' &&
+        events.last.game.season_year == Time.now.year - 1
       if result[key]
         result[key] += val
       else
@@ -35,9 +41,8 @@ class StatEvent < ActiveRecord::Base
     end
 
     if player && player.sport.name == 'MLB'
-      events_games_count = events.map(&:game_stats_id).uniq.count
       value = events.map(&:point_value).reduce(0) { |value, sum| sum + value }
-      result['Fantasy Points'] = value
+      result['Fantasy Points'] = value / events_games_count
       result['Era (earned run avg)'] = result['Earned run'.to_sym] / events_games_count  if result['Earned run'.to_sym]
       result['Extra base hits'.to_sym] += result['Home Run'.to_sym] if result['Home Run'.to_sym]
     end
