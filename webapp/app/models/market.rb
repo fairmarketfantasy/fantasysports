@@ -183,6 +183,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
     SportStrategy.for(self.sport.name).calculate_market_points(self.id)
     Market.find_by_sql("select * from publish_market(#{self.id})")
+    self.players.map(&:calculate_ppg)
     reload
 
     if self.state == 'published'
