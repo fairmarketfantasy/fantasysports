@@ -1,6 +1,6 @@
 class MarketPlayer < ActiveRecord::Base
   attr_protected
-  belongs_to :market
+  belongs_to :market, dependent: :destroy
   belongs_to :player
 
   def self.next_game_time_for_roster_players(roster)
