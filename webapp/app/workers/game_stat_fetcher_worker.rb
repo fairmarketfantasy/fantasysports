@@ -70,7 +70,8 @@ class GameStatFetcherWorker
       'SO' => ['Strike Out', 1.0],
       'ER' => ['Earned run', -1.0],
       'IP' => ['Inning Pitched', 1.0],
-      'W' => ['Wins', 4.0] # W = 4pts
+      'W' => ['Wins', 4.0], # W = 4pts
+      'PENALTY' => ['PENALTY',-0.5] # -.5 for a hit or walk or hbp (hit by pitch)
   }
 
 
@@ -92,6 +93,9 @@ class GameStatFetcherWorker
           puts "wrong points map for #{batter['action']}"
         else
           find_or_create_stat_event(batter['batter_id'].to_s, game, batter['action'], 1.0)
+          if (batter['action'] =~ /(1B|2B|3B|HR|BB|HBP)/)
+            find_or_create_stat_event(batter['pitcher_id'].to_s, game, 'PENALTY', 1.0)
+          end
         end
       end
 
