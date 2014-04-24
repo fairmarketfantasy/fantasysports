@@ -117,7 +117,7 @@ class MLBStrategy < SportStrategy
 
     (Team.find(market.games.first.home_team).players.active + Team.find(market.games.first.away_team).players.active).each do |player|
       player.positions.each do |pos|
-        next if pos.position == 'SP' and player.out? # skip not-starting SP
+        player.update_attribute(:out, false) and next if pos.position == 'SP' and player.out? # skip not-starting SP
         market_player = market.market_players.where(:player_stats_id => player.stats_id).first || market.market_players.new # player is already added
         market_player.player = player
         market_player.expected_points = player.ppg
@@ -152,7 +152,7 @@ class MLBStrategy < SportStrategy
       # calculate total ppg # TODO: this should be YTD
       # set expected ppg
       # TODO: HANDLE INACTIVE
-      if (mp.player.status =~ /(ACT|A|M)/).present? || events.count == 0
+      if (mp.player.status =~ /(ACT|A|M)/).nil? || events.count == 0
         mp.expected_points = 0
       else
         mp.expected_points = expected_points = 0.2 * (recent_points || 0) + 0.8 * history
