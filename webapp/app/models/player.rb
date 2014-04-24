@@ -142,8 +142,8 @@ class Player < ActiveRecord::Base
     played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}'" ).
                                  pluck('DISTINCT game_stats_id')
     games = Game.where(stats_id: played_games_ids)
-    last_year_ids = games.where(season_year: (Time.now.utc - 4).year - 1).map(&:stats_id)
-    this_year_ids = games.where(season_year: (Time.now.utc - 4).year).select { |i| i.stat_events.any? }.map(&:stats_id)
+    last_year_ids = games.where(season_year: (Time.now.utc - 4).year - 1).map(&:stats_id).uniq
+    this_year_ids = games.where(season_year: (Time.now.utc - 4).year).select { |i| i.stat_events.any? }.map(&:stats_id).uniq
     events = StatEvent.where(player_stats_id: params[:player_ids],
                              game_stats_id: played_games_ids)
     if games.last.sport.name == 'MLB'
@@ -177,7 +177,11 @@ class Player < ActiveRecord::Base
         history = last_year != 0 ? [last_year * (last_year - 2 * this_year)/last_year + this_year, 0].max : this_year
         recent = (recent_stats[k] || 0.to_d)/recent_ids.count if recent_ids.count != 0
         recent ||= 0
-        value = 0.2.to_d * recent + 0.8.to_d * history
+        if last_year_ids.count == 0
+          value = self.average_for_position(params[:position])[k] || 0
+        else
+          value = 0.2.to_d * recent + 0.8.to_d * history
+        end
       else
         value = v.to_d / BigDecimal.new(played_games_ids.count)
         value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
@@ -200,6 +204,19 @@ class Player < ActiveRecord::Base
       more_pt = IndividualPrediction.get_pt_value(value, 'more')
 
       data << { name: k, value: value, bid_less: bid_less, bid_more: bid_more, less_pt: less_pt, more_pt: more_pt }
+    end
+
+    data
+  end
+
+  def average_for_position(position)
+    player_ids = self.sport.players.joins(:positions).where("player_positions.position='#{position}'").pluck(:stats_id)
+    this_year_game_ids = Game.where(season_year: (Time.now.utc - 4).year).pluck('DISTINCT stats_id')
+    this_year_events = StatEvent.where(player_stats_id: player_ids,
+                                       game_stats_id: this_year_game_ids)
+    data = {}
+    StatEvent.collect_stats(this_year_events, position).each do |k, v|
+      data[k] = v.to_d / BigDecimal.new(this_year_game_ids.count)
     end
 
     data
