@@ -38,7 +38,7 @@ class Market < ActiveRecord::Base
     def tend
       publish
       open
-      #remove_shadow_bets
+      remove_shadow_bets
       track_benched_players
       fill_rosters
       DataFetcher.update_benched
@@ -121,7 +121,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def lock_players
-      apply :lock_players, "state IN('closed')"
+      apply :lock_players, "state IN('opened', 'closed')"
     end
 
     def tabulate_scores
