@@ -117,7 +117,9 @@ class MLBStrategy < SportStrategy
 
     (Team.find(market.games.first.home_team).players.active + Team.find(market.games.first.away_team).players.active).each do |player|
       player.positions.each do |pos|
-        player.update_attribute(:out, false) and next if pos.position == 'SP' and player.out? # skip not-starting SP
+        player.update_attribute(:out, false)
+        next if pos.position == 'SP' && player.out? # skip not-starting SP
+
         market_player = market.market_players.where(:player_stats_id => player.stats_id).first || market.market_players.new # player is already added
         market_player.player = player
         market_player.expected_points = player.ppg
@@ -156,6 +158,7 @@ class MLBStrategy < SportStrategy
         mp.expected_points = 0
       else
         expected_points = total_games == 0 ? mp.player.average_for_position(mp.position)['Fantasy Points'] : 0.2 * (recent_points || 0) + 0.8 * history
+        require 'pry'; binding.pry if expected_points > 100
         mp.expected_points = expected_points
         mp.player.update_attribute(:ppg, expected_points.round(1))
       end
