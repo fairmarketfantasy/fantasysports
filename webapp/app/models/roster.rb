@@ -1,7 +1,7 @@
 class Roster < ActiveRecord::Base
   USER_BONUSES = { 'twitter_follow' =>  1}
   ROSTER_BONUSES = { 'twitter_share' => 1, 'facebook_share' => 1}
-  DEFAULT_BUY_IN = 1500
+  DEFAULT_BUY_IN = 1000
   DEFAULT_REMAINING_SALARY = 100000
   FB_CHARGE = 1.5.to_d
 
