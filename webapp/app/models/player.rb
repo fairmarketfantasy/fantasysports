@@ -62,7 +62,7 @@ class Player < ActiveRecord::Base
 
   scope :benched,   -> { where(Player.bench_conditions) }
   scope :active, -> () {
-    where("status = 'ACT' OR status = 'A' AND NOT removed AND benched_games < 3")
+    where("status = 'ACT' OR status = 'A' OR STATUS = 'M' AND NOT removed AND benched_games < 3")
   }
 
   scope :purchasable_for_roster, -> (roster) {
