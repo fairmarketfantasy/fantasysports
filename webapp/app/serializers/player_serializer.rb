@@ -35,7 +35,7 @@ class PlayerSerializer < ActiveModel::Serializer
   end
 
   def benched
-    object.benched? ? true : false
+    (object.benched? && !object.positions.map(&:position).include?('SP')) ? true : false
   end
 
   def ppg
