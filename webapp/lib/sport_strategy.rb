@@ -155,8 +155,8 @@ class MLBStrategy < SportStrategy
       if (mp.player.status =~ /(ACT|A|M)/).nil? || events.count == 0
         mp.expected_points = 0
       else
-        mp.expected_points = expected_points = 0.2 * (recent_points || 0) + 0.8 * history
-        puts expected_points
+        expected_points = total_games == 0 ? mp.player.average_for_position(mp.position)['Fantasy Points'] : 0.2 * (recent_points || 0) + 0.8 * history
+        mp.expected_points = expected_points
         mp.player.update_attribute(:ppg, expected_points.round(1))
       end
       total_expected += mp.expected_points
