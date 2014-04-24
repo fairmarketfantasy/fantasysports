@@ -183,7 +183,7 @@ class Player < ActiveRecord::Base
         value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
       end
 
-      value = value.round(1)
+      value = value.round(2)
       next if value == 0
 
       bid_less = false
