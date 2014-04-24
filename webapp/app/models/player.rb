@@ -215,6 +215,6 @@ class Player < ActiveRecord::Base
 
   def with_formula_value(value, total, more, less)
     value = value * (20 + total + (more - less)).to_d / (20 + total).to_d
-    value.round(1)
+    value.round(2)
   end
 end
