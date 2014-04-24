@@ -30,7 +30,9 @@ class SeasonStatsWorker
                    'Strike Out' => 1.0,
                    'Earned run' => -1.0,
                    'Inning Pitched' => 1.0,
-                   'Wins' => 4.0 } # W = 4pts
+                   'Wins' => 4.0, # W = 4pts
+                   'PENALTY' => -0.5 # -.5 for a hit or walk or hbp (hit by pitch)
+                }
 
   def perform(team_stats_id, year, season_type = 'reg')
     @team = Team.find_by_stats_id team_stats_id
@@ -46,7 +48,9 @@ class SeasonStatsWorker
     data['batting_stats'].each do |batting_stat|
       player_stats_id = batting_stat['player_id'].to_s
       total_games  = batting_stat['games']
-      # EPIC TODO: batting_stat['']*1.0 # First Base (1B) = 1pt
+      # hits less doubles, triples, and homeruns
+      singles = batting_stat['hits'] - batting_stat['doubles'] - batting_stat['triples'] - batting_stat['homeruns']
+      create_stat_event(player_stats_id, singles, game, 'Singled')
       # Second base, or double(2B) = 2pts
       create_stat_event(player_stats_id, batting_stat['doubles'], game, 'Doubled')
       # Third base, or triple(3B) = 3pts
@@ -83,6 +87,9 @@ class SeasonStatsWorker
       create_stat_event(player_stats_id, pitching_stat['total_outs'], game, 'Strike Out')
       # Inning Pitched (IP) = 1pt
       create_stat_event(player_stats_id, pitching_stat['ip'], game, 'Inning Pitched')
+
+      # -.5 for a hit or walk or hbp (hit by pitch)
+      create_stat_event(player_stats_id, pitching_stat['walks'] + pitching_stat['hits'] , game, 'PENALTY')
 
       player = Player.where(stats_id: player_stats_id).first
 
