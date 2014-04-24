@@ -99,7 +99,6 @@ class MLBStrategy < SportStrategy
 
   def calculate_market_points(market_id)
     market = Market.find(market_id)
-    sport_name = market.sport.name
     data = JSON.parse OpenURI.send(:open, "http://api.sportsnetwork.com/v1/mlb/pitching_probables?api_token=#{TSN_API_KEY}").read
     probable_pitcher_data = data.select { |item| item['game_id'] == market.games.first.id.to_i }.first
 
@@ -108,15 +107,17 @@ class MLBStrategy < SportStrategy
         next if t['pitcher_id'].blank?
         player = Player.find_by_stats_id t['pitcher_id'].to_s
         positions = PlayerPosition.where(:position => 'SP').select { |item| item.player.team.stats_id == t['team_id'].to_s }
-        positions.map(&:destroy)
-        player.positions.destroy_all
-        PlayerPosition.create player_id: player.id, position: 'SP' if player # this is the starting pitcher
+        positions.map(&:player).flatten.each { |i| i.update_attribute(:out, true) }
+        player.update_attribute(:out, false)
+
+        # the case when player is in pitching probables, but don`t present in depth charts
+        player.positions.create!(:position => 'SP') unless player.positions.map(&:position).include?('SP')
       end
     end
 
     (Team.find(market.games.first.home_team).players.active + Team.find(market.games.first.away_team).players.active).each do |player|
       player.positions.each do |pos|
-        #next unless pos
+        next if pos.position == 'SP' and player.out? # skip not-starting SP
         market_player = market.market_players.where(:player_stats_id => player.stats_id).first || market.market_players.new # player is already added
         market_player.player = player
         market_player.expected_points = player.ppg
@@ -151,7 +152,7 @@ class MLBStrategy < SportStrategy
       # calculate total ppg # TODO: this should be YTD
       # set expected ppg
       # TODO: HANDLE INACTIVE
-      if (mp.player.status != 'ACT' and mp.player.status != 'A') || events.count == 0
+      if (mp.player.status =~ /(ACT|A|M)/).present? || events.count == 0
         mp.expected_points = 0
       else
         mp.expected_points = expected_points = 0.2 * (recent_points || 0) + 0.8 * history
