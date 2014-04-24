@@ -1,9 +1,6 @@
 class RostersController < ApplicationController
   skip_before_filter :authenticate_user!, :only => [:show, :sample_roster]
 
-  DEFAULT_BUY_IN = 1500
-  DEFAULT_REMAINING_SALARY = 100000
-
   def mine
     sport = params[:sport] ? Sport.where(:name => params[:sport]).first : Sport.where('is_active').first
     rosters = current_user.rosters.where(state: ["finished", "cancelled", "submitted"]).
@@ -30,8 +27,8 @@ class RostersController < ApplicationController
   def new
     sport_id = Sport.where(name: params[:sport]).first.id
     roster = Roster.new(:owner_id => current_user.id, :takes_tokens => false,
-                       :buy_in => DEFAULT_BUY_IN,
-                       :remaining_salary => DEFAULT_REMAINING_SALARY).as_json
+                       :buy_in => Roster::DEFAULT_BUY_IN,
+                       :remaining_salary => Roster::DEFAULT_REMAINING_SALARY).as_json
 
     roster[:positions] = Positions.for_sport_id(sport_id).split(',').each_with_index.map { |item,i| { :acronym => item, :name => Positions.names_for_sport_id(sport_id).split(',')[i] } }
     render json: roster.to_json
