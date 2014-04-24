@@ -22,7 +22,7 @@ class Roster < ActiveRecord::Base
   validates :owner_id, :market_id, :buy_in, :remaining_salary, :state, presence: true
 
   before_create :set_view_code
-  before_destroy :pre_destroy
+  #before_destroy :pre_destroy
 
   scope :over, -> { where(state: ['cancelled', 'finished'])}
   scope :active, -> { where(state: ['in_progress', 'submitted'])}
@@ -509,9 +509,9 @@ class Roster < ActiveRecord::Base
     positions
   end
 
-  def pre_destroy
-    Roster.find_by_sql("select * from cancel_roster(#{self.id})")
-  end
+  #def pre_destroy
+  #  Roster.find_by_sql("select * from cancel_roster(#{self.id})")
+  #end
 
   def cancel!(reason)
     self.with_lock do

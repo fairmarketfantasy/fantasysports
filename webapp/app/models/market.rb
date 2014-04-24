@@ -121,7 +121,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def lock_players
-      apply :lock_players, "state IN('opened', 'closed')"
+      apply :lock_players, "state IN('closed')"
     end
 
     def tabulate_scores
