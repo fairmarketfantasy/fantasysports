@@ -184,17 +184,17 @@ BEGIN
 	--IF NOT FOUND THEN
 		--RAISE EXCEPTION 'market % is unavailable, roster may not be canceled', _roster.market_id;
 	--END IF;
+    IF _roster.state = 'submitted' THEN
+		-- decrement bets for all market players in roster by buy_in amount
+		UPDATE market_players SET bets = bets - _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
+			WHERE market_id = _roster.market_id AND player_id IN
+			(SELECT player_id from rosters_players where roster_id = _roster_id);
 
-	-- decrement bets for all market players in roster by buy_in amount
-	UPDATE market_players SET bets = bets - _roster.buy_in * buy_in_ratio(_roster.takes_tokens)
-		WHERE market_id = _roster.market_id AND player_id IN
-		(SELECT player_id from rosters_players where roster_id = _roster_id);
-
-	-- decrement total_bets by buy_in times number of players bought
-	update markets set total_bets = total_bets -
-		_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
-		where id = _roster.market_id;
-
+		-- decrement total_bets by buy_in times number of players bought
+		update markets set total_bets = total_bets -
+			_roster.buy_in * buy_in_ratio(_roster.takes_tokens) * (select count(*) from rosters_players where roster_id  = _roster.id)
+			where id = _roster.market_id;
+	END IF;
 	-- delete rosters_players, market_orders, and finally the roster
 	DELETE FROM rosters_players WHERE roster_id = _roster_id;
 	DELETE FROM market_orders where roster_id = _roster_id;
