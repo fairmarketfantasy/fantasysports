@@ -44,7 +44,7 @@ gem 'activeadmin', github: 'gregbell/active_admin', branch: 'master'
 # work queue
 gem 'sidekiq'
 gem 'sidekiq_monitor'
-gem 'sidekiq-scheduler'
+gem 'sidetiq' # schedule extension
 
 # data processing
 gem 'nokogiri'

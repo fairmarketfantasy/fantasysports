@@ -1,6 +1,11 @@
 class MLBTeamsFetcherWorker
 
   include Sidekiq::Worker
+  include Sidetiq::Schedulable
+
+  recurrence  do
+    minutely(120)
+  end
 
   SPORT_CODE = 'AA' # MLB sport code in The Sports Network API
 

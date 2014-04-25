@@ -38,7 +38,8 @@ class SeasonStatsWorker
     @team = Team.find_by_stats_id team_stats_id
     url = "http://api.sportsnetwork.com/v1/mlb/stats?team_id=#{team_stats_id}&season=#{season_type}&year=#{year}&api_token=#{TSN_API_KEY}"
     data = JSON.parse open(url).read
-    game = Game.where(:sport_id => @team.sport_id, home_team: team_stats_id + year.to_s + '1').first
+    game = Game.where(:sport_id => @team.sport_id, stats_id: team_stats_id + year.to_s).first
+    game.stat_events.destroy_all if game # cleanup old stat
     game ||= Game.create!(status: 'closed', sport_id: Sport.where(name: 'MLB').first.id,
                                  game_day: Date.parse("#{year}-01-01"), stats_id: team_stats_id + year.to_s,
                                  home_team: team_stats_id + year.to_s,
