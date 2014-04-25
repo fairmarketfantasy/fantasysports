@@ -1,6 +1,6 @@
 <div ng-show="rosters.currentRoster">
 
-  <flex-slider class="carousel home-market" repeat="market in marketService.upcoming track by market.id | orderBy:'id':reverse=false"animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="160" item-margin="0">
+  <flex-slider class="carousel home-market" repeat="market in marketService.upcoming track by market.id"animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="160" item-margin="0">
     <li class="market-li home-market-li" ng-class="{'landing-border': $last }">
       <a  href="#/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">
         <strong>{{market.name}}</strong>
