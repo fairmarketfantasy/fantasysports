@@ -4,7 +4,7 @@ class Market < ActiveRecord::Base
   attr_protected
   has_many :games_markets, :inverse_of => :market
   has_many :games, :through => :games_markets
-  has_many :market_players
+  has_many :market_players, dependent: :destroy
   has_many :players, :through => :market_players
   has_many :contests
   has_many :contest_types

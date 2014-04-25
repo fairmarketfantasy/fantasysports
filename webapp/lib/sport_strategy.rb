@@ -93,7 +93,7 @@ class MLBStrategy < SportStrategy
 
   def initialize
     @sport = Sport.where(:name => 'MLB').first
-    @positions_mapper = { 'SP' => 'RP', 'P'=>'RP', 'RP'=>'RP', 'C'=> 'C', '1B'=> '1B/DH', '2B'=> '2B',
+    @positions_mapper = { 'SP' => 'SP', 'P'=>'RP', 'RP'=>'RP', 'C'=> 'C', '1B'=> '1B/DH', '2B'=> '2B',
                          '3B'=> '3B', 'SS'=> 'SS', 'CF'=> 'OF', 'LF'=> 'OF', 'OF'=> 'OF', 'RF'=> 'OF', 'DH'=> '1B/DH', 'PH'=> '1B/DH'}
   end
 
@@ -108,6 +108,7 @@ class MLBStrategy < SportStrategy
         player = Player.find_by_stats_id t['pitcher_id'].to_s
         positions = PlayerPosition.where(:position => 'SP').select { |item| item.player.team.stats_id == t['team_id'].to_s }
         positions.map(&:player).flatten.each { |i| i.update_attribute(:out, true) }
+        player.reload
         player.update_attribute(:out, false)
 
         # the case when player is in pitching probables, but don`t present in depth charts
@@ -115,6 +116,7 @@ class MLBStrategy < SportStrategy
       end
     end
 
+    market.market_players.destroy_all
     (Team.find(market.games.first.home_team).players.active + Team.find(market.games.first.away_team).players.active).each do |player|
       player.positions.each do |pos|
         player.update_attribute(:out, false) and next if pos.position == 'SP' && player.out? # skip not-starting SP
