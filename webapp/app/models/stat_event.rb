@@ -37,7 +37,7 @@ class StatEvent < ActiveRecord::Base
     end
 
     if player && player.sport.name == 'MLB'
-      result['Extra base hits'.to_sym] += result['Home Run'.to_sym] if result['Home Run'.to_sym]
+      result['Extra base hits'.to_sym] += result['Home Run'.to_sym] if result['Home Run'.to_sym] && result['Extra base hits'.to_sym]
       result['Fantasy Points'] = events.map(&:point_value).reduce(0) { |value, sum| sum + value }
     end
 

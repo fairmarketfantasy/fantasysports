@@ -132,34 +132,45 @@ class MLBStrategy < SportStrategy
     market.reload
     total_expected = 0
     market.market_players.each do |mp|
+      next unless mp.position
+
       played_games_ids = StatEvent.where("player_stats_id='#{mp.player.stats_id}'" ).pluck('DISTINCT game_stats_id')
-      games = Game.where(stats_id: played_games_ids, season_year: (Time.now.utc - 4).year)
+      games = Game.where(stats_id: played_games_ids)
+      this_year_games_ids = games.where(season_year: (Time.now.utc - 4).year).pluck('DISTINCT stats_id')
+      last_year_games_ids = games.where(season_year: (Time.now.utc - 4).year - 1).pluck('DISTINCT stats_id')
       recent_games = games.order("game_time DESC").first(50)
+      recent_games_ids = recent_games.map(&:stats_id)
       # calculate ppg in last 5 games
       events = StatEvent.where(player_stats_id: mp.player.stats_id, game_stats_id: played_games_ids)
-
-      recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
+      last_year_events = events.where(game_stats_id: last_year_games_ids)
+      this_year_events = events.where(game_stats_id: this_year_games_ids)
+      recent_events = events.where(game_stats_id: recent_games_ids)
       if events.any?
-        recent_points = recent_events.map(&:point_value).reduce(0) { |value, sum| sum + value }
-        points = events.map(&:point_value).reduce(0) { |value, sum| sum + value }
-        recent_points = recent_games.count != 0 ? recent_points.to_d/recent_games.count : 0
-        this_year = games.count != 0 ? points.to_d / BigDecimal.new(games.count) : 0
+        recent_points = StatEvent.collect_stats(recent_events, mp.position)['Fantasy Points']
+        last_year_points = StatEvent.collect_stats(last_year_events, mp.position)['Fantasy Points']
+        this_year_points = StatEvent.collect_stats(this_year_events, mp.position)['Fantasy Points']
+        recent_points = recent_games.count != 0 ? recent_points.to_d/recent_games_ids.count : 0
+        this_year_points = this_year_games_ids.count != 0 ? this_year_points.to_d / BigDecimal.new(this_year_games_ids.count) : 0
       end
-      this_year ||= 0
-      total_games = mp.player.total_games
-      last_year = mp.player.total_points/total_games if total_games != 0
-      last_year_points = last_year || 0
-      history = [last_year_points, 0].max + this_year
+      this_year_points ||= 0
+      last_year_points ||= 0
+      history = [last_year_points, 0].max + this_year_points
       # calculate total ppg # TODO: this should be YTD
       # set expected ppg
       # TODO: HANDLE INACTIVE
       if (mp.player.status =~ /(ACT|A|M)/).nil? || events.count == 0
         mp.expected_points = 0
       else
-        expected_points = total_games == 0 ? mp.player.average_for_position(mp.position)['Fantasy Points'] : 0.2 * (recent_points || 0) + 0.8 * history
+        if last_year_games_ids.count == 0
+          expected_points = mp.player.average_for_position(mp.position)['Fantasy Points']
+        else
+          expected_points = 0.2 * (recent_points || 0) + 0.8 * history
+        end
         mp.expected_points = expected_points
         mp.player.update_attribute(:ppg, expected_points.round(1))
       end
+
+      mp.save!
       total_expected += mp.expected_points
     end
 
