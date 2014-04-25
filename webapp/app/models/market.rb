@@ -403,7 +403,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       self.state = 'complete'
       self.save!
       self.games.each { |game| game.unbench_players }
-      self.games.each { |game| game.calculate_ppg }
+      self.games.each { |game| game.calculate_ppg } if self.sport.name != 'MLB'
     end
   end
 
