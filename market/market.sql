@@ -400,7 +400,7 @@ BEGIN
 
 	-- insert players into market. use the first game time for which the player is participating and zero shadow bets.
   SELECT sports.name FROM sports WHERE sports.id = _market.id INTO _sport_name;
-  IF _market.game_type != 'team_single_elimination' THEN
+  IF _market.game_type != 'team_single_elimination' AND _sport_name != 'MLB' THEN
 	  INSERT INTO market_players (market_id, player_id, shadow_bets, bets, initial_shadow_bets, locked_at, player_stats_id, created_at, updated_at)
 	  	SELECT
 	  		_market_id, p.id, 0, 0, 0,
