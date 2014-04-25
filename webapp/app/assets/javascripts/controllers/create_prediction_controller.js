@@ -4,8 +4,6 @@ angular.module("app.controllers")
     $scope.market = market;
     $scope.confirmShow = false;
     $scope.eventData = {};
-    $scope.reloadBackdrop = false;
-
 
     $scope.playerStats = function(){
         fs.prediction.show(player.stats_id, $routeParams.market_id, player.position).then(function(data){
@@ -48,7 +46,6 @@ angular.module("app.controllers")
         $scope.eventSubmit.push($scope.confirm);
 
         fs.prediction.submit($routeParams.roster_id,$routeParams.market_id,player.stats_id, $scope.eventSubmit).then(function(data){
-            $scope.reloadBackdrop = true;
             flash.success("Individual prediction submitted successfully!");
             _.each($scope.points, function(events){
                 if(events.name == $scope.confirm.name){
@@ -59,10 +56,7 @@ angular.module("app.controllers")
     };
 
     $scope.close = function(){
-        if($scope.reloadBackdrop){
-            location.reload();
-        }
-        dialog.close();
+       dialog.close();
     };
 
     $scope.playerStats();
