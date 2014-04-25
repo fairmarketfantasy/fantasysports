@@ -210,13 +210,13 @@ class Player < ActiveRecord::Base
   end
 
   def average_for_position(position)
-    player_ids = self.sport.players.joins(:positions).where("player_positions.position='#{position}'").pluck(:stats_id)
+    player_ids = self.sport.players.joins(:positions).where("player_positions.position='#{position}'").pluck('DISTINCT stats_id')
     this_year_game_ids = Game.where(season_year: (Time.now.utc - 4).year).pluck('DISTINCT stats_id')
     this_year_events = StatEvent.where(player_stats_id: player_ids,
                                        game_stats_id: this_year_game_ids)
     data = {}
     StatEvent.collect_stats(this_year_events, position).each do |k, v|
-      data[k] = v.to_d / BigDecimal.new(this_year_game_ids.count)
+      data[k] = v.to_d / BigDecimal.new(this_year_game_ids.count) / player_ids.count
     end
 
     data
