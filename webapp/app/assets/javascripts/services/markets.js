@@ -13,9 +13,11 @@ angular.module('app.data')
         this.upcoming = [];
         // TODO: memoize?
         var self = this;
+        var count = 0
         return fs.markets.list(opts.type, opts.sport).then(function(markets) {
           _.each(markets, function(market) {
-            marketData[market.id] = market;
+            marketData[count] = market;
+            count ++;
           });
           if (opts.id) {
             self.currentMarket = marketData[opts.id];
@@ -26,15 +28,20 @@ angular.module('app.data')
       };
 
       this.selectMarketId = function(id, sport) {
-        if(!marketData[id]){ return; }
-        var type = marketData[id].game_type == 'regular_season' ? 'regular_season' : 'single_elimination'; // Hacky
-        this.selectMarketType(type, idsToSports[marketData[id].sport_id]);
-        this.currentMarket = marketData[id];
+        var selectMarket = null;
+        _.each(marketData, function(select){
+          if(select.id == id){
+            selectMarket = select
+          }
+        });
+        if(!selectMarket){ return; }
+        var type = selectMarket.game_type == 'regular_season' ? 'regular_season' : 'single_elimination'; // Hacky
+        this.selectMarketType(type, idsToSports[selectMarket.sport_id]);
+        this.currentMarket = selectMarket;
       };
 
       this.selectMarketType = function(type, sport) {
         this.marketType = type || 'regular_season';
-
         this.upcoming = _.filter(marketData, function(elt) {
           return elt.sport_id == sportsToIds[sport] && elt.game_type.match(type) || (type == 'regular_season' && elt.game_type == null);
           /* last clause should be temporary*/
