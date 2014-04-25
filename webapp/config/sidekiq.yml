@@ -9,6 +9,7 @@
   - [game_stat_fetcher, 1]
   - [season_stat_worker, 1]
   - [game_listener, 1]
+  - [mlb_all_schedule_fetcher, 1]
 staging:
   :concurrency: 10
 production:
