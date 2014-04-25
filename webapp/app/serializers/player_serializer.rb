@@ -41,6 +41,6 @@ class PlayerSerializer < ActiveModel::Serializer
   def ppg
     return unless object.ppg
 
-    !object.ppg.round.zero? ? object.ppg : nil
+    object.ppg.round > 0 ? object.ppg : nil
   end
 end
