@@ -171,10 +171,10 @@ class Player < ActiveRecord::Base
     data = []
     total_stats.each do |k, v|
       if games.last.sport.name == 'MLB'
-        last_year = last_year_stats[k] || 0.to_d
-        this_year = (this_year_stats[k] || 0).to_d/this_year_ids.count if this_year_ids.count != 0
-        this_year ||= 0
-        history = last_year != 0 ? [last_year * (last_year - 2 * this_year)/last_year + this_year, 0].max : this_year
+        last_year_points = last_year_stats[k] || 0.to_d
+        this_year_points = (this_year_stats[k] || 0).to_d/this_year_ids.count if this_year_ids.count != 0
+        history = [last_year_points, 0].max + (this_year_points || 0)
+        #history = last_year != 0 ? [last_year * (last_year - 2 * this_year)/last_year + this_year, 0].max : this_year
         recent = (recent_stats[k] || 0.to_d)/recent_ids.count if recent_ids.count != 0
         recent ||= 0
         if last_year_ids.count == 0
