@@ -16,4 +16,8 @@ class Team < ActiveRecord::Base
     (identifier.split('-').count > 2 ? Team.where(:stats_id => identifier) : Team.where(:abbrev => identifier)).first
   end
 
+  def logo_url
+    "https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/" +
+      "team-logos/#{self.sport.name.downcase}/#{self.name.gsub('`', '').downcase}.png"
+  end
 end

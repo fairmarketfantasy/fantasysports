@@ -1,0 +1,23 @@
+<div  ng-controller="PrestigeController">
+    <h3 class="prestige-chart-label">
+        TOP
+        <br>
+        PREDICTORS
+    </h3>
+    <div class="prestige-chart-content">
+        <div ng-repeat="(chartName, chartContent) in prestigeChart">
+            <p class="chart-title">{{chartName}}</p>
+            <ul class="no-no">
+                <li class="chart-item" ng-repeat="chartItem in chartContent">
+                    <div class="prestige-chart-user-score">
+                        {{$index + 1}}. {{chartItem.prestige}}
+                    </div>
+                    <div class="prestige-chart-user-name">
+                        {{chartItem.name}}
+                    </div>
+                </li>
+                <hr ng-if="(!$last)">
+            </ul>
+        </div>
+    </div>
+</div>

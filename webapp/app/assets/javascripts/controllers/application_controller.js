@@ -13,6 +13,7 @@ angular.module("app.controllers")
   });
 
   $scope.sports = window.App.sports;
+  $scope.defaultSport = window.App.defaultSport;
   $scope.fs = fs;
   $scope.$routeParams = $routeParams;
 
@@ -35,6 +36,11 @@ angular.module("app.controllers")
     if (!App.currentUser || !newSport) { return; }
     console.log(newSport);
     App.currentUser.currentSport = newSport;
+  });
+  $scope.$watch(function() { return $route.current && $route.current.params.category; }, function(newSport, oldSport) {
+    if (!App.currentUser || !newSport) { return; }
+    console.log(newSport);
+    App.currentUser.currentCategory = newSport;
   });
 
 //    $scope.reloadRoster = function(id, sport) {

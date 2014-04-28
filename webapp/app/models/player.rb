@@ -145,7 +145,6 @@ class Player < ActiveRecord::Base
     recent_events = events.where(game_stats_id: recent_ids)
     last_year_events = events.where(game_stats_id: last_year_ids)
     this_year_events = events.where(game_stats_id: this_year_ids)
-
     recent_stats = SportStrategy.for(sport_name).collect_stats(recent_events, params[:position])
     last_year_stats = SportStrategy.for(sport_name).collect_stats(last_year_events, params[:position])
     this_year_stats = SportStrategy.for(sport_name).collect_stats(this_year_events, params[:position])

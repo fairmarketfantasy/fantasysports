@@ -14,6 +14,9 @@ defaults: &defaults
 development:
   <<: *defaults
 
+testing:
+  <<: *defaults
+
 staging:
   <<: *defaults
   host: fantasysports-staging-postgres.clvfjvvzcbre.us-west-2.rds.amazonaws.com

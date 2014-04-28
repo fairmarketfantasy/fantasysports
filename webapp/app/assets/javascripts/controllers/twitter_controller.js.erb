@@ -7,13 +7,20 @@ window.twttr = (function (d,s,id) {
 
 angular.module("app.controllers")
 // TODO: change the name of this to ShareController, or split them up
-.controller('TwitterController', ['$scope', '$timeout', 'fs','rosters', function($scope, $timeout, fs, rosters) {
-  $scope.shareUrl = 'https://predictthat.com/#/' + $scope.currentUser.currentSport + '/market/' +
-              (($scope.$routeParams && $scope.$routeParams.market_id) || $scope.roster.market_id)  + '/roster/' +
-              (($scope.$routeParams && $scope.$routeParams.roster_id) || $scope.roster.id) + '?view_code=' +
-              (($scope.$routeParams && $scope.$routeParams.view_code) || ($scope.roster && $scope.roster.view_code ));
+.controller('TwitterController', ['$scope', '$timeout', 'fs','rosters','competitionRosters', function($scope, $timeout, fs, rosters, competitionRosters) {
+
+  if($scope.$routeParams.category == 'fantasy_sport'){
+    $scope.shareUrl = 'https://predictthat.com/#/' + $scope.currentUser.currentCategory + '/' + $scope.currentUser.currentSport + '/market/' +
+      (($scope.$routeParams && $scope.$routeParams.market_id) || $scope.roster.market_id)  + '/roster/' +
+      (($scope.$routeParams && $scope.$routeParams.roster_id) || $scope.roster.id) + '?view_code=' +
+      (($scope.$routeParams && $scope.$routeParams.view_code) || ($scope.roster && $scope.roster.view_code ));
+  } else if($scope.$routeParams.category == 'sport') {
+    $scope.shareUrl = 'https://predictthat.com/#/' + $scope.currentUser.currentCategory + '/' + $scope.currentUser.currentSport + 'competition_roster'
+  }
+
 
   $scope.rosters = rosters;
+  $scope.competitionRosters = competitionRosters;
 
   // Facebook
   $scope.fbShare = function() {
@@ -40,8 +47,14 @@ angular.module("app.controllers")
 
   var highestPrize = $scope.roster && JSON.parse($scope.roster.contest_type.payout_structure)[0];
     $timeout(function(){
-      $scope.away_team = $scope.rosters.currentRoster.market.games[0].away_team;
-      $scope.home_team = $scope.rosters.currentRoster.market.games[0].home_team;
+      if($scope.$routeParams.category == 'fantasy_sport'){
+        $scope.away_team = $scope.rosters.currentRoster.market.games[0].away_team;
+        $scope.home_team = $scope.rosters.currentRoster.market.games[0].home_team;
+        $scope.text = 'I built an epic roster ' + (highestPrize  && highestPrize > 8000 ? 'to win $' + highestPrize / 100 : '') + ' on Predict That. Check it out! #'+ $scope.$routeParams.category +' #'+ $scope.$routeParams.sport +' #'+ $scope.away_team +' #'+ $scope.home_team +' @predictthatnow';
+      } else if($scope.$routeParams.category == 'sports') {
+        $scope.text = 'I built an epic roster ' + (highestPrize  && highestPrize > 8000 ? 'to win $' + highestPrize / 100 : '') + ' on Predict That. Check it out! #'+ $scope.$routeParams.category +' #'+ $scope.$routeParams.sport +' @predictthatnow';
+      }
+
     },1500);   // hacky.  Should really wait for roster
 
   // Twitter
@@ -56,7 +69,7 @@ angular.module("app.controllers")
           },
           {
             count: 'none',
-            text: 'I built an epic roster ' + (highestPrize  && highestPrize > 8000 ? 'to win $' + highestPrize / 100 : '') + ' on Predict That. Check it out! #'+ $scope.$routeParams.sport +' #'+ $scope.away_team +' #'+ $scope.home_team +' @predictthatnow',
+            text:  $scope.text,
             size: 'large'
           }
         );
@@ -85,5 +98,6 @@ angular.module("app.controllers")
       });
     }, 1600); // hacky.  Should really wait for roster
   });
+
 }]);
 

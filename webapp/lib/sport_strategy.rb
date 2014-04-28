@@ -1,6 +1,6 @@
 class SportStrategy
-  def self.for(sportName)
-    Object.const_get(sportName + 'Strategy').new
+  def self.for(sportName, category = 'fantasy_sports')
+    Object.const_get(sportName + 'Strategy').new if category == 'fantasy_sports'
   end
 
   def fetch_markets(type)
