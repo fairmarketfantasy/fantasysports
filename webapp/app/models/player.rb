@@ -123,7 +123,7 @@ class Player < ActiveRecord::Base
       events = StatEvent.where(player_stats_id: self.stats_id, game_stats_id: played_games_ids)
       return if events.count == 0 || self.total_games.to_i == 0
 
-      value = events.map(&:point_value).reduce(0) { |value, sum| sum + value } / self.total_games.to_i
+      value = events.map(&:point_value).reduce(0) { |value, sum| sum + value }*10 / self.total_games.to_i
     else
       played_games_ids = StatEvent.where("player_stats_id='#{self.stats_id}' AND activity='points' AND quantity != 0" ).
                                    pluck('DISTINCT game_stats_id')
