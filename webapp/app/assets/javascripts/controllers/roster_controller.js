@@ -303,7 +303,9 @@ angular.module("app.controllers")
 
   $scope.removePlayer = function(player) {
     rosters.removePlayer(player);
-    $scope.filterPlayers({position: player.position}, true);
+    $timeout(function(){
+      $scope.filterPlayers({position: player.position}, true);
+    },500)
   };
 
   $scope.totalSalary = function(roster) {
