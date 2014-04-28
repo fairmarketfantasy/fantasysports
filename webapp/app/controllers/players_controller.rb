@@ -46,6 +46,9 @@ class PlayersController < ApplicationController
       @players = @players.order("#{sort} #{order}")
       swap_priced_players!
     end
+
+    response.headers['Expires'] = Time.now.httpdate
+
     render_api_response @players #.limit(50).page(params[:page] || 1)
   end
 
