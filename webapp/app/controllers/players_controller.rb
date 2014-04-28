@@ -3,7 +3,7 @@ class PlayersController < ApplicationController
 
   def index
     roster = Roster.find(params[:roster_id])
-    @player_prices = Rails.cache.fetch("market_prices_#{roster.market_id}", :expires_in => 1.minute) do
+    @player_prices = Rails.cache.fetch("market_prices_#{roster.market_id}_#{roster.players.count}", :expires_in => 1.minute) do
       h = {}
       roster.market.players.normal_positions(roster.market.sport_id).with_prices(roster.market, roster.buy_in).each{|p| h[p.id] = p }
       h
