@@ -59,7 +59,7 @@ class SeasonStatsWorker
       # Home Runs(HR) = 4pts
       create_stat_event(player_stats_id, batting_stat['homeruns'], game, 'Home Run')
       # Run Batted In (RBI) = 1pt
-      create_stat_event(player_stats_id, batting_stat['rbi'], game, 'Run Batted In')
+      create_stat_event(player_stats_id, batting_stat['rbi'] + batting_stat['homeruns'], game, 'Run Batted In')
       # Runs(R) = 1pt
       create_stat_event(player_stats_id, batting_stat['runs'], game, 'Run')
       # Base On Balls(BB) or Walks (term from Wiki) = 1pt
