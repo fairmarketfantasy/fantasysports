@@ -14,7 +14,7 @@ class Market < ActiveRecord::Base
   belongs_to :linked_market, :class_name => 'Market'
 
   validates :shadow_bets, :shadow_bet_rate, :sport_id, presence: true
-  validates :state, inclusion: { in: %w( published opened closed complete ), allow_nil: true }
+  validates :state, inclusion: { in: %w( published opened closed complete ) << '', allow_nil: true } # blank string when go created
   validates :game_type, inclusion: { in: %w( regular_season single_elimination team_single_elimination )}
 
   scope :published_after,   ->(time) { where('published_at > ?', time)}
