@@ -1,0 +1,39 @@
+<div class="roster home-roster competition-roster">
+  <div class="roster-area">
+    <div class="clearfix">
+      <h4 class="team-heading inline-heading">Roster</h4>
+      <a class="btn btn-small btn-info pull-right autofill" href="javascript://" ng-show="competitionRosters.currentRoster.game_roster.state == 'in_progress'" ng-click="competitionRosters.autoFill($routeParams.sport)">AutoFill</a>
+      <span class="salary-cap score" ng-show="competitionRosters.currentRoster.game_roster.state == 'finished'" highlight-changes="roster.score">Team Score: {{gamePrediction.game_roster.score | zeroIfEmpty}}</span>
+    </div>
+
+    <div class="roster-overflow">
+      <ul class="no-no" highlight-changes-in-list="gamePrediction" key-to-watch="score">
+        <li class="mr-item clearfix" ng-repeat="team in competition_roster.game_roster.game_predictions" ng-class="{'no-border': $last }">
+          <div class="mr-team-image pull-left" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': team.team_logo && ('url(' + team.team_logo +')')}">
+            <span ng-show="team.home_team" class="swapped-icon">H</span>
+            <span ng-show="!team.home_team && team.team_stats_id" class="swapped-icon">V</span>
+          </div>
+          <div ng-hide="showPlayer(gamePrediction, team)" class="mr-ind-team-name pull-left">
+            <p style="margin-top: 20px;">Team not selected</p>
+          </div>
+          <div ng-show="showPlayer(gamePrediction, team)" class="mr-ind-team-name pull-left">
+            <h3 class="mr-player-name">{{team.team_name}}</h3>
+            <p>Start time: {{team.game_time | shortFormTime }}</p>
+            <span class="mr-team">{{team.team_name}} @ {{team.opposite_team}}</span>
+          </div>
+          <div ng-click="removeTeamFromRoster(team)" ng-show="showPlayer(gamePrediction, team) && competitionRosters.currentRoster.game_roster.state != 'finished'" class="remove-selected-team pull-right">
+            <span class="special">trade</span>
+          </div>
+          <div ng-show="showPlayer(gamePrediction, team)" class="ind-game-point pull-right">
+            <span>{{team.pt | toFixed}}</span>
+          </div>
+          <div ng-show="showPlayer(gamePrediction, team)" class="mr-ind-team-pred pull-right">
+            <p>Prediction </p>
+            <p>points</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>

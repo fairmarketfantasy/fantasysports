@@ -125,6 +125,11 @@ angular.module('app.filters')
       return input+(s[(v-20)%10]||s[v]||s[0]);
     };
   })
+  .filter('underscore', ['$filter', function($filter) {
+    return function(input) {
+      return input.replace('_',' ');
+    };
+  }])
   .filter('slashesToDashes', ['$filter', function($filter) {
     return function(input) {
       if (!input) { return ""; }

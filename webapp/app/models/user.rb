@@ -29,9 +29,11 @@ class User < ActiveRecord::Base
       :total_wins
 
   has_many :rosters, foreign_key: :owner_id
+  has_many :game_rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner_id
   has_many :push_devices
   has_many :individual_predictions
+  has_many :game_predictions
   has_many :transaction_records
   has_many :league_memberships
   has_many :leagues, :through => :league_memberships

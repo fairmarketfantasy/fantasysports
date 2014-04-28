@@ -52,7 +52,7 @@
   <![endif]-->
 </head>
 
-<body ng-controller="ApplicationController" class="{{$routeParams.sport}}">
+<body ng-controller="ApplicationController" class="{{$routeParams.sport}} {{$routeParams.category}}">
 <!-- FB SHIT -->
 <div id="fb-root"></div>
 <script>
@@ -104,111 +104,17 @@
       <div class="fixed-header">
         <div class="container home clearfix">
           <div class="span8 nav-span">
-            <h1 class="logo-font"><a href="/#/{{currentUser.currentSport}}/home">Predict <span class="logo-slash">That</span></a></h1>
+            <h1 class="logo-font"><a href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/home">Predict <span class="logo-slash">That</span></a></h1>
             <nav class="landing-nav">
               <ul>
-                <li>
-                  <a class="dropdown-toggle" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">Sports</a>
-                  <div ng-show="popover_sports" ng-class="{in : popover_sports}" class="popover bottom fade header-popover">coming very soon <div class="arrow"></div></div>
-                  <!--<ul class="header-drop-menu dropdown-menu">-->
-                  <!--<li ng-class="{'no-border': $last}" ng-repeat="sport in sports" ng-show="sport.is_active" >-->
-                  <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentSport == sport.name}"></em>-->
-                  <!--<a class="landing-nav-link"  href="/#/{{sport.name}}/home">{{sport.name}}</a>-->
-                  <!--</li>-->
-                  <!--</ul>-->
+                <li ng-repeat="category in sports">
+                  <div ng-show="category.note" ng-class="{in : popover_sports}" class="popover bottom fade header-popover">{{category.note}} <div class="arrow"></div></div>
+                  <a class="dropdown-toggle" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">{{category.name | underscore}}</a>
                   <ul class="header-drop-menu dropdown-menu">
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">mlb</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nba</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nfl</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nhl</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nascar</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">golf</a>
-                    </li>
-                    <li class="no-border">
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">tennis</a>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a ng-show="sports" class="dropdown-toggle">Fantasy Sports</a>
-                  <ul class="header-drop-menu dropdown-menu">
-                    <li  ng-repeat="sport in sports" ng-show="sport.is_active" >
-                      <em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentSport == sport.name}"></em>
-                      <a class="landing-nav-link"  href="/#/{{sport.name}}/home">{{sport.name}}</a>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a class="dropdown-toggle" ng-mouseleave="popover_entertainment = false" ng-mouseenter="popover_entertainment = true">Entertainment</a>
-                  <div style="left:-4px;" ng-class="{in : popover_entertainment}" ng-show="popover_entertainment" class="popover bottom fade header-popover">coming soon <div class="arrow"></div></div>
-                  <!--<ul class="header-drop-menu dropdown-menu">-->
-                  <!--<li ng-class="{'no-border': $last}" ng-repeat="entertainment in entertainments" ng-show="entertainment.is_active" >-->
-                  <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentEntertainment == entertainment.name}"></em>-->
-                  <!--<a class="landing-nav-link"  href="/#/{{entertainment.name}}/home">{{entertainment.name}}</a>-->
-                  <!--</li>-->
-                  <!--</ul>-->
-                  <ul class="header-drop-menu dropdown-menu">
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">music</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">reality shows</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">oscars</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">grammys</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">celebrity propositions</a>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a class="dropdown-toggle" ng-mouseleave="popover_politics = false" ng-mouseenter="popover_politics = true">Politics</a>
-                  <div ng-show="popover_politics" ng-class="{in : popover_politics}"  class="popover bottom fade header-popover">coming soon <div class="arrow"></div></div>
-                  <!--<ul class="header-drop-menu dropdown-menu">-->
-                  <!--<li ng-class="{'no-border': $last}" ng-repeat="politic in politics" ng-show="politic.is_active" >-->
-                  <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentPolitic == politic.name}"></em>-->
-                  <!--<a class="landing-nav-link"  href="/#/{{politic.name}}/home">{{politic.name}}</a>-->
-                  <!--</li>-->
-                  <!--</ul>-->
-                  <ul class="header-drop-menu dropdown-menu">
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">presidential candidates</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">congressional races</a>
-                    </li>
-                    <li>
-                      <em class="menu-arrow"></em>
-                      <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">senate races</a>
+                    <li  ng-repeat="sport in category.sports"  ng-show="sport.is_active" >
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name && $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link" ng-hide="sport.coming_soon"  href="/#/{{category.name}}/{{sport.name}}/home">{{sport.name}}</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">{{sport.name}}</a>
                     </li>
                   </ul>
                 </li>
@@ -260,8 +166,8 @@
             <small>PresTige:</small>&nbsp;&nbsp;{{currentUser.prestige}}
           </div>
           <div class="user-dash no-border clearfix">
-            <a class="btn btn-small btn-success home-header-btn" href="/#/{{currentUser.currentSport}}/home">Home</a>
-            <a class="btn btn-small btn-success prediction-header-btn" href="/#/{{currentUser.currentSport}}/rosters">My Predictions</a>
+            <a class="btn btn-small btn-success home-header-btn" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/home">Home</a>
+            <a class="btn btn-small btn-success prediction-header-btn" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
           </div>
           <div ng-hide="$routeParams.sport == 'MLB'" class="try-it">
             <p>Fantasy Baseball is live, try it out</p>
@@ -292,11 +198,11 @@
             <div class="clearfix">
                 <h4 class="logo-font">Predict <span class="logo-slash">That</span></h4>
                 <ul class="footer-nav">
-                  <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/home">Home</a></li>
+                  <li class="nav-item"><a href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/home">Home</a></li>
                   <!--<li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>-->
                   <!--<li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>-->
                   <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
-                  <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rules" >Rules and Scoring</a></li>
+                  <li class="nav-item"><a href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rules" >Rules and Scoring</a></li>
                   <li class="nav-item"><a href="/support" target="_blank" >How it works/support</a></li>
                   <li class="nav-item"><a href="/conditions" target="_blank">Subcription terms</a></li>
                   <!--<li class="nav-item"><a href="/#/legal" >Legal Info</a></li>-->
@@ -318,10 +224,11 @@
   window.App = {
     site: "<%= SITE %>",
     currentUser: <%= (UserSerializer.new(current_user, scope: current_user).to_json.html_safe) || 'null' %>,
-    isUserAdmin: <%= current_user && current_user.admin? || false %>
+    isUserAdmin: <%= current_user && current_user.admin? || false %>,
+    defaultSport: <%= { :name => Sport.active.first.name, :category_name => Sport.active.first.category.name }.to_json.html_safe %>
   };
 
-window.App.sports = <%= Sport.all.map{|s| SportSerializer.new(s, scope: current_user) }.to_json.html_safe %>;
+window.App.sports = <%= Category.all.map{|s| CategorySerializer.new(s, scope: current_user) }.to_json.html_safe %>;
 
   window.setCurrentUser = function(user) {
     window.App.currentUser = user;

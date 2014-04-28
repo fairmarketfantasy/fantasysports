@@ -91,9 +91,10 @@ angular.module('app.services')
       },
 
       setUser: function(user) {
-        console.log($routeParams.sport);
         user.currentSport = $routeParams.sport;
+        user.currentCategory = $routeParams.category;
         this.currentUser = window.App.currentUser = user;
+        this.currentUser = window.App.currentCategory = user;
       },
 
       withdrawFundsModal: function() {
@@ -213,16 +214,16 @@ angular.module('app.services')
         applyPromo: function(code) {
           return $http({method: 'POST', url: '/promo', params: {code: code}});
         },
-        create: function(user_attrs, params, sport){
+        create: function(user_attrs, params, category, sport){
           params = params || {};
-          return $http({method: 'POST', url: '/users.json', params: params, data: {user: user_attrs, sport: sport}});
+          return $http({method: 'POST', url: '/users.json', params: params, data: {user: user_attrs, category:category, sport: sport}});
         },
         update: function(user_attrs) {
           return $http({method: 'PUT', url: '/users.json', data: {user: user_attrs}});
         },
-        login: function(user_attrs, sport, params){
+        login: function(user_attrs,category, sport, params){
           params = params || {};
-          return $http({method: 'POST', url: '/users/sign_in',params: params, data: {user: user_attrs, sport: sport}});
+          return $http({method: 'POST', url: '/users/sign_in',params: params, data: {user: user_attrs ,category:category, sport: sport}});
         },
         addMoney: function(amount){
           return $http({method: 'POST', url: '/users/add_money', data: {amount: amount} });
@@ -302,8 +303,8 @@ angular.module('app.services')
         show: function(id) {
           return $http({method: 'GET', url: '/markets/' + id});
         },
-        list: function(type, sport) {
-          return $http({method: 'GET', url: '/markets', params: {type: type, sport: sport}});
+        list: function(type, category, sport) {
+          return $http({method: 'GET', url: '/markets', params: {type: type, category: category, sport: sport}});
         }
       },
       contests: {
@@ -362,8 +363,8 @@ angular.module('app.services')
         show: function(id, view_code) {
           return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + (view_code || '')});
         },
-        getSample: function(id, sport) {
-          var params = {id: id, sport: sport};
+        getSample: function(id, category, sport) {
+          var params = {id: id, category: category, sport: sport};
           return $http({method: 'GET', url: '/rosters/sample', params: params});
         },
         in_contest: function(contest_id, page) {
@@ -410,6 +411,32 @@ angular.module('app.services')
         mine: function(opts) {
             opts = opts || {};
             return $http({method: 'GET', url: '/individual_predictions/mine?all=true&' + $.param(opts)});
+        }
+      },
+      game_predictions : {
+        dayGames: function(sport, roster_id){
+          roster_id = roster_id || 'false';
+          return $http({method: 'GET', url: '/game_predictions/day_games?sport='+sport+'&roster_id='+roster_id});
+        },
+        sample: function(sport){
+          return $http({method: 'GET', url: '/game_predictions/sample?sport='+sport});
+        },
+        submitPrediction: function(game_stats_id, team_stats_id){
+          return $http({method: 'POST', url: '/game_predictions', data: {game_stats_id: game_stats_id, team_stats_id: team_stats_id} });
+        }
+      },
+      game_rosters: {
+        submit: function(opts){
+          return $http({method: 'POST', url: '/game_rosters', data: {teams: opts}});
+        },
+        update: function(opts, roster_id){
+          return $http({method: 'PUT', url: '/game_rosters/'+roster_id, data: {teams: opts}});
+        },
+        autofill: function(sport){
+          return $http({method: 'POST', url: '/game_rosters/autofill?sport='+sport});
+        },
+        in_contest: function(roster_id){
+          return $http({method: 'GET', url: '/game_rosters/in_contest/'+roster_id});
         }
       }
     }

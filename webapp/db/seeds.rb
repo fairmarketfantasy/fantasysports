@@ -27,3 +27,27 @@ Sport.where(:name => "NBA").first_or_create.save
 Sport.where(:name => "MLB").first_or_create.save
 
 MarketDefaults.where(:sport_id => 0).first_or_create(:single_game_multiplier => 2.3, :multiple_game_multiplier => 10).save
+
+CATEGORY_SPORTS = { 'fantasy_sports' => ['nfl', 'nba', 'mlb'],
+                    'entertainment' => ['music', 'reality shows', 'oscars', 'grammys', 'celebrity propositions'],
+                    'politics' => ['presidental candidates', 'congressional races', 'senate races'],
+                    'sports' => ['mlb', 'nba', 'nfl', 'nhl', 'nascar', 'golf', 'tennis'] }
+
+CATEGORY_SPORTS.each do |category, sports|
+  cat = Category.where(name: category).first_or_create
+  if category == 'sports'
+    cat.update_attribute(:note, '')
+  elsif category == 'fantasy_sports'
+    cat.update_attribute(:note, '')
+  end
+
+  sports.each.each do |s|
+    if category == 'fantasy_sports'
+      sport = Sport.where(name: s.upcase).first
+      sport.update_attributes(category_id: cat.id, coming_soon: false) unless cat.sports.where(name: s.upcase).first
+    else
+      sport = cat.sports.where(name: s.upcase).first_or_create
+      sport.update_attribute(:coming_soon, false) if sport.name == 'MLB'
+    end
+  end
+end
