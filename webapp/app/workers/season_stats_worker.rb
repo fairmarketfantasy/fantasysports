@@ -35,10 +35,10 @@ class SeasonStatsWorker
                 }
 
   def perform(team_stats_id, year, season_type = 'reg')
-    @team = Team.find_by_stats_id team_stats_id
+    team = Team.find_by_stats_id team_stats_id
     url = "http://api.sportsnetwork.com/v1/mlb/stats?team_id=#{team_stats_id}&season=#{season_type}&year=#{year}&api_token=#{TSN_API_KEY}"
     data = JSON.parse open(url).read
-    game = Game.where(:sport_id => @team.sport_id, stats_id: team_stats_id + year.to_s).first
+    game = Game.where(:sport_id => team.sport_id, stats_id: team_stats_id + year.to_s).first
     game.stat_events.destroy_all if game # cleanup old stat
     game ||= Game.create!(status: 'closed', sport_id: Sport.where(name: 'MLB').first.id,
                                  game_day: Date.parse("#{year}-01-01"), stats_id: team_stats_id + year.to_s,
@@ -101,10 +101,10 @@ class SeasonStatsWorker
   end
 
   def self.job_name(team_stats_id, year, season_type = 'reg')
-    @team = Team.find team_stats_id
-    return 'No team found' unless @team
+    team = Team.find team_stats_id
+    return 'No team found' unless team
 
-    "Fetch team stats for team: #{@team.name}, season: #{year}, season_type: #{season_type}"
+    "Fetch team stats for team: #{team.name}, season: #{year}, season_type: #{season_type}"
   end
 
   private

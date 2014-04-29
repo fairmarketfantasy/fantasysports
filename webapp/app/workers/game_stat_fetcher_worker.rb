@@ -78,7 +78,8 @@ class GameStatFetcherWorker
   def perform(game_stat_id)
     game = Game.find_by_stats_id game_stat_id
 
-    return if game.stat_events.any?
+    game.stat_events.destroy_all
+
     data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/play_by_play?game_id=#{game_stat_id}&api_token=#{TSN_API_KEY}").read
 
     game.update_attributes({:home_team_status => {:points => data['home_team_score']}.to_json,
@@ -92,15 +93,22 @@ class GameStatFetcherWorker
         if POINTS_MAPPER[batter['action']].nil?
           puts "wrong points map for #{batter['action']}"
         else
-          find_or_create_stat_event(batter['batter_id'].to_s, game, batter['action'], 1.0)
+          pl = batter['batter_id']
           if (batter['action'] =~ /(1B|2B|3B|HR|BB|HBP)/).present?
             find_or_create_stat_event(batter['pitcher_id'].to_s, game, 'PENALTY', 1.0)
-          end
 
-          # every HR is RBI
-          if batter['action'] == 'HR'
-            find_or_create_stat_event(batter['batter_id'].to_s, game, 'RBI', 1.0)
+            # every HR is RBI
+            if batter['action'] == 'HR'
+              find_or_create_stat_event(batter['batter_id'].to_s, game, 'RBI', 1.0)
+            elsif batter['action'] == 'BB'
+              #earned run
+              find_or_create_stat_event(batter['pitcher_id'].to_s, game, 'ER', 1.0)
+            end
+
+          elsif (batter['action'] =~ /(SO|W)/).present?
+            pl = batter['pitcher_id']
           end
+          find_or_create_stat_event(pl.to_s, game, batter['action'], 1.0)
         end
       end
 
@@ -113,8 +121,8 @@ class GameStatFetcherWorker
       pitch = d['pitches'].last
       if pitch.present?
 
-        find_or_create_stat_event(pitch['pitcher_id'].to_s, game, 'ER', pitch['balls'].to_f)
-        find_or_create_stat_event(pitch['pitcher_id'].to_s, game, 'SO', pitch['strikes'].to_f)
+        #find_or_create_stat_event(pitch['pitcher_id'].to_s, game, 'ER', pitch['balls'].to_f)
+        #find_or_create_stat_event(pitch['pitcher_id'].to_s, game, 'SO', pitch['strikes'].to_f)
         # if inning pitched
         if pitch['balls'].to_i == 0
           find_or_create_stat_event(pitch['pitcher_id'].to_s, game, 'IP', 1.0)
