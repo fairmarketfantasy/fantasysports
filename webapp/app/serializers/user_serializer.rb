@@ -60,9 +60,10 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def prestige
-    val = object.transaction_records.where(event: ["contest_payout", "contest_payout_bonus", "individual_prediction_win"]).
-                                     select(:amount).map(&:amount).reduce(0){|sum, p| sum += p }/100
-    val.round
+    rosters = object.rosters.where(state: 'finished')
+    sum = rosters.map(&:amount_paid).compact.reduce(0) { |sum, v| sum + v }
+    sum += object.individual_predictions.map(&:award).compact.reduce(0) { |sum, v| sum + v * 100 }
+    (sum/100).round
   end
 
 end

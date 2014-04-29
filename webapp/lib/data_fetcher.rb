@@ -37,7 +37,6 @@ class DataFetcher
     end
 
     def update_game_players(game)
-      return if game.sport.name != 'NBA'
       puts "Update game players"
       return if game.checked
 
