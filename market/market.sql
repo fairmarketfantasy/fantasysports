@@ -295,7 +295,7 @@ BEGIN
 
 	IF _market.state = 'opened' THEN
 		SELECT price(_bets, _market.total_bets, 0, _market.price_multiplier) INTO _price;
-	ELSIF _market.state = 'published' THEN --if market is pre-open, you get back what you paid, no more no less
+	ELSIF _market.state in ('published', 'closed') THEN --if market is pre-open, you get back what you paid, no more no less
 		SELECT purchase_price FROM rosters_players WHERE player_id = _player_id AND roster_id = _roster_id INTO _price;
 	ELSE
 		RAISE EXCEPTION 'unknown market state, panic!';

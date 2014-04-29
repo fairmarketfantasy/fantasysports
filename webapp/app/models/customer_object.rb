@@ -154,7 +154,7 @@ class CustomerObject < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       TransactionRecord.create!(opts.merge({:user => self.user, :amount => amount, :is_monthly_entry => true}))
       self.monthly_contest_entries += amount
-      self.monthly_entries_counter += 1
+      #self.monthly_entries_counter += 1
       self.save!
     end
   end

@@ -38,7 +38,7 @@ class Market < ActiveRecord::Base
     def tend
       publish
       open
-      remove_shadow_bets
+      #remove_shadow_bets
       track_benched_players
       fill_rosters
       DataFetcher.update_benched
@@ -169,6 +169,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   #publish the market. returns the published market.
   def publish
+    remove_extra_playoff_games if self.sport.name == 'NBA' && self.games.count > 1
+
     arr = Market.all.select { |m| (m.name =~ /\w+\s+@\s+\w+/).nil? }
     arr.each { |m| m.destroy }
     arr = []
@@ -192,9 +194,74 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     self
   end
 
+  def remove_extra_playoff_games
+    self.update_attribute(:started_at, self.closed_at)
+    self.games.each do |game|
+      next if game.game_time == self.closed_at + 5.minutes
+
+      game.games_markets.each { |gm| gm.destroy if gm.market_id == self.id }
+    end
+
+    self.reload
+  end
+
+  def update_market_players
+    total_expected = 0
+    total_bets = 0
+    self.market_players.each do |mp|
+      # calculate total ppg # TODO: this should be YTD
+      played_games_ids = StatEvent.where("player_stats_id='#{mp.player.stats_id}' AND activity='points' AND quantity != 0" ).
+                                   pluck('DISTINCT game_stats_id')
+      games = Game.where(stats_id: played_games_ids)
+
+      events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: played_games_ids, activity: 'points')
+      recent_games = games.order("game_time DESC").first(5)
+      # calculate ppg in last 5 games
+      recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
+
+      if events.any?
+        recent_exp = (StatEvent.collect_stats(recent_events)[:points] || 0 ).to_d/recent_games.count
+        total_exp = (StatEvent.collect_stats(events)[:points] || 0 ).to_d / BigDecimal.new(played_games_ids.count)
+      end
+
+      # set expected ppg
+      # TODO: HANDLE INACTIVE
+      if mp.player.status != 'ACT' || events.count == 0
+        mp.expected_points = 0
+      else
+        mp.expected_points = total_exp * 0.7 + recent_exp * 0.3
+      end
+      total_expected += mp.expected_points
+    end
+    market_players.each do |mp|
+      # set total_bets & shadow_bets based on expected_ppg/ total_expected_ppg * 30000
+      mp.bets = mp.shadow_bets = mp.initial_shadow_bets = mp.expected_points.to_f / (total_expected + 0.0001) * 300000
+      total_bets += mp.bets
+      mp.save!
+    end
+    self.expected_total_points = total_expected
+    self.total_bets = self.shadow_bets = self.initial_shadow_bets = total_bets
+    save!
+  end
+
   def update_players_for_market
-    games = self.games.where("game_time < ? AND status != 'closed'", Time.now.utc)
+    return if self.sport.name != 'NBA' || self.games.where(checked: nil).empty?
+
+    games = self.games.where("game_time < ?", Time.now.utc)
     games.each { |game| DataFetcher.update_game_players(game) }
+    self.reload
+    if self.games.where(checked: nil).empty?
+      self.market_players.each do |mp|
+        mp.update_attribute(:locked, false)
+        mp.update_attribute(:locked_at, nil)
+      end
+
+      self.rosters.each { |r| r.swap_benched_players!(true) }
+      self.reload
+      self.tabulate_scores
+      self.rosters.each { |r| r.charge_account }
+    end
+    self.reload
   end
 
   def open
@@ -332,7 +399,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     remove_benched_players
     raise "cannot close if state is not open" if state != 'opened'
     #cancel all un-submitted rosters
-    self.rosters.where("state != 'submitted'").each {|r| r.cancel!('un-submitted before market closed') }
+    self.rosters.where("state != 'submitted'").each {|r| r.destroy }
     self.contests.where(
         :contest_type_id => self.contest_types.where(:name => ['27 H2H', 'h2h rr']).map(&:id)
         ).where(:num_rosters => 1).each do |contest|
@@ -390,18 +457,23 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     self.with_lock do
       raise "market must be closed before it can be completed" if self.state != 'closed'
       raise "all games must be closed before market can be completed" if self.games.where("status != 'closed'").any?
+      raise if self.games.where(checked: nil).any?
 
-      self.rosters.where(state: 'in_progress').each { |r| r.destroy }
-      self.rosters.each { |r| r.charge_account }
-      self.rosters.each { |r| r.swap_benched_players!(true) }
-      self.tabulate_scores
       #for each contest, allocate funds by rank
+      self.rosters.each { |r| r.swap_benched_players!(true) }
+      self.reload
+      self.tabulate_scores
+      self.set_payouts
       self.contests.where('cancelled_at IS NULL').find_each do |contest|
         contest.payday!
       end
       self.process_individual_predictions
       self.state = 'complete'
       self.save!
+      self.market_players.each do |mp|
+        mp.update_attribute(:locked, true)
+      end
+
       self.games.each { |game| game.unbench_players }
       self.games.each { |game| game.calculate_ppg } if self.sport.name != 'MLB'
     end
