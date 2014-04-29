@@ -73,7 +73,6 @@ end
 
 group :test do
   gem 'mocha', :require => false
-  gem 'pry'
   gem 'factory_girl'
   gem "factory_girl_rails", "~> 4.0"
   # gem 'mustwin-stripe-ruby-mock', '>= 1.8.5.00'
@@ -82,10 +81,12 @@ group :test do
 end
 
 group :development do
-  gem 'pry'
   gem 'quiet_assets'
   gem 'descriptive-statistics'
 end
+
+
+gem 'pry', group: [:development, :test]
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
