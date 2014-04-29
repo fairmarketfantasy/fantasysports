@@ -93,8 +93,13 @@ class GameStatFetcherWorker
           puts "wrong points map for #{batter['action']}"
         else
           find_or_create_stat_event(batter['batter_id'].to_s, game, batter['action'], 1.0)
-          if (batter['action'] =~ /(1B|2B|3B|HR|BB|HBP)/)
+          if (batter['action'] =~ /(1B|2B|3B|HR|BB|HBP)/).present?
             find_or_create_stat_event(batter['pitcher_id'].to_s, game, 'PENALTY', 1.0)
+          end
+
+          # every HR is RBI
+          if batter['action'] == 'HR'
+            find_or_create_stat_event(batter['batter_id'].to_s, game, 'RBI', 1.0)
           end
         end
       end
