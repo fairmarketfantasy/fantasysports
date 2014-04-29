@@ -9,7 +9,7 @@
     <p ng-show="message">{{message}}</p>
     <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
     <div class='modal-form-container'>
-      <input type='text' name="username" required placeholder='Username' ng-model="user.username" class='mvm' focus-me="signUpForm.username.$error.required" /><br />
+      <input type='text' name="username" required placeholder='Username' ng-model="user.username" class='mvm' /><br />
       <input type='text' name="name" required placeholder='Real Name' ng-model="user.name" class='mvm' /><br />
       <input type='email' name="email" required placeholder='Email' ng-model="user.email" class='mvm' /><br />
       <input type='password' ng-minlength="6" name="password" required placeholder='Password' ng-model="user.password" class='mvm'><br />

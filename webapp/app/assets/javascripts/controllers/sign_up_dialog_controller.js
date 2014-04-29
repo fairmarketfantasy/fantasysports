@@ -5,11 +5,14 @@ angular.module("app.controllers")
   $scope.noPromo = true;
 
   $scope.submit = function() {
-    if (!$scope.isValid()) { return; }
-    fs.user.create($scope.user, registrationService.getLoginOpts(), $routeParams.sport).then(function(resp){
-      //only fires on success, errors are intercepted by fsAPIInterceptor
-      $timeout(function() {window.location.reload(true);}, 750);
-    });
+    if (!$scope.isValid()) {
+      return
+    }else {
+      fs.user.create($scope.user, registrationService.getLoginOpts(), $routeParams.sport).then(function(resp){
+        //only fires on success, errors are intercepted by fsAPIInterceptor
+        $timeout(function() {window.location.reload(true);}, 750);
+      });
+    }
   };
 
   $scope.isValid = function(){
