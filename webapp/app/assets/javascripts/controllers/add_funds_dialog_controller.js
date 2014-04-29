@@ -134,7 +134,10 @@ angular.module("app.controllers")
         flash.error(err);
         $scope.addMoneySpinner = false;
       });
-    }, function() { $scope.addMoneySpinner = false; });
+    }, function() {
+      $scope.addMoneySpinner = false;
+      flash.error("You don't have any cards, add one.")
+    });
   };
 
   $scope.addFunds = function() {
