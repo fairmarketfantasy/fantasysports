@@ -41,7 +41,7 @@ angular.module("app.controllers")
     $scope.playerStats = function(player){
       if(!player){return;}
       $scope.player = player;
-      fs.prediction.show(player.stats_id).then(function(data){
+      fs.prediction.show(player.stats_id, $scope.marketService.currentMarket.id, player.position).then(function(data){
         $scope.events = data.events;
       });
     };
