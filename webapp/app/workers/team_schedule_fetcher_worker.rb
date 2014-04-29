@@ -34,7 +34,7 @@ class TeamScheduleFetcherWorker
       game.season_year = (Time.now.utc - 4).year
       game.sport = @team.sport
       game.save!
-      game.create_market unless game.markets.any?
+      game.create_market unless game.markets.any? or game.game_time < Time.now
     end
   end
 end

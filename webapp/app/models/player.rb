@@ -11,10 +11,7 @@ class Player < ActiveRecord::Base
     end
     team.first
   end
-  belongs_to :player, :foreign_key => 'player_stats_id', :inverse_of => :stat_events
-
-  # This bullshit doesn't work if the foreign key isn't an id column
-  has_many :stat_events, :foreign_key => 'player_stats_id', :inverse_of => :player
+  has_many :stat_events, :foreign_key => 'player_stats_id', :inverse_of => :player, :primary_key => 'stats_id'
   has_many :positions, :class_name => 'PlayerPosition'
   has_many :individual_predictions
 
@@ -147,7 +144,7 @@ class Player < ActiveRecord::Base
     events = StatEvent.where(player_stats_id: params[:player_ids],
                              game_stats_id: played_games_ids)
     if games.last.sport.name == 'MLB'
-      recent_games = games.order("game_time DESC").first(50)
+      recent_games = games.where(season_year: (Time.now.utc - 4).year).order("game_time DESC").first(50)
     else
       recent_games = games.order("game_time DESC").first(5)
     end

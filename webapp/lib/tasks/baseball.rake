@@ -5,6 +5,8 @@ namespace :baseball do
   end
 
   task :fetch_prev_season_stats => :environment do
+    Player.where(:sport_id => Sport.find_by_name('MLB').id).update_all('total_games = 0')
+    Player.where(:sport_id => Sport.find_by_name('MLB').id).update_all('total_points=0')
     Team.where(:sport_id => Sport.find_by_name('MLB').id).each { |t| SeasonStatsWorker.perform_async(t.stats_id, (Date.today - 1.year).year)}
   end
 
