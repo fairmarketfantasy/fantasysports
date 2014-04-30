@@ -20,7 +20,7 @@ class PlayersFetcherWorker
         player.name_abbr = listing['last_name']
         player.birthdate = listing['dob']
         player.jersey_number = listing['jersey_number']
-        player.status = listing['status']
+        player.status = (listing['status'] =~ /(ACT|A|M)/).present?  ? 'ACT' : listing['status']
         player.height = listing['height'].split('-')[0].to_i*30.58 + listing['height'].split('-')[1].to_i*2.54 # convert feets & inches to cm
         player.weight = listing['weight']*0.454 # convert pounds to kilograms
         player.out = false
@@ -73,7 +73,7 @@ class PlayersFetcherWorker
       player = Player.find_by_stats_id pitcher['starter_id'].to_s
       player.positions.map(&:destroy)
 
-      #PlayerPosition.create! player_id: player.id, position: 'RP'
+      PlayerPosition.create! player_id: player.id, position: 'RP'
 
     end
   end
