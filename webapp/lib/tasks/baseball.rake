@@ -23,6 +23,6 @@ namespace :baseball do
   desc 'Calculate prev games stats'
   task :fetch_past_games => :environment do
     Market.where(:sport_id => 872).select { |m| m.closed_at < Time.now}.each { |i| i.update_attribute(:state, 'complete')}
-    Game.where(:sport_id => 872).select { |g| g.game_time < Time.now and g.game_time.year == 2014}.each { |i| GameStatFetcherWorker.perform_async i.stats_id }
+    Game.where(:sport_id => 872).select { |g| g.game_time < Time.now and g.game_time.year == 2014}.uniq.each { |i| GameStatFetcherWorker.perform_async i.stats_id }
   end
 end
