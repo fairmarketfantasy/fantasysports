@@ -73,7 +73,7 @@ class PlayersFetcherWorker
       player = Player.find_by_stats_id pitcher['starter_id'].to_s
       player.positions.map(&:destroy)
 
-      PlayerPosition.create! player_id: player.id, position: 'RP'
+      #PlayerPosition.create! player_id: player.id, position: 'RP'
 
     end
   end
