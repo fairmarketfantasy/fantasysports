@@ -364,11 +364,14 @@ select:focus:invalid {
   font-size: 12px;
   padding: 0 10px;
   span{
-    font-size: 15px;
+    display: inline-block;
+    font-size: 14px;
+    width: 345px;
   }
   a {
     color:#fff;
     float: right;
+    margin-top: 8px;
   }
 }
 .ie8 .login-buttons {
@@ -492,6 +495,25 @@ select:focus:invalid {
   padding: 30px 0 60px;
   &.first-section {
     padding-top: 60px;
+  }
+}
+.fanbucks-convert{
+  left: 50%;
+  margin-left: -268px;
+  position: absolute;
+  top: -60px;
+  span {
+    width: 55px;
+    height: 55px;
+    display: block;
+    background: asset-url('bucks.png') no-repeat 0 0;
+    float:left;
+  }
+  h3 {
+    color:@white;
+    float:left;
+    margin-top: 7px;
+    text-shadow: 1px 1px 5px @black;
   }
 }
 .about-text {
@@ -1699,6 +1721,18 @@ input, textarea, .uneditable-input {
   margin-bottom: 15px;
   position: relative;
 }
+.team-selection-info{
+  text-align: center;
+  margin: 10px 0;
+  p {
+    color:@white;
+    margin: 0 0 2px 0;
+  }
+  h3 {
+    color:@white;
+    font-size: 22px;
+  }
+}
 .team-heading {
   color: @white;
   margin: 0 0 8px;
@@ -1907,7 +1941,7 @@ input, textarea, .uneditable-input {
 .mr-item {
   display: inline-block;
   width: 50%;
-  padding: 20px 0;
+  padding: 16px 0;
 }
 .mr-player-name {
   color:#000;
@@ -2062,7 +2096,7 @@ input[type="text"].players-search {
 }
 
 .roster-alert {
-  bottom: 0;
+  bottom: 60px;
   position: absolute;
   right: 0;
   .roster-submit{
@@ -2119,7 +2153,9 @@ input[type="text"].players-search {
     color: @green;
   }
 }
-
+.about-container{
+  position: relative;
+}
 
 /* Button Overrides -- there are many
    TODO - remove the .btn.btn- specificity in flat-ui -- GROSS
