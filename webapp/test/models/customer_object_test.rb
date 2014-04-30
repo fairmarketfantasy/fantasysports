@@ -48,15 +48,48 @@ class CustomerObjectTest < ActiveSupport::TestCase
 
   test "monthly accounting" do
     c = create(:user).customer_object
-    c.update_attributes(:monthly_winnings => 150000, :monthly_contest_entries => 9, :contest_entries_deficit => 1)
-    assert_equal c.taxed_net_monthly_winnings, 75000
-    assert_difference "c.reload.monthly_winnings", -150000 do
-      assert_difference "c.reload.balance", 75000 - 1000 do # -1000 for this month's activation
+    c.update_attributes(:monthly_winnings => 245000, :monthly_contest_entries => 45)
+    assert_equal c.taxed_net_monthly_winnings, 72500
+    assert_difference "c.reload.monthly_winnings", -245000 do
+      assert_difference "c.reload.balance",  72500 - 1000 do # -1000 for this month's activation
         c.do_monthly_accounting!
       end
     end
+
+    assert_equal c.net_monthly_winnings, 0
+    assert_equal c.monthly_contest_entries, 0
     assert c.is_active?
     assert c.last_activated_at
+  end
+
+  test "monthly accounting when balance is less then -50 FB" do
+    c = create(:user).customer_object
+    c.update_attributes(:monthly_winnings => 45, :monthly_contest_entries => 45)
+    assert_difference "c.reload.monthly_winnings", -45 do
+      assert_difference "c.reload.balance", 0 do # -1000 for this month's activation
+        c.do_monthly_accounting!
+      end
+    end
+
+    assert_equal c.reload.net_monthly_winnings, -5000.0
+    assert_equal c.reload.monthly_contest_entries, 5
+    assert !c.is_active?
+    assert !c.last_activated_at
+  end
+
+  test "monthly accounting when balance is between -50 and 0 FB" do
+    c = create(:user).customer_object
+    c.update_attributes(:monthly_winnings => 1000, :monthly_contest_entries => 2)
+    assert_difference "c.reload.monthly_winnings", -1000 do
+      assert_difference "c.reload.balance", 0 do # -1000 for this month's activation
+        c.do_monthly_accounting!
+      end
+    end
+
+    assert_equal c.net_monthly_winnings, -1000
+    assert_equal c.monthly_contest_entries, 1
+    assert !c.is_active?
+    assert !c.last_activated_at
   end
 
   test "user activation" do
@@ -71,8 +104,8 @@ class CustomerObjectTest < ActiveSupport::TestCase
 
   test "taxed winnings" do
     c = create(:user).customer_object
-    c.update_attributes(:monthly_winnings => 150000, :monthly_contest_entries => 9, :contest_entries_deficit => 1)
-    assert_equal c.taxed_net_monthly_winnings, 75000
+    c.update_attributes(:monthly_winnings => 245000, :monthly_contest_entries => 45)
+    assert_equal c.taxed_net_monthly_winnings, 72500
   end
 
   test "double activate not double charged" do
