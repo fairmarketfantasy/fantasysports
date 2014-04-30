@@ -22,15 +22,18 @@ class CustomerObject < ActiveRecord::Base
     raise "Monthly accounting doesn't add up" unless condition
 
     self.class.transaction do
-      decrease_monthly_winnings(user_earnings, :event => 'monthly_user_balance')
+      #decrease_monthly_winnings(user_earnings, :event => 'monthly_user_balance')
       #decrease_monthly_winnings(deficit_entries * 1000, :event => 'monthly_user_entries') if deficit_entries > 0
-      decrease_monthly_winnings(tax_earnings, :event => 'monthly_taxes') if tax_earnings > 0
-      if user_earnings > 0
+      #decrease_monthly_winnings(tax_earnings, :event => 'monthly_taxes') if tax_earnings > 0
+      if self.net_monthly_winnings > 0
         increase_account_balance(user_earnings, :event => 'monthly_user_balance')
         self.update_attributes(:monthly_contest_entries => 0)
+      elsif self.net_monthly_winnings < -5000
+        self.update_attributes(:monthly_contest_entries => 5)
       else
-        self.update_attributes(:monthly_contest_entries => -5) if self.net_monthly_winnings < -5000
+        self.update_attributes(:monthly_contest_entries => self.net_monthly_winnings.abs/1000)
       end
+
       self.update_attributes(:monthly_winnings => 0, :monthly_entries_counter => 0)
       puts "--Accounting #{self.user.id}"
       if self.balance > 1000
