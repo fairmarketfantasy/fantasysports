@@ -241,6 +241,14 @@ angular.module('app.data')
         });
       };
 
+      this.playerNoBorder = function(data){
+        if(data % 2 != 0){
+          return null;
+        }else {
+          return data-2
+        }
+      };
+
       this.openInviteFriends = function(roster) {
         var dialogOpts = {
               backdrop: true,
