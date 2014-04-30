@@ -64,6 +64,7 @@ class GameStatFetcherWorker
       'R' => ['Run', 1.0], # R = 1pt
       'SB' => ['Stolen Base', 2.0], # SB = 2pts
       'OUT' => ['Out', -0.25], # Out (calculated as at bats - hits) = -.25pt
+      'AB' => ['At Bats', 0.0], # AB = 2pts
       nil => ['none', 0.0],
 
       # and this is for pitchers
@@ -71,7 +72,7 @@ class GameStatFetcherWorker
       'ER' => ['Earned run', -1.0],
       'IP' => ['Inning Pitched', 1.0],
       'W' => ['Wins', 4.0], # W = 4pts
-      'PENALTY' => ['PENALTY',-0.5] # -.5 for a hit or walk or hbp (hit by pitch)
+      'PENALTY' => ['PENALTY', -0.5] # -.5 for a hit or walk or hbp (hit by pitch)
   }
 
 
@@ -80,55 +81,64 @@ class GameStatFetcherWorker
 
     game.stat_events.destroy_all
 
-    data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/play_by_play?game_id=#{game_stat_id}&api_token=#{TSN_API_KEY}").read
+    data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/boxscore?game_ids=#{game_stat_id}&api_token=#{TSN_API_KEY}").read
 
-    game.update_attributes({:home_team_status => {:points => data['home_team_score']}.to_json,
-                            :away_team_status => {:points => data['away_team_score']}.to_json})
+    #game.update_attributes({:home_team_status => {:points => data['home_team_score']}.to_json,
+    #                        :away_team_status => {:points => data['away_team_score']}.to_json})
 
-    data['plays'].each do |d|
+    data = data.first
 
-      batter = d['batter']
+    return unless data.present?
 
-      if batter['action'].present?
-        if POINTS_MAPPER[batter['action']].nil?
-          puts "wrong points map for #{batter['action']}"
-        else
-          pl = batter['batter_id']
-          if (batter['action'] =~ /(1B|2B|3B|HR|BB|HBP)/).present?
-            find_or_create_stat_event(batter['pitcher_id'].to_s, game, 'PENALTY', 1.0)
+    data['team_summary'].each do |team_summary|
+      team_summary['batting_fielding_stats'].each do |batting_fielding_stat|
+        player_stats_id = batting_fielding_stat['player_id'].to_s
 
-            # every HR is RBI
-            if batter['action'] == 'HR'
-              find_or_create_stat_event(batter['batter_id'].to_s, game, 'RBI', 1.0)
-            elsif batter['action'] == 'BB'
-              #earned run
-              find_or_create_stat_event(batter['pitcher_id'].to_s, game, 'ER', 1.0)
-            end
+        singles = batting_fielding_stat['hits'] - batting_fielding_stat['doubles'] - batting_fielding_stat['triples'] - batting_fielding_stat['home_runs']
+        find_or_create_stat_event(player_stats_id, game, '1B', singles.to_f)
+        # Second base, or double(2B) = 2pts
+        find_or_create_stat_event(player_stats_id, game, '2B', batting_fielding_stat['triples'].to_f)
+        # Third base, or triple(3B) = 3pts
+        find_or_create_stat_event(player_stats_id, game, '3B', batting_fielding_stat['triples'].to_f)
+        # Home Runs(HR) = 4pts
+        find_or_create_stat_event(player_stats_id, game, 'HR', batting_fielding_stat['home_runs'].to_f)
+        # Run Batted In (RBI) = 1pt
+        find_or_create_stat_event(player_stats_id, game, 'RBI', batting_fielding_stat['rbi'].to_f)
+        # Runs(R) = 1pt
+        find_or_create_stat_event(player_stats_id, game, 'R', batting_fielding_stat['runs'].to_f)
+        # Base On Balls(BB) or Walks (term from Wiki) = 1pt
+        find_or_create_stat_event(player_stats_id, game, 'BB', batting_fielding_stat['walks'].to_f)
+        # Stolen Base (SB) = 2pts
+        find_or_create_stat_event(player_stats_id, game, 'SB', batting_fielding_stat['stolen_bases'].to_f)
+        # Hit By Pitch (HBP) = 1pt
+        find_or_create_stat_event(player_stats_id, game, 'HBP', batting_fielding_stat['hbp'].to_f)
+        # Out (calculated as at bats - hits) = -.25pt
+        find_or_create_stat_event(player_stats_id, game, 'OUT', (batting_fielding_stat['at_bats'] - batting_fielding_stat['hits']).to_f)
 
-          elsif (batter['action'] =~ /(SO|W)/).present?
-            pl = batter['pitcher_id']
-          end
-          find_or_create_stat_event(pl.to_s, game, batter['action'], 1.0)
+        # calculate at_bats
+        find_or_create_stat_event(player_stats_id, game, 'AB', batting_fielding_stat['at_bats'].to_f)
+      end
+
+      team_summary['pitching_stats'].each do |pitching_stat|
+        player_stats_id = pitching_stat['player_id'].to_s
+
+        # Win (W) = 4pts
+        q_wins = Player.find_by_stats_id(player_stats_id).stat_events.where(:activity => 'Wins').select { |e| e.game.game_time.year == Time.now.year}.map(&:quantity).sum
+        delta = pitching_stat['season_wins'] - q_wins
+
+        if delta > 0
+          find_or_create_stat_event(player_stats_id, game, 'W', delta)
         end
+        # Earned Run (ER) = -1pt
+        find_or_create_stat_event(player_stats_id, game, 'ER', pitching_stat['earned_runs'].to_f)
+        # Strike Out (SO) = 1pt
+        find_or_create_stat_event(player_stats_id, game, 'SO', pitching_stat['strikeouts'].to_f)
+        # Inning Pitched (IP) = 1pt
+        find_or_create_stat_event(player_stats_id, game, 'IP', pitching_stat['innings_pitched'].to_f)
+
+        # -.5 for a hit or walk or hbp (hit by pitch)
+        find_or_create_stat_event(player_stats_id, game, 'PENALTY', (pitching_stat['walks'] + pitching_stat['hits']).to_f)
       end
-
-
-      d['pitchers'].each do |pitcher|
-        find_or_create_stat_event(batter['pitcher_id'].to_s, game, 'OUT', pitcher['outs'].to_f)
-      end
-
-      # select last pitch of the inning - stats for the inning are cumulative
-      pitch = d['pitches'].last
-      if pitch.present?
-
-        #find_or_create_stat_event(pitch['pitcher_id'].to_s, game, 'ER', pitch['balls'].to_f)
-        #find_or_create_stat_event(pitch['pitcher_id'].to_s, game, 'SO', pitch['strikes'].to_f)
-        # if inning pitched
-        if pitch['balls'].to_i == 0
-          find_or_create_stat_event(pitch['pitcher_id'].to_s, game, 'IP', 1.0)
-        end
-      end
-
     end
   end
 

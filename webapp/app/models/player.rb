@@ -168,16 +168,20 @@ class Player < ActiveRecord::Base
     data = []
     total_stats.each do |k, v|
       if games.last.sport.name == 'MLB'
-        last_year_points = last_year_stats[k] || 0.to_d
-        this_year_points = (this_year_stats[k] || 0).to_d/this_year_ids.count if this_year_ids.count != 0
-        history = [last_year_points, 0].max + (this_year_points || 0)
+        #last_year_points = last_year_stats[k] || 0.to_d
+        #this_year_points = (this_year_stats[k] || 0).to_d/this_year_ids.count if this_year_ids.count != 0
+        history = ((last_year_stats[k] || 0.to_d)*self.total_games + (this_year_stats[k] || 0).to_d)/(this_year_ids.count + self.total_games)
         #history = last_year != 0 ? [last_year * (last_year - 2 * this_year)/last_year + this_year, 0].max : this_year
         recent = (recent_stats[k] || 0.to_d)/recent_ids.count if recent_ids.count != 0
         recent ||= 0
         if last_year_ids.count == 0
           value = self.average_for_position(params[:position])[k] || 0
         else
-          value = 0.2.to_d * recent + 0.8.to_d * history
+          #if this_year_stats[:'Inning Pitched'].to_i > 15 or self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year } > 50
+          #  value = recent
+          #else
+            value = 0.2.to_d * recent + 0.8.to_d * history
+          #end
         end
       else
         value = v.to_d / BigDecimal.new(played_games_ids.count)
