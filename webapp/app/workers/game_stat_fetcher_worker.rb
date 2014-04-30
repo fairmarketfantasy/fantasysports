@@ -123,11 +123,14 @@ class GameStatFetcherWorker
         player_stats_id = pitching_stat['player_id'].to_s
 
         # Win (W) = 4pts
-        q_wins = Player.find_by_stats_id(player_stats_id).stat_events.where(:activity => 'Wins').select { |e| e.game.game_time.year == Time.now.year}.map(&:quantity).sum
-        delta = pitching_stat['season_wins'] - q_wins
+        pl = Player.find_by_stats_id(player_stats_id)
+        if pl.present?
+          q_wins = Player.find_by_stats_id(player_stats_id).stat_events.where(:activity => 'Wins').select { |e| e.game.game_time.year == Time.now.year}.map(&:quantity).sum
+          delta = pitching_stat['season_wins'] - q_wins
 
-        if delta > 0
-          find_or_create_stat_event(player_stats_id, game, 'W', delta)
+          if delta > 0
+            find_or_create_stat_event(player_stats_id, game, 'W', delta)
+          end
         end
         # Earned Run (ER) = -1pt
         find_or_create_stat_event(player_stats_id, game, 'ER', pitching_stat['earned_runs'].to_f)
@@ -152,6 +155,7 @@ class GameStatFetcherWorker
   private
 
   def find_or_create_stat_event(player_stats_id, game, action, quantity)
+    return unless Player.find_by_stats_id(player_stats_id).present?
 
     st = game.stat_events.where(:player_stats_id => player_stats_id, :activity => POINTS_MAPPER[action][0]).first || game.stat_events.new
     st.player_stats_id = player_stats_id
