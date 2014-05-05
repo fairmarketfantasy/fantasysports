@@ -42,8 +42,15 @@ ActiveAdmin.register User do
     column :username
     column :created_at
     column :email
-    column :token_balance
     column(:balance) {|u| u.customer_object.balance }
+    column(:fanbucks) {|u| u.customer_object.net_monthly_winnings/100 }
+    column(:prestige) do |u|
+      rosters = u.rosters.where(state: 'finished')
+      sum = rosters.map(&:amount_paid).compact.reduce(0) { |sum, v| sum + v }
+      sum += u.individual_predictions.map(&:award).compact.reduce(0) { |sum, v| sum + v * 100 }
+      (sum/100).round
+    end
+
     column :rosters do |user|
       link_to "Rosters", :controller => "rosters", :action => "index", 'q[owner_id_eq]' => "#{user.id}".html_safe
     end
@@ -63,9 +70,9 @@ ActiveAdmin.register User do
   end
   action_item :only => [:show, :edit] do
     form_tag(user_payout_admin_user_path(user)) do
-      label_tag('form', 'Payout') + 
-      text_field_tag('amount', '', :class => 'custom-text-input', :placeholder => "10.00", :maxlength => 6) + 
-      text_field_tag('reason', '', :class => 'custom-text-input', :placeholder => "Why? refund for contest 187", :maxlength => 128) + 
+      label_tag('form', 'Payout') +
+      text_field_tag('amount', '', :class => 'custom-text-input', :placeholder => "10.00", :maxlength => 6) +
+      text_field_tag('reason', '', :class => 'custom-text-input', :placeholder => "Why? refund for contest 187", :maxlength => 128) +
       submit_tag("Pay them")
     end
   end
