@@ -499,7 +499,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         user.update_attribute(:total_loses, user.total_loses.to_i + 1)
       end
 
-      prediction.update_attribute(:state, 'finished')
+      prediction.update_attribute(:state, 'finished') if prediction.state != 'canceled'
     end
   end
 
