@@ -11,7 +11,7 @@ ActiveAdmin.register Promo do
     column :only_new_users
     column :created_at
 
-    column('number_of_uses') {|promo| promo.users.count }
+    #column('number_of_uses') {|promo| promo.users.count }
     default_actions
   end
 
