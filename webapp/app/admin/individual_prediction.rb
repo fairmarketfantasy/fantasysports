@@ -14,6 +14,8 @@ ActiveAdmin.register IndividualPrediction do
     column(:event_type) { |ip| ip.event_predictions.last.event_type }
     column(:diff) { |ip| ip.event_predictions.last.diff }
     column(:value) { |ip| ip.event_predictions.last.value }
+    column :game_result
+    column :state
     default_actions
   end
 end
