@@ -48,6 +48,9 @@ class SeasonStatsWorker
                                  game_time: Date.parse("#{year}-01-01").to_time)
     data['batting_stats'].each do |batting_stat|
       player_stats_id = batting_stat['player_id'].to_s
+      player = Player.where(stats_id: player_stats_id).first
+      next if player.nil? or (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).blank?
+
       total_games  = batting_stat['games']
       # hits less doubles, triples, and homeruns
       singles = batting_stat['hits'] - batting_stat['doubles'] - batting_stat['triples'] - batting_stat['homeruns']
@@ -70,14 +73,16 @@ class SeasonStatsWorker
       create_stat_event(player_stats_id, batting_stat['hbp'], game, 'Hit By Pitch')
       # Out (calculated as at bats - hits) = -.25pt
       create_stat_event(player_stats_id, (batting_stat['at_bats'] - batting_stat['hits']), game, 'Out')
-      player = Player.where(stats_id: player_stats_id).first
-      next unless player
 
       player.update_attribute(:total_games, total_games.to_i)
     end
 
     data['pitching_stats'].each do |pitching_stat|
       player_stats_id = pitching_stat['player_id'].to_s
+
+      player = Player.where(stats_id: player_stats_id).first
+      next if player.nil? or (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present?
+
       total_games = pitching_stat['appearances']
 
       # Win (W) = 4pts
@@ -89,12 +94,11 @@ class SeasonStatsWorker
       # Inning Pitched (IP) = 1pt
       create_stat_event(player_stats_id, pitching_stat['ip'], game, 'Inning Pitched')
 
+      # Base On Balls(BB) or Walks (term from Wiki) = 1pt
+      create_stat_event(player_stats_id, pitching_stat['walks'], game, 'Walked')
+
       # -.5 for a hit or walk or hbp (hit by pitch)
       create_stat_event(player_stats_id, pitching_stat['walks'] + pitching_stat['hits'] , game, 'PENALTY')
-
-      player = Player.where(stats_id: player_stats_id).first
-
-      next unless player
 
       player.update_attribute(:total_games, total_games.to_i)
     end
