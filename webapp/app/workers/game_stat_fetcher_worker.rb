@@ -139,6 +139,9 @@ class GameStatFetcherWorker
         # Inning Pitched (IP) = 1pt
         find_or_create_stat_event(player_stats_id, game, 'IP', pitching_stat['innings_pitched'].to_f)
 
+        # Base On Balls(BB) or Walks (term from Wiki) = 1pt
+        find_or_create_stat_event(player_stats_id, game, 'BB', pitching_stat['walks'].to_f)
+
         # -.5 for a hit or walk or hbp (hit by pitch)
         find_or_create_stat_event(player_stats_id, game, 'PENALTY', (pitching_stat['walks'] + pitching_stat['hits']).to_f)
       end
