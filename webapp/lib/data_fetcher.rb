@@ -34,7 +34,7 @@ class DataFetcher
       end
     end
 
-    def update_game_players(game)
+    def update_game_players(game, required_time = 0)
       puts "Update game players"
 
       url = NBA_BASE_URL + "games/#{game.stats_id}/summary.xml" + NBA_API_KEY_PARAMS
@@ -50,7 +50,7 @@ class DataFetcher
         game_player_ids << id
         played = node.at_xpath("@played")
 
-        benched_ids << id if played.nil? || played.value != "true" || less_then_6_min(node)
+        benched_ids << id if played.nil? || played.value != "true" || less_then_n_min(node, required_time)
       end
 
       game.players.each do |player|
@@ -77,14 +77,14 @@ class DataFetcher
       end
     end
 
-    def less_then_6_min(node)
+    def less_then_n_min(node, required_time)
       minutes = node.search("statistics").at_xpath("@minutes")
       points = node.search("statistics").at_xpath("@points")
 
       min_val = minutes.value[/^(?<minutes>\d{2}):\d{2}$/, :minutes] if minutes
       return true unless min_val
 
-      min_val.to_i < 6
+      min_val.to_i <= required_time
     end
 
   end
