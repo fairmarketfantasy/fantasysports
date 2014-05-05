@@ -1,10 +1,9 @@
 class IndividualPrediction < ActiveRecord::Base
-  belongs_to :roster
   belongs_to :player
   belongs_to :user
   belongs_to :market
   has_many :event_predictions
-  validates_presence_of :user_id, :player_id, :roster_id, :market_id, :pt
+  validates_presence_of :user_id, :player_id, :market_id, :pt
   attr_protected
 
   PT = BigDecimal.new(25)
@@ -32,11 +31,10 @@ class IndividualPrediction < ActiveRecord::Base
       event = params[:events].first
       pt = IndividualPrediction.get_pt_value(event[:value].to_d, event[:diff])
       prediction = user.individual_predictions.create(player_id: player.id,
-                                                      roster_id: params[:roster_id],
                                                       market_id: params[:market_id],
                                                       pt: pt)
       TransactionRecord.create!(:user => user, :event => 'create_individual_prediction',
-                                :amount => pt * 100, roster_id: params[:roster_id])
+                                :amount => pt * 100)
       Eventing.report(user, 'CreateIndividualPrediction', :amount => pt * 100)
       customer_object = user.customer_object
       customer_object.monthly_entries_counter += 1

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140414133513) do
+ActiveRecord::Schema.define(version: 20140505115706) do
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -170,7 +170,6 @@ ActiveRecord::Schema.define(version: 20140414133513) do
   add_index "games_markets", ["market_id", "game_stats_id"], name: "index_games_markets_on_market_id_and_game_stats_id", unique: true, using: :btree
 
   create_table "individual_predictions", force: true do |t|
-    t.integer  "roster_id",                         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "player_id"
@@ -578,10 +577,10 @@ ActiveRecord::Schema.define(version: 20140414133513) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
-    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
+    t.string   "avatar"
     t.text     "bonuses"
     t.string   "referral_code"
     t.integer  "total_loses",            default: 0
