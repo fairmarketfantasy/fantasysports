@@ -27,10 +27,8 @@ class DataFetcher
           end
         end
       end
+
       sport_id = Sport.where(name: 'NBA').first.id
-      Player.where(out: true, sport_id: sport_id).each do |player|
-        player.update_attribute(:out, false) unless benched_ids.include?(player.stats_id)
-      end
       Player.where(stats_id: benched_ids, sport_id: sport_id).each do |player|
         player.update_attribute(:out, true) unless player.out
       end
@@ -38,7 +36,6 @@ class DataFetcher
 
     def update_game_players(game)
       puts "Update game players"
-      return if game.checked
 
       url = NBA_BASE_URL + "games/#{game.stats_id}/summary.xml" + NBA_API_KEY_PARAMS
       xml = get_xml(url)
@@ -46,17 +43,18 @@ class DataFetcher
       return unless second_half_started
 
       benched_ids = []
+      game_player_ids = []
       players = xml.search("player")
       players.each do |node|
         id = node.xpath("@id").first.value
+        game_player_ids << id
         played = node.at_xpath("@played")
 
-        benched_ids << id if played.nil? || played.value != "true" || less_then_1_min(node)
-
+        benched_ids << id if played.nil? || played.value != "true" || less_then_6_min(node)
       end
 
       game.players.each do |player|
-        if benched_ids.include?(player.stats_id)
+        if benched_ids.include?(player.stats_id) || !game_player_ids.include?(player.stats_id)
           player.update_attribute(:out, true) unless player.out
         else
           player.update_attribute(:out, false) if player.out
@@ -79,13 +77,14 @@ class DataFetcher
       end
     end
 
-    def less_then_1_min(node)
+    def less_then_6_min(node)
       minutes = node.search("statistics").at_xpath("@minutes")
       points = node.search("statistics").at_xpath("@points")
 
       min_val = minutes.value[/^(?<minutes>\d{2}):\d{2}$/, :minutes] if minutes
-      min_val = min_val.to_i if min_val
-      min_val && min_val == 0 && points.value.to_i == 0
+      return true unless min_val
+
+      min_val.to_i < 6
     end
 
   end

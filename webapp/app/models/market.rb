@@ -467,6 +467,9 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       self.contests.where('cancelled_at IS NULL').find_each do |contest|
         contest.payday!
       end
+      games = self.games.where("game_time < ?", Time.now.utc)
+      games.each { |game| DataFetcher.update_game_players(game) }
+      self.reload
       self.process_individual_predictions
       self.state = 'complete'
       self.save!
