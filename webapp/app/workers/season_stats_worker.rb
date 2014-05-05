@@ -90,7 +90,7 @@ class SeasonStatsWorker
       # Earned Run (ER) = -1pt
       create_stat_event(player_stats_id, pitching_stat['earned_runs'], game, 'Earned run')
       # Strike Out (SO) = 1pt
-      create_stat_event(player_stats_id, pitching_stat['total_outs'], game, 'Strike Out')
+      create_stat_event(player_stats_id, pitching_stat['ko'], game, 'Strike Out')
       # Inning Pitched (IP) = 1pt
       create_stat_event(player_stats_id, pitching_stat['ip'], game, 'Inning Pitched')
 
