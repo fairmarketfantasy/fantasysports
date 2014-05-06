@@ -30,6 +30,7 @@ class SeasonStatsWorker
                    'Strike Out' => 1.0,
                    'Earned run' => -1.0,
                    'Inning Pitched' => 1.0,
+                   'At Bats' => 0.0,
                    'Wins' => 4.0, # W = 4pts
                    'PENALTY' => -0.5 # -.5 for a hit or walk or hbp (hit by pitch)
                 }
@@ -71,6 +72,8 @@ class SeasonStatsWorker
       create_stat_event(player_stats_id, batting_stat['sb'], game, 'Stolen Base')
       # Hit By Pitch (HBP) = 1pt
       create_stat_event(player_stats_id, batting_stat['hbp'], game, 'Hit By Pitch')
+      # At bats
+      create_stat_event(player_stats_id, batting_stat['at_bats'], game, 'At Bats')
       # Out (calculated as at bats - hits) = -.25pt
       create_stat_event(player_stats_id, (batting_stat['at_bats'] - batting_stat['hits']), game, 'Out')
 
