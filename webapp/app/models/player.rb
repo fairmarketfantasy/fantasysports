@@ -177,11 +177,17 @@ class Player < ActiveRecord::Base
         if last_year_ids.count == 0
           value = self.average_for_position(params[:position])[k] || 0
         else
-          #if this_year_stats[:'Inning Pitched'].to_i > 15 or self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year } > 50
-          #  value = recent
-          #else
-            value = 0.2.to_d * recent + 0.8.to_d * history
-          #end
+          if this_year_stats[:'Inning Pitched'].to_i > 15 or self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size > 50
+            koef = 0.2
+          else
+            # batter
+            if (self.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present?
+              koef = 0.2*(self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size/50.0)
+            else
+              koef = 0.2*(this_year_stats[:'Inning Pitched'].to_i/15.0)
+            end
+          end
+          value = koef.to_d * recent + (1.0 - koef).to_d * history
         end
       else
         value = v.to_d / BigDecimal.new(played_games_ids.count)
