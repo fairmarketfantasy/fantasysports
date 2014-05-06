@@ -37,10 +37,10 @@ class Positions
   end
 
   def self.default_MLB
-    'SP,RP,C,1B/DH,2B,3B,SS,OF,OF,OF'
+    'SP,C,1B/DH,2B,3B,SS,OF,OF,OF'
   end
 
   def self.default_MLB_names
-    'Starting Pitcher,Relief Pitcher,Catcher,First baseman,Second baseman,Third baseman,Shortstop,Outfielder,Outfielder,Outfielder'
+    'Starting Pitcher,Catcher,First baseman,Second baseman,Third baseman,Shortstop,Outfielder,Outfielder,Outfielder'
   end
 end
