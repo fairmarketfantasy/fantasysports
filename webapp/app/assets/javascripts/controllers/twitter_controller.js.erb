@@ -62,16 +62,16 @@ angular.module("app.controllers")
         );
       })
 
-      twttr.widgets.createFollowButton(
-        'Predict That',
-        $('.twitter-follow').get(0),
-        function (el) {
-          console.log("Follow button created.")
-        },
-        {
-          size: 'large'
-        }
-      );
+//      twttr.widgets.createFollowButton(
+//        'Predict That',
+//        $('.twitter-follow').get(0),
+//        function (el) {
+//          console.log("Follow button created.")
+//        },
+//        {
+//          size: 'large'
+//        }
+//      );
 
       twttr.events.bind('follow', function (event) {
         if ($scope.noReport) { return; }
