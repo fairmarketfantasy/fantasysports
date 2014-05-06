@@ -274,13 +274,14 @@ class Roster < ActiveRecord::Base
       players.each do |player|
         if candidate_players[player.position].length > 0
           target_price = player.purchase_price
-          candidates = candidate_players[player.position].select { |p| !p.benched? }
+          candidates = candidate_players[player.position]
           replacement_player = candidates.reduce(nil) do |closest_player, candidate|
             closest_player ||= candidate
             closest_player = candidate if player.id != candidate.id && !candidate.benched? &&
               (closest_player.buy_price - target_price).abs > (candidate.buy_price - target_price).abs
             closest_player
           end
+
           remove_from_candidate_players(candidate_players, replacement_player)
           remove_player(player, !self.is_generated?)
           add_player(replacement_player, player.position, !self.is_generated?)
@@ -449,6 +450,7 @@ class Roster < ActiveRecord::Base
         candidate_players[p.position] << p
         indexes[p.position] += 1 if p.buy_price > 1500
       end
+
       candidate_players.each do |pos,players|
         candidate_players[pos] = players.sort_by{|player| -player.buy_price }
       end
