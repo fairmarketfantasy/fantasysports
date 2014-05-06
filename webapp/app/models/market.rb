@@ -499,6 +499,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       prediction.charge_owner
       if prediction.player.benched?
         prediction.cancel!
+        prediction.reload
       elsif prediction.won?
         customer_object = user.customer_object
         ActiveRecord::Base.transaction do

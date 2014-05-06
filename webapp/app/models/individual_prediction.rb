@@ -34,7 +34,7 @@ class IndividualPrediction < ActiveRecord::Base
                                                       market_id: params[:market_id],
                                                       pt: pt)
       TransactionRecord.create!(:user => user, :event => 'create_individual_prediction',
-                                :amount => pt * 100)
+                                :amount => Roster::FB_CHARGE * 1000)
       Eventing.report(user, 'CreateIndividualPrediction', :amount => pt * 100)
       customer_object = user.customer_object
       customer_object.monthly_entries_counter += 1
