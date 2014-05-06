@@ -50,7 +50,7 @@ God.watch do |w|
 end
 
 God.watch do |w|
-  pid_file = PID_PATH + '/sidekiq-1.pid'
+  pid_file = PID_PATH + '/sidekiq1.pid'
   w.name = 'sidekiq1'
   w.start = 'bundle exec sidekiq'
   w.dir = BASE_DIR + '/current/webapp'
@@ -64,7 +64,7 @@ God.watch do |w|
 end
 
 God.watch do |w|
-  pid_file = PID_PATH + '/sidekiq-2.pid'
+  pid_file = PID_PATH + '/sidekiq2.pid'
   w.name = 'sidekiq2'
   w.start = 'bundle exec sidekiq'
   w.dir = BASE_DIR + '/current/webapp'
