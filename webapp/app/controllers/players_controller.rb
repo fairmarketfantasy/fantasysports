@@ -19,10 +19,12 @@ class PlayersController < ApplicationController
 
     scopes = { in_game: game, in_contest: params[:contest].presence, on_team: params[:team].presence}
 
-    if roster.market.sport.name == 'MLB'
-      scopes.merge! in_position_by_market_id: [roster.market_id, params[:position].presence]
-    else
-      scopes.merge! in_position: params[:position].presence
+    unless params[:autocomplete]
+      if roster.market.sport.name == 'MLB'
+        scopes.merge! in_position_by_market_id: [roster.market_id, params[:position].presence]
+      else
+        scopes.merge! in_position: params[:position].presence
+      end
     end
 
     sort = params[:sort] || 'id'
