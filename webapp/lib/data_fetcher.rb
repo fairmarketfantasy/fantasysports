@@ -53,6 +53,7 @@ class DataFetcher
         benched_ids << id if played.nil? || played.value != "true" || less_then_n_min(node, required_time)
       end
 
+      return if (game_player_ids.sort - benched_ids.sort).empty?
       game.players.each do |player|
         if benched_ids.include?(player.stats_id) || !game_player_ids.include?(player.stats_id)
           player.update_attribute(:out, true) unless player.out

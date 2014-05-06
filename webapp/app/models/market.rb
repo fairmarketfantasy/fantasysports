@@ -39,7 +39,7 @@ class Market < ActiveRecord::Base
       publish
       open
       #remove_shadow_bets
-      track_benched_players
+      #track_benched_players
       fill_rosters
       DataFetcher.update_benched
       update_players_for_market
@@ -256,7 +256,18 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         mp.update_attribute(:locked_at, nil)
       end
 
-      self.rosters.each { |r| r.swap_benched_players!(true) }
+      self.rosters.each do |r|
+        begin
+          r.swap_benched_players!(true)
+        rescue => e
+          Honeybadger.notify(
+            :error_class   => "Swapping players error",
+            :error_message => e.message,
+            :parameters    => { roster: r }
+          )
+        end
+      end
+
       self.reload
       self.tabulate_scores
       self.rosters.each { |r| r.charge_account }
