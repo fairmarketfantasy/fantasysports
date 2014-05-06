@@ -102,9 +102,14 @@ class UsersController < ApplicationController
 
   def withdraw_money
     authenticate_user!
+    unless current_user.customer_object.last_activated_at > Time.now.utc.beginning_of_month
+      render json: {error: "Should be not trial account"}, status: :unprocessable_entity and return
+    end
+
     unless params[:amount]
       render json: {error: "Must supply an amount"}, status: :unprocessable_entity and return
     end
+
     if current_user.recipient.transfer(params[:amount])
       render_api_response current_user.reload
     end
