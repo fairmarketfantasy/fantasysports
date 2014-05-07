@@ -95,7 +95,7 @@ class SeasonStatsWorker
       # Strike Out (SO) = 1pt
       create_stat_event(player_stats_id, pitching_stat['ko'], game, 'Strike Out')
       # Inning Pitched (IP) = 1pt
-      create_stat_event(player_stats_id, pitching_stat['ip'], game, 'Inning Pitched')
+      create_stat_event(player_stats_id, pitching_stat['ip'].to_i + (pitching_stat['ip'].to_d.modulo(1)*10.0/3.0).to_f, game, 'Inning Pitched')
 
       # Base On Balls(BB) or Walks (term from Wiki) = 1pt
       create_stat_event(player_stats_id, pitching_stat['walks'], game, 'Walked')
