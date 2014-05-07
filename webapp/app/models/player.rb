@@ -149,6 +149,7 @@ class Player < ActiveRecord::Base
       recent_games = games.order("game_time DESC").first(5)
     end
     recent_ids = recent_games.map(&:stats_id)
+    recent_ids.uniq!
     recent_events = events.where(game_stats_id: recent_ids)
     last_year_events = events.where(game_stats_id: last_year_ids)
     this_year_events = events.where(game_stats_id: this_year_ids)
