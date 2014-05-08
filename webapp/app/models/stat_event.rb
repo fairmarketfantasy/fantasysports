@@ -41,9 +41,10 @@ class StatEvent < ActiveRecord::Base
       result['Fantasy Points'] = events.map(&:point_value).reduce(0) { |value, sum| sum + value }*4
     end
 
+    result['Era (earned run avg)'] = result['Earned run'.to_sym] if result['Earned run'.to_sym]
+
     if last_year
       result['Fantasy Points'] = result['Fantasy Points'] / events_games_count
-      result['Era (earned run avg)'] = result['Earned run'.to_sym] / events_games_count if result['Earned run'.to_sym]
     end
 
     result
