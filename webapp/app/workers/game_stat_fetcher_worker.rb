@@ -137,7 +137,9 @@ class GameStatFetcherWorker
         # Strike Out (SO) = 1pt
         find_or_create_stat_event(player_stats_id, game, 'SO', pitching_stat['strikeouts'].to_f)
         # Inning Pitched (IP) = 1pt
-        find_or_create_stat_event(player_stats_id, game, 'IP', pitching_stat['innings_pitched'].to_i + (pitching_stat['innings_pitched'].to_d.modulo(1)*10.0/3.0).to_f)
+        s = pitching_stat['innings_pitched']
+        partial_pitches = s.include?('-') ? s.split('-').first.split(' ').last.to_f : 0
+        find_or_create_stat_event(player_stats_id, game, 'IP', s.to_i + (partial_pitches/3.0).to_f)
 
         # Base On Balls(BB) or Walks (term from Wiki) = 1pt
         find_or_create_stat_event(player_stats_id, game, 'BB', pitching_stat['walks'].to_f)
