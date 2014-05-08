@@ -33,7 +33,10 @@ class TeamScheduleFetcherWorker
       game.status = listing['status'].present? ? listing['status'] : 'scheduled'
       game.season_year = (Time.now.utc - 4).year
       game.sport = @team.sport
-      game.save!
+      begin
+        game.save!
+      rescue ActiveRecord::RecordNotUnique
+      end
       game.create_market unless game.markets.any? or game.game_time < Time.now
     end
   end
