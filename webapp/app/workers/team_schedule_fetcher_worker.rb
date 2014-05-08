@@ -37,7 +37,7 @@ class TeamScheduleFetcherWorker
         game.save!
       rescue ActiveRecord::RecordNotUnique
       end
-      game.create_market unless game.markets.any? or game.game_time < Time.now
+      game.create_or_update_market
     end
   end
 end

@@ -71,11 +71,13 @@ class Game < ActiveRecord::Base
     self.players.each { |p| p.calculate_ppg }
   end
 
-  def create_market
+  def create_or_update_market
+    return if self.game_time < Time.now
+
     home_team = Team.find(self.home_team)
     away_team = Team.find(self.away_team)
 
-    market = Market.new
+    market = self.markets.first || Market.new
     market.sport = self.sport
     market.name = away_team.name + ' @ ' + home_team.name
     market.shadow_bet_rate = 0.75
