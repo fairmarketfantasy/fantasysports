@@ -57,7 +57,7 @@ God.watch do |w|
   w.log = BASE_DIR + '/shared/log/sidekiq-1.log'
   w.env = {'RAILS_ENV' => ENV['RAILS_ENV'],
            'PIDFILE' => pid_file}
-  w.stop          = -> { `kill #{IO.read(pid_file)}` }
+  w.stop          = -> { `kill -9 #{IO.read(pid_file)}` }
   w.start_grace   = 5.seconds
   w.restart_grace = 5.seconds
   w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
@@ -71,7 +71,7 @@ God.watch do |w|
   w.log = BASE_DIR + '/shared/log/sidekiq-2.log'
   w.env = {'RAILS_ENV' => ENV['RAILS_ENV'],
            'PIDFILE' => pid_file}
-  w.stop          = -> { `kill #{IO.read(pid_file)}` }
+  w.stop          = -> { `kill -9 #{IO.read(pid_file)}` }
   w.start_grace   = 5.seconds
   w.restart_grace = 5.seconds
   w.keepalive#(:memory_max => 150.megabytes, :cpu_max => 50.percent)
