@@ -108,19 +108,7 @@ class Player < ActiveRecord::Base
 
   def calculate_ppg
     if self.sport.name == 'MLB'
-      played_games_ids = StatEvent.where(player_stats_id: self.stats_id).pluck('DISTINCT game_stats_id')
-      games = Game.where(stats_id: played_games_ids).order("game_time DESC")
-      this_year_games = games.select { |g| g.game_day.year == Time.now.year }
-      if this_year_games.count >= 40
-        games = this_year_games
-      else
-        games = games.last(40)
-      end
-      played_games_ids = games.map(&:id).uniq
-      events = StatEvent.where(player_stats_id: self.stats_id, game_stats_id: played_games_ids)
-      return if events.count == 0 || self.total_games.to_i == 0
-
-      value = events.map(&:point_value).reduce(0) { |value, sum| sum + value }*4 / self.total_games.to_i
+      value = self.calculate_average({ player_ids: self.stats_id, position: self.positions.map(&:position).first },nil, true)
     else
       played_games_ids = StatEvent.where("player_stats_id='#{self.stats_id}' AND activity='points' AND quantity != 0" ).
                                    pluck('DISTINCT game_stats_id')
@@ -135,7 +123,8 @@ class Player < ActiveRecord::Base
     self.update_attribute(:ppg, value)
   end
 
-  def calculate_average(params, current_user)
+  # third param - hook for return Fantasy Points
+  def calculate_average(params, current_user, ret_fp = false)
     played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}'" ).
                                  pluck('DISTINCT game_stats_id')
     games = Game.where(stats_id: played_games_ids)
@@ -195,6 +184,7 @@ class Player < ActiveRecord::Base
             end
           end
           value = koef.to_d * recent + (1.0 - koef).to_d * history
+          return value if ret_fp and k == 'Fantasy Points'
         end
       else
         value = v.to_d / BigDecimal.new(played_games_ids.count)
