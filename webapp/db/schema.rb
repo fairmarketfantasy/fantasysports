@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140505115706) do
+ActiveRecord::Schema.define(version: 20140509115640) do
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -117,7 +117,8 @@ ActiveRecord::Schema.define(version: 20140505115706) do
     t.decimal  "value"
   end
 
-  create_table "game_events", force: true do |t|
+  create_table "game_events", id: false, force: true do |t|
+    t.integer  "id",              null: false
     t.string   "stats_id"
     t.integer  "sequence_number", null: false
     t.string   "type",            null: false
@@ -134,15 +135,16 @@ ActiveRecord::Schema.define(version: 20140505115706) do
   add_index "game_events", ["game_stats_id"], name: "index_game_events_on_game_stats_id", using: :btree
   add_index "game_events", ["sequence_number"], name: "index_game_events_on_sequence_number", using: :btree
 
-  create_table "games", force: true do |t|
-    t.string   "stats_id",         null: false
-    t.string   "status",           null: false
-    t.date     "game_day",         null: false
-    t.datetime "game_time",        null: false
+  create_table "games", id: false, force: true do |t|
+    t.integer  "id"
+    t.string   "stats_id"
+    t.string   "status"
+    t.date     "game_day"
+    t.datetime "game_time"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "home_team",        null: false
-    t.string   "away_team",        null: false
+    t.string   "home_team"
+    t.string   "away_team"
     t.string   "season_type"
     t.integer  "season_week"
     t.integer  "season_year"
@@ -357,6 +359,7 @@ ActiveRecord::Schema.define(version: 20140505115706) do
     t.boolean  "removed",       default: false
     t.boolean  "out"
     t.decimal  "ppg",           default: 0.0
+    t.boolean  "legionnaire",   default: false, null: false
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
