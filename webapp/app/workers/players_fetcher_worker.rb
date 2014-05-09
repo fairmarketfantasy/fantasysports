@@ -63,6 +63,7 @@ class PlayersFetcherWorker
 
       player = Player.find_by_stats_id starting_pitcher['starter_id'].to_s
       player.positions.map(&:destroy)
+      player.update_attribute(:state, 'ACT')
 
       PlayerPosition.create! player_id: player.id, position: 'SP'
 

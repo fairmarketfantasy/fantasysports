@@ -171,7 +171,7 @@ class Player < ActiveRecord::Base
           recent ||= 0
         end
 
-        if last_year_ids.count == 0
+        if this_year_ids.count == 0
           value = self.average_for_position(params[:position])[k] || 0
         else
           if this_year_stats[:'Inning Pitched'].to_i > 15 or self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size > 50
@@ -185,6 +185,7 @@ class Player < ActiveRecord::Base
             end
           end
           value = koef.to_d * recent + (1.0 - koef).to_d * history
+          value = this_year_stats[k].to_f/this_year_ids.count if self.legionnaire? or self.total_games.zero?
           return value if ret_fp and k == 'Fantasy Points'
         end
       else
