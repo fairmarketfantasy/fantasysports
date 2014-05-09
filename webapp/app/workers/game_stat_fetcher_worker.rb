@@ -148,6 +148,8 @@ class GameStatFetcherWorker
         find_or_create_stat_event(player_stats_id, game, 'PENALTY', (pitching_stat['walks'] + pitching_stat['hits']).to_f)
       end
     end
+
+    game.update_attribute(:checked, true)
   end
 
   def self.job_name(game_stat_id)
