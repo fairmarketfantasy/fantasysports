@@ -97,7 +97,7 @@ class GameStatFetcherWorker
         singles = batting_fielding_stat['hits'] - batting_fielding_stat['doubles'] - batting_fielding_stat['triples'] - batting_fielding_stat['home_runs']
         find_or_create_stat_event(player_stats_id, game, '1B', singles.to_f)
         # Second base, or double(2B) = 2pts
-        find_or_create_stat_event(player_stats_id, game, '2B', batting_fielding_stat['triples'].to_f)
+        find_or_create_stat_event(player_stats_id, game, '2B', batting_fielding_stat['doubles'].to_f)
         # Third base, or triple(3B) = 3pts
         find_or_create_stat_event(player_stats_id, game, '3B', batting_fielding_stat['triples'].to_f)
         # Home Runs(HR) = 4pts
@@ -168,7 +168,7 @@ class GameStatFetcherWorker
     st.player_stats_id = player_stats_id
     st.quantity = st.quantity.to_f + quantity
     st.points_per = POINTS_MAPPER[action][1]
-    st.point_value = st.point_value.to_f + POINTS_MAPPER[action][1]
+    st.point_value = st.point_value.to_f + POINTS_MAPPER[action][1]*quantity
     st.activity = POINTS_MAPPER[action][0]
     st.data = ''
     st.save!
