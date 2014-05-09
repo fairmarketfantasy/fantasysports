@@ -109,6 +109,7 @@ class Player < ActiveRecord::Base
   def calculate_ppg
     if self.sport.name == 'MLB'
       value = self.calculate_average({ player_ids: self.stats_id, position: self.positions.map(&:position).first },nil, true)
+      value = 0 if value.is_a? Array
     else
       played_games_ids = StatEvent.where("player_stats_id='#{self.stats_id}' AND activity='points' AND quantity != 0" ).
                                    pluck('DISTINCT game_stats_id')
@@ -132,7 +133,7 @@ class Player < ActiveRecord::Base
     this_year_ids = games.where(season_year: (Time.now.utc - 4).year).select { |i| i.stat_events.any? }.map(&:stats_id).uniq
     events = StatEvent.where(player_stats_id: params[:player_ids],
                              game_stats_id: played_games_ids)
-    if games.last.sport.name == 'MLB'
+    if games.last and games.last.sport.name == 'MLB'
       recent_games = games.where(season_year: (Time.now.utc - 4).year).order("game_time DESC").first(50)
     else
       recent_games = games.order("game_time DESC").first(5)
