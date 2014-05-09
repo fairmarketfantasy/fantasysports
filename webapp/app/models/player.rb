@@ -162,8 +162,8 @@ class Player < ActiveRecord::Base
         #last_year_points = last_year_stats[k] || 0.to_d
         #this_year_points = (this_year_stats[k] || 0).to_d/this_year_ids.count if this_year_ids.count != 0
         if k == 'Era (earned run avg)'
-          history = (last_year_stats[k]*self.total_games + this_year_stats[k])/((this_year_stats[:'Inning Pitched'] + last_year_stats[:'Inning Pitched']*self.total_games)/9.0)
-          recent = this_year_stats[k]/(this_year_stats[:'Inning Pitched']/9.0)
+          history = (last_year_stats[k].to_f*self.total_games + this_year_stats[k].to_f)/((this_year_stats[:'Inning Pitched'].to_f + last_year_stats[:'Inning Pitched'].to_f*self.total_games)/9.0)
+          recent = this_year_stats[k].to_f/(this_year_stats[:'Inning Pitched'].to_f/9.0)
         else
           history = ((last_year_stats[k] || 0.to_d)*self.total_games + (this_year_stats[k] || 0).to_d)/(this_year_ids.count + self.total_games)
           #history = last_year != 0 ? [last_year * (last_year - 2 * this_year)/last_year + this_year, 0].max : this_year
