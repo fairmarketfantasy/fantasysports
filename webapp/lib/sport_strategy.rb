@@ -161,16 +161,11 @@ class MLBStrategy < SportStrategy
       # calculate total ppg # TODO: this should be YTD
       # set expected ppg
       # TODO: HANDLE INACTIVE
+      mp.player.calculate_ppg
       if (mp.player.status =~ /(ACT|A|M)/).nil? || events.count == 0
         mp.expected_points = 0
       else
-        if last_year_games_ids.count == 0
-          expected_points = mp.player.average_for_position(mp.position)['Fantasy Points']
-        else
-          expected_points = 0.2 * (recent_points || 0) + 0.8 * history
-        end
-        mp.expected_points = expected_points
-        mp.player.update_attribute(:ppg, expected_points.round(1))
+        mp.expected_points = mp.player.ppg
       end
 
       mp.save!
