@@ -3,6 +3,7 @@ class SeasonStatsWorker
 
   sidekiq_options :queue => :season_stat_worker
 
+  # ALL POINTS MULTIPLIED TO 10
   EVENT_POINTS = { 'Ground Out' => 0.0,
                    'Dropped 3rd strike, batter out' => 0.0,
                    'Struck Out Looking' => 0.0,

@@ -8,6 +8,7 @@ class GameStatFetcherWorker
 
   # this is the FULL mapper for batter actions
   # fetcher raises an erorr 'wrong points map'
+  # ALL POINTS MULTIPLIED TO 10
   POINTS_MAPPER = {
       '1B' => ['Singled', 1.0], # Single = +1 PTs
       '2B' => ['Doubled', 2.0], # Double = +2 PTs
