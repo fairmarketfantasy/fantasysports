@@ -165,7 +165,7 @@ class MLBStrategy < SportStrategy
       if (mp.player.status =~ /(ACT|A|M)/).nil? || events.count == 0
         mp.expected_points = 0
       else
-        mp.expected_points = mp.player.ppg
+        mp.expected_points = mp.player.ppg || 0
       end
 
       mp.save!
