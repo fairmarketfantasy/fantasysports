@@ -84,7 +84,7 @@ class Game < ActiveRecord::Base
     market.shadow_bets = 0.0
     market.game_type = 'regular_season'
     market.opened_at = Time.now - 2.days
-    market.price_multiplier = 4.0 # 4.0 price multiplier for MLB
+    market.price_multiplier = 3.0 # 4.0 price multiplier for MLB
     market.started_at = self.game_time - 5.minutes
     market.closed_at = self.game_time - 5.minutes
     market.published_at = self.game_time - 2.days
