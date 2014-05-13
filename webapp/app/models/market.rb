@@ -42,9 +42,9 @@ class Market < ActiveRecord::Base
       #track_benched_players
       fill_rosters
       DataFetcher.update_benched
-      update_players_for_market
       close
-      lock_players
+      update_players_for_market
+      #lock_players
       tabulate_scores
       set_payouts # this is used for leaderboards
       deliver_bonuses
@@ -121,7 +121,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def lock_players
-      apply :lock_players, "state IN('opened', 'closed')"
+      apply :lock_players, "state='closed'"
     end
 
     def tabulate_scores
@@ -211,7 +211,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     total_bets = 0
     self.market_players.each do |mp|
       # calculate total ppg # TODO: this should be YTD
-      played_games_ids = StatEvent.where("player_stats_id='#{mp.player.stats_id}' AND activity='points' AND quantity != 0" ).
+      played_games_ids = StatEvent.where("player_stats_id='#{mp.player.stats_id}' AND quantity != 0" ).
                                    pluck('DISTINCT game_stats_id')
       games = Game.where(stats_id: played_games_ids)
 
@@ -258,15 +258,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       end
 
       self.rosters.each do |r|
-        begin
-          r.swap_benched_players!(true)
-        rescue => e
-          Honeybadger.notify(
-            :error_class   => "Swapping players error",
-            :error_message => e.message,
-            :parameters    => { roster: r }
-          )
-        end
+        r.swap_benched_players!(true)
       end
 
       self.reload
@@ -354,16 +346,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     bad_h2h_types = bad_h2h_types.map(&:id).unshift(-1)
   end
 
-  def remove_benched_players
-    # select distinct rosters.* from rosters JOIN rosters_players ON rosters.id=rosters_players.roster_id JOIN players ON rosters_players.player_id=players.id WHERE rosters_players.market_id=326
-    # AND (players.status = 'IR' OR players.removed);
-    affected_rosters = Roster.select('distinct rosters.*'
-                 ).joins('JOIN rosters_players ON rosters.id=rosters_players.roster_id JOIN players ON rosters_players.player_id=players.id'
-                 ).where(["rosters_players.market_id = ? AND #{Player.bench_conditions}", self.id])
-    affected_rosters.each{|r| r.swap_benched_players!(true) }
-    reload
-  end
-
   def track_benched_players
     self.games.where('bench_counted_at <= ? AND (NOT bench_counted OR bench_counted IS NULL)', Time.new).each do |game|
       puts "#{Time.now} -- track game #{game.id}"
@@ -373,6 +355,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def lock_players
+    self.rosters.each { |r| r.swap_benched_players!(true) }
     Market.find_by_sql("SELECT * from lock_players(#{self.id}, '#{self.game_type == 'regular_season' ? 't' : 'f'}')")
     reload
   end
@@ -408,8 +391,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   # close a market. allocates remaining rosters in this manner:
   def close
-    remove_benched_players
     raise "cannot close if state is not open" if state != 'opened'
+
     #cancel all un-submitted rosters
     self.rosters.where("state != 'submitted'").each {|r| r.destroy }
     self.contests.where(
@@ -455,7 +438,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       end
 =end
     self.fill_rosters_to_percent(1.0)
-    self.lock_players
+    #self.lock_players
     self.state = 'closed'
     save!
     return self
@@ -471,6 +454,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       raise "all games must be closed before market can be completed" if self.games.where("status != 'closed'").any?
       raise if self.games.where(checked: nil).any?
 
+      games.each { |game| DataFetcher.update_game_players(game, 1) }
       #for each contest, allocate funds by rank
       self.rosters.each { |r| r.swap_benched_players!(true) }
       self.reload
@@ -483,6 +467,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       games.each { |game| DataFetcher.update_game_players(game, 6) }
       self.reload
       self.process_individual_predictions
+      self.lock_players
       self.state = 'complete'
       self.save!
       self.market_players.each do |mp|
