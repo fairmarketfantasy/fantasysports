@@ -11,3 +11,7 @@
     <%= render partial: 'templates/rules_nba' %>
   </div>
 <% end %>
+
+<% if @sport == 'MLB' %>
+  <%= render partial: 'templates/rules_mlb' %>
+<% end %>
