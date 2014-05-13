@@ -15,9 +15,9 @@ Sidekiq.configure_client do |config|
   config.redis = { :url => conf[Rails.env] }
 end
 
-if Rails.env == 'staging' or Rails.env == 'production'
-  $redis.flushall
-  Sidekiq::Monitor::Job.delete_all
-  Game.where(:sport_id => 872).select { |g| g.game_time < Time.now and g.game_time.year == 2014 and g.stat_events.empty? }.uniq.each { |i| GameStatFetcherWorker.perform_async i.stats_id }
-  GameListener.perform_async
-end
+#if Rails.env == 'staging' or Rails.env == 'production'
+#  $redis.flushall
+#  Sidekiq::Monitor::Job.delete_all
+#  Game.where(:sport_id => 872).select { |g| g.game_time < Time.now and g.game_time.year == 2014 and g.stat_events.empty? }.uniq.each { |i| GameStatFetcherWorker.perform_async i.stats_id }
+#  GameListener.perform_async
+#end
