@@ -34,7 +34,7 @@ class DataFetcher
       end
     end
 
-    def update_game_players(game, required_time = 0)
+    def update_game_players(game, required_time = nil)
       puts "Update game players"
 
       url = NBA_BASE_URL + "games/#{game.stats_id}/summary.xml" + NBA_API_KEY_PARAMS
@@ -79,10 +79,12 @@ class DataFetcher
     end
 
     def less_then_n_min(node, required_time)
+      return unless required_time
+
       minutes = node.search("statistics").at_xpath("@minutes")
       points = node.search("statistics").at_xpath("@points")
 
-      min_val = minutes.value[/^(?<minutes>\d{2}):\d{2}$/, :minutes] if minutes
+      min_val = minutes.value.split(":")[0..-2].join("") if minutes
       return true unless min_val
 
       min_val.to_i <= required_time

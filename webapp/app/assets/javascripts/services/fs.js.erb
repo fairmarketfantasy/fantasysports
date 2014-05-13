@@ -131,6 +131,10 @@ angular.module('app.services')
           var currentUserService = $injector.get('currentUserService');
           currentUserService.addFundsModal();
         }
+        if (resp.status == 409) {
+          flash.error(resp.data.error);
+          window.location.href = '/';
+        }
         // TODO: we'll need to implement this again
         if (resp.status == 403) {
         /*  var dialogOpts = {

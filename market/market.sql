@@ -76,7 +76,6 @@ RETURNS TABLE(player_id integer, buy_price numeric, is_eliminated boolean) AS $$
 		r.id = $1 AND
 		r.market_id = m.id AND
 		r.market_id = mp.market_id AND
-		(is_session_variable_set('override_market_close') OR NOT (mp.locked)) AND
 		mp.player_id NOT IN (SELECT rosters_players.player_id
 			FROM rosters_players WHERE roster_id = $1);
 $$ LANGUAGE SQL;
@@ -234,7 +233,7 @@ BEGIN
 
 	-- TODO: test positional requirements here
 	-- Get price, test salary cap
-	SELECT * from markets WHERE id = _roster.market_id and (state in ('published', 'opened') OR is_session_variable_set('override_market_close'))
+	SELECT * from markets WHERE id = _roster.market_id and (state in ('published', 'opened', 'closed') OR is_session_variable_set('override_market_close'))
 		INTO _market FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % is unavailable', _roster.market_id;
@@ -281,7 +280,7 @@ BEGIN
 	END IF;
 
 	-- Get price
-	SELECT * FROM markets WHERE id = _roster.market_id and state in ('opened', 'published')
+	SELECT * FROM markets WHERE id = _roster.market_id and state in ('opened', 'published', 'closed')
 		INTO _market FOR UPDATE;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'market % is unavailable', _roster.market_id;

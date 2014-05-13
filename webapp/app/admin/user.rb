@@ -65,7 +65,7 @@ ActiveAdmin.register User do
   member_action :user_payout, :method => :post do
     user = User.find(params[:id])
     amount = params[:amount].to_i * 100
-    user.customer_object.increase_account_balance(amount, 'manual_payout', :transaction_data => {reason: params[:reason] }.to_json)
+    user.customer_object.increase_account_balance(amount, :event => 'manual_payout', :transaction_data => {reason: params[:reason] }.to_json)
     redirect_to({:action => :index}, {:notice => "User paid out successfully!"})
   end
   action_item :only => [:show, :edit] do

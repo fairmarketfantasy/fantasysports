@@ -10,6 +10,7 @@ class SportStrategy
         ).where(['closed_at > ? AND state IN(\'published\', \'opened\')', Time.now.utc]
         ).order('closed_at asc').limit(10).select{|m| m.game_type =~ /single_elimination/ }
     else
+<<<<<<< HEAD
       # next_market_day = @sport.markets.where(['closed_at > ?', Time.now.utc]).order('closed_at asc').first.closed_at.beginning_of_day
       markets = @sport.markets.where(
           ["game_type IS NULL OR game_type = 'regular_season'"]
@@ -53,6 +54,13 @@ class SportStrategy
       mp.bets = mp.shadow_bets = mp.initial_shadow_bets = mp.expected_points.to_f / (total_expected + 0.0001) * 300000
       total_bets += mp.bets
       mp.save!
+      next_market_day_end = @sport.markets.where(['closed_at > ?', Time.now.utc]).order('closed_at asc').first.closed_at + 6.hours
+      this_day_end = Time.now.utc.end_of_day + 6.hours
+      markets = @sport.markets.where(
+          ["game_type IS NULL OR game_type = 'regular_season'"]
+          ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', Time.now.utc, [next_market_day_end, this_day_end].min]
+          ).order('closed_at asc')
+      markets.any? && markets.first.games.first.season_type == "PST" ? markets.select { |m| !m.games.where("status != 'scheduled'").any? } : markets.limit(20)
     end
     market.expected_total_points = total_expected
     market.total_bets = market.shadow_bets = market.initial_shadow_bets = total_bets

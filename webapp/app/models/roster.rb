@@ -63,7 +63,7 @@ class Roster < ActiveRecord::Base
       :market_id => contest_type.market_id,
       :contest_type_id => contest_type.id,
       :takes_tokens => contest_type.takes_tokens,
-      :buy_in => contest_type.buy_in,
+      :buy_in => DEFAULT_BUY_IN,
       :remaining_salary => contest_type.salary_cap,
       :state => 'in_progress',
     )
@@ -119,6 +119,7 @@ class Roster < ActiveRecord::Base
     if self.owner.id != SYSTEM_USER.id
       raise HttpException.new(402, "Agree to terms!") if charge && !owner.customer_object.has_agreed_terms?
       raise HttpException.new(402, "Unpaid subscription!") if charge && !owner.active_account?
+      raise HttpException.new(409, "This market is closed") unless ['opened', 'published'].include?(self.market.state)
       #raise HttpException.new(409, "Rosters must have less than $20k remaining salary!") if
       #  remaining_salary > 20000 && Rails.env != 'test' # Doing this in test will make everything way slow
 
@@ -444,11 +445,13 @@ class Roster < ActiveRecord::Base
       candidate_players = {}
       indexes = {}
       (positions || remaining_positions).each { |pos| candidate_players[pos] = []; indexes[pos] = 0 }
-      self.purchasable_players.active.each do |p|
+      self.purchasable_players.each do |p|
         next unless candidate_players.include?(p.position)
         next if self.rosters_players.map(&:player_id).include?(p.id)
+        next if p.benched?
+
         candidate_players[p.position] << p
-        indexes[p.position] += 1 if p.buy_price > 1500
+        indexes[p.position] += 1 if p.buy_price > self.buy_in
       end
 
       candidate_players.each do |pos,players|
