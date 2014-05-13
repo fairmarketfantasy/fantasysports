@@ -94,6 +94,8 @@ class GameStatFetcherWorker
     data['team_summary'].each do |team_summary|
       team_summary['batting_fielding_stats'].each do |batting_fielding_stat|
         player_stats_id = batting_fielding_stat['player_id'].to_s
+        player = Player.where(stats_id: player_stats_id).first
+        next if player.nil? or (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).blank?
 
         singles = batting_fielding_stat['hits'] - batting_fielding_stat['doubles'] - batting_fielding_stat['triples'] - batting_fielding_stat['home_runs']
         find_or_create_stat_event(player_stats_id, game, '1B', singles.to_f)
@@ -122,6 +124,8 @@ class GameStatFetcherWorker
 
       team_summary['pitching_stats'].each do |pitching_stat|
         player_stats_id = pitching_stat['player_id'].to_s
+        player = Player.where(stats_id: player_stats_id).first
+        next if player.nil? or (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present?
 
         # Win (W) = 4pts
         pl = Player.find_by_stats_id(player_stats_id)
