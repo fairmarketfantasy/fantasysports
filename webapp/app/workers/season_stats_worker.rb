@@ -126,10 +126,10 @@ class SeasonStatsWorker
     mapper = (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present? ? BATTER_EVENT_POINTS : PITCHER_EVENT_POINTS
 
     item = StatEvent.new(player_stats_id: player_stats_id,
-                         point_value: value.to_f * mapper[key],
+                         point_value: 10*value.to_f * mapper[key],
                          game_stats_id: game.stats_id,
                          activity: key,
-                         quantity: 10*value,
+                         quantity: value,
                          points_per: mapper[key],
                          data: '')
     item.save!
