@@ -13,7 +13,7 @@ angular.module("app.controllers")
   $scope.totalPoints = function(){
     return _.reduce($scope.playerStats, function(memo, elt) {
       return memo += parseFloat(elt.point_value);
-    }, 0);
+    }, 0).toFixed(2);
   };
 
   $scope.fetchPlayerStats();
