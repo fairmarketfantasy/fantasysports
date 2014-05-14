@@ -115,6 +115,7 @@ class Roster < ActiveRecord::Base
   #set the state to 'submitted'. If it's in a private contest, increment the number of
   #rosters in the private contest. If not, enter it into a public contest, creating a new one if necessary.
   def submit!(charge = true)
+    binding.pry
     #buy all the players on the roster. This sql function handles all of that.
     if self.owner.id != SYSTEM_USER.id
       raise HttpException.new(402, "Agree to terms!") if charge && !owner.customer_object.has_agreed_terms?

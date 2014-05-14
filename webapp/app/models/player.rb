@@ -161,7 +161,7 @@ class Player < ActiveRecord::Base
       if games.last.sport.name == 'MLB'
         #last_year_points = last_year_stats[k] || 0.to_d
         #this_year_points = (this_year_stats[k] || 0).to_d/this_year_ids.count if this_year_ids.count != 0
-        if k == 'Era (earned run avg)'
+        if k == 'Era (earned run avg)'.to_sym
           history = (last_year_stats[k].to_f*self.total_games + this_year_stats[k].to_f)/((this_year_stats[:'Inning Pitched'].to_f + last_year_stats[:'Inning Pitched'].to_f*self.total_games)/9.0)
           recent = this_year_stats[k].to_f/(this_year_stats[:'Inning Pitched'].to_f/9.0)
         else
@@ -186,7 +186,7 @@ class Player < ActiveRecord::Base
           end
           value = koef.to_d * recent + (1.0 - koef).to_d * history
           value = this_year_stats[k].to_f/this_year_ids.count if self.legionnaire? or self.total_games.zero?
-          return value if ret_fp and k == 'Fantasy Points'
+          return value if ret_fp and k == 'Fantasy Points'.to_sym
         end
       else
         value = v.to_d / BigDecimal.new(played_games_ids.count)

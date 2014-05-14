@@ -77,6 +77,8 @@ class PlayersFetcherWorker
       #PlayerPosition.create! player_id: player.id, position: 'RP'
 
     end
+
+    SportStrategy.for('MLB').fetch_markets('regular_season').select { |i| (i.games.map(&:home_team) + i.games.map(&:away_team)).include?(team_stats_id) }.each { |m| m.update_attribute(:state, nil) }
   end
 
   def self.job_name(team_stats_id)

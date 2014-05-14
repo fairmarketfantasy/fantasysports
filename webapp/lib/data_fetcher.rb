@@ -35,6 +35,8 @@ class DataFetcher
     end
 
     def update_game_players(game, required_time = nil)
+      return if game.sport.name == 'MLB'
+
       puts "Update game players"
 
       url = NBA_BASE_URL + "games/#{game.stats_id}/summary.xml" + NBA_API_KEY_PARAMS

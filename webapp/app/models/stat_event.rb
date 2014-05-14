@@ -38,13 +38,13 @@ class StatEvent < ActiveRecord::Base
 
     if player && player.sport.name == 'MLB'
       result['Extra base hits'.to_sym] += result['Home Run'.to_sym] if result['Home Run'.to_sym] && result['Extra base hits'.to_sym]
-      result['Fantasy Points'] = events.map(&:point_value).reduce(0) { |value, sum| sum + value }*10
+      result['Fantasy Points'.to_sym] = events.map(&:point_value).reduce(0) { |value, sum| sum + value }*10
     end
 
-    result['Era (earned run avg)'] = result['Earned run'.to_sym] if result['Earned run'.to_sym]
+    result['Era (earned run avg)'.to_sym] = result['Earned run'.to_sym] if result['Earned run'.to_sym]
 
     if last_year
-      result['Fantasy Points'] = result['Fantasy Points'] / events_games_count
+      result['Fantasy Points'.to_sym] = result['Fantasy Points'.to_sym] / events_games_count
     end
 
     result
