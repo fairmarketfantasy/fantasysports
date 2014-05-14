@@ -129,7 +129,7 @@ class SeasonStatsWorker
                          point_value: value.to_f * mapper[key],
                          game_stats_id: game.stats_id,
                          activity: key,
-                         quantity: value,
+                         quantity: 10*value,
                          points_per: mapper[key],
                          data: '')
     item.save!
