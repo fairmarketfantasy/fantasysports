@@ -159,7 +159,7 @@ class MLBStrategy < SportStrategy
         recent_points = StatEvent.collect_stats(recent_events, mp.position)['Fantasy Points']
         last_year_points = StatEvent.collect_stats(last_year_events, mp.position)['Fantasy Points']
         this_year_points = StatEvent.collect_stats(this_year_events, mp.position)['Fantasy Points']
-        recent_points = recent_games.count != 0 ? recent_points.to_d/recent_games_ids.count : 0
+        recent_points = recent_games.count != 0 ? (recent_points || 0).to_d/recent_games_ids.count : 0
         this_year_points = this_year_games_ids.count != 0 ? this_year_points.to_d / BigDecimal.new(this_year_games_ids.count) : 0
       end
       this_year_points ||= 0
