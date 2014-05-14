@@ -9,7 +9,7 @@ class GameStatFetcherWorker
   # this is the FULL mapper for batter actions
   # fetcher raises an erorr 'wrong points map'
   # ALL POINTS MULTIPLIED TO 10
-  POINTS_MAPPER = {
+  BATTING_POINTS_MAPPER = {
       '1B' => ['Singled', 1.0], # Single = +1 PTs
       '2B' => ['Doubled', 2.0], # Double = +2 PTs
       '3B' => ['Tripled', 3.0], # 3B = 3pts,
@@ -68,12 +68,17 @@ class GameStatFetcherWorker
       'AB' => ['At Bats', 0.0], # AB = 2pts
       nil => ['none', 0.0],
 
-      # and this is for pitchers
-      'SO' => ['Strike Out', 1.0],
-      'ER' => ['Earned run', -1.0],
-      'IP' => ['Inning Pitched', 1.0],
-      'W' => ['Wins', 4.0], # W = 4pts
-      'PENALTY' => ['PENALTY', -0.5] # -.5 for a hit or walk or hbp (hit by pitch)
+
+  }
+
+  PITCHING_POINTS_MAPPER = {
+    # and this is for pitchers
+    'SO' => ['Strike Out', 1.0],
+    'ER' => ['Earned run', -1.0],
+    'IP' => ['Inning Pitched', 1.0],
+    'W' => ['Wins', 4.0], # W = 4pts
+    'BB' => ['Walked', 0.0],
+    'PENALTY' => ['PENALTY', -0.5] # -.5 for a hit or walk or hbp (hit by pitch)
   }
 
 
@@ -167,14 +172,15 @@ class GameStatFetcherWorker
   private
 
   def find_or_create_stat_event(player_stats_id, game, action, quantity)
-    return unless Player.find_by_stats_id(player_stats_id).present?
+    player = Player.find_by_stats_id(player_stats_id)
+    mapper = (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present? ? BATTING_POINTS_MAPPER : PITCHING_POINTS_MAPPER
 
-    st = game.stat_events.where(:player_stats_id => player_stats_id, :activity => POINTS_MAPPER[action][0]).first || game.stat_events.new
+    st = game.stat_events.where(:player_stats_id => player_stats_id, :activity => mapper[action][0]).first || game.stat_events.new
     st.player_stats_id = player_stats_id
     st.quantity = st.quantity.to_f + quantity
-    st.points_per = POINTS_MAPPER[action][1]
-    st.point_value = st.point_value.to_f + POINTS_MAPPER[action][1]*quantity
-    st.activity = POINTS_MAPPER[action][0]
+    st.points_per = mapper[action][1]
+    st.point_value = st.point_value.to_f + mapper[action][1]*quantity
+    st.activity = mapper[action][0]
     st.data = ''
     st.save!
   end

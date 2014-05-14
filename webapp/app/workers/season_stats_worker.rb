@@ -4,7 +4,7 @@ class SeasonStatsWorker
   sidekiq_options :queue => :season_stat_worker
 
   # ALL POINTS MULTIPLIED TO 10
-  EVENT_POINTS = { 'Ground Out' => 0.0,
+  BATTER_EVENT_POINTS = { 'Ground Out' => 0.0,
                    'Dropped 3rd strike, batter out' => 0.0,
                    'Struck Out Looking' => 0.0,
                    'Singled' => 1.0, # Single = +1 PTs
@@ -27,14 +27,18 @@ class SeasonStatsWorker
                    'Stolen Base' => 2.0, # SB = 2pts
                    'Out' => -0.25, # Out (calculated as at bats - hits) = -.25pt
                    'none' => 0.0,
-                    # and this is for pitchers
-                   'Strike Out' => 1.0,
-                   'Earned run' => -1.0,
-                   'Inning Pitched' => 1.0,
                    'At Bats' => 0.0,
-                   'Wins' => 4.0, # W = 4pts
-                   'PENALTY' => -0.5 # -.5 for a hit or walk or hbp (hit by pitch)
-                }
+  }
+
+  PITCHER_EVENT_POINTS = {
+      # and this is for pitchers
+      'Strike Out' => 1.0,
+      'Earned run' => -1.0,
+      'Inning Pitched' => 1.0,
+      'Walked' => 0.0,
+      'Wins' => 4.0, # W = 4pts
+      'PENALTY' => -0.5 # -.5 for a hit or walk or hbp (hit by pitch)
+  }
 
   def perform(team_stats_id, year, season_type = 'reg')
     team = Team.find_by_stats_id team_stats_id
@@ -118,12 +122,15 @@ class SeasonStatsWorker
   private
 
   def create_stat_event(player_stats_id, value, game, key)
+    player = Player.find_by_stats_id(player_stats_id)
+    mapper = (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present? ? BATTER_EVENT_POINTS : PITCHER_EVENT_POINTS
+
     item = StatEvent.new(player_stats_id: player_stats_id,
-                         point_value: value.to_f * EVENT_POINTS[key],
+                         point_value: value.to_f * mapper[key],
                          game_stats_id: game.stats_id,
                          activity: key,
                          quantity: value,
-                         points_per: EVENT_POINTS[key],
+                         points_per: mapper[key],
                          data: '')
     item.save!
   end
