@@ -72,7 +72,7 @@ class Game < ActiveRecord::Base
   end
 
   def create_or_update_market
-    return if self.game_time < Time.now
+    #return if self.game_time < Time.now
 
     home_team = Team.find(self.home_team)
     away_team = Team.find(self.away_team)
