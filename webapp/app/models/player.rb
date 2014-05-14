@@ -184,7 +184,7 @@ class Player < ActiveRecord::Base
               koef = 0.2*(this_year_stats[:'Inning Pitched'].to_i/15.0)
             end
           end
-          value = koef.to_d * recent + (1.0 - koef).to_d * history
+          value = koef.to_d * recent.to_f + (1.0 - koef).to_d * history.to_f
           value = this_year_stats[k].to_f/this_year_ids.count if self.legionnaire? or self.total_games.zero?
           return value if ret_fp and k == 'Fantasy Points'.to_sym
         end
