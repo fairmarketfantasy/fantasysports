@@ -10,7 +10,6 @@ class SportStrategy
         ).where(['closed_at > ? AND state IN(\'published\', \'opened\')', Time.now.utc]
         ).order('closed_at asc').limit(10).select{|m| m.game_type =~ /single_elimination/ }
     else
-<<<<<<< HEAD
       # next_market_day = @sport.markets.where(['closed_at > ?', Time.now.utc]).order('closed_at asc').first.closed_at.beginning_of_day
       markets = @sport.markets.where(
           ["game_type IS NULL OR game_type = 'regular_season'"]
