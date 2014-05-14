@@ -48,8 +48,8 @@ class User < ActiveRecord::Base
 
   def active_account?
     customer_object.has_agreed_terms? && customer_object.is_active? &&
-      !customer_object.locked? || self.id == SYSTEM_USER.id ||
-      customer_object.trial_active?
+      !customer_object.locked? && customer_object.last_activated_at &&
+      customer_object.last_activated_at >= Time.new.beginning_of_month
   end
 
   def create_customer_object

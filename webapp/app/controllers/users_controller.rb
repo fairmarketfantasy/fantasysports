@@ -102,7 +102,7 @@ class UsersController < ApplicationController
 
   def withdraw_money
     authenticate_user!
-    unless current_user.customer_object.last_activated_at > Time.now.utc.beginning_of_month
+    unless current_user.customer_object.last_activated_at && current_user.customer_object.last_activated_at > Time.now.utc.beginning_of_month
       render json: {error: "Should be not trial account"}, status: :unprocessable_entity and return
     end
 
