@@ -179,7 +179,7 @@ class GameStatFetcherWorker
     st.player_stats_id = player_stats_id
     st.quantity = st.quantity.to_f + quantity
     st.points_per = mapper[action][1]
-    st.point_value = st.point_value.to_f + mapper[action][1]*quantity
+    st.point_value = st.point_value.to_f + 10*mapper[action][1]*quantity
     st.activity = mapper[action][0]
     st.data = ''
     st.save!
