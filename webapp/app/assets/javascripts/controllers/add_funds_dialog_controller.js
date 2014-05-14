@@ -7,7 +7,6 @@ angular.module("app.controllers")
    $scope.cards       = $scope.cards        || [];
    $scope.payment_type = '';
 
-
   $scope.agreeReload = true;
   if($scope.currentUser.customer_object.has_agreed_terms){
     $scope.agreeReload = false;
@@ -24,6 +23,9 @@ angular.module("app.controllers")
   $timeout(function() { $scope.card = new Skeuocard($("#credit-card-form")); }, 0);
 
    fs.cards.list().then(function(resp){
+     if($scope.currentUser){
+       $scope.currentUser.customer_object = resp;
+     }
      $scope.cards = resp.cards || [];
      $scope.user_info = resp;
      if(!$scope.user_info.is_active ){

@@ -8,8 +8,13 @@
   <img src='/assets/ajax-loader-big.gif'>
 </div>
 <div class='modal-body'>
-<!-- New Terms -->
-<div ng-show="!currentUser.customer_object.has_agreed_terms">
+  <!-- TRIAL MESSAGE -->
+<div ng-show="currentUser.customer_object.show_subscribe_message" >
+  <h4>Your free trial has ended</h4>
+  <p class="trial-message">We hope you have enjoyed playing on our site and we have many more predictable events to come including baseball in a couple days. To continue using the site you need to pay $10. If you have positive Fanbucks at this time, you can keep them. If you have negative Fanbucks we will reset your balance to zero.</p>
+</div>
+  <!-- New Terms -->
+<div ng-show="!currentUser.customer_object.has_agreed_terms && !currentUser.customer_object.show_subscribe_message">
   <h4>Predict That has new terms and conditions</h4>
   <p>Predict That requires a subscription to view content, but you can choose a 15 day free trial.  After subscribing, you will also be able to make unlimited predictions for free.<a href="/support" target="_blank">Read more about how it works</a></p>
   <label class="checkbox " for="agree-terms" ng-click="agreeToTerms()" ng-class="{'checked': currentUser.customer_object.has_agreed_terms}">
@@ -22,7 +27,7 @@
   <input id="agree-terms" class="hide" type="checkbox" ng-model="currentUser.customer_object.has_agreed_terms" ng-change="agreeToTerms()" />
 </div>
 <!-- Paid subscription -->
-  <div ng-show="currentUser.customer_object.is_active">
+  <div ng-show="currentUser.customer_object.is_active && !currentUser.customer_object.show_subscribe_message">
     <h4>Your Account This Month</h4>
     <div class="account-states">
       <div class="account-state">
@@ -53,7 +58,7 @@
   </div>
 
 <!-- UnPaid subscription -->
-  <div ng-hide="currentUser.customer_object.is_active">
+  <div ng-hide="currentUser.customer_object.is_active || currentUser.customer_object.show_subscribe_message">
     <h4>Looks like you need to pay your subscription this month</h4>
 		<div class="clearfix">
 			<ul class="nav nav-pills modal-pills pull-left">
@@ -167,9 +172,10 @@
   </div>
 </div>
 <div class='modal-footer'>
-  <a href="javascript://" ng-show="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" ng-click="close()">close</a>
-  <a href="javascript://" ng-hide="!currentUser.customer_object.is_active || !currentUser.customer_object.has_agreed_terms || !agreeReload " class="btn btn-info pull-right" ng-click="close_reload()">close</a>
-  <a class="user-logout txt-red-hover pull-left" style="margin-top:10px;" ng-hide="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" href="/users/sign_out">sign out</a>
+  <a href="javascript://" ng-show="currentUser.customer_object.show_subscribe_message" class="btn btn-success" ng-click="currentUser.customer_object.show_subscribe_message = false">continue</a>
+  <a href="javascript://" ng-show="currentUser.customer_object.is_active && !agreeReload && !currentUser.customer_object.show_subscribe_message" class="btn btn-info" ng-click="close()">close</a>
+  <a href="javascript://" ng-hide="!currentUser.customer_object.is_active || !currentUser.customer_object.has_agreed_terms || !agreeReload && !currentUser.customer_object.show_subscribe_message" class="btn btn-info pull-right" ng-click="close_reload()">close</a>
+  <a class="user-logout txt-red-hover pull-left" style="margin-top:10px;" ng-hide="currentUser.customer_object.is_active && !agreeReload && !currentUser.customer_object.show_subscribe_message" class="btn btn-info" href="/users/sign_out">sign out</a>
 </div>
 <div class="subscription-backdrop" ng-hide="currentUser.customer_object.is_active && !agreeReload"></div>
 

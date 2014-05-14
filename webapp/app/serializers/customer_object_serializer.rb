@@ -1,7 +1,7 @@
 class CustomerObjectSerializer < ActiveModel::Serializer
   attributes :id, :balance, :net_monthly_winnings, :monthly_contest_entries, :contest_entries_deficit,
       :locked, :locked_reason, :cards, :is_active, :has_agreed_terms, :contest_winnings_multiplier,
-      :trial_started_at, :monthly_award
+      :trial_started_at, :monthly_award, :show_subscribe_message
 
   def cards
     object.credit_cards.select{|c| !c.deleted }.map do |card|
@@ -28,6 +28,11 @@ class CustomerObjectSerializer < ActiveModel::Serializer
 
   def contest_winnings_multiplier
     object.contest_winnings_multiplier
+  end
+
+  def show_subscribe_message
+    object.trial_started_at && !object.user.active_account? && !object.trial_active? &&
+      object.last_activated_at.nil?
   end
 
 end

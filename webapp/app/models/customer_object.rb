@@ -14,7 +14,7 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def do_monthly_accounting!
-    return if !self.last_activated_at && trial_active?
+    return unless trial_active?
 
     user_earnings = taxed_net_monthly_winnings
     tax_earnings = self.net_monthly_winnings - user_earnings
@@ -39,6 +39,13 @@ class CustomerObject < ActiveRecord::Base
       if self.balance > 1000
         do_monthly_activation!
       end
+    end
+  end
+
+  def calculated_trial_ending
+    if self.net_monthly_winnings <= 0
+      self.update_attributes(:monthly_winnings => 0, :monthly_entries_counter => 0,
+                             :monthly_contest_entries => 0)
     end
   end
 
@@ -203,13 +210,19 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def deactivate_account
-    self.update_attributes(is_active: false, trial_started_at: Date.today - 16)
+    self.update_attributes(is_active: false, trial_started_at: Date.today - 16, last_activated_at: Time.now - 1.month)
     card_ids = self.credit_cards.pluck(:id)
     card_ids.each { |id| self.delete_card(id) }
     self.reload
   end
 
   def trial_active?
-    self.trial_started_at && self.trial_started_at + 15 >= Date.today
+    if !self.last_activated_at && self.trial_started_at && self.trial_started_at + 15 >= Date.today
+      true
+    else
+      self.update_attribute(:is_active, false) if self.is_active
+      self.calculated_trial_ending
+      false
+    end
   end
 end
