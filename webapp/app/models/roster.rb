@@ -118,7 +118,7 @@ class Roster < ActiveRecord::Base
     #buy all the players on the roster. This sql function handles all of that.
     if self.owner.id != SYSTEM_USER.id
       raise HttpException.new(402, "Agree to terms!") if charge && !owner.customer_object.has_agreed_terms?
-      raise HttpException.new(402, "Unpaid subscription!") if charge && !owner.active_account?
+      raise HttpException.new(402, "Unpaid subscription!") if !owner.active_account? && !owner.customer_object.trial_active?
       raise HttpException.new(409, "This market is closed") unless ['opened', 'published'].include?(self.market.state)
       #raise HttpException.new(409, "Rosters must have less than $20k remaining salary!") if
       #  remaining_salary > 20000 && Rails.env != 'test' # Doing this in test will make everything way slow
