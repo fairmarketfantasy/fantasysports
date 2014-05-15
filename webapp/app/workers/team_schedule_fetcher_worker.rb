@@ -33,7 +33,7 @@ class TeamScheduleFetcherWorker
       Time.zone = 'Eastern Time (US & Canada)'
       game.game_time = Time.zone.parse(game.game_day.to_s + ' ' + listing['gametime']).utc
       game.status = listing['status'].present? ? listing['status'].downcase : 'scheduled'
-      game.status = 'postponed' if game.game_time != old_time and old_time.today?
+      game.markets.each { |i| i.update_attribute(:state,nil) } if game.game_time != old_time and old_time.today?
       game.season_year = (Time.now.utc - 4).year
       game.sport = @team.sport
       begin
