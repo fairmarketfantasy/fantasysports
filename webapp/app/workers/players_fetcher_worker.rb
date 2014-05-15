@@ -69,14 +69,14 @@ class PlayersFetcherWorker
 
     end
 
-    positions_data['relief_pitchers'].each do |pitcher|
+    #positions_data['relief_pitchers'].each do |pitcher|
 
-      player = Player.find_by_stats_id pitcher['starter_id'].to_s
-      player.positions.map(&:destroy)
+      #player = Player.find_by_stats_id pitcher['starter_id'].to_s
+      #player.positions.map(&:destroy)
 
       #PlayerPosition.create! player_id: player.id, position: 'RP'
 
-    end
+    #end
 
     SportStrategy.for('MLB').fetch_markets('regular_season').select { |i| (i.games.map(&:home_team) + i.games.map(&:away_team)).include?(team_stats_id) }.each { |m| m.update_attribute(:state, nil) }
   end
