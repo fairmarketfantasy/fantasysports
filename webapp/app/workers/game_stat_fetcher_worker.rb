@@ -10,7 +10,7 @@ class GameStatFetcherWorker
 
   sidekiq_retries_exhausted do |msg|
     game = Game.find_by_stats_id msg['args'][0]
-    game.update_attribute(:state, 'cancelled') if game.stat_events.empty?
+    game.update_attribute(:status, 'cancelled') if game.stat_events.empty?
     game.markets.each { |m| m.individual_predictions.each(&:cancel!) }
     game.markets.each { |m| m.rosters.each { |r| r.cancel!('game postponed') } }
   end
