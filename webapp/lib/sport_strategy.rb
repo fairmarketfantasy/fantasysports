@@ -97,12 +97,13 @@ class NFLStrategy < SportStrategy
 end
 
 class MLBStrategy < SportStrategy
-  attr_accessor :positions_mapper
+  attr_accessor :positions_mapper, :price_multiplier
 
   def initialize
     @sport = Sport.where(:name => 'MLB').first
     @positions_mapper = { 'SP' => 'SP', 'P'=>'RP', 'RP'=>'RP', 'C'=> 'C', '1B'=> '1B/DH', '2B'=> '2B',
                          '3B'=> '3B', 'SS'=> 'SS', 'CF'=> 'OF', 'LF'=> 'OF', 'OF'=> 'OF', 'RF'=> 'OF', 'DH'=> '1B/DH', 'PH'=> '1B/DH'}
+    @price_multiplier = 3.0
   end
 
   def calculate_market_points(market_id)
