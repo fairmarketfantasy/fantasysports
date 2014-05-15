@@ -8,6 +8,13 @@ class GameStatFetcherWorker
     3
   end
 
+  sidekiq_retries_exhausted do
+    game = Game.find_by_stats_id game_stat_id
+    game.update_attribute(:state, 'cancelled') if game.stat_events.empty?
+    game.markets.each { |m| m.individual_predictions.each(&:cancel!) }
+    game.markets.each { |m| m.rosters.each { |r| r.cancel!('game postponed') } }
+  end
+
   # See PBP Play type doc part for MLB
 
   # this is the FULL mapper for batter actions

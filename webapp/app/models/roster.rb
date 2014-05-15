@@ -510,7 +510,7 @@ class Roster < ActiveRecord::Base
     self.with_lock do
       if self.state == 'submitted'
         Roster.transaction do
-          #self.owner.payout(:monthly_entry, 1.5.to_d, :event => 'cancelled_roster', :roster_id => self.id, :contest_id => self.contest_id)
+          self.owner.payout(:monthly_entry, 1.5.to_d, :event => 'cancelled_roster', :roster_id => self.id, :contest_id => self.contest_id)
           self.state = 'cancelled'
           self.cancelled = true
           self.cancelled_at = Time.new
