@@ -164,7 +164,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       self.add_default_contests
     end
     reload
-    self.update_attribute(:price_multiplier, 2.0) if self.sport.name == 'MLB'
+    self.update_attribute(:price_multiplier, SportStrategy.for('MLB').price_multiplier) if self.sport.name == 'MLB'
     self
   end
 
