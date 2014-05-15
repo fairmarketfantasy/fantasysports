@@ -105,7 +105,7 @@ class GameStatFetcherWorker
 
     data = data.first
 
-    if self.status.downcase == 'postponed' or self.status == 'cancelled'
+    if self.status.downcase == 'postponed' or game.status == 'cancelled'
       return unless data.present?
     else
       raise unless data.present?
