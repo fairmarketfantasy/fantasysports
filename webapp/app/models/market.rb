@@ -452,6 +452,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     self.with_lock do
       raise "market must be closed before it can be completed" if self.state != 'closed'
       raise "all games must be closed before market can be completed" if self.games.where("status != 'closed'").any?
+      raise if self.games.where(checked: nil).any?
 
       games.each { |game| DataFetcher.update_game_players(game, 1) }
       #for each contest, allocate funds by rank
