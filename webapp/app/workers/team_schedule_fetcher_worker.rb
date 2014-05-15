@@ -23,14 +23,17 @@ class TeamScheduleFetcherWorker
 
   def parse_data(data)
     data.each do |listing|
+      old_time = game.game_time.clone
+
       game = Game.find(listing['game_id']) rescue Game.new
       game.stats_id = listing['game_id'].to_s
       game.home_team = Team.find_by_sport_id_and_market(@team.sport_id,listing['home_team']).stats_id
       game.away_team = Team.find_by_sport_id_and_market(@team.sport_id,listing['away_team']).stats_id
-      game.game_day = Date.strptime listing['gamedate'], '%m/%d/%Y'
+      game.game_day = Date.strptime(listing['gamedate'], '%m/%d/%Y').to_time.utc.to_date
       Time.zone = 'Eastern Time (US & Canada)'
       game.game_time = Time.zone.parse(game.game_day.to_s + ' ' + listing['gametime']).utc
       game.status = listing['status'].present? ? listing['status'].downcase : 'scheduled'
+      game.status = 'postponed' if game.game_time != old_time and old_time.today?
       game.season_year = (Time.now.utc - 4).year
       game.sport = @team.sport
       begin
