@@ -61,7 +61,7 @@ func (mgr *FetchManager) CreateMarkets(games []*models.Game) {
 		//dayKey := games[i].GameDay.String()
 		away_name := mgr.GetTeamById(games[i].AwayTeam).Name
 		home_name := mgr.GetTeamById(games[i].HomeTeam).Name
-		if away_name != "" && home_name != "" {
+		if games[i].Status == "scheduled" && away_name != "" && home_name != "" {
 		  mgr.createMarket(mgr.GetTeamById(games[i].AwayTeam).Name+" @ "+mgr.GetTeamById(games[i].HomeTeam).Name, []*models.Game{games[i]})
 		}
 		//	weekKey := games[i].SeasonType + "-" + strconv.Itoa(games[i].SeasonWeek)
