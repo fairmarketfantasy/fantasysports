@@ -3,6 +3,10 @@ class GameStatFetcherWorker
 
   sidekiq_options :queue => :game_stat_fetcher
 
+  # retry in 3 seconds
+  sidekiq_retry_in do
+    3
+  end
 
   # See PBP Play type doc part for MLB
 
@@ -94,7 +98,11 @@ class GameStatFetcherWorker
 
     data = data.first
 
-    return unless data.present?
+    if self.status.downcase == 'postponed' or self.status == 'cancelled'
+      return unless data.present?
+    else
+      raise unless data.present?
+    end
 
     data['team_summary'].each do |team_summary|
       team_summary['batting_fielding_stats'].each do |batting_fielding_stat|
@@ -159,7 +167,7 @@ class GameStatFetcherWorker
       end
     end
 
-    game.update_attribute(:checked, true)
+    game..update_attributes(:status =>'closed',:checked => true)
   end
 
   def self.job_name(game_stat_id)
