@@ -49,7 +49,6 @@ class Market < ActiveRecord::Base
       set_payouts # this is used for leaderboards
       deliver_bonuses
       finish_games
-      remove_duplicated_games!
       complete
     end
 
@@ -83,21 +82,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
     def publish
       apply :publish, "published_at <= ? AND (state is null or state='' or state='unpublished')", Time.now
-    end
-
-    def remove_duplicated_games!
-      Market.where(state: 'closed').each do |m|
-        game_ids = m.games_markets.where.not(finished_at: nil).map do |gm|
-          game = gm.game
-          next unless game
-
-          game.stats_id if game.status == 'closed'
-        end
-
-        game_ids.compact.each do |game_id|
-          Game.where(stats_id: game_id).each { |game| game.destroy if game.status != 'closed' }
-        end
-      end
     end
 
     def open
@@ -169,19 +153,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   #publish the market. returns the published market.
   def publish
-    remove_extra_playoff_games if self.sport.name == 'NBA' && self.games.count > 1
-
     arr = Market.all.select { |m| (m.name =~ /\w+\s+@\s+\w+/).nil? }
     arr.each { |m| m.destroy }
-    arr = []
-    Market.all.each do |m|
-      markets = Market.where(name: m.name, closed_at: m.closed_at)
-      arr.concat(markets[1..-1]) if markets.count > 1
-    end
-    arr.each do |m|
-      m.rosters.each { |r| r.destroy }
-      m.destroy
-    end
 
     SportStrategy.for(self.sport.name).calculate_market_points(self.id)
     Market.find_by_sql("select * from publish_market(#{self.id})")
@@ -193,17 +166,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     reload
     self.update_attribute(:price_multiplier, 2.0) if self.sport.name == 'MLB'
     self
-  end
-
-  def remove_extra_playoff_games
-    self.update_attribute(:started_at, self.closed_at)
-    self.games.each do |game|
-      next if game.game_time == self.closed_at + 5.minutes
-
-      game.games_markets.each { |gm| gm.destroy if gm.market_id == self.id }
-    end
-
-    self.reload
   end
 
   def update_market_players
