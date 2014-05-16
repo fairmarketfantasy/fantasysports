@@ -214,11 +214,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     games.each { |game| DataFetcher.update_game_players(game) }
     self.reload
     if self.games.where(checked: nil).empty?
-      self.market_players.each do |mp|
-        mp.update_attribute(:locked, false)
-        mp.update_attribute(:locked_at, nil)
-      end
-
+      self.unlock_market_players
       self.rosters.each do |r|
         r.swap_benched_players!(true)
       end
@@ -417,14 +413,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       raise if self.games.where(checked: nil).any?
 
       games.each { |game| DataFetcher.update_game_players(game, 1) }
-      #for each contest, allocate funds by rank
-      self.market_players.each do |mp|
-        mp.update_attribute(:locked, false)
-        mp.update_attribute(:locked_at, nil)
-      end
-
+      self.unlock_market_players
       self.rosters.each { |r| r.swap_benched_players!(true) }
       self.reload
+      #for each contest, allocate funds by rank
       self.tabulate_scores
       self.set_payouts
       self.contests.where('cancelled_at IS NULL').find_each do |contest|
@@ -443,6 +435,13 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
       self.games.each { |game| game.unbench_players }
       self.games.each { |game| game.calculate_ppg } if self.sport.name != 'MLB'
+    end
+  end
+
+  def unlock_market_players
+    self.market_players.each do |mp|
+      mp.update_attribute(:locked, false)
+      mp.update_attribute(:locked_at, nil)
     end
   end
 
