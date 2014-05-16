@@ -97,7 +97,7 @@ class NFLStrategy < SportStrategy
 end
 
 class MLBStrategy < SportStrategy
-  attr_accessor :positions_mapper, :price_multiplier
+  attr_accessor :positions_mapper, :price_multiplier, :sport
 
   def initialize
     @sport = Sport.where(:name => 'MLB').first

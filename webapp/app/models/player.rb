@@ -216,13 +216,20 @@ class Player < ActiveRecord::Base
   end
 
   def average_for_position(position)
-    player_ids = self.sport.players.joins(:positions).where("player_positions.position='#{position}'").pluck('DISTINCT stats_id')
-    this_year_game_ids = Game.where(season_year: (Time.now.utc - 4).year).pluck('DISTINCT stats_id')
+    player_ids = self.sport.players.active.where('ppg != 0 OR ppg != null').joins(:positions).where("player_positions.position='#{position}'").pluck('DISTINCT stats_id')
+    this_year_game_ids = Game.where(season_year: (Time.now.utc - 4).year, status: 'FINAL', sport_id: self.sport.id).pluck('DISTINCT stats_id')
     this_year_events = StatEvent.where(player_stats_id: player_ids,
                                        game_stats_id: this_year_game_ids)
     data = {}
     StatEvent.collect_stats(this_year_events, position).each do |k, v|
-      data[k] = v.to_d / BigDecimal.new(this_year_game_ids.count) / player_ids.count
+      if k == 'Era (earned run avg)'.to_sym
+        data[k] = v.to_d/(data[:'Inning Pitched'].to_d/9.0)/BigDecimal.new(this_year_game_ids.count)
+      elsif k == 'Fantasy Points'.to_sym
+        arr = self.sport.players.active.where('ppg != 0 OR ppg != null').joins(:positions).where("player_positions.position='#{position}'").map(&:ppg).map(&:to_f)
+        data[k] = arr.sum / arr.size.to_f
+      else
+        data[k] = v.to_d / BigDecimal.new(this_year_game_ids.count)
+      end
     end
 
     data

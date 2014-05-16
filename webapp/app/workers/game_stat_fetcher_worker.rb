@@ -174,7 +174,7 @@ class GameStatFetcherWorker
       end
     end
 
-    game..update_attributes(:status =>'closed',:checked => true)
+    game.update_attributes(:status =>'closed',:checked => true)
   end
 
   def self.job_name(game_stat_id)
