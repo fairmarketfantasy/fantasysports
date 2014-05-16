@@ -418,6 +418,11 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
       games.each { |game| DataFetcher.update_game_players(game, 1) }
       #for each contest, allocate funds by rank
+      self.market_players.each do |mp|
+        mp.update_attribute(:locked, false)
+        mp.update_attribute(:locked_at, nil)
+      end
+
       self.rosters.each { |r| r.swap_benched_players!(true) }
       self.reload
       self.tabulate_scores
