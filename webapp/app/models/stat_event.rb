@@ -18,7 +18,7 @@ class StatEvent < ActiveRecord::Base
     last_year = player && player.sport.name == 'MLB' && events.last.game.season_year == Time.now.year - 1
     events_games_count = player.total_games if last_year
     events.each do |event|
-      hitters_types = ['Hit By Pitch', 'Doubled', 'Tripled', 'Home Run',
+      hitters_types = ['Doubled', 'Tripled', 'Home Run',
                        'Run Batted In', 'Stolen Base']
       pitchers_types = ['Inning Pitched', 'Strike Out', 'Walked', 'Earned run', 'Wins']
       allowed_types = position && ['SP', 'RP'].include?(position) ? pitchers_types : hitters_types
