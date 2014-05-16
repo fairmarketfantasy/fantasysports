@@ -1,6 +1,7 @@
 class UnfetchedGamesWorker
 
   include Sidekiq::Worker
+  include Sidetiq::Schedulable
 
   sidekiq_options :queue => :unfetched_games_worker
 
