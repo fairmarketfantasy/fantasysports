@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140509115640) do
+ActiveRecord::Schema.define(version: 20140518101306) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -134,8 +137,7 @@ ActiveRecord::Schema.define(version: 20140509115640) do
   add_index "game_events", ["game_stats_id"], name: "index_game_events_on_game_stats_id", using: :btree
   add_index "game_events", ["sequence_number"], name: "index_game_events_on_sequence_number", using: :btree
 
-  create_table "games", id: false, force: true do |t|
-    t.integer  "id"
+  create_table "games", force: true do |t|
     t.string   "stats_id"
     t.string   "status"
     t.date     "game_day"
@@ -159,7 +161,6 @@ ActiveRecord::Schema.define(version: 20140509115640) do
   add_index "games", ["bench_counted_at"], name: "index_games_on_bench_counted_at", using: :btree
   add_index "games", ["game_day"], name: "index_games_on_game_day", using: :btree
   add_index "games", ["game_time"], name: "index_games_on_game_time", using: :btree
-  add_index "games", ["stats_id"], name: "index_games_on_stats_id", unique: true, using: :btree
 
   create_table "games_markets", force: true do |t|
     t.string   "game_stats_id",                  null: false
@@ -579,10 +580,10 @@ ActiveRecord::Schema.define(version: 20140509115640) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
-    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
+    t.string   "avatar"
     t.text     "bonuses"
     t.string   "referral_code"
     t.integer  "total_loses",            default: 0

@@ -25,7 +25,7 @@ class TeamScheduleFetcherWorker
     data.each do |listing|
       old_time = game.game_time.clone
 
-      game = Game.find(listing['game_id']) rescue Game.new
+      game = Game.where(stats_id: listing['game_id']).first_or_initialize
       game.stats_id = listing['game_id'].to_s
       game.home_team = Team.find_by_sport_id_and_market(@team.sport_id,listing['home_team']).stats_id
       game.away_team = Team.find_by_sport_id_and_market(@team.sport_id,listing['away_team']).stats_id
@@ -36,10 +36,7 @@ class TeamScheduleFetcherWorker
       game.markets.each { |i| i.update_attribute(:state,nil) } if game.game_time != old_time and old_time.today?
       game.season_year = (Time.now.utc - 4).year
       game.sport = @team.sport
-      begin
-        game.save!
-      rescue ActiveRecord::RecordNotUnique
-      end
+      game.save!
       game.create_or_update_market
     end
   end

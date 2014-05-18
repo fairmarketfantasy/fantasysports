@@ -107,7 +107,8 @@ class Player < ActiveRecord::Base
   end
 
   def calculate_ppg
-    if self.sport.name == 'MLB'
+    sport_name = self.sport.name
+    if sport_name == 'MLB'
       value = self.calculate_average({ player_ids: self.stats_id, position: self.positions.map(&:position).first },nil, true)
       value = 0 if value.is_a? Array
     else
@@ -115,7 +116,7 @@ class Player < ActiveRecord::Base
                                    pluck('DISTINCT game_stats_id')
       events = StatEvent.where(player_stats_id: self.stats_id,
                                game_stats_id: played_games_ids, activity: 'points')
-      total_stats = StatEvent.collect_stats(events)[:points]
+      total_stats = SportStrategy.for(sport_name).collect_stats(events, self.position)[:points]
       return if total_stats.nil? || played_games_ids.count == 0
 
       value = total_stats / played_games_ids.count
@@ -126,6 +127,7 @@ class Player < ActiveRecord::Base
 
   # third param - hook for return Fantasy Points
   def calculate_average(params, current_user, ret_fp = false)
+    sport_name = self.sport.name
     played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}'" ).
                                  pluck('DISTINCT game_stats_id')
     games = Game.where(stats_id: played_games_ids)
@@ -133,7 +135,7 @@ class Player < ActiveRecord::Base
     this_year_ids = games.where(season_year: (Time.now.utc - 4).year).select { |i| i.stat_events.any? }.map(&:stats_id).uniq
     events = StatEvent.where(player_stats_id: params[:player_ids],
                              game_stats_id: played_games_ids)
-    if games.last and games.last.sport.name == 'MLB'
+    if games.last and sport_name == 'MLB'
       recent_games = games.where(season_year: (Time.now.utc - 4).year).order("game_time DESC").first(50)
     else
       recent_games = games.order("game_time DESC").first(5)
@@ -144,10 +146,10 @@ class Player < ActiveRecord::Base
     last_year_events = events.where(game_stats_id: last_year_ids)
     this_year_events = events.where(game_stats_id: this_year_ids)
 
-    recent_stats = StatEvent.collect_stats(recent_events, params[:position])
-    last_year_stats = StatEvent.collect_stats(last_year_events, params[:position])
-    this_year_stats = StatEvent.collect_stats(this_year_events, params[:position])
-    total_stats = StatEvent.collect_stats(events, params[:position])
+    recent_stats = SportStrategy.for(sport_name).collect_stats(recent_events, params[:position])
+    last_year_stats = SportStrategy.for(sport_name).collect_stats(last_year_events, params[:position])
+    this_year_stats = SportStrategy.for(sport_name).collect_stats(this_year_events, params[:position])
+    total_stats = SportStrategy.for(sport_name).collect_stats(events, params[:position])
 
     if params[:market_id] == 'undefined'
        bid_ids = []
@@ -221,7 +223,7 @@ class Player < ActiveRecord::Base
     this_year_events = StatEvent.where(player_stats_id: player_ids,
                                        game_stats_id: this_year_game_ids)
     data = {}
-    StatEvent.collect_stats(this_year_events, position).each do |k, v|
+    SportStrategy.for(self.sport.name).collect_stats(this_year_events, position).each do |k, v|
       if k == 'Era (earned run avg)'.to_sym
         data[k] = v.to_d/(data[:'Inning Pitched'].to_d/9.0)/BigDecimal.new(this_year_game_ids.count)
       elsif k == 'Fantasy Points'.to_sym

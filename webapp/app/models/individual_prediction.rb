@@ -67,9 +67,9 @@ class IndividualPrediction < ActiveRecord::Base
   def won?
     game_ids = GamesMarket.where(:market_id => self.market.id).map(&:game_stats_id)
     events = StatEvent.where(:player_stats_id => self.player.stats_id, :game_stats_id => game_ids)
-
-    position = self.market.sport.name == 'MLB' ? self.player.positions.first.try(:position) : nil
-    game_stats = StatEvent.collect_stats(events, position)
+    sport_name = self.market.sport.name
+    position = sport_name == 'MLB' ? self.player.positions.first.try(:position) : nil
+    game_stats = SportStrategy.for(sport_name).collect_stats(events, position)
     self.event_predictions.each do |prediction|
       game_result = game_stats[prediction.event_type.to_sym] || 0
       self.update_attribute(:game_result, game_result.to_i)
