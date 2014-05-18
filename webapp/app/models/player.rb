@@ -112,7 +112,7 @@ class Player < ActiveRecord::Base
       value = self.calculate_average({ player_ids: self.stats_id, position: self.positions.map(&:position).first },nil, true)
       value = 0 if value.is_a? Array
     else
-      played_games_ids = StatEvent.where("player_stats_id='#{self.stats_id}' AND activity='points' AND quantity != 0" ).
+      played_games_ids = StatEvent.where("player_stats_id='#{self.stats_id}' AND quantity != 0" ).
                                    pluck('DISTINCT game_stats_id')
       events = StatEvent.where(player_stats_id: self.stats_id,
                                game_stats_id: played_games_ids, activity: 'points')
@@ -128,7 +128,7 @@ class Player < ActiveRecord::Base
   # third param - hook for return Fantasy Points
   def calculate_average(params, current_user, ret_fp = false)
     sport_name = self.sport.name
-    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}'" ).
+    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}'").
                                  pluck('DISTINCT game_stats_id')
     games = Game.where(stats_id: played_games_ids)
     last_year_ids = games.where(season_year: (Time.now.utc - 4).year - 1).map(&:stats_id).uniq
