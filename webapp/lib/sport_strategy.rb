@@ -25,7 +25,7 @@ class SportStrategy
     total_bets = 0
     market.market_players.each do |mp|
       # calculate total ppg # TODO: this should be YTD
-      played_games_ids = StatEvent.where("player_stats_id='#{mp.player.stats_id}' AND activity='points' AND quantity != 0" ).
+      played_games_ids = StatEvent.where("player_stats_id='#{mp.player.stats_id}' AND quantity != 0" ).
                                    pluck('DISTINCT game_stats_id')
       games = Game.where(stats_id: played_games_ids)
 
@@ -35,8 +35,8 @@ class SportStrategy
       recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
 
       if events.any?
-        recent_exp = (StatEvent.collect_stats(recent_events)[:points] || 0 ).to_d/recent_games.count
-        total_exp = (StatEvent.collect_stats(events)[:points] || 0 ).to_d / BigDecimal.new(played_games_ids.count)
+        recent_exp = (collect_stats(recent_events)[:points] || 0 ).to_d/recent_games.count
+        total_exp = (collect_stats(events)[:points] || 0 ).to_d / BigDecimal.new(played_games_ids.count)
       end
 
       # set expected ppg
@@ -53,17 +53,25 @@ class SportStrategy
       mp.bets = mp.shadow_bets = mp.initial_shadow_bets = mp.expected_points.to_f / (total_expected + 0.0001) * 300000
       total_bets += mp.bets
       mp.save!
-      next_market_day_end = @sport.markets.where(['closed_at > ?', Time.now.utc]).order('closed_at asc').first.closed_at + 6.hours
-      this_day_end = Time.now.utc.end_of_day + 6.hours
-      markets = @sport.markets.where(
-          ["game_type IS NULL OR game_type = 'regular_season'"]
-          ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', Time.now.utc, [next_market_day_end, this_day_end].min]
-          ).order('closed_at asc')
-      markets.any? && markets.first.games.first.season_type == "PST" ? markets.select { |m| !m.games.where("status != 'scheduled'").any? } : markets.limit(20)
     end
+
     market.expected_total_points = total_expected
     market.total_bets = market.shadow_bets = market.initial_shadow_bets = total_bets
     market.save!
+  end
+
+  def collect_stats(events, position = nil)
+    result = {}
+    events.each do |event|
+      key = event.activity.to_sym
+      if result[key]
+        result[key] += event.quantity.abs
+      else
+        result[key] = event.quantity.abs
+      end
+    end
+
+    result
   end
 end
 
@@ -157,9 +165,9 @@ class MLBStrategy < SportStrategy
       this_year_events = events.where(game_stats_id: this_year_games_ids)
       recent_events = events.where(game_stats_id: recent_games_ids)
       if events.any?
-        recent_points = StatEvent.collect_stats(recent_events, mp.position)['Fantasy Points'.to_sym]
-        last_year_points = StatEvent.collect_stats(last_year_events, mp.position)['Fantasy Points'.to_sym]
-        this_year_points = StatEvent.collect_stats(this_year_events, mp.position)['Fantasy Points'.to_sym]
+        recent_points = collect_stats(recent_events, mp.position)['Fantasy Points'.to_sym]
+        last_year_points = collect_stats(last_year_events, mp.position)['Fantasy Points'.to_sym]
+        this_year_points = collect_stats(this_year_events, mp.position)['Fantasy Points'.to_sym]
         recent_points = recent_games.count != 0 ? (recent_points || 0).to_d/recent_games_ids.count : 0
         this_year_points = this_year_games_ids.count != 0 ? (this_year_points || 0).to_d / BigDecimal.new(this_year_games_ids.count) : 0
       end
@@ -190,5 +198,43 @@ class MLBStrategy < SportStrategy
     market.expected_total_points = total_expected
     market.total_bets = market.shadow_bets = market.initial_shadow_bets = total_bets
     market.save!
+  end
+
+  def collect_stats(events, position = nil)
+    result = {}
+    player = events.first.player if events.any?
+    last_year = player && player.sport.name == 'MLB' && events.last.game.season_year == Time.now.year - 1
+    events_games_count = player.total_games if last_year
+    events.each do |event|
+      hitters_types = ['Doubled', 'Tripled', 'Home Run',
+                       'Run Batted In', 'Stolen Base']
+      pitchers_types = ['Inning Pitched', 'Strike Out', 'Walked', 'Earned run', 'Wins']
+      allowed_types = position && ['SP', 'RP'].include?(position) ? pitchers_types : hitters_types
+      next if player.sport.name == 'MLB' && !allowed_types.include?(event.activity)
+
+      key = ['Doubled', 'Tripled'].include?(event.activity) ? 'Extra base hits' : event.activity
+      key = key.to_sym
+
+      val = event.quantity.abs
+      val = val / events_games_count if last_year
+      if result[key]
+        result[key] += val
+      else
+        result[key] = val
+      end
+    end
+
+    if player && player.sport.name == 'MLB'
+      result['Extra base hits'.to_sym] += result['Home Run'.to_sym] if result['Home Run'.to_sym] && result['Extra base hits'.to_sym]
+      result['Fantasy Points'.to_sym] = events.map(&:point_value).reduce(0) { |value, sum| sum + value }
+    end
+
+    result['Era (earned run avg)'.to_sym] = result['Earned run'.to_sym] if result['Earned run'.to_sym]
+
+    if last_year
+      result['Fantasy Points'.to_sym] = result['Fantasy Points'.to_sym] / events_games_count
+    end
+
+    result
   end
 end

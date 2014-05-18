@@ -15,7 +15,7 @@ class DailyScheduleFetcherWorker
     gamedate = Date.parse date
 
     data['games'].each do |game_dat|
-      game = Game.find(game_dat['game_id']) rescue Game.new
+      game = Game.where(stats_id: game_dat['game_id']).first_or_initialize
       game.stats_id = game_dat['game_id']
       game.home_team = game_dat['home_team_id']
       game.away_team = game_dat['visiting_team_id']
