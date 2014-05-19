@@ -28,7 +28,7 @@ $$ LANGUAGE SQL IMMUTABLE;
 DROP FUNCTION market_prices_for_players(integer, integer, VARIADIC arr integer[]);
 
 CREATE OR REPLACE FUNCTION market_prices_for_players(_market_id integer, _buy_in integer, VARIADIC arr integer[])
-RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score integer) AS $$
+RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score numeric) AS $$
 	SELECT
 		mp.player_id,
 		price(mp.bets, m.total_bets, $2, m.price_multiplier),
@@ -46,7 +46,7 @@ $$ LANGUAGE SQL;
 DROP FUNCTION market_prices(integer, integer);
 
 CREATE OR REPLACE FUNCTION market_prices(_market_id integer, _buy_in integer)
-RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score integer) AS $$
+RETURNS TABLE(player_id integer, buy_price numeric, sell_price numeric, locked boolean, is_eliminated boolean, score numeric) AS $$
 	SELECT
 		mp.player_id,
 		price(mp.bets, m.total_bets, $2, m.price_multiplier),
@@ -86,7 +86,7 @@ DROP FUNCTION sell_prices(integer);
 
 CREATE OR REPLACE FUNCTION sell_prices(_roster_id integer)
 RETURNS TABLE(roster_player_id integer, player_id integer, sell_price numeric,
-		purchase_price numeric, locked boolean, score integer) AS $$
+		purchase_price numeric, locked boolean, score numeric) AS $$
 	SELECT rp.id, mp.player_id, price(mp.bets, m.total_bets, 0, m.price_multiplier),
 		rp.purchase_price, mp.locked, mp.score
 	FROM market_players mp, markets m, rosters_players rp, rosters r
