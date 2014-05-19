@@ -31,7 +31,7 @@ class PlayersFetcherWorker
     # get injures
     injures_data = JSON.parse OpenURI.send(:open, "http://api.sportsnetwork.com/v1/mlb/injuries?team_id=#{team.stats_id}&api_token=#{TSN_API_KEY}").read
     team.players.each do |player|
-      player.update_attribute(:out, true) if injures_data['injuries'].include? player.name
+      player.update_attribute(:out, injures_data['injuries'].include?(player.name))
     end
 
     positions_data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/depth_charts?team_id=#{team_stats_id}&year=#{Time.now.year}&api_token=#{TSN_API_KEY}").read
