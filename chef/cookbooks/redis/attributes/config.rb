@@ -24,8 +24,8 @@ default.redis.config.configure_slowlog       = false
 default.redis.config.slowlog_log_slower_than = 10000
 default.redis.config.slowlog_max_len         = 1024
 
-default.redis.config.configure_maxmemory_samples = false
-default.redis.config.maxmemory_samples = 3
+# max quantity of keys (?)
+default.redis.config.maxmemory_samples = 100
 
 default.redis.config.configure_no_appendfsync_on_rewrite = false
 default.redis.config.no_appendfsync_on_rewrite = false
