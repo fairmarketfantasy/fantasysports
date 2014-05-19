@@ -15,17 +15,7 @@ class DataFetcher
       players.each do |node|
         id = node.xpath("@id").first.value
         status = node.at('injury').at_xpath("@status").value
-        if status =~ /^Out/
-          benched_ids << id
-        elsif status == "Day To Day"
-          match = node.at('injury').at_xpath("@comment").value[/\((?<date>\d+\/\d+)\)/, :date]
-          if match
-            date = Date.strptime("#{match}/#{Date.today.year}", "%m/%d/%Y")
-            benched_ids << id if (Time.now.utc - 4.hours).to_date == date
-          else
-            benched_ids << id
-          end
-        end
+        benched_ids << id if status =~ /^Out/
       end
 
       sport_id = Sport.where(name: 'NBA').first.id
