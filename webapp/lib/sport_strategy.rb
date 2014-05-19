@@ -111,7 +111,7 @@ class MLBStrategy < SportStrategy
     @sport = Sport.where(:name => 'MLB').first
     @positions_mapper = { 'SP' => 'SP', 'P'=>'RP', 'RP'=>'RP', 'C'=> 'C', '1B'=> '1B/DH', '2B'=> '2B',
                          '3B'=> '3B', 'SS'=> 'SS', 'CF'=> 'OF', 'LF'=> 'OF', 'OF'=> 'OF', 'RF'=> 'OF', 'DH'=> '1B/DH', 'PH'=> '1B/DH'}
-    @price_multiplier = 3.75
+    @price_multiplier = 3.25
   end
 
   def calculate_market_points(market_id)
