@@ -36,6 +36,7 @@ Fantasysports::Application.routes.draw do
   get '/about' => 'pages#about'
   get '/sign_up' => 'pages#sign_up'
   get '/leaderboard' => 'leaderboard#index'
+  get '/prestige_chart' => 'leaderboard#prestige'
 
   get '/pages/mobile/forgot_password' => 'mobile_pages#forgot_password'
   get '/pages/mobile/conditions' => 'mobile_pages#conditions'
