@@ -23,9 +23,9 @@ class TeamScheduleFetcherWorker
 
   def parse_data(data)
     data.each do |listing|
-      old_time = game.game_time.clone
+      game = Game.where(stats_id: listing['game_id'].to_s).first_or_initialize
+      old_time = game.game_time.try(:clone)
 
-      game = Game.where(stats_id: listing['game_id']).first_or_initialize
       game.stats_id = listing['game_id'].to_s
       game.home_team = Team.find_by_sport_id_and_market(@team.sport_id,listing['home_team']).stats_id
       game.away_team = Team.find_by_sport_id_and_market(@team.sport_id,listing['away_team']).stats_id
@@ -33,7 +33,7 @@ class TeamScheduleFetcherWorker
       Time.zone = 'Eastern Time (US & Canada)'
       game.game_time = Time.zone.parse(game.game_day.to_s + ' ' + listing['gametime']).utc
       game.status = listing['status'].present? ? listing['status'].downcase : 'scheduled'
-      game.markets.each { |i| i.update_attribute(:state,nil) } if game.game_time != old_time and old_time.today?
+      game.markets.each { |i| i.update_attribute(:state,nil) } if game.game_time != old_time and (old_time.is_a?(Time) and old_time.today?)
       game.season_year = (Time.now.utc - 4).year
       game.sport = @team.sport
       game.save!
