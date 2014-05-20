@@ -60,7 +60,7 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def prestige
-    object.prestige
+    object.prestige.round
   end
 
 end
