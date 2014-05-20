@@ -263,6 +263,9 @@
             <a class="btn btn-small btn-success home-header-btn" href="/#/{{currentUser.currentSport}}/home">Home</a>
             <a class="btn btn-small btn-success prediction-header-btn" href="/#/{{currentUser.currentSport}}/rosters">My Predictions</a>
           </div>
+          <div ng-hide="$routeParams.sport == 'MLB'" class="try-it">
+            <p>Fantasy Baseball is live, try it out</p>
+          </div>
         </div>
       </div>
     </div>
