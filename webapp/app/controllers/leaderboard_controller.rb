@@ -13,6 +13,21 @@ class LeaderboardController < ApplicationController
     render_api_response(@leaderboard)
   end
 
+  # top 5 by prestige
+  def prestige
+    users = Rails.cache.fetch('prestige' + User.count.to_s + Roster.where(:state => 'finished').count.to_s + IndividualPrediction.count.to_s) do
+      all_users = User.where.not(:name => 'SYSTEM USER', :admin => true)
+
+      all_users.sort_by { |i| -i.prestige }.first(5).map { |i| { 'name' => i.name, 'prestige' => i.prestige } } +
+      all_users.sort_by { |i| -i.normalized_prestige }.first(5).map { |i| { 'name' => i.name, 'prestige' => i.normalized_prestige } }
+    end
+    render_api_response(
+        {
+          'Prestige' => users.first(5),
+          'Prestige per prediction' => users.last(5)
+        })
+  end
+
   protected
 
   def most_dollars

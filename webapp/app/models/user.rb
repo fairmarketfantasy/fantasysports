@@ -141,6 +141,17 @@ class User < ActiveRecord::Base
     se ? se.created_at : Time.new(1900) # long ago
   end
 
+  def prestige
+    rosters = self.rosters.where(state: 'finished')
+    sum = rosters.map(&:amount_paid).compact.reduce(0) { |sum, v| sum + v }
+    sum += self.individual_predictions.map(&:award).compact.reduce(0) { |sum, v| sum + v * 100 }
+    (sum/100).round
+  end
+
+  def normalized_prestige
+    self.prestige/(self.rosters.where(state: 'finished').count + self.individual_predictions.count) rescue 0
+  end
+
   SYSTEM_USERNAMES = [
 "teetriceps",
 "basegear",
