@@ -69,6 +69,10 @@ angular.module("app.controllers")
 
   };
 
+  $scope.fs.leaderboard.prestigeChart().then(function(chart) {
+    $scope.prestigeChart = chart;
+  });
+
   $scope.$watch('$routeParams.roster_id', function() {
     rosters.fetch($routeParams.roster_id, $routeParams.view_code).then(function(roster) {
       rosters.selectRoster(roster);

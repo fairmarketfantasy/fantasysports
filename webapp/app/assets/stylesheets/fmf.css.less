@@ -1183,6 +1183,42 @@ input, textarea, .uneditable-input {
 .my-roster-title {
   margin-bottom: 0;
 }
+
+.prestige-chart {
+  position: relative;
+  left: 17px;
+  border: 2px solid @green;
+  .border-radius(3px);
+  .box-sizing;
+  margin-top: 10px;
+  .prestige-chart-label {
+    font-size: 22px;
+    background: @green;
+    color: @white;
+    padding: 6px 10px;
+  }
+  .prestige-chart-content {
+    padding: 10px;
+    .chart-title {
+      color: @green;
+      font-weight: bold;
+    }
+    .chart-item{
+      margin-bottom: 10px;
+      .prestige-chart-user-score {
+        font-family: @special;
+        font-size: 18px;
+      }
+      .prestige-chart-user-name {
+        color: @gray;
+      }
+    }
+    hr {
+      border-top: 1px solid @green;
+    }
+  }
+}
+
 .market-type-list {
   list-style-type: none;
 }
