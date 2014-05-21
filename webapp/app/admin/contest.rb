@@ -28,7 +28,6 @@ id              | integer                     | not null default nextval('contes
     column(:contest_type){|c| c.contest_type.name }
     column(:league){|c| c.league && c.league.name }
     column(:date) { |c| c.market.games.last.game_day }
-    column :user_cap
     column :invitation_code
     column :num_rosters
     column :num_generated
