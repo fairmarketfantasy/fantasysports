@@ -10,16 +10,16 @@ ActiveAdmin.register Contest do
 id              | integer                     | not null default nextval('contests_id_seq'::regclass)
  owner_id        | integer                     | not null
  buy_in          | integer                     | not null
- user_cap        | integer                     | 
- start_time      | timestamp without time zone | 
- end_time        | timestamp without time zone | 
- created_at      | timestamp without time zone | 
- updated_at      | timestamp without time zone | 
+ user_cap        | integer                     |
+ start_time      | timestamp without time zone |
+ end_time        | timestamp without time zone |
+ created_at      | timestamp without time zone |
+ updated_at      | timestamp without time zone |
  market_id       | integer                     | not null
- invitation_code | character varying(255)      | 
+ invitation_code | character varying(255)      |
  contest_type_id | integer                     | not null
  num_rosters     | integer                     | default 0
- paid_at         | timestamp without time zone | 
+ paid_at         | timestamp without time zone |
  private         | boolean                     | default false
 =end
     column(:market_name) {|c| c.market && c.market.name }
@@ -27,8 +27,7 @@ id              | integer                     | not null default nextval('contes
     #column :end_time
     column(:contest_type){|c| c.contest_type.name }
     column(:league){|c| c.league && c.league.name }
-    column :buy_in
-    column(:fanfrees) {|c| c.contest_type.takes_tokens? }
+    column(:date) { |c| c.market.games.last.game_day }
     column :user_cap
     column :invitation_code
     column :num_rosters
