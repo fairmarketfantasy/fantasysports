@@ -342,6 +342,9 @@ angular.module('app.services')
       leaderboard: {
         fetch: function(timeframe) {
           return $http({method: 'GET', url: '/leaderboard', params: {timeframe: timeframe}});
+        },
+        prestigeChart: function() {
+          return $http({method: 'GET', url: '/prestige_chart'});
         }
       },
       transactions: {
