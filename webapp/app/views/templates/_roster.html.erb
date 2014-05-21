@@ -64,7 +64,30 @@
   </div>
 
   <div class="row">
-    <div class="span12">
+    <div class="span2 prestige-chart">
+      <h3 class="prestige-chart-label">
+        TOPS
+        <br>
+        WINNERS
+      </h3>
+      <div class="prestige-chart-content">
+        <div ng-repeat="(chartName, chartContent) in prestigeChart">
+          <p class="chart-title">{{chartName}}</p>
+          <ul class="no-no">
+            <li class="chart-item" ng-repeat="chartItem in chartContent">
+              <div class="prestige-chart-user-score">
+                {{$index + 1}}. {{Math.round(chartItem.prestige)}}
+              </div>
+              <div class="prestige-chart-user-name">
+                {{chartItem.name}}
+              </div>
+            </li>
+            <hr ng-if="(!$last)">
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="span10 pull-right">
       <div class="entries-container">
         <div class="roster-title my-roster-title clearfix">
           <h3 class="inline-heading">
