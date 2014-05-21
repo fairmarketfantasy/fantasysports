@@ -11,7 +11,7 @@ angular.module("app.controllers")
     if(!$routeParams.roster_id){
       competitionRosters.selectOpponentRoster(null);
       if(!$scope.gamePrediction.games.length){
-        $scope.gameNotFound = "There are no 	" + $routeParams.sport + " games scheduled";
+        $scope.gameNotFound = true;
         return;
       }
 

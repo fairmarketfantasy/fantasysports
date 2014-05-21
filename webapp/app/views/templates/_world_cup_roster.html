@@ -1,0 +1,30 @@
+<div ng-hide="gameNotFound || types_games" class='market-loader centered'>
+    <img src='/assets/ajax-loader-big.gif'>
+</div>
+<div ng-show="gameNotFound" class="centered no_games">
+    <h4>There are no {{currentUser.currentCategory | underscore}} {{currentTitle | underscore}} games scheduled</h4>
+</div>
+
+<div ng-show="types_games">
+  <div class="row">
+    <div class="span2 prestige-chart" ng-include="'/prestige.html'"></div>
+    <div class="span10 roster-main">
+      <div class="entries-container">
+        <div class="roster-title my-roster-title clearfix">
+          <ul class="no-no clearfix world-cup-menu">
+            <li ng-class="{'no-border' : $first}" ng-repeat="prediction_type in prediction_type_list">
+                <a ng-class="{'active': active_type == prediction_type}" ng-click="changeActiveType(prediction_type)">{{prediction_type | underscore}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="team-selection world-cup-team-selection clearfix">
+        <div ng-show="active_type == 'daily_wins'" class="clearfix" ng-include="'/world_cup_daily_wins.html'"></div>
+        <div ng-show="active_type == 'win_the_cup'" ng-controller="IncludeController" ng-init="track({world_cup_column: 'types_games.win_the_cup'})" class="clearfix" ng-include="'/world_cup_column.html'"></div>
+        <div ng-show="active_type == 'win_groups'" class="clearfix" ng-include="'/world_cup_win_group.html'"></div>
+        <div ng-show="active_type == 'mvp'" ng-controller="IncludeController" ng-init="track({world_cup_column: 'types_games.mvp'})" class="clearfix" ng-include="'/world_cup_column.html'"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -15,9 +15,11 @@ class TransactionRecord < ActiveRecord::Base
   validates_presence_of :user
   validates :event, inclusion: { in: CONTEST_TYPES + %w(
                                  create_individual_prediction cancel_individual_prediction individual_prediction_win game_prediction_win
-                                 contest_payout_bonus payout joined_grant token_buy token_buy_ios
+                                 contest_payout_bonus payout joined_grant token_buy token_buy_ios create_player_prediction
                                  free_referral_payout paid_referral_payout referred_join_payout deposit withdrawal
-                                 revert_transaction manual_payout promo monthly_user_balance monthly_taxes monthly_user_entries) }
+                                 revert_transaction manual_payout promo monthly_user_balance monthly_taxes monthly_user_entries
+                                 create_daily_wins_prediction create_win_the_cup_prediction create_win_groups_prediction create_mvp_prediction
+                                 won_heat_daily_wins_prediction lose_heat_daily_wins_prediction dead_heat_daily_wins_prediction) }
   validates_with TransactionRecordValidator
 
   belongs_to :user

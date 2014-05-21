@@ -1,0 +1,10 @@
+
+<div class='modal-body clearfix'>
+    <h4 class="pull-left">Predict <span class="pt">PT{{prediction.pt | toFixed}}</span> {{prediction.name}} <img src="" class="mr-ind-team-image"  alt="logo" ng-src="{{prediction.logo_url }}" />?</h4>
+</div>
+<div class='modal-footer'>
+    <a href="javascript://" class="btn btn-success" ng-click="ipSubmit(prediction.stats_id, predictionType)">Submit</a>
+    <a href="javascript://" class="btn btn-info" ng-click="close()" >Cancel</a>
+</div>
+
+

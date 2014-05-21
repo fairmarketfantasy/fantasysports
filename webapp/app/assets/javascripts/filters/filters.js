@@ -41,6 +41,14 @@ angular.module('app.filters')
       return input;
     };
   })
+  .filter('NAIfEmpty', function() {
+    return function(input, scope) {
+      if (!input) {
+        return "N/A";
+      }
+      return input;
+    };
+  })
   .filter('dividedOneHundred', function() {
     return function(input) {
       if (!input) {
@@ -127,7 +135,7 @@ angular.module('app.filters')
   })
   .filter('underscore', ['$filter', function($filter) {
     return function(input) {
-      return input.replace('_',' ');
+      return input.replace(/_/g,' ');
     };
   }])
   .filter('slashesToDashes', ['$filter', function($filter) {

@@ -58,7 +58,6 @@ class GameRostersController < ApplicationController
 
     render :json => { predictions: data.map { |d| GamePredictionSerializer.new(d) },
                       games: GamePrediction.generate_games_data(sport: params[:sport],
-                      category: 'fantasy_sports',
-                      roster: data.map(&:team_stats_id), user: current_user)}.to_json
+                      category: 'fantasy_sports', roster: data.map(&:team_stats_id), user: current_user)}.to_json
   end
 end

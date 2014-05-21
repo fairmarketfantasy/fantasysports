@@ -23,15 +23,30 @@ class PlayerSerializer < ActiveModel::Serializer
       :benched_games,
       :next_game_at,
       :benched,
-      :swapped_player_name
+      :swapped_player_name,
+      :pt,
+      :logo_url,
+      :disable_pt
+
+  def disable_pt
+    Prediction.prediction_made?(stats_id, 'mvp', '', options[:user])
+  end
 
   # TODO: fix for NFL when no stats_id
   def team
-    Team.find(object[:team]).name
+    Team.where(:stats_id => object[:team]).first.try(:name)
   end
 
   def headshot_url
     object.headshot_url
+  end
+
+  def logo_url
+    object.headshot_url
+  end
+
+  def stats_id
+    object.stats_id || object.id.to_s
   end
 
   def benched

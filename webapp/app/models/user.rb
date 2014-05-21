@@ -34,6 +34,8 @@ class User < ActiveRecord::Base
   has_many :push_devices
   has_many :individual_predictions
   has_many :game_predictions
+  has_many :predictions
+  has_many :player_predictions
   has_many :transaction_records
   has_many :league_memberships
   has_many :leagues, :through => :league_memberships
