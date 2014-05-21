@@ -1,7 +1,7 @@
 conf = {
   'test' => 'redis://localhost:6379/',
   'development' => 'redis://localhost:6379/',
-  'staging' => 'redis://172.31.40.75:6379/',
+  'staging' => 'redis://172.31.32.28:6379/',
   'production' => 'redis://172.31.35.223:6379/', # This will be problematic with multiple workers
 }
 if IPSocket.getaddress(Socket.gethostname) == URI.parse(conf[Rails.env]).host
