@@ -106,6 +106,7 @@ class Contest < ActiveRecord::Base
 
   #pays owners of rosters according to their place in the contest
   def payday!
+    self.game_rosters.each(&:charge_account)
     self.with_lock do
       return if self.paid_at #&& Market.override_close
       raise if self.paid_at || self.cancelled_at
@@ -187,11 +188,17 @@ class Contest < ActiveRecord::Base
     fill_number = contest_cap * percentage
     rosters = [fill_number - self.num_rosters, 0].max.to_i
     rosters.times do
-      roster = Roster.generate(SYSTEM_USER, self.contest_type)
+      game_roster =  self.game_rosters.any?
+      roster = if game_roster
+                 GameRoster.generate(SYSTEM_USER, self.contest_type)
+               else
+                 Roster.generate(SYSTEM_USER, self.contest_type)
+               end
+
       roster.contest_id = self.id
       roster.is_generated = true
       roster.save!
-      roster.fill_pseudo_randomly5(false)
+      roster.fill_pseudo_randomly5(false) unless game_roster
       roster.submit!
     end
   end

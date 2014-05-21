@@ -38,6 +38,7 @@ class Market < ActiveRecord::Base
     def tend
       publish
       calculate_non_fantasy_pt
+      DataFetcher.parse_world_cup
       open
       #remove_shadow_bets
       #track_benched_players

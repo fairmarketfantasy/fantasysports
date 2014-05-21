@@ -1,8 +1,12 @@
 <div class="roster-title">
-  <h3 ng-show="$routeParams.category == 'fantasy_sports'">Your {{currentUser.currentCategory | underscore}} {{currentUser.currentSport}} Individual Prediction
-  <h3 ng-show="$routeParams.category == 'sports'">Your {{currentUser.currentCategory}} {{currentUser.currentSport}} game predictions
-      <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
-      <!--<a ng-show="pt_history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/history">My Predictions History</a>-->
+  <h3 ng-show="currentUser.currentCategory == 'fantasy_sports'">Your {{currentUser.currentCategory | underscore}} {{currentTitle}} Individual Prediction
+    <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
+  </h3>
+  <h3 ng-show="currentUser.currentCategory == 'sports' && currentUser.currentSport != 'FWC'">Your {{currentUser.currentCategory}} {{currentTitle}} games Prediction
+    <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
+  </h3>
+  <h3 ng-show='currentUser.currentSport == "FWC"'>Your {{currentUser.currentCategory}} {{currentTitle}} just my predictions
+    <a ng-hide='currentUser.currentSport == "FWC"' class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
   </h3>
 </div>
 <table class="table table-striped">
@@ -30,10 +34,10 @@
         </div>
       </td>
       <td>
-        <span>{{prediction.game_time | onlyFormTime}}</span>
+        <span>{{prediction.game_time | onlyFormTime | NAIfEmpty}}</span>
       </td>
       <td>
-        <span>{{prediction.game_day | longFormDate}}</span>
+        <span>{{prediction.game_day | longFormDate | NAIfEmpty}}</span>
       </td>
       <td>
         <span ng-show="prediction.state == 'finished'">

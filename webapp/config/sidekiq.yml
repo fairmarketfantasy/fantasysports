@@ -11,6 +11,7 @@
   - [game_listener, 1]
   - [mlb_all_schedule_fetcher, 1]
   - [unfetched_games_worker, 1]
+  - [sports_data_fetcher, 1]
 staging:
   :concurrency: 10
 production:

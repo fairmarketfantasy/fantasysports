@@ -26,6 +26,10 @@ class UserSerializer < ActiveModel::Serializer
     Category.where(name: 'fantasy_sports', note: '').first.name
   end
 
+  def currentCategory
+    Category.where(note: '').first.name
+  end
+
   def balance
     object.customer_object.try(:balance) || 0
   end

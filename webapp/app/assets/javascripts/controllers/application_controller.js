@@ -14,6 +14,7 @@ angular.module("app.controllers")
 
   $scope.sports = window.App.sports;
   $scope.defaultSport = window.App.defaultSport;
+  $scope.currentTitle = '';
   $scope.fs = fs;
   $scope.$routeParams = $routeParams;
 
@@ -23,15 +24,29 @@ angular.module("app.controllers")
   $scope.currentUser = currentUserService.currentUser;
   $scope.currentLandingSport = $routeParams.sport;
 
-  $scope.$watch('currentUserService.currentUser', function(newVal) {$scope.currentUser = newVal;}, true);
+  $scope.$watch('currentUserService.currentUser', function(newVal) {
+    if(newVal){
+      $scope.currentUser = newVal;
+      $scope.current_title();
+    }
+  }, true);
 
   $scope.sportHasPlayoffs = function() {
     var sport = _.find(App.sports, function(s) { return s.name == $scope.currentUser.currentSport; } );
     return sport && sport.playoffs_on;
   };
 
+  $scope.current_title = function(){
+    if($routeParams.category){
+      var sport = _.find(App.sports, function(s) { return s.name == $routeParams.category; } );
+      var title = _.find(sport.sports, function(s) { return s.name == $routeParams.sport; } );
+      $scope.currentTitle = title.title;
+    }
+  }
+
   // Watch the sport scope
   $scope.$watch(function() { return $route.current && $route.current.params.sport; }, function(newSport, oldSport) {
+    $scope.current_title();
     $scope.disable = true;
     if (!App.currentUser || !newSport) { return; }
     console.log(newSport);
@@ -42,13 +57,6 @@ angular.module("app.controllers")
     console.log(newSport);
     App.currentUser.currentCategory = newSport;
   });
-
-//    $scope.reloadRoster = function(id, sport) {
-//        $scope.roster = undefined;
-//        fs.rosters.getSample(id, sport).then(function(roster) {
-//            $scope.roster = roster;
-//        });
-//    };
 
   $scope.signUpModal = function(msg, opts) {
     registrationService.signUpModal(msg, opts);

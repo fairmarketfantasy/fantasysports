@@ -47,7 +47,7 @@ angular.module("app.controllers")
     });
   }
 
-    $scope.startMarket();
+  $scope.startMarket();
 
   $scope.removeLow = false;
   var filterOpts = {position: rosters.uniqPositionList && rosters.uniqPositionList[0], removeLow: false, sort: 'buy_price', dir: 'desc'};
@@ -393,4 +393,3 @@ $scope.openPredictionDialog = function(player) {
 };
 
 }]);
-

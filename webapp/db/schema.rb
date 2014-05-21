@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140530125708) do
+ActiveRecord::Schema.define(version: 20140604152139) do
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -129,8 +129,7 @@ ActiveRecord::Schema.define(version: 20140530125708) do
     t.decimal  "value"
   end
 
-  create_table "game_events", id: false, force: true do |t|
-    t.integer  "id",              null: false
+  create_table "game_events", force: true do |t|
     t.string   "stats_id"
     t.integer  "sequence_number", null: false
     t.string   "type",            null: false
@@ -435,6 +434,16 @@ ActiveRecord::Schema.define(version: 20140530125708) do
   add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
   add_index "players", ["team"], name: "index_players_on_team", using: :btree
 
+  create_table "prediction_pts", force: true do |t|
+    t.string   "stats_id",         null: false
+    t.decimal  "pt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "competition_type"
+  end
+
+  add_index "prediction_pts", ["stats_id"], name: "index_prediction_pts_on_stats_id", using: :btree
+
   create_table "predictions", force: true do |t|
     t.string   "stats_id"
     t.string   "game_stats_id"
@@ -445,6 +454,8 @@ ActiveRecord::Schema.define(version: 20140530125708) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "state"
+    t.string   "result"
+    t.decimal  "award"
   end
 
   add_index "predictions", ["game_stats_id"], name: "index_predictions_on_game_stats_id", using: :btree
@@ -672,10 +683,10 @@ ActiveRecord::Schema.define(version: 20140530125708) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
+    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
-    t.string   "avatar"
     t.text     "bonuses"
     t.string   "referral_code"
     t.integer  "total_loses",            default: 0
