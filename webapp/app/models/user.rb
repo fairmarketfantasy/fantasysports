@@ -150,7 +150,7 @@ class User < ActiveRecord::Base
 
   def normalized_prestige
     predictions_size = self.rosters.where(state: 'finished').count + self.individual_predictions.where.not(:state => 'canceled').count
-    return 0 if predictions_size.zero?
+    return 0 if predictions_size < 10
     self.prestige/predictions_size.to_d
   end
 
