@@ -26,6 +26,7 @@ end
 
 if is_worker
   $redis.flushall
+  Sidekiq::Monitor::Job.delete_all
   GameListener.perform_async
 
   schedule_file = 'config/schedule.yml'
