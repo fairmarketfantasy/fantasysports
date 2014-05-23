@@ -1,10 +1,5 @@
 class MLBAllScheduleFetcherWorker
   include Sidekiq::Worker
-  include Sidetiq::Schedulable
-
-  recurrence  do
-    daily.hour_of_day(12) # 12 UTC is 4 am PST
-  end
 
   sidekiq_options :queue => :mlb_all_schedule_fetcher
 
