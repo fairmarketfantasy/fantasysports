@@ -1,3 +1,19 @@
+default.redis.install_type   = "package"
+default.redis.package_name   = "redis-server"
+default.redis.source.sha     = "fdf61c693e5c4908b4bb44c428d4a2b7568f05566c144c58fdf19c5cb12a9caf"
+default.redis.source.url     = "http://redis.googlecode.com/files"
+default.redis.source.version = "2.6.14"
+default.redis.src_dir    = "/usr/src/redis"
+default.redis.dst_dir    = "/opt/redis"
+default.redis.conf_dir   = "/etc/redis"
+default.redis.init_style = "init"
+default.redis.symlink_binaries = false
+default.redis.ulimit = 10032
+
+# service user & group
+default.redis.user  = "redis"
+default.redis.group = "redis"
+
 # configuration
 default.redis.config.appendonly      = false
 default.redis.config.appendfsync     = "everysec"
