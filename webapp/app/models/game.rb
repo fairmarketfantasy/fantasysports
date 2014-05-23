@@ -71,6 +71,10 @@ class Game < ActiveRecord::Base
     self.players.each { |p| p.calculate_ppg }
   end
 
+  def label
+    Team.where(stats_id: self.home_team).first.try(:name) + ' @ ' + Team.where(stats_id: self.away_team).first.try(:name)
+  end
+
   def create_or_update_market
     return if self.game_time < Time.now
 

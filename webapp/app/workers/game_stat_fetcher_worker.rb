@@ -181,7 +181,7 @@ class GameStatFetcherWorker
     game = Game.find_by_stats_id game_stat_id
     return 'No team found' unless game
 
-    "Fetch team players for team #{game.stats_id}"
+    "Fetch game results for game #{game.label} (#{game.stats_id})"
   end
 
   private
