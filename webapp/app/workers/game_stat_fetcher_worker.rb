@@ -1,11 +1,11 @@
 class GameStatFetcherWorker
   include Sidekiq::Worker
 
-  sidekiq_options :queue => :game_stat_fetcher
+  sidekiq_options :queue => :game_stat_fetcher, :retry => 20
 
   # retry in 3 seconds
   sidekiq_retry_in do
-    3
+    60*15
   end
 
   sidekiq_retries_exhausted do |msg|
