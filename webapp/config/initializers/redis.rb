@@ -4,7 +4,10 @@ conf = {
   'staging' => 'redis://172.31.32.28:6379/',
   'production' => 'redis://172.31.35.223:6379/', # This will be problematic with multiple workers
 }
-if IPSocket.getaddress(Socket.gethostname) == URI.parse(conf[Rails.env]).host
+
+is_worker = IPSocket.getaddress(Socket.gethostname) == URI.parse(conf[Rails.env]).host
+
+if is_worker
   redis_url = 'redis://0.0.0.0:6379/'
 else
   redis_url = conf[Rails.env]
@@ -21,8 +24,13 @@ Sidekiq.configure_client do |config|
   config.redis = { :url => redis_url }
 end
 
-schedule_file = 'config/schedule.yml'
+if is_worker
+  $redis.flushall
+  GameListener.perform_async
 
-if File.exists?(schedule_file)
-  Sidekiq::Cron::Job.load_from_hash YAML.load_file(schedule_file)
+  schedule_file = 'config/schedule.yml'
+
+  if File.exists?(schedule_file)
+    Sidekiq::Cron::Job.load_from_hash YAML.load_file(schedule_file)
+  end
 end
