@@ -1,11 +1,11 @@
 class GameStatFetcherWorker
   include Sidekiq::Worker
 
-  sidekiq_options :queue => :game_stat_fetcher
+  sidekiq_options :queue => :game_stat_fetcher, :retry => 20
 
   # retry in 3 seconds
   sidekiq_retry_in do
-    3
+    60*15
   end
 
   sidekiq_retries_exhausted do |msg|
@@ -181,7 +181,7 @@ class GameStatFetcherWorker
     game = Game.find_by_stats_id game_stat_id
     return 'No team found' unless game
 
-    "Fetch team players for team #{game.stats_id}"
+    "Fetch game results for game #{game.label} (#{game.stats_id})"
   end
 
   private
