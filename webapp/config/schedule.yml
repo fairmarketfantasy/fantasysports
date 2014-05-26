@@ -1,0 +1,15 @@
+
+schedule_fetcher:
+  cron: "0 12 * * *"
+  class: "MLBAllScheduleFetcherWorker"
+  queue: mlb_all_schedule_fetcher
+
+teams_fetcher:
+  cron: "15 12 * * *"
+  class: "MLBTeamsFetcherWorker"
+  queue: mlb_teams_fetcher
+
+unfetched_games_worker:
+  cron: "0 * * * *"
+  class: "UnfetchedGamesWorker"
+  queue: unfetched_games_worker
