@@ -10,10 +10,12 @@ class GameListener
   end
 
   def perform(sport = 'mlb')
+    return if $redis.get('listener_working') == 'true'
 
     EM.run {
       url = "ws://apistream.sportsnetwork.com/v1/#{sport}/play_by_play?team_ids=all"
       puts "Beginning stream to the following url #{url}"
+      $redis.set 'listener_working', true
 
       headers = {'Origin' => 'http://apistream.sportsnetwork.com'}
       ws = Faye::WebSocket::Client.new(url, nil, :headers => headers)
@@ -30,6 +32,7 @@ class GameListener
         # connection has been closed callback.
         p [:close, event.code, event.reason]
         ws = nil
+        $redis.set 'listener_working', false
       end
     }
   end
