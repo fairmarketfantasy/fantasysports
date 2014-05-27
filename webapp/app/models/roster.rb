@@ -138,8 +138,7 @@ class Roster < ActiveRecord::Base
         #enter roster into public contest
         set_contest = Contest.where("contest_type_id = ?
           AND (user_cap = 0 OR user_cap > 12
-              OR (num_rosters - num_generated < user_cap
-                  AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
+              OR (num_rosters - num_generated < user_cap))
           AND NOT private", contest_type.id).order('id asc').first
         if set_contest.nil?
           if contest_type.limit.nil? || Contest.where(contest_type_id: contest_type.id).count < contest_type.limit
