@@ -155,9 +155,9 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   def publish
     arr = Market.all.select { |m| (m.name =~ /\w+\s+@\s+\w+/).nil? }
     arr.each { |m| m.destroy }
-
-    SportStrategy.for(self.sport.name).calculate_market_points(self.id)
     Market.find_by_sql("select * from publish_market(#{self.id})")
+    reload
+    SportStrategy.for(self.sport.name).calculate_market_points(self.id)
     reload
 
     if self.state == 'published'
