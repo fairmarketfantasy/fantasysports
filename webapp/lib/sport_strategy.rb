@@ -29,14 +29,14 @@ class SportStrategy
                                    pluck('DISTINCT game_stats_id')
       games = Game.where(stats_id: played_games_ids)
 
-      events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: played_games_ids, activity: 'points')
+      events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: played_games_ids)
       recent_games = games.order("game_time DESC").first(5)
       # calculate ppg in last 5 games
       recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
 
       if events.any?
-        recent_exp = (collect_stats(recent_events)[:points] || 0 ).to_d/recent_games.count
-        total_exp = (collect_stats(events)[:points] || 0 ).to_d / BigDecimal.new(played_games_ids.count)
+        recent_exp = (recent_events.map(&:point_value).reduce(:+) || 0 ).to_d/recent_games.count
+        total_exp = (events.map(&:point_value).reduce(:+) || 0 ).to_d / BigDecimal.new(played_games_ids.count)
       end
 
       # set expected ppg
@@ -47,7 +47,9 @@ class SportStrategy
         mp.expected_points = total_exp * 0.7 + recent_exp * 0.3
       end
       total_expected += mp.expected_points
+      mp.player.update_attribute(:ppg, mp.expected_points)
     end
+
     market.market_players.each do |mp|
       # set total_bets & shadow_bets based on expected_ppg/ total_expected_ppg * 30000
       mp.bets = mp.shadow_bets = mp.initial_shadow_bets = mp.expected_points.to_f / (total_expected + 0.0001) * 300000
