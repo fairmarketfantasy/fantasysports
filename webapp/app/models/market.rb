@@ -182,7 +182,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
       self.reload
       self.tabulate_scores
-      self.rosters.each { |r| r.charge_account }
     end
     self.reload
   end
@@ -380,6 +379,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       #for each contest, allocate funds by rank
       self.tabulate_scores
       self.set_payouts
+      self.rosters.each { |r| r.charge_account }
       self.contests.where('cancelled_at IS NULL').find_each do |contest|
         contest.payday!
       end
