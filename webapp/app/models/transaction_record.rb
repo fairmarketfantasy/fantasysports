@@ -14,7 +14,7 @@ class TransactionRecord < ActiveRecord::Base
   CONTEST_TYPES = %w( buy_in cancelled_roster contest_payout rake )
   validates_presence_of :user
   validates :event, inclusion: { in: CONTEST_TYPES + %w(
-                                 create_individual_prediction cancel_individual_prediction individual_prediction_win
+                                 create_individual_prediction cancel_individual_prediction individual_prediction_win game_prediction_win
                                  contest_payout_bonus payout joined_grant token_buy token_buy_ios
                                  free_referral_payout paid_referral_payout referred_join_payout deposit withdrawal
                                  revert_transaction manual_payout promo monthly_user_balance monthly_taxes monthly_user_entries) }

@@ -126,7 +126,7 @@
             <ul class="header-drop-menu dropdown-menu">
               <li  ng-repeat="sport in sports" ng-show="sport.is_active" >
                 <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name}"></em>
-                <a class="landing-nav-link"  href="/#/{{sport.name}}/external">{{sport.name}}</a>
+                <a class="landing-nav-link"  href="/#/{{currentUser.currentCategory}}/{{sport.name}}/external">{{sport.name}}</a>
               </li>
               <li class="no-border">
                 <em class="menu-arrow"></em>
@@ -225,7 +225,7 @@
           <div class="clearfix">
             <h4 class="logo-font">Predict <span class="logo-slash">That</span></h4>
             <ul class="footer-nav">
-              <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/home">Home</a></li>
+              <li class="nav-item"><a href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/home">Home</a></li>
               <!--<li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>-->
               <!--<li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>-->
               <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>

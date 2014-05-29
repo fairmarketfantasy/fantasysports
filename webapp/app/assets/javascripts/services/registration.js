@@ -76,7 +76,7 @@ angular.module('app.services')
             google: 'height=260,width=630'*/
         };
         if(service === 'email'){
-          fs.user.login($scope.user, $routeParams.sport, loginOpts).then(function(resp){
+          fs.user.login($scope.user, $routeParams.category, $routeParams.sport, loginOpts).then(function(resp){
             // window.setCurrentUser(resp);
             window.location.reload(true);
           });

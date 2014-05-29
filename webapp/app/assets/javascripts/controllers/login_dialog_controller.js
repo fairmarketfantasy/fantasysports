@@ -9,7 +9,7 @@ angular.module("app.controllers")
 
   $scope.submit = function() {
     if (! $scope.isValid()) return;
-    fs.user.login($scope.user, $routeParams.sport).then(function(resp){
+    fs.user.login($scope.user, $routeParams.category, $routeParams.sport).then(function(resp){
       // window.setCurrentUser(resp);
       $timeout(function() {
         window.location.reload(true);

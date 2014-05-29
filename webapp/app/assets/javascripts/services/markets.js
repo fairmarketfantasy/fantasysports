@@ -2,8 +2,9 @@ angular.module('app.data')
   .factory('markets', ['fs', '$q','$location','$routeParams', function(fs, $q, $location, $routeParams) {
     var marketData = {}
       , gameData = {}
-      , sportsToIds = _.object(_.map(App.sports, function(s) { return s.name; }), _.map(App.sports, function(s) { return s.id; }))
-      , idsToSports= _.invert(sportsToIds);
+      , gameCategory = []
+      , sportsToIds = {}
+      , idsToSports = {};
 
     return new function() {
       this.currentMarket = null;
@@ -14,7 +15,7 @@ angular.module('app.data')
         // TODO: memoize?
         var self = this;
         var count = 0
-        return fs.markets.list(opts.type, opts.sport).then(function(markets) {
+        return fs.markets.list(opts.type, opts.category, opts.sport).then(function(markets) {
           _.each(markets, function(market) {
             marketData[count] = market;
             count ++;
@@ -27,7 +28,7 @@ angular.module('app.data')
         });
       };
 
-      this.selectMarketId = function(id, sport) {
+      this.selectMarketId = function(id, category, sport) {
         var selectMarket = null;
         _.each(marketData, function(select){
           if(select.id == id){
@@ -36,11 +37,14 @@ angular.module('app.data')
         });
         if(!selectMarket){ return; }
         var type = selectMarket.game_type == 'regular_season' ? 'regular_season' : 'single_elimination'; // Hacky
-        this.selectMarketType(type, idsToSports[selectMarket.sport_id]);
+        this.selectMarketType(type, category, sport);
         this.currentMarket = selectMarket;
       };
 
-      this.selectMarketType = function(type, sport) {
+      this.selectMarketType = function(type, category, sport) {
+        gameCategory = _.find(App.sports, function(s){  if(s.name == category) return s })
+        sportsToIds = _.object(_.map(gameCategory.sports, function(s) { return s.name; }), _.map(gameCategory.sports, function(s) { return s.id; }))
+        idsToSports= _.invert(sportsToIds);
         this.marketType = type || 'regular_season';
         this.upcoming = _.filter(marketData, function(elt) {
           return elt.sport_id == sportsToIds[sport] && elt.game_type.match(type) || (type == 'regular_season' && elt.game_type == null);

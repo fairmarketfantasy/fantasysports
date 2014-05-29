@@ -122,6 +122,14 @@ footer {
     max-height: 425px;
   }
 }
+.MLB.sports {
+  .player-overflow {
+    max-height: 469px;
+  }
+  .roster-alert {
+    bottom: 15px;
+  }
+}
 
 //END GAME TYPE
 
@@ -670,7 +678,7 @@ select:focus:invalid {
 }
 .user-avatar {
   .border-radius(2px);
-  border: 1px solid @gray;
+//  border: 1px solid @gray;
   float: left;
   width: 60px;
   margin: 5px 12px 0 2px;
@@ -745,6 +753,12 @@ select:focus:invalid {
     margin: 0;
     padding: 0;
   }
+}
+.popover.fade {
+  display: none;
+}
+.popover.fade.in {
+  display: block;
 }
 .landing-nav .popover {
   width: 120px;
@@ -1302,7 +1316,7 @@ input, textarea, .uneditable-input {
   border-left: 1px solid #E0E0E0;
   padding: 5px 3px;
   height: 50px;
-  width: 153px !important;
+  width: 154px !important;
 }
 .home-market-link{
   color:@info;
@@ -1580,7 +1594,7 @@ input, textarea, .uneditable-input {
 }
 .player-overflow, .roster-overflow {
   background-color: @white;
-  padding: 0 5px 5px;
+  padding: 0 5px;
   .border-radius(5px);
   position: relative;
 }
@@ -1637,6 +1651,11 @@ input, textarea, .uneditable-input {
     &.tiny-btn {
       width: 54px;
     }
+  }
+}
+.games-table {
+  th.less-larger{
+    text-align: center;
   }
 }
 
@@ -1900,6 +1919,18 @@ input, textarea, .uneditable-input {
   background-repeat: no-repeat;
   position: relative;
 }
+.mr-team-image{
+  height: 50px;
+  width: 50px;
+  background-repeat: no-repeat;
+  position: relative;
+  background-image: asset-url('helmet.png');
+  background-size: 100% 100%;
+}
+.mr-ind-team-image{
+  width: 60px;
+  height: 60px;
+}
 .mr-item .benched-image {
   border-color:#FFA701;
 }
@@ -1948,6 +1979,29 @@ input, textarea, .uneditable-input {
   color: @gray;
   font-weight: 200;
 }
+.mr-ind-team-name {
+  margin: 0 0 0 15px;
+  p{
+    color:@gray;
+    font-size: 12px;
+    margin: 0;
+  }
+  .mr-team {
+    font-size:12px;
+    font-weight: normal;
+    color:@black;
+  }
+}
+.mr-ind-team-pred{
+  margin: 14px 10px 0 0;
+  p {
+    color: @gray;
+    font-size: 12px;
+    margin: 0;
+    text-align: right;
+    line-height: 1;
+  }
+}
 .diff {
   color: @green;
 }
@@ -1977,6 +2031,12 @@ input, textarea, .uneditable-input {
     padding: 10px 0.5%;
     min-height: 95px;
   }
+  .mr-team-item{
+    display: inline-block;
+    width: 100%;
+    padding: 10px 0.5%;
+    min-height: 95px;
+  }
   .mr-player-cta{
     float:left;
     margin-top: 5px;
@@ -1989,10 +2049,129 @@ input, textarea, .uneditable-input {
   }
 }
 
+.competition-roster{
+  .mr-item {
+    width: 100%;
+    min-height: 40px;
+    padding: 15px 0;
+  }
+  .mr-team-image {
+    background-image: asset-url('default-user.png');
+    width: 60px;
+    height: 60px;
+  }
+  .remove-selected-team {
+    background-color: #FFA901;
+    .border-radius(6px);
+    cursor: pointer;
+    font-size: 13px;
+    margin: 11px 0 0 5px;
+    padding: 6px 10px 6px;
+    &:hover{
+      background-color: @orangeHighlight;
+    }
+  }
+  .team-heading{
+    margin-bottom: 18px;
+  }
+  .swapped-icon{
+    bottom: 40px;
+    line-height: 19px;
+    font-size: 10px;
+  }
+}
+
+.roster-team-list {
+  .roster-team-list-block{
+    width: 50%;
+    padding: 10px 0;
+    .mr-team-image{
+      width: 30px;
+      height: 30px;
+      margin: 2px 5px 0;
+    }
+    .pt{
+      color:@info;
+      border: 2px solid @info;
+      padding: 0 2px;
+      margin:2px 0 0 0;
+      font-size: 11px;
+      font-weight: bold;
+      cursor:pointer;
+      width: 40px;
+      text-align: center;
+    }
+    p{
+      font-size:13px;
+      margin:8px 0 0 0;
+    }
+    .home_pt{
+      .border-radius(5px 0 0 5px);
+      border-right-width:1px;
+      position: relative;
+      span{
+        display: block;
+        height: 27px;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    }
+    .away_pt{
+      .border-radius(0 5px 5px 0);
+      border-left-width:1px;
+      position: relative;
+      span{
+        display: block;
+        height: 27px;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    }
+
+
+    .ip-btn-disable{
+      .opacity(50);
+      cursor:default;
+    }
+  }
+  .start-time{
+    color:@gray;
+    font-size:12px;
+    margin-top: 18px;
+  }
+  .add-team {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 3px;
+    color: @info;
+    cursor:pointer;
+    &:hover {
+      color: @green;
+    }
+  }
+  .add-team.pull-left{
+    margin-left: 10px;
+  }
+  .add-team.pull-right{
+    margin-right: 10px;
+  }
+}
+
 .mr-item {
   display: inline-block;
   width: 50%;
   padding: 16px 0;
+}
+.mr-team-item{
+  display: inline-block;
+  width: 100%;
+  padding: 16px 0;
+  color:@black;
+  border-bottom: 1px solid #AAAAAA;
 }
 .mr-player-name {
   color:#000;
@@ -2147,11 +2326,11 @@ input[type="text"].players-search {
 }
 
 .roster-alert {
-  bottom: 60px;
+  bottom: 40px;
   position: absolute;
   right: 0;
   .roster-submit{
-    margin-bottom: 15px;
+    margin-bottom: 0;
     padding: 0 10px;
     position: relative;
   }
@@ -2263,7 +2442,7 @@ input[type="text"].players-search {
   background: #ebedef;
   padding: 4px;
   margin: 3px;
-  border-radius: 5px;
+  .border-radius(5px);
 }
 .btn-contest-cta {
   position: absolute;
@@ -2312,6 +2491,16 @@ textarea[class*="span"] {
 .stats-list {
   float: left;
   margin-left: 10px;
+}
+
+.ind-game-point{
+  background-color: #E8E8E8;
+  .border-radius(6px);
+  color: #375C89;
+  font-family: Prohibition-Round,'Arial Black',Helvetica,sans-serif;
+  font-size: 20px;
+  margin-top: 11px;
+  padding: 6px 18px;
 }
 
 .individual-predict {
@@ -2365,7 +2554,7 @@ textarea[class*="span"] {
 .landing-ind-prediction {
   border:1px solid #fdfdfd ;
   .border-radius(6px);
-  padding: 1.5%;
+  padding: 1%;
   position: absolute;
   right: 10%;
   text-align: left;
@@ -2386,6 +2575,9 @@ textarea[class*="span"] {
       }
     }
   }
+  .landing-ind-list{
+    min-width: 350px;
+  }
   .landing-ind-list li{
     height: 45px;
   }
@@ -2401,9 +2593,19 @@ textarea[class*="span"] {
   }
 }
 
+.landing-ind-games-list {
+  div.pull-left {
+    width: 50%;
+    a.pull-right{
+      float:right;
+    }
+  }
+}
+
 .home-prediction-info{
   color: #FEFEFE;
   text-align: center;
+  font-size: 12px;
 }
 
 /* Media Queries: 980-1199px

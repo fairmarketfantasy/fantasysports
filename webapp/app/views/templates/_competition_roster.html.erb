@@ -1,0 +1,61 @@
+<div ng-hide="gameNotFound || gamePrediction.games.length" class='market-loader centered'>
+  <img src='/assets/ajax-loader-big.gif'>
+</div>
+<div ng-show="gameNotFound" class="market-loader centered">
+  <h4>{{gameNotFound}}</h4>
+</div>
+<div ng-show="gamePrediction.games.length">
+  <div class="row">
+    <div class="span2 prestige-chart" ng-include="'/prestige.html'"></div>
+    <div class="span10">
+
+      <div ng-show="competitionRosters.currentRoster.game_roster.state == 'finished'" class="contest-leaderboard ">
+        <table class="table table-striped">
+          <thead>
+          <th>Rank</th>
+          <th>User</th>
+          <th>Award</th>
+          <th>Points&nbsp;&nbsp;of: {{leaderboard[0].perfect_score | number:1}}</th>
+          <th>Roster</th>
+          </thead>
+          <tbody>
+          <tr ng-repeat="roster in competitionRosters.currentLeaderboard">
+            <td>
+              <span >{{roster.contest_rank}}</span>
+            </td>
+            <td>{{roster.owner_name}}</td>
+            <td>
+              <span>{{(roster.contest_rank_payout || 0) | centsToFanbucks}}</span>
+            </td>
+            <td>{{roster.score | number:2}}</td>
+            <td>
+              <span ng-show="roster.id == competitionRosters.currentRoster.game_roster.id">This roster</span>
+              <a ng-show="roster.owner_id != currentUser.id" href='javascript://' ng-click="opponentRoster(roster.id)" >See their roster</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <a href="javascript://" ng-click="showMoreLeaders()" class="show-more-leaders" ng-show="rosters.currentRoster.contest_type.max_entries > 10">Show More</a>
+      </div>
+
+      <div class="entries-container">
+        <div class="roster-title my-roster-title clearfix">
+          <h3 class="inline-heading">
+            <span>Your Choices</span>
+          </h3>
+          <h3 class="inline-heading opponent" ng-show="competitionRosters.opponentRoster">{{competitionRosters.opponentRoster.game_roster.owner_name | truncate:10}}</h3>
+        </div>
+      </div>
+
+      <div class="team-selection clearfix">
+        <div ng-controller="IncludeController" ng-init="track({competition_roster: 'gamePrediction'})"><div ng-include="'/competition_selected_team.html'"></div></div>
+        <div ng-show="competitionRosters.opponentRoster" ng-controller="IncludeController" ng-init="track({competition_roster: 'competitionRosters.opponentRoster'})"><div ng-include="'/competition_selected_team.html'"></div></div>
+        <div ng-hide="competitionRosters.opponentRoster" class="clearfix" ng-include="'/competition_teams.html'"></div>
+        <div class="team-selection-info">
+          <p>Roster receives prediction points for correct predictions. Most prediction points wins 100 Fanbucks!</p>
+          <h3>Your roster will compete against 11 other rosters.</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

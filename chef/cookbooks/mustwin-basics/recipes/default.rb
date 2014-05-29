@@ -107,7 +107,7 @@ deploy app_root do
   repo "git@github.com:fairmarketfantasy/#{node['easternpeak']['app_name']}.git"
   ssh_wrapper "/home/ubuntu/wrap-ssh4git.sh"
   environment "RAILS_ENV" => node['env']['RAILS_ENV']
-  revision node['env']['RAILS_ENV'] == "production" ? "production" : "HEAD"
+  revision node['env']['RAILS_ENV'] == "production" ? "production" : "staging"
   action :deploy
 
   before_migrate do

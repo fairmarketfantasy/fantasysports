@@ -5,7 +5,7 @@ class Users::SessionsController < Devise::SessionsController
     self.resource = warden.authenticate! scope: resource_name, recall: "#{controller_path}#sign_in_failure"
     sign_in resource_name, resource
     delete_broken_rosters(current_user)
-    render_api_response current_user, handle_referrals(params[:sport])
+    render_api_response current_user, handle_referrals(sport: params[:sport], category: params[:category])
     #render json: UserSerializer.new(current_user, scope: current_user)
   end
 

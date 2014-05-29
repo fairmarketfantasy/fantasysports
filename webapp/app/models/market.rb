@@ -37,19 +37,24 @@ class Market < ActiveRecord::Base
 
     def tend
       publish
+      calculate_non_fantasy_pt
       open
       #remove_shadow_bets
       #track_benched_players
       fill_rosters
+      fill_non_fantasy_rosters
       DataFetcher.update_benched
       close
       update_players_for_market
       #lock_players
       tabulate_scores
+      tabulate_non_fantasy
       set_payouts # this is used for leaderboards
+      set_non_fantasy_payout
       deliver_bonuses
       finish_games
       complete
+      finish_non_fantasy_contests
     end
 
     def apply method, sql, *params
@@ -84,6 +89,13 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       apply :publish, "published_at <= ? AND (state is null or state='' or state='unpublished')", Time.now
     end
 
+    def calculate_non_fantasy_pt
+      games = Sport.where(name: 'MLB').first.games.where("game_time > ? AND game_time < ?", Time.now.utc, Time.now.utc + 2.days)
+      games.each { |game| DataFetcher.calculate_teams_pt(game) }
+    rescue
+      puts "panic!"
+    end
+
     def open
       apply :open, "state = 'published' AND (shadow_bets = 0 or opened_at < ?)", Time.now
     end
@@ -112,12 +124,27 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       apply :tabulate_scores, "state in ('published', 'opened', 'closed')"
     end
 
+    def tabulate_non_fantasy
+      non_fantasy_contests.each do |c|
+        Contest.find_by_sql("SELECT * FROM tabulate_non_fantasy_scores(#{c.id})")
+        c.reload
+      end
+    end
+
+    def non_fantasy_contests
+      contests = GameRoster.where(state: 'submitted').map(&:contest).uniq.compact
+    end
+
     def deliver_bonuses
       apply :deliver_bonuses, "game_type = 'single_elimination' AND state in ('opened', 'closed')"
     end
 
     def set_payouts
       apply :set_payouts, "state in ('opened', 'closed')"
+    end
+
+    def set_non_fantasy_payout
+      non_fantasy_contests.each{ |c| c.set_payouts! }
     end
 
     def finish_games
@@ -136,6 +163,21 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       EOF
     end
 
+    def finish_non_fantasy_contests
+      non_fantasy_contests.each do |c|
+        g_rosters = c.games_rosters
+        games = g_rosters.map(&:game_predictions).flatten.map(&:game)
+        if games.find { |g| g.status == 'cancelled'}
+          g_rosters.each { |r| r.cancel! }
+          return
+        end
+
+        next if games.find { |g| g.status == 'scheduled'}
+
+        g_rosters.each { |r| r.charge_account }
+        contest.payday!
+      end
+    end
   end
 
   def accepting_rosters?
@@ -153,18 +195,21 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
   #publish the market. returns the published market.
   def publish
+    sport_name = self.sport.name
     arr = Market.all.select { |m| (m.name =~ /\w+\s+@\s+\w+/).nil? }
     arr.each { |m| m.destroy }
+
     Market.find_by_sql("select * from publish_market(#{self.id})")
     reload
-    SportStrategy.for(self.sport.name).calculate_market_points(self.id)
+    SportStrategy.for(sport_name).calculate_market_points(self.id)
     reload
 
     if self.state == 'published'
       self.add_default_contests
     end
+
     reload
-    self.update_attribute(:price_multiplier, SportStrategy.for('MLB').price_multiplier) if self.sport.name == 'MLB'
+    self.update_attribute(:price_multiplier, SportStrategy.for('MLB').price_multiplier) if sport_name == 'MLB'
     self
   end
 
@@ -174,6 +219,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     games = self.games.where("game_time < ?", Time.now.utc)
     games.each { |game| DataFetcher.update_game_players(game) }
     self.reload
+
     if self.games.where(checked: nil).empty?
       self.unlock_market_players
       self.rosters.each do |r|
@@ -233,6 +279,16 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
     self.fill_unfilled_rosters
     self.reload
+  end
+
+  def fill_non_fantasy_rosters
+    ids = GameRoster.where(state: 'submitted').pluck('DISTINCT contest_id').compact
+    ids.each do |id|
+      c = Contest.find(id)
+      puts id
+      game_rosters_number = c.game_rosters.where(state: 'submitted').count
+      c.fill_with_game_rosters if game_rosters_number > 0 && game_rosters_number < c.user_cap
+    end
   end
 
   def fill_rosters_to_percent(percent)
@@ -383,6 +439,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       self.contests.where('cancelled_at IS NULL').find_each do |contest|
         contest.payday!
       end
+
       games = self.games.where("game_time < ?", Time.now.utc)
       games.each { |game| DataFetcher.update_game_players(game, 6) }
       self.reload

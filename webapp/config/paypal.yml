@@ -23,6 +23,9 @@ test: &default
 development:
   <<: *default
 
+testing:
+  <<: *default
+
 staging:
   <<: *default
 
