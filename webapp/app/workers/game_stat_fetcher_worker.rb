@@ -111,11 +111,14 @@ class GameStatFetcherWorker
       raise unless data.present?
     end
 
+    played_players_ids = []
+
     data['team_summary'].each do |team_summary|
       team_summary['batting_fielding_stats'].each do |batting_fielding_stat|
         player_stats_id = batting_fielding_stat['player_id'].to_s
         player = Player.where(stats_id: player_stats_id).first
         next if player.nil? or (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).blank?
+        played_players_ids << player_stats_id
 
         singles = batting_fielding_stat['hits'] - batting_fielding_stat['doubles'] - batting_fielding_stat['triples'] - batting_fielding_stat['home_runs']
         find_or_create_stat_event(player_stats_id, game, '1B', singles.to_f)
@@ -146,6 +149,7 @@ class GameStatFetcherWorker
         player_stats_id = pitching_stat['player_id'].to_s
         player = Player.where(stats_id: player_stats_id).first
         next if player.nil? or (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present?
+        played_players_ids << player_stats_id
 
         # Win (W) = 4pts
         pl = Player.find_by_stats_id(player_stats_id)
@@ -172,6 +176,10 @@ class GameStatFetcherWorker
         # -.5 for a hit or walk or hbp (hit by pitch)
         find_or_create_stat_event(player_stats_id, game, 'PENALTY', (pitching_stat['walks'] + pitching_stat['hits']).to_f)
       end
+    end
+
+    game.markets.each do |market|
+      market.players.each { |pl| pl.update_attribute(:removed, !played_players_ids.include?(pl.stats_id)) }
     end
 
     game.update_attributes(:status =>'closed',:checked => true)

@@ -8,7 +8,7 @@ class Team < ActiveRecord::Base
   validates :sport_id, :abbrev, :name, presence: true # :conference, :division for NFL
 
   def games
-    Game.where("home_team = #{self.id} OR away_team_id = #{self.id}")
+    Game.where("home_team = '#{self.id}' OR away_team = '#{self.id}'")
   end
 
   # Either an abbrev or a stats_id
