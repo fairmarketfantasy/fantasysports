@@ -8,7 +8,7 @@ angular.module("app.controllers")
     if (!$scope.isValid()) {
       return
     }else {
-      fs.user.create($scope.user, registrationService.getLoginOpts(), $routeParams.sport).then(function(resp){
+      fs.user.create($scope.user, registrationService.getLoginOpts(), $routeParams.category, $routeParams.sport).then(function(resp){
         //only fires on success, errors are intercepted by fsAPIInterceptor
         $timeout(function() {window.location.reload(true);}, 750);
       });

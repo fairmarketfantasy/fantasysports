@@ -28,7 +28,6 @@ class DataFetcher
       return if game.sport.name == 'MLB'
 
       puts "Update game players"
-
       url = NBA_BASE_URL + "games/#{game.stats_id}/summary.xml" + NBA_API_KEY_PARAMS
       xml = get_xml(url)
       second_half_started = xml.search("quarter").find { |node| node.at_xpath("@number").value == "3" }
@@ -55,6 +54,53 @@ class DataFetcher
       end
 
       game.update_attribute(:checked, true)
+    end
+
+    def calculate_teams_pt(game)
+      url = 'http://97.74.80.137/SportsOddsAPI/Odds/5Dimes/MLB'
+      odds = JSON.parse open(url).read
+      odd = odds.find do |odd|
+        game.game_time == DateTime.strptime(odd["GameTime"], '%m/%d/%Y %l:%M %p')
+        game.home_team == find_team(odd["Home"]).stats_id
+        game.away_team == find_team(odd["Visitor"]).stats_id
+      end
+
+      return unless odd
+
+      home_ml = odd["HomeMoneyLine"].to_d
+      away_ml = odd["VisitorMoneyLine"].to_d
+      game.home_team_pt = DataFetcher.get_pt_value(home_ml, away_ml)
+      game.away_team_pt = DataFetcher.get_pt_value(away_ml, home_ml)
+      game.save!
+    end
+
+    def find_team(team_name)
+      category = Category.where(name: 'fantasy_sports').first
+      sport = Sport.where(name: 'MLB', category_id: category.id).first
+      team = Team.where(sport_id: sport.id, market: team_name).first
+      team ||= Team.where(sport_id: sport.id).find do |t|
+        t.name.downcase.include?(team_name.split(/\s+/).last.downcase)
+      end
+
+      team ||= Team.where(sport_id: sport.id).find do |t|
+        t.market.downcase.include?(team_name.split(/\s+/).first.downcase)
+      end
+
+      team || raise("Team not found!")
+    end
+
+    def get_pt_value(target_ml, opposite_ml)
+      total_ml = (target_ml.abs + opposite_ml.abs).to_d/2
+      return 15.to_d if total_ml == 0
+
+      prob = if target_ml > opposite_ml
+               100/(100 + total_ml)
+             else
+               1-100/(100 + total_ml)
+             end
+
+      value = 1/prob * 0.95 * Roster::FB_CHARGE * 10
+      value.round
     end
 
     private

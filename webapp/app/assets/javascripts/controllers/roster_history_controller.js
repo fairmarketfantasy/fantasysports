@@ -9,7 +9,7 @@ angular.module("app.controllers")
   $scope.fetchMore = function() {
     $scope.showMore = false;
     page++;
-    rosterService.fetchMine({sport: $routeParams.sport, historical: true, page: page}).then(function(rosters) {
+    rosterService.fetchMine({category: $routeParams.category, sport: $routeParams.sport, historical: true, page: page}).then(function(rosters) {
 
       if (rosters.length > 24) {
         $scope.showMore = true;

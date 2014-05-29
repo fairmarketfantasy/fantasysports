@@ -746,3 +746,13 @@ begin
 end
 $$ LANGUAGE plpgsql;--SQL;
 
+DROP FUNCTION tabulate_non_fantasy_scores(integer);
+
+CREATE OR REPLACE FUNCTION tabulate_non_fantasy_scores(_contest_id integer) RETURNS VOID AS $$
+
+begin
+	WITH ranks as
+		(SELECT game_rosters.id, rank() OVER (PARTITION BY contest_id ORDER BY score IS NOT NULL DESC, score desc) FROM game_rosters WHERE game_rosters.contest_id = $1 AND game_rosters.state IN('submitted'))
+		UPDATE game_rosters set contest_rank = rank FROM ranks where game_rosters.id = ranks.id;
+end
+$$ LANGUAGE plpgsql;--SQL;

@@ -1,8 +1,9 @@
 class Positions
 
   @@positions = {}
+
   def self.for_sport_id(id)
-    if @@positions.empty?
+    if @@positions.empty? and not Sport.find(id).coming_soon?
       Sport.all.each do |s|
         @@positions[s.id] = send('default_' + s.name)
       end
@@ -13,7 +14,7 @@ class Positions
   def self.names_for_sport_id(id)
     @@position_names = {}
     if @@position_names.empty?
-      Sport.all.each do |s|
+      Category.where(name: 'fantasy_sports').first.sports.each do |s|
         @@position_names[s.id] = send('default_' + s.name + '_names')
       end
     end
@@ -42,5 +43,17 @@ class Positions
 
   def self.default_MLB_names
     'Starting Pitcher,Catcher,First baseman,Second baseman,Third baseman,Shortstop,Outfielder,Outfielder,Outfielder'
+  end
+
+  (Sport.all.map(&:name) - %w(NFL NBA MLB')).each do |item|
+    self.class.send :define_method, "default_#{item}" do
+      ''
+    end
+  end
+
+  (Sport.all.map(&:name) - %w(NFL NBA MLB')).each do |item|
+    self.class.send :define_method, "default_#{item}" do
+      ''
+    end
   end
 end

@@ -9,6 +9,8 @@ ActiveAdmin.register IndividualPrediction do
     column(:user_email) { |ip| ip.user.email }
     column(:market_name) { |ip| ip.market.name }
     column(:player_name) { |ip| ip.player.name }
+    column :market_id
+    column :player_id
     column :pt
     column :award
     column :created_at
