@@ -130,11 +130,9 @@ class GameRoster < ActiveRecord::Base
   # all games finished
   def check_for_payday
     gp_count = self.game_predictions.where(:state => 'submitted').count
-    if (self.state == 'in_pregress') and self.contest and self.game_predictions.where(:state => 'submitted').blank?
+    if self.state == 'submitted' && self.contest && self.game_predictions.where(:state => 'submitted').blank?
       self.contest.payday!
       self.state = 'finished'
-    elsif gp_count < ROOM_NUMBER and gp_count > 0
-      self.state = 'in_progress'
     end
   end
 
