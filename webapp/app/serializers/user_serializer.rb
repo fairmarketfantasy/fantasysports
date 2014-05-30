@@ -15,7 +15,7 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def currentSport
-    Sport.where('is_active').first.name
+    Sport.where(name: 'MLB', is_active: true).first.name
   end
 
   def active_sports
@@ -23,7 +23,7 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def currentCategory
-    Category.where(note: '').first.name
+    Category.where(name: 'fantasy_sports', note: '').first.name
   end
 
   def balance
