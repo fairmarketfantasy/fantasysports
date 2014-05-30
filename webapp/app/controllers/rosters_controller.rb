@@ -4,7 +4,7 @@ class RostersController < ApplicationController
   def mine
     game_prediction = params[:category] && params[:category] == 'sports' && params[:sport] == 'MLB'
     if game_prediction
-      rosters = current_user.game_rosters
+      rosters = current_user.game_rosters.order('started_at asc, created_at desc')
     else
       category = Category.where(name: params[:category]).first || Category.where(name: 'fantasy_sports').first
       sport = category.sports.where(:name => params[:sport]).first || Sport.where('is_active').first
