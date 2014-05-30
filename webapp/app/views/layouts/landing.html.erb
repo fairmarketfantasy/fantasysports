@@ -80,6 +80,7 @@
         <h1 class="logo-font"><a href="/#/external">Predict <span class="logo-slash">That</span></a></h1>
         <nav ng-class="{true :'disable-nav'}[disable]" class="landing-nav">
           <ul>
+            <em class="new"></em>
             <li ng-repeat="category in sports">
               <div ng-show="category.note" ng-class="{in : popover_sports}" class="popover bottom fade header-popover">{{category.note}} <div class="arrow"></div></div>
               <a class="dropdown-toggle" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">{{category.name | underscore}}</a>
