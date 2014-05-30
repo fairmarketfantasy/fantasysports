@@ -32,7 +32,7 @@ class IndividualPredictionsController < ApplicationController
     sport = category.sports.where(:name => params[:sport]).first if params[:sport]
     sport ||= Sport.where('is_active').first
     if params[:category] && params[:category] == 'sports' and params[:sport] == 'MLB'
-      predictions = current_user.game_predictions.where(:game_roster_id => 0)
+      predictions = current_user.game_predictions.where(:game_roster_id => 0).joins('JOIN games g ON game_predictions.game_stats_id=g.stats_id').order('game_time asc')
     else
       predictions = current_user.individual_predictions.joins('JOIN markets m ON individual_predictions.market_id=m.id').
           where(['m.sport_id = ?', sport.id]).order('closed_at desc')

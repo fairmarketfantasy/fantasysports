@@ -270,11 +270,16 @@ class GameStatFetcherWorker
     game.markets.each do |market|
       market.players.each { |pl| pl.update_attribute(:removed, !played_players_ids.include?(pl.stats_id)) }
       game.markets.first.individual_predictions.each do |prediction|
-        if prediction.player.benched? and prediction.award > 0
+        if prediction.player.benched?
           prediction.cancel!
-          TransactionRecord.create!(:user => prediction.user, :event => 'create_individual_prediction',
+          TransactionRecord.create!(:user => prediction.user, :event => 'cancel_individual_prediction',
                                     :amount => prediction.award)
-          Eventing.report(user, 'CancelIndividualPrediction', :amount => prediction.award)
+          Eventing.report(prediction.user, 'CancelIndividualPrediction', :amount => prediction.award)
+
+          ActiveRecord::Base.transaction do
+            prediction.user.customer_object.monthly_winnings -= prediction.pt * 100
+            prediction.user.customer_object.save!
+          end
           prediction.reload
         end
       end
