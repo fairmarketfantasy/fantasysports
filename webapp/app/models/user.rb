@@ -43,9 +43,18 @@ class User < ActiveRecord::Base
 
   before_create :set_blank_name
   after_create :create_customer_object
+  after_destroy :delete_related_objects
 
   def set_blank_name
     self.name ||= ''
+  end
+
+  def delete_related_objects
+    self.rosters.where(state: ['in_progress', 'submitted']).destroy_all
+    self.individual_predictions.where(state: ['in_progress', 'submitted']).destroy_all
+    self.game_rosters.where(state: ['in_progress', 'submitted']).destroy_all
+    self.game_predictions.where(state: ['in_progress', 'submitted']).destroy_all
+    self.customer_object.destroy
   end
 
   def active_account?

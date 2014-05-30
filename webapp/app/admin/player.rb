@@ -1,4 +1,5 @@
 ActiveAdmin.register Player do
+  actions :all, except: [:destroy]
   filter :name
   filter :position
   filter :team
@@ -8,22 +9,22 @@ ActiveAdmin.register Player do
     column :id
 =begin
  id            | integer                     | not null default nextval('players_id_seq'::regclass)
- stats_id      | character varying(255)      | 
- sport_id      | integer                     | 
- name          | character varying(255)      | 
- name_abbr     | character varying(255)      | 
- birthdate     | character varying(255)      | 
- height        | integer                     | 
- weight        | integer                     | 
- college       | character varying(255)      | 
- position      | character varying(255)      | 
- jersey_number | integer                     | 
- status        | character varying(255)      | 
+ stats_id      | character varying(255)      |
+ sport_id      | integer                     |
+ name          | character varying(255)      |
+ name_abbr     | character varying(255)      |
+ birthdate     | character varying(255)      |
+ height        | integer                     |
+ weight        | integer                     |
+ college       | character varying(255)      |
+ position      | character varying(255)      |
+ jersey_number | integer                     |
+ status        | character varying(255)      |
  total_games   | integer                     | not null default 0
  total_points  | integer                     | not null default 0
- created_at    | timestamp without time zone | 
- updated_at    | timestamp without time zone | 
- team          | character varying(255)      | 
+ created_at    | timestamp without time zone |
+ updated_at    | timestamp without time zone |
+ team          | character varying(255)      |
  benched_games | integer                     | default 0
 =end
     column :stats_id
