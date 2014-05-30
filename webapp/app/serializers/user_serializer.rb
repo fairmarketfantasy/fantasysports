@@ -69,7 +69,7 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def categories
-    ActiveModel::ArraySerializer.new(Category.all, each_serializer: CategorySerializer)
+    ActiveModel::ArraySerializer.new(Category.active, each_serializer: CategorySerializer)
   end
 
 end
