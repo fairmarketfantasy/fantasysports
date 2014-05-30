@@ -96,6 +96,16 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       puts "panic!"
     end
 
+    def fill_non_fantasy_rosters
+      ids = GameRoster.where(state: 'submitted').pluck('DISTINCT contest_id').compact
+      ids.each do |id|
+        c = Contest.find(id)
+        puts id
+        game_rosters_number = c.game_rosters.where(state: 'submitted').count
+        c.fill_with_game_rosters if game_rosters_number > 0 && game_rosters_number < c.user_cap
+      end
+    end
+
     def open
       apply :open, "state = 'published' AND (shadow_bets = 0 or opened_at < ?)", Time.now
     end
@@ -165,7 +175,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
     def finish_non_fantasy_contests
       non_fantasy_contests.each do |c|
-        g_rosters = c.games_rosters
+        g_rosters = c.game_rosters
         games = g_rosters.map(&:game_predictions).flatten.map(&:game)
         if games.find { |g| g.status == 'cancelled'}
           g_rosters.each { |r| r.cancel! }
@@ -279,16 +289,6 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
     self.fill_unfilled_rosters
     self.reload
-  end
-
-  def fill_non_fantasy_rosters
-    ids = GameRoster.where(state: 'submitted').pluck('DISTINCT contest_id').compact
-    ids.each do |id|
-      c = Contest.find(id)
-      puts id
-      game_rosters_number = c.game_rosters.where(state: 'submitted').count
-      c.fill_with_game_rosters if game_rosters_number > 0 && game_rosters_number < c.user_cap
-    end
   end
 
   def fill_rosters_to_percent(percent)
