@@ -169,8 +169,11 @@
             <a class="btn btn-small btn-success home-header-btn" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/home">Home</a>
             <a class="btn btn-small btn-success prediction-header-btn" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
           </div>
-          <div ng-hide="$routeParams.sport == 'MLB'" class="try-it">
-            <p>Fantasy Baseball is live, try it out</p>
+          <div ng-show="$routeParams.sport == 'NBA'" class="try-it">
+            <p>fantasy baseball and baseball predict-a-game are live, try them out!</p>
+          </div>
+          <div ng-show="$routeParams.sport == 'MLB' && $routeParams.category == 'fantasy_sports'" class="try-it">
+            <p>baseball predict-a-game is live try it out!</p>
           </div>
         </div>
       </div>
