@@ -1,5 +1,6 @@
 ActiveAdmin.register CustomerObject do
   filter :user_id
+  actions :all, except: [:destroy]
 
   index do
     column :id
