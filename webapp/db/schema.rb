@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140523142449) do
+ActiveRecord::Schema.define(version: 20140530125708) do
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -36,6 +36,9 @@ ActiveRecord::Schema.define(version: 20140523142449) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "note",       default: "COMING SOON"
+    t.boolean  "is_active",  default: true
+    t.boolean  "is_new",     default: false
+    t.string   "title",      default: "",            null: false
   end
 
   add_index "categories", ["name"], name: "index_categories_on_name", using: :btree
@@ -153,7 +156,7 @@ ActiveRecord::Schema.define(version: 20140523142449) do
     t.string   "state",          default: "submitted", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "game_roster_id"
+    t.integer  "game_roster_id", default: 0,           null: false
     t.integer  "position_index"
   end
 
@@ -215,6 +218,15 @@ ActiveRecord::Schema.define(version: 20140523142449) do
   end
 
   add_index "games_markets", ["market_id", "game_stats_id"], name: "index_games_markets_on_market_id_and_game_stats_id", unique: true, using: :btree
+
+  create_table "groups", force: true do |t|
+    t.integer  "sport_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "groups", ["name", "sport_id"], name: "index_groups_on_name_and_sport_id", unique: true, using: :btree
 
   create_table "individual_predictions", force: true do |t|
     t.datetime "created_at"
@@ -384,6 +396,17 @@ ActiveRecord::Schema.define(version: 20140523142449) do
   add_index "player_positions", ["player_id", "position"], name: "index_player_positions_on_player_id_and_position", unique: true, using: :btree
   add_index "player_positions", ["position"], name: "index_player_positions_on_position", using: :btree
 
+  create_table "player_predictions", force: true do |t|
+    t.integer  "user_id",                  null: false
+    t.integer  "player_id",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.decimal  "pt",         default: 0.0
+  end
+
+  add_index "player_predictions", ["player_id"], name: "index_player_predictions_on_player_id", using: :btree
+  add_index "player_predictions", ["user_id"], name: "index_player_predictions_on_user_id", using: :btree
+
   create_table "players", force: true do |t|
     t.string   "stats_id"
     t.integer  "sport_id"
@@ -405,11 +428,29 @@ ActiveRecord::Schema.define(version: 20140523142449) do
     t.boolean  "out"
     t.decimal  "ppg",           default: 0.0
     t.boolean  "legionnaire",   default: false, null: false
+    t.decimal  "pt"
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
   add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
   add_index "players", ["team"], name: "index_players_on_team", using: :btree
+
+  create_table "predictions", force: true do |t|
+    t.string   "stats_id"
+    t.string   "game_stats_id"
+    t.integer  "user_id"
+    t.string   "sport"
+    t.string   "prediction_type"
+    t.decimal  "pt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "state"
+  end
+
+  add_index "predictions", ["game_stats_id"], name: "index_predictions_on_game_stats_id", using: :btree
+  add_index "predictions", ["prediction_type"], name: "index_predictions_on_prediction_type", using: :btree
+  add_index "predictions", ["stats_id"], name: "index_predictions_on_stats_id", using: :btree
+  add_index "predictions", ["user_id"], name: "index_predictions_on_user_id", using: :btree
 
   create_table "promo_redemptions", force: true do |t|
     t.integer  "promo_id",   null: false
@@ -539,6 +580,7 @@ ActiveRecord::Schema.define(version: 20140523142449) do
     t.boolean  "playoffs_on", default: false
     t.integer  "category_id"
     t.boolean  "coming_soon", default: true
+    t.string   "title",       default: "",    null: false
   end
 
   add_index "sports", ["category_id"], name: "index_sports_on_category_id", using: :btree
@@ -574,10 +616,12 @@ ActiveRecord::Schema.define(version: 20140523142449) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "stats_id",   default: ""
+    t.integer  "group_id"
   end
 
   add_index "teams", ["abbrev", "sport_id"], name: "index_teams_on_abbrev_and_sport_id", unique: true, using: :btree
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
+  add_index "teams", ["group_id"], name: "index_teams_on_group_id", using: :btree
   add_index "teams", ["stats_id"], name: "index_teams_on_stats_id", using: :btree
 
   create_table "transaction_records", force: true do |t|

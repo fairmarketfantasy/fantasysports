@@ -31,7 +31,7 @@ MarketDefaults.where(:sport_id => 0).first_or_create(:single_game_multiplier => 
 CATEGORY_SPORTS = { 'fantasy_sports' => ['nfl', 'nba', 'mlb'],
                     'entertainment' => ['music', 'reality shows', 'oscars', 'grammys', 'celebrity propositions'],
                     'politics' => ['presidental candidates', 'congressional races', 'senate races'],
-                    'sports' => ['mlb', 'nba', 'nfl', 'nhl', 'nascar', 'golf', 'tennis'] }
+                    'sports' => ['mlb', 'nba', 'fwc', 'nfl', 'nhl', 'nascar', 'golf', 'tennis'] }
 
 CATEGORY_SPORTS.each do |category, sports|
   cat = Category.where(name: category).first_or_create
@@ -50,4 +50,32 @@ CATEGORY_SPORTS.each do |category, sports|
       sport.update_attribute(:coming_soon, false) if sport.name == 'MLB'
     end
   end
+
+  inactive_sport_names = ['MUSIC', 'REALITY SHOWS', 'OSCARS', 'GRAMMYS', 'CELEBRITY PROPOSITIONS',
+                          'PRESIDENTAL CANDIDATES', 'CONGRESSIONAL RACES', 'SENATE RACES', 'NASCAR',
+                          'GOLF', 'TENNIS']
+  Sport.where(name: inactive_sport_names).each { |s| s.update_attribute(:is_active, false) }
+  Category.where(name: ['entertainment', 'politics']).each { |s| s.update_attribute(:is_active, false) }
+  Category.where(name: 'sports').first.sports.where(name: ['NFL', 'NHL', 'NBA']).each do |s|
+    s.update_attribute(:is_active, false)
+  end
+
+  Sport.all.each do |s|
+    name  = if s.name == 'FWC'
+              'Soccer World Cup 2014'
+            elsif s.name == 'MLB' && s.category.name == 'sports'
+              'Predict-a-Game MLB'
+            else
+              s.name
+            end
+
+    s.update_attribute(:title, name)
+  end
+
+  Category.all.each do |s|
+    name = s.name.gsub('_', ' ')
+    s.update_attribute(:title, name)
+  end
+
+  Category.where(name: 'sports').first.update_attribute(:is_new, true)
 end
