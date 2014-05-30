@@ -1,4 +1,5 @@
 ActiveAdmin.register Contest do
+  actions :all, except: [:destroy]
   filter :start_time
   filter :end_time
   filter :market_id

@@ -1,4 +1,5 @@
 ActiveAdmin.register Roster do
+  actions :all, except: [:destroy]
   filter :submitted_at
   filter :market_id
   filter :contest_id
