@@ -90,6 +90,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def calculate_non_fantasy_pt
+      puts 'calculate non fantasy pt'
       games = Sport.where(name: 'MLB').first.games.where("game_time > ? AND game_time < ?", Time.now.utc, Time.now.utc + 2.days)
       games.each { |game| DataFetcher.calculate_teams_pt(game) }
     rescue
@@ -100,6 +101,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       ids = GameRoster.where(state: 'submitted').pluck('DISTINCT contest_id').compact
       ids.each do |id|
         c = Contest.find(id)
+        next if c.paid_at
         puts id
         game_rosters_number = c.game_rosters.where(state: 'submitted').count
         c.fill_with_game_rosters if game_rosters_number > 0 && game_rosters_number < c.user_cap
@@ -142,7 +144,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def non_fantasy_contests
-      contests = GameRoster.where(state: 'submitted').map(&:contest).uniq.compact
+      contests = GameRoster.where(state: 'submitted').map(&:contest).uniq.compact.select { |c| c.paid_at.nil? }
     end
 
     def deliver_bonuses
@@ -175,6 +177,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
     def finish_non_fantasy_contests
       non_fantasy_contests.each do |c|
+        puts "finish non fantasy contest #{c.id}"
         g_rosters = c.game_rosters
         games = g_rosters.map(&:game_predictions).flatten.map(&:game)
         if games.find { |g| g.status == 'cancelled'}
@@ -182,10 +185,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
           return
         end
 
-        next if games.find { |g| g.status == 'scheduled'}
+        next if games.find { |g| g.status == 'scheduled'} || c.paid_at
 
         g_rosters.each { |r| r.charge_account }
-        contest.payday!
+        c.payday!
       end
     end
   end
