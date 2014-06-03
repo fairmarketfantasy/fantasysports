@@ -18,7 +18,7 @@ class LeaderboardController < ApplicationController
     users = Rails.cache.fetch('prestige' + User.count.to_s + Roster.where(:state => 'finished').count.to_s + IndividualPrediction.count.to_s) do
       all_users = User.where.not(:name => 'SYSTEM USER', :admin => true)
 
-      all_users.sort_by { |i| -i.prestige }.first(5).map { |i| { 'name' => i.name, 'prestige' => i.prestige.round(2) } } +
+      all_users.sort_by { |i| -i.prestige }.first(5).map { |i| { 'name' => i.name, 'prestige' => i.prestige.round } } +
       all_users.sort_by { |i| -i.normalized_prestige }.first(5).map { |i| { 'name' => i.name, 'prestige' => i.normalized_prestige.round(2) } }
     end
     render_api_response(
