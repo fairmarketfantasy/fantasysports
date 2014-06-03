@@ -160,11 +160,18 @@ class Player < ActiveRecord::Base
     data = []
     total_stats.each do |k, v|
       if games.last.sport.name == 'MLB'
+        ip_per_game = 9.0
         #last_year_points = last_year_stats[k] || 0.to_d
         #this_year_points = (this_year_stats[k] || 0).to_d/this_year_ids.count if this_year_ids.count != 0
         if k == 'Era (earned run avg)'.to_sym
-          history_val = (last_year_stats[k].to_f*self.total_games + this_year_stats[k].to_f)/((this_year_stats[:'Inning Pitched'].to_f + last_year_stats[:'Inning Pitched'].to_f*self.total_games)/9.0)
-          recent = this_year_stats[k].to_f/(this_year_stats[:'Inning Pitched'].to_f/9.0)
+          recent = ip_per_game * this_year_stats[k].to_f/this_year_stats[:'Inning Pitched'].to_f
+          history_val = if self.total_games.zero?
+                          recent
+                        else
+                          era = (last_year_stats[k].to_f*self.total_games + this_year_stats[k].to_f)
+                          ip = this_year_stats[:'Inning Pitched'].to_f + last_year_stats[:'Inning Pitched'].to_f*self.total_games
+                          ip_per_game * era/ip
+                        end
         else
           history_val = ((last_year_stats[k] || 0.to_d)*self.total_games + (this_year_stats[k] || 0).to_d)/(this_year_ids.count + self.total_games)
           #history = last_year != 0 ? [last_year * (last_year - 2 * this_year)/last_year + this_year, 0].max : this_year
@@ -178,22 +185,22 @@ class Player < ActiveRecord::Base
             :error_message => "NoLastYearMLBStats: #{Player.where(stats_id: params[:player_ids]).name} #{self.name}",
             :parameters    => params
           )
-        else
-          if this_year_stats[:'Inning Pitched'].to_i > 15 or self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size > 50
-            koef = 0.2
-          else
-            # batter
-            if (self.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present?
-              koef = 0.2*(self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size/50.0)
-            else
-              koef = 0.2*(this_year_stats[:'Inning Pitched'].to_i/15.0)
-            end
-          end
-
-          value = koef.to_d * recent.to_f + (1.0 - koef).to_d * history_val.to_f
         end
 
-        value = this_year_stats[k].to_f/this_year_ids.count if self.legionnaire? || self.total_games.zero?
+        if this_year_stats[:'Inning Pitched'].to_i > 15 or self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size > 50
+          koef = 0.2
+        else
+          # batter
+          if (self.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present?
+            koef = 0.2*(self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size/50.0)
+          else
+            koef = 0.2*(this_year_stats[:'Inning Pitched'].to_i/15.0)
+          end
+        end
+
+        value = koef.to_d * recent.to_f + (1.0 - koef).to_d * history_val.to_f
+
+        value = this_year_stats[k].to_f/this_year_ids.count if k != 'Era (earned run avg)'.to_sym && (self.legionnaire? || self.total_games.zero?)
         return value if ret_fp && k == 'Fantasy Points'.to_sym
       else
         value = v.to_d / BigDecimal.new(played_games_ids.count)
