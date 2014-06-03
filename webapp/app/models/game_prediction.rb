@@ -17,7 +17,7 @@ class GamePrediction < ActiveRecord::Base
       games = markets.map(&:games).flatten
       data = []
       games.each do |g|
-        next if g.home_team_pt == g.away_team_pt
+        next if g.home_team_pt == g.away_team_pt or g.home_team_pt.nil? or g.away_team_pt.nil?
 
         h = {}
         home_team = Team.find(g.home_team)

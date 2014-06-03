@@ -19,7 +19,7 @@ class GameRoster < ActiveRecord::Base
   class << self
     def sample(sport)
       games = SportStrategy.for(sport, 'fantasy_sports').fetch_markets('regular_season').map(&:games).flatten
-      games = games.sample(5).sort_by(&:game_time)
+      games = games.select { |i| i.home_team_pt.present? and i.away_team_pt.present? }.sample(5).sort_by(&:game_time)
 
       data = []
       games.each_with_index do |game, i|
