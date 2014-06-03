@@ -7,15 +7,18 @@ class CustomerObject < ActiveRecord::Base
   has_many :credit_cards
 
   def self.monthly_accounting!
-    condition = 'is_active AND has_agreed_terms AND last_activated_at < ?'
-    CustomerObject.where([condition, Time.new.beginning_of_month]).each do |co|
+    condition = 'is_active AND has_agreed_terms AND last_activated_at is NOT NULL'
+    CustomerObject.where(condition).each do |co|
       co.do_monthly_accounting!
+    end
+
+    trial_condition = 'last_activated_at IS NULL AND trial_started_at IS NOT NULL'
+    CustomerObject.where(trial_condition).each do |co|
+      co.calculated_trial_ending
     end
   end
 
   def do_monthly_accounting!
-    return unless trial_active?
-
     user_earnings = taxed_net_monthly_winnings
     tax_earnings = self.net_monthly_winnings - user_earnings
     condition = (user_earnings + tax_earnings) - (self.monthly_winnings - self.monthly_contest_entries * 1000) == 0
