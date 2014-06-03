@@ -226,13 +226,7 @@ class Player < ActiveRecord::Base
       data << { name: k, value: value, bid_less: bid_less, bid_more: bid_more, less_pt: less_pt, more_pt: more_pt }
     end
 
-    wins = data.find { |i| i[:name ] == 'Wins'.to_sym }
-    if wins && this_year_stats[:'Inning Pitched'] + (last_year_stats[:'Inning Pitched'] || 0) < 50
-      wins[:value] = 0.2.to_d if wins[:value] < 0.2
-      wins[:value] = 0.7.to_d if wins[:value] > 0.7
-    end
-
-    data
+    adjust_wins(data, this_year_stats)
   end
 
   private
@@ -246,5 +240,15 @@ class Player < ActiveRecord::Base
   def with_formula_value(value, total, more, less)
     value = value * (20 + total + (more - less)).to_d / (20 + total).to_d
     value.round(2)
+  end
+
+  def adjust_wins(data, this_year_stats)
+    wins = data.find { |i| i[:name ] == 'Wins'.to_sym }
+    if wins && this_year_stats[:'Inning Pitched'] < 50
+      wins[:value] = 0.2.to_d if wins[:value] < 0.2
+      wins[:value] = 0.7.to_d if wins[:value] > 0.7
+    end
+
+    data
   end
 end
