@@ -33,7 +33,7 @@ class GameRoster < ActiveRecord::Base
 
     def generate(user, contest_type, sport = 'MLB')
       day_games = SportStrategy.for(sport, 'fantasy_sports').fetch_markets('regular_season').map(&:games).flatten
-      games = day_games.sample(5)
+      games = day_games.select { |i| i.home_team_pt.present? and i.away_team_pt.present? }.sample(5)
       data = []
       game = day_games.first
       roster = user.game_rosters.create!(state: 'submitted',
