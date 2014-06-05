@@ -31,7 +31,7 @@ MarketDefaults.where(:sport_id => 0).first_or_create(:single_game_multiplier => 
 CATEGORY_SPORTS = { 'fantasy_sports' => ['nfl', 'nba', 'mlb'],
                     'entertainment' => ['music', 'reality shows', 'oscars', 'grammys', 'celebrity propositions'],
                     'politics' => ['presidental candidates', 'congressional races', 'senate races'],
-                    'sports' => ['mlb', 'nba', 'fwc', 'nfl', 'nhl', 'nascar', 'golf', 'tennis'] }
+                    'sports' => ['mlb', 'fwc', 'nhl', 'nascar', 'golf', 'tennis'] }
 
 CATEGORY_SPORTS.each do |category, sports|
   cat = Category.where(name: category).first_or_create
