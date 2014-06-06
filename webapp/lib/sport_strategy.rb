@@ -298,9 +298,9 @@ class FWCStrategy < NonFantasyStrategy
     resp = {}
     daily_wins = @sport.games.where(game_time: (date.beginning_of_day..date.end_of_day)).map { |g| FootballGameSerializer.new(g, opts.merge(type: 'daily_wins', game_stats_id: g.stats_id)) }
     resp[:daily_wins] = daily_wins if daily_wins.size > 0
-    resp[:win_the_cup] = @sport.teams.map { |t| TeamSerializer.new(t, opts.merge(type: 'win_the_cup')) }
-    resp[:win_groups] = @sport.groups.map { |g| GroupSerializer.new(g, opts.merge(type: 'win_groups')) }
-    resp[:mvp] = @sport.players.map { |u| PlayerSerializer.new(u, opts) }
+    resp[:win_the_cup] = @sport.teams.map { |t| TeamSerializer.new(t, opts.merge(type: 'win_the_cup')) } if @sport.teams.any?
+    resp[:win_groups] = @sport.groups.map { |g| GroupSerializer.new(g, opts.merge(type: 'win_groups')) } if @sport.groups.any?
+    resp[:mvp] = @sport.players.map { |u| PlayerSerializer.new(u, opts) } if @sport.players.any?
     resp
   end
 
