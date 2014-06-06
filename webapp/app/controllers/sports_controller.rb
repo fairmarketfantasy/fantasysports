@@ -10,7 +10,8 @@ class SportsController < ApplicationController
 
   def create_prediction
     if params[:sport].eql?('FWC')
-      render json: Prediction.create_prediction(params, current_user)
+      message = Prediction.create_prediction(params, current_user)
+      render json: message, status: message[:status]
     else
       render SportStrategy.for(params[:sport], params[:category]).create_prediction(params, current_user)
     end
