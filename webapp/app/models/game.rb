@@ -56,8 +56,10 @@ class Game < ActiveRecord::Base
       home_team
     elsif away['points'] > home['points']
       away_team
+    elsif away['points'] == home['points']
+      return
     else
-      nil
+      raise "No winning team!"
     end
   end
 
@@ -104,38 +106,6 @@ class Game < ActiveRecord::Base
     begin
       self.markets << @market unless self.markets.any?
     rescue ActiveRecord::RecordNotUnique
-    end
-  end
-
-  def process_game_predictions
-    self.game_predictions.where.not(state: ['finished', 'canceled']).each do |prediction|
-      user = prediction.user
-      prediction.charge_owner unless prediction.game_roster.present?
-      if prediction.game.status.to_s.downcase == 'postponed'
-        prediction.cancel!
-        prediction.reload
-      elsif prediction.won?
-        if prediction.game_roster.nil?
-          customer_object = user.customer_object
-          ActiveRecord::Base.transaction do
-            customer_object.monthly_winnings += prediction.pt * 100
-            customer_object.save!
-          end
-          TransactionRecord.create!(:user => user, :event => 'game_prediction_win', :amount => prediction.pt * 100)
-          Eventing.report(user, 'GamePredictionWin', :amount => prediction.pt * 100)
-          user.update_attribute(:total_wins, user.total_wins.to_i + 1)
-          prediction.update_attribute(:award, prediction.pt)
-        else
-          g_roster = prediction.game_roster
-          g_roster.score += prediction.pt
-          g_roster.save!
-        end
-      elsif !prediction.won?
-        user.update_attribute(:total_loses, user.total_loses.to_i + 1)
-        prediction.update_attribute(:award, 0)
-      end
-
-      prediction.update_attribute(:state, 'finished') if prediction.state != 'canceled'
     end
   end
 end

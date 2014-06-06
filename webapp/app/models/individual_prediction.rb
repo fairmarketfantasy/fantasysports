@@ -86,4 +86,16 @@ class IndividualPrediction < Prediction
 
     true
   end
+
+  def payout
+    customer_object = user.customer_object
+    ActiveRecord::Base.transaction do
+      customer_object.monthly_winnings += self.pt * 100
+      customer_object.save!
+    end
+    TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => self.pt * 100)
+    Eventing.report(user, 'IndividualPredictionWin', :amount => self.pt * 100)
+    user.update_attribute(:total_wins, user.total_wins.to_i + 1)
+    prediction.update_attribute(:award, self.pt)
+  end
 end
