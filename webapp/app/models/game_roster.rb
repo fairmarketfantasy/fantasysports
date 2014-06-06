@@ -14,7 +14,7 @@ class GameRoster < ActiveRecord::Base
   scope :submitted, -> { where(state: 'submitted')}
   scope :active, -> { where(state: 'submitted') }
 
-  before_save :check_for_payday
+  before_destroy :pre_destroy
 
   class << self
     def sample(sport)
@@ -127,14 +127,6 @@ class GameRoster < ActiveRecord::Base
     self.expected_payout
   end
 
-  # all games finished
-  def check_for_payday
-    if self.state == 'submitted' && self.contest && self.game_predictions.where(:state => 'finished').count == ROOM_NUMBER
-      self.contest.payday!
-      self.state = 'finished'
-    end
-  end
-
   def owner_name
     if self.is_generated?
       User::SYSTEM_USERNAMES[self.id % User::SYSTEM_USERNAMES.length]
@@ -149,5 +141,29 @@ class GameRoster < ActiveRecord::Base
 
   # huck, as long as we have same behaviour with Roster class
   def set_records!
+  end
+
+  def process
+    puts "process game roster #{self.id}"
+    if game_predictions.where(state: 'canceled').any?
+      self.update_attribute(:state, 'canceled')
+      return
+    end
+
+    sum = 0.to_d
+    self.game_predictions.where(state: 'finished').each do |prediction|
+      if prediction.won?
+        sum += (prediction.pt || 0)
+      else
+        prediction.update_attribute(:pt, 0)
+      end
+    end
+
+    self.update_attribute(:score, sum)
+    self.update_attribute(:state, 'finished') if self.game_predictions.where("state != 'finished'").empty?
+  end
+
+  def pre_destroy
+    self.game_predictions.destroy_all
   end
 end

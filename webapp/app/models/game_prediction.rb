@@ -98,7 +98,8 @@ class GamePrediction < ActiveRecord::Base
   end
 
   def won?
-    return false unless self.game.checked?
+    raise "No winning team" if self.game.winning_team.nil?
+
     self.team_stats_id == self.game.winning_team
   end
 
@@ -125,5 +126,35 @@ class GamePrediction < ActiveRecord::Base
   def game_result
     return '' unless self.state == 'finished'
     "#{JSON.parse(self.game.home_team_status)['points']}:#{JSON.parse(self.game.away_team_status)['points']}"
+  end
+
+  def payout
+    customer_object = user.customer_object
+    ActiveRecord::Base.transaction do
+      customer_object.monthly_winnings += self.pt * 100
+      customer_object.save!
+    end
+    TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => self.pt * 100)
+    Eventing.report(user, 'IndividualPredictionWin', :amount => self.pt * 100)
+    user.update_attribute(:total_wins, user.total_wins.to_i + 1)
+    self.update_attribute(:award, self.pt)
+  end
+
+  def process
+    puts "process game prediction #{self.id}"
+    raise 'Should be submitted!' if self.state != 'submitted'
+    return if self.game.status != 'closed'
+
+    charge_owner if game_roster.nil?
+    if self.game.status == 'cancelled'
+      cancel!
+      return
+    end
+
+    if won? && self.game_roster.nil?
+      payout
+    end
+
+    self.update_attribute(:state, 'finished')
   end
 end

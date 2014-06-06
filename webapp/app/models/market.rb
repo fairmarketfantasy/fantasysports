@@ -101,9 +101,12 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     def fill_non_fantasy_rosters
       ids = GameRoster.where(state: 'submitted').pluck('DISTINCT contest_id').compact
       ids.each do |id|
+        puts "Fill non fantasy roster #{id}"
         c = Contest.find(id)
+        extra_generated_number = c.game_rosters.count - c.user_cap
+        c.game_rosters.where(is_generated: true).order(:score).first(extra_generated_number).map(&:destroy) if extra_generated_number > 0
         next if c.paid_at
-        puts id
+
         game_rosters_number = c.game_rosters.where(state: 'submitted').count
         c.fill_with_game_rosters if game_rosters_number > 0 && game_rosters_number < c.user_cap
       end
@@ -138,14 +141,22 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def tabulate_non_fantasy
+      GamePrediction.where(state: 'submitted').each do |gp|
+        gp.process if gp.game.status == 'closed' rescue puts 'no winner'
+      end
+      GameRoster.where(state: 'submitted').each do |gr|
+        gr.process
+      end
       non_fantasy_contests.each do |c|
         Contest.find_by_sql("SELECT * FROM tabulate_non_fantasy_scores(#{c.id})")
         c.reload
       end
+    rescue => e
+      puts e.message
     end
 
     def non_fantasy_contests
-      contests = GameRoster.where(state: 'submitted').map(&:contest).uniq.compact.select { |c| c.paid_at.nil? }
+      Contest.where(paid_at: nil).select { |c| c.game_rosters.any? }
     end
 
     def deliver_bonuses
@@ -177,20 +188,15 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def finish_non_fantasy_contests
-      non_fantasy_contests.each do |c|
+      Contest.where(paid_at: nil).select { |c| c.game_rosters.where("state != 'finished'").empty? && c.game_rosters.any? }.each do |c|
         puts "finish non fantasy contest #{c.id}"
-        g_rosters = c.game_rosters
-        games = g_rosters.map(&:game_predictions).flatten.map(&:game)
-        if games.find { |g| g.status == 'cancelled'}
-          g_rosters.each { |r| r.cancel! }
-          return
-        end
+        next if c.paid_at
 
-        next if games.find { |g| g.status == 'scheduled'} || c.paid_at
-
-        g_rosters.each { |r| r.charge_account }
+        c.game_rosters.where(state: 'finished').each { |r| r.charge_account }
         c.payday!
       end
+    rescue => e
+      puts e.message
     end
   end
 
@@ -475,15 +481,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         prediction.cancel!
         prediction.reload
       elsif prediction.won?
-        customer_object = user.customer_object
-        ActiveRecord::Base.transaction do
-          customer_object.monthly_winnings += prediction.pt * 100
-          customer_object.save!
-        end
-        TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => prediction.pt * 100)
-        Eventing.report(user, 'IndividualPredictionWin', :amount => prediction.pt * 100)
-        user.update_attribute(:total_wins, user.total_wins.to_i + 1)
-        prediction.update_attribute(:award, prediction.pt)
+        prediction.payout
       elsif !prediction.won?
         user.update_attribute(:total_loses, user.total_loses.to_i + 1)
       end

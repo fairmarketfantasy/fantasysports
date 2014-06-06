@@ -48,8 +48,7 @@ class GameRostersController < ApplicationController
   def in_contest
     contest = Contest.find(params[:contest_id])
     rosters = contest.game_rosters.where(:state => ['submitted', 'finished']).
-                                   order('contest_rank asc').
-                                   limit((params[:page] || 1).to_i * 10)
+                                   order('contest_rank asc')
     render :json => GameRoster.json_view(rosters)
   end
 
