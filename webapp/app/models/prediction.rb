@@ -24,9 +24,9 @@ class Prediction < ActiveRecord::Base
         customer_object = user.customer_object
         customer_object.monthly_entries_counter += 1
         customer_object.save!
-        {msg: "#{params[:prediction_type].gsub('_', ' ')} prediction submitted successfully!", status: :ok}
+        [{msg: "#{params[:prediction_type].gsub('_', ' ')} prediction submitted successfully!"}, :ok]
       rescue
-        {error: "#{params[:prediction_type].gsub('_', ' ')} prediction creation failed!", status: :unprocessable_entity}
+        [{error: "#{params[:prediction_type].gsub('_', ' ')} prediction creation failed!"}, :unprocessable_entity]
       end
     end
 
