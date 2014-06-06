@@ -8,7 +8,7 @@ class Game < ActiveRecord::Base
   has_many :game_predictions, :foreign_key => 'game_stats_id', :inverse_of => :game
   belongs_to :sport
 
-  validates :home_team, :away_team, :status, :game_day, :game_time, presence: true
+  validates :home_team, :away_team, :game_day, :game_time, presence: true
 
   def teams
     # Again, because sportsdata uses both for different sports.  So dumb.
@@ -107,38 +107,34 @@ class Game < ActiveRecord::Base
     end
   end
 
-  def process_individual_gp
-    self.game_predictions.individual.where.not(state: ['finished', 'canceled']).each do |prediction|
+  def process_game_predictions
+    self.game_predictions.where.not(state: ['finished', 'canceled']).each do |prediction|
       user = prediction.user
-      prediction.charge_owner
+      prediction.charge_owner unless prediction.game_roster.present?
       if prediction.game.status.to_s.downcase == 'postponed'
         prediction.cancel!
         prediction.reload
       elsif prediction.won?
-        customer_object = user.customer_object
-        ActiveRecord::Base.transaction do
-          customer_object.monthly_winnings += prediction.pt * 100
-          customer_object.save!
+        if prediction.game_roster.nil?
+          customer_object = user.customer_object
+          ActiveRecord::Base.transaction do
+            customer_object.monthly_winnings += prediction.pt * 100
+            customer_object.save!
+          end
+          TransactionRecord.create!(:user => user, :event => 'game_prediction_win', :amount => prediction.pt * 100)
+          Eventing.report(user, 'GamePredictionWin', :amount => prediction.pt * 100)
+          user.update_attribute(:total_wins, user.total_wins.to_i + 1)
+          prediction.update_attribute(:award, prediction.pt)
+        else
+          g_roster = prediction.game_roster
+          g_roster.score += prediction.pt
+          g_roster.save!
         end
-        TransactionRecord.create!(:user => user, :event => 'game_prediction_win', :amount => prediction.pt * 100)
-        Eventing.report(user, 'GamePredictionWin', :amount => prediction.pt * 100)
-        user.update_attribute(:total_wins, user.total_wins.to_i + 1)
-        prediction.update_attribute(:award, prediction.pt)
       elsif !prediction.won?
         user.update_attribute(:total_loses, user.total_loses.to_i + 1)
         prediction.update_attribute(:award, 0)
       end
 
-      prediction.update_attribute(:state, 'finished') if prediction.state != 'canceled'
-    end
-  end
-
-  def process_roster_gp
-    self.game_predictions.in_roster.where.not(state: ['finished', 'canceled']).where(team_stats_id: self.winning_team).each do |prediction|
-      g_roster = prediction.game_roster
-      prediction.cancel! and prediction.destroy and next unless g_roster
-      g_roster.score += prediction.pt
-      g_roster.save!
       prediction.update_attribute(:state, 'finished') if prediction.state != 'canceled'
     end
   end

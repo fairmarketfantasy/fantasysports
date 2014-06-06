@@ -4,7 +4,7 @@ class Player < ActiveRecord::Base
   #belongs_to :team, :foreign_key => 'team' # THe sportsdata data model is so bad taht sometimes this is an abbrev, sometimes its a stats id
   def team
     return self[:team] if self[:team].is_a? Team
-    team = if self[:team].split('-').count > 2 or self[:team].to_i > 0
+    team = if self[:team].split('-').count > 2 or self[:team].to_i > 0 or self.sport.name == 'FWC'
       Team.where(:stats_id => self[:team])
     else
       Team.where(:abbrev => self[:team])
@@ -84,16 +84,22 @@ class Player < ActiveRecord::Base
   end
 
   def headshot_url(size = 65) # or 195
+    s3_url = 'https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com'
+    default = "#{s3_url}m/headshots/#{stats_id}/#{size}.jpg"
+
     return nil if position == 'DEF'
+    return default if self.team.nil?
     if sport.name == 'MLB'
       if (positions.first.try(:position) =~ /(P|SP|RP)/).present?
         return ActionController::Base.helpers.asset_path 'pitcher_icon.png'
       else
         return ActionController::Base.helpers.asset_path 'hitter_icon.png'
       end
+    elsif sport.name == 'FWC'
+      return team.logo_url
     end
 
-    return "https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/#{stats_id}/#{size}.jpg"
+    return default
   end
 
   def next_game_at # Requires with_market scope
@@ -108,6 +114,7 @@ class Player < ActiveRecord::Base
 
   def calculate_ppg
     sport_name = self.sport.name
+
     if sport_name == 'MLB'
       value = self.calculate_average({ player_ids: self.stats_id, position: self.positions.map(&:position).first },nil, true)
       value = 0 if value.is_a? Array
@@ -128,7 +135,7 @@ class Player < ActiveRecord::Base
   # third param - hook for return Fantasy Points
   def calculate_average(params, current_user, ret_fp = false)
     sport_name = self.sport.name
-    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}'").
+    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}' AND quantity != 0").
                                  pluck('DISTINCT game_stats_id')
     games = Game.where(stats_id: played_games_ids)
     last_year_ids = games.where(season_year: (Time.now.utc - 4).year - 1).map(&:stats_id).uniq

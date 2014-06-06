@@ -8,23 +8,6 @@ class GamePredictionsController < ApplicationController
     render_api_response prediction
   end
 
-  def mine
-    sport = Category.where(name: params[:category_name]).sports.where(:name => params[:sport]).first if params[:sport]
-    sport ||= Sport.where('is_active').first
-    predictions = current_user.individual_predictions.joins('JOIN markets m ON individual_predictions.market_id=m.id').
-                                                      where(['m.sport_id = ?', sport.id]).order('closed_at desc')
-    page = params[:page] || 1
-    if params[:historical]
-      predictions = predictions.where(state: ['finished', 'canceled'])
-    elsif params[:all]
-      predictions = predictions
-    else
-      predictions = predictions.where(state: 'submitted')
-    end
-
-    render_api_response predictions.page(page)
-  end
-
   def sample
     games = SportStrategy.for(params[:sport], 'fantasy_sports').fetch_markets('regular_season').map(&:games).flatten
     games = games.sample(5)
@@ -50,9 +33,9 @@ class GamePredictionsController < ApplicationController
   end
 
   def day_games
-    current_user ||= nil
-    raise HttpException.new(402, 'Agree to terms!') if current_user && !current_user.customer_object.has_agreed_terms?
-    raise HttpException.new(402, 'Unpaid subscription!') if current_user && !current_user.active_account? && !current_user.customer_object.trial_active?
+    user = current_user rescue nil
+    raise HttpException.new(402, 'Agree to terms!') if user && !user.customer_object.has_agreed_terms?
+    raise HttpException.new(402, 'Unpaid subscription!') if user && !user.active_account? && !user.customer_object.trial_active?
 
     roster = GameRoster.find(params[:roster_id]) if params[:roster_id] && params[:roster_id] != "false"
     data = GamePrediction.generate_games_data(sport: params[:sport], category: 'fantasy_sports', roster: roster, user: current_user)

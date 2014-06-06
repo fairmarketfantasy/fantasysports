@@ -196,7 +196,7 @@ namespace :seed do
     end
   end
 
-  desc 'push player headshots to s3'
+  desc 'push team logo to s3'
   task :push_team_logo_to_s3 => :environment do
     s3 = AWS::S3.new
     bucket = s3.buckets['fairmarketfantasy-prod']
@@ -207,6 +207,25 @@ namespace :seed do
       path = Rails.root.join('app', 'assets', 'images', 'logos', "team-logos_#{team_name}.png")
       File.open(path) do |img|
         s3_key = "team-logos/mlb/#{team_name}.png"
+        next if uploaded.include?(s3_key)
+        puts s3_key
+        begin
+          bucket.objects[s3_key].write(img.read)
+          bucket.objects[s3_key].acl = :public_read
+          uploaded << s3_key
+        rescue => e
+          puts e.message
+          retry
+        end
+      end
+    end
+
+    teams = Category.where(name: 'sports').first.sports.where(name: 'FWC').first.teams
+    teams.each do |team|
+      team_name = team.name.gsub(' ', '-')
+      path = Rails.root.join('app', 'assets', 'images', 'flags', "#{team_name}_flat_big.png") # "#{team_name}_flat.png"
+      File.open(path) do |img|
+        s3_key = "team-logos/fwc/#{team_name.downcase}.png" # "team-logos/fwc/#{team_name.downcase}-small.png
         next if uploaded.include?(s3_key)
         puts s3_key
         begin

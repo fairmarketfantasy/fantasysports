@@ -1,5 +1,5 @@
-<div class="roster-title">  
-  <h3>Your {{currentUser.currentCategory | underscore}} {{currentUser.currentSport}} Predictions
+<div class="roster-title">
+  <h3>Your {{currentUser.currentCategory | underscore}} {{currentTitle}} Predictions
     <a ng-show="$routeParams.category == 'fantasy_sports'" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/individual_predictions">My Individual Predictions</a>
     <a ng-show="$routeParams.category == 'sports'" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/game_predictions">My Game Predictions</a>
   </h3>
@@ -54,13 +54,14 @@
         </span>
       </td>
       <td>
-          <a ng-show="$routeParams.category == 'fantasy_sports'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{roster.market.id}}/roster/{{roster.id}}">view</a>
-          <a ng-show="$routeParams.category == 'sports'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/competition_roster/{{roster.id}}">view</a>
+        <a ng-show="$routeParams.category == 'fantasy_sports' && roster.state != 'cancelled'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{roster.market.id}}/roster/{{roster.id}}">view</a>
+        <a ng-show="$routeParams.category == 'sports' && roster.state != 'cancelled'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/competition_roster/{{roster.id}}">view</a>
+        <span ng-show="roster.state == 'cancelled'">N/A</span>
       </td>
     </tr>
   </tbody>
 </table>
 <div ng-hide="!landingShow" class='market-loader centered'>
-    <img src='/assets/ajax-loader-big.gif'>
+  <img src='/assets/ajax-loader-big.gif'>
 </div>
 <btn class="btn btn-info" ng-show="showMore" ng-click="fetchMore()">Show More</btn>
