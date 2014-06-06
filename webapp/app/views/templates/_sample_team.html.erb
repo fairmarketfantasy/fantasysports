@@ -16,11 +16,24 @@
   </flex-slider>
 
   <div class="roster-area">
-    <div class="loading-message" ng-hide="!marketService.currentMarket || roster">
-      <img src=<%= asset_path 'ajax-throbber.gif' %>/>
-    </div>
-    <div class="loading-message" ng-hide="marketService.currentMarket">
-      <h4>{{gameNotFound}} </h4>
+    <div  ng-controller="LandingWorldCupController" class="landing-roster-title roster-title my-roster-title clearfix">
+      <div class="loading-message" ng-hide="hide_loading">
+        <img src=<%= asset_path 'ajax-throbber.gif' %>/>
+      </div>
+      <div class="loading-message no_games" ng-show="gameNotFound">
+        <h4>There are no {{$routeParams.category | underscore}} {{currentTitle | underscore}} games scheduled</h4>
+      </div>
+      <div ng-show="types_games">
+        <ul class="no-no clearfix world-cup-menu">
+          <li ng-class="{'no-border' : $first}" ng-repeat="prediction_type in prediction_type_list">
+            <a ng-class="{'active': active_type == prediction_type}" ng-click="changeActiveType(prediction_type)">{{prediction_type | underscore}}</a>
+          </li>
+        </ul>
+        <div ng-show="active_type == 'daily_wins'" class="clearfix" ng-include="'/world_cup_daily_wins.html'"></div>
+        <div ng-show="active_type == 'win_the_cup'" ng-controller="IncludeController" ng-init="track({world_cup_column: 'types_games.win_the_cup'})" class="clearfix" ng-include="'/world_cup_column.html'"></div>
+        <div ng-show="active_type == 'win_groups'" class="clearfix" ng-include="'/world_cup_win_group.html'"></div>
+        <div ng-show="active_type == 'mvp'" ng-controller="IncludeController" ng-init="track({world_cup_column: 'types_games.mvp'})" class="clearfix" ng-include="'/world_cup_column.html'"></div>
+      </div>
     </div>
 
     <div class="roster-overflow" >
@@ -64,17 +77,9 @@
         </li>
       </ul>
     </div>
-
   </div>
-    <div class="text-center roster-area-footer" ng-show="roster">
-      <!--<p>-->
-        <!--<a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">enter roster to win 100 fanbucks</a>-->
-        <!--<a href="javascript://" class="btn btn-large btn-info" ng-click='reloadRoster(roster.market.id)'>get new lineup</a>-->
-      <!--</p>-->
-      <!--<p style="text-align: left">You will be able to trade, adjust, and change your lineup at will until the game begins.</p>-->
-    </div>
 
-  <div ng-show="roster" class="landing-ind-prediction">
+  <div ng-show="roster || gamePrediction.games" class="landing-ind-prediction">
     <p ng-show="$routeParams.category == 'fantasy_sports'" class="individual-predict">OR Predict Individual Perfomances </br> and win Fanbucks</p>
     <p ng-show="$routeParams.category == 'sports'" class="individual-predict"> Or predict single game and </br> and win Fanbucks</p>
     <div ng-show="$routeParams.category == 'fantasy_sports'" class="landing-player-pos clearfix">

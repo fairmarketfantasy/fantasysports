@@ -288,8 +288,7 @@ class GameStatFetcherWorker
     end
 
     game.update_attributes(:status =>'closed',:checked => true)
-    game.process_individual_gp
-    game.process_roster_gp
+    game.process_game_predictions
   end
 
   def self.job_name(game_stat_id)

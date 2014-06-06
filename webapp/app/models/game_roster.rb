@@ -11,8 +11,8 @@ class GameRoster < ActiveRecord::Base
   ROOM_NUMBER = 5
   FB_CHARGE = 1.5.to_d
 
-  scope :submitted, -> { where(state: ['submitted'])}
-  scope :active, -> { where(state: ['in_progress', 'submitted'])}
+  scope :submitted, -> { where(state: 'submitted')}
+  scope :active, -> { where(state: 'submitted') }
 
   before_save :check_for_payday
 

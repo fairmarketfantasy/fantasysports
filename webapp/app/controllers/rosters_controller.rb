@@ -179,7 +179,6 @@ class RostersController < ApplicationController
                                  where(['m.sport_id = ?', sport.id]).
                                  where('paid_at is not null').
                                  select('SUM(amount_paid) as total_payout, MAX(score) as top_score, AVG(score) as avg_score, SUM(wins) as wins, SUM(losses) as losses')[0]
-
     render_api_response({
       total_payout: stats[:total_payout].to_i,
       avg_score: stats[:avg_score].to_f,

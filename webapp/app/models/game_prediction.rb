@@ -9,6 +9,9 @@ class GamePrediction < ActiveRecord::Base
   scope :individual,   -> { where('game_roster_id=0')}
 
   scope :in_roster,   -> { where.not('game_roster_id=0')}
+  scope :active, -> { where(state: ['in_progress', 'submitted'])}
+
+  PT = BigDecimal.new(25)
 
   class << self
 
@@ -22,7 +25,7 @@ class GamePrediction < ActiveRecord::Base
         h = {}
         home_team = Team.find(g.home_team)
         away_team = Team.find(g.away_team)
-        ['stats_id', 'name', 'logo_url'].each do |field|
+        %w(stats_id name logo_url).each do |field|
           h["home_team_#{field}".to_sym] = home_team.send(field.to_sym)
           h["away_team_#{field}".to_sym] = away_team.send(field.to_sym)
         end
