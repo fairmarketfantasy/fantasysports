@@ -18,7 +18,7 @@ class GameListener
       $redis.set 'listener_working', true
 
       headers = {'Origin' => 'http://apistream.sportsnetwork.com'}
-      ws = Faye::WebSocket::Client.new(url, nil, :headers => headers)
+      ws = Faye::WebSocket::Client.new(url, nil, :headers => headers, :ping => 60)
 
       ws.on :message do |event|
         # here is the entry point for data coming from the server.
