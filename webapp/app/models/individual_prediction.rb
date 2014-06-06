@@ -3,6 +3,7 @@ class IndividualPrediction < Prediction
   self.table_name = 'individual_predictions'
 
   belongs_to :market
+  belongs_to :player
   has_many :event_predictions
   attr_protected
   validates_presence_of :market_id
