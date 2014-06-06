@@ -119,7 +119,7 @@ class RostersController < ApplicationController
     m = get_market(params)
     return render_api_response [] unless m
 
-    return render_api_response m.games.first(5) if m.sport.category.name == 'sports'
+    return render_api_response m.games.select { |i| i.home_team_pt.present? and i.away_team_pt.present? }.first(5) if m.sport.category.name == 'sports'
 
     # Fill the lolla first, if that's full, revert to Top5 contests
     lolla_type = m.contest_types.where("name ilike '%k%'").first
