@@ -19,7 +19,7 @@ class TransactionRecord < ActiveRecord::Base
                                  free_referral_payout paid_referral_payout referred_join_payout deposit withdrawal
                                  revert_transaction manual_payout promo monthly_user_balance monthly_taxes monthly_user_entries
                                  create_daily_wins_prediction create_win_the_cup_prediction create_win_groups_prediction create_mvp_prediction
-                                 won_heat_daily_wins_prediction lose_heat_daily_wins_prediction dead_heat_daily_wins_prediction) }
+                                 won_daily_wins_prediction lose_daily_wins_prediction dead_heat_daily_wins_prediction) }
   validates_with TransactionRecordValidator
 
   belongs_to :user
