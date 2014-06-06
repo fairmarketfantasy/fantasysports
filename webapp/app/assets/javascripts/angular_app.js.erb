@@ -16,10 +16,10 @@ angular.module('app', [
     //PICK UP HERE, FIGURE OUT ROUTES
       when('/', {redirectTo: function(){ return window.App.currentUser ? '/home' : '/external' }, reloadOnSearch: false}).
       when('/external', { redirectTo: function() {
-      return 'sports/FWC/external' //App.defaultSport.category_name + '/' + App.defaultSport.name +'/external'
+        return 'sports/FWC/external' //App.defaultSport.category_name + '/' + App.defaultSport.name +'/external'
       } }).
       when('/home', { redirectTo: function() {
-      return 'sports/FWC/external' //App.defaultSport.category_name + '/' + App.defaultSport.name +'/home'
+        return 'sports/FWC/home' //App.defaultSport.category_name + '/' + App.defaultSport.name +'/home'
       } }).
       when('/:category/:sport/external', {templateUrl: '/sample_team.html'}).
       when('/:category/:sport/home', {templateUrl: '/home.html', controller: 'HomeController'}).
