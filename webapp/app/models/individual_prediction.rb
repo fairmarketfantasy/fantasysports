@@ -96,6 +96,6 @@ class IndividualPrediction < Prediction
     TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => self.pt * 100)
     Eventing.report(user, 'IndividualPredictionWin', :amount => self.pt * 100)
     user.update_attribute(:total_wins, user.total_wins.to_i + 1)
-    prediction.update_attribute(:award, self.pt)
+    self.update_attribute(:award, self.pt)
   end
 end
