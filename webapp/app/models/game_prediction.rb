@@ -145,13 +145,13 @@ class GamePrediction < ActiveRecord::Base
     raise 'Should be submitted!' if self.state != 'submitted'
     return if self.game.status != 'closed' && self.game.winning_team.nil?
 
-    charge_owner if game_roster.nil?
     if self.game.status == 'cancelled'
       cancel!
       return
     end
 
     if won? && self.game_roster.nil?
+      charge_owner
       payout
     end
 
