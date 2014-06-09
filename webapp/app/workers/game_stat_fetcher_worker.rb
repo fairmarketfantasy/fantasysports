@@ -185,7 +185,7 @@ class GameStatFetcherWorker
 
     game.markets.each do |market|
       market.players.each { |pl| pl.update_attribute(:out, !played_players_ids.include?(pl.stats_id)) }
-      game.markets.first.individual_predictions.each do |prediction|
+      game.markets.first.individual_predictions.where.not(state: ['finished', 'canceled']).each do |prediction|
         unless played_players_ids.include?(prediction.player.stats_id)
           prediction.cancel!
           TransactionRecord.create!(:user => prediction.user, :event => 'cancel_individual_prediction',
