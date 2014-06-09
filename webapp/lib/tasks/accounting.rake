@@ -25,6 +25,7 @@ namespace :users do
   task :recalculate_winnings => :environment do
     User.all.each do |user|
       time = user.customer_object.trial_started_at || Time.now.beginning_of_month
+      time = user.customer_object.last_activated_at if user.customer_object.last_activated_at && user.customer_object.trial_started_at && user.customer_object.trial_started_at < Time.now.beginning_of_month - 1.month
 
       ip = user.individual_predictions.where("state not in ('canceled', 'submitted') AND created_at > ?", time)
       r = user.rosters.where("state not in ('in_progress', 'submitted', 'cancelled') AND created_at > ?", time)
