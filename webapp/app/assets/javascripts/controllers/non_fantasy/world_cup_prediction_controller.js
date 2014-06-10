@@ -35,7 +35,7 @@ angular.module("app.controllers")
       dialog.close();
 
     }, function(data){
-      flash.error(data.data);
+      flash.error(data.error);
     });
   }
 
