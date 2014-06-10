@@ -46,10 +46,8 @@ class CustomerObject < ActiveRecord::Base
   end
 
   def calculated_trial_ending
-    if self.net_monthly_winnings <= 0
-      self.update_attributes(:monthly_winnings => 0, :monthly_entries_counter => 0,
-                             :monthly_contest_entries => 0)
-    end
+    self.update_attributes(monthly_winnings: 0, monthly_entries_counter: 0,
+                           monthly_contest_entries: 0)
   end
 
   def do_monthly_activation!
@@ -215,6 +213,10 @@ class CustomerObject < ActiveRecord::Base
   def deactivate_account
     self.update_attributes(is_active: false, trial_started_at: Date.today - 16, last_activated_at: Time.now - 1.month)
     card_ids = self.credit_cards.pluck(:id)
+    if self.last_activated_at.nil? && self.trial_started_at.present?
+      self.calculated_trial_ending
+    end
+
     card_ids.each { |id| self.delete_card(id) }
     self.reload
   end
