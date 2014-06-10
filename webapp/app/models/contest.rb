@@ -106,7 +106,6 @@ class Contest < ActiveRecord::Base
 
   #pays owners of rosters according to their place in the contest
   def payday!
-    self.game_rosters.each(&:charge_account)
     self.with_lock do
       return if self.paid_at #&& Market.override_close
       raise if self.paid_at || self.cancelled_at
