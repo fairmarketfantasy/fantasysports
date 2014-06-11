@@ -4,6 +4,7 @@ class Contest < ActiveRecord::Base
   belongs_to :market
   has_many :games
   has_many :rosters
+  has_many :game_rosters
   has_many :transaction_records
   belongs_to :owner, class_name: "User"
   belongs_to :contest_type
@@ -74,7 +75,8 @@ class Contest < ActiveRecord::Base
   end
 
   def submitted_rosters_by_rank(&block)
-    rosters = self.rosters.submitted.order("contest_rank ASC")
+    rosters = self.game_rosters.any? ? self.game_rosters : self.rosters
+    rosters = rosters.submitted.order("contest_rank ASC")
     ranks = rosters.collect(&:contest_rank)
 
     #figure out how much each rank gets -- tricky only because of ties
@@ -110,7 +112,7 @@ class Contest < ActiveRecord::Base
       puts "Payday! for contest #{self.id}"
       Rails.logger.debug("Payday! for contest #{self.id}")
       submitted_rosters_by_rank do |roster, rank, payment|
-        roster.set_records!
+        #roster.set_records!
         roster.paid_at = Time.new
         roster.state = 'finished'
         roster_owner = roster.owner
@@ -178,19 +180,45 @@ class Contest < ActiveRecord::Base
 
   def fill_with_rosters(percentage = 1.0)
     contest_cap = if self.user_cap == 0
-        JSON.parse(self.contest_type.payout_structure).sum  * self.contest_type.rake / self.buy_in
+        JSON.parse(self.contest_type.payout_structure).sum * self.contest_type.rake / self.buy_in
       else
         self.user_cap
       end
     fill_number = contest_cap * percentage
     rosters = [fill_number - self.num_rosters, 0].max.to_i
     rosters.times do
-      roster = Roster.generate(SYSTEM_USER, self.contest_type)
+      game_roster =  self.game_rosters.any?
+      roster = if game_roster
+                 GameRoster.generate(SYSTEM_USER, self.contest_type)
+               else
+                 Roster.generate(SYSTEM_USER, self.contest_type)
+               end
+
       roster.contest_id = self.id
       roster.is_generated = true
       roster.save!
-      roster.fill_pseudo_randomly5(false)
+      roster.fill_pseudo_randomly5(false) unless game_roster
       roster.submit!
+    end
+  end
+
+  def fill_with_game_rosters(percentage = 1.0)
+    contest_cap = if self.user_cap == 0
+                    JSON.parse(self.contest_type.payout_structure).sum  * self.contest_type.rake / self.buy_in
+                  else
+                    self.user_cap
+                  end
+
+    fill_number = contest_cap * percentage
+    rosters = [fill_number - self.game_rosters.where(state: 'submitted').count, 0].max.to_i
+    rosters.times do
+      roster = GameRoster.generate(SYSTEM_USER, self.contest_type)
+      roster.contest_id = self.id
+      roster.is_generated = true
+      roster.state = 'submitted'
+      roster.save!
+      self.num_rosters += 1
+      self.num_generated += 1
     end
   end
 
@@ -206,24 +234,13 @@ class Contest < ActiveRecord::Base
     self.invitation_code ||= SecureRandom.urlsafe_base64
   end
 
-    def rounded_payouts(payout_per, number)
-      total = (payout_per * number).to_i
-      payouts = Array.new(number, payout_per.floor)
-      sum = payouts.reduce(&:+)
-      (0..(total - sum-1)).each do |i|
-        payouts[i] += 1
-      end
-      payouts
+  def rounded_payouts(payout_per, number)
+    total = (payout_per * number).to_i
+    payouts = Array.new(number, payout_per.floor)
+    sum = payouts.reduce(&:+)
+    (0..(total - sum-1)).each do |i|
+      payouts[i] += 1
     end
-
-    def rounded_payouts(payout_per, number)
-      total = (payout_per * number).to_i
-      payouts = Array.new(number, payout_per.floor)
-      sum = payouts.reduce(&:+)
-      (0..(total - sum-1)).each do |i|
-        payouts[i] += 1
-      end
-      payouts
-    end
-
+    payouts
+  end
 end

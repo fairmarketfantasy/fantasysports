@@ -39,7 +39,7 @@ override['easternpeak']['database']['password'] = 'F4n7a5y'
 override['easternpeak']['database']['master_url'] = '54.213.46.254'
 
 override['easternpeak']['services']['WEB'] = ['puma']
-override['easternpeak']['services']['WORKER'] = ['datafetcher', 'markettender']
+override['easternpeak']['services']['WORKER'] = %w(datafetcher markettender sidekiq1 sidekiq2)
 
 override['easternpeak']['ssh_key.pub'] = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJlQy3RFRx7s+XQZCkZFQYaVqg1vxXlZCU4kZjqG2uXAK6cxznxs+aj/OicvsOHngtUfiZhMYPyEFS9TiM04vMOu246FGVN3CXTlT9U8v8MbIlTMnMUQ/WYG+Y3oSzZp1cHvmYoINJXk++iVNsEUGFF3TBgh1MJz1ZdcTf7XbrAtOmwIQ5LvW8MGVHA9neoywwzmxNl6AnOT8SyKTxMSii10+xqUbCP3/Sz1pcPmk03ZGqGsqNGIpK+cM/DBjMrGVwZNADM9fzgC3/BmdkacVfJRHsYG5Op7IJw8hhlWmFrzG/nwpkfSrzyEy+rIgUCNNReh/yJxJJutq9D2OOVd4T fantasysport@easternpeak.com"
 override['easternpeak']['ssh_key'] = <<-EOF

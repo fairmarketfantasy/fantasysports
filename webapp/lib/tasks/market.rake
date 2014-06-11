@@ -18,13 +18,13 @@ namespace :market do
 
   desc 'pubilsh the markets'
   task :publish => :environment do
-		Market.publish
+    Market.publish
   end
 
   desc 'open the markets'
   task :open => :environment do
     Market.open
-  end  
+  end
 
   desc 'lock the players'
   task :lock_players => :environment do

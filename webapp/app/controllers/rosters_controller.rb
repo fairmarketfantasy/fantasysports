@@ -2,20 +2,32 @@ class RostersController < ApplicationController
   skip_before_filter :authenticate_user!, :only => [:show, :sample_roster]
 
   def mine
-    sport = params[:sport] ? Sport.where(:name => params[:sport]).first : Sport.where('is_active').first
-    rosters = current_user.rosters.where(state: ["finished", "cancelled", "submitted"]).
-                                   joins('JOIN markets m ON rosters.market_id=m.id').
-                                   where(['m.sport_id = ?', sport.id]).order('closed_at desc')
+    game_prediction = params[:category] && params[:category] == 'sports' && params[:sport] == 'MLB'
+    if game_prediction
+      rosters = current_user.game_rosters.order('started_at asc, created_at desc')
+    else
+      category = Category.where(name: params[:category]).first || Category.where(name: 'fantasy_sports').first
+      sport = category.sports.where(:name => params[:sport]).first || Sport.where('is_active').first
+      rosters = current_user.rosters.where.not(state: 'in_progress').
+                                     joins('JOIN markets m ON rosters.market_id=m.id').
+                                     where(['m.sport_id = ?', sport.id]).order('closed_at desc')
+    end
+
     page = params[:page] || 1
     rosters = if params[:historical]
-      rosters.where(state: 'finished')
-    elsif params[:all]
-      rosters
+                rosters.where(state: 'finished')
+              elsif params[:all]
+                rosters
+              else
+                # Don't paginate active rosters
+                rosters.active
+              end
+
+    if game_prediction
+      render :json => rosters.page(page).to_json(:include => :contest_type)
     else
-      # Don't paginate active rosters
-      rosters.active
+      render_api_response rosters.page(page) # This is slow too, maybe make abridging smarter
     end
-    render_api_response rosters.page(page) # This is slow too, maybe make abridging smarter
   end
 
   def in_contest
@@ -25,7 +37,8 @@ class RostersController < ApplicationController
 
   # new roster template for android
   def new
-    sport_id = Sport.where(name: params[:sport]).first.id
+    category = Category.where(name: params[:category]).first || Category.where(name: 'fantasy_sports').first
+    sport_id = category.sports.where(name: params[:sport]).first.id
     roster = Roster.new(:owner_id => current_user.id, :takes_tokens => false,
                        :buy_in => Roster::DEFAULT_BUY_IN,
                        :remaining_salary => Roster::DEFAULT_REMAINING_SALARY).as_json
@@ -105,6 +118,9 @@ class RostersController < ApplicationController
   def sample_roster
     m = get_market(params)
     return render_api_response [] unless m
+
+    return render_api_response m.games.select { |i| i.home_team_pt.present? and i.away_team_pt.present? }.first(5) if m.sport.category.name == 'sports'
+
     # Fill the lolla first, if that's full, revert to Top5 contests
     lolla_type = m.contest_types.where("name ilike '%k%'").first
     lolla = lolla_type && lolla_type.contests.first
@@ -157,9 +173,12 @@ class RostersController < ApplicationController
   end
 
   def past_stats
-    sport = Sport.where(:name => params[:sport]).first
-    stats = current_user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').where(['m.sport_id = ?', sport.id]).where('paid_at is not null').select('SUM(amount_paid) as total_payout, MAX(score) as top_score, AVG(score) as avg_score, SUM(wins) as wins, SUM(losses) as losses')[0]
-
+    category = Category.where(name: params[:category]).first || Category.where(name: 'fantasy_sports').first
+    sport = category.sports.where(name: params[:sport]).first
+    stats = current_user.rosters.joins('JOIN markets m ON rosters.market_id=m.id').
+                                 where(['m.sport_id = ?', sport.id]).
+                                 where('paid_at is not null').
+                                 select('SUM(amount_paid) as total_payout, MAX(score) as top_score, AVG(score) as avg_score, SUM(wins) as wins, SUM(losses) as losses')[0]
     render_api_response({
       total_payout: stats[:total_payout].to_i,
       avg_score: stats[:avg_score].to_f,
@@ -202,8 +221,7 @@ class RostersController < ApplicationController
 
   def get_market(params)
     if params[:id] == 'true' || params[:id].nil?
-      sport = params[:sport] ? Sport.where(:name => params[:sport]).first : Sport.last
-      SportStrategy.for(sport.name).fetch_markets('regular_season').first
+      SportStrategy.for(params[:sport], params[:category]).fetch_markets('regular_season').first
     else
       Market.find(params[:id])
     end

@@ -1,4 +1,5 @@
 ActiveAdmin.register Market do
+  actions :all, except: [:destroy]
   filter :id
   filter :state
   filter :closed_at
@@ -8,20 +9,20 @@ ActiveAdmin.register Market do
     column :id
 =begin
     id                  | integer                     | not null default nextval('markets_id_seq'::regclass)
-     name                | character varying(255)      | 
+     name                | character varying(255)      |
         shadow_bets         | numeric                     | not null
       shadow_bet_rate     | numeric                     | not null
-       opened_at           | timestamp without time zone | 
-          closed_at           | timestamp without time zone | 
-           created_at          | timestamp without time zone | 
-            updated_at          | timestamp without time zone | 
-             published_at        | timestamp without time zone | 
-              state               | character varying(255)      | 
-               total_bets          | numeric                     | 
+       opened_at           | timestamp without time zone |
+          closed_at           | timestamp without time zone |
+           created_at          | timestamp without time zone |
+            updated_at          | timestamp without time zone |
+             published_at        | timestamp without time zone |
+              state               | character varying(255)      |
+               total_bets          | numeric                     |
                 sport_id            | integer                     | not null
-        initial_shadow_bets | numeric                     | 
+        initial_shadow_bets | numeric                     |
            price_multiplier    | numeric                     | default 1
-         started_at          | timestamp without time zone | 
+         started_at          | timestamp without time zone |
 =end
     column :name
     column :started_at

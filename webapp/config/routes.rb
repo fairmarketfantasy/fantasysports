@@ -1,4 +1,5 @@
 Fantasysports::Application.routes.draw do
+  post "team_predictions/create"
   match "*path" => redirect("https://predictthat.com/%{path}"), :constraints => { :subdomain => "www" }, :via => [:get] if Rails.env == 'production'
 
   root 'pages#index'
@@ -11,6 +12,7 @@ Fantasysports::Application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   Rails.application.routes.draw do
+  post "team_predictions/create"
     devise_for :admin_users, ActiveAdmin::Devise.config
     ActiveAdmin.routes(self)
     # oauth routes can be mounted to any path (ex: /oauth2 or /oauth)
@@ -37,11 +39,13 @@ Fantasysports::Application.routes.draw do
   get '/sign_up' => 'pages#sign_up'
   get '/leaderboard' => 'leaderboard#index'
   get '/prestige_chart' => 'leaderboard#prestige'
-
+  get '/categories' => 'categories#index'
   get '/pages/mobile/forgot_password' => 'mobile_pages#forgot_password'
   get '/pages/mobile/conditions' => 'mobile_pages#conditions'
   get '/pages/mobile/terms' => 'mobile_pages#terms'
   get '/pages/mobile/rules' => 'mobile_pages#rules'
+  get '/home' => 'sports#home'
+  post '/create_prediction' => 'sports#create_prediction'
 
   get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
 
@@ -151,6 +155,20 @@ Fantasysports::Application.routes.draw do
     end
   end
 
+  resources :game_rosters, :only => [:create, :show, :update] do
+    collection do
+      post 'autofill', :action => 'autofill'
+      get 'in_contest/:contest_id', :action => 'in_contest'
+    end
+  end
+
+  resources :game_predictions, :only => [:show, :create] do
+    collection do
+      get 'mine', :action => 'mine'
+      get 'day_games', :action => 'day_games'
+      get 'sample', :action => 'sample'
+    end
+  end
   #Stripe webhooks
   post '/webhooks', to: "webhooks#new"
 

@@ -2,23 +2,12 @@
 
   <flex-slider class="carousel home-market" repeat="market in marketService.upcoming track by market.id"animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="160" item-margin="0">
     <li class="market-li home-market-li" ng-class="{'landing-border': $last }">
-      <a  href="#/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">
+      <a  href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">
         <strong>{{market.name}}</strong>
         <p>{{market.games[0].game_time | onlyFormTime}}</p>
       </a>
     </li>
   </flex-slider>
-
-  <!--<ul class="clearfix market-list home-market" ng-show="marketService.upcoming">-->
-    <!--<li class="slider-prev" ng-click="prev()"></li>-->
-    <!--<li class="market-li home-market-li" ng-class="{'home-market-border': $last }" ng-repeat="(i, market) in marketService.upcoming">-->
-      <!--<a  href="#/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">-->
-        <!--<strong>{{market.name}}</strong>-->
-        <!--<p>{{market.games[0].game_time | onlyFormTime}}</p>-->
-      <!--</a>-->
-    <!--</li>-->
-    <!--<li class="slider-next" ng-click="next()"></li>-->
-  <!--</ul>-->
 
   <div class="alert alert-info hide" ng-show="!rosters.justSubmittedRoster && false">
   </div>
@@ -54,8 +43,8 @@
           <td>{{roster.score | number:2}}</td>
           <td>
             <span ng-show="roster.id == rosters.currentRoster.id">This roster</span>
-            <a ng-show="roster.owner_id == currentUser.id && roster.id != rosters.currentRoster.id" href="/#/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{roster.id}}">View roster</a>
-            <a ng-show="roster.owner_id != currentUser.id" href="/#/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{rosters.currentRoster.id}}/vs/{{roster.id}}">See their roster</a>
+            <a ng-show="roster.owner_id == currentUser.id && roster.id != rosters.currentRoster.id" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{roster.id}}">View roster</a>
+            <a ng-show="roster.owner_id != currentUser.id" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{rosters.currentRoster.id}}/vs/{{roster.id}}">See their roster</a>
           </td>
         </tr>
       </tbody>
@@ -64,29 +53,7 @@
   </div>
 
   <div class="row">
-    <div class="span2 prestige-chart">
-      <h3 class="prestige-chart-label">
-        TOP
-        <br>
-        PREDICTORS
-      </h3>
-      <div class="prestige-chart-content">
-        <div ng-repeat="(chartName, chartContent) in prestigeChart">
-          <p class="chart-title">{{chartName}}</p>
-          <ul class="no-no">
-            <li class="chart-item" ng-repeat="chartItem in chartContent">
-              <div class="prestige-chart-user-score">
-                {{$index + 1}}. {{Math.round(chartItem.prestige)}}
-              </div>
-              <div class="prestige-chart-user-name">
-                {{chartItem.name}}
-              </div>
-            </li>
-            <hr ng-if="(!$last)">
-          </ul>
-        </div>
-      </div>
-    </div>
+    <div class="span2 prestige-chart" ng-include="'/prestige.html'"></div>
     <div class="span10 roster-main">
       <div class="entries-container">
         <div class="roster-title my-roster-title clearfix">
@@ -108,8 +75,7 @@
         <div ng-show="rosters.opponentRoster" ng-controller="IncludeController" ng-init="track({roster: 'rosters.opponentRoster'})"><div ng-include="'/team.html'"></div></div>
         <div ng-hide="rosters.opponentRoster" class="clearfix" ng-include="'/players.html'"></div>
         <div class="team-selection-info">
-          <p>Roster receives prediction points for correct predictions. most prediction points wins!</p>
-          <h3>your roster will complete agaist 11 other users and get points for correct predictions.</h3>
+          <h3>Roster competes against 11 others and the roster with the most fantasy points wins 100 Fanbucks!</h3>
         </div>
       </div>
     </div>

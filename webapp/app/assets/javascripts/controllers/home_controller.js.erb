@@ -3,10 +3,17 @@ angular.module("app.controllers")
   $scope.rosters = rosters;
   $scope.landingShow = false;
 
+  if($routeParams.category == 'fantasy_sports'){
+    $scope.include = {url: '/market.html'};
+  } else if ($routeParams.category == 'sports'){
+    $scope.include = {url: '/competition_market.html'};
+  }
+
+
   if ($scope.currentUser) {
-    rosters.fetchMine({sport: $routeParams.sport});
+    rosters.fetchMine({category: $routeParams.category, sport: $routeParams.sport});
 //    rosters.fetchPastStats({sport: $routeParams.sport});
-    rosters.setPoller(function() { rosters.fetchMine({sport: $scope.currentUser.currentSport}); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
+    rosters.setPoller(function() { rosters.fetchMine({category: $scope.currentUser.currentCategory, sport: $scope.currentUser.currentSport}); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
 
     // Force them to set a user!
     if (_.isEmpty($scope.currentUser.username)) {

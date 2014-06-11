@@ -12,7 +12,7 @@ angular.module("app.controllers")
     $scope.showMore = false;
     page++;
 
-    rosterService.fetchMinePrediction({sport: $routeParams.sport, page: page}).then(function(data) {
+    rosterService.fetchMinePrediction({category: $routeParams.category, sport: $routeParams.sport, page: page}).then(function(data) {
 
       if (data.length > 24) {
         $scope.showMore = true;

@@ -1,7 +1,8 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :name, :admin, :username, :email, :balance, :image_url, :win_percentile, :total_points, :joined_at, :token_balance, :provider,
-    :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses, :referral_code, :inviter_id, :currentSport, :in_progress_roster_id, # Leaderboard keys
-    :abridged, :prestige, :active_sports
+    :amount, :bets, :winnings, :total_wins, :total_losses, :bonuses, :referral_code, :inviter_id, :currentSport,
+    :currentCategory, :in_progress_roster_id, # Leaderboard keys
+    :abridged, :prestige, :categories, :active_sports
 
   has_one :customer_object
   has_one :in_progress_roster
@@ -14,11 +15,19 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def currentSport
-    Sport.where('is_active').first.name
+    Sport.where(name: 'MLB', is_active: true).first.name
   end
 
   def active_sports
-    Sport.where('is_active').pluck(:name)
+    Sport.where(is_active: true, name: ['MLB', 'NBA']).pluck("DISTINCT name")# for old mobile versions
+  end
+
+  def currentCategory
+    Category.where(name: 'fantasy_sports', note: '').first.name
+  end
+
+  def currentCategory
+    Category.where(note: '').first.name
   end
 
   def balance
@@ -61,6 +70,10 @@ class UserSerializer < ActiveModel::Serializer
 
   def prestige
     object.prestige.round
+  end
+
+  def categories
+    ActiveModel::ArraySerializer.new(Category.active, each_serializer: CategorySerializer)
   end
 
 end

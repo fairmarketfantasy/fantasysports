@@ -217,8 +217,7 @@ BEGIN
 		RAISE EXCEPTION 'roster % does not exist', _roster_id;
 	END IF;
 
-	SELECT * FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
-			(is_session_variable_set('override_market_close') OR locked_at IS NULL OR locked_at > CURRENT_TIMESTAMP) INTO _market_player;
+	SELECT * FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id INTO _market_player;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'player % is locked or nonexistent', _player_id;
 	END IF;
@@ -286,8 +285,7 @@ BEGIN
 		RAISE EXCEPTION 'market % is unavailable', _roster.market_id;
 	END IF;
 
-	SELECT bets FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id AND
-			(locked_at is null or locked_at > CURRENT_TIMESTAMP) INTO _bets;
+	SELECT bets FROM market_players WHERE player_id = _player_id AND market_id = _roster.market_id INTO _bets;
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'could not find player %', _player_id;
 	END IF;
@@ -746,3 +744,13 @@ begin
 end
 $$ LANGUAGE plpgsql;--SQL;
 
+DROP FUNCTION tabulate_non_fantasy_scores(integer);
+
+CREATE OR REPLACE FUNCTION tabulate_non_fantasy_scores(_contest_id integer) RETURNS VOID AS $$
+
+begin
+	WITH ranks as
+		(SELECT game_rosters.id, rank() OVER (PARTITION BY contest_id ORDER BY score IS NOT NULL DESC, score desc) FROM game_rosters WHERE game_rosters.contest_id = $1)
+		UPDATE game_rosters set contest_rank = rank FROM ranks where game_rosters.id = ranks.id;
+end
+$$ LANGUAGE plpgsql;--SQL;
