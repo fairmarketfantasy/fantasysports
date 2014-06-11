@@ -143,9 +143,9 @@ class GamePrediction < ActiveRecord::Base
   def process
     puts "process game prediction #{self.id}"
     raise 'Should be submitted!' if self.state != 'submitted'
-    return if self.game.status != 'closed' && self.game.winning_team.nil?
+    return if self.game.status != 'closed'
 
-    if self.game.status == 'cancelled'
+    if self.game.status == 'cancelled' || self.game.winning_team.nil?
       cancel!
       return
     end
