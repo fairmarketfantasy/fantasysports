@@ -75,6 +75,8 @@ class Player < ActiveRecord::Base
   }
   scope :sellable, -> { where('sell_prices.locked != true' ) }
 
+  scope :with_flags, -> { where("team != 'MVP'") }
+
   def self.bench_conditions
     "(players.out = true OR players.status = 'IR' OR players.removed)"
   end
