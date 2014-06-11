@@ -1,6 +1,10 @@
 class SportStrategy
-  def self.for(sportName)
-    Object.const_get(sportName + 'Strategy').new
+  def self.for(sportName, category = 'fantasy_sports')
+    if category == 'sports'
+      NonFantasyStrategy.new(sportName)
+    else
+      Object.const_get(sportName + 'Strategy').new
+    end
   end
 
   def fetch_markets(type)
@@ -29,14 +33,14 @@ class SportStrategy
                                    pluck('DISTINCT game_stats_id')
       games = Game.where(stats_id: played_games_ids)
 
-      events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: played_games_ids, activity: 'points')
+      events = StatEvent.where(:player_stats_id => mp.player.stats_id, game_stats_id: played_games_ids)
       recent_games = games.order("game_time DESC").first(5)
       # calculate ppg in last 5 games
       recent_events = events.where(game_stats_id: recent_games.map(&:stats_id))
 
       if events.any?
-        recent_exp = (collect_stats(recent_events)[:points] || 0 ).to_d/recent_games.count
-        total_exp = (collect_stats(events)[:points] || 0 ).to_d / BigDecimal.new(played_games_ids.count)
+        recent_exp = (recent_events.map(&:point_value).reduce(:+) || 0 ).to_d/recent_games.count
+        total_exp = (events.map(&:point_value).reduce(:+) || 0 ).to_d / BigDecimal.new(played_games_ids.count)
       end
 
       # set expected ppg
@@ -47,7 +51,9 @@ class SportStrategy
         mp.expected_points = total_exp * 0.7 + recent_exp * 0.3
       end
       total_expected += mp.expected_points
+      mp.player.update_attribute(:ppg, mp.expected_points)
     end
+
     market.market_players.each do |mp|
       # set total_bets & shadow_bets based on expected_ppg/ total_expected_ppg * 30000
       mp.bets = mp.shadow_bets = mp.initial_shadow_bets = mp.expected_points.to_f / (total_expected + 0.0001) * 300000
@@ -72,6 +78,48 @@ class SportStrategy
     end
 
     result
+  end
+end
+
+class NonFantasyStrategy < SportStrategy
+  def initialize(sport_name)
+    @sport = Category.where(name: 'sports').first.sports.where(:name => sport_name).first
+  end
+
+  def fetch_markets(type)
+    if type == 'single_elimination'
+      @sport.markets.where(
+          "game_type IS NULL OR game_type ILIKE '%single_elimination'"
+      ).where(['closed_at > ? AND state IN(\'published\', \'opened\')', Time.now.utc]
+      ).order('closed_at asc').limit(10).select{|m| m.game_type =~ /single_elimination/ }
+    else
+      # next_market_day = @sport.markets.where(['closed_at > ?', Time.now.utc]).order('closed_at asc').first.closed_at.beginning_of_day
+      markets = @sport.markets.where(
+          ["game_type IS NULL OR game_type = 'regular_season'"]
+      ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', Time.now.utc, Time.now.utc.end_of_day + 6.hours]
+      ).order('closed_at asc').limit(5)
+    end
+  end
+end
+
+class NonFantasyStrategy < SportStrategy
+  def initialize(sport_name)
+    @sport = Category.where(name: 'sports').first.sports.where(:name => sport_name).first
+  end
+
+  def fetch_markets(type)
+    if type == 'single_elimination'
+      @sport.markets.where(
+          "game_type IS NULL OR game_type ILIKE '%single_elimination'"
+      ).where(['closed_at > ? AND state IN(\'published\', \'opened\')', Time.now.utc]
+      ).order('closed_at asc').limit(10).select{|m| m.game_type =~ /single_elimination/ }
+    else
+      # next_market_day = @sport.markets.where(['closed_at > ?', Time.now.utc]).order('closed_at asc').first.closed_at.beginning_of_day
+      markets = @sport.markets.where(
+          ["game_type IS NULL OR game_type = 'regular_season'"]
+      ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', Time.now.utc, Time.now.utc.end_of_day + 6.hours]
+      ).order('closed_at asc').limit(5)
+    end
   end
 end
 
@@ -111,7 +159,7 @@ class MLBStrategy < SportStrategy
     @sport = Sport.where(:name => 'MLB').first
     @positions_mapper = { 'SP' => 'SP', 'P'=>'RP', 'RP'=>'RP', 'C'=> 'C', '1B'=> '1B/DH', '2B'=> '2B',
                          '3B'=> '3B', 'SS'=> 'SS', 'CF'=> 'OF', 'LF'=> 'OF', 'OF'=> 'OF', 'RF'=> 'OF', 'DH'=> '1B/DH', 'PH'=> '1B/DH'}
-    @price_multiplier = 3.1
+    @price_multiplier = 2.8
   end
 
   def calculate_market_points(market_id)
@@ -236,5 +284,94 @@ class MLBStrategy < SportStrategy
     end
 
     result
+  end
+end
+
+class FWCStrategy < NonFantasyStrategy
+  def initialize
+    @sport = Sport.where(:name => 'FWC').first
+  end
+
+    def home_page_content(user = nil)
+    date = Time.zone.now
+    opts = user.present? ? { user: user} : {}
+    resp = {}
+    daily_wins = @sport.games.where(game_time: (date.beginning_of_day..date.end_of_day)).map { |g| FootballGameSerializer.new(g, opts.merge(type: 'daily_wins', game_stats_id: g.stats_id)) }
+    resp[:daily_wins] = daily_wins if daily_wins.size > 0
+    resp[:win_the_cup] = @sport.teams.map { |t| TeamSerializer.new(t, opts.merge(type: 'win_the_cup')) } if @sport.teams.any?
+    resp[:win_groups] = @sport.groups.map { |g| GroupSerializer.new(g, opts.merge(type: 'win_groups')) } if @sport.groups.any?
+    resp[:mvp] = @sport.players.map { |u| PlayerSerializer.new(u, opts) } if @sport.players.any?
+    resp
+  end
+
+  def create_prediction(params, user)
+    if params['prediction_type'] == 'mvp'
+      raise HttpException.new(402, 'Agree to terms!') unless user.customer_object.has_agreed_terms?
+      raise HttpException.new(402, 'Unpaid subscription!') if !user.active_account? && !user.customer_object.trial_active?
+
+      PlayerPrediction.create_prediction(params, user)
+
+      {:msg => 'Player prediction submitted successfully!', :status => :ok}
+    else
+      {:msg => 'This prediction not supported', :status => 500}
+    end
+  end
+
+  def grab_data
+    DataFetcher.parse_world_cup
+
+    url = SPORT_ODDS_API_HOST + '/SportsOddsAPI/Odds/5Dimes/SOC/Future'
+
+    data = JSON.parse open(url).read
+
+    #Parse players
+    players_data = data.select { |d| d['Category'].include?('Golden Boot Award') }
+
+    fwc_sport = Sport.where(:name => 'FWC').first
+    fwc_sport.players.update_all("team = 'exMVP'")
+    players_data.each do |player_data|
+      player = Player.where(name: player_data['ContestName']).first_or_initialize
+      player.team = 'MVP'
+      player.sport =fwc_sport
+      player.name_abbr = player_data['ContestName']
+      player.status = 'ACT'
+      player.out = false
+      player.pt = DataFetcher.get_pt_value(player_data['MoneyLine'])
+      player.save!
+    end
+
+    CSV.foreach(Rails.root + 'db/players_country_map.csv') do |row|
+      next if row.join.include?('Name')
+      Player.find_by_name(row.first).update_attribute(:team, fwc_sport.teams.where(name: row.last).first.stats_id)
+    end
+
+    #Parse groups
+    base_group = 'A'
+    8.times do
+      teams_data = data.select { |d| d['Category'] == "Group #{base_group} - Group Winner" }
+      group = fwc_sport.groups.where(name: "Group #{base_group}").first_or_create
+      teams_data.each do |team_data|
+        name = team_data['ContestName']
+        next if name.blank?
+        team = fwc_sport.teams.where(name: name).first
+        team.update_attribute(:group_id, group.id)
+
+        #Fill prediction_pts
+        prediction_pt = PredictionPt.find_by_stats_id_and_competition_type(team.stats_id, 'win_groups') || PredictionPt.new(stats_id: team.stats_id, competition_type: 'win_groups')
+        prediction_pt.update_attributes!(pt: DataFetcher.get_pt_value(team_data['MoneyLine']))
+      end
+
+      base_group.succ!
+    end
+
+    #Parse team's PT
+    teams_data = data.select { |d| d['Category'].eql?("Winner 2014") }
+    teams_data.each do |team_data|
+      name = team_data['ContestName']
+      next unless Team.exists?(name: name)
+      team = Team.find_by_name(name)
+      prediction_pt = PredictionPt.find_by_stats_id_and_competition_type(team.stats_id, 'win_the_cup') || PredictionPt.new(stats_id: team.stats_id, competition_type: 'win_the_cup')
+      prediction_pt.update_attributes!(pt: DataFetcher.get_pt_value(team_data['MoneyLine']))
+    end
   end
 end

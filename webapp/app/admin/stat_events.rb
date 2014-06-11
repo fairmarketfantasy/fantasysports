@@ -1,4 +1,5 @@
 ActiveAdmin.register StatEvent do
+  actions :all, except: [:destroy]
 
   filter :activity
   filter :game_game_time

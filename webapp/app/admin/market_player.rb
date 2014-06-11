@@ -1,4 +1,5 @@
 ActiveAdmin.register MarketPlayer do
+  actions :all, except: [:destroy]
   filter :market_id
   filter :player_stats_id
   filter :player_name, :as => :string

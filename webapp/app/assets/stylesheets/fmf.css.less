@@ -37,7 +37,9 @@ body {
 }
 a {
   color: @info;
+
 }
+
 body.guide {
   background-color: @white;
 }
@@ -120,6 +122,32 @@ footer {
   }
   .player-overflow {
     max-height: 425px;
+  }
+}
+.MLB.sports {
+  .player-overflow {
+    max-height: 469px;
+  }
+  .roster-alert {
+    bottom: 0;
+  }
+}
+.FWC.sports {
+  .landing-container {
+    background-image: asset-url('bg-landing-fwc.jpg');
+  }
+  header {
+    background-image: asset-url('bg-blur-fwc.jpg');
+  }
+  .player-overflow {
+    max-height: 469px;
+  }
+  .roster-alert {
+    bottom: 0;
+  }
+  .roster-main .players-area,
+  .roster-main .roster-area {
+    min-height: 584px;
   }
 }
 
@@ -369,9 +397,13 @@ select:focus:invalid {
     width: 345px;
   }
   a {
-    color:#fff;
+    color: #FFFFFF;
     float: right;
-    margin-top: 8px;
+    margin-top: 5px;
+    text-align: center;
+    &:hover {
+      color: @turquoise;
+    }
   }
 }
 .ie8 .login-buttons {
@@ -409,6 +441,10 @@ select:focus:invalid {
 }
 .loading-message {
   text-align: center;
+}
+.loading-message.no_games{
+  margin: 0;
+  height: 375px;
 }
 .sample-team {
   padding-top: 0;
@@ -626,6 +662,16 @@ select:focus:invalid {
     width: inherit;
     .border-radius(0)
   }
+  .new{
+    background: asset-url('new.png') no-repeat 0 0;
+    width: 29px;
+    height: 15px;
+    display:block;
+    position: absolute;
+    top: 6px;
+    right: -10px;
+    z-index: 50;
+  }
 }
 .user-navigation {
   margin: 3px 0 0;
@@ -670,7 +716,7 @@ select:focus:invalid {
 }
 .user-avatar {
   .border-radius(2px);
-  border: 1px solid @gray;
+//  border: 1px solid @gray;
   float: left;
   width: 60px;
   margin: 5px 12px 0 2px;
@@ -741,10 +787,20 @@ select:focus:invalid {
   line-height: 1.1em;
   padding: 5px;
   text-align: center;
+  z-index: 500;
   div{
     margin: 0;
     padding: 0;
   }
+}
+.modal .popover {
+  z-index: 1041;
+}
+.popover.fade {
+  display: none;
+}
+.popover.fade.in {
+  display: block;
 }
 .landing-nav .popover {
   width: 120px;
@@ -783,6 +839,9 @@ select:focus:invalid {
 .popover.right .arrow
 {
   border-right-color: #777;
+}
+.popover.top .arrow{
+  border-top-color: #777;
 }
 .user-balance {
   position: relative;
@@ -1149,6 +1208,15 @@ input, textarea, .uneditable-input {
 .market-loader {
   margin-top: 300px;
 }
+.no_games {
+  background: asset-url('no_games.png') no-repeat 50% 0;
+  height: 330px;
+  margin-top: 155px;
+  h4 {
+    padding-top: 300px;
+  }
+}
+
 .league-selector {
   float: right;
   width: 100%;
@@ -1302,7 +1370,7 @@ input, textarea, .uneditable-input {
   border-left: 1px solid #E0E0E0;
   padding: 5px 3px;
   height: 50px;
-  width: 153px !important;
+  width: 154px !important;
 }
 .home-market-link{
   color:@info;
@@ -1528,6 +1596,10 @@ input, textarea, .uneditable-input {
 }
 .position-link.selected {
   background-color: @info;
+  &:focus{
+    color:@white;
+    text-decoration:none;
+  }
 }
 .position-item {
   float: left;
@@ -1580,7 +1652,7 @@ input, textarea, .uneditable-input {
 }
 .player-overflow, .roster-overflow {
   background-color: @white;
-  padding: 0 5px 5px;
+  padding: 0 5px;
   .border-radius(5px);
   position: relative;
 }
@@ -1591,7 +1663,7 @@ input, textarea, .uneditable-input {
   max-height: 315px;
   -ms-overflow-y : scroll; // IE 8, bitches
   overflow-y: auto;
-  overflow-x: none;
+  overflow-x: hidden;
 }
 .fixed-table-header {
   position: absolute;
@@ -1639,6 +1711,11 @@ input, textarea, .uneditable-input {
     }
   }
 }
+.games-table {
+  th.less-larger{
+    text-align: center;
+  }
+}
 
 .landing-container .prediction {
   float: right;
@@ -1657,10 +1734,14 @@ input, textarea, .uneditable-input {
   vertical-align: middle;
   cursor: pointer;
 }
-
+.prediction .ip-btn-disable,
+.daily-wins .daily-team .pt.ip-btn-disable{
+  .opacity(50);
+  cursor:default;
+}
 .pt {
   color:@info;
-  border: 3px solid @info;
+  border: 2px solid @info;
   .border-radius(6px);
   padding: 2px 4px 1px;
   margin:4px 0 0 0;
@@ -1724,7 +1805,7 @@ input, textarea, .uneditable-input {
     left: 0;
     position: absolute;
     top: 0;
-    width: 45px;
+    min-width: 45px;
   }
 }
 .prediction-more {
@@ -1735,7 +1816,7 @@ input, textarea, .uneditable-input {
     left: 0;
     position: absolute;
     top: 0;
-    width: 49px;
+    min-width: 49px;
   }
 }
 
@@ -1781,7 +1862,7 @@ input, textarea, .uneditable-input {
   }
   h3 {
     color:@white;
-    font-size: 22px;
+    font-size: 16px;
   }
 }
 .team-heading {
@@ -1900,6 +1981,26 @@ input, textarea, .uneditable-input {
   background-repeat: no-repeat;
   position: relative;
 }
+.mr-team-image{
+  height: 50px;
+  width: 50px;
+  background-repeat: no-repeat;
+  position: relative;
+  background-image: asset-url('helmet.png');
+  background-size: 100% 100%;
+}
+.mr-ind-team-image{
+  width: 60px;
+  height: 60px;
+}
+.mr-team-flat {
+  width: 24px;
+  height: 24px;
+  background-image: asset-url('Brazil_flat.png');
+  background-repeat: no-repeat;
+  position: relative;
+  background-size: 100% 100%;
+}
 .mr-item .benched-image {
   border-color:#FFA701;
 }
@@ -1948,6 +2049,29 @@ input, textarea, .uneditable-input {
   color: @gray;
   font-weight: 200;
 }
+.mr-ind-team-name {
+  margin: 0 0 0 15px;
+  p{
+    color:@gray;
+    font-size: 12px;
+    margin: 0;
+  }
+  .mr-team {
+    font-size:12px;
+    font-weight: normal;
+    color:@black;
+  }
+}
+.mr-ind-team-pred{
+  margin: 14px 10px 0 0;
+  p {
+    color: @gray;
+    font-size: 12px;
+    margin: 0;
+    text-align: right;
+    line-height: 1;
+  }
+}
 .diff {
   color: @green;
 }
@@ -1966,6 +2090,150 @@ input, textarea, .uneditable-input {
   width: 98%;
 }
 //////////////////
+.world-cup-menu{
+  text-align: center;
+  li {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    border-left:1px solid #666;
+    a {
+      font: 19px/1.2em 'Prohibition-Round','Arial Black',Helvetica,sans-serif;
+      text-transform: uppercase;
+      cursor:pointer;
+      color:#666;
+      &:hover{
+        color:#16A085;
+      }
+    }
+    .active{
+      color:@green;
+    }
+  }
+}
+.world-cup-column {
+  margin: 0 0.2%;
+  padding: 10px 0;
+  .box-sizing();
+  width: 24.5%;
+  border-bottom: 2px solid #E6E6E6;
+  .mr-player-name{
+    padding: 4px 0 0 3px;
+    font-size: 12.5px;
+  }
+  .prediction{
+    margin-right: 2px;
+    position: relative;
+    p{
+      text-align: center;
+      min-width: 55px;
+      display: inline-block;
+    }
+    span{
+      display: block;
+      height: 27px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+  }
+  .mr-team-flat{
+    margin: 3px 0 0 2px;
+  }
+}
+
+.world-cup-column.add-bgc,
+.daily-team-block.add-bgc{
+  background-color:#F9FAFB;
+}
+
+.world-cup-team-selection{
+  margin-bottom: 0;
+  .roster-overflow{
+    //    height: 548px;
+    //    overflow-y: auto;
+    //    overflow-x: hidden;
+  }
+}
+.wc-groups-roster{
+  width: 100%;
+  .roster-overflow{
+    //    margin-bottom: 144px;
+  }
+  .group-member{
+    width: 24%;
+    background: #F9FAFC;
+    margin: 1% 0.5%;
+    text-align: center;
+    .border-radius(3px);
+    .box-sizing;
+  }
+  .team-flag {
+    width: 64px;
+    height: 64px;
+    margin: 80px auto 0;
+  }
+  .team-name{
+    font-weight: bold;
+  }
+  .prediction{
+    margin: 50px auto 130px;
+    position: relative;
+    span{
+      display: block;
+      height: 27px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+  }
+}
+
+.daily-wins {
+  text-align: center;
+  position: relative;
+
+  .daily-team-block{
+    border-bottom: 2px solid #E6E6E6;
+    padding: 15px 0;
+  }
+  .team-flag{
+    margin: 0;
+    background-image: asset-url('Brazil_flat_big.png');
+    height: 64px;
+    width: 64px;
+    margin: 0 50px;
+  }
+  .daily-team{
+    display:inline-block;
+    position: relative;
+    width: 47%;
+    .pt{
+      font-weight: bold;
+      margin-top: 12px;
+      padding: 4px;
+      font-size: 12px;
+      min-width: 65px;
+      cursor:pointer;
+    }
+    .away_pt{
+      left:-3px;
+    }
+  }
+  p {
+    margin: 24px 10px 0;
+  }
+  .start-time {
+    bottom: 8px;
+    color: #666666;
+    font-size: 12px;
+    left: -85px;
+    position: absolute;
+  }
+}
+
 
 .home-roster {
   .roster-area{
@@ -1974,6 +2242,12 @@ input, textarea, .uneditable-input {
   .mr-item {
     display: inline-block;
     width: 49%;
+    padding: 10px 0.5%;
+    min-height: 95px;
+  }
+  .mr-team-item{
+    display: inline-block;
+    width: 100%;
     padding: 10px 0.5%;
     min-height: 95px;
   }
@@ -1989,10 +2263,156 @@ input, textarea, .uneditable-input {
   }
 }
 
+.competition-roster{
+  .mr-item {
+    width: 100%;
+    min-height: 40px;
+    padding: 15px 0;
+  }
+  .mr-team-image {
+    background-image: asset-url('default-user.png');
+    width: 60px;
+    height: 60px;
+  }
+  .remove-selected-team {
+    background-color: #FFA901;
+    .border-radius(6px);
+    cursor: pointer;
+    font-size: 13px;
+    margin: 11px 0 0 5px;
+    padding: 6px 10px 6px;
+    &:hover{
+      background-color: @orangeHighlight;
+    }
+  }
+  .team-heading{
+    margin-bottom: 18px;
+  }
+  .swapped-icon{
+    bottom: 40px;
+    line-height: 19px;
+    font-size: 10px;
+  }
+}
+
+.home_pt{
+  .border-radius(5px 0 0 5px);
+  border-right-width:1px;
+  position: relative;
+  span{
+    display: block;
+    height: 27px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+.away_pt{
+  .border-radius(0 5px 5px 0);
+  border-left-width:1px;
+  position: relative;
+  span{
+    display: block;
+    height: 27px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+
+.roster-team-list {
+  .roster-team-list-block{
+    width: 50%;
+    padding: 10px 0;
+    .mr-team-image{
+      width: 30px;
+      height: 30px;
+      margin: 2px 5px 0;
+    }
+    .pt{
+      color:@info;
+      border: 2px solid @info;
+      padding: 0 2px;
+      margin:2px 0 0 0;
+      font-size: 11px;
+      font-weight: bold;
+      cursor:pointer;
+      width: 40px;
+      text-align: center;
+    }
+    p{
+      font-size:13px;
+      margin:8px 0 0 0;
+    }
+    .home_pt{
+      .border-radius(5px 0 0 5px);
+      border-right-width:1px;
+      position: relative;
+      span{
+        display: block;
+        height: 27px;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    }
+    .away_pt{
+      .border-radius(0 5px 5px 0);
+      border-left-width:1px;
+      position: relative;
+      span{
+        display: block;
+        height: 27px;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    }
+
+
+    .ip-btn-disable{
+      .opacity(50);
+      cursor:default;
+    }
+  }
+  .start-time{
+    color:@gray;
+    font-size:12px;
+    margin-top: 18px;
+  }
+  .add-team {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 3px;
+    color: @info;
+    cursor:pointer;
+    &:hover {
+      color: @green;
+    }
+  }
+  .add-team.pull-left{
+    margin-left: 10px;
+  }
+  .add-team.pull-right{
+    margin-right: 10px;
+  }
+}
+
 .mr-item {
   display: inline-block;
   width: 50%;
   padding: 16px 0;
+}
+.mr-team-item{
+  display: inline-block;
+  width: 100%;
+  padding: 16px 0;
+  color:@black;
+  border-bottom: 1px solid #AAAAAA;
 }
 .mr-player-name {
   color:#000;
@@ -2147,11 +2567,11 @@ input[type="text"].players-search {
 }
 
 .roster-alert {
-  bottom: 60px;
+  bottom: 40px;
   position: absolute;
   right: 0;
   .roster-submit{
-    margin-bottom: 15px;
+    margin-bottom: 0;
     padding: 0 10px;
     position: relative;
   }
@@ -2263,7 +2683,7 @@ input[type="text"].players-search {
   background: #ebedef;
   padding: 4px;
   margin: 3px;
-  border-radius: 5px;
+  .border-radius(5px);
 }
 .btn-contest-cta {
   position: absolute;
@@ -2314,6 +2734,16 @@ textarea[class*="span"] {
   margin-left: 10px;
 }
 
+.ind-game-point{
+  background-color: #E8E8E8;
+  .border-radius(6px);
+  color: #375C89;
+  font-family: Prohibition-Round,'Arial Black',Helvetica,sans-serif;
+  font-size: 20px;
+  margin-top: 11px;
+  padding: 6px 18px;
+}
+
 .individual-predict {
   font-size: 14px;
   font-weight: bold;
@@ -2338,10 +2768,86 @@ textarea[class*="span"] {
   position: relative;
   .roster-area{
     width: 100%;
+    padding: 0;
   }
   .landing-roster-header {
     padding: 10px 0 20px 0;
     text-align: center;
+  }
+
+  .daily-wins{
+    .team-flag{
+      background-size: 100% 100%;
+      height: 44px;
+      margin: 0 5px;
+      width: 44px;
+    }
+    p.pull-left,
+    p.pull-right{
+      color: @black;
+      font-size: 12.5px;
+      margin: 13px 3px 0;
+      font-weight: bold;
+    }
+    .pt,
+    .pt.ip-btn-disable{
+      .opacity(100);
+      margin-top: 9px;
+      cursor:pointer;
+    }
+    .start-time{
+      left: -82px;
+      bottom: -10px;
+    }
+  }
+  .world-cup-column{
+    width: 49.5%;
+    .mr-player-name {
+      font-size: 12px;
+    }
+    .prediction p {
+      .opacity(100);
+    }
+  }
+  .players-area{
+    height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .position-link {
+    font-size: 12px;
+    padding: 4px;
+  }
+  .world-cup-menu li a {
+    font-size: 18px;
+  }
+  .group-member{
+    .team-name {
+      color:@black;
+    }
+    .prediction{
+      float: none;
+      margin: 50px auto 80px;
+      .pt.ip-btn-disable{
+        .opacity(100);
+        margin-top: 9px;
+        cursor:pointer;
+      }
+    }
+  }
+  .team-heading{
+    display: none;
+  }
+  .pt span,
+  .roster-overflow .prediction span{
+      display:none;
+  }
+
+}
+.landing-roster-title{
+  background-color: inherit;
+  ul li a {
+    color:@white;
   }
 }
 #playoff-teaser {
@@ -2365,7 +2871,7 @@ textarea[class*="span"] {
 .landing-ind-prediction {
   border:1px solid #fdfdfd ;
   .border-radius(6px);
-  padding: 1.5%;
+  padding: 1%;
   position: absolute;
   right: 10%;
   text-align: left;
@@ -2381,10 +2887,14 @@ textarea[class*="span"] {
       background-color: @info;
       float:left;
       padding: 6px 9px 5px;
+      min-width: 50px;
       &:hover {
         background-color: @blue;
       }
     }
+  }
+  .landing-ind-list{
+    min-width: 350px;
   }
   .landing-ind-list li{
     height: 45px;
@@ -2401,9 +2911,19 @@ textarea[class*="span"] {
   }
 }
 
+.landing-ind-games-list {
+  div.pull-left {
+    width: 50%;
+    a.pull-right{
+      float:right;
+    }
+  }
+}
+
 .home-prediction-info{
   color: #FEFEFE;
   text-align: center;
+  font-size: 12px;
 }
 
 /* Media Queries: 980-1199px
@@ -2469,6 +2989,17 @@ textarea[class*="span"] {
     width: 625px;
   }
 
+  .world-cup-column{
+    .prediction p {
+      min-width: 33px;
+      font-size: 9px;
+    }
+    .mr-player-name{
+      font-size: 10.5px;
+    }
+  }
+
+
 }
 @media (min-width: 980px) and (max-width: 1100px) {
   .landing-container {
@@ -2489,6 +3020,15 @@ textarea[class*="span"] {
   .landing-ind-prediction{
     right: 6%;
   }
+  .world-cup-column{
+    .prediction p {
+      min-width: 33px;
+      font-size: 9px;
+    }
+    .mr-player-name{
+      font-size: 10.5px;
+    }
+  }
 }
 @media (min-width: 890px) and (max-width: 979px) {
   .modal {
@@ -2496,6 +3036,15 @@ textarea[class*="span"] {
   }
   .confirm-modal {
     left: 50% !important;
+  }
+  .world-cup-column{
+    .prediction p {
+      min-width: 33px;
+      font-size: 9px;
+    }
+    .mr-player-name{
+      font-size: 10.5px;
+    }
   }
 }
 @media (min-width: 767px) and (max-width: 889px) {
@@ -2505,7 +3054,17 @@ textarea[class*="span"] {
   .confirm-modal {
     left: 50% !important;
   }
+  .world-cup-column{
+    .prediction p {
+      min-width: 33px;
+      font-size: 9px;
+    }
+    .mr-player-name{
+      font-size: 10.5px;
+    }
+  }
 }
+
 
 @media (max-width: 979px) {
   .modal{
@@ -2595,5 +3154,13 @@ textarea[class*="span"] {
     float: left;
     margin-left: 0;
   }
+  .world-cup-column{
+    .prediction p {
+      min-width: 33px;
+      font-size: 9px;
+    }
+    .mr-player-name{
+      font-size: 10.5px;
+    }
+  }
 }
-

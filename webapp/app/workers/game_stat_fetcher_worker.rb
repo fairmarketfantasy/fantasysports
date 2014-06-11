@@ -83,39 +83,47 @@ class GameStatFetcherWorker
   }
 
   PITCHING_POINTS_MAPPER = {
-    # and this is for pitchers
-    'SO' => ['Strike Out', 1.0],
-    'ER' => ['Earned run', -1.0],
-    'IP' => ['Inning Pitched', 1.0],
-    'W' => ['Wins', 4.0], # W = 4pts
-    'BB' => ['Walked', 0.0],
-    'PENALTY' => ['PENALTY', -0.5] # -.5 for a hit or walk or hbp (hit by pitch)
+      # and this is for pitchers
+      'SO' => ['Strike Out', 1.0],
+      'ER' => ['Earned run', -1.0],
+      'IP' => ['Inning Pitched', 1.0],
+      'W' => ['Wins', 4.0], # W = 4pts
+      'BB' => ['Walked', 0.0],
+      'PENALTY' => ['PENALTY', -0.5] # -.5 for a hit or walk or hbp (hit by pitch)
   }
-
 
   def perform(game_stat_id)
     game = Game.find_by_stats_id game_stat_id
 
-    game.stat_events.destroy_all
+    begin
+      scores_data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/play_by_play?game_id=#{game_stat_id}&api_token=#{TSN_API_KEY}").read
 
-    data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/boxscore?game_ids=#{game_stat_id}&api_token=#{TSN_API_KEY}").read
+      game.update_attributes({:home_team_status => {:points => scores_data['home_team_score']}.to_json,
+                              :away_team_status => {:points => scores_data['away_team_score']}.to_json})
 
-    #game.update_attributes({:home_team_status => {:points => data['home_team_score']}.to_json,
-    #                        :away_team_status => {:points => data['away_team_score']}.to_json})
+      game.stat_events.destroy_all
+
+      data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/boxscore?game_ids=#{game_stat_id}&api_token=#{TSN_API_KEY}").read
+    rescue
+      return
+    end
 
     data = data.first
 
-    if game.status.downcase == 'postponed' or game.status == 'cancelled'
+    if game.status.try(:downcase) == 'postponed' or game.status == 'cancelled'
       return unless data.present?
     else
       raise unless data.present?
     end
+
+    played_players_ids = []
 
     data['team_summary'].each do |team_summary|
       team_summary['batting_fielding_stats'].each do |batting_fielding_stat|
         player_stats_id = batting_fielding_stat['player_id'].to_s
         player = Player.where(stats_id: player_stats_id).first
         next if player.nil? or (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).blank?
+        played_players_ids << player_stats_id
 
         singles = batting_fielding_stat['hits'] - batting_fielding_stat['doubles'] - batting_fielding_stat['triples'] - batting_fielding_stat['home_runs']
         find_or_create_stat_event(player_stats_id, game, '1B', singles.to_f)
@@ -146,6 +154,7 @@ class GameStatFetcherWorker
         player_stats_id = pitching_stat['player_id'].to_s
         player = Player.where(stats_id: player_stats_id).first
         next if player.nil? or (player.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present?
+        played_players_ids << player_stats_id
 
         # Win (W) = 4pts
         pl = Player.find_by_stats_id(player_stats_id)
@@ -172,6 +181,26 @@ class GameStatFetcherWorker
         # -.5 for a hit or walk or hbp (hit by pitch)
         find_or_create_stat_event(player_stats_id, game, 'PENALTY', (pitching_stat['walks'] + pitching_stat['hits']).to_f)
       end
+    end
+
+    game.markets.each do |market|
+      market.players.each { |pl| pl.update_attribute(:out, !played_players_ids.include?(pl.stats_id)) }
+      game.markets.first.individual_predictions.where.not(state: ['finished', 'canceled']).each do |prediction|
+        unless played_players_ids.include?(prediction.player.stats_id)
+          prediction.cancel!
+          TransactionRecord.create!(:user => prediction.user, :event => 'cancel_individual_prediction',
+                                    :amount => prediction.award)
+          Eventing.report(prediction.user, 'CancelIndividualPrediction', :amount => prediction.award)
+
+          ActiveRecord::Base.transaction do
+            co = prediction.user.customer_object
+            co.monthly_winnings -= prediction.award * 100
+            co.save!
+          end
+          prediction.reload
+        end
+      end
+
     end
 
     game.update_attributes(:status =>'closed',:checked => true)

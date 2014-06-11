@@ -28,7 +28,6 @@ class DataFetcher
       return if game.sport.name == 'MLB'
 
       puts "Update game players"
-
       url = NBA_BASE_URL + "games/#{game.stats_id}/summary.xml" + NBA_API_KEY_PARAMS
       xml = get_xml(url)
       second_half_started = xml.search("quarter").find { |node| node.at_xpath("@number").value == "3" }
@@ -55,6 +54,108 @@ class DataFetcher
       end
 
       game.update_attribute(:checked, true)
+    end
+
+    def calculate_teams_pt(game)
+      url = 'http://97.74.80.137/SportsOddsAPI/Odds/5Dimes/MLB'
+      odds = JSON.parse open(url).read
+      odd = odds.find do |odd|
+        game.game_time == DateTime.strptime(odd["GameTime"], '%m/%d/%Y %l:%M %p')
+        game.home_team == find_team(odd["Home"]).stats_id
+        game.away_team == find_team(odd["Visitor"]).stats_id
+      end
+
+      return unless odd
+
+      home_ml = odd["HomeMoneyLine"].to_d
+      away_ml = odd["VisitorMoneyLine"].to_d
+      game.home_team_pt = DataFetcher.get_pt_value(home_ml, away_ml)
+      game.away_team_pt = DataFetcher.get_pt_value(away_ml, home_ml)
+      game.save!
+    end
+
+    def parse_world_cup
+      sport_id = Sport.where(name: "FWC").first.id
+      odds = JSON.load open(WORLD_CUP_API_URL)
+      odds.each do |odd|
+        if odd['Category'].eql? 'International World Cup 2014'
+          #Fill teams
+          home_name    = odd['Home'].split(/[()]/)
+          visitor_name = odd['Visitor'].split(/[()]/)
+          team_ids = []
+          [home_name, visitor_name].each do |name|
+            team_label = name.first.rstrip
+            team_label = 'Bosnia' if name.first.rstrip.include?('Bosnia')
+            stat_id = Digest::MD5.hexdigest(team_label + odd['GameTime'])
+            team_ids << stat_id
+            Team.where(name: team_label, abbrev: team_label, sport_id: sport_id, market: 'World Cup', stats_id: stat_id).first_or_create!
+          end
+
+          #Fill games
+          game_time = DateTime.strptime(odd["GameTime"], '%m/%d/%Y %l:%M %p')
+          home_ml = odd['HomeMoneyLine'].to_d
+          away_ml = odd['VisitorMoneyLine'].to_d
+          game_stats_id = Digest::MD5.hexdigest(team_ids.join + odd['GameTime'])
+          game = Game.where(game_day:    game_time.strftime("%Y-%m-%d"),
+                            game_time:   game_time,
+                            home_team:   team_ids.first,
+                            away_team:   team_ids.last,
+                            stats_id:    game_stats_id,
+                            season_type: 'REG',
+                            sport_id:    sport_id).first_or_create!
+
+          game.home_team_pt     = get_pt_value(home_ml, 0)
+          game.away_team_pt     = get_pt_value(away_ml, 0)
+          game.home_team_status = odd['HomeScore']
+          game.away_team_status = odd['VisitorScore']
+          game.status           = 'scheduled'
+          game.save
+
+          #Fill prediction_pts
+          prediction_pt = PredictionPt.find_by_stats_id_and_competition_type(team_ids.first, 'daily_wins') || PredictionPt.new(stats_id: team_ids.first, competition_type: 'daily_wins')
+          prediction_pt.update_attributes!(pt: get_pt_value(home_ml, away_ml))
+
+          prediction_pt = PredictionPt.find_by_stats_id_and_competition_type(team_ids.last,  'daily_wins') || PredictionPt.new(stats_id: team_ids.last,  competition_type: 'daily_wins')
+          prediction_pt.update_attributes!(pt: get_pt_value(away_ml, home_ml))
+
+          #Process predictions for daily_wins
+          Prediction.process_prediction(game, 'daily_wins') if game_time < (Time.zone.now + 4.hours)
+        end
+      end
+    end
+
+    def find_team(team_name)
+      category = Category.where(name: 'fantasy_sports').first
+      sport = Sport.where(name: 'MLB', category_id: category.id).first
+      team = Team.where(sport_id: sport.id, market: team_name).first
+      team ||= Team.where(sport_id: sport.id).find do |t|
+        t.name.downcase.include?(team_name.split(/\s+/).last.downcase)
+      end
+
+      team ||= Team.where(sport_id: sport.id).find do |t|
+        t.market.downcase.include?(team_name.split(/\s+/).first.downcase)
+      end
+
+      team || raise("Team not found!")
+    end
+
+    def get_pt_value(target_ml, opposite_ml = 0)
+      if opposite_ml.zero?
+        target_ml = 10000.0/target_ml if target_ml < 0
+        value = (15 * (1 + target_ml.to_d.abs/100) * 0.95)
+      else
+        total_ml = (target_ml.abs + opposite_ml.abs).to_d/2
+        return 15.to_d if total_ml == 0
+
+        prob = if target_ml > opposite_ml
+                 100/(100 + total_ml)
+               else
+                 1-100/(100 + total_ml)
+               end
+
+        value = 1/prob * 0.95 * Roster::FB_CHARGE * 10
+      end
+      value.round
     end
 
     private

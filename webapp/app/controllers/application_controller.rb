@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_api_response(data, opts = {}) # TODO: handle pagination?
-    if data.respond_to?(:to_a) && data.class != Hash
+    if data.respond_to?(:to_a) && (data.class != Hash) && !opts[:no_serializer]
       opts[:serializer] = ApiArraySerializer
     end
     if opts[:redirect]

@@ -1,10 +1,12 @@
-class IndividualPrediction < ActiveRecord::Base
-  belongs_to :player
-  belongs_to :user
+class IndividualPrediction < Prediction
+
+  self.table_name = 'individual_predictions'
+
   belongs_to :market
+  belongs_to :player
   has_many :event_predictions
-  validates_presence_of :user_id, :player_id, :market_id, :pt
   attr_protected
+  validates_presence_of :market_id
 
   PT = BigDecimal.new(25)
 
@@ -26,15 +28,15 @@ class IndividualPrediction < ActiveRecord::Base
       end
     end
 
-    def create_individual_prediction(params, user)
+    def create_prediction(params, user)
       player = Player.where(stats_id: params[:player_id]).first
       event = params[:events].first
       pt = IndividualPrediction.get_pt_value(event[:value].to_d, event[:diff])
-      prediction = user.individual_predictions.create(player_id: player.id,
-                                                      market_id: params[:market_id],
-                                                      pt: pt)
+      prediction = user.individual_predictions.create!(player_id: player.id,
+                                                       market_id: params[:market_id],
+                                                       pt: pt)
       TransactionRecord.create!(:user => user, :event => 'create_individual_prediction',
-                                :amount => Roster::FB_CHARGE * 1000)
+                                :amount => pt * 100)
       Eventing.report(user, 'CreateIndividualPrediction', :amount => pt * 100)
       customer_object = user.customer_object
       customer_object.monthly_entries_counter += 1
@@ -83,5 +85,17 @@ class IndividualPrediction < ActiveRecord::Base
     end
 
     true
+  end
+
+  def payout
+    customer_object = user.customer_object
+    ActiveRecord::Base.transaction do
+      customer_object.monthly_winnings += self.pt * 100
+      customer_object.save!
+    end
+    TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => self.pt * 100)
+    Eventing.report(user, 'IndividualPredictionWin', :amount => self.pt * 100)
+    user.update_attribute(:total_wins, user.total_wins.to_i + 1)
+    self.update_attribute(:award, self.pt)
   end
 end

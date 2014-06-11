@@ -4,7 +4,7 @@ class Player < ActiveRecord::Base
   #belongs_to :team, :foreign_key => 'team' # THe sportsdata data model is so bad taht sometimes this is an abbrev, sometimes its a stats id
   def team
     return self[:team] if self[:team].is_a? Team
-    team = if self[:team].split('-').count > 2 or self[:team].to_i > 0
+    team = if self[:team].split('-').count > 2 or self[:team].to_i > 0 or self.sport.name == 'FWC'
       Team.where(:stats_id => self[:team])
     else
       Team.where(:abbrev => self[:team])
@@ -84,16 +84,22 @@ class Player < ActiveRecord::Base
   end
 
   def headshot_url(size = 65) # or 195
+    s3_url = 'https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com'
+    default = "#{s3_url}m/headshots/#{stats_id}/#{size}.jpg"
+
     return nil if position == 'DEF'
+    return default if self.team.nil?
     if sport.name == 'MLB'
       if (positions.first.try(:position) =~ /(P|SP|RP)/).present?
         return ActionController::Base.helpers.asset_path 'pitcher_icon.png'
       else
         return ActionController::Base.helpers.asset_path 'hitter_icon.png'
       end
+    elsif sport.name == 'FWC'
+      return team.logo_url
     end
 
-    return "https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/#{stats_id}/#{size}.jpg"
+    return default
   end
 
   def next_game_at # Requires with_market scope
@@ -108,6 +114,7 @@ class Player < ActiveRecord::Base
 
   def calculate_ppg
     sport_name = self.sport.name
+
     if sport_name == 'MLB'
       value = self.calculate_average({ player_ids: self.stats_id, position: self.positions.map(&:position).first },nil, true)
       value = 0 if value.is_a? Array
@@ -115,12 +122,12 @@ class Player < ActiveRecord::Base
       played_games_ids = StatEvent.where("player_stats_id='#{self.stats_id}' AND quantity != 0" ).
                                    pluck('DISTINCT game_stats_id')
       events = StatEvent.where(player_stats_id: self.stats_id,
-                               game_stats_id: played_games_ids, activity: 'points')
-      total_stats = SportStrategy.for(sport_name).collect_stats(events, self.position)[:points]
-      return if total_stats.nil? || played_games_ids.count == 0
+                               game_stats_id: played_games_ids)
+      return unless events.any? || played_games_ids.count == 0
 
-      value = total_stats / played_games_ids.count
+      value = events.map(&:point_value).reduce(:+) / played_games_ids.count
     end
+
     value = value.round == 0 ? nil : value
     self.update_attribute(:ppg, value)
   end
@@ -128,7 +135,7 @@ class Player < ActiveRecord::Base
   # third param - hook for return Fantasy Points
   def calculate_average(params, current_user, ret_fp = false)
     sport_name = self.sport.name
-    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}'").
+    played_games_ids = StatEvent.where("player_stats_id='#{params[:player_ids]}' AND quantity != 0").
                                  pluck('DISTINCT game_stats_id')
     games = Game.where(stats_id: played_games_ids)
     last_year_ids = games.where(season_year: (Time.now.utc - 4).year - 1).map(&:stats_id).uniq
@@ -145,7 +152,6 @@ class Player < ActiveRecord::Base
     recent_events = events.where(game_stats_id: recent_ids)
     last_year_events = events.where(game_stats_id: last_year_ids)
     this_year_events = events.where(game_stats_id: this_year_ids)
-
     recent_stats = SportStrategy.for(sport_name).collect_stats(recent_events, params[:position])
     last_year_stats = SportStrategy.for(sport_name).collect_stats(last_year_events, params[:position])
     this_year_stats = SportStrategy.for(sport_name).collect_stats(this_year_events, params[:position])
@@ -161,35 +167,48 @@ class Player < ActiveRecord::Base
     data = []
     total_stats.each do |k, v|
       if games.last.sport.name == 'MLB'
+        ip_per_game = 9.0
         #last_year_points = last_year_stats[k] || 0.to_d
         #this_year_points = (this_year_stats[k] || 0).to_d/this_year_ids.count if this_year_ids.count != 0
         if k == 'Era (earned run avg)'.to_sym
-          history = (last_year_stats[k].to_f*self.total_games + this_year_stats[k].to_f)/((this_year_stats[:'Inning Pitched'].to_f + last_year_stats[:'Inning Pitched'].to_f*self.total_games)/9.0)
-          recent = this_year_stats[k].to_f/(this_year_stats[:'Inning Pitched'].to_f/9.0)
+          recent = ip_per_game * this_year_stats[k].to_f/this_year_stats[:'Inning Pitched'].to_f
+          history_val = if self.total_games.zero?
+                          recent
+                        else
+                          era = (last_year_stats[k].to_f*self.total_games + this_year_stats[k].to_f)
+                          ip = this_year_stats[:'Inning Pitched'].to_f + last_year_stats[:'Inning Pitched'].to_f*self.total_games
+                          ip_per_game * era/ip
+                        end
         else
-          history = ((last_year_stats[k] || 0.to_d)*self.total_games + (this_year_stats[k] || 0).to_d)/(this_year_ids.count + self.total_games)
+          history_val = ((last_year_stats[k] || 0.to_d)*self.total_games + (this_year_stats[k] || 0).to_d)/(this_year_ids.count + self.total_games)
           #history = last_year != 0 ? [last_year * (last_year - 2 * this_year)/last_year + this_year, 0].max : this_year
           recent = (recent_stats[k] || 0.to_d)/recent_ids.count if recent_ids.count != 0
           recent ||= 0
         end
 
-        if this_year_ids.count == 0
-          value = self.average_for_position(params[:position])[k] || 0
-        else
-          if this_year_stats[:'Inning Pitched'].to_i > 15 or self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size > 50
-            koef = 0.2
-          else
-            # batter
-            if (self.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present?
-              koef = 0.2*(self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size/50.0)
-            else
-              koef = 0.2*(this_year_stats[:'Inning Pitched'].to_i/15.0)
-            end
-          end
-          value = koef.to_d * recent.to_f + (1.0 - koef).to_d * history.to_f
-          value = this_year_stats[k].to_f/this_year_ids.count if self.legionnaire? or self.total_games.zero?
-          return value if ret_fp and k == 'Fantasy Points'.to_sym
+        if last_year_ids.count == 0
+          Honeybadger.notify(
+            :error_class   => "NoLastYearMLBStats",
+            :error_message => "NoLastYearMLBStats: #{Player.where(stats_id: params[:player_ids]).name} #{self.name}",
+            :parameters    => params
+          )
         end
+
+        if this_year_stats[:'Inning Pitched'].to_i > 15 or self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size > 50
+          koef = 0.2
+        else
+          # batter
+          if (self.positions.first.try(:position) =~ /(C|1B|DH|2B|3B|SS|OF)/).present?
+            koef = 0.2*(self.stat_events.where(:activity => 'At Bats').select { |st| st.game.game_time.year == Time.now.year }.size/50.0)
+          else
+            koef = 0.2*(this_year_stats[:'Inning Pitched'].to_i/15.0)
+          end
+        end
+
+        value = koef.to_d * recent.to_f + (1.0 - koef).to_d * history_val.to_f
+
+        value = this_year_stats[k].to_f/this_year_ids.count if k != 'Era (earned run avg)'.to_sym && (self.legionnaire? || self.total_games.zero?)
+        return value if ret_fp && k == 'Fantasy Points'.to_sym
       else
         value = v.to_d / BigDecimal.new(played_games_ids.count)
         value = value * 0.7 + (recent_stats[k] || 0.to_d)/recent_ids.count * 0.3
@@ -214,27 +233,7 @@ class Player < ActiveRecord::Base
       data << { name: k, value: value, bid_less: bid_less, bid_more: bid_more, less_pt: less_pt, more_pt: more_pt }
     end
 
-    data
-  end
-
-  def average_for_position(position)
-    player_ids = self.sport.players.active.where('ppg != 0 OR ppg != null').joins(:positions).where("player_positions.position='#{position}'").pluck('DISTINCT stats_id')
-    this_year_game_ids = Game.where(season_year: (Time.now.utc - 4).year, status: 'FINAL', sport_id: self.sport.id).pluck('DISTINCT stats_id')
-    this_year_events = StatEvent.where(player_stats_id: player_ids,
-                                       game_stats_id: this_year_game_ids)
-    data = {}
-    SportStrategy.for(self.sport.name).collect_stats(this_year_events, position).each do |k, v|
-      if k == 'Era (earned run avg)'.to_sym
-        data[k] = v.to_d/(data[:'Inning Pitched'].to_d/9.0)/BigDecimal.new(this_year_game_ids.count)
-      elsif k == 'Fantasy Points'.to_sym
-        arr = self.sport.players.active.where('ppg != 0 OR ppg != null').joins(:positions).where("player_positions.position='#{position}'").map(&:ppg).map(&:to_f)
-        data[k] = arr.sum / arr.size.to_f
-      else
-        data[k] = v.to_d / BigDecimal.new(this_year_game_ids.count)
-      end
-    end
-
-    data
+    adjust_wins(data, this_year_stats)
   end
 
   private
@@ -248,5 +247,15 @@ class Player < ActiveRecord::Base
   def with_formula_value(value, total, more, less)
     value = value * (20 + total + (more - less)).to_d / (20 + total).to_d
     value.round(2)
+  end
+
+  def adjust_wins(data, this_year_stats)
+    wins = data.find { |i| i[:name ] == 'Wins'.to_sym }
+    if wins && this_year_stats[:'Inning Pitched'] < 50
+      wins[:value] = 0.2.to_d if wins[:value] < 0.2
+      wins[:value] = 0.7.to_d if wins[:value] > 0.7
+    end
+
+    data
   end
 end

@@ -138,8 +138,7 @@ class Roster < ActiveRecord::Base
         #enter roster into public contest
         set_contest = Contest.where("contest_type_id = ?
           AND (user_cap = 0 OR user_cap > 12
-              OR (num_rosters - num_generated < user_cap
-                  AND NOT EXISTS (SELECT 1 FROM rosters WHERE contest_id = contests.id AND rosters.owner_id=#{self.owner_id})))
+              OR (num_rosters - num_generated < user_cap))
           AND NOT private", contest_type.id).order('id asc').first
         if set_contest.nil?
           if contest_type.limit.nil? || Contest.where(contest_type_id: contest_type.id).count < contest_type.limit
@@ -190,8 +189,7 @@ class Roster < ActiveRecord::Base
   end
 
   def charge_account
-    condition = self.contest_type.buy_in > 0 &&
-      TransactionRecord.where(event: 'buy_in', user_id: self.owner_id, roster_id: self.id).first.nil?
+    condition = self.contest_type.buy_in > 0 && TransactionRecord.where(event: 'buy_in', user_id: self.owner_id, roster_id: self.id).first.nil?
     if condition
       self.owner.charge(:monthly_entry, FB_CHARGE, :event => 'buy_in', :roster_id => self.id, :contest_id => self.contest_id)
       #SYSTEM_USER.payout(:monthly_entry, 1, :event => 'rake', :roster_id => nil, :contest_id => self.id) unless self.owner.id == SYSTEM_USER.id

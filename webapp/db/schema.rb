@@ -11,10 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140518101306) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 20140604152139) do
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -33,6 +30,18 @@ ActiveRecord::Schema.define(version: 20140518101306) do
 
   add_index "admin_users", ["email"], name: "index_admin_users_on_email", unique: true, using: :btree
   add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "categories", force: true do |t|
+    t.string   "name",                               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "note",       default: "COMING SOON"
+    t.boolean  "is_active",  default: true
+    t.boolean  "is_new",     default: false
+    t.string   "title",      default: "",            null: false
+  end
+
+  add_index "categories", ["name"], name: "index_categories_on_name", using: :btree
 
   create_table "contest_types", force: true do |t|
     t.integer "market_id",                          null: false
@@ -137,8 +146,43 @@ ActiveRecord::Schema.define(version: 20140518101306) do
   add_index "game_events", ["game_stats_id"], name: "index_game_events_on_game_stats_id", using: :btree
   add_index "game_events", ["sequence_number"], name: "index_game_events_on_sequence_number", using: :btree
 
+  create_table "game_predictions", force: true do |t|
+    t.integer  "user_id",                              null: false
+    t.string   "game_stats_id",                        null: false
+    t.string   "team_stats_id",                        null: false
+    t.decimal  "award"
+    t.decimal  "pt"
+    t.string   "state",          default: "submitted", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "game_roster_id", default: 0,           null: false
+    t.integer  "position_index"
+  end
+
+  create_table "game_rosters", force: true do |t|
+    t.integer  "owner_id",                      null: false
+    t.integer  "game_id"
+    t.integer  "contest_id"
+    t.decimal  "score",           default: 0.0, null: false
+    t.integer  "contest_rank"
+    t.decimal  "amount_paid"
+    t.datetime "paid_at"
+    t.string   "cancelled_cause"
+    t.datetime "cancelled_at"
+    t.string   "state",                         null: false
+    t.datetime "submitted_at"
+    t.boolean  "cancelled"
+    t.integer  "expected_payout"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "contest_type_id"
+    t.date     "day"
+    t.datetime "started_at"
+    t.boolean  "is_generated"
+  end
+
   create_table "games", force: true do |t|
-    t.string   "stats_id"
+    t.string   "stats_id",         null: false
     t.string   "status"
     t.date     "game_day"
     t.datetime "game_time"
@@ -156,11 +200,14 @@ ActiveRecord::Schema.define(version: 20140518101306) do
     t.text     "away_team_status"
     t.integer  "sport_id"
     t.boolean  "checked"
+    t.decimal  "home_team_pt"
+    t.decimal  "away_team_pt"
   end
 
   add_index "games", ["bench_counted_at"], name: "index_games_on_bench_counted_at", using: :btree
   add_index "games", ["game_day"], name: "index_games_on_game_day", using: :btree
   add_index "games", ["game_time"], name: "index_games_on_game_time", using: :btree
+  add_index "games", ["stats_id"], name: "index_games_on_stats_id", using: :btree
 
   create_table "games_markets", force: true do |t|
     t.string   "game_stats_id",                  null: false
@@ -170,6 +217,15 @@ ActiveRecord::Schema.define(version: 20140518101306) do
   end
 
   add_index "games_markets", ["market_id", "game_stats_id"], name: "index_games_markets_on_market_id_and_game_stats_id", unique: true, using: :btree
+
+  create_table "groups", force: true do |t|
+    t.integer  "sport_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "groups", ["name", "sport_id"], name: "index_groups_on_name_and_sport_id", unique: true, using: :btree
 
   create_table "individual_predictions", force: true do |t|
     t.datetime "created_at"
@@ -240,7 +296,7 @@ ActiveRecord::Schema.define(version: 20140518101306) do
     t.datetime "locked_at"
     t.decimal  "initial_shadow_bets"
     t.boolean  "locked",              default: false
-    t.integer  "score",               default: 0,     null: false
+    t.decimal  "score",               default: 0.0
     t.string   "player_stats_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -339,6 +395,17 @@ ActiveRecord::Schema.define(version: 20140518101306) do
   add_index "player_positions", ["player_id", "position"], name: "index_player_positions_on_player_id_and_position", unique: true, using: :btree
   add_index "player_positions", ["position"], name: "index_player_positions_on_position", using: :btree
 
+  create_table "player_predictions", force: true do |t|
+    t.integer  "user_id",                  null: false
+    t.integer  "player_id",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.decimal  "pt",         default: 0.0
+  end
+
+  add_index "player_predictions", ["player_id"], name: "index_player_predictions_on_player_id", using: :btree
+  add_index "player_predictions", ["user_id"], name: "index_player_predictions_on_user_id", using: :btree
+
   create_table "players", force: true do |t|
     t.string   "stats_id"
     t.integer  "sport_id"
@@ -360,11 +427,41 @@ ActiveRecord::Schema.define(version: 20140518101306) do
     t.boolean  "out"
     t.decimal  "ppg",           default: 0.0
     t.boolean  "legionnaire",   default: false, null: false
+    t.decimal  "pt"
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
   add_index "players", ["stats_id"], name: "index_players_on_stats_id", unique: true, using: :btree
   add_index "players", ["team"], name: "index_players_on_team", using: :btree
+
+  create_table "prediction_pts", force: true do |t|
+    t.string   "stats_id",         null: false
+    t.decimal  "pt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "competition_type"
+  end
+
+  add_index "prediction_pts", ["stats_id"], name: "index_prediction_pts_on_stats_id", using: :btree
+
+  create_table "predictions", force: true do |t|
+    t.string   "stats_id"
+    t.string   "game_stats_id"
+    t.integer  "user_id"
+    t.string   "sport"
+    t.string   "prediction_type"
+    t.decimal  "pt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "state"
+    t.string   "result"
+    t.decimal  "award"
+  end
+
+  add_index "predictions", ["game_stats_id"], name: "index_predictions_on_game_stats_id", using: :btree
+  add_index "predictions", ["prediction_type"], name: "index_predictions_on_prediction_type", using: :btree
+  add_index "predictions", ["stats_id"], name: "index_predictions_on_stats_id", using: :btree
+  add_index "predictions", ["user_id"], name: "index_predictions_on_user_id", using: :btree
 
   create_table "promo_redemptions", force: true do |t|
     t.integer  "promo_id",   null: false
@@ -492,9 +589,13 @@ ActiveRecord::Schema.define(version: 20140518101306) do
     t.datetime "updated_at"
     t.boolean  "is_active",   default: true
     t.boolean  "playoffs_on", default: false
+    t.integer  "category_id"
+    t.boolean  "coming_soon", default: true
+    t.string   "title",       default: "",    null: false
   end
 
-  add_index "sports", ["name"], name: "index_sports_on_name", unique: true, using: :btree
+  add_index "sports", ["category_id"], name: "index_sports_on_category_id", using: :btree
+  add_index "sports", ["name", "category_id"], name: "index_sports_on_name_and_category_id", unique: true, using: :btree
 
   create_table "stat_events", force: true do |t|
     t.string   "activity",        null: false
@@ -526,10 +627,12 @@ ActiveRecord::Schema.define(version: 20140518101306) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "stats_id",   default: ""
+    t.integer  "group_id"
   end
 
   add_index "teams", ["abbrev", "sport_id"], name: "index_teams_on_abbrev_and_sport_id", unique: true, using: :btree
   add_index "teams", ["abbrev"], name: "index_teams_on_abbrev", using: :btree
+  add_index "teams", ["group_id"], name: "index_teams_on_group_id", using: :btree
   add_index "teams", ["stats_id"], name: "index_teams_on_stats_id", using: :btree
 
   create_table "transaction_records", force: true do |t|
@@ -580,10 +683,10 @@ ActiveRecord::Schema.define(version: 20140518101306) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
+    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
-    t.string   "avatar"
     t.text     "bonuses"
     t.string   "referral_code"
     t.integer  "total_loses",            default: 0

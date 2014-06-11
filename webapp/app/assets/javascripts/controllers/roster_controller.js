@@ -6,18 +6,17 @@ angular.module("app.controllers")
   $scope.markets = markets;
   $scope.landingShow = false;
 
-
   $scope.Math = window.Math;
 
     if(!marketService.upcoming[0]){
-        marketService.fetchUpcoming({type: 'single_elimination', sport: currentUserService.currentUser.currentSport}).then(function() {
-            marketService.fetchUpcoming({type: 'regular_season', sport: currentUserService.currentUser.currentSport}).then(function() {
+        marketService.fetchUpcoming({type: 'single_elimination', category:$routeParams.category, sport: currentUserService.currentUser.currentSport}).then(function() {
+            marketService.fetchUpcoming({type: 'regular_season', category:currentUserService.currentUser.currentCategory, sport: currentUserService.currentUser.currentSport}).then(function() {
                 if ($routeParams.market_id) {
-                    marketService.selectMarketId($routeParams.market_id, currentUserService.currentUser.currentSport);
+                    marketService.selectMarketId($routeParams.market_id, currentUserService.currentUser.currentCategory, currentUserService.currentUser.currentSport);
                 } else if ($location.path().match(/\w+\/playoffs/)) {
-                    marketService.selectMarketType('single_elimination', currentUserService.currentUser.currentSport);
+                    marketService.selectMarketType('single_elimination', currentUserService.currentUser.currentCategory, currentUserService.currentUser.currentSport);
                 } else {
-                    marketService.selectMarketType('regular_season', currentUserService.currentUser.currentSport);
+                    marketService.selectMarketType('regular_season', currentUserService.currentUser.currentCategory, currentUserService.currentUser.currentSport);
                 }
             });
         });
@@ -27,7 +26,7 @@ angular.module("app.controllers")
         if (!market) { return; }
         if (!marketService.currentMarket) {
             flash.error("Oops, we couldn't find that market, pick a different one.");
-            $location.path(currentUserService.currentUser.currentSport + '/home');
+            $location.path('/' +  currentUserService.currentUser.currentCategory + '/'+ currentUserService.currentUser.currentSport + '/home');
             return;
         }
         return (market.id === marketService.currentMarket.id);
@@ -48,7 +47,7 @@ angular.module("app.controllers")
     });
   }
 
-    $scope.startMarket();
+  $scope.startMarket();
 
   $scope.removeLow = false;
   var filterOpts = {position: rosters.uniqPositionList && rosters.uniqPositionList[0], removeLow: false, sort: 'buy_price', dir: 'desc'};
@@ -68,10 +67,6 @@ angular.module("app.controllers")
     });
 
   };
-
-  $scope.fs.leaderboard.prestigeChart().then(function(chart) {
-    $scope.prestigeChart = chart;
-  });
 
   $scope.$watch('$routeParams.roster_id', function() {
     rosters.fetch($routeParams.roster_id, $routeParams.view_code).then(function(roster) {
@@ -264,13 +259,13 @@ angular.module("app.controllers")
     fs.contests.join(contestType.id, roster.id).then(function(data) {
       rosters.selectRoster(data);
       flash.success("Awesome, we've started a new roster with all the players from your last roster. Go ahead and customize then enter again!");
-      $location.path('/' + $scope.currentUser.currentSport + '/market/' + $scope.market.id + '/roster/' + data.id);
+      $location.path('/' + $scope.currentUser.currentCategory + '/' + $scope.currentUser.currentSport + '/market/' + $scope.market.id + '/roster/' + data.id);
     });
   };
 
   $scope.submitRoster = function(gameType) {
     rosters.submit(gameType).then(function(roster) {
-      $location.path('/' + $scope.currentUser.currentSport + '/market/' + roster.market.id);
+      $location.path('/' + $scope.currentUser.currentCategory + '/' + $scope.currentUser.currentSport + '/market/' + roster.market.id);
 //      $timeout(function() {
 //        joinContestModal('submitRoster', roster).then(function(result) {
 //          if (result && result.contestType) {
@@ -291,7 +286,7 @@ angular.module("app.controllers")
 
   $scope.finish = function() {
     rosters.reset('/market/' + rosters.currentRoster.market.id);
-    $location.path( $routeParams.sport +'/home' )
+    $location.path( '/' + $routeParams.category + '/' + $routeParams.sport +'/home' )
   };
 
   $scope.addPlayer = function(player) {
@@ -337,7 +332,7 @@ angular.module("app.controllers")
             // give the server time to save everything
             $timeout(function() {
                 rosters.selectRoster(data);
-                $location.path('/' + $scope.currentUser.currentSport + '/market/' + data.market.id + '/roster/' + data.id);
+                $location.path('/' + $scope.currentUser.currentCategory + '/' + $scope.currentUser.currentSport + '/market/' + data.market.id + '/roster/' + data.id);
             }, 500);
         });
     }
@@ -375,7 +370,7 @@ $scope.openCreateDialog = function() {
         ).then(function(roster) {
                 flash.success("Awesome, your contest is all setup. Now lets create your entry into the contest.");
                 rosters.selectRoster(roster);
-                $location.path('/' + currentUserService.currentUser.currentSport +'/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
+                $location.path('/' + currentUserService.currentUser.currentCategory + '/' + currentUserService.currentUser.currentSport +'/market/' + marketService.currentMarket.id + '/roster/' + roster.id);
                 currentUserService.refreshUser();
             });
     });
@@ -398,4 +393,3 @@ $scope.openPredictionDialog = function(player) {
 };
 
 }]);
-

@@ -1,12 +1,12 @@
 <div ng-controller="SampleRosterController">
 
-  <div ng-hide="!marketService.currentMarket" class="landing-roster-header">
+  <div ng-hide="!marketService.currentMarket || $routeParams.category != 'fantasy_sports'" class="landing-roster-header">
     <h4>
       Create a Fantasy Team and compete against others to win 100 Fanbucks
     </h4>
   </div>
 
-  <flex-slider class="carousel" repeat="market in marketService.upcoming track by market.id | orderBy:market.id:reverse=false" animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="151" item-margin="0">
+  <flex-slider ng-show="$routeParams.category == 'fantasy_sports'" class="carousel" repeat="market in marketService.upcoming track by market.id | orderBy:market.id:reverse=false" animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="151" item-margin="0">
     <li class="market-li" ng-class="{'landing-border': $last }">
       <a ng-click="reloadRoster(market.id)" class="market-link" ng-class="{'active-market': market.id == roster.market.id }">
         <strong>{{market.name}}</strong>
@@ -16,16 +16,30 @@
   </flex-slider>
 
   <div class="roster-area">
-    <div class="loading-message" ng-hide="!marketService.currentMarket || roster">
-      <img src=<%= asset_path 'ajax-throbber.gif' %>/>
-    </div>
-    <div class="loading-message" ng-hide="marketService.currentMarket">
-      <h4>{{gameNotFound}} </h4>
+    <div  ng-controller="LandingWorldCupController" class="landing-roster-title roster-title my-roster-title clearfix">
+      <div class="loading-message" ng-hide="hide_loading">
+        <img src=<%= asset_path 'ajax-throbber.gif' %>/>
+      </div>
+      <div class="loading-message no_games" ng-show="gameNotFound">
+        <h4>There are no {{$routeParams.category | underscore}} {{currentTitle | underscore}} games scheduled</h4>
+      </div>
+      <div ng-show="types_games">
+        <ul class="no-no clearfix world-cup-menu">
+          <li ng-class="{'no-border' : $first}" ng-repeat="prediction_type in prediction_type_list">
+            <a ng-class="{'active': active_type == prediction_type}" ng-click="changeActiveType(prediction_type)">{{prediction_type | underscore}}</a>
+          </li>
+        </ul>
+        <div ng-show="active_type == 'daily_wins'" class="clearfix" ng-include="'/world_cup_daily_wins.html'"></div>
+        <div ng-show="active_type == 'win_the_cup'" ng-controller="IncludeController" ng-init="track({world_cup_column: 'types_games.win_the_cup'})" class="clearfix" ng-include="'/world_cup_column.html'"></div>
+        <div ng-show="active_type == 'win_groups'" class="clearfix" ng-include="'/world_cup_win_group.html'"></div>
+        <div ng-show="active_type == 'mvp'" ng-controller="IncludeController" ng-init="track({world_cup_column: 'types_games.mvp'})" class="clearfix" ng-include="'/world_cup_column.html'"></div>
+      </div>
     </div>
 
-    <div class="roster-overflow" ng-show="roster">
+    <div class="roster-overflow" >
       <ul class="no-no">
-        <li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix" ng-repeat="player in roster.players">
+        <!--FANTASY SPORTS-->
+        <li ng-show="$routeParams.category == 'fantasy_sports'" ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix" ng-repeat="player in roster.players">
           <div ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon">B</span></div>
           <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled"></div>
 
@@ -42,21 +56,33 @@
 						<p ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
 					</div>
         </li>
+        <!--SPORTS CATEGORY-->
+        <li ng-show="$routeParams.category == 'sports'" class="mr-team-item competition-roster clearfix" ng-repeat="game in landingGameList" ng-class="{'no-border': $last }">
+          <div class="mr-team-image pull-left" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': game.team_logo && ('url(' + game.team_logo +')')}">
+            <span ng-show="game.home_team" class="swapped-icon">H</span>
+            <span ng-show="!game.home_team && game.team_stats_id" class="swapped-icon">V</span>
+          </div>
+          <div class="mr-ind-team-name pull-left">
+            <h3 class="mr-player-name">{{game.team_name}}</h3>
+            <p>Start time: {{game.game_time | shortFormTime }}</p>
+            <span class="mr-team">{{game.home_team_name}} @ {{game.away_team_name}}</span>
+          </div>
+          <div class="ind-game-point pull-right">
+            <span>{{game.pt | toFixed}}</span>
+          </div>
+          <div class="mr-ind-team-pred pull-right">
+            <p>Prediction </p>
+            <p>points</p>
+          </div>
+        </li>
       </ul>
     </div>
-
   </div>
-    <div class="text-center roster-area-footer" ng-show="roster">
-      <!--<p>-->
-        <!--<a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">enter roster to win 100 fanbucks</a>-->
-        <!--<a href="javascript://" class="btn btn-large btn-info" ng-click='reloadRoster(roster.market.id)'>get new lineup</a>-->
-      <!--</p>-->
-      <!--<p style="text-align: left">You will be able to trade, adjust, and change your lineup at will until the game begins.</p>-->
-    </div>
 
-  <div ng-show="roster" class="landing-ind-prediction">
-    <p class="individual-predict">OR Predict Individual Perfomances </br> and win Fanbucks</p>
-    <div class="landing-player-pos clearfix">
+  <div ng-show="roster || gamePrediction.games" class="landing-ind-prediction">
+    <p ng-show="$routeParams.category == 'fantasy_sports'" class="individual-predict">OR Predict Individual Perfomances </br> and win Fanbucks</p>
+    <p ng-show="$routeParams.category == 'sports'" class="individual-predict"> Or predict single game and </br> and win Fanbucks</p>
+    <div ng-show="$routeParams.category == 'fantasy_sports'" class="landing-player-pos clearfix">
       <div class="clearfix inline-block" ng-show="player.position != 'DEF'">
         <div class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
         <p><i>{{player.name}}</i></p>
@@ -68,6 +94,7 @@
     </div>
     <div>
       <ul class="no-no landing-ind-list clearfix">
+        <!--FANTASY SPORTS-->
         <li ng-repeat="stat in events">
           <p class="pull-left">{{stat.name}} : {{stat.value}}</p>
           <div class="pull-right">
@@ -75,8 +102,20 @@
             <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more" popover-trigger="mouseenter" popover="PT{{stat.more_pt | toFixed}}, predict correctly and win {{stat.more_pt | toFixed}}FB" popover-placement="top">more</a>
           </div>
         </li>
+
+        <!--SPORTS-->
+        <li class="landing-ind-games-list"   ng-repeat="team in gamePrediction.games | limitTo:11">
+          <div class="pull-left">
+            <p class="pull-left">{{team.home_team_name}}</p>
+            <a href="javascript://" ng-click="signUpModal()" class="pull-right btn prediction-less" popover-trigger="mouseenter" popover="PT{{team.home_team_pt | toFixed}}, predict correctly and win {{team.home_team_pt | toFixed}}FB" popover-placement="top">PT{{team.home_team_pt | toFixed}}</a>
+          </div>
+          <div class="pull-left">
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more" popover-trigger="mouseenter" popover="PT{{team.away_team_pt | toFixed}}, predict correctly and win {{team.away_team_pt | toFixed}}FB" popover-placement="top">PT{{team.away_team_pt | toFixed}}</a>
+            <p class="pull-right">{{team.away_team_name}}</p>
+          </div>
+        </li>
       </ul>
     </div>
-    <div style="margin-top: 10px; text-align: center;">Click on the PT icon to change the player to predict</div>
+    <div ng-show="$routeParams.category == 'fantasy_sports'" style="margin-top: 10px; text-align: center;">Click on the PT icon to change the player to predict</div>
   </div>
 </div>

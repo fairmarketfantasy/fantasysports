@@ -29,9 +29,13 @@ class User < ActiveRecord::Base
       :total_wins
 
   has_many :rosters, foreign_key: :owner_id
+  has_many :game_rosters, foreign_key: :owner_id
   has_many :contests, foreign_key: :owner_id
   has_many :push_devices
   has_many :individual_predictions
+  has_many :game_predictions
+  has_many :predictions
+  has_many :player_predictions
   has_many :transaction_records
   has_many :league_memberships
   has_many :leagues, :through => :league_memberships
@@ -41,9 +45,18 @@ class User < ActiveRecord::Base
 
   before_create :set_blank_name
   after_create :create_customer_object
+  after_destroy :delete_related_objects
 
   def set_blank_name
     self.name ||= ''
+  end
+
+  def delete_related_objects
+    self.rosters.where(state: ['in_progress', 'submitted']).destroy_all
+    self.individual_predictions.where(state: ['in_progress', 'submitted']).destroy_all
+    self.game_rosters.where(state: ['in_progress', 'submitted']).destroy_all
+    self.game_predictions.where(state: ['in_progress', 'submitted']).destroy_all
+    self.customer_object.destroy
   end
 
   def active_account?

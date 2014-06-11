@@ -1,4 +1,5 @@
 ActiveAdmin.register Promo do
+  actions :all, except: [:destroy]
   filter :code
   filter :valid_until
 

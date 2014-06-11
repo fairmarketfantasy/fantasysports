@@ -4,9 +4,11 @@ class Game < ActiveRecord::Base
   has_many :games_markets, :inverse_of => :game, :foreign_key => "game_stats_id"
   has_many :markets, :through => :games_markets, :foreign_key => "game_stats_id"
   has_many :stat_events, :foreign_key => "game_stats_id", :inverse_of => :game
+  has_many :game_rosters, :inverse_of => :game, :foreign_key => 'game_stats_id'
+  has_many :game_predictions, :foreign_key => 'game_stats_id', :inverse_of => :game
   belongs_to :sport
 
-  validates :home_team, :away_team, :status, :game_day, :game_time, presence: true
+  validates :home_team, :away_team, :game_day, :game_time, presence: true
 
   def teams
     # Again, because sportsdata uses both for different sports.  So dumb.
@@ -54,8 +56,10 @@ class Game < ActiveRecord::Base
       home_team
     elsif away['points'] > home['points']
       away_team
+    elsif away['points'] == home['points']
+      return
     else
-      nil
+      raise "No winning team!"
     end
   end
 
