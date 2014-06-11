@@ -300,7 +300,7 @@ class FWCStrategy < NonFantasyStrategy
     resp[:daily_wins] = daily_wins if daily_wins.size > 0
     resp[:win_the_cup] = @sport.teams.map { |t| TeamSerializer.new(t, opts.merge(type: 'win_the_cup')) } if @sport.teams.any?
     resp[:win_groups] = @sport.groups.map { |g| GroupSerializer.new(g, opts.merge(type: 'win_groups')) } if @sport.groups.any?
-    resp[:mvp] = @sport.players.map { |u| PlayerSerializer.new(u, opts) } if @sport.players.any?
+    resp[:mvp] = @sport.players.with_flags.map { |u| PlayerSerializer.new(u, opts) } if @sport.players.any?
     resp
   end
 
@@ -328,7 +328,6 @@ class FWCStrategy < NonFantasyStrategy
     players_data = data.select { |d| d['Category'].include?('Golden Boot Award') }
 
     fwc_sport = Sport.where(:name => 'FWC').first
-    fwc_sport.players.update_all("team = 'exMVP'")
     players_data.each do |player_data|
       player = Player.where(name: player_data['ContestName']).first_or_initialize
       player.team = 'MVP'
