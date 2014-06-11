@@ -58,8 +58,6 @@ class Game < ActiveRecord::Base
       away_team
     elsif away['points'] == home['points']
       return
-    else
-      raise "No winning team!"
     end
   end
 
