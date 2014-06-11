@@ -51,6 +51,46 @@ class GamePrediction < ActiveRecord::Base
       data
     end
 
+    def generate_new_games_data(opts = {})
+      markets = SportStrategy.for(opts[:sport], opts[:category]).fetch_markets('regular_season')
+      games = markets.map(&:games).flatten
+      data = []
+      games.each do |g|
+        next if g.home_team_pt == g.away_team_pt or g.home_team_pt.nil? or g.away_team_pt.nil?
+
+        h = {stats_id:  g.stats_id,
+             home_team: {},
+             away_team: {}}
+
+        home_team = Team.find(g.home_team)
+        away_team = Team.find(g.away_team)
+        game_name = "#{home_team.name}@#{away_team.name}"
+
+        %w(stats_id name logo_url).each do |field|
+          h[:home_team]["#{field}".to_sym] = home_team.send(field.to_sym)
+          h[:away_team]["#{field}".to_sym] = away_team.send(field.to_sym)
+        end
+
+        h[:home_team][:game_time]     = g.game_time
+        h[:away_team][:game_time]     = g.game_time
+        h[:home_team][:game_stats_id] = g.stats_id
+        h[:away_team][:game_stats_id] = g.stats_id
+        h[:home_team][:game_name]     = game_name
+        h[:away_team][:game_name]     = game_name
+        h[:home_team][:is_home]       = true
+        h[:away_team][:is_home]       = false
+
+        h[:home_team][:pt]         = g.home_team_pt
+        h[:away_team][:pt]         = g.away_team_pt
+        h[:home_team][:is_added]   = prediction_made?(opts[:roster], h[:home_team][:game_stats_id], h[:home_team][:stats_id])
+        h[:away_team][:is_added]   = prediction_made?(opts[:roster], h[:away_team][:game_stats_id], h[:away_team][:stats_id])
+        h[:home_team][:disable_pt] = prediction_made?(opts[:user],   h[:home_team][:game_stats_id], h[:home_team][:stats_id])
+        h[:away_team][:disable_pt] = prediction_made?(opts[:user],   h[:away_team][:game_stats_id], h[:away_team][:stats_id])
+        data << h
+      end
+
+      data
+    end
     # owner is whether user or roster
     def prediction_made?(owner, game_stats_id, team_stats_id)
       return false unless owner
@@ -134,6 +174,22 @@ class GamePrediction < ActiveRecord::Base
     "#{JSON.parse(self.game.home_team_status)['points']}:#{JSON.parse(self.game.away_team_status)['points']}"
   end
 
+  def stats_id
+    self.team_stats_id
+  end
+
+  def name
+    self.team_name
+  end
+
+  def logo_url
+    self.team_logo
+  end
+
+  def is_home
+    self.home_team
+  end
+
   def payout
     customer_object = user.customer_object
     amount_value = self.pt * 100 * customer_object.contest_winnings_multiplier
@@ -166,6 +222,35 @@ class GamePrediction < ActiveRecord::Base
     self.update_attribute(:state, 'finished')
     puts 'finish prediction'
     self.reload
+  end
+
+  def current_pt
+    return unless ['scheduled', 'live'].include?(self.game.status)
+
+    value = if team.name == Team.where(stats_id: game.home_team).first.name
+              game.home_team_pt
+            elsif team.name == Team.where(stats_id: game.away_team).first.name
+              game.away_team_pt
+            else
+              raise "Team not found for prediction #{self.id}"
+            end
+    return if pt - value == 0
+
+    value
+  end
+
+  def pt_refund
+    return unless current_pt
+
+    (pt/current_pt * PREDICTION_CHARGE - PREDICTION_CHARGE).round(2)
+  end
+
+  def refund_owner
+    ActiveRecord::Base.transaction do
+      customer_object = user.customer_object
+      customer_object.monthly_winnings += pt_refund * 100
+      customer_object.save
+    end
   end
 
   def current_pt

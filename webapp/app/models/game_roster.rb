@@ -56,7 +56,8 @@ class GameRoster < ActiveRecord::Base
 
     def json_view(arr)
       required_fields = [:game_stats_id, :team_stats_id, :home_team, :team_logo,
-                         :team_name, :game_time, :opposite_team, :pt, :position_index]
+                         :team_name, :game_time, :opposite_team, :pt,
+                         :position_index, :stats_id, :name, :logo_url, :is_home]
       arr.to_json(:only => [:id, :score, :state, :contest_id, :contest_rank, :owner_id, :paid_at, :amount_paid, :expected_payout],
                   :methods => [:room_number, :owner_name, :contest_rank_payout, :perfect_score],
                   :include => { :game_predictions => {:methods => required_fields} } )
