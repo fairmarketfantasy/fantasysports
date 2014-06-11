@@ -10,6 +10,6 @@ teams_fetcher:
   queue: mlb_teams_fetcher
 
 unfetched_games_worker:
-  cron: "0 * * * *"
+  cron: "0 10 * * *"
   class: "UnfetchedGamesWorker"
   queue: unfetched_games_worker
