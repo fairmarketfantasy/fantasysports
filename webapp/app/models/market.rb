@@ -38,7 +38,7 @@ class Market < ActiveRecord::Base
     def tend
       publish
       calculate_non_fantasy_pt
-      DataFetcher.parse_world_cup
+      parse_world_cup
       open
       #remove_shadow_bets
       #track_benched_players
@@ -96,6 +96,11 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
       games.each { |game| DataFetcher.calculate_teams_pt(game) }
     rescue
       puts "panic!"
+    end
+
+    def parse_world_cup
+      puts 'parse world cup'
+      SportStrategy.for('FWC').grab_data
     end
 
     def fill_non_fantasy_rosters
