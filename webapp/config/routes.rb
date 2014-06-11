@@ -46,6 +46,7 @@ Fantasysports::Application.routes.draw do
   get '/pages/mobile/rules' => 'mobile_pages#rules'
   get '/home' => 'sports#home'
   post '/create_prediction' => 'sports#create_prediction'
+  delete '/trade_prediction', to: 'sports#trade_prediction'
 
   get 'join_contest/:invitation_code', to: "contests#join", as: 'join_contest'
 

@@ -446,6 +446,11 @@ angular.module('app.services')
         create_prediction: function(sport, predictable_id, prediction_type, game_stats_id){
           return $http({method: 'POST', url: '/create_prediction', data: {sport: sport, predictable_id: predictable_id, prediction_type: prediction_type, game_stats_id: game_stats_id}});
         }
+      },
+      trade_prediction: {
+         trade: function(id, sport){
+           return $http({method: 'DELETE', url: 'trade_prediction?id='+ id + '&sport='+ sport});
+         }
       }
     }
   }])

@@ -166,4 +166,33 @@ class GamePrediction < ActiveRecord::Base
     puts 'finish prediction'
     self.reload
   end
+
+  def current_pt
+    return unless ['scheduled', 'live'].include?(self.game.status)
+
+    value = if team.name == Team.where(stats_id: game.home_team).first.name
+              game.home_team_pt
+            elsif team.name == Team.where(stats_id: game.away_team).first.name
+              game.away_team_pt
+            else
+              raise "Team not found for prediction #{self.id}"
+            end
+    return if pt - value == 0
+
+    value
+  end
+
+  def pt_refund
+    return unless current_pt
+
+    (pt/current_pt * PREDICTION_CHARGE - PREDICTION_CHARGE).round(2)
+  end
+
+  def refund_owner
+    ActiveRecord::Base.transaction do
+      customer_object = user.customer_object
+      customer_object.monthly_winnings += pt_refund * 100
+      customer_object.save
+    end
+  end
 end
