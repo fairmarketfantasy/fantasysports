@@ -3,16 +3,27 @@ angular.module("app.controllers")
   $scope.user = $scope.user || {};
   $scope.message = message;
   $scope.noPromo = true;
+  $scope.agreedTerms = false;
+  $scope.signUpType = null;
 
-  $scope.submit = function() {
+  $scope.submit = function($event) {
+
     if (!$scope.isValid()) {
-      return
+      return;
     }else {
+      if ($scope.signUpType === 'payment'){
+        $scope.user.payment = true;
+      }
+
       fs.user.create($scope.user, registrationService.getLoginOpts(), $routeParams.category, $routeParams.sport).then(function(resp){
         //only fires on success, errors are intercepted by fsAPIInterceptor
         $timeout(function() {window.location.reload(true);}, 750);
       });
     }
+  };
+
+  $scope.setSignUpType = function(type){
+    $scope.signUpType = type;
   };
 
   $scope.isValid = function(){
