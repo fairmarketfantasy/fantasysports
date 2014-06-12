@@ -87,7 +87,7 @@ class Player < ActiveRecord::Base
 
   def headshot_url(size = 65) # or 195
     s3_url = 'https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com'
-    default = "#{s3_url}m/headshots/#{stats_id}/#{size}.jpg"
+    default = "#{s3_url}/headshots/#{stats_id}/#{size}.jpg"
 
     return nil if position == 'DEF'
     return default if self.team.nil?
