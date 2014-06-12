@@ -8,29 +8,48 @@ class Users::RegistrationsController < Devise::RegistrationsController
     if resource.save
       if resource.active_for_authentication?
         sign_up(resource_name, resource)
+        if params[:user][:payment].present?
+          resource.customer_object.update_attributes!(has_agreed_terms: true)
+
+        else
+          resource.customer_object.update_attributes!(trial_started_at: Date.today,
+                                                      is_active:        true,
+                                                      has_agreed_terms: true)
+          resource.customer_object.do_monthly_activation!
+        end
+
         render_api_response resource, handle_referrals(sport: params[:sport], category: params[:category]).merge({status: :created})
       else
         expire_session_data_after_sign_in!
-        render :json => {error: resource.errors.full_messages.first}, status: :unprocessable_entity
+        render json: {error: resource.errors.full_messages.first}, status: :unprocessable_entity
       end
     else
       clean_up_passwords resource
-      render :json => {error: resource.errors.full_messages.first}, status: :unprocessable_entity
+      render json: {error: resource.errors.full_messages.first}, status: :unprocessable_entity
     end
   end
 
   def sign_up_from_json
     r = build_resource(params[:user])
-    user = User.where(:email => r.email).first
+    user = User.where(email: r.email).first
     # Allow posting the same info again
     if user && user.valid_password?(r.password)
       r = user
     end
     if r.save
       opts = handle_referrals(sport: params[:sport], category: params[:category])
+      if params[:user][:payment].present?
+        r.customer_object.update_attributes!(has_agreed_terms: true)
+      else
+        r.customer_object.update_attributes!(trial_started_at: Date.today,
+                                             is_active:        true,
+                                             has_agreed_terms: true)
+        r.customer_object.do_monthly_activation!
+      end
+
       render_api_response r.reload, opts
     else
-      render :json => {:error => resource.errors.values.join(', ')}, :status => :unprocessable_entity
+      render json: {error: resource.errors.values.join(', ')}, status: :unprocessable_entity
     end
   end
 
