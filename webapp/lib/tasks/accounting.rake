@@ -31,7 +31,8 @@ namespace :users do
       r = user.rosters.where("state not in ('in_progress', 'submitted', 'cancelled') AND created_at > ?", time)
       gr = user.game_rosters.where("state = 'finished' AND created_at > ?", time)
       gp = user.game_predictions.where("game_roster_id IS NULL AND state = 'finished' AND created_at > ?", time)
-      number = ip.count + r.count + gr.count + gp.count
+      pr = user.predictions.where("state = 'finished' AND created_at > ?", time)
+      number = ip.count + r.count + gr.count + gp.count + pr.count
       co = user.customer_object
       co.monthly_entries_counter = number
       co.monthly_contest_entries = number * 1.5.to_d
@@ -39,6 +40,7 @@ namespace :users do
       sum += ip.map(&:award).compact.reduce(0) { |sum, v| sum + v * 100 }
       sum += gr.map(&:amount_paid).compact.reduce(0) { |sum, v| sum + v }
       sum += gp.map(&:award).compact.reduce(0) { |sum, v| sum + v * 100 }
+      sum += pr.map(&:award).compact.reduce(0) { |sum, v| sum + v * 100 }
       co.monthly_winnings = sum
       co.save!
     end
