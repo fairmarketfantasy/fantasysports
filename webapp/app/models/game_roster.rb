@@ -145,7 +145,7 @@ class GameRoster < ActiveRecord::Base
 
   def process
     puts "process game roster #{self.id}"
-    if game_predictions.where(state: 'canceled').any?
+    if game_predictions.where(state: ['canceled', 'postponed']).any?
       self.update_attribute(:state, 'canceled')
       return
     end
