@@ -86,14 +86,20 @@ class GamePrediction < ActiveRecord::Base
 
   def cancel!
     user = self.user
-    ActiveRecord::Base.transaction do
-      customer_object = user.customer_object
-      customer_object.monthly_contest_entries -= Roster::FB_CHARGE
-      customer_object.monthly_entries_counter -= 1
-      customer_object.save!
+    if self.game_roster.nil?
+      ActiveRecord::Base.transaction do
+        customer_object = user.customer_object
+        customer_object.monthly_contest_entries -= Roster::FB_CHARGE
+        customer_object.monthly_entries_counter -= 1
+        customer_object.save!
+      end
+      TransactionRecord.create!(:user => user, :event => 'cancel_individual_prediction', :amount => Roster::FB_CHARGE * 1000)
+      Eventing.report(user, 'CancelIndividualPrediction', :amount => Roster::FB_CHARGE * 1000)
+    else
+      self.game_roster.contest.game_rosters.map(&:cancel!) if self.game_roster.contest
     end
-    TransactionRecord.create!(:user => user, :event => 'cancel_individual_prediction', :amount => Roster::FB_CHARGE * 1000)
-    Eventing.report(user, 'CancelIndividualPrediction', :amount => Roster::FB_CHARGE * 1000)
+
+    puts 'cancel prediction'
     self.update_attribute(:state, 'canceled')
   end
 
@@ -142,11 +148,12 @@ class GamePrediction < ActiveRecord::Base
 
   def process
     puts "process game prediction #{self.id}"
+    self.reload
     raise 'Should be submitted!' if self.state != 'submitted'
-    return if self.game.status != 'closed'
 
-    if self.game.status == 'cancelled' || self.game.winning_team.nil?
-      cancel!
+    if ['cancelled', 'postponed'].include?(self.game.status) || self.game.winning_team.nil?
+      self.cancel!
+      self.reload
       return
     end
 
@@ -156,5 +163,7 @@ class GamePrediction < ActiveRecord::Base
     end
 
     self.update_attribute(:state, 'finished')
+    puts 'finish prediction'
+    self.reload
   end
 end

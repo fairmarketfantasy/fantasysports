@@ -161,6 +161,7 @@ class GameRoster < ActiveRecord::Base
 
     self.update_attribute(:score, sum)
     self.update_attribute(:state, 'finished') if self.game_predictions.where("state != 'finished'").empty?
+    self.reload
   end
 
   def pre_destroy
