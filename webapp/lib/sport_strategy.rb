@@ -292,12 +292,12 @@ class FWCStrategy < NonFantasyStrategy
     @sport = Sport.where(:name => 'FWC').first
   end
 
-    def home_page_content(user = nil)
-    date = Time.zone.now
-    last_date = date.end_of_day + 1.day
+  def home_page_content(user = nil)
+    last_date = Time.now.utc.end_of_day + 1.day
     opts = user.present? ? { user: user} : {}
     resp = {}
-    daily_wins = @sport.games.where(game_time: (date.beginning_of_day..last_date.end_of_day)).map { |g| FootballGameSerializer.new(g, opts.merge(type: 'daily_wins', game_stats_id: g.stats_id)) }
+    daily_wins = @sport.games.where(game_time: ((Time.now.utc + 5.minutes)..last_date.end_of_day)).order(:game_time)
+    daily_wins.map! { |g| FootballGameSerializer.new(g, opts.merge(type: 'daily_wins', game_stats_id: g.stats_id)) }
     resp[:daily_wins] = daily_wins if daily_wins.size > 0
     resp[:win_the_cup] = @sport.teams.map { |t| TeamSerializer.new(t, opts.merge(type: 'win_the_cup')) } if @sport.teams.any?
     resp[:win_groups] = @sport.groups.map { |g| GroupSerializer.new(g, opts.merge(type: 'win_groups')) } if @sport.groups.any?
