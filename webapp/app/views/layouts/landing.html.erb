@@ -112,8 +112,8 @@
         <!--<div class="sample-team clearfix" ng-include="'/sample_team.html'"></div>-->
         <div ng-hide="!landingShow" id="content" ng-view>
         </div>
-        <p class="terms">
-          <span>Roster competes against 11 others and the roster <br />with the most fantasy points wins 100 Fanbucks!</span>
+        <p class="terms clearfix">
+          <span ng-hide="$routeParams.sport == 'FWC'">Roster competes against 11 others and the roster <br />with the most fantasy points wins 100 Fanbucks!</span>
           <a href="/conditions" target="_blank">Membership <br /> terms and conditions</a>
         </p>
 
