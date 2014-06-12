@@ -8,12 +8,7 @@ class GameStatFetcherWorker
     60*15
   end
 
-  sidekiq_retries_exhausted do |msg|
-    game = Game.find_by_stats_id msg['args'][0]
-    game.update_attributes(:status =>'cancelled', :checked => true) if game.stat_events.empty?
-    game.markets.each { |m| m.individual_predictions.each(&:cancel!) }
-    game.markets.each { |m| m.rosters.each { |r| r.cancel!('game postponed') } }
-  end
+  sidekiq_retries_exhausted { |msg| cancel_predictions(msg['args'][0]) }
 
   # See PBP Play type doc part for MLB
 
@@ -110,10 +105,13 @@ class GameStatFetcherWorker
 
     data = data.first
 
-    if game.status.try(:downcase) == 'postponed' or game.status == 'cancelled'
-      return unless data.present?
-    else
-      raise unless data.present?
+    unless data.present?
+      if game.status.try(:downcase) == 'postponed' or game.status == 'cancelled' or (Time.now.utc - game.game_time.utc > 5.hours)
+        cancel_predictions(game_stat_id)
+        return
+      else
+        raise
+      end
     end
 
     played_players_ids = []
@@ -227,5 +225,12 @@ class GameStatFetcherWorker
     st.activity = mapper[action][0]
     st.data = ''
     st.save!
+  end
+
+  def cancel_predictions(game_stats_id)
+    game = Game.find_by_stats_id game_stats_id
+    game.update_attributes(:status =>'cancelled', :checked => true) if game.stat_events.empty?
+    game.markets.each { |m| m.individual_predictions.where.not(state: ['finished', 'canceled']).each(&:cancel!) }
+    game.markets.each { |m| m.rosters.each { |r| r.cancel!('game postponed') } }
   end
 end
