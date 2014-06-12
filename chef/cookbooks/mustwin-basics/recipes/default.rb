@@ -193,6 +193,12 @@ deploy app_root do
       end
     end
 
+    if node['easternpeak']['roles'].include?('WORKER')
+      execute 'Flush Redis' do
+        command 'redis-cli flushall'
+      end
+    end
+
     node['easternpeak']['roles'].each do |role, b|
       node['easternpeak']['services'][role].each do |service|
         # TODO: FIGURE OUT GOD, DAMMIT
