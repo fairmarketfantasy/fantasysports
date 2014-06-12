@@ -119,7 +119,7 @@ class DataFetcher
           prediction_pt.update_attributes!(pt: get_pt_value(away_ml, home_ml))
 
           #Process predictions for daily_wins
-          Prediction.process_prediction(game, 'daily_wins') if (game_time + 4.hours) < Time.zone.now
+          Prediction.process_prediction(game, 'daily_wins') if (game_time.utc + 4.hours) < Time.now.utc
         end
       end
     end
