@@ -55,7 +55,7 @@ class Prediction < ActiveRecord::Base
           ActiveRecord::Base.transaction do
             customer_object = user.customer_object
             customer_object.monthly_contest_entries += 1.5
-            customer_object.monthly_winnings += award
+            customer_object.monthly_winnings += award * 100
             customer_object.save
           end
           TransactionRecord.create!(user: user, event: event, amount: award)
