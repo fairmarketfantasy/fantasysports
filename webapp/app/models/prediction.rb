@@ -47,6 +47,7 @@ class Prediction < ActiveRecord::Base
             award  = (res >= 13.5) ? res : 13.5
             event  = "dead_heat_#{pr_type}_prediction"
           end
+          award *= customer_object.contest_winnings_multiplier
           user = prediction.user
           ActiveRecord::Base.transaction do
             customer_object = user.customer_object
