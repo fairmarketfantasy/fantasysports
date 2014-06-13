@@ -6,6 +6,8 @@ class CustomerObject < ActiveRecord::Base
   belongs_to :default_card, :class_name => 'CreditCard'
   has_many :credit_cards
 
+  AWARDS_MULTIPLIER = 0.8.to_d
+
   def self.monthly_accounting!
     condition = 'is_active AND has_agreed_terms AND last_activated_at is NOT NULL'
     CustomerObject.where(condition).each do |co|
@@ -84,7 +86,11 @@ class CustomerObject < ActiveRecord::Base
 
   def contest_winnings_multiplier
     # Exclude the current contest when counting bonus
-    1 + ([net_monthly_winnings, 0].min * -0.0005)/100.to_d
+    AWARDS_MULTIPLIER + bonus_multiplier
+  end
+
+  def bonus_multiplier
+    ([net_monthly_winnings, 0].min * -0.0005)/100.to_d
   end
 
   #override reload to nil out memoized stripe object
