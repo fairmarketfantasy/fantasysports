@@ -24,13 +24,13 @@ class SportsController < ApplicationController
                    GamePrediction.find(params[:id])
                  end
 
-    if ['scheduled', 'live'].include?(prediction.game.status)
+    if prediction.state == 'submitted'
       prediction.refund_owner
       prediction.destroy!
 
       render :json => { 'msg' => 'You trade your prediction' }, :status => :ok
     else
-      raise HttpException.new(422, 'Trade error: game is finished')
+      raise HttpException.new(422, 'Trade error: prediction is not submitted')
     end
   end
 end
