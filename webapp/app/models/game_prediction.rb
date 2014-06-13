@@ -136,14 +136,15 @@ class GamePrediction < ActiveRecord::Base
 
   def payout
     customer_object = user.customer_object
+    amount_value = self.pt * 100 * customer_object.contest_winnings_multiplier
     ActiveRecord::Base.transaction do
-      customer_object.monthly_winnings += self.pt * 100
+      customer_object.monthly_winnings += amount_value
       customer_object.save!
     end
-    TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => self.pt * 100)
-    Eventing.report(user, 'IndividualPredictionWin', :amount => self.pt * 100)
+    TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => amount_value)
+    Eventing.report(user, 'IndividualPredictionWin', :amount => amount_value)
     user.update_attribute(:total_wins, user.total_wins.to_i + 1)
-    self.update_attribute(:award, self.pt)
+    self.update_attribute(:award, self.pt * customer_object.contest_winnings_multiplier)
   end
 
   def process
