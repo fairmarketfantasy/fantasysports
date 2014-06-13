@@ -133,7 +133,7 @@ angular.module("app.controllers")
         $scope.close();
       }, function(err) {
         console && console.log(err);
-        flash.error(err);
+        flash.error(err.error);
         $scope.addMoneySpinner = false;
       });
     }, function() {
