@@ -341,8 +341,9 @@ class FWCStrategy < NonFantasyStrategy
     end
 
     CSV.foreach(Rails.root + 'db/players_country_map.csv') do |row|
-      next if row.join.include?('Name')
-      Player.find_by_name(row.first).update_attribute(:team, fwc_sport.teams.where(name: row.last).first.stats_id)
+      player = Player.find_by_name(row.first)
+      next if row.join.include?('Name') or player.blank?
+      player.update_attribute(:team, fwc_sport.teams.where(name: row.last).first.stats_id)
     end
 
     #Parse groups
