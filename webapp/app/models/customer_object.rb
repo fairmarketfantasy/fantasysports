@@ -6,8 +6,6 @@ class CustomerObject < ActiveRecord::Base
   belongs_to :default_card, :class_name => 'CreditCard'
   has_many :credit_cards
 
-  AWARDS_MULTIPLIER = 0.8.to_d
-
   def self.monthly_accounting!
     condition = 'is_active AND has_agreed_terms AND last_activated_at is NOT NULL'
     CustomerObject.where(condition).each do |co|
@@ -86,7 +84,12 @@ class CustomerObject < ActiveRecord::Base
 
   def contest_winnings_multiplier
     # Exclude the current contest when counting bonus
-    AWARDS_MULTIPLIER + bonus_multiplier
+    awards_multiplier + bonus_multiplier
+  end
+
+  def awards_multiplier
+    monthly_award = net_monthly_winnings/100
+    monthly_award > 200 ? 0.8.to_d : 1.to_d
   end
 
   def bonus_multiplier
