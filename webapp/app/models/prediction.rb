@@ -7,11 +7,7 @@ class Prediction < ActiveRecord::Base
 
     def create_prediction(params, user)
       begin
-        pt = if params[:prediction_type].eql?('mvp')
-               (Player.where(stats_id: params[:predictable_id]).first || Player.where(id: params[:predictable_id]).first).pt
-             else
-               PredictionPt.where(stats_id: params[:predictable_id], competition_type: params[:prediction_type]).first.pt
-             end
+        pt = get_pt_value(params)
         game_stats_id = params[:game_stats_id] || ''
         user.predictions.create!(stats_id: params[:predictable_id],
                                  sport: params[:sport],
@@ -51,17 +47,19 @@ class Prediction < ActiveRecord::Base
             award  = (res >= 13.5) ? res : 13.5
             event  = "dead_heat_#{pr_type}_prediction"
           end
+
           user = prediction.user
+          customer_object = user.customer_object
+          award *= customer_object.contest_winnings_multiplier
           ActiveRecord::Base.transaction do
-            customer_object = user.customer_object
             customer_object.monthly_contest_entries += 1.5
-            customer_object.monthly_winnings += award
+            customer_object.monthly_winnings += award * 100
             customer_object.save
           end
           TransactionRecord.create!(user: user, event: event, amount: award)
           Eventing.report(user, event, amount: award)
           prediction.update_attributes(state: 'finished', result: result, award: award)
-          game.update_attribute(:checked, true)
+          game.update_attributes(checked: true, status: 'finished')
         end if predictions.present?
       end
     end
@@ -103,5 +101,38 @@ class Prediction < ActiveRecord::Base
 
   def game
     Game.where(stats_id: self.game_stats_id).first
+  end
+
+  def current_pt
+    return unless self.state == 'submitted'
+
+    value = self.class.get_pt_value(prediction_type: self.prediction_type, predictable_id: self.stats_id).round(2)
+    return if pt - value == 0
+
+    value
+  end
+
+  def pt_refund
+    return unless current_pt
+
+    (pt/current_pt * PREDICTION_CHARGE - PREDICTION_CHARGE).round(2)
+  end
+
+  def refund_owner
+    ActiveRecord::Base.transaction do
+      customer_object = user.customer_object
+      customer_object.monthly_winnings += pt_refund * 100
+      customer_object.save
+    end
+  end
+
+  private
+
+  def self.get_pt_value(params)
+    if params[:prediction_type].eql?('mvp')
+      (Player.where(stats_id: params[:predictable_id]).first || Player.where(id: params[:predictable_id]).first).pt
+    else
+      PredictionPt.where(stats_id: params[:predictable_id], competition_type: params[:prediction_type]).first.pt
+    end
   end
 end

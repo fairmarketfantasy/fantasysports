@@ -16,4 +16,21 @@ class SportsController < ApplicationController
       render SportStrategy.for(params[:sport], params[:category]).create_prediction(params, current_user)
     end
   end
+
+  def trade_prediction
+    prediction = if params[:sport].eql?('FWC')
+                   Prediction.find(params[:id])
+                 else
+                   GamePrediction.find(params[:id])
+                 end
+
+    if prediction.state == 'submitted'
+      prediction.refund_owner
+      prediction.destroy!
+
+      render :json => { 'msg' => 'You trade your prediction' }, :status => :ok
+    else
+      raise HttpException.new(422, 'Trade error: prediction is not submitted')
+    end
+  end
 end

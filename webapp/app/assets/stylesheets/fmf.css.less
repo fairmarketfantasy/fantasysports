@@ -181,6 +181,15 @@ footer {
 
 .sign-up-modal{
   width: 650px;
+  .modal-footer{
+    text-align: left;
+    .sign-up-actions{
+      margin-right: 45px;
+      .btn {
+        font-size: 1.6em;
+      }
+    }
+  }
 }
 
 .reset-modal{
@@ -227,6 +236,10 @@ footer {
   height: 40px;
 }
 .forgot-modal .modal-line div {
+  height: 30px;
+}
+
+.sign-up-modal .modal-footer .modal-line div {
   height: 30px;
 }
 
@@ -454,7 +467,8 @@ select:focus:invalid {
   }
 }
 .promo-code {
-  margin-top: 7.2em;
+  margin-top: 0em;
+  text-align: left;
   input[type="text"] {
     width: 90px;
   }
@@ -1024,9 +1038,11 @@ select:focus:invalid {
 .trial-content{
   margin-left: 5px;
   .or{
-    margin: 9px 9px 0 4px;
+    font-size: 10px;
+    margin: 8px 9px 0 4px;
   }
   li{
+    margin-top: 7px;
     float:left;
   }
 }
@@ -1820,6 +1836,13 @@ input, textarea, .uneditable-input {
   }
 }
 
+.modal-trade-prediction{
+  h4 {
+    padding: 0 25px;
+    text-align: center;
+  }
+}
+
 .btn.btn-small.btn-invisible {
   background-color: @white;
   color: @white;
@@ -1859,6 +1882,7 @@ input, textarea, .uneditable-input {
   p {
     color:@white;
     margin: 0 0 2px 0;
+    font-size: 14px;
   }
   h3 {
     color:@white;
@@ -2215,7 +2239,7 @@ input, textarea, .uneditable-input {
       margin-top: 12px;
       padding: 4px;
       font-size: 12px;
-      min-width: 65px;
+      min-width: 60px;
       cursor:pointer;
     }
     .away_pt{

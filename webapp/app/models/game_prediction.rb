@@ -86,14 +86,20 @@ class GamePrediction < ActiveRecord::Base
 
   def cancel!
     user = self.user
-    ActiveRecord::Base.transaction do
-      customer_object = user.customer_object
-      customer_object.monthly_contest_entries -= Roster::FB_CHARGE
-      customer_object.monthly_entries_counter -= 1
-      customer_object.save!
+    if self.game_roster.nil?
+      ActiveRecord::Base.transaction do
+        customer_object = user.customer_object
+        customer_object.monthly_contest_entries -= Roster::FB_CHARGE
+        customer_object.monthly_entries_counter -= 1
+        customer_object.save!
+      end
+      TransactionRecord.create!(:user => user, :event => 'cancel_individual_prediction', :amount => Roster::FB_CHARGE * 1000)
+      Eventing.report(user, 'CancelIndividualPrediction', :amount => Roster::FB_CHARGE * 1000)
+    else
+      self.game_roster.contest.game_rosters.map(&:cancel!) if self.game_roster.contest
     end
-    TransactionRecord.create!(:user => user, :event => 'cancel_individual_prediction', :amount => Roster::FB_CHARGE * 1000)
-    Eventing.report(user, 'CancelIndividualPrediction', :amount => Roster::FB_CHARGE * 1000)
+
+    puts 'cancel prediction'
     self.update_attribute(:state, 'canceled')
   end
 
@@ -130,23 +136,25 @@ class GamePrediction < ActiveRecord::Base
 
   def payout
     customer_object = user.customer_object
+    amount_value = self.pt * 100 * customer_object.contest_winnings_multiplier
     ActiveRecord::Base.transaction do
-      customer_object.monthly_winnings += self.pt * 100
+      customer_object.monthly_winnings += amount_value
       customer_object.save!
     end
-    TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => self.pt * 100)
-    Eventing.report(user, 'IndividualPredictionWin', :amount => self.pt * 100)
+    TransactionRecord.create!(:user => user, :event => 'individual_prediction_win', :amount => amount_value)
+    Eventing.report(user, 'IndividualPredictionWin', :amount => amount_value)
     user.update_attribute(:total_wins, user.total_wins.to_i + 1)
-    self.update_attribute(:award, self.pt)
+    self.update_attribute(:award, self.pt * customer_object.contest_winnings_multiplier)
   end
 
   def process
     puts "process game prediction #{self.id}"
+    self.reload
     raise 'Should be submitted!' if self.state != 'submitted'
-    return if self.game.status != 'closed' && self.game.winning_team.nil?
 
-    if self.game.status == 'cancelled'
-      cancel!
+    if ['cancelled', 'postponed'].include?(self.game.status) || self.game.winning_team.nil?
+      self.cancel!
+      self.reload
       return
     end
 
@@ -156,5 +164,36 @@ class GamePrediction < ActiveRecord::Base
     end
 
     self.update_attribute(:state, 'finished')
+    puts 'finish prediction'
+    self.reload
+  end
+
+  def current_pt
+    return unless ['scheduled', 'live'].include?(self.game.status)
+
+    value = if team.name == Team.where(stats_id: game.home_team).first.name
+              game.home_team_pt
+            elsif team.name == Team.where(stats_id: game.away_team).first.name
+              game.away_team_pt
+            else
+              raise "Team not found for prediction #{self.id}"
+            end
+    return if pt - value == 0
+
+    value
+  end
+
+  def pt_refund
+    return unless current_pt
+
+    (pt/current_pt * PREDICTION_CHARGE - PREDICTION_CHARGE).round(2)
+  end
+
+  def refund_owner
+    ActiveRecord::Base.transaction do
+      customer_object = user.customer_object
+      customer_object.monthly_winnings += pt_refund * 100
+      customer_object.save
+    end
   end
 end

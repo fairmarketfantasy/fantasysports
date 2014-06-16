@@ -145,7 +145,7 @@ class GameRoster < ActiveRecord::Base
 
   def process
     puts "process game roster #{self.id}"
-    if game_predictions.where(state: 'canceled').any?
+    if game_predictions.where(state: ['canceled', 'postponed']).any?
       self.update_attribute(:state, 'canceled')
       return
     end
@@ -161,6 +161,7 @@ class GameRoster < ActiveRecord::Base
 
     self.update_attribute(:score, sum)
     self.update_attribute(:state, 'finished') if self.game_predictions.where("state != 'finished'").empty?
+    self.reload
   end
 
   def pre_destroy

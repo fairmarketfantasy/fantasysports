@@ -1,5 +1,6 @@
 class PredictionSerializer < ActiveModel::Serializer
-  attributes :market_name, :player_name, :game_time, :game_day, :game_result, :pt, :award, :state
+  attributes :id, :market_name, :player_name, :game_time, :game_day, :game_result,
+             :pt, :current_pt, :trade_message, :award, :state
 
   def market_name
     object.prediction_type.gsub('_', ' ').upcase
@@ -38,4 +39,7 @@ class PredictionSerializer < ActiveModel::Serializer
   #   team.nil? ? '' : team.name
   # end
 
+  def trade_message
+    "You can trade this prediction and return #{object.pt_refund} fanbucks."
+  end
 end
