@@ -106,12 +106,12 @@
         <!--SPORTS-->
         <li class="landing-ind-games-list"   ng-repeat="team in gamePrediction.games | limitTo:11">
           <div class="pull-left">
-            <p class="pull-left">{{team.home_team_name}}</p>
-            <a href="javascript://" ng-click="signUpModal()" class="pull-right btn prediction-less" popover-trigger="mouseenter" popover="PT{{team.home_team_pt | toFixed}}, predict correctly and win {{team.home_team_pt | toFixed}}FB" popover-placement="top">PT{{team.home_team_pt | toFixed}}</a>
+            <p class="pull-left">{{team.home_team.name}}</p>
+            <a href="javascript://" ng-click="signUpModal()" class="pull-right btn prediction-less" popover-trigger="mouseenter" popover="PT{{team.home_team.pt | toFixed}}, predict correctly and win {{team.home_team.pt | toFixed}}FB" popover-placement="top">PT{{team.home_team.pt | toFixed}}</a>
           </div>
           <div class="pull-left">
-            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more" popover-trigger="mouseenter" popover="PT{{team.away_team_pt | toFixed}}, predict correctly and win {{team.away_team_pt | toFixed}}FB" popover-placement="top">PT{{team.away_team_pt | toFixed}}</a>
-            <p class="pull-right">{{team.away_team_name}}</p>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more" popover-trigger="mouseenter" popover="PT{{team.away_team.pt | toFixed}}, predict correctly and win {{team.away_team.pt | toFixed}}FB" popover-placement="top">PT{{team.away_team.pt | toFixed}}</a>
+            <p class="pull-right">{{team.away_team.name}}</p>
           </div>
         </li>
       </ul>

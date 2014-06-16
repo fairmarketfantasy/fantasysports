@@ -48,24 +48,24 @@
             <tr class="roster-team-list" ng-repeat="teamList in gamePrediction.games | filter:searchTeam">
               <td colspan="2" class="larger">
                 <div class="roster-team-list-block pull-left">
-                  <span ng-class="{'ip-btn-disable' : teamList.disable_pt_home_team}" class="pull-right pt home_pt" ng-click="openCompetitionPredictionDialog(teamList, 'home')">PT{{teamList.home_team_pt | toFixed}}
-                    <span ng-hide="teamList.disable_pt_home_team"  popover-trigger="mouseenter" popover="PT{{teamList.home_team_pt | toFixed}}, predict correctly and win {{teamList.home_team_pt | toFixed}}FB" popover-placement="top"></span>
+                  <span ng-class="{'ip-btn-disable' : teamList.home_team.disable_pt}" class="pull-right pt home_pt" ng-click="openCompetitionPredictionDialog(teamList.home_team)">PT{{teamList.home_team.pt | toFixed}}
+                    <span ng-hide="teamList.home_team.disable_pt"  popover-trigger="mouseenter" popover="PT{{teamList.home_team.pt | toFixed}}, predict correctly and win {{teamList.home_team.pt | toFixed}}FB" popover-placement="top"></span>
                   </span>
-                  <div class="mr-team-image pull-right" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': teamList.home_team_logo_url && ('url(' + teamList.home_team_logo_url +')')}"></div>
-                  <p class="pull-right">{{teamList.home_team_name}}</p>
-                  <span ng-hide="teamList.disable_home_team" class="add-team pull-left" ng-click="addTeamInRoster(teamList, 'home')" href="javascript://">+</span>
+                  <div class="mr-team-image pull-right" ng-style="{'background-image': teamList.home_team.logo_url && ('url(' + teamList.home_team.logo_url +')')}"></div>
+                  <p class="pull-right">{{teamList.home_team.name}}</p>
+                  <span ng-hide="teamList.home_team.is_added" class="add-team pull-left" ng-click="addTeamInRoster(teamList.home_team, teamList.away_team.name)" href="javascript://">+</span>
                 </div>
                 <div class="roster-team-list-block pull-left">
-                  <span ng-class="{'ip-btn-disable' : teamList.disable_pt_away_team}" class="pull-left pt away_pt" ng-click="openCompetitionPredictionDialog(teamList, 'away')">PT{{teamList.away_team_pt | toFixed}}
-                    <span ng-hide="teamList.disable_pt_away_team" popover-trigger="mouseenter" popover="PT{{teamList.away_team_pt | toFixed}}, predict correctly and win {{teamList.away_team_pt | toFixed}}FB" popover-placement="top"></span>
+                  <span ng-class="{'ip-btn-disable' : teamList.away_team.disable_pt}" class="pull-left pt away_pt" ng-click="openCompetitionPredictionDialog(teamList.away_team)">PT{{teamList.away_team.pt | toFixed}}
+                    <span ng-hide="teamList.away_team.disable_pt" popover-trigger="mouseenter" popover="PT{{teamList.away_team.pt | toFixed}}, predict correctly and win {{teamList.away_team.pt | toFixed}}FB" popover-placement="top"></span>
                   </span>
-                  <div class="mr-team-image pull-left" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': teamList.away_team_logo_url && ('url(' + teamList.away_team_logo_url +')')}"></div>
-                  <p class="pull-left">{{teamList.away_team_name}}</p>
-                  <span ng-hide="teamList.disable_away_team" ng-click="addTeamInRoster(teamList, 'away')" class="pull-right add-team" href="javascript://">+</span>
+                  <div class="mr-team-image pull-left" ng-style="{'background-image': teamList.away_team.logo_url && ('url(' + teamList.away_team.logo_url +')')}"></div>
+                  <p class="pull-left">{{teamList.away_team.name}}</p>
+                  <span ng-hide="teamList.away_team.is_added" ng-click="addTeamInRoster(teamList.away_team, teamList.home_team.name)" class="pull-right add-team" href="javascript://">+</span>
                 </div>
               </td>
               <td class="tiny">
-                <p class="start-time">{{teamList.game_time | shortFormTime }}</p>
+                <p class="start-time">{{teamList.away_team.game_time | shortFormTime }}</p>
               </td>
             </tr>
           </tbody>
