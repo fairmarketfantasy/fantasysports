@@ -5,7 +5,7 @@
   <h3 ng-show="currentUser.currentCategory == 'sports' && currentUser.currentSport != 'FWC'">Your {{currentUser.currentCategory}} {{currentTitle}} games Prediction
     <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
   </h3>
-  <h3 ng-show='currentUser.currentSport == "FWC"'>Your {{currentUser.currentCategory}} {{currentTitle}} just my predictions
+  <h3 ng-show='currentUser.currentSport == "FWC"'>Your {{currentUser.currentCategory}} {{currentTitle}} my predictions
     <a ng-hide='currentUser.currentSport == "FWC"' class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
   </h3>
 </div>
@@ -19,6 +19,7 @@
     <th ng-show="$routeParams.category == 'fantasy_sports'">Prediction</th>
     <th>PT</th>
     <th>Award</th>
+    <th ng-show="prediction.state != 'finished'">Trade</th>
     <!--<th ng-hide="pt_history"></th>-->
   </thead>
   <tbody>
@@ -75,9 +76,14 @@
             </span>
             </div>
         </td>
-        <!--<td>-->
-           <!--<a href="javascript://" ng-hide="prediction.finished" ng-click="openPredictionDialog(prediction.id, prediction.player_stat_id, prediction.player_name)">Edit</a>-->
-        <!--</td>-->
+        <td>
+           <a ng-show="prediction.current_pt && prediction.state != 'finished'" href="javascript://"  ng-click="openTradeDialog(prediction)">
+               Trade
+           </a>
+            <span ng-hide="prediction.current_pt && prediction.state != 'finished'">
+                N/A
+            </span>
+        </td>
     </tr>
   </tbody>
 </table>

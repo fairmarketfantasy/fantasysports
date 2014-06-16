@@ -34,17 +34,16 @@ angular.module("app.controllers")
 
   $scope.fetchMore();
 
-  $scope.openPredictionDialog = function(event_id, stats_id, name) {
-    var player = {event_id:event_id, stats_id:stats_id, name:name}
+  $scope.openTradeDialog = function(prediction) {
     var dialogOpts = {
       backdrop: true,
       keyboard: true,
       backdropClick: true,
-      dialogClass: 'modal modal-prediction',
-      templateUrl: '/create_individual_prediction.html',
-      controller: 'UpdateIndividualPredictionController',
+      dialogClass: 'modal modal-trade-prediction',
+      templateUrl: '/trade_prediction.html',
+      controller: 'TradePredictionController',
       resolve: {
-          player: function() { return player; }
+        prediction: function() { return prediction; }
       }
     };
     return $dialog.dialog(dialogOpts).open();

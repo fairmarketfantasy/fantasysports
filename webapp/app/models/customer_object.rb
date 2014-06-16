@@ -84,7 +84,16 @@ class CustomerObject < ActiveRecord::Base
 
   def contest_winnings_multiplier
     # Exclude the current contest when counting bonus
-    1 + ([net_monthly_winnings, 0].min * -0.0005)/100.to_d
+    awards_multiplier + bonus_multiplier
+  end
+
+  def awards_multiplier
+    monthly_award = net_monthly_winnings/100
+    monthly_award > 200 ? 0.8.to_d : 1.to_d
+  end
+
+  def bonus_multiplier
+    ([net_monthly_winnings, 0].min * -0.0005)/100.to_d
   end
 
   #override reload to nil out memoized stripe object

@@ -92,24 +92,24 @@ class DataFetcher
           end
 
           #Fill games
-          game_time = DateTime.strptime(odd["GameTime"], '%m/%d/%Y %l:%M %p')
+          game_time = DateTime.strptime(odd["GameTime"], '%m/%d/%Y %l:%M %p') + 4.hours # Brasilia timezone difference
           home_ml = odd['HomeMoneyLine'].to_d
           away_ml = odd['VisitorMoneyLine'].to_d
           game_stats_id = Digest::MD5.hexdigest(team_ids.join + odd['GameTime'])
           game = Game.where(game_day:    game_time.strftime("%Y-%m-%d"),
-                            game_time:   game_time,
                             home_team:   team_ids.first,
                             away_team:   team_ids.last,
                             stats_id:    game_stats_id,
                             season_type: 'REG',
-                            sport_id:    sport_id).first_or_create!
+                            sport_id:    sport_id).first_or_initialize
 
+          game.game_time        = game_time
           game.home_team_pt     = get_pt_value(home_ml, 0)
           game.away_team_pt     = get_pt_value(away_ml, 0)
           game.home_team_status = odd['HomeScore']
           game.away_team_status = odd['VisitorScore']
           game.status           = 'scheduled'
-          game.save
+          game.save!
 
           #Fill prediction_pts
           prediction_pt = PredictionPt.find_by_stats_id_and_competition_type(team_ids.first, 'daily_wins') || PredictionPt.new(stats_id: team_ids.first, competition_type: 'daily_wins')
@@ -119,7 +119,7 @@ class DataFetcher
           prediction_pt.update_attributes!(pt: get_pt_value(away_ml, home_ml))
 
           #Process predictions for daily_wins
-          Prediction.process_prediction(game, 'daily_wins') if game_time < (Time.zone.now + 4.hours)
+          Prediction.process_prediction(game, 'daily_wins') if (game_time.utc + 4.hours) < Time.now.utc
         end
       end
     end
