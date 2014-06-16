@@ -50,7 +50,7 @@ angular.module("app.controllers")
   };
 
   $scope.isValidRoster = function() {
-    if(!competitionRosters.currentRoster || _.filter(competitionRosters.currentRoster.game_roster.game_predictions, function(p) {return p.team_stats_id}).length < 1){
+    if(!competitionRosters.currentRoster || _.filter(competitionRosters.currentRoster.game_roster.game_predictions, function(p) {return p.stats_id}).length < 1){
       return false;
     }
     return true;
@@ -62,9 +62,11 @@ angular.module("app.controllers")
 
   $scope.removeTeamFromRoster = function(team){
     _.find($scope.gamePrediction.games, function(data){
-      if(data.game_stats_id == team.game_stats_id){
-        team.home_team ?  data.disable_home_team = false : data.disable_away_team = false;
-      }
+      _.find(data, function(s){
+        if(team.game_stats_id == s.game_stats_id){
+          s.is_added = false;
+        }
+      });
     });
     competitionRosters.removeTeam(team);
   }
@@ -72,7 +74,7 @@ angular.module("app.controllers")
   $scope.submitRoster = function(){
     _.each($scope.gamePrediction.game_roster.game_predictions, function(data){
       if(data.game_stats_id){
-        $scope.submitList.push({game_stats_id: data.game_stats_id, team_stats_id: data.team_stats_id, position_index: data.position_index})
+        $scope.submitList.push({game_stats_id: data.game_stats_id, team_stats_id: data.stats_id, position_index: data.position_index})
       }
     });
 
@@ -112,17 +114,11 @@ angular.module("app.controllers")
       }
     } ;
 
-    $scope.openCompetitionPredictionDialog = function(team, side) {
+    $scope.openCompetitionPredictionDialog = function(team) {
 
-      if(side == 'home'){
-        if(team.disable_pt_home_team){
+        if(team.disable_pt){
           return false;
         }
-      } else{
-        if(team.disable_pt_away_team){
-          return false;
-        }
-      }
 
       var dialogOpts = {
         backdrop: true,
@@ -133,7 +129,6 @@ angular.module("app.controllers")
         controller: 'CompetitionCreateIndividualPredictionController',
         resolve: {
           team: function() { return team; },
-          side: function() { return side; },
           games: function() { return competitionRosters.currentRoster.games; }
         }
       };

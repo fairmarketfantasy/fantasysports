@@ -18,9 +18,9 @@ angular.module("app.controllers")
           });
         } else if(prediction_type == 'win_groups'){
           _.find(data, function(win_groups){
-            _.find(win_groups, function(time){
-              if(predictable_id == time.stats_id){
-                time.disable_pt = true;
+            _.find(win_groups, function(team){
+              if(predictable_id == team.stats_id){
+                team.disable_pt = true;
               }
             });
           });

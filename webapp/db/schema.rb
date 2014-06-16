@@ -129,7 +129,8 @@ ActiveRecord::Schema.define(version: 20140604152139) do
     t.decimal  "value"
   end
 
-  create_table "game_events", force: true do |t|
+  create_table "game_events", id: false, force: true do |t|
+    t.integer  "id",              null: false
     t.string   "stats_id"
     t.integer  "sequence_number", null: false
     t.string   "type",            null: false
@@ -428,6 +429,7 @@ ActiveRecord::Schema.define(version: 20140604152139) do
     t.decimal  "ppg",           default: 0.0
     t.boolean  "legionnaire",   default: false, null: false
     t.decimal  "pt"
+    t.string   "info",          default: "{}"
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
@@ -683,10 +685,10 @@ ActiveRecord::Schema.define(version: 20140604152139) do
     t.integer  "total_wins",             default: 0,     null: false
     t.decimal  "win_percentile",         default: 0.0,   null: false
     t.integer  "token_balance",          default: 0
-    t.string   "avatar"
     t.string   "username"
     t.string   "fb_token"
     t.integer  "inviter_id"
+    t.string   "avatar"
     t.text     "bonuses"
     t.string   "referral_code"
     t.integer  "total_loses",            default: 0
