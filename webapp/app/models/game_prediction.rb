@@ -107,7 +107,7 @@ class GamePrediction < ActiveRecord::Base
     end
 
     def create_prediction(opts = {})
-      game = Game.where(stats_id: opts[:game_stats_id]).first
+      game = opts[:game]
       pt = opts[:team_stats_id] == game.home_team ? game.home_team_pt : game.away_team_pt
       prediction = User.find(opts[:user_id]).game_predictions.create!(game_stats_id: opts[:game_stats_id],
                                                                       team_stats_id: opts[:team_stats_id],

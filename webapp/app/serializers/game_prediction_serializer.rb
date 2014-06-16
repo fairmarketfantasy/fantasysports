@@ -3,7 +3,7 @@ class GamePredictionSerializer < ActiveModel::Serializer
              :away_team_name, :market_name, :player_name, :state, :award,
              :game_stats_id, :home_team, :opposite_team, :team_logo,
              :team_stats_id, :position_index, :game_result, :current_pt,
-             :trade_message, :stats_id, :name, :logo_url, :is_home
+             :trade_message, :stats_id, :name, :logo_url, :is_home, :show_trade
 
   def team_name
     Team.where(stats_id: object.team_stats_id).first.name
@@ -44,6 +44,10 @@ class GamePredictionSerializer < ActiveModel::Serializer
     object.game.teams.where.not(:stats_id => object.team_stats_id).first.name
   end
 
+  def show_trade
+    !!current_pt
+  end
+
   def trade_message
     "You can trade this prediction and return #{object.pt_refund} fanbucks."
   end
@@ -62,9 +66,5 @@ class GamePredictionSerializer < ActiveModel::Serializer
 
   def is_home
     home_team
-  end
-
-  def trade_message
-    "You can trade this prediction and return #{object.pt_refund} fanbucks."
   end
 end

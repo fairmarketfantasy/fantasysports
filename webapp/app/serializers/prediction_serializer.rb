@@ -1,6 +1,6 @@
 class PredictionSerializer < ActiveModel::Serializer
   attributes :id, :market_name, :player_name, :game_time, :game_day, :game_result,
-             :pt, :current_pt, :trade_message, :award, :state
+             :pt, :current_pt, :trade_message, :award, :state, :show_trade
 
   def market_name
     object.prediction_type.gsub('_', ' ').upcase
@@ -26,6 +26,10 @@ class PredictionSerializer < ActiveModel::Serializer
 
   def game_result
     object.result
+  end
+
+  def show_trade
+    !!current_pt
   end
 
   # CHOOSE THE GAME
