@@ -86,11 +86,10 @@ class DataFetcher
           [home_name, visitor_name].each do |name|
             team_label = name.first.rstrip
             team_label = 'Bosnia' if name.first.rstrip.include?('Bosnia')
-            stat_id = Digest::MD5.hexdigest(team_label + odd['GameTime'])
-            team_ids << stat_id
-            team = Team.where(name: team_label, abbrev: team_label, sport_id: sport_id, market: 'World Cup').first_or_create
-            team.stats_id = stat_id
-            team.save
+            stat_id = Digest::MD5.hexdigest(team_label)
+            relation = Team.where(name: team_label, abbrev: team_label, sport_id: sport_id, market: 'World Cup')
+            team = relation.first || relation.where(stats_id: stat_id).create!
+            team_ids << team.stats_id
           end
 
           #Fill games
