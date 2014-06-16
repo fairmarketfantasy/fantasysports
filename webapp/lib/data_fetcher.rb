@@ -88,7 +88,9 @@ class DataFetcher
             team_label = 'Bosnia' if name.first.rstrip.include?('Bosnia')
             stat_id = Digest::MD5.hexdigest(team_label + odd['GameTime'])
             team_ids << stat_id
-            Team.where(name: team_label, abbrev: team_label, sport_id: sport_id, market: 'World Cup', stats_id: stat_id).first_or_create!
+            team = Team.where(name: team_label, abbrev: team_label, sport_id: sport_id, market: 'World Cup').first_or_create
+            team.stats_id = stat_id
+            team.save
           end
 
           #Fill games
