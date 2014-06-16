@@ -2,6 +2,7 @@ class IndividualPredictionsController < ApplicationController
   def create
     raise HttpException.new(402, "Agree to terms!") unless current_user.customer_object.has_agreed_terms?
     raise HttpException.new(402, "Unpaid subscription!") if !current_user.active_account? && !current_user.customer_object.trial_active?
+    raise HttpException.new(403, "This market is closed") unless Market.find(params[:market_id]).accepting_rosters?
 
     prediction = IndividualPrediction.create_prediction(params, current_user)
     params[:events].each do |event|

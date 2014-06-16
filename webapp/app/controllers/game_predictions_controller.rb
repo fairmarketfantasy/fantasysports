@@ -25,9 +25,13 @@ class GamePredictionsController < ApplicationController
     raise HttpException.new(402, 'Agree to terms!') unless current_user.customer_object.has_agreed_terms?
     raise HttpException.new(402, 'Unpaid subscription!') if !current_user.active_account? && !current_user.customer_object.trial_active?
 
-    GamePrediction.create_prediction(:user_id => current_user.id,
-                                     :game_stats_id => params[:game_stats_id],
-                                     :team_stats_id => params[:team_stats_id])
+    game = Game.where(stats_id: params[:game_stats_id]).first
+    raise HttpException.new(422, 'Trade error: prediction is not submitted') unless game.status == 'scheduled'
+
+    GamePrediction.create_prediction(user_id: current_user.id,
+                                     game_stats_id: params[:game_stats_id],
+                                     team_stats_id: params[:team_stats_id],
+                                     game: game)
 
     render :json => { 'msg' => 'Game prediction submitted successfully!' }, :status => :ok
   end
