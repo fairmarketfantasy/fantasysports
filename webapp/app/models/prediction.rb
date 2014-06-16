@@ -10,7 +10,7 @@ class Prediction < ActiveRecord::Base
         pt = get_pt_value(params)
         game_stats_id = params[:game_stats_id] || ''
         game = Game.where(stats_id: game_stats_id).first
-        return [{error: "Game is closed"}, :unprocessable_entity] if game && game.status != 'scheduled'
+        return [{error: "Game is closed"}, :unprocessable_entity] if game && game.game_time.utc < Time.now.utc
 
         user.predictions.create!(stats_id: params[:predictable_id],
                                  sport: params[:sport],

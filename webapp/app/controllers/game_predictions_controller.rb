@@ -26,7 +26,7 @@ class GamePredictionsController < ApplicationController
     raise HttpException.new(402, 'Unpaid subscription!') if !current_user.active_account? && !current_user.customer_object.trial_active?
 
     game = Game.where(stats_id: params[:game_stats_id]).first
-    raise HttpException.new(422, 'Trade error: prediction is not submitted') unless game.status == 'scheduled'
+    raise HttpException.new(422, 'Create error: the game is started') if game.game_time < Time.now.utc
 
     GamePrediction.create_prediction(user_id: current_user.id,
                                      game_stats_id: params[:game_stats_id],
