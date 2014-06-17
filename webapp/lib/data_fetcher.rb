@@ -76,7 +76,9 @@ class DataFetcher
 
     def parse_world_cup
       sport_id = Sport.where(name: "FWC").first.id
-      odds = JSON.load open(WORLD_CUP_API_URL)
+      year = Time.current.year
+      fwc_duration = "06-01-#{year}/09-01-#{year}"
+      odds = JSON.load open(WORLD_CUP_API_URL + fwc_duration)
       odds.each do |odd|
         if odd['Category'].eql? 'International World Cup 2014'
           #Fill teams
