@@ -2,6 +2,7 @@ angular.module("app.controllers")
 .controller('LandingWorldCupController', ['$scope', '$routeParams', '$location', 'markets', 'flash', '$dialog', 'currentUserService','fs', 'registrationService', function($scope, $routeParams, $location, marketService, flash, $dialog, currentUserService, fs, registrationService) {
     $scope.types_games = [];
     $scope.prediction_type_list={};
+    $scope.isExternal = true;
 
    if($routeParams.sport == 'FWC'){
      fs.world_cup_rosters.mine($routeParams.sport).then(function(data){

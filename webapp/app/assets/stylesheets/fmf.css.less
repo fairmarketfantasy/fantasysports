@@ -857,12 +857,18 @@ select:focus:invalid {
 .popover.top .arrow{
   border-top-color: #777;
 }
+.popover.bottom .arrow{
+  border-bottom-color: #777;
+}
 
 .landing-container{
   .popover.right-centered[style]{
     left: -216px!important;
     .arrow{
       margin-left: 95px;
+    }
+    &.bottom{
+      top: 27px!important;
     }
   }
 }
