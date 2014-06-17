@@ -9,12 +9,15 @@ class Prediction < ActiveRecord::Base
       begin
         pt = get_pt_value(params)
         game_stats_id = params[:game_stats_id] || ''
+        game = Game.where(stats_id: game_stats_id).first
+        return [{error: "Game is closed"}, :unprocessable_entity] if game && game.game_time.utc < Time.now.utc
+
         user.predictions.create!(stats_id: params[:predictable_id],
                                  sport: params[:sport],
                                  game_stats_id: game_stats_id,
                                  prediction_type: params[:prediction_type],
                                  state: 'submitted',
-                                 pt: pt)
+                                 pt: adjusted_pt(user: user))
         TransactionRecord.create!(user: user, event: "create_#{params[:prediction_type]}_prediction", amount: 15)
         Eventing.report(user, "create_#{params[:prediction_type]}_prediction", amount: 15)
         customer_object = user.customer_object
@@ -50,12 +53,12 @@ class Prediction < ActiveRecord::Base
 
           user = prediction.user
           customer_object = user.customer_object
-          award *= customer_object.contest_winnings_multiplier
           ActiveRecord::Base.transaction do
             customer_object.monthly_contest_entries += 1.5
             customer_object.monthly_winnings += award * 100
             customer_object.save
           end
+
           TransactionRecord.create!(user: user, event: event, amount: award)
           Eventing.report(user, event, amount: award)
           prediction.update_attributes(state: 'finished', result: result, award: award)
@@ -124,6 +127,14 @@ class Prediction < ActiveRecord::Base
       customer_object.monthly_winnings += pt_refund * 100
       customer_object.save
     end
+  end
+
+  def adjusted_pt(opts = {})
+    value = self.pt
+    user = opts[:user]
+    value *= user.customer_object.contest_winnings_multiplier if user
+    value = 15.01.to_d if value < 15.to_d
+    value.round(2)
   end
 
   private

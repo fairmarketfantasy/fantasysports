@@ -129,7 +129,7 @@ footer {
     max-height: 469px;
   }
   .roster-alert {
-    bottom: 0;
+    bottom: 13px;
   }
 }
 .FWC.sports {
@@ -143,7 +143,7 @@ footer {
     max-height: 469px;
   }
   .roster-alert {
-    bottom: 0;
+    bottom: 13px;
   }
   .roster-main .players-area,
   .roster-main .roster-area {
@@ -836,7 +836,7 @@ select:focus:invalid {
   margin-left: -7px;
 }
 .landing-nav .popover.bottom,
-.landing-nav .popover.right{
+.landing-nav  .popover.right{
   background-color: @black;
   border-color:@black;
 }
@@ -856,6 +856,15 @@ select:focus:invalid {
 }
 .popover.top .arrow{
   border-top-color: #777;
+}
+
+.landing-container{
+  .popover.right-centered[style]{
+    left: -216px!important;
+    .arrow{
+      margin-left: 95px;
+    }
+  }
 }
 .user-balance {
   position: relative;
@@ -2864,9 +2873,8 @@ textarea[class*="span"] {
   }
   .pt span,
   .roster-overflow .prediction span{
-      display:none;
+//      display:none;
   }
-
 }
 .landing-roster-title{
   background-color: inherit;
@@ -2881,6 +2889,10 @@ textarea[class*="span"] {
   margin-right: 10%;
   h4{
     text-shadow: 1px 1px 2px @black;
+  }
+  #start-free-trial-button{
+    margin-top: 10px;
+    .border-radius(25px);
   }
 }
 #sport-teaser {
@@ -2899,7 +2911,7 @@ textarea[class*="span"] {
   position: absolute;
   right: 10%;
   text-align: left;
-  top: 200px;
+  top: 260px;
   text-shadow: 1px 1px 2px @black;
   ul{
     margin-top: 20px;

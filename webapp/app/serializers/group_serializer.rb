@@ -4,6 +4,6 @@ class GroupSerializer < ActiveModel::Serializer
   has_many :teams
 
   def teams
-    object.teams.map { |t| TeamSerializer.new(t, {type: 'win_groups', user: options[:user]}) }
+    object.teams.map { |t| TeamSerializer.new(t, options) }
   end
 end

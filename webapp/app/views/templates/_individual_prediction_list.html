@@ -11,7 +11,7 @@
 </div>
 <table class="table table-striped">
   <thead>
-    <th>Event</th>
+    <th><a href="javascript://" ng-click="predicate = 'market_name'; reverse=!reverse">Event</a></th>
     <th>Choice</th>
     <th>Game time</th>
     <th>Day</th>
@@ -23,7 +23,7 @@
     <!--<th ng-hide="pt_history"></th>-->
   </thead>
   <tbody>
-    <tr ng-repeat="prediction in predictionList | orderBy:'id':reverse=true" >
+    <tr ng-repeat="prediction in predictionList | orderBy:predicate:reverse" >
       <td>
         <div>
             <span>{{prediction.market_name}}</span>
@@ -38,7 +38,7 @@
         <span>{{prediction.game_time | onlyFormTime | NAIfEmpty}}</span>
       </td>
       <td>
-        <span>{{prediction.game_day | longFormDate | NAIfEmpty}}</span>
+        <span>{{prediction.game_time | longFormDate | NAIfEmpty}}</span>
       </td>
       <td>
         <span ng-show="prediction.state == 'finished'">

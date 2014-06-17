@@ -416,7 +416,7 @@ angular.module('app.services')
       game_predictions : {
         dayGames: function(sport, roster_id){
           roster_id = roster_id || 'false';
-          return $http({method: 'GET', url: '/game_predictions/day_games?sport='+sport+'&roster_id='+roster_id});
+          return $http({method: 'GET', url: '/game_predictions/new_day_games?sport='+sport+'&roster_id='+roster_id});
         },
         sample: function(sport){
           return $http({method: 'GET', url: '/game_predictions/sample?sport='+sport});
@@ -433,7 +433,7 @@ angular.module('app.services')
           return $http({method: 'PUT', url: '/game_rosters/'+roster_id, data: {teams: opts}});
         },
         autofill: function(sport){
-          return $http({method: 'POST', url: '/game_rosters/autofill?sport='+sport});
+          return $http({method: 'POST', url: '/game_rosters/new_autofill?sport='+sport});
         },
         in_contest: function(roster_id){
           return $http({method: 'GET', url: '/game_rosters/in_contest/'+roster_id});

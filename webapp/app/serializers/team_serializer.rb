@@ -9,7 +9,7 @@ class TeamSerializer < ActiveModel::Serializer
     Prediction.prediction_made?(stats_id, options[:type], '', options[:user])
   end
 
-  def pt(competition_type = options[:type])
-    object.pt(competition_type)
+  def pt(options = {})
+    value = object.pt(options)
   end
 end

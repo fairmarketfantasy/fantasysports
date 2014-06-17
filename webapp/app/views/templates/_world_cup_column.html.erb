@@ -11,7 +11,7 @@
           <span class="pull-left mr-player-name">{{list.name}}</span>
           <div class="prediction pull-right">
             <p ng-class="{'ip-btn-disable' : list.disable_pt}" ng-click="openCWorldCupPredictionDialog(list)">PT{{list.pt | toFixed}}
-              <span ng-hide="list.disable_pt" popover-trigger="mouseenter" popover="{{list.name}} PT{{list.pt | toFixed}}, predict correctly and win {{list.pt | toFixed}}FB" popover-placement="top"></span>
+              <span ng-hide="list.disable_pt" popover-trigger="mouseenter" popover="{{list.name}} PT{{list.pt | toFixed}}, predict correctly and win {{list.pt | toFixed}}FB" popover-placement="{{($index%2)?'top right-centered':'top'}}"></span>
             </p>
           </div>
         </li>

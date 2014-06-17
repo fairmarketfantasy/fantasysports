@@ -26,37 +26,45 @@ class GameRostersController < ApplicationController
 
   def update
     roster = GameRoster.find(params[:id])
+    roster.game_predictions.destroy_all
     params[:teams].each do |bet|
       game = Game.where(stats_id: bet[:game_stats_id]).first
       pt = bet[:team_stats_id] == game.home_team ? game.home_team_pt : game.away_team_pt
-      item = roster.game_predictions.where(user_id: current_user.id,
-                                           game_stats_id: bet[:game_stats_id],
-                                           team_stats_id: bet[:team_stats_id],
-                                           pt: pt).first_or_create!
-      item.update_attribute(:position_index, bet[:position_index])
+      roster.game_predictions.create(user_id: current_user.id,
+                                     game_stats_id: bet[:game_stats_id],
+                                     team_stats_id: bet[:team_stats_id],
+                                     position_index: bet[:position_index],
+                                     state: 'submitted',
+                                     pt: pt)
     end
 
-    game_ids = params[:teams].map { |bet| bet[:game_stats_id] }
-    team_ids = params[:teams].map { |bet| bet[:team_stats_id] }
-    arr = roster.game_predictions.where.not(game_stats_id: game_ids,
-                                            team_stats_id: team_ids)
-    arr.destroy_all
-
-    render :json => { 'msg' => 'Roster updated successfully!' }, :status => :ok
+    render json: { 'msg' => 'Roster updated successfully!' }, status: :ok
   end
 
   def in_contest
     contest = Contest.find(params[:contest_id])
-    rosters = contest.game_rosters.where(:state => ['submitted', 'finished']).
-                                   order('contest_rank asc')
-    render :json => GameRoster.json_view(rosters)
+    rosters = contest.game_rosters.where(state: ['submitted', 'finished'])
+                                  .order('contest_rank asc')
+    render json: GameRoster.json_view(rosters)
   end
 
   def autofill
     data = GameRoster.sample(params[:sport])
 
-    render :json => { predictions: data.map { |d| GamePredictionSerializer.new(d) },
-                      games: GamePrediction.generate_games_data(sport: params[:sport],
-                      category: 'fantasy_sports', roster: data.map(&:team_stats_id), user: current_user)}.to_json
+    render json: {predictions: data.map { |d| GamePredictionSerializer.new(d) },
+                  games: GamePrediction.generate_games_data(sport: params[:sport],
+                  category: 'fantasy_sports',
+                  roster: data.map(&:team_stats_id),
+                  user: current_user)}.to_json
+  end
+
+  def new_autofill
+    data = GameRoster.sample(params[:sport])
+
+    render json: {predictions: data.map { |d| GamePredictionSerializer.new(d) },
+                  games: GamePrediction.generate_new_games_data(sport: params[:sport],
+                  category: 'fantasy_sports',
+                  roster: data.map(&:team_stats_id),
+                  user: current_user)}.to_json
   end
 end

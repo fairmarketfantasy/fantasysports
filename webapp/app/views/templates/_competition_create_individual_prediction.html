@@ -1,10 +1,10 @@
 
 <div class='modal-body clearfix'>
-    <h4 class="pull-left">Predict <span class="pt">PT{{ind_team.team_pt | toFixed}}</span> {{ind_team.team_name}} <img src="" class="mr-ind-team-image"  alt="logo" ng-src="{{ind_team.team_logo_url }}" />?</h4>
+    <h4 class="pull-left">Predict <span class="pt">PT{{team.pt | toFixed}}</span> {{team.name}} <img src="" class="mr-ind-team-image"  alt="logo" ng-src="{{team.logo_url }}" />?</h4>
 
 </div>
 <div class='modal-footer'>
-    <a href="javascript://" class="btn btn-success" ng-click="ipSubmit(ind_team.game_stats_id, ind_team.team_stats_id)">Submit</a>
+    <a href="javascript://" class="btn btn-success" ng-click="ipSubmit(team.game_stats_id, team.stats_id)">Submit</a>
     <a href="javascript://" class="btn btn-info" ng-click="close()" >Cancel</a>
 </div>
 
