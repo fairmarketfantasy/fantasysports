@@ -158,16 +158,18 @@ Fantasysports::Application.routes.draw do
 
   resources :game_rosters, :only => [:create, :show, :update] do
     collection do
-      post 'autofill', :action => 'autofill'
-      get 'in_contest/:contest_id', :action => 'in_contest'
+      post 'autofill', action: 'autofill'
+      post 'new_autofill', action: 'new_autofill'
+      get 'in_contest/:contest_id', action: 'in_contest'
     end
   end
 
   resources :game_predictions, :only => [:show, :create] do
     collection do
-      get 'mine', :action => 'mine'
-      get 'day_games', :action => 'day_games'
-      get 'sample', :action => 'sample'
+      get 'mine', action: 'mine'
+      get 'day_games', action: 'day_games'
+      get 'new_day_games', action: 'new_day_games'
+      get 'sample', action: 'sample'
     end
   end
   #Stripe webhooks

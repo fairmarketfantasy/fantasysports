@@ -53,6 +53,10 @@ class PlayerSerializer < ActiveModel::Serializer
     object.benched? ? true : false
   end
 
+  def pt
+    object.adjusted_pt(options)
+  end
+
   def ppg
     return unless object.ppg
 

@@ -76,7 +76,9 @@ class DataFetcher
 
     def parse_world_cup
       sport_id = Sport.where(name: "FWC").first.id
-      odds = JSON.load open(WORLD_CUP_API_URL)
+      year = Time.current.year
+      fwc_duration = "06-01-#{year}/09-01-#{year}"
+      odds = JSON.load open(WORLD_CUP_API_URL + fwc_duration)
       odds.each do |odd|
         if odd['Category'].eql? 'International World Cup 2014'
           #Fill teams
@@ -86,9 +88,10 @@ class DataFetcher
           [home_name, visitor_name].each do |name|
             team_label = name.first.rstrip
             team_label = 'Bosnia' if name.first.rstrip.include?('Bosnia')
-            stat_id = Digest::MD5.hexdigest(team_label + odd['GameTime'])
-            team_ids << stat_id
-            Team.where(name: team_label, abbrev: team_label, sport_id: sport_id, market: 'World Cup', stats_id: stat_id).first_or_create!
+            stat_id = Digest::MD5.hexdigest(team_label)
+            relation = Team.where(name: team_label, abbrev: team_label, sport_id: sport_id, market: 'World Cup')
+            team = relation.first || relation.where(stats_id: stat_id).create!
+            team_ids << team.stats_id
           end
 
           #Fill games

@@ -8,7 +8,6 @@ angular.module("app.controllers")
         dialog.close();
         flash.success(data.msg);
         location.reload();
-
       }, function(data){
         flash.error(data.error);
       });

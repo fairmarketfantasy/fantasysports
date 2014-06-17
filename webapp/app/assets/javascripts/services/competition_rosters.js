@@ -24,40 +24,24 @@ angular.module('app.data')
 
       var indexForPlayerInRoster = function(roster) {return _.min(roster.game_roster.game_predictions, function(data){return data.index});};
 
-      this.addTeam = function(team, side){
+      this.addTeam = function(team, opposite_team_name){
         var teamPosition = indexForPlayerInRoster(this.currentRoster);
         if(teamPosition.index != undefined){
-          if(side == 'home'){
-            var selectTeam = {
-              home_team: true,
-              team_stats_id:  team.home_team_stats_id,
-              team_name:      team.home_team_name,
-              team_logo:      team.home_team_logo_url,
-              pt:             team.home_team_pt,
-              game_stats_id:  team.game_stats_id,
-              position_index: teamPosition.index,
-              game_time:      team.game_time,
-              opposite_team:  team.away_team_name
-            }
-            this.currentRoster.game_roster.game_predictions[teamPosition.index] = selectTeam;
-          } else{
-            var selectTeam = {
-              home_team:     false,
-              team_stats_id: team.away_team_stats_id,
-              team_name:     team.away_team_name,
-              team_logo:     team.away_team_logo_url,
-              pt:            team.away_team_pt,
-              game_stats_id: team.game_stats_id,
-              position_index:teamPosition.index,
-              game_time:     team.game_time,
-              opposite_team: team.home_team_name
-            }
-            this.currentRoster.game_roster.game_predictions[teamPosition.index] = selectTeam;
-          }
+          var selectTeam = {
+            position_index: teamPosition.index,
+            opposite_team:  opposite_team_name
+          };
+          $.extend(team, selectTeam)
+
+          this.currentRoster.game_roster.game_predictions[teamPosition.index] = team;
+
           _.find(this.currentRoster.games, function(data){
-            if(data.game_stats_id == team.game_stats_id){
-              side == 'home' ?  data.disable_home_team = true : data.disable_away_team = true;
-            }
+            _.find(data, function(s){
+              if(team.stats_id == s.stats_id){
+                console.log(s)
+                s.is_added = true;
+              }
+            });
           });
         } else {
           flash.error("Roster is full");
