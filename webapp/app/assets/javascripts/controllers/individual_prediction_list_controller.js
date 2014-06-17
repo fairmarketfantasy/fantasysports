@@ -7,6 +7,7 @@ angular.module("app.controllers")
   $scope.landingShow = true;
   var page = 0;
   $scope.predictionList = [];
+  $scope.predicate = '-id';  //sort by id
 
   $scope.fetchMore = function() {
     $scope.showMore = false;
