@@ -77,10 +77,10 @@
             </div>
         </td>
         <td>
-           <a ng-show="prediction.current_pt && prediction.state != 'finished' && inThePast(prediction.game_time)" href="javascript://"  ng-click="openTradeDialog(prediction)">
+           <a ng-show="prediction.current_pt && prediction.state != 'finished'" href="javascript://"  ng-click="openTradeDialog(prediction)">
                Trade
            </a>
-            <span ng-hide="prediction.current_pt && prediction.state != 'finished' && inThePast(prediction.game_time)">
+            <span ng-hide="prediction.current_pt && prediction.state != 'finished'">
                 N/A
             </span>
         </td>
