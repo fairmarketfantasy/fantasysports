@@ -19,7 +19,8 @@ class SportStrategy
           ["game_type IS NULL OR game_type = 'regular_season'"]
           ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', Time.now.utc, Time.now.utc.end_of_day + 6.hours]
           ).order('closed_at asc')
-      markets.any? && markets.first.games.first.season_type == "PST" ? markets.limit(3) : markets.limit(20)
+      markets = markets.any? && markets.first.games.first.season_type == "PST" ? markets.limit(3) : markets.limit(20)
+      markets.select { |m| m.games.first.status == 'scheduled' }
     end
   end
 
