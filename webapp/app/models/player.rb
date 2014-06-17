@@ -238,6 +238,14 @@ class Player < ActiveRecord::Base
     adjust_wins(data, this_year_stats)
   end
 
+  def adjusted_pt(opts = {})
+    value = self.pt
+    user = opts[:user]
+    value *= user.customer_object.contest_winnings_multiplier if user
+    value = 15.01.to_d if value < 15.to_d
+    value.round(2)
+  end
+
   private
 
   def current_bid_ids(market_id, player_id, current_user_id)
