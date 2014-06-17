@@ -12,18 +12,28 @@ class Team < ActiveRecord::Base
     Game.where("home_team = '#{self.id}' OR away_team = '#{self.id}'")
   end
 
-  def pt(competition_type=nil)
-    return PredictionPt.find_by_stats_id_and_competition_type(self.id, competition_type).pt if !competition_type.nil? && PredictionPt.exists?(stats_id: self.id, competition_type: competition_type)
-    return Game.find_by_home_team(self.id).home_team_pt if Game.exists?(home_team: self.id)
-    return Game.find_by_away_team(self.id).away_team_pt if Game.exists?(away_team: self.id)
+  def pt(opts = {})
+    competition_type = opts[:competition_type] rescue binding.pry
+    value = if !competition_type.nil? && PredictionPt.exists?(stats_id: self.id, competition_type: competition_type)
+              PredictionPt.find_by_stats_id_and_competition_type(self.id, competition_type).pt
+            elsif Game.exists?(home_team: self.id)
+              Game.find_by_home_team(self.id).home_team_pt
+            elsif Game.exists?(away_team: self.id)
+              Game.find_by_away_team(self.id).away_team_pt
+            end
+
+    user = opts[:user]
+    value *= user.customer_object.contest_winnings_multiplier if user
+    value = 15.01.to_d if value < 15.to_d
+    value.round(2)
   end
 
   def game_stats_id
   end
 
   def home_disable_pt
-    Prediction.prediction_made?(object.home_team, 'daily_wins', object.stats_id) || Prediction.prediction_made?(object.away_team, 'daily_wins', object.stats_id)
-
+    Prediction.prediction_made?(object.home_team, 'daily_wins', object.stats_id) ||
+      Prediction.prediction_made?(object.away_team, 'daily_wins', object.stats_id)
   end
 
   # Either an abbrev or a stats_id

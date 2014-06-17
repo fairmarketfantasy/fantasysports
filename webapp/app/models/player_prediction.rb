@@ -9,7 +9,7 @@ class PlayerPrediction < Prediction
 
     def create_prediction(params, user)
       player = Player.where(id: params[:player_id]).first
-      user.player_predictions.create!(player_id: player.id, user: user, pt: player.pt)
+      user.player_predictions.create!(player_id: player.id, user: user, pt: player.adjusted_pt(user: user))
       TransactionRecord.create!(:user => user, :event => 'create_player_prediction',
                                 :amount => Roster::FB_CHARGE * 1000)
       Eventing.report(user, 'CreatePlayerPrediction', :amount => Roster::FB_CHARGE * 1000)
