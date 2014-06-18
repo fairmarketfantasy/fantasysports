@@ -18,7 +18,7 @@ private
         name: team.name,
         stats_id: team_stats_id,
         logo_url: team.logo_url,
-        pt: team.pt(options),
+        pt: team.pt(options.merge(game_stats_id: object.stats_id)),
         game_stats_id: object.stats_id,
         disable_pt: Prediction.prediction_made?(team_stats_id, 'daily_wins', object.stats_id, options[:user])
     }

@@ -370,6 +370,7 @@ class FWCStrategy < NonFantasyStrategy
     teams_data = data.select { |d| d['Category'].eql?("Winner 2014") }
     teams_data.each do |team_data|
       name = team_data['ContestName']
+      name = 'Bosnia' if team_data['ContestName'].include?('Bosnia')
       next unless Team.exists?(name: name)
       team = Team.find_by_name(name)
       prediction_pt = PredictionPt.find_by_stats_id_and_competition_type(team.stats_id, 'win_the_cup') || PredictionPt.new(stats_id: team.stats_id, competition_type: 'win_the_cup')

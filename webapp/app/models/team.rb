@@ -13,13 +13,13 @@ class Team < ActiveRecord::Base
   end
 
   def pt(opts = {})
-    competition_type = opts[:competition_type] rescue binding.pry
+    competition_type = opts[:type]
     value = if !competition_type.nil? && PredictionPt.exists?(stats_id: self.id, competition_type: competition_type)
               PredictionPt.find_by_stats_id_and_competition_type(self.id, competition_type).pt
-            elsif Game.exists?(home_team: self.id)
-              Game.find_by_home_team(self.id).home_team_pt
-            elsif Game.exists?(away_team: self.id)
-              Game.find_by_away_team(self.id).away_team_pt
+            elsif Game.exists?(home_team: self.id, stats_id: opts[:game_stats_id])
+              Game.find_by_home_team_and_stats_id(self.id, opts[:game_stats_id]).home_team_pt
+            elsif Game.exists?(away_team: self.id, stats_id: opts[:game_stats_id])
+              Game.find_by_away_team_and_stats_id(self.id, opts[:game_stats_id]).away_team_pt
             end
 
     user = opts[:user]
