@@ -107,19 +107,12 @@ class DataFetcher
                             sport_id:    sport_id).first_or_initialize
 
           game.game_time        = game_time
-          game.home_team_pt     = get_pt_value(home_ml, 0)
-          game.away_team_pt     = get_pt_value(away_ml, 0)
+          game.home_team_pt     = get_dayly_wins_pt(home_ml, away_ml)
+          game.away_team_pt     = get_dayly_wins_pt(away_ml, home_ml)
           game.home_team_status = odd['HomeScore']
           game.away_team_status = odd['VisitorScore']
           game.status           = 'scheduled'
           game.save!
-
-          #Fill prediction_pts
-          prediction_pt = PredictionPt.find_by_stats_id_and_competition_type(team_ids.first, 'daily_wins') || PredictionPt.new(stats_id: team_ids.first, competition_type: 'daily_wins')
-          prediction_pt.update_attributes!(pt: get_pt_value(home_ml, away_ml))
-
-          prediction_pt = PredictionPt.find_by_stats_id_and_competition_type(team_ids.last,  'daily_wins') || PredictionPt.new(stats_id: team_ids.last,  competition_type: 'daily_wins')
-          prediction_pt.update_attributes!(pt: get_pt_value(away_ml, home_ml))
 
           #Process predictions for daily_wins
           Prediction.process_prediction(game, 'daily_wins') if (game_time.utc + 4.hours) < Time.now.utc
@@ -159,6 +152,15 @@ class DataFetcher
         value = 1/prob * 0.95 * Roster::FB_CHARGE * 10
       end
       value.round
+    end
+
+    def get_dayly_wins_pt(target_ml, opposite_ml)
+      target_ml = target_ml/100
+      opposite_ml = opposite_ml/100
+      target_ml = 1.to_f/target_ml.abs if target_ml < 0
+      opposite_ml = 1.to_f/opposite_ml.abs if opposite_ml < 0
+
+      0.95*15*(target_ml + opposite_ml+2)/(opposite_ml+1)
     end
 
     private
