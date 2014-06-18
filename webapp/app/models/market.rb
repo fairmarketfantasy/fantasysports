@@ -104,7 +104,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def fill_non_fantasy_rosters
-      ids = GameRoster.where(state: 'submitted').map(&:contest).compact.map(:id)
+      ids = GameRoster.where(state: 'submitted').map(&:contest).compact.map(&:id)
       ids.each do |id|
         puts "Fill non fantasy contest #{id}"
         c = Contest.find(id)
