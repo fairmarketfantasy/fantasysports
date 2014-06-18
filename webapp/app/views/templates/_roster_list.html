@@ -54,8 +54,8 @@
         </span>
       </td>
       <td>
-        <a ng-show="($routeParams.category == 'fantasy_sports' && roster.state != 'cancelled') || roster.state != 'canceled'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{roster.market.id}}/roster/{{roster.id}}">view</a>
-        <a ng-show="($routeParams.category == 'sports' && roster.state != 'cancelled') || roster.state != 'canceled'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/competition_roster/{{roster.id}}">view</a>
+        <a ng-show="$routeParams.category == 'fantasy_sports' && roster.state != 'canceled' && roster.state != 'cancelled'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{roster.market.id}}/roster/{{roster.id}}">view</a>
+        <a ng-show="$routeParams.category == 'sports' && roster.state != 'canceled' && roster.state != 'cancelled'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/competition_roster/{{roster.id}}">view</a>
         <span ng-show="roster.state == 'cancelled' || roster.state == 'canceled'">N/A</span>
       </td>
     </tr>
