@@ -104,16 +104,10 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def fill_non_fantasy_rosters
-      ids = GameRoster.where(state: 'submitted').pluck('DISTINCT contest_id').compact
+      ids = GameRoster.where(state: 'submitted').map(&:contest).compact.map(:id)
       ids.each do |id|
         puts "Fill non fantasy contest #{id}"
         c = Contest.find(id)
-        if c.game_rosters.where(state: 'canceled').any?
-          c.game_rosters.map(&:cancel!)
-          puts 'Contest canceled!'
-          next
-        end
-
         extra_generated_number = c.game_rosters.count - c.user_cap
         c.game_rosters.where(is_generated: true).order(:score).first(extra_generated_number).map(&:destroy) if extra_generated_number > 0
         next if c.paid_at
@@ -121,6 +115,8 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
         game_rosters_number = c.game_rosters.where(state: 'submitted').count
         c.fill_with_game_rosters if game_rosters_number > 0 && game_rosters_number < c.user_cap
       end
+    rescue => e
+      puts e.message
     end
 
     def open
