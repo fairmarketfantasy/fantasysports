@@ -14,6 +14,8 @@ class Player < ActiveRecord::Base
   has_many :stat_events, :foreign_key => 'player_stats_id', :inverse_of => :player, :primary_key => 'stats_id'
   has_many :positions, :class_name => 'PlayerPosition'
   has_many :individual_predictions
+  has_many :members, as: :memberable
+  has_many :competitions, through: :members
 
   def purchase_price; self[:purchase_price]; end
   def buy_price; self[:buy_price]; end

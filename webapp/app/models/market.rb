@@ -498,7 +498,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
   end
 
   def next_game_time_for_team(team)
-    team = Team.find(team) if team.is_a?(String)
+    team = Team.where(stats_id: team).first if team.is_a?(String)
     game = self.games.where(['game_time > NOW() AND (home_team = ? OR away_team = ?)', team, team]).order('game_time asc').first
     game && game.game_time
   end

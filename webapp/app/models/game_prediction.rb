@@ -23,8 +23,8 @@ class GamePrediction < ActiveRecord::Base
         next if g.home_team_pt == g.away_team_pt or g.home_team_pt.nil? or g.away_team_pt.nil?
 
         h = {}
-        home_team = Team.find(g.home_team)
-        away_team = Team.find(g.away_team)
+        home_team = Team.where(stats_id: g.home_team).first
+        away_team = Team.where(stats_id: g.away_team).first
         %w(stats_id name logo_url).each do |field|
           h["home_team_#{field}".to_sym] = home_team.send(field.to_sym)
           h["away_team_#{field}".to_sym] = away_team.send(field.to_sym)
@@ -62,8 +62,8 @@ class GamePrediction < ActiveRecord::Base
              home_team: {},
              away_team: {}}
 
-        home_team = Team.find(g.home_team)
-        away_team = Team.find(g.away_team)
+        home_team = Team.where(stats_id: g.home_team).first
+        away_team = Team.where(stats_id: g.away_team).first
         game_name = "#{home_team.name}@#{away_team.name}"
 
         %w(stats_id name logo_url).each do |field|
@@ -141,6 +141,10 @@ class GamePrediction < ActiveRecord::Base
 
     puts 'cancel prediction'
     self.update_attribute(:state, 'canceled')
+  end
+
+  def team
+    Team.where(stats_id: self.team_stats_id).first
   end
 
   def won?
@@ -222,35 +226,6 @@ class GamePrediction < ActiveRecord::Base
     self.update_attribute(:state, 'finished')
     puts 'finish prediction'
     self.reload
-  end
-
-  def current_pt
-    return unless ['scheduled', 'live'].include?(self.game.status)
-
-    value = if team.name == Team.where(stats_id: game.home_team).first.name
-              game.home_team_pt
-            elsif team.name == Team.where(stats_id: game.away_team).first.name
-              game.away_team_pt
-            else
-              raise "Team not found for prediction #{self.id}"
-            end
-    return if pt - value == 0
-
-    value
-  end
-
-  def pt_refund
-    return unless current_pt
-
-    (pt/current_pt * PREDICTION_CHARGE - PREDICTION_CHARGE).round(2)
-  end
-
-  def refund_owner
-    ActiveRecord::Base.transaction do
-      customer_object = user.customer_object
-      customer_object.monthly_winnings += pt_refund * 100
-      customer_object.save
-    end
   end
 
   def current_pt

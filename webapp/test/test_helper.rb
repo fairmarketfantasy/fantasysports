@@ -71,7 +71,7 @@ class ActiveSupport::TestCase
 
   def setup_team(opts = {})
     team = create(:team, opts)
-    players = (Positions.default_NFL.split(',') + ['TEAM']).each do |pos| 
+    players = (Positions.default_NFL.split(',') + ['TEAM']).each do |pos|
       p = create(:player, :team => team)
       PlayerPosition.create(:player_id => p.id, :position => pos)
       StatEvent.create!(
@@ -93,7 +93,7 @@ class ActiveSupport::TestCase
         mp.initial_shadow_bets = mp.shadow_bets = mp.bets = bets
         mp.save!
         total_bets += bets
-    end 
+    end
     market.total_bets = market.shadow_bets = market.initial_shadow_bets = total_bets
     market.save!
   end
@@ -101,7 +101,7 @@ class ActiveSupport::TestCase
   def play_game(game)
     # Home team always wins!
     [game.away_team, game.home_team].each_with_index do |team, i|
-      team = Team.find(team) if team.is_a?(String)
+      team = Team.where(stats_id: team).first if team.is_a?(String)
       team.players.each do |p|
         StatEvent.create!(
           :game_stats_id => game.stats_id,
@@ -115,7 +115,7 @@ class ActiveSupport::TestCase
     game.update_attributes(:home_team_status => '{"points": 14}', :away_team_status => '{"points": 7}', :status => 'closed', :game_time => Time.new-1.minute)
     game
   end
-  
+
   def setup_single_elimination_market
     teams = (1..4).map{ setup_team(:sport_id => 1) }
     @game1_1 = create(:game, :home_team => teams[0], :away_team => teams[1], :game_time => Time.now + 10.minute) # Publish subtracts 5 minutes
