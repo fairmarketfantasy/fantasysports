@@ -13,7 +13,7 @@ private
 
   def get_team(type, options)
     team_stats_id = object.send("#{type}_team")
-    team = Team.find(team_stats_id)
+    team = Team.where(stats_id: team_stats_id).first
     {
         name: team.name,
         stats_id: team_stats_id,

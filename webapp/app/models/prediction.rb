@@ -36,42 +36,11 @@ class Prediction < ActiveRecord::Base
     #Process prediction for daily_wins
     def process_prediction(game, pr_type=nil)
       if pr_type.eql?('daily_wins')
-        predictions = Prediction.where(prediction_type: pr_type, game_stats_id: game.stats_id).where.not(state: ['finished', 'canceled'])
-        predictions.each do |prediction|
-          puts "process prediction #{prediction.id}"
+        predictions = Prediction.where(prediction_type: pr_type, game_stats_id: game.stats_id).
+                                 where.not(state: ['finished', 'canceled'])
+        predictions.each { |p| p.process! }
 
-          if prediction.won?
-            result = 'Win'
-            award  = prediction.pt
-            event  = "won_#{pr_type}_prediction"
-          end
-          if prediction.lose?
-            result = 'Lose'
-            award  = 0
-            event  = "lose_#{pr_type}_prediction"
-          end
-          if prediction.dead_heat?
-            result = 'Dead heat'
-            res    = prediction.pt.to_d / 2
-            award  = (res >= 13.5) ? res : 13.5
-            event  = "dead_heat_#{pr_type}_prediction"
-          end
-
-          user = prediction.user
-          customer_object = user.customer_object
-          ActiveRecord::Base.transaction do
-            customer_object.monthly_contest_entries += 1.5
-            customer_object.monthly_winnings += award * 100
-            customer_object.save
-          end
-
-          TransactionRecord.create!(user: user, event: event, amount: award)
-          Eventing.report(user, event, amount: award)
-          prediction.update_attribute(:state, 'finished')
-          prediction.update_attribute(:result, result)
-          prediction.update_attribute(:award, award)
-          game.update_attributes(checked: true, status: 'finished')
-        end
+        game.update_attributes(checked: true, status: 'finished')
       end
     end
 
@@ -98,6 +67,43 @@ class Prediction < ActiveRecord::Base
     end
   end
 
+  def process!
+    pr_type = self.prediction_type
+    puts "process prediction #{self.id}"
+    if self.send("#{pr_type}_won?".to_sym)
+      result = 'Win'
+      award  = self.pt
+      event  = "won_#{pr_type}_prediction"
+    end
+
+    if self.send("#{pr_type}_lose?".to_sym)
+      result = 'Lose'
+      award  = 0
+      event  = "lose_#{pr_type}_prediction"
+    end
+
+    if self.send("#{pr_type}_dead_heat?".to_sym)
+      result = 'Dead heat'
+      res    = self.pt.to_d / 2
+      award  = (res >= 13.5) ? res : 13.5
+      event  = "dead_heat_#{pr_type}_prediction"
+    end
+
+    user = self.user
+    customer_object = user.customer_object
+    ActiveRecord::Base.transaction do
+      customer_object.monthly_contest_entries += 1.5
+      customer_object.monthly_winnings += award * 100
+      customer_object.save
+    end
+
+    TransactionRecord.create!(user: user, event: event, amount: award)
+    Eventing.report(user, event, amount: award)
+    self.update_attribute(:state, 'finished')
+    self.update_attribute(:result, result)
+    self.update_attribute(:award, award)
+  end
+
   def charge_owner
     ActiveRecord::Base.transaction do
       customer_object = self.user.customer_object
@@ -111,20 +117,40 @@ class Prediction < ActiveRecord::Base
   end
 
   #These 3 methods will work only for 'daily_wins'!
-  def won?
+  def daily_wins_won?
     return true if (game.home_team_status.to_i > game.away_team_status.to_i) and game.home_team.eql?(self.stats_id)
     return true if (game.home_team_status.to_i < game.away_team_status.to_i) and game.away_team.eql?(self.stats_id)
     false
   end
 
-  def lose?
+  def daily_wins_lose?
     return true if (game.home_team_status.to_i < game.away_team_status.to_i) and game.home_team.eql?(self.stats_id)
     return true if (game.home_team_status.to_i > game.away_team_status.to_i) and game.away_team.eql?(self.stats_id)
     false
   end
 
-  def dead_heat?
+  def daily_wins_dead_heat?
     return true if game.home_team_status.to_i == game.away_team_status.to_i
+    false
+  end
+
+  #These 3 methods will work only for 'win_groups'!
+
+  def win_groups_won?
+    winners_number = 1
+    p_team = Team.where(stats_id: self.stats_id).first
+    competition = p_team.competitions.find { |c| c.group_type? }
+    raise 'No rank' if competition.members.where(rank: nil).any?
+
+    winner_ids = competition.members.order(:rank).pluck(:memberable_id).first(winners_number)
+    winner_ids.include?(p_team.id)
+  end
+
+  def win_groups_lose?
+    !win_groups_won?
+  end
+
+  def win_groups_dead_heat?
     false
   end
 

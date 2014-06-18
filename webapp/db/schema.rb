@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140618134709) do
-
+ActiveRecord::Schema.define(version: 20140618152347) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,6 +44,17 @@ ActiveRecord::Schema.define(version: 20140618134709) do
   end
 
   add_index "categories", ["name"], name: "index_categories_on_name", using: :btree
+
+  create_table "competitions", force: true do |t|
+    t.integer  "sport_id"
+    t.integer  "category_id"
+    t.string   "name"
+    t.string   "state",           default: "in_progress"
+    t.integer  "memberable_id"
+    t.string   "memberable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "contest_types", force: true do |t|
     t.integer "market_id",                          null: false
@@ -334,6 +344,15 @@ ActiveRecord::Schema.define(version: 20140618134709) do
   end
 
   add_index "markets", ["closed_at", "started_at", "name", "game_type", "sport_id"], name: "markets_new_unique_idx", unique: true, using: :btree
+
+  create_table "members", force: true do |t|
+    t.integer  "competition_id"
+    t.integer  "memberable_id"
+    t.string   "memberable_type"
+    t.integer  "rank"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "oauth2_access_tokens", force: true do |t|
     t.integer  "user_id"

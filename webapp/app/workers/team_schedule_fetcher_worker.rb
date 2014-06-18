@@ -4,7 +4,7 @@ class TeamScheduleFetcherWorker
   sidekiq_options :queue => :team_schedule_fetcher
 
   def perform(team_stats_id)
-    @team = Team.find team_stats_id
+    @team = Team.where(stats_id: team_stats_id).first
 
     data = JSON.parse open("http://api.sportsnetwork.com/v1/mlb/schedule?team_id=#{team_stats_id}&api_token=#{TSN_API_KEY}").read
     parse_data(data['listings'])
@@ -13,7 +13,7 @@ class TeamScheduleFetcherWorker
   end
 
   def self.job_name(team_stats_id)
-    @team = Team.find team_stats_id
+    @team = Team.where(stats_id: team_stats_id).first
     return 'No team found' unless @team
 
     "Fetch team schedule for team #{@team.name}"

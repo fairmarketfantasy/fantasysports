@@ -183,7 +183,9 @@ class MLBStrategy < SportStrategy
     end
 
     market.market_players.destroy_all
-    (Team.find(market.games.first.home_team).players.active + Team.find(market.games.first.away_team).players.active).each do |player|
+    players = Team.where(stats_id: market.games.first.home_team).first.players.active +
+      Team.where(stats_id: market.games.first.away_team).first.players.active
+    players.each do |player|
       player.positions.each do |pos|
         player.update_attribute(:out, false) and next if pos.position == 'SP' && player.out? # skip not-starting SP
 
@@ -301,7 +303,8 @@ class FWCStrategy < NonFantasyStrategy
     daily_wins.map! { |g| FootballGameSerializer.new(g, opts.merge(type: 'daily_wins', game_stats_id: g.stats_id)) }
     resp[:daily_wins] = daily_wins if daily_wins.size > 0
     resp[:win_the_cup] = @sport.teams.map { |t| TeamSerializer.new(t, opts.merge(type: 'win_the_cup')) } if @sport.teams.any?
-    resp[:win_groups] = @sport.groups.map { |g| GroupSerializer.new(g, opts.merge(type: 'win_groups')) } if @sport.groups.any?
+    groups = @sport.groups.where("closed IS NOT true")
+    resp[:win_groups] = groups.map { |g| GroupSerializer.new(g, opts.merge(type: 'win_groups')) } if groups.any?
     resp[:mvp] = @sport.players.with_flags.map { |u| PlayerSerializer.new(u, opts) } if @sport.players.any?
     resp
   end

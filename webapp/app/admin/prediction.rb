@@ -8,7 +8,7 @@ ActiveAdmin.register Prediction, :as => "FWCUP_Prediction" do
     column :user_id
     column(:user_email) { |p| p.user.email }
     column(:game) do |p|
-     "#{Team.find(p.game.home_team).name} @ #{Team.find(p.game.away_team).name}" if p.game
+     "#{Team.where(stats_id: p.game.home_team).first.name} @ #{Team.where(stats_id: p.game.away_team).first.name}" if p.game
     end
 
     column(:game_time) do |p|
