@@ -1,5 +1,5 @@
 ActiveAdmin.register Prediction, :as => "FWCUP_Prediction" do
-  actions :all, except: [:destroy]
+  actions :all, except: [:destroy, :edit]
   filter :user_id
   filter :prediction_type
 
