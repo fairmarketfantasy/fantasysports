@@ -1,0 +1,15 @@
+one:
+  id: 1
+  stats_id: 'team_1'
+  pt: 20
+  created_at: '2014-06-18 13:11:14.373'
+  updated_at: '2014-06-18 13:11:14.373'
+  competition_type: 'daily_wins'
+
+two:
+  id: 2
+  stats_id: 'team_2'
+  pt: 30
+  created_at: '2014-06-18 13:11:14.373'
+  updated_at: '2014-06-18 13:11:14.373'
+  competition_type: 'daily_wins'
