@@ -112,7 +112,7 @@ class Prediction < ActiveRecord::Base
   def current_pt
     return unless self.state == 'submitted'
 
-    value = self.class.get_pt_value(prediction_type: self.prediction_type, predictable_id: self.stats_id).round(2)
+    value = self.class.get_pt_value(type: self.prediction_type, predictable_id: self.stats_id)
     return if pt - value == 0
 
     value
@@ -137,16 +137,16 @@ class Prediction < ActiveRecord::Base
     user = opts[:user]
     value *= user.customer_object.contest_winnings_multiplier if user
     value = 15.01.to_d if value < 15.to_d
-    value.round(2)
+    value
   end
 
   private
 
   def self.get_pt_value(params)
-    if params[:prediction_type].eql?('mvp')
+    if params[:type].eql?('mvp')
       (Player.where(stats_id: params[:predictable_id]).first || Player.where(id: params[:predictable_id]).first).pt
     else
-      PredictionPt.where(stats_id: params[:predictable_id], competition_type: params[:prediction_type]).first.pt
+      Team.where(stats_id: params[:predictable_id]).first.pt(params)
     end
   end
 end
