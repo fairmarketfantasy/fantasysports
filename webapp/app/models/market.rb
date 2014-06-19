@@ -149,7 +149,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
 
     def tabulate_non_fantasy
       GamePrediction.where(state: 'submitted').each do |gp|
-        gp.process if gp.game.status == 'closed'
+        gp.process if gp.game.status != 'scheduled'
       end
 
       GameRoster.where(state: 'submitted').each do |gr|
@@ -163,7 +163,7 @@ new_shadow_bets = [0, market.initial_shadow_bets - real_bets * market.shadow_bet
     end
 
     def non_fantasy_contests
-      Contest.where(paid_at: nil).select { |c| c.game_rosters.any? }
+      Contest.where(paid_at: nil).select { |c| c.game_rosters.where(state: ['submitted', 'finished']).any? }
     end
 
     def deliver_bonuses
