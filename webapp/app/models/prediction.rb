@@ -38,6 +38,8 @@ class Prediction < ActiveRecord::Base
       if pr_type.eql?('daily_wins')
         predictions = Prediction.where(prediction_type: pr_type, game_stats_id: game.stats_id).where.not(state: ['finished', 'canceled'])
         predictions.each do |prediction|
+          puts "process prediction #{prediction.id}"
+
           if prediction.won?
             result = 'Win'
             award  = prediction.pt
@@ -65,9 +67,11 @@ class Prediction < ActiveRecord::Base
 
           TransactionRecord.create!(user: user, event: event, amount: award)
           Eventing.report(user, event, amount: award)
-          prediction.update_attributes(state: 'finished', result: result, award: award)
+          prediction.update_attribute(:state, 'finished')
+          prediction.update_attribute(:result, result)
+          prediction.update_attribute(:award, award)
           game.update_attributes(checked: true, status: 'finished')
-        end if predictions.present?
+        end
       end
     end
 

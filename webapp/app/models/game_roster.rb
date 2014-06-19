@@ -146,13 +146,13 @@ class GameRoster < ActiveRecord::Base
 
   def process
     puts "process game roster #{self.id}"
-    if game_predictions.map(&:game).select { |g| ['canceled', 'postponed'].include?(g.status) }.any?
+    if game_predictions.where(state: 'canceled').any?
       self.update_attribute(:state, 'canceled')
       return
     end
 
     sum = 0.to_d
-    self.game_predictions.where(state: 'finished').each do |prediction|
+    game_predictions.where(state: 'finished').each do |prediction|
       if prediction.won?
         sum += (prediction.pt || 0)
       else
