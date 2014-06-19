@@ -208,7 +208,7 @@ class GamePrediction < ActiveRecord::Base
     self.reload
     raise 'Should be submitted!' if self.state != 'submitted'
 
-    if ['cancelled', 'postponed'].include?(self.game.status) || self.game.winning_team.nil?
+    if ['cancelled', 'postponed'].include?(self.game.status)
       self.cancel!
       self.reload
       return
