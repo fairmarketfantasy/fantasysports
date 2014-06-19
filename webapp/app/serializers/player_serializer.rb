@@ -30,7 +30,7 @@ class PlayerSerializer < ActiveModel::Serializer
       :remove_pt
 
   def disable_pt
-    Prediction.prediction_made?(stats_id, 'mvp', '', options[:user]) || object.pt <= 15
+    Prediction.prediction_made?(stats_id, 'mvp', '', options[:user]) || object.pt.to_f <= 15
   end
 
   def remove_pt
