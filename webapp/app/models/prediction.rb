@@ -14,11 +14,11 @@ class Prediction < ActiveRecord::Base
         return [{error: "Game is closed"}, :unprocessable_entity] if game && game.game_time.utc < Time.now.utc
 
         prediction = user.predictions.new(stats_id: params[:predictable_id],
-                                 sport: params[:sport],
-                                 game_stats_id: game_stats_id,
-                                 prediction_type: params[:prediction_type],
-                                 pt: get_pt_value(params),
-                                 state: 'submitted')
+                                          sport: params[:sport],
+                                          game_stats_id: game_stats_id,
+                                          prediction_type: params[:prediction_type],
+                                          pt: get_pt_value(params),
+                                          state: 'submitted')
         prediction.pt = prediction.adjusted_pt(user: user)
         prediction.save!
         TransactionRecord.create!(user: user, event: "create_#{params[:prediction_type]}_prediction", amount: 15)
@@ -27,7 +27,8 @@ class Prediction < ActiveRecord::Base
         customer_object.monthly_entries_counter += 1
         customer_object.save!
         [{msg: "#{params[:prediction_type].gsub('_', ' ')} prediction submitted successfully!"}, :ok]
-      rescue
+      rescue Exception => e
+        logger.warn e
         [{error: "#{params[:prediction_type].gsub('_', ' ')} prediction creation failed!"}, :unprocessable_entity]
       end
     end
@@ -143,7 +144,8 @@ class Prediction < ActiveRecord::Base
   private
 
   def self.get_pt_value(params)
-    if params[:type].eql?('mvp')
+    type = params[:type] || params[:prediction_type]
+    if type.eql?('mvp')
       (Player.where(stats_id: params[:predictable_id]).first || Player.where(id: params[:predictable_id]).first).pt
     else
       Team.where(stats_id: params[:predictable_id]).first.pt(params)
