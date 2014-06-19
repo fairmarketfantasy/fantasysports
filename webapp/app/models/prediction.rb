@@ -7,21 +7,20 @@ class Prediction < ActiveRecord::Base
 
   class << self
 
-    def create_prediction(params, user)
+    def create_prediction(params)
       begin
         game_stats_id = params[:game_stats_id] || ''
         game = Game.where(stats_id: game_stats_id).first
         return [{error: "Game is in progress now"}, :unprocessable_entity] if team_plays?(params[:predictable_id], params[:prediction_type])
         return [{error: "Game is closed"}, :unprocessable_entity] if game && game.game_time.utc < Time.now.utc
 
-        prediction = user.predictions.new(stats_id: params[:predictable_id],
-                                          sport: params[:sport],
-                                          game_stats_id: game_stats_id,
-                                          prediction_type: params[:prediction_type],
-                                          pt: get_pt_value(params),
-                                          state: 'submitted')
-        prediction.pt = prediction.adjusted_pt(user: user)
-        prediction.save!
+        user = params[:user]
+        prediction = user.predictions.create!(stats_id: params[:predictable_id],
+                                 sport: params[:sport],
+                                 game_stats_id: game_stats_id,
+                                 prediction_type: params[:prediction_type],
+                                 pt: get_pt_value(params),
+                                 state: 'submitted')
         TransactionRecord.create!(user: user, event: "create_#{params[:prediction_type]}_prediction", amount: 15)
         Eventing.report(user, "create_#{params[:prediction_type]}_prediction", amount: 15)
         customer_object = user.customer_object
@@ -132,8 +131,10 @@ class Prediction < ActiveRecord::Base
   def current_pt
     return unless self.state == 'submitted'
 
-    value = self.class.get_pt_value(type: self.prediction_type, predictable_id: self.stats_id)
-    return if pt - value == 0
+    value = self.class.get_pt_value(type: self.prediction_type, user: self.user,
+                                    predictable_id: self.stats_id,
+                                    game_stats_id: game.try(:stats_id))
+    return if pt - value <= 0
 
     value
   end
@@ -153,20 +154,12 @@ class Prediction < ActiveRecord::Base
     end
   end
 
-  def adjusted_pt(opts = {})
-    value = self.pt
-    user = opts[:user]
-    value *= user.customer_object.contest_winnings_multiplier if user
-    value = 15.01.to_d if value < 15.to_d
-    value.round
-  end
-
   private
 
   def self.get_pt_value(params)
     type = params[:type] || params[:prediction_type]
     if type.eql?('mvp')
-      (Player.where(stats_id: params[:predictable_id]).first || Player.where(id: params[:predictable_id]).first).pt
+      (Player.where(stats_id: params[:predictable_id]).first || Player.where(id: params[:predictable_id]).first).adjusted_pt(params)
     else
       Team.where(stats_id: params[:predictable_id]).first.pt(params)
     end

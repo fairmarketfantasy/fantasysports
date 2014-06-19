@@ -306,19 +306,6 @@ class FWCStrategy < NonFantasyStrategy
     resp
   end
 
-  def create_prediction(params, user)
-    if params['prediction_type'] == 'mvp'
-      raise HttpException.new(402, 'Agree to terms!') unless user.customer_object.has_agreed_terms?
-      raise HttpException.new(402, 'Unpaid subscription!') if !user.active_account? && !user.customer_object.trial_active?
-
-      PlayerPrediction.create_prediction(params, user)
-
-      {:msg => 'Player prediction submitted successfully!', :status => :ok}
-    else
-      {:msg => 'This prediction not supported', :status => 500}
-    end
-  end
-
   def grab_data
     DataFetcher.parse_world_cup
 
