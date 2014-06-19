@@ -82,8 +82,13 @@ class Prediction < ActiveRecord::Base
       else
         team_stats_id = stats_id
       end
-      games = Game.where(home_team: team_stats_id) + Game.where(away_team: team_stats_id)
-      games.each do |game|
+      group   = Team.where(stats_id: team_stats_id).first.group_id
+      teams   = Team.where(group_id: group).map(&:stats_id).compact
+      p_teams = Player.where(team: teams).map(&:stats_id).compact
+      team_ids = teams + p_teams
+
+      games = Game.where(home_team: team_ids) + Game.where(away_team: team_ids)
+      games.uniq.each do |game|
         return true if (game.game_time.utc < Time.now.utc) && (game.game_time.utc + 6.hours > Time.now.utc)
       end
       false
