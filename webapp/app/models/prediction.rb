@@ -143,7 +143,8 @@ class Prediction < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       customer_object = user.customer_object
       customer_object.monthly_winnings += pt_refund * 100
-      customer_object.save
+      customer_object.save!
+      TransactionRecord.create!(user: user, event: 'trade_prediction', amount: pt_refund)
     end
   end
 

@@ -41,6 +41,7 @@ namespace :users do
       sum += gr.map(&:amount_paid).compact.reduce(0) { |sum, v| sum + v }
       sum += gp.map(&:award).compact.reduce(0) { |sum, v| sum + v * 100 }
       sum += pr.map(&:award).compact.reduce(0) { |sum, v| sum + v * 100 }
+      sum += user.transaction_records.where(event: 'trade_prediction').map(&:amount).compact.reduce(0) { |sum, v| sum + v * 100 }
       co.monthly_winnings = sum
       co.save!
     end
