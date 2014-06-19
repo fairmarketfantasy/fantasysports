@@ -26,15 +26,10 @@ class PlayerSerializer < ActiveModel::Serializer
       :swapped_player_name,
       :pt,
       :logo_url,
-      :disable_pt,
-      :remove_pt
+      :disable_pt
 
   def disable_pt
-    Prediction.prediction_made?(stats_id, 'mvp', '', options[:user]) || object.pt <= 15
-  end
-
-  def remove_pt
-    false #  object.pt <= 15
+    Prediction.prediction_made?(stats_id, 'mvp', '', options[:user])
   end
 
   # TODO: fix for NFL when no stats_id
