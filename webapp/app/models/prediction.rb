@@ -11,6 +11,7 @@ class Prediction < ActiveRecord::Base
       begin
         game_stats_id = params[:game_stats_id] || ''
         game = Game.where(stats_id: game_stats_id).first
+        return [{error: "Game is in progress now"}, :unprocessable_entity] if team_plays?(params[:predictable_id], params[:prediction_type])
         return [{error: "Game is closed"}, :unprocessable_entity] if game && game.game_time.utc < Time.now.utc
 
         prediction = user.predictions.new(stats_id: params[:predictable_id],
@@ -73,6 +74,19 @@ class Prediction < ActiveRecord::Base
 
     def prediction_made?(stats_id, prediction_type, game_stats_id='', user = nil)
       self.where(stats_id: stats_id, game_stats_id: game_stats_id, prediction_type: prediction_type, user_id: user.try(:id)).any?
+    end
+
+    def team_plays?(stats_id, prediction_type)
+      if prediction_type.eql?('mvp')
+        team_stats_id = (Player.where(stats_id: stats_id).first || Player.where(id: stats_id).first).team.stats_id
+      else
+        team_stats_id = stats_id
+      end
+      games = Game.where(home_team: team_stats_id) + Game.where(away_team: team_stats_id)
+      games.each do |game|
+        return true if (game.game_time.utc < Time.now.utc) && (game.game_time.utc + 6.hours > Time.now.utc)
+      end
+      false
     end
   end
 
