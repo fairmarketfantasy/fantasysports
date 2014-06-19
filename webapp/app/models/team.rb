@@ -13,7 +13,7 @@ class Team < ActiveRecord::Base
   end
 
   def pt(opts = {})
-    competition_type = opts[:type]
+    competition_type = opts[:type] || opts[:prediction_type]
     value = if opts[:game_stats_id].blank? && !competition_type.nil? && PredictionPt.exists?(stats_id: self.id, competition_type: competition_type)
               PredictionPt.find_by_stats_id_and_competition_type(self.id, competition_type).pt
             elsif Game.exists?(home_team: self.id, stats_id: opts[:game_stats_id])

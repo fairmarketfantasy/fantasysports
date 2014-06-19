@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140604152139) do
+ActiveRecord::Schema.define(version: 20140618134709) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "admin_users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -129,8 +132,7 @@ ActiveRecord::Schema.define(version: 20140604152139) do
     t.decimal  "value"
   end
 
-  create_table "game_events", id: false, force: true do |t|
-    t.integer  "id",              null: false
+  create_table "game_events", force: true do |t|
     t.string   "stats_id"
     t.integer  "sequence_number", null: false
     t.string   "type",            null: false
@@ -396,17 +398,6 @@ ActiveRecord::Schema.define(version: 20140604152139) do
   add_index "player_positions", ["player_id", "position"], name: "index_player_positions_on_player_id_and_position", unique: true, using: :btree
   add_index "player_positions", ["position"], name: "index_player_positions_on_position", using: :btree
 
-  create_table "player_predictions", force: true do |t|
-    t.integer  "user_id",                  null: false
-    t.integer  "player_id",                null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.decimal  "pt",         default: 0.0
-  end
-
-  add_index "player_predictions", ["player_id"], name: "index_player_predictions_on_player_id", using: :btree
-  add_index "player_predictions", ["user_id"], name: "index_player_predictions_on_user_id", using: :btree
-
   create_table "players", force: true do |t|
     t.string   "stats_id"
     t.integer  "sport_id"
@@ -429,7 +420,6 @@ ActiveRecord::Schema.define(version: 20140604152139) do
     t.decimal  "ppg",           default: 0.0
     t.boolean  "legionnaire",   default: false, null: false
     t.decimal  "pt"
-    t.string   "info",          default: "{}"
   end
 
   add_index "players", ["benched_games"], name: "index_players_on_benched_games", using: :btree
