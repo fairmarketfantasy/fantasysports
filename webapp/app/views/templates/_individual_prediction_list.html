@@ -77,10 +77,10 @@
             </div>
         </td>
         <td>
-           <a ng-show="prediction.current_pt && prediction.state != 'finished'" href="javascript://"  ng-click="openTradeDialog(prediction)">
+           <a ng-show="prediction.show_trade && prediction.state != 'finished'" href="javascript://"  ng-click="openTradeDialog(prediction)">
                Trade
            </a>
-            <span ng-hide="prediction.current_pt && prediction.state != 'finished'">
+            <span ng-hide="prediction.show_trade && prediction.state != 'finished'">
                 N/A
             </span>
         </td>
