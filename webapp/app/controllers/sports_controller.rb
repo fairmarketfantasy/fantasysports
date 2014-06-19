@@ -9,11 +9,12 @@ class SportsController < ApplicationController
   end
 
   def create_prediction
+    params[:user] = current_user
     if params[:sport].eql?('FWC')
-      message, status = Prediction.create_prediction(params, current_user)
+      message, status = Prediction.create_prediction(params)
       render json: message, status: status
     else
-      render SportStrategy.for(params[:sport], params[:category]).create_prediction(params, current_user)
+      raise 'Not implemented!'
     end
   end
 
