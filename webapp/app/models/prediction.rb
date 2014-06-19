@@ -138,7 +138,7 @@ class Prediction < ActiveRecord::Base
     user = opts[:user]
     value *= user.customer_object.contest_winnings_multiplier if user
     value = 15.01.to_d if value < 15.to_d
-    value
+    value.round
   end
 
   private
