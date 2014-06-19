@@ -1,5 +1,5 @@
 class TeamSerializer < ActiveModel::Serializer
-  attributes :name, :logo_url, :pt, :stats_id, :disable_pt
+  attributes :name, :logo_url, :pt, :stats_id, :disable_pt, :remove_pt
 
   def stats_id
     object.stats_id
@@ -11,5 +11,9 @@ class TeamSerializer < ActiveModel::Serializer
 
   def pt
     object.pt(options)
+  end
+
+  def remove_pt
+    object.pt(options) <= 15
   end
 end
