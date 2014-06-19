@@ -29,7 +29,7 @@ class PredictionSerializer < ActiveModel::Serializer
   end
 
   def show_trade
-    !!current_pt
+    !!current_pt and !Prediction.team_plays?(object.stats_id, object.prediction_type)
   end
 
   # CHOOSE THE GAME
