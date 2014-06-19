@@ -14,7 +14,7 @@ class Team < ActiveRecord::Base
 
   def pt(opts = {})
     competition_type = opts[:type] || opts[:prediction_type]
-    value = if opts[:game_stats_id].blank? && !competition_type.nil? && PredictionPt.exists?(stats_id: self.id, competition_type: competition_type)
+    value = if opts[:game_stats_id].blank? && !competition_type.nil? && competition_type != 'daily_wins'
               PredictionPt.find_by_stats_id_and_competition_type(self.id, competition_type).pt
             elsif Game.exists?(home_team: self.id, stats_id: opts[:game_stats_id])
               Game.find_by_home_team_and_stats_id(self.id, opts[:game_stats_id]).home_team_pt
