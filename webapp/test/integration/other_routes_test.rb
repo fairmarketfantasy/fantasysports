@@ -7,7 +7,7 @@ class OtherRoutesTest < ActionDispatch::IntegrationTest
   end
 
   test "terms route" do
-    assert_routing({path: "/terms", method: :get}, { controller: "pages", action: "terms" })
+    assert_routing({path: "/pages/mobile/terms", method: :get}, { controller: "mobile_pages", action: "terms" })
   end
 
   test "about route" do
