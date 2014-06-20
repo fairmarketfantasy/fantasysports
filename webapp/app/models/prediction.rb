@@ -15,7 +15,7 @@ class Prediction < ActiveRecord::Base
         return [{error: "Game is closed"}, :unprocessable_entity] if game && game.game_time.utc < Time.now.utc
 
         user = params[:user]
-        prediction = user.predictions.create!(stats_id: params[:predictable_id],
+        user.predictions.create!(stats_id: params[:predictable_id],
                                  sport: params[:sport],
                                  game_stats_id: game_stats_id,
                                  prediction_type: params[:prediction_type],

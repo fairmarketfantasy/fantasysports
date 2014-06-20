@@ -1,9 +1,12 @@
 require 'test_helper'
 
 class SportsControllerTest < ActionController::TestCase
-  test "should create prediction" do
-    sign_in create(:user)
+  setup do
+    @user = create(:user)
+    sign_in @user
+  end
 
+  test "should create prediction" do
     params = {
       game_stats_id:   'game_1',
       predictable_id:  'team_2',
@@ -18,8 +21,15 @@ class SportsControllerTest < ActionController::TestCase
   end
 
   test "should not create prediction" do
-    sign_in create(:user)
-
+    Prediction.create(
+        user_id:         @user.id,
+        stats_id:        'team_1',
+        sport:           'FWC',
+        game_stats_id:   'game_1',
+        prediction_type: 'daily_wins',
+        state:           'submitted',
+        pt:              25
+    )
     params = {
         game_stats_id:   'game_1',
         predictable_id:  'team_1', #Such prediction exists

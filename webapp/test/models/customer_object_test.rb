@@ -129,7 +129,7 @@ class CustomerObjectTest < ActiveSupport::TestCase
   test 'multiplier for negative balance' do
     c = create(:user).customer_object
     c.update_attributes(:monthly_winnings => 0, :monthly_contest_entries => 15)
-    assert_equal c.contest_winnings_multiplier, 0.875
+    assert_equal c.contest_winnings_multiplier, 1.075
     assert_equal c.bonus_multiplier, 0.075
   end
 end
