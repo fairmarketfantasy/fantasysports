@@ -6,7 +6,7 @@ class TeamSerializer < ActiveModel::Serializer
   end
 
   def disable_pt
-    Prediction.prediction_made?(stats_id, options[:type], '', options[:user])
+    Prediction.prediction_made?(stats_id, options[:type], '', options[:user]) or object.pt(options) <= 15.0 
   end
 
   def pt
