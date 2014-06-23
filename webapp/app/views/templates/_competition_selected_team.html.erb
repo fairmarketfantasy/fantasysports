@@ -21,7 +21,7 @@
             <p>Start time: {{team.game_time | shortFormTime }}</p>
             <span class="mr-team">{{team.name}} @ {{team.opposite_team}}</span>
           </div>
-          <div ng-click="removeTeamFromRoster(team)" ng-show="showPlayer(gamePrediction, team) && competitionRosters.currentRoster.game_roster.state != 'finished'" class="remove-selected-team pull-right">
+          <div ng-click="removeTeamFromRoster(team)" ng-show="team.is_trade && showPlayer(gamePrediction, team) && competitionRosters.currentRoster.game_roster.state != 'finished'" class="remove-selected-team pull-right">
             <span class="special">trade</span>
           </div>
           <div ng-show="showPlayer(gamePrediction, team)" class="ind-game-point pull-right">

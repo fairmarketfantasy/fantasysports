@@ -95,6 +95,21 @@ angular.module("app.controllers")
     }
   };
 
+    $scope.submitTypeRoster = function(type){
+      _.each($scope.gamePrediction.game_roster.game_predictions, function(data){
+        if(data.game_stats_id){
+          $scope.submitList.push({game_stats_id: data.game_stats_id, team_stats_id: data.stats_id, position_index: data.position_index})
+        }
+      });
+
+      fs.game_rosters.create_pick($scope.submitList, type).then(function(data) {
+        flash.success(data.msg);
+        location.reload();
+      }, function(){
+        flash.error('Sorry, we could not submitted roster. Try again later')
+      });
+    };
+
     $scope.finish = function(){
       $location.path('/' +  currentUserService.currentUser.currentCategory + '/'+ currentUserService.currentUser.currentSport + '/competition_roster');
     };

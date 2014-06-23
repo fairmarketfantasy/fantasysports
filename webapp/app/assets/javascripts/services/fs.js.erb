@@ -437,6 +437,9 @@ angular.module('app.services')
         },
         in_contest: function(roster_id){
           return $http({method: 'GET', url: '/game_rosters/in_contest/'+roster_id});
+        },
+        create_pick: function(list, type){
+          return $http({method: 'POST', url: '/game_rosters/create_pick_5', data: {teams: list, type: type}});
         }
       },
       world_cup_rosters: {
