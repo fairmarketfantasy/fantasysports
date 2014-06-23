@@ -229,8 +229,12 @@ class GameStatFetcherWorker
 
   def cancel_predictions(game_stats_id)
     game = Game.find_by_stats_id game_stats_id
-    game.update_attributes(:status =>'cancelled', :checked => true) if game.stat_events.empty?
-    game.markets.each { |m| m.individual_predictions.where.not(state: ['finished', 'canceled']).each(&:cancel!) }
-    game.markets.each { |m| m.rosters.each { |r| r.cancel!('game postponed') } }
+    game.update_attributes(status: 'cancelled', checked: true) if game.stat_events.empty?
+    game.markets.each do |m|
+      m.individual_predictions.where.not(state: ['finished', 'canceled']).each(&:cancel!)
+      m.rosters.each { |r| r.cancel!('game postponed') }
+    end
+    game.game_predictions.where.not(state: ['finished', 'canceled']).each(&:cancel!)
+    game.game_rosters.each { |r| r.cancel!('game postponed') }
   end
 end
