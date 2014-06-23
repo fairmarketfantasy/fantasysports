@@ -6,6 +6,7 @@ angular.module("app.controllers")
     $location.path('/')
   }
 
+  $scope.betAlias = "WIN";
   $scope.landingShow = true;
   $scope.disable = false;
   $scope.$on('enableNavBar', function() {

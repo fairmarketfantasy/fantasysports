@@ -54,7 +54,7 @@
               <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
             </span>
 						<div class="prediction" style="margin: 3px 0 0 5px; display: inline;">
-							<p ng-hide="player.benched || !player.ppg || inThePast(market.started_at)" ng-click="openPredictionDialog(player)">PT</p>
+							<p ng-hide="player.benched || !player.ppg || inThePast(market.started_at)" ng-click="openPredictionDialog(player)">{{betAlias}}</p>
 						</div>
           </div>
         </li>
