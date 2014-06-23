@@ -10,7 +10,7 @@
           <div class="mr-team-flat pull-left" ng-style="{'background-image': list.logo_url && ('url(' + list.logo_url +')')}"></div></td>
           <span class="pull-left mr-player-name">{{list.name}}</span>
           <div class="prediction pull-right">
-            <p ng-class="{'ip-btn-disable' : list.disable_pt}" ng-click="openCWorldCupPredictionDialog(list)">PT{{list.pt | toFixed}}
+            <p ng-hide="list.remove_pt" ng-class="{'ip-btn-disable' : list.disable_pt}" ng-click="openCWorldCupPredictionDialog(list)">PT{{list.pt | toFixed}}
               <span ng-if="isExternal" ng-hide="list.disable_pt" popover-trigger="mouseenter" popover="{{list.name}} PT{{list.pt | toFixed}}, predict correctly and win {{list.pt | toFixed}}FB" popover-placement="{{($index == 0 || $index== 1)?($index%2)?'bottom right-centered':'bottom':($index%2)?'top right-centered':'top'}}"></span>
               <span ng-if="!isExternal" ng-hide="list.disable_pt" popover-trigger="mouseenter" popover="{{list.name}} PT{{list.pt | toFixed}}, predict correctly and win {{list.pt | toFixed}}FB" popover-placement="top"></span>
             </p>
