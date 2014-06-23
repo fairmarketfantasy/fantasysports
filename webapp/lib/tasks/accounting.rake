@@ -7,7 +7,6 @@ namespace :users do
   		wait_time = Integer(args.wait_time)
   	end
   	puts "Checking for new month every #{wait_time} seconds"
-    CustomerObject.monthly_accounting!
   	while true
       day = Time.new.day
   		print "Is it a new month? Day == #{day} - "
