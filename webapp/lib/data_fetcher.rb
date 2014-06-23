@@ -136,8 +136,6 @@ class DataFetcher
     end
 
     def get_pt_value(target_ml, opposite_ml = 0)
-      return target_ml if target_ml == 0
-
       if opposite_ml.zero?
         target_ml = 10000.0/target_ml if target_ml < 0
         value = (15 * (1 + target_ml.to_d.abs/100) * 0.95)

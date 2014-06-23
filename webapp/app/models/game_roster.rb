@@ -82,8 +82,8 @@ class GameRoster < ActiveRecord::Base
     set_contest.num_rosters += 1
     set_contest.save!
     set_contest.reload
-    if set_contest.game_rosters.count > set_contest.user_cap && set_contest.user_cap != 0
-      removed_roster = set_contest.game_rosters.where("is_generated = true AND NOT state = 'canceled'").first
+    if set_contest.num_rosters > set_contest.user_cap && set_contest.user_cap != 0
+      removed_roster = set_contest.game_rosters.where('is_generated = true AND NOT canceled').first
       if removed_roster.nil?
         set_contest = Contest.create!(owner_id: self.owner_id, buy_in: contest_type.buy_in, user_cap: contest_type.max_entries,
                                       market_id: Market.first.id, contest_type_id: contest_type.id)

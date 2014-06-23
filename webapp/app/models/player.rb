@@ -240,7 +240,7 @@ class Player < ActiveRecord::Base
 
   def adjusted_pt(opts = {})
     value = self.pt
-    return if value.nil? || value == 0
+    return unless value
 
     user = opts[:user]
     value *= user.customer_object.contest_winnings_multiplier if user
