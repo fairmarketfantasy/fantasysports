@@ -156,11 +156,12 @@ Fantasysports::Application.routes.draw do
     end
   end
 
-  resources :game_rosters, :only => [:create, :show, :update] do
+  resources :game_rosters, only: [:create, :show, :update] do
     collection do
-      post 'autofill', action: 'autofill'
-      post 'new_autofill', action: 'new_autofill'
-      get 'in_contest/:contest_id', action: 'in_contest'
+      post 'autofill',               action: 'autofill'
+      post 'new_autofill',           action: 'new_autofill'
+      post 'create_pick_5',          action: 'create_pick_5'
+      get  'in_contest/:contest_id', action: 'in_contest'
     end
   end
 

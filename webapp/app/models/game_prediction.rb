@@ -86,6 +86,12 @@ class GamePrediction < ActiveRecord::Base
         h[:away_team][:is_added]   = prediction_made?(opts[:roster], h[:away_team][:game_stats_id], h[:away_team][:stats_id])
         h[:home_team][:disable_pt] = prediction_made?(opts[:user],   h[:home_team][:game_stats_id], h[:home_team][:stats_id])
         h[:away_team][:disable_pt] = prediction_made?(opts[:user],   h[:away_team][:game_stats_id], h[:away_team][:stats_id])
+
+        if opts[:type] && opts[:type].eql?('pick5')
+          h[:home_team][:is_added] = true
+          h[:away_team][:is_added] = true
+        end
+
         data << h
       end
 
@@ -114,6 +120,10 @@ class GamePrediction < ActiveRecord::Base
                                                                       pt: pt)
       prediction
     end
+  end
+
+  def remove_trade
+    true
   end
 
   def charge_owner

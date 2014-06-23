@@ -38,7 +38,6 @@ angular.module('app.data')
           _.find(this.currentRoster.games, function(data){
             _.find(data, function(s){
               if(team.stats_id == s.stats_id){
-                console.log(s)
                 s.is_added = true;
               }
             });

@@ -24,8 +24,8 @@ class RostersController < ApplicationController
               end
 
     if game_prediction
-      render :json => rosters.page(page).to_json(:include => :contest_type,
-                                                 :methods => :contest_rank_payout)
+      render json: rosters.page(page).to_json(include: :contest_type,
+                                              methods: [:contest_rank_payout, :roster_type])
     else
       render_api_response rosters.page(page) # This is slow too, maybe make abridging smarter
     end

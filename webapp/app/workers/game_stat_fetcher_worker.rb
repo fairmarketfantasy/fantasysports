@@ -202,6 +202,53 @@ class GameStatFetcherWorker
     end
 
     game.update_attributes(:status =>'closed',:checked => true)
+    process_pick5_predictions(game_stat_id)
+  end
+
+  def process_pick5_predictions(game_stats_id)
+    game = Game.where(stats_id: game_stats_id).first
+    return unless game
+
+    rosters = game.game_rosters.where(contest_type_id: ContestType.find_by_name('Pick5').id, state: 'submitted')
+    rosters.each do |roster|
+      prediction_records = GamePrediction.where(game_roster_id: roster.id, state: 'submitted')
+      award = (prediction_records.map(&:pt).inject(1){ |result, elem| result * elem.to_d } / 15**4).round
+      game_ids = prediction_records.map(&:game_stats_id)
+      games = Game.where(stats_id: game_ids.uniq)
+      game_states = []
+      games.each do |game|
+        if game.status.try(:downcase) == 'postponed' or game.status == 'cancelled' or (Time.now.utc - game.game_time.utc > 5.hours)
+          cancel_predictions(game.stats_id)
+        end
+        game_states << game.status
+      end
+
+      if game_states.eql?(['closed'] * game_states.size)
+        prediction_records.reload
+        game_results = []
+        game = Game.where(stats_id: prediction.game_stats_id)
+        prediction_records.each do |prediction|
+          result = 'lose'
+          result = 'win' if game.home_team.eql?(prediction.stats_id) && game.home_team_status.to_i >= game.away_team_status.to_i
+          result = 'win' if game.away_team.eql?(prediction.stats_id) && game.home_away_status.to_i >= game.home_team_status.to_i
+          game_results << result
+        end
+        award = 0 unless game_results.eql?(['win'] * prediction_records.size)
+        prediction.update_attributes(state: 'finished', award: award)
+        roster.update_attributes(state: 'finished')
+
+        TransactionRecord.create!(user: roster.owner, event: 'cancel_individual_prediction', amount: award)
+        Eventing.report(roster.owner, 'CancelIndividualPrediction', amount: award)
+
+        ActiveRecord::Base.transaction do
+          co = prediction.user.customer_object
+          co.monthly_winnings -= prediction.award
+          co.save!
+        end
+      else
+        next
+      end
+    end
   end
 
   def self.job_name(game_stat_id)
@@ -229,8 +276,12 @@ class GameStatFetcherWorker
 
   def cancel_predictions(game_stats_id)
     game = Game.find_by_stats_id game_stats_id
-    game.update_attributes(:status =>'cancelled', :checked => true) if game.stat_events.empty?
-    game.markets.each { |m| m.individual_predictions.where.not(state: ['finished', 'canceled']).each(&:cancel!) }
-    game.markets.each { |m| m.rosters.each { |r| r.cancel!('game postponed') } }
+    game.update_attributes(status: 'cancelled', checked: true) if game.stat_events.empty?
+    game.markets.each do |m|
+      m.individual_predictions.where.not(state: ['finished', 'canceled']).each(&:cancel!)
+      m.rosters.each { |r| r.cancel!('game postponed') }
+    end
+    game.game_rosters.each { |r| r.cancel!('game postponed') }
+    game.game_roster_predictions.where.not(state: ['finished', 'canceled']).each(&:cancel!)
   end
 end
