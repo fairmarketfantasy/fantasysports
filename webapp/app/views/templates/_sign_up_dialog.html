@@ -49,7 +49,7 @@
           </label>
           <input id="agree-terms" class="hide" type="checkbox" ng-model="agreedTerms"/>
           <!--<a href="/conditions" target="_blank">Membership terms and conditions</a>-->
-          <input class="btn btn-lg btn-info" ng-disabled="!agreedTerms" ng-click="setSignUpType('trial')" type="submit" value="15 day trial">
+          <input class="btn btn-lg btn-info" ng-disabled="!agreedTerms" ng-click="setSignUpType('trial')" type="submit" popover-trigger="mouseenter" popover="During free trial, Fanbucks will not be eligible for conversion into dollars." popover-placement="bottom" value="15 day trial">
           <input class="btn btn-primary" ng-disabled="!agreedTerms" ng-click="setSignUpType('payment')" type="submit" value="pay $10 member fee">
       </div>
     <!--<input type="submit" class="btn btn-primary" value="Sign Up">-->
