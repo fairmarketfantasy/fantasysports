@@ -77,11 +77,10 @@
         <!--<a class="btn btn-large btn-contest-cta btn-success"  ng-click="finish()" href="javascript://" >Back to Contests</a>-->
       <!--</div>-->
     <!--</div>-->
-    <div ng-show="isValidRoster()" class="roster-alert clearfix" >
+    <div ng-show="isValidRoster(1)" class="roster-alert clearfix" >
       <div class="pull-right roster-submit">
-        {{competitionRosters.indexForPlayerInRoster}}
         <a ng-show="competitionRosters.currentRoster.game_roster.state == 'in_progress'" class="btn btn-large btn-success pull-right" ng-click="submitRoster()" href="javascript://" >Submit</a>
-        <a ng-show="competitionRosters.currentRoster.game_roster.state == 'in_progress'" class="btn btn-large btn-orange pull-right" ng-click="submitTypeRoster('pick5')" href="javascript://" >pick 5</a>
+        <a ng-show="isValidRoster(5) && competitionRosters.currentRoster.game_roster.state == 'in_progress'" class="btn btn-large btn-orange pull-right" ng-click="submitTypeRoster('pick5')" href="javascript://" >pick 5</a>
         <a ng-show="competitionRosters.currentRoster.game_roster.state == 'submitted'" class="btn btn-large btn-success pull-right" ng-click="submitRoster()" href="javascript://" >Update Roster</a>
         <a ng-show="competitionRosters.currentRoster.game_roster.state == 'finished'" class="btn btn-large btn-contest-cta btn-success"  ng-click="finish()" href="javascript://" >Back to Contests</a>
       </div>

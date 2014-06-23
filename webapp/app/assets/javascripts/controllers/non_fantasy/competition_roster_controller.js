@@ -49,12 +49,13 @@ angular.module("app.controllers")
     }
   };
 
-  $scope.isValidRoster = function() {
-    if(!competitionRosters.currentRoster || _.filter(competitionRosters.currentRoster.game_roster.game_predictions, function(p) {return p.stats_id}).length < 1){
+  $scope.isValidRoster = function(count) {
+    if(!competitionRosters.currentRoster || _.filter(competitionRosters.currentRoster.game_roster.game_predictions, function(p) {return p.stats_id}).length < count){
       return false;
     }
     return true;
   };
+
 
   $scope.addTeamInRoster = function(team, side){
     competitionRosters.addTeam(team, side);
