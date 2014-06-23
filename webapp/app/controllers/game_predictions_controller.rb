@@ -62,6 +62,7 @@ class GamePredictionsController < ApplicationController
     data = GamePrediction.generate_new_games_data(sport: params[:sport], category: 'fantasy_sports', roster: roster, user: current_user, type: type)
     if roster
       roster = JSON.parse(GameRoster.json_view([roster], type)).first
+      roster["competition_type"] = type
       roster["game_predictions"] = roster["game_predictions"].sort_by { |g| g["position_index"] }
     end
 
