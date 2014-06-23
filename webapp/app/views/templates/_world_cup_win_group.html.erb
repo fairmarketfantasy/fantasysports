@@ -14,7 +14,7 @@
         <div class="team-flag" ng-style="{'background-image': team.logo_url && ('url(' + team.logo_url +')')}"></div>
         <div class="team-name">{{team.name}}</div>
         <div class="prediction">
-          <p ng-hide="team.remove_pt" ng-class="{'ip-btn-disable' : team.disable_pt}" class="pt" ng-click="openCWorldCupPredictionDialog(team)">PT{{team.pt | toFixed}}
+          <p ng-class="{'ip-btn-disable' : team.disable_pt}" class="pt" ng-click="openCWorldCupPredictionDialog(team)">PT{{team.pt | toFixed}}
             <span ng-hide="team.disable_pt" popover-trigger="mouseenter" popover="{{team.name}} PT{{team.pt | toFixed}}, predict correctly and win {{team.pt | toFixed}}FB" popover-placement="top"></span>
           </p>
         </div>
