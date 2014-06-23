@@ -29,7 +29,7 @@ namespace :users do
       ip = user.individual_predictions.where("state not in ('canceled', 'submitted') AND created_at > ?", time)
       r = user.rosters.where("state not in ('in_progress', 'submitted', 'cancelled') AND created_at > ?", time)
       gr = user.game_rosters.where("state = 'finished' AND created_at > ?", time)
-      gp = user.game_predictions.where("game_roster_id IS NULL AND state = 'finished' AND created_at > ?", time)
+      gp = user.game_predictions.where("game_roster_id=0 AND state = 'finished' AND created_at > ?", time)
       pr = user.predictions.where("state = 'finished' AND created_at > ?", time)
       number = ip.count + r.count + gr.count + gp.count + pr.count
       co = user.customer_object
