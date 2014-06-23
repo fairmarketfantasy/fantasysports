@@ -138,7 +138,7 @@ class Prediction < ActiveRecord::Base
     value = self.class.get_pt_value(type: self.prediction_type, user: self.user,
                                     predictable_id: self.stats_id,
                                     game_stats_id: game.try(:stats_id))
-    return if pt - value <= 0
+    return if value.nil? || pt - value <= 0
 
     value
   end
