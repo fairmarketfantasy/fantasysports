@@ -32,6 +32,10 @@ class PredictionSerializer < ActiveModel::Serializer
     !!current_pt and !Prediction.team_plays?(object.stats_id, object.prediction_type) and current_pt.try(:round) > 15
   end
 
+  def award
+    object.award.to_f.round(2)
+  end
+
   # CHOOSE THE GAME
   # game = Game.where(stats_id: object.game_stats_id).first
   # if not game.nil?
