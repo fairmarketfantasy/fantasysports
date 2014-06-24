@@ -22,4 +22,8 @@ class IndividualPredictionSerializer < ActiveModel::Serializer
   def game_day
     object.market.closed_at
   end
+
+  def award
+    object.award.to_f.round(2)
+  end
 end
