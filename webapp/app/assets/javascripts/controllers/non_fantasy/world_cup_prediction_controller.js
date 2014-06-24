@@ -1,8 +1,9 @@
 angular.module("app.controllers")
-.controller('WorldCupPredictionController', ['$scope', 'dialog', 'fs', 'prediction', 'predictionType', 'typesGames', 'flash', '$routeParams', function($scope, dialog, fs, prediction, predictionType, typesGames, flash, $routeParams) {
+.controller('WorldCupPredictionController', ['$scope', 'dialog', 'fs', 'prediction', 'predictionType', 'typesGames', 'flash', '$routeParams', 'betAlias', function($scope, dialog, fs, prediction, predictionType, typesGames, flash, $routeParams, betAlias) {
     $scope.prediction = prediction;
     $scope.predictionType = predictionType;
     $scope.types_games = typesGames;
+    $scope.betAlias = betAlias;
 
   $scope.ipSubmit = function( predictable_id, prediction_type){
 

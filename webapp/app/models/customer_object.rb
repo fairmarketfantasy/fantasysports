@@ -67,7 +67,7 @@ class CustomerObject < ActiveRecord::Base
     return net_monthly_winnings if net_monthly_winnings <= 10000
 
     sum = net_monthly_winnings
-    [10000, 30000, 50000].each do |tier|
+    [10000, 20000, 30000, 50000].each do |tier|
       sum -= 0.25.to_d * (net_monthly_winnings - tier) if net_monthly_winnings >= tier
     end
 
