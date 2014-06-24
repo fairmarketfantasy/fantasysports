@@ -26,11 +26,10 @@ class PlayerSerializer < ActiveModel::Serializer
       :swapped_player_name,
       :pt,
       :logo_url,
-      :disable_pt,
-      :remove_pt
+      :disable_pt
 
   def disable_pt
-    Prediction.prediction_made?(stats_id, 'mvp', '', options[:user])
+    Prediction.prediction_made?(stats_id, 'mvp', '', options[:user]) or object.pt.to_f.round <= 15.0
   end
 
   def remove_pt
