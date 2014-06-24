@@ -34,7 +34,7 @@ class PlayerSerializer < ActiveModel::Serializer
   end
 
   def remove_pt
-    object.pt.try(:round) <= 15.0
+    object.pt.to_f.round <= 15.0
   end
 
   # TODO: fix for NFL when no stats_id
