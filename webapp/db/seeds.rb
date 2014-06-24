@@ -29,8 +29,8 @@ MarketDefaults.where(:sport_id => 0).first_or_create(:single_game_multiplier => 
 
 CATEGORY_SPORTS = { 'fantasy_sports' => ['nfl', 'nba', 'mlb'],
                     'entertainment' => ['music', 'reality shows', 'oscars', 'grammys', 'celebrity propositions'],
-                    'politics' => ['presidental candidates', 'congressional races', 'senate races'],
-                    'sports' => ['mlb', 'fwc', 'nhl', 'nascar', 'golf', 'tennis'] }
+                    'politics' => ['presidental candidates', 'congressional races', 'snt'],
+                    'sports' => ['mlb', 'fwc', 'nhl', 'nascar', 'golf', 'tennis', 'hrd'] }
 
 CATEGORY_SPORTS.each do |category, sports|
   cat = Category.where(name: category).first_or_create!
@@ -52,10 +52,11 @@ CATEGORY_SPORTS.each do |category, sports|
 end
 
 inactive_sport_names = ['MUSIC', 'REALITY SHOWS', 'OSCARS', 'GRAMMYS', 'CELEBRITY PROPOSITIONS',
-                        'PRESIDENTAL CANDIDATES', 'CONGRESSIONAL RACES', 'SENATE RACES', 'NASCAR',
+                        'PRESIDENTAL CANDIDATES', 'CONGRESSIONAL RACES', 'NASCAR',
                         'GOLF', 'TENNIS']
 Sport.where(name: inactive_sport_names).each { |s| s.update_attribute(:is_active, false) }
-Category.where(name: ['entertainment', 'politics']).each { |s| s.update_attribute(:is_active, false) }
+Category.where(name: 'entertainment').each { |s| s.update_attribute(:is_active, false) }
+Category.where(name: 'politics').each { |s| s.update_attribute(:is_active, true) }
 Category.where(name: 'sports').first.sports.where(name: ['NFL', 'NHL', 'NBA']).each do |s|
   s.update_attribute(:is_active, false)
 end
@@ -64,6 +65,10 @@ Sport.all.each do |s|
             'Soccer World Cup 2014'
           elsif s.name == 'MLB' && s.category.name == 'sports'
             'Predict-a-Game MLB'
+          elsif s.name == 'HRD' && s.category.name == 'sports'
+            'Home run derby'
+          elsif s.name == 'SNT' && s.category.name == 'politics'
+            'Senate races'
           else
             s.name
           end
