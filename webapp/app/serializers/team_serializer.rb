@@ -1,12 +1,12 @@
 class TeamSerializer < ActiveModel::Serializer
-  attributes :name, :logo_url, :pt, :stats_id, :disable_pt, :remove_pt
+  attributes :name, :logo_url, :pt, :stats_id, :disable_pt#, :remove_pt
 
   def stats_id
     object.stats_id
   end
 
   def disable_pt
-    Prediction.prediction_made?(stats_id, options[:type], '', options[:user]) or object.pt(options).to_f.round <= 15
+    Prediction.prediction_made?(stats_id, options[:type], '', options[:user]) or object.pt(options) <= 15.0
   end
 
   def pt
@@ -14,6 +14,6 @@ class TeamSerializer < ActiveModel::Serializer
   end
 
   def remove_pt
-    object.pt(options).to_f.round <= 15
+    object.pt(options) <= 15
   end
 end
