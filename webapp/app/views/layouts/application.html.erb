@@ -230,7 +230,7 @@
     defaultSport: <%= { :name => Sport.active.first.name, :category_name => Sport.active.first.category.name }.to_json.html_safe %>
   };
 
-window.App.sports = <%= Category.active.map{|s| CategorySerializer.new(s, scope: current_user) }.to_json.html_safe %>;
+window.App.sports = <%= Category.unscoped { Category.where(name: ['fantasy_sports', 'sports', 'politics']).map{|s| CategorySerializer.new(s, scope: current_user) }.to_json.html_safe } %>;
 
   window.setCurrentUser = function(user) {
     window.App.currentUser = user;
