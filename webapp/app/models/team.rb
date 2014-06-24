@@ -1,25 +1,26 @@
 class Team < ActiveRecord::Base
-  self.primary_key = 'stats_id'
   has_many :players, :foreign_key => 'team'
   belongs_to :sport
   belongs_to :group
+  has_many :members, as: :memberable
+  has_many :competitions, through: :members
 
   attr_accessible *(%i(abbrev sport name market division state country stats_id conference))
 
   validates :sport_id, :abbrev, :name, presence: true # :conference, :division for NFL
 
   def games
-    Game.where("home_team = '#{self.id}' OR away_team = '#{self.id}'")
+    Game.where("home_team = '#{self.stats_id}' OR away_team = '#{self.stats_id}'")
   end
 
   def pt(opts = {})
     competition_type = opts[:type] || opts[:prediction_type]
     value = if opts[:game_stats_id].blank? && !competition_type.nil? && competition_type != 'daily_wins'
-              PredictionPt.find_by_stats_id_and_competition_type(self.id, competition_type).pt
-            elsif Game.exists?(home_team: self.id, stats_id: opts[:game_stats_id])
-              Game.find_by_home_team_and_stats_id(self.id, opts[:game_stats_id]).home_team_pt
-            elsif Game.exists?(away_team: self.id, stats_id: opts[:game_stats_id])
-              Game.find_by_away_team_and_stats_id(self.id, opts[:game_stats_id]).away_team_pt
+              PredictionPt.find_by_stats_id_and_competition_type(self.stats_id, competition_type).pt
+            elsif Game.exists?(home_team: self.stats_id, stats_id: opts[:game_stats_id])
+              Game.find_by_home_team_and_stats_id(self.stats_id, opts[:game_stats_id]).home_team_pt
+            elsif Game.exists?(away_team: self.stats_id, stats_id: opts[:game_stats_id])
+              Game.find_by_away_team_and_stats_id(self.stats_id, opts[:game_stats_id]).away_team_pt
             end
 
     user = opts[:user]
