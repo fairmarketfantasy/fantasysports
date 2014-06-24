@@ -1,7 +1,8 @@
 angular.module("app.controllers")
-.controller('CompetitionCreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'team', 'flash', '$routeParams', 'games' , function($scope, dialog, fs, team,  flash, $routeParams, games) {
+.controller('CompetitionCreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'team', 'flash', '$routeParams', 'games' , 'betAlias', function($scope, dialog, fs, team,  flash, $routeParams, games, betAlias) {
     $scope.team = team;
-    $scope.games = games
+    $scope.games = games;
+    $scope.betAlias = betAlias;
 
     $scope.ipSubmit = function(game_stats_id, team_stats_id){
 

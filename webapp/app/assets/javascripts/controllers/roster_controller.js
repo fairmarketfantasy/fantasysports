@@ -386,7 +386,8 @@ $scope.openPredictionDialog = function(player) {
         controller: 'CreateIndividualPredictionController',
         resolve: {
             player: function() { return player; },
-            market: function() {  return rosters.currentRoster.market; }
+            market: function() {  return rosters.currentRoster.market; },
+            betAlias: function() {  return $scope.betAlias; }
         }
     };
     return $dialog.dialog(dialogOpts).open();
