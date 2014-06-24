@@ -54,14 +54,19 @@ class GameRoster < ActiveRecord::Base
       roster
     end
 
-    def json_view(arr)
+    def json_view(arr, type=nil)
       required_fields = [:game_stats_id, :team_stats_id, :home_team, :team_logo,
                          :team_name, :game_time, :opposite_team, :pt,
                          :position_index, :stats_id, :name, :logo_url, :is_home]
+      required_fields << :remove_trade if type && type.eql?('pick5')
       arr.to_json(:only => [:id, :score, :state, :contest_id, :contest_rank, :owner_id, :paid_at, :amount_paid, :expected_payout],
                   :methods => [:room_number, :owner_name, :contest_rank_payout, :perfect_score],
                   :include => { :game_predictions => {:methods => required_fields} } )
     end
+  end
+
+  def roster_type
+    self.contest_type_id.eql?(ContestType.find_by_name('Pick5').id) ? 'Pick5':'100/30/30'
   end
 
   def room_number

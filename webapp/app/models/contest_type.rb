@@ -1,5 +1,6 @@
 class ContestTypeValidator < ActiveModel::Validator
   def validate(record)
+    return true if record.name.eql?('Pick5')
     total_payout = record.get_payout_structure.sum
     total_buy_in = record.max_entries * record.buy_in
     if record.max_entries == 0

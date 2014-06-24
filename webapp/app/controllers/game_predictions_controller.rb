@@ -58,9 +58,11 @@ class GamePredictionsController < ApplicationController
     raise HttpException.new(402, 'Unpaid subscription!') if user && !user.active_account? && !user.customer_object.trial_active?
 
     roster = GameRoster.find(params[:roster_id]) if params[:roster_id] && params[:roster_id] != "false"
-    data = GamePrediction.generate_new_games_data(sport: params[:sport], category: 'fantasy_sports', roster: roster, user: current_user)
+    type = (roster && roster.contest_type_id.eql?(ContestType.find_by_name('Pick5').id)) ? 'pick5' : nil
+    data = GamePrediction.generate_new_games_data(sport: params[:sport], category: 'fantasy_sports', roster: roster, user: current_user, type: type)
     if roster
-      roster = JSON.parse(GameRoster.json_view([roster])).first
+      roster = JSON.parse(GameRoster.json_view([roster], type)).first
+      roster["competition_type"] = type
       roster["game_predictions"] = roster["game_predictions"].sort_by { |g| g["position_index"] }
     end
 

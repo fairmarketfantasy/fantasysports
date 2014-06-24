@@ -103,3 +103,15 @@ fwc_sport.players.each do |p|
   Member.where(competition_id: mvp_competition.id, memberable_id: p.id,
                memberable_type: 'Player').first_or_create!
 end
+
+#Add new ContestType for Pick5 predictions
+ContestType.create(
+  market_id:          1_000_000_000,
+  name:               'Pick5',
+  description:        'pick up 5 teams and win pt1*pt2*pt3*pt4*pt5 / 15^4 if all 5 teams wins',
+  payout_structure:   'pt1*pt2*pt3*pt4*pt5 / 15^4',
+  payout_description: 'pt1*pt2*pt3*pt4*pt5 / 15^4',
+  max_entries:        1_000_000_000,
+  buy_in:             1_000_000_000,
+  rake:               1_000_000_000
+)

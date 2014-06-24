@@ -19,6 +19,14 @@ class Game < ActiveRecord::Base
     Player.where('team IN(?, ?)', self.home_team, self.away_team)
   end
 
+  def game_rosters
+    GameRoster.where(game_id: self.stats_id)
+  end
+
+  def game_roster_predictions
+    GamePrediction.where(game_roster_id: self.game_rosters.map(&:id))
+  end
+
   def market_players_for_market(market_id)
     MarketPlayer.select('players.*').joins('JOIN players p ON p.id=market_players.player_id').where('markets.id = ?', market_id).where('team IN(?, ?)', self.home_team, self.away_team)
   end

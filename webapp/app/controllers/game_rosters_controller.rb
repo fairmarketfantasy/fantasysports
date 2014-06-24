@@ -21,7 +21,32 @@ class GameRostersController < ApplicationController
                                       position_index: bet[:position_index])
     end
 
-    render :json => { 'msg' => 'Roster submitted successfully!' }, :status => :ok
+    render json: { 'msg' => 'Roster submitted successfully!' }, status: :ok
+  end
+
+  def create_pick_5
+    raise HttpException.new(402, "Agree to terms!")      unless current_user.customer_object.has_agreed_terms?
+    raise HttpException.new(402, "Unpaid subscription!") if !current_user.active_account? && !current_user.customer_object.trial_active?
+
+    contest_type = ContestType.where(name: 'Pick5').first
+    game = Game.where(stats_id: params[:teams].first[:game_stats_id]).last
+    roster = current_user.game_rosters.create!(contest_type_id: contest_type.id,
+                                               started_at: game.game_time - 5.minutes,
+                                               game_id: game.stats_id,
+                                               state: 'submitted',
+                                               day: game.game_day)
+    roster.submit!
+    params[:teams].each do |bet|
+      game = Game.where(stats_id: bet[:game_stats_id]).first
+      pt = bet[:team_stats_id] == game.home_team ? game.home_team_pt : game.away_team_pt
+      roster.game_predictions.create!(user_id:        current_user.id,
+                                      game_stats_id:  bet[:game_stats_id],
+                                      team_stats_id:  bet[:team_stats_id],
+                                      pt:             pt,
+                                      position_index: bet[:position_index])
+    end
+
+    render json: { 'msg' => 'Pick5 submitted successfully!' }, status: :ok
   end
 
   def update
