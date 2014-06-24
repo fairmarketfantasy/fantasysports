@@ -181,13 +181,19 @@ footer {
 
 .sign-up-modal{
   width: 650px;
+  .modal-body {
+    .modal-line {
+      margin-right: 18px;
+      margin-left: 18px;
+    }
+  }
   .modal-footer{
     text-align: left;
     .sign-up-actions{
-      margin-right: 45px;
+      margin-right: 25px;
       .btn {
         font-size: 1.6em;
-        &:not(:first-child){
+        &:last-child{
           margin-left: 12px;
         }
       }
@@ -470,7 +476,7 @@ select:focus:invalid {
   }
 }
 .promo-code {
-  margin-top: 0em;
+  margin: 0 27px 0 0;
   text-align: left;
   input[type="text"] {
     width: 90px;

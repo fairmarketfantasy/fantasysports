@@ -62,7 +62,8 @@ angular.module("app.controllers")
         resolve: {
           prediction: function() { return prediction; },
           predictionType: function() { return $scope.active_type; },
-          typesGames: function() { return $scope.types_games; }
+          typesGames: function() { return $scope.types_games; },
+          betAlias: function() {  return $scope.betAlias; }
         }
       };
       return $dialog.dialog(dialogOpts).open();

@@ -129,7 +129,8 @@ angular.module("app.controllers")
         controller: 'CompetitionCreateIndividualPredictionController',
         resolve: {
           team: function() { return team; },
-          games: function() { return competitionRosters.currentRoster.games; }
+          games: function() { return competitionRosters.currentRoster.games; },
+          betAlias: function() { return $scope.betAlias}
         }
       };
       return $dialog.dialog(dialogOpts).open();

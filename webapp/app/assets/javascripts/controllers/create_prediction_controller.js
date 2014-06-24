@@ -1,7 +1,8 @@
 angular.module("app.controllers")
-.controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'player', 'market' ,'flash', '$routeParams', function($scope, dialog, fs, player, market, flash, $routeParams) {
+.controller('CreateIndividualPredictionController', ['$scope', 'dialog', 'fs', 'player', 'market' ,'flash', '$routeParams', 'betAlias', function($scope, dialog, fs, player, market, flash, $routeParams, betAlias) {
     $scope.player = player;
     $scope.market = market;
+    $scope.betAlias = betAlias;
     $scope.confirmShow = false;
     $scope.eventData = {};
 
