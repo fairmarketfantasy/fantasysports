@@ -60,6 +60,7 @@ Category.where(name: 'politics').each { |s| s.update_attribute(:is_active, true)
 Category.where(name: 'sports').first.sports.where(name: ['NFL', 'NHL', 'NBA']).each do |s|
   s.update_attribute(:is_active, false)
 end
+
 Sport.all.each do |s|
   name  = if s.name == 'FWC'
             'Soccer World Cup 2014'
@@ -81,3 +82,24 @@ Category.all.each do |s|
 end
 
 Category.where(name: 'sports').first.update_attribute(:is_new, true)
+
+fwc_sport = Sport.where(:name => 'FWC').first
+cup_competition = fwc_sport.competitions.where(name: 'Win the cup').first_or_create!
+fwc_sport.teams.each do |t|
+  Member.where(competition_id: cup_competition.id, memberable_id: t.id,
+               memberable_type: 'Team').first_or_create!
+end
+
+fwc_sport.groups.each do |group|
+  group_competition = fwc_sport.competitions.where(name: group.name).first_or_create!
+  group.teams.each do |t|
+    Member.where(competition_id: group_competition.id, memberable_id: t.id,
+                 memberable_type: 'Team').first_or_create!
+  end
+end
+
+mvp_competition = fwc_sport.competitions.where(name: 'MVP').first_or_create!
+fwc_sport.players.each do |p|
+  Member.where(competition_id: mvp_competition.id, memberable_id: p.id,
+               memberable_type: 'Player').first_or_create!
+end

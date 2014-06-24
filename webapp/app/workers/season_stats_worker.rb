@@ -113,7 +113,7 @@ class SeasonStatsWorker
   end
 
   def self.job_name(team_stats_id, year, season_type = 'reg')
-    team = Team.find team_stats_id
+    team = Team.where(stats_id: team_stats_id).first
     return 'No team found' unless team
 
     "Fetch team stats for team: #{team.name}, season: #{year}, season_type: #{season_type}"

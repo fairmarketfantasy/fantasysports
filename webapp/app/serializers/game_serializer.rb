@@ -3,10 +3,10 @@ class GameSerializer < ActiveModel::Serializer
              :away_team, :season_type, :season_week, :season_year, :network
 
   def home_team
-    Team.find(object[:home_team]).name
+    Team.where(stats_id: object[:home_team]).first.name
   end
 
   def away_team
-    Team.find(object[:away_team]).name
+    Team.where(stats_id: object[:away_team]).first.name
   end
 end
