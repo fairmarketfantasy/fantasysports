@@ -58,7 +58,7 @@ class PlayerSerializer < ActiveModel::Serializer
   end
 
   def pt
-    object.adjusted_pt(options).try(:round)
+    object.adjusted_pt(options).to_f.round
   end
 
   def ppg
