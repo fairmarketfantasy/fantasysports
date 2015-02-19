@@ -118,4 +118,7 @@ user = User.where(email: 'mail@example.com').first
 WeeklyDigestMailer.digest_email(user).deliver
 ```
 
+## Credentials
+Do not forget to add config for paypal and other constants to run app
+
 
