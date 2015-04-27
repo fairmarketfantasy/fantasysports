@@ -15,9 +15,9 @@ class SportStrategy
         ).order('closed_at asc').limit(10).select{|m| m.game_type =~ /single_elimination/ }
     else
       # next_market_day = @sport.markets.where(['closed_at > ?', Time.now.utc]).order('closed_at asc').first.closed_at.beginning_of_day
-      markets = @sport.markets.where(
+      markets = @sport.markets.joins(:players).where(
           ["game_type IS NULL OR game_type = 'regular_season'"]
-          ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', Time.now.utc, Time.now.utc.end_of_day + 6.hours]
+          #).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\')', Time.now.utc, Time.now.utc.end_of_day + 6.hours]
           ).order('closed_at asc')
       markets = markets.any? && markets.first.games.first.season_type == "PST" ? markets.limit(3) : markets.limit(20)
       markets.select { |m| m.games.first.status == 'scheduled' }
@@ -137,15 +137,15 @@ class NFLStrategy < SportStrategy
 
   def fetch_markets(type)
     if type == 'single_elimination'
-      @sport.markets.where(
+      @sport.markets.joins(:players).where(
           "game_type IS NULL OR game_type ILIKE '%single_elimination'"
-        ).where(['closed_at > ? AND state IN(\'published\', \'opened\', \'closed\')', Time.now]
+        #).where(['closed_at > ? AND state IN(\'published\', \'opened\', \'closed\')', Time.now]
         ).order('closed_at asc').limit(10).select{|m| m.game_type =~ /single_elimination/ }
     else
       week_market = @sport.markets.where(['closed_at > ? AND name ILIKE \'%week%\' AND state IN(\'published\', \'opened\', \'closed\')', Time.now]).order('closed_at asc').first
-      markets =  @sport.markets.where(
+      markets =  @sport.markets.joins(:players).where(
                     ["game_type IS NULL OR game_type = 'regular_season'"]
-                  ).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\', \'closed\')', Time.now, (week_market && week_market.closed_at) || Time.now + 1.week]
+                  #).where(['closed_at > ? AND closed_at <= ?  AND state IN(\'published\', \'opened\', \'closed\')', Time.now, (week_market && week_market.closed_at) || Time.now + 1.week]
                   ).order('closed_at asc').limit(10)
       markets = markets.select{|m| m.id != week_market.id}.unshift(week_market) if week_market
       markets

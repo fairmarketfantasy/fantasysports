@@ -1,7 +1,7 @@
 before_exec do |_|
   ENV['BUNDLE_GEMFILE'] = File.join(root, 'Gemfile')
 end
-deploy_to   = '/home/ubuntu/prisma/'
+deploy_to   = '/home/ubuntu/predictthat-2/'
 rails_root  = "#{deploy_to}/current"
 pid_file    = "#{deploy_to}/shared/pids/unicorn.pid"
 socket_file = "#{deploy_to}/shared/unicorn.sock"

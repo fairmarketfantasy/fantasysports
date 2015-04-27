@@ -1,1 +1,0 @@
-customer_object_controller.rb

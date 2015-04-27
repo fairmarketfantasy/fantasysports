@@ -92,6 +92,24 @@ namespace :seed do
     `rake seed:tend_markets_once`
   end
 
+  task :create_fake_data do
+    Game.update_all(game_time: Time.now + 2.days, status: 'scheduled')
+
+    Market.all.each do |market|
+      market.update_column(:closed_at, Time.now + 2.days)
+      market.add_default_contests
+      total_bets = 0
+      market.market_players.each do |mp|
+        bets = 100 * 100 * rand(1..10)
+        mp.initial_shadow_bets = mp.shadow_bets = mp.bets = bets
+        mp.save!
+        total_bets += bets
+      end
+      market.total_bets = market.shadow_bets = market.initial_shadow_bets = total_bets
+      market.save!
+    end
+  end
+
   desc 'tend the markets once'
   task :tend_markets_once => :environment do
     Market.tend

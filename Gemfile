@@ -84,10 +84,10 @@ group :development do
   gem 'descriptive-statistics'
   # Use Capistrano for deployment
   gem 'capistrano', '= 2.15.5'
-  gem 'rvm-capistrano'
+  gem 'rvm-capistrano', require: false
 end
 
-#gem 'quiet_assets'
+gem 'quiet_assets'
 
 
 gem 'pry', group: [:development, :test]

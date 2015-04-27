@@ -375,6 +375,8 @@ class Roster < ActiveRecord::Base
       end while(remaining_positions.length > 0)
     end
     self.reload
+  rescue
+    return self
   end
 
   def fill_pseudo_randomly5(place_bets = true)
@@ -444,9 +446,9 @@ class Roster < ActiveRecord::Base
       indexes = {}
       (positions || remaining_positions).each { |pos| candidate_players[pos] = []; indexes[pos] = 0 }
       self.purchasable_players.each do |p|
-        next unless candidate_players.include?(p.position)
-        next if self.rosters_players.map(&:player_id).include?(p.id)
-        next if p.benched?
+        if !candidate_players.include?(p.position) || self.rosters_players.map(&:player_id).include?(p.id)# || p.benched?
+          next
+        end
 
         candidate_players[p.position] << p
         indexes[p.position] += 1 if p.buy_price > self.buy_in

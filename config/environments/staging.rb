@@ -67,9 +67,9 @@ Fantasysports::Application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
   # Use a different cache store in production.
-  #config.cache_store = :file_store, File.join(Rails.root, 'tmp', 'cache')
-  elasticache = Dalli::ElastiCache.new('staging-001.0nuqd9.0001.usw2.cache.amazonaws.com:11211')
-  config.cache_store = :dalli_store, elasticache.servers, {:expires_in => 1.day, :compress => true}
+  config.cache_store = :file_store, File.join(Rails.root, 'tmp', 'cache')
+  # elasticache = Dalli::ElastiCache.new('staging-001.0nuqd9.0001.usw2.cache.amazonaws.com:11211')
+  # config.cache_store = :dalli_store, elasticache.servers, {:expires_in => 1.day, :compress => true}
 
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
@@ -77,7 +77,7 @@ Fantasysports::Application.configure do
 
   # Precompile additional assets.
   # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
-  config.assets.precompile += %w( flat-ui.css fmf.css fonts.css terms.js terms.css )
+  config.assets.precompile += %w( flat-ui.css fmf.css fonts.css terms.js terms.css fonts)
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
