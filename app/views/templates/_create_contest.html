@@ -1,0 +1,45 @@
+<div class='modal-header'>
+  <h1>Create a Contest {{markets.currentMarket.started_at | shortFormTime }}</h1>
+</div>
+<div class='modal-body'>
+  <div class="clearfix">
+    <div class="full-row">
+      <!-- NOENTRY TODO: change these, no custom 27 H2H pricing -->
+      <h3>Contest Type</h3>
+      <ul class="contest-type-pills nav-pills modal-pills">
+        <li ng-class="{active: contest_type == '100/30/30'}"><a href="javascript://" ng-click="contest_type = '100/30/30'">100/30/30</a></li>
+        <li ng-class="{active: contest_type == '27 H2H'}"><a href="javascript://" ng-click="contest_type = '27 H2H'">27 H2H</a></li>
+      </ul>
+    </div>
+    <div class="full-row">
+      <h3>Make it Recurring</h3>
+      <div class="contest-name">
+        <input type="text" ng-model="league_name" placeholder="Name the league"/>
+        <p>and we'll invite everybody again next week</p>
+        <p class="tiny">or just leave it blank for a one time contest</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="clearfix">
+
+    <div class="full-row">
+      <h3>Invite friends</h3>
+      <textarea ng-model="invitees" placeholder="Put your friend's email addresses in here (comma or semicolon delimited)"></textarea>
+      <p>We give new friends you invite a free $1 game!  We also throw a buck your way to thank you for supporting us.</p>
+    </div>
+    <div class="full-row">
+      <h3>Custom note</h3>
+      <textarea ng-model="message" placeholder="If you want to send a custom message, put it here"></textarea>
+      <p>Also: If your friends don't fill up your contest, we'll fill it with generated rosters.</p>
+    </div>
+  </div>
+  <div>
+
+  </div>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn btn-success" ng-click="createContest()">Create Contest</a>
+  <a href="javascript://" class="btn btn-info" ng-click="close()">Cancel</a>
+</div>
+

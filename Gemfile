@@ -1,0 +1,115 @@
+source 'https://rubygems.org'
+
+# Use debugger
+gem 'debugger', group: [:development, :test]
+
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '4.0.0'
+
+# Use sqlite3 as the database for Active Record
+gem 'pg'
+gem 'dalli-elasticache'
+
+# Use SCSS for stylesheets
+gem 'less-rails'
+
+# Use Uglifier as compressor for JavaScript assets
+gem 'uglifier', '>= 1.3.0'
+
+# Use CoffeeScript for .js.coffee assets and views
+#gem 'coffee-rails', '~> 4.0.0'
+
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'therubyracer', platforms: :ruby
+gem 'twitter-bootstrap-rails'
+
+gem 'carrierwave'
+gem 'fog'
+gem "mini_magick"
+
+# Use jquery as the JavaScript library
+#gem 'jquery-rails'
+
+# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+# gem 'turbolinks'
+
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-facebook'
+gem 'omniauth-facebook-access-token'
+gem 'mustwin_devise_oauth2_providable', '1.1.6'#, :path => '/Users/mike/code/devise_oauth2_providable'
+gem 'protected_attributes'
+gem 'activeadmin', github: 'gregbell/active_admin', branch: 'master'
+
+# work queue
+gem 'sidekiq'
+gem 'sidekiq_monitor'
+gem 'sidekiq-cron', '~> 0.2.0' # schedule extension
+
+# data processing
+gem 'nokogiri'
+gem 'aws-sdk'
+
+#pagination
+gem 'kaminari'
+
+# Third Party Integrations
+# gem 'honeybadger'
+
+#payments
+gem 'skeuocard-rails'
+#gem 'paypal-sdk-rest'
+#gem 'paypal-sdk-adaptivepayments'
+#gem 'venice' # iOS receipt verification
+
+# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'jbuilder', '~> 1.2'
+gem "active_model_serializers"
+
+group :doc do
+  # bundle exec rake doc:rails generates the API under doc/api.
+  #gem 'sdoc', require: false
+end
+
+group :test do
+  gem 'mocha', :require => false
+  gem 'factory_girl'
+  gem "factory_girl_rails", "~> 4.0"
+  # gem 'mustwin-stripe-ruby-mock', '>= 1.8.5.00'
+  # gem 'mustwin-stripe-ruby-mock', path: '/Users/dylan/code/stripe-ruby-mock'
+  #gem 'mustwin-stripe-ruby-mock', git: 'git://github.com/MustWin/stripe-ruby-mock', ref: '6d5815f953e4168df5af4a78cb48b2f13f008365'
+end
+
+group :development do
+  gem 'descriptive-statistics'
+  # Use Capistrano for deployment
+  gem 'capistrano', '= 2.15.5'
+  gem 'rvm-capistrano'
+end
+
+#gem 'quiet_assets'
+
+
+gem 'pry', group: [:development, :test]
+# Use ActiveModel has_secure_password
+# gem 'bcrypt-ruby', '~> 3.0.0'
+
+# Ops
+#gem 'god'
+#gem 'puma'
+#gem 'chef', '~> 11.6.0'
+#gem 'knife-ec2'
+
+# Use unicorn as the app server
+gem 'unicorn'
+
+# Use Capistrano for deployment
+# gem 'capistrano', '= 2.15.5', group: :development
+
+gem 'typhoeus'
+gem 'sendgrid'
+gem 'faye-websocket'
+gem 'trollop'
+gem 'eventmachine'
+
+gem 'simplecov', require: false, group: :test

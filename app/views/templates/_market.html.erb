@@ -1,0 +1,8 @@
+<div ng-controller="MarketController">
+  <div ng-hide="gameNotFound" class='market-loader centered'>
+    <img src='/assets/ajax-loader-big.gif'>
+  </div>
+  <div ng-show="gameNotFound" class="centered no_games">
+    <h4>There are no {{currentUser.currentCategory | underscore}} {{currentTitle | underscore}} games scheduled</h4>
+  </div>
+</div>

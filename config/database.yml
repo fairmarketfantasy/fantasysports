@@ -1,0 +1,30 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+defaults: &defaults
+  adapter: postgresql
+  database: fantasysports
+  host: localhost
+  username: fantasysports
+  password: F4n7a5y
+  pool: 16
+
+development:
+  <<: *defaults
+
+testing:
+  <<: *defaults
+
+staging:
+  <<: *defaults
+  host: fantasysports-staging-postgres.clvfjvvzcbre.us-west-2.rds.amazonaws.com
+
+test:
+  <<: *defaults
+  database: fantasysports_test
+
+production:
+  <<: *defaults
+  #host: fantasysports-postgres-master.clvfjvvzcbre.us-west-2.rds.amazonaws.com

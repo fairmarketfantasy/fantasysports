@@ -1,0 +1,20 @@
+<div class='modal-header'>
+  <h3>Challenge your friends!</h3>
+</div>
+<div class='modal-body'>
+  <p>We give new friends you invite a free $1 game!  We also throw a buck your way to thank you for supporting us.</p>
+  <textarea ng-model="invitees" placeholder="Put your friend's email addresses in here"></textarea>
+  <textarea ng-model="message" placeholder="If you want to send a custom message, put it here"></textarea>
+  <p>Or send them this link:
+    <span class="invite-link">
+      <a href="<%= SITE %>/contests/join?contest_code={{ contest.invitation_code }}&referral_code={{ currentUser.referral_code }}">
+        <%= SITE %>/contests/join?contest_code={{ contest.invitation_code }}&referral_code={{ currentUser.referral_code }}
+      </a>
+    </span>
+  </p>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn btn-success" ng-click="sendInvites()">Send invitations</a>
+  <a href="javascript://" class="btn btn-info" ng-click="close()">close</a>
+</div>
+

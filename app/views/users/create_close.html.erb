@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7]> <html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7]> <html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8]> <html class="ie ie8" lang="en"> <![endif]-->
+<!--[if IE 9]> <html class="ie ie9" lang="en"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+</head>
+<body>
+  <script type="text/javascript">
+    if(window.opener) {
+      window.opener.setCurrentUser(<%= @user.to_json.html_safe %>)
+      <% if @redirect %>
+        window.opener.location.replace('/#<%= @redirect %>?flash=<%= CGI::escape(@flash) %>');
+      <% end %>
+      window.opener.location.reload(true);
+      window.close()
+    }
+  </script>
+</body>
+</html>
+

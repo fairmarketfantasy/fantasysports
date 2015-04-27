@@ -1,0 +1,47 @@
+<div class='modal-header'>
+  <h3 class='inline-block'>Epic Roster. Let's make it count!</h3>
+</div>
+<div class='modal-body'>
+  <div class="clearfix">
+    <h4 class="bonus-header">Share your entry and earn bonus fantasy points!</h4><span class="total-bonus-points">+{{roster.bonus_points}} total</span>
+    <div ng-controller="TwitterController">
+      <div class="bonus-points">Tweet your entry<h3>+1 points</h3>
+        <div class="twitter-share"></div>
+      </div>
+      <div ng-hide="currentUser.bonuses.twitter_follow" class="bonus-points">Follow us on Twitter!<h3>+1 points</h3>
+        <div class="twitter-follow"></div>
+      </div>
+      <div class="bonus-points">Share on Facebook<h3>+1 points</h3>
+        <a class="fb-share" href="javascript://" ng-hide="fbShared" ng-click="fbShare()"><img class="fb-share-btn" src="<%= asset_path('fb-share-btn.png') %>"/></a>
+      </div>
+    </div>
+  </div>
+  <h4>Win more. Enter another contest?</h4>
+  <div>
+    <ul class="clearfix no-no" ng-cloak>
+      <li class="contest-classes">
+      <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
+        <div >
+          <h2>New roster?</h2>
+        </div>
+        <div>
+          <ul class="contests no-no">
+            <li class="enter-contest">
+              <a class="btn btn-contest btn-orange" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="close()" title="100/30/30">
+                <span>Enter</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <form>
+    <div class='clearfix'>
+    </div>
+  </form>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn btn-info" ng-show="buttonAction == 'enterAgain'" ng-click="close()">cancel</a>
+  <a href="javascript://" class="btn btn-info" ng-show="buttonAction == 'submitRoster'" ng-click="close()">no thanks</a>
+</div>

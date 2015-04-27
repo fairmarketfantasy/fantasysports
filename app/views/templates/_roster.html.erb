@@ -1,0 +1,99 @@
+<div ng-show="rosters.currentRoster">
+
+  <flex-slider class="carousel home-market" repeat="market in marketService.upcoming track by market.id"animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="160" item-margin="0">
+    <li class="market-li home-market-li" ng-class="{'landing-border': $last }">
+      <a  href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">
+        <strong>{{market.name}}</strong>
+        <p>{{market.games[0].game_time | onlyFormTime}}</p>
+      </a>
+    </li>
+  </flex-slider>
+
+  <div class="alert alert-info hide" ng-show="!rosters.justSubmittedRoster && false">
+  </div>
+  <!--<p class="alert alert-info" ng-show="market.state == 'published'">
+    This market's bell hasn't rung yet (it will open on or before {{dayBefore(market.opened_at) | shortFormTime}}). <br/>That means all prices are indicative. This helps keep our market fair. <a class="" href="/#rules">Learn More</a>.
+  </p>-->
+
+  <div class="contest-leaderboard" ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && (inThePast(market.started_at) || rosters.currentRoster.contest.private)">
+    <table class="table table-striped">
+      <thead>
+        <th ng-show="rosters.contest_type.name == 'h2h rr'">Record</th>
+        <th ng-hide="rosters.contest_type.name == 'h2h rr'">Rank</th>
+        <th>User</th>
+        <th>Award</th>
+        <th>Points&nbsp;&nbsp;of: {{leaderboard[0].perfect_score | number:1}}</th>
+        <th>Roster</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="roster in leaderboard">
+          <td ng-show="roster.contest_type.name == 'h2h rr'">
+            <span ng-show="inThePast(market.started_at)">{{record(leaderboard, roster)}}</span>
+            <span ng-hide="inThePast(market.started_at)">Not Started</span>
+          </td>
+          <td ng-hide="roster.contest_type.name == 'h2h rr'">
+            <span ng-show="inThePast(market.started_at)">{{roster.contest_rank}}</span>
+            <span ng-hide="inThePast(market.started_at)">Not Started</span>
+          </td>
+          <td>{{roster.owner_name}}</td>
+          <td>
+            <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{roster.contest_rank_payout || 0}} FanFrees</span>
+            <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{(roster.contest_rank_payout || 0) | centsToFanbucks}}</span>
+          </td>
+          <td>{{roster.score | number:2}}</td>
+          <td>
+            <span ng-show="roster.id == rosters.currentRoster.id">This roster</span>
+            <a ng-show="roster.owner_id == currentUser.id && roster.id != rosters.currentRoster.id" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{roster.id}}">View roster</a>
+            <a ng-show="roster.owner_id != currentUser.id" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{rosters.currentRoster.id}}/vs/{{roster.id}}">See their roster</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <a href="javascript://" ng-click="showMoreLeaders()" class="show-more-leaders" ng-show="rosters.currentRoster.contest_type.max_entries > 10">Show More</a>
+  </div>
+
+  <div class="row">
+    <div class="span2 prestige-chart" ng-include="'/prestige.html'"></div>
+    <div class="span10 roster-main">
+      <div class="entries-container">
+        <div class="roster-title my-roster-title clearfix">
+          <h3 class="inline-heading">
+            <span ng-show="rosters.currentRoster.owner_id == currentUser.id">Your Team</span>
+            <span ng-show="rosters.currentRoster.owner_id != currentUser.id">{{rosters.currentRoster.owner_name}}'s Team</span>
+          </h3>
+
+          <h3 class="inline-heading opponent" ng-show="rosters.opponentRoster">{{rosters.opponentRoster.owner_name | truncate:10}}</h3>
+
+          <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}" ng-hide="rosters.opponentRoster">
+            Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
+          </div>
+        </div>
+      </div>
+
+      <div class="team-selection clearfix">
+        <div ng-controller="IncludeController" ng-init="track({roster: 'rosters.currentRoster'})"><div ng-include="'/team.html'"></div></div>
+        <div ng-show="rosters.opponentRoster" ng-controller="IncludeController" ng-init="track({roster: 'rosters.opponentRoster'})"><div ng-include="'/team.html'"></div></div>
+        <div ng-hide="rosters.opponentRoster" class="clearfix" ng-include="'/players.html'"></div>
+        <div class="team-selection-info">
+          <h3>Roster competes against 11 others and the roster with the most fantasy points wins 100 Fanbucks!</h3>
+        </div>
+      </div>
+    </div>
+    <div class="pull-left score-list" ng-hide="true">
+      <div class="league-selector" ng-show="currentUser.leagues.length > 0">
+        <select ng-model="league" name="league" ng-options="l as l.name for l in currentUser.leagues" ng-change="showNextLeagueRoster(league)">
+          <option value="">Select a League</option>
+        </select>
+      </div>
+      <ul class="clearfix no-no" ng-cloak>
+        <!-- Replace this when we want 5k back-->
+        <li ng-hide="!marketService.currentMarket" class="contest-classes full-row" ng-class="{realfull: !hasLollapalooza()}">
+          <!--<li class="contest-classes full-row realfull">-->
+          <h4>It's More Fun With Friends!</h4>
+          <p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>
+          <a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create your own private contest</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

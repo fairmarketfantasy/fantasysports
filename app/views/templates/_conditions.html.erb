@@ -1,0 +1,79 @@
+<div ng-controller="UnsubscribeController">
+
+  <%= render :partial => 'templates/paying_terms' %>
+  <a class="btn btn-mini btn-success" ng-show="currentUser && currentUser.customer_object.is_active" href="javascript://" ng-click="confirmShow = true">Unsubscribe</a>
+  <%= render :partial => 'templates/purchase_terms' %>
+  <div  class="confirm-modal display-none" ng-class="{'display-block' : confirmShow}">
+    <div class="modal-body clearfix">
+      <span>Are you sure that you want to unsubscribe?</span>
+    </div>
+    <div class='modal-footer'>
+      <a href="javascript://" class="btn btn-success" ng-click="unsubscribe()">Yes</a>
+      <a href="javascript://" class="btn btn-info" ng-click="confirmShow = false">No</a>
+    </div>
+  </div>
+  <div class="confirm-backdrop display-none" ng-class="{'display-block' : confirmShow}" ng-click="confirmShow = false"></div>
+
+</div>
+<style type="text/css">
+  .display-none{
+    display:none;
+  }
+  .display-block{
+   display:block;
+  }
+  .btn-success,
+  .btn-info{
+    background: none repeat scroll 0 0 #6FA648;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    padding:5px 10px;
+    margin-top: 10px;
+  }
+  .btn-info {
+    background: none repeat scroll 0 0 #375C89;
+    margin: 0 10px 0 0;
+  }
+
+  .confirm-backdrop  {
+    background-color: #243342;
+    height: 100%;
+    left: 0;
+    opacity: 0.55;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+  }
+  .confirm-modal {
+    background-color: #F9FAFB;
+    left: 50%;
+    margin-left: -370px;
+    position: fixed;
+    top: 36px;
+    width: 545px;
+    z-index: 1045;
+   border-radius:6px;
+  }
+  .modal-body {
+    padding: 15px;
+    width: 525px;
+  }
+  h4{
+    font-size:23px;
+  }
+
+  .modal-footer {
+    padding:0;
+  }
+
+</style>
+<script type="text/javascript">
+  window.App = {
+    site: "<%= SITE %>",
+    currentUser: <%= (UserSerializer.new(current_user, scope: current_user).to_json.html_safe) || 'null' %>,
+    isUserAdmin: <%= current_user && current_user.admin? || false %>
+  };
+</script>

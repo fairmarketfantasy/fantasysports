@@ -1,0 +1,15 @@
+<% if @contest.private? %>
+  <%= @inviter.name %> just invited you to their league on predictthat.com
+<% else %>
+  <%= @inviter.name %> challenged you on predictthat.com
+<% end %>
+
+Go here to join the game:
+
+<%= SITE %>/contests/join?contest_code=<%= @contest.invitation_code %>&referral_code=<%= @invitation.code %>
+
+<%= @message %>
+
+
+----------
+To unsubscribe from our emails click here: <%= SITE %>/users/unsubscribe?email=<%= @email %>&type=all"

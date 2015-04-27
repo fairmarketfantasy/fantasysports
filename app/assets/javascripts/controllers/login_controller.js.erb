@@ -1,0 +1,7 @@
+angular.module("app.controllers")
+.controller('LoginController', ['$scope', '$dialog', 'fs', '$location', 'registrationService', function($scope, $dialog, fs, $location, registrationService) {
+
+  $scope.login = registrationService.login;
+
+}]);
+

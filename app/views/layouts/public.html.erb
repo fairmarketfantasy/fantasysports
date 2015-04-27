@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <!--<![endif]-->
+<head>
+  <!-- http://docs.angularjs.org/guide/ie -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <!-- CSS DIFF -->
+  <meta name="viewport" content="width=1200">
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+
+  <%
+    title = @page_title || 'Predict That'
+    description = @page_description || 'Predict That is the fairest fantasy sports gaming website out there'
+    keywords = @page_keywords || ''
+    tagline = "The fair market fantasy game!"
+  %>
+  <title><%= title %></title>
+
+  <!-- TODO: Fill in the og goodness -->
+  <!-- og: == 'Open Graph Protocol' - Makes you Facebook "Like" Button & Sharing Friendly -->
+  <meta name="title" content="<%= title %>" property="og:title" />
+  <meta name="og:type" content="<%= @og_type || '' %>" property="og:type" />
+  <meta name="og:url" content="<%= @og_url || '' %>" property="og:url" />
+  <meta name="og:image" content="<%= @og_image || '' %>" property="og:image" />
+  <meta name="og:site_name" content="<%= @og_site || '' %>" property="og:site_name" />
+  <meta name="fb:app_id" content="<%= nil %>" property="fb:app_id" />
+  <meta name="fb:admins" content="" property="fb:admins" />
+  <meta name="description" content="<%= description %>" property="og:description" />
+  <meta name="copyright" content="Predict That, LLC" />
+  <meta name="author" content="Predict That, LLC" />
+
+  <!-- SEO -->
+  <meta name="description" content="<%= description %>"/>
+  <meta name="keywords" content="<%= keywords %>"/>
+
+  <%= csrf_meta_tags %>
+  <%= stylesheet_link_tag "application", "flat-ui", "fonts", "fmf", :media => "all" %>
+
+  <!-- TODO: make these icons -->
+  <link rel="shortcut icon" href="<%= asset_path 'favicon.ico' %>"/>
+  <link rel="apple-touch-icon" href="<%= asset_path 'favicon.ico' %>"/>
+
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body ng-controller="ApplicationController">
+<!-- GA SHIT -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46242308-1', 'predictthat.com');
+  ga('send', 'pageview');
+
+</script>
+  <div flash-alert active-class="alert in" class="fixed-flash fade " ng-cloak>
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <strong class="alert-heading"></strong>
+          <span class="alert-message">{{flash.message}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- This is where you work your magic, do your best! -->
+<div class="fixed-header land-nav">
+  <div class="container clearfix">
+    <div class="span7 nav-span nav-menu">
+      <h1 class="logo-font"><a href="/#/external">Predict <span class="logo-slash">That</span></a></h1>
+      <nav ng-class="{true :'disable-nav'}[disable]" class="landing-nav">
+        <ul>
+          <li>
+            <a class="dropdown-toggle" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">Sports</a>
+            <div ng-show="popover_sports" class="popover bottom fade in header-popover">coming very soon <div class="arrow"></div></div>
+            <!--<ul class="header-drop-menu dropdown-menu">-->
+            <!--<li ng-class="{'no-border': $last}" ng-repeat="sport in sports" ng-show="sport.is_active" >-->
+            <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentSport == sport.name}"></em>-->
+            <!--<a class="landing-nav-link"  href="/#/{{sport.name}}/home">{{sport.name}}</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <ul class="header-drop-menu dropdown-menu">
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">mlb</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nba</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nfl</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nhl</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">nascar</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">golf</a>
+              </li>
+              <li class="no-border">
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">tennis</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a ng-show="sports" class="dropdown-toggle">Fantasy Sports</a>
+            <ul class="header-drop-menu dropdown-menu">
+              <li  ng-repeat="sport in sports" ng-show="sport.is_active" >
+                <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name}"></em>
+                <a class="landing-nav-link"  href="/#/{{currentUser.currentCategory}}/{{sport.name}}/external">{{sport.name}}</a>
+              </li>
+              <li class="no-border">
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">MLB</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a class="dropdown-toggle" ng-mouseleave="popover_entertainment = false" ng-mouseenter="popover_entertainment = true">Entertainment</a>
+            <div style="left:-4px;" ng-show="popover_entertainment" class="popover bottom fade in header-popover">coming soon <div class="arrow"></div></div>
+            <!--<ul class="header-drop-menu dropdown-menu">-->
+            <!--<li ng-class="{'no-border': $last}" ng-repeat="entertainment in entertainments" ng-show="entertainment.is_active" >-->
+            <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentEntertainment == entertainment.name}"></em>-->
+            <!--<a class="landing-nav-link"  href="/#/{{entertainment.name}}/home">{{entertainment.name}}</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <ul class="header-drop-menu dropdown-menu">
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">music</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">reality shows</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">oscars</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">grammys</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">celebrity propositions</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a class="dropdown-toggle" ng-mouseleave="popover_politics = false" ng-mouseenter="popover_politics = true">Politics</a>
+            <div ng-show="popover_politics" class="popover bottom fade in header-popover">coming soon <div class="arrow"></div></div>
+            <!--<ul class="header-drop-menu dropdown-menu">-->
+            <!--<li ng-class="{'no-border': $last}" ng-repeat="politic in politics" ng-show="politic.is_active" >-->
+            <!--<em class="menu-arrow" ng-class="{'active-arrow': currentUser.currentPolitic == politic.name}"></em>-->
+            <!--<a class="landing-nav-link"  href="/#/{{politic.name}}/home">{{politic.name}}</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <ul class="header-drop-menu dropdown-menu">
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">presidential candidates</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">congressional races</a>
+              </li>
+              <li>
+                <em class="menu-arrow"></em>
+                <a style="cursor:default;" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link" href="javascript://">senate races</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <!--<div class="span2 nav-span">-->
+    <!--<a class="coming-soon-nav"><span>New Daily NBA Games</span></a>-->
+    <!--</div>-->
+    <div class="span2 nav-span">
+      <a class="sign-in-nav" href="javascript://" ng-click="loginModal()">Sign In</a>
+    </div>
+    <div class="span2 nav-span">
+      <a href="javascript://" class="sign-up-nav" ng-click='signUpModal()'>Sign Up</a>
+    </div>
+  </div>
+</div>
+
+<article>
+  <div class="container">
+    <div class="row">
+      <div class="span12 page-content">
+        <div class="padded-content">
+          <div class="content">
+            <div id="content" ng-view>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <div class="clearfix">
+            <h4 class="logo-font">Predict <span class="logo-slash">That</span></h4>
+            <ul class="footer-nav">
+              <li class="nav-item"><a href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/home">Home</a></li>
+              <!--<li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>-->
+              <!--<li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>-->
+              <li class="nav-item hide"><a href="/#/leaderboard">Leaderboards</a></li>
+              <li class="nav-item"><a href="/#/{{currentUser.currentSport}}/rules" >Rules and Scoring</a></li>
+              <li class="nav-item"><a href="/support" target="_blank" >How it works/support</a></li>
+              <li class="nav-item"><a href="/conditions" target="_blank">Subcription terms</a></li>
+              <!--<li class="nav-item"><a href="/#/legal" >Legal Info</a></li>-->
+              <!--<li class="nav-item"><a href="/#/support">Support</a></li>-->
+              <li class="nav-item end"><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></li>
+            </ul>
+          </div>
+          <p>Copyright 2013, Fair Market Fantasy, LLC. All Rights Reserved.</p>
+          <p>Based in San Francisco, CA</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</article>
+
+
+<!-- Setup some handy globals -->
+<script type="text/javascript">
+  window.App = {
+    site: "<%= SITE %>",
+    currentUser: <%= (UserSerializer.new(current_user, scope: current_user).to_json.html_safe) || 'null' %>,
+    isUserAdmin: <%= current_user && current_user.admin? || false %>,
+  };
+  window.setCurrentUser = function(user) {
+    window.App.currentUser = user;
+  };
+  window.addToBalance = function(amount) {
+    window.App.currentUser.balance = window.App.currentUser.balance + amount;
+    var $scope = $('body').scope();
+    $scope.$emit('user-changed');
+  };
+  window.addToTokenBalance = function(amount) {
+    window.App.currentUser.token_balance = window.App.currentUser.token_balance + amount;
+    var $scope = $('body').scope();
+    $scope.$emit('user-changed');
+  };
+</script>
+
+
+<%= render :partial => 'templates/ng_includes' %>
+<%= javascript_include_tag "application" %>
+
+<%= yield :javascript %>
+
+
+<!--Start of Async HubSpot Analytics Code -->
+<script type="text/javascript">
+  (function(d,s,i,r) {
+    if (d.getElementById(i)){return;}
+    var n=d.createElement(s),e=d.getElementsByTagName(s)[0];
+    n.id=i;n.src='//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/396676.js';
+    e.parentNode.insertBefore(n, e);
+  })(document,"script","hs-analytics",300000);
+</script>
+<!--End of Async HubSpot Analytics Code -->
+</body>
+</html>
+
+

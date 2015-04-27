@@ -1,0 +1,459 @@
+angular.module('app.services')
+.factory('currentUserService', ['$dialog', '$rootScope', 'flash', '$timeout', '$rootScope', '$routeParams', 'fs',
+         function($dialog, $rootScope, flash, $timeout, $rootScope, $routeParams, fs) {
+    var dialogOpts = {
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          dialogClass: 'modal'
+    }, loginOpts = {};
+
+    return {
+      currentUser: window.App.currentUser,
+      resetPasswordModal: function(token){
+        dialogOpts.dialogClass = 'modal reset-modal',
+        dialogOpts.templateUrl = '/reset_password_dialog.html';
+        dialogOpts.controller  = 'ResetPasswordDialogController';
+        dialogOpts.resolve     = {token: function(){ return token; }};
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
+        $rootScope.$on('user-changed', function(){
+          $rootScope.$apply(function() {
+            d.close();
+            flash.success("Successfully reset password.");
+          });
+        });
+      },
+
+      addFundsModal: function(){
+        dialogOpts.templateUrl = '/add_funds_dialog.html',
+        dialogOpts.controller  = 'AddFundsDialogController'
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
+        $rootScope.$on('user-changed', function () {
+          $rootScope.$apply(function() {
+            d.close();
+            flash.success("Paypal payment deposited successfully!");
+            location.reload();
+          });
+        });
+      },
+
+      addFanFreesModal: function() {
+        dialogOpts.templateUrl = '/add_fan_frees_dialog.html',
+        dialogOpts.controller  = 'AddFanFreesDialogController'
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
+        $rootScope.$on('user-changed', function () {
+          $rootScope.$apply(function() {
+            d.close();
+            flash.success("FanFrees purchased successfully!");
+          });
+        });
+      },
+
+      settingsModal: function() {
+        dialogOpts.templateUrl = '/settings_dialog.html';
+        dialogOpts.controller  = 'SettingsController';
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
+      },
+
+      addUnsubscribeModal: function() {
+        dialogOpts.templateUrl = '/unsubscribe_dialog.html';
+        dialogOpts.controller  = 'UnsubscribeDialogController';
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
+      },
+
+      refreshUser: function() {
+        var self = this;
+        fs.user.refresh().then(function(user) {
+          $timeout(function() {
+            self.setUser(user);
+          });
+        });
+      },
+
+      setUser: function(user) {
+        user.currentSport = $routeParams.sport;
+        user.currentCategory = $routeParams.category;
+        this.currentUser = window.App.currentUser = user;
+        this.currentUser = window.App.currentCategory = user;
+      },
+
+      withdrawFundsModal: function() {
+        dialogOpts.templateUrl = '/withdraw_funds_dialog.html',
+        dialogOpts.controller  = 'WithdrawFundsDialogController'
+        var d = $dialog.dialog(dialogOpts);
+        d.open();
+        $timeout(function() {
+           $.placeholder.shim();
+        });
+      }
+    };
+  }])
+  .factory('fsAPIInterceptor', ['$q', 'flash', '$injector', '$location', function($q, flash, $injector, $location) {
+// TODO: this is where jsonH stuff will go
+    return function(promise) {
+      var success = function(resp) {
+        if (resp.headers()['content-type']  === "application/json; charset=utf-8") {
+          var redirect = resp.data.redirect || resp.headers()['x-client-redirect'];
+          if (redirect) {
+            $location.path(redirect);
+          }
+          var flashMsg = resp.data.flash || resp.headers()['x-client-flash'];
+          if (flashMsg) {
+            flash.success(flashMsg);
+          }
+          if (resp.data.data) {
+            return JSONH.unpack(resp.data.data);
+          }
+          return resp.data;
+        }
+        return resp;
+      }, failure = function(resp) {
+        if (resp.status == 402) {
+          var currentUserService = $injector.get('currentUserService');
+          currentUserService.addFundsModal();
+        }
+        if (resp.status == 409) {
+          flash.error(resp.data.error);
+          window.location.href = '/';
+        }
+        // TODO: we'll need to implement this again
+        if (resp.status == 403) {
+        /*  var dialogOpts = {
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            dialogClass: 'modal signin-modal',
+            templateUrl: 'assets/login_modal.html',
+            controller: 'LoginController'
+          };
+          $dialog = $injector.get('$dialog');
+          var openLoginModal = function(){
+            var d = $dialog.dialog(dialogOpts);
+            d.open();
+          };
+          openLoginModal();*/
+          window.location.href = '/';
+        } else if (resp.data && resp.data.error) {
+          flash.error(resp.data.error);
+        } else {
+          //flash.error("Oops, something went wrong, try again later");
+        }
+        console && console.log('API Error: ');
+        console.log(resp);
+        return $q.reject(resp);
+      }
+      return promise.then(success, failure);
+    };
+  }])
+  .factory('fs', ['$http', '$q', 'flash', function($http, $q, flash) {
+    /*var makeCrossOriginRequest = function(httpArgs) {
+      var xsrf = $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
+      delete $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
+      var result = $http(httpArgs);
+      $httpProvider.defaults.headers.common['X-XSRF-TOKEN'] = xsrf;
+      return result;
+    };*/
+
+    var customJsonPFunc = function(url, responseFunc, timeout) {
+      // setup the magic
+      var deferred = $q.defer();
+      window['jsonp_' + responseFunc] = function(data) {
+        angular.element('body').scope().$apply(function() {
+          if (data.error) {
+            flash.error(data.error);
+            deferred.reject(data);
+            return;
+          }
+          deferred.resolve(data);
+        });
+      };
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.addEventListener('error', function(err) { deferred.reject(err); }, true);
+      var timeout = setTimeout(function() {
+        deferred.reject("request timed out.");
+      }, timeout || 20000)
+      script.addEventListener('load', function(data) {
+        clearTimeout(timeout);
+      }, true);
+      script.src = url;
+      document.body.appendChild(script);
+      return deferred.promise;
+    };
+    return {
+      sendSupportRequest: function(title, email, message) {
+        return $http({method: 'POST', url: '/support', data: {title: title, email: email, message: message}});
+      },
+      user: {
+        agreeToTerms: function(){
+          return $http({method: 'POST', url: '/users/agree_to_terms'});
+        },
+        refresh: function(){
+          return $http({method: 'GET', url: '/users.json'});
+        },
+        applyPromo: function(code) {
+          return $http({method: 'POST', url: '/promo', params: {code: code}});
+        },
+        create: function(user_attrs, params, category, sport){
+          params = params || {};
+          return $http({method: 'POST', url: '/users.json', params: params, data: {user: user_attrs, category:category, sport: sport}});
+        },
+        update: function(user_attrs) {
+          return $http({method: 'PUT', url: '/users.json', data: {user: user_attrs}});
+        },
+        login: function(user_attrs,category, sport, params){
+          params = params || {};
+          return $http({method: 'POST', url: '/users/sign_in',params: params, data: {user: user_attrs ,category:category, sport: sport}});
+        },
+        addMoney: function(amount){
+          return $http({method: 'POST', url: '/users/add_money', data: {amount: amount} });
+        },
+        addTokens: function(token_ct){
+          return $http({method: 'POST', url: '/users/add_tokens', data: {product_id: token_ct}})
+        },
+        withdrawMoney: function(amount){
+          return $http({method: 'POST', url: '/users/withdraw_money', data: {amount: amount} })
+        },
+        resendConfirmation: function(){
+          return $http({method: 'POST', url: '/users/confirmation'});
+        },
+        resetPassword: function(email){
+          return $http({method: 'POST', url: '/users/reset_password', data: {email: email}})
+        },
+        updatePassword: function(user_attrs){
+          //expects user_attrs: {password: '123', password_confirmation: '123' , reset_password_token: 'abcd'}
+          return $http({method: 'PUT', url: '/users/password', data: {user: user_attrs}})
+        },
+        setUsername: function(name) {
+          return $http({method: 'POST', url: '/users/set_username', params: {name: name}})
+        },
+        isNameAvailable: function(name) {
+          return $http({method: 'GET', url: '/users/name_taken', params: {name: name}})
+        },
+				activeTrial: function() {
+          return $http({method: 'POST', url: '/users/activate_trial'})
+        }
+      },
+      recipients: {
+        list: function(){
+          return $http({method: 'GET', url: '/recipients'});
+        },
+        create: function(recipient_attrs){
+          return $http({method: 'POST', url: '/recipients', data: {recipient: recipient_attrs}});
+        },
+        remove: function(){
+          return $http({method: 'DELETE', url: '/recipients' })
+        }
+      },
+      cards: {
+        add_url: function(callbackName) {
+          return $http({method: 'GET', url: '/cards/add_url?callback=' + callbackName});
+        },
+        create: function(url, respCallback, type, number, cvc, name, exp_month, exp_year) {
+          // make this step 2 of card creation
+          name = name.split(' ');
+          return customJsonPFunc(url + '?' + $.param({
+            'billing-cc-number': number,
+            'billing-cvv': cvc,
+            'billing-first-name': name[0],
+            'billing-last-name': name.slice(1).join(' '),
+            'billing-cc-exp': exp_month + exp_year}), respCallback, 60000);
+        },
+        charge_url: function(amount, cardId, callbackName) {
+          return $http({method: 'GET', url: '/cards/charge_url', params: {
+            callback: callbackName,
+            amount: amount,
+            card_id: cardId
+          }});
+        },
+        charge: function(url, respCallback) {
+          return customJsonPFunc(url + '?' + $.param({}), respCallback, 60000);
+        },
+        list: function(){
+          return $http({method: 'GET', url: '/cards'});
+        },
+        destroy: function(cardId){
+          return $http({method: 'DELETE', url: '/cards/' + cardId});
+        },
+        unsubscribe: function(){
+          return $http({method: 'DELETE', url: '/users/deactivate_account'});
+        }
+      },
+      markets: {
+        show: function(id) {
+          return $http({method: 'GET', url: '/markets/' + id});
+        },
+        list: function(type, category, sport) {
+          return $http({method: 'GET', url: '/markets', params: {type: type, category: category, sport: sport}});
+        }
+      },
+      contests: {
+        for_market: function(market_id) {
+          return $http({method: 'GET', url: '/contests/for_market/' + market_id });
+        },
+        join: function(contest_type_id, copy_roster_id) {
+          return $http({method: 'POST', url: '/rosters', data: {contest_type_id: contest_type_id, copy_roster_id: copy_roster_id}});
+        },
+        join_league: function(league_id) {
+          return $http({method: 'POST', url: '/rosters/enter_league/' + league_id});
+        },
+        create: function(opts) {
+          return $http({method: 'POST', url: '/contests', data: opts});
+        },
+        invite: function(contest_id, invitees, message, invitation_code) {
+          return $http({method: 'POST', url: '/contests/' + contest_id + '/invite', data: {invitees: invitees, message: message, invitation_code: invitation_code}});
+        }
+      },
+      games: {
+        list: function(market_id) {
+          return $http({method: 'GET', url: '/games/for_market/' + market_id});
+        }
+      },
+      players: {
+        list: function(roster_id, opts) {
+          opts = opts || {}
+          return $http({method: 'GET', url: '/players/', params: angular.extend(opts, {roster_id: roster_id})});
+        }
+      },
+      events: {
+        for_players: function(market_id, players) {
+          return $http({method: 'GET', url: '/events/for_players', params: {player_ids: _.map(players, function(elt) { return elt.stats_id}).join(','), market_id: market_id} });
+        }
+      },
+      leaderboard: {
+        fetch: function(timeframe) {
+          return $http({method: 'GET', url: '/leaderboard', params: {timeframe: timeframe}});
+        },
+        prestigeChart: function() {
+          return $http({method: 'GET', url: '/prestige_chart'});
+        }
+      },
+      transactions: {
+        list: function(page) {
+          return $http({method: 'GET', url: '/transactions', params: {page: page}});
+        }
+      },
+      rosters: {
+        add_player: function(roster_id, player_id, position) {
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/add_player/' + player_id + '/' + position});
+        },
+        remove_player: function(roster_id, player_id) {
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/remove_player/' + player_id});
+        },
+        show: function(id, view_code) {
+          return $http({method: 'GET', url: '/rosters/' + id + '?view_code=' + (view_code || '')});
+        },
+        getSample: function(id, category, sport) {
+          var params = {id: id, category: category, sport: sport};
+          return $http({method: 'GET', url: '/rosters/sample', params: params});
+        },
+        in_contest: function(contest_id, page) {
+          page = page || 1;
+          return $http({method: 'GET', url: '/rosters/in_contest/' + contest_id + '?page=' + page});
+        },
+        toggleRemoveBenched: function(id) {
+          return $http({method: 'POST', url: '/rosters/' + id + '/toggle_remove_bench'});
+        },
+        past_stats: function(opts) {
+          return $http({method: 'GET', url: '/rosters/past_stats?' + $.param(opts)});
+        },
+        mine: function(opts) {
+          opts = opts || {};
+          return $http({method: 'GET', url: '/rosters/mine?all=true&' + $.param(opts)});
+        },
+        submit: function(roster_id, gameType) {
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/submit', data: {contest_type: gameType}});
+        },
+        cancel: function(roster_id) {
+          return $http({method: 'DELETE', url: '/rosters/' + roster_id});
+        },
+        autoFill: function(roster_id) {
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/autofill'});
+        },
+        socialBonus: function(type, roster_id) {
+          return $http({method: 'POST', url: '/rosters/' + roster_id + '/share?' + $.param({event: type})})
+        },
+        roster: function(market_id){
+          return $http({method: 'POST', url: '/rosters/', data: {market_id: market_id}});
+        }
+      },
+      prediction: {
+        submit: function(roster_id, market_id, player_id, events) {
+          return $http({method: 'POST', url: '/individual_predictions/', data: {roster_id:roster_id, market_id:market_id, player_id: player_id, events: events}});
+        },
+				update: function(prediction_id, events) {
+          return $http({method: 'PUT', url: '/individual_predictions/'+prediction_id, data: {events: events}});
+        },
+        show: function(stats_id, market_id, position) {
+          var url = '/events/for_players?player_ids='+ stats_id + '&average=true' + '&market_id=' + market_id + '&position=' + position
+          return $http({method: 'GET', url: url});
+        },
+        mine: function(opts) {
+            opts = opts || {};
+            return $http({method: 'GET', url: '/individual_predictions/mine?all=true&' + $.param(opts)});
+        }
+      },
+      game_predictions : {
+        dayGames: function(sport, roster_id){
+          roster_id = roster_id || 'false';
+          return $http({method: 'GET', url: '/game_predictions/new_day_games?sport='+sport+'&roster_id='+roster_id});
+        },
+        sample: function(sport){
+          return $http({method: 'GET', url: '/game_predictions/sample?sport='+sport});
+        },
+        submitPrediction: function(game_stats_id, team_stats_id){
+          return $http({method: 'POST', url: '/game_predictions', data: {game_stats_id: game_stats_id, team_stats_id: team_stats_id} });
+        }
+      },
+      game_rosters: {
+        submit: function(opts){
+          return $http({method: 'POST', url: '/game_rosters', data: {teams: opts}});
+        },
+        update: function(opts, roster_id){
+          return $http({method: 'PUT', url: '/game_rosters/'+roster_id, data: {teams: opts}});
+        },
+        autofill: function(sport){
+          return $http({method: 'POST', url: '/game_rosters/new_autofill?sport='+sport});
+        },
+        in_contest: function(roster_id){
+          return $http({method: 'GET', url: '/game_rosters/in_contest/'+roster_id});
+        }
+      },
+      world_cup_rosters: {
+        mine: function(sport){
+          return $http({method: 'GET', url: '/home?sport='+sport});
+        },
+        create_prediction: function(sport, predictable_id, prediction_type, game_stats_id){
+          return $http({method: 'POST', url: '/create_prediction', data: {sport: sport, predictable_id: predictable_id, prediction_type: prediction_type, game_stats_id: game_stats_id}});
+        }
+      },
+      trade_prediction: {
+         trade: function(id, sport){
+           return $http({method: 'DELETE', url: 'trade_prediction?id='+ id + '&sport='+ sport});
+         }
+      }
+    }
+  }])
+  .config(['$httpProvider', function($httpProvider) {
+    $httpProvider.responseInterceptors.push('fsAPIInterceptor');
+  }]);

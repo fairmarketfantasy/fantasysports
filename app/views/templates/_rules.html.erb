@@ -1,0 +1,16 @@
+<%= render partial: 'templates/rules_general' %>
+<div ng-show="currentUser.currentSport == 'NFL'">
+  <%= render partial: 'templates/rules_nfl' %>
+</div>
+
+<div ng-show="currentUser.currentSport == 'NBA'">
+  <%= render partial: 'templates/rules_nba' %>
+</div>
+
+<div ng-show="currentUser.currentCategory == 'fantasy_sports' && currentUser.currentSport == 'MLB'">
+  <%= render partial: 'templates/rules_mlb' %>
+</div>
+
+<div ng-show="currentUser.currentSport == 'FWC'">
+  <%= render partial: 'templates/rules_fwc' %>
+</div>

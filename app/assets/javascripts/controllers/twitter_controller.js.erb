@@ -1,0 +1,103 @@
+window.twttr = (function (d,s,id) {
+  var t, js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return; js=d.createElement(s); js.id=id;
+  js.src="https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs);
+  return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });
+}(document, "script", "twitter-wjs"));
+
+angular.module("app.controllers")
+// TODO: change the name of this to ShareController, or split them up
+.controller('TwitterController', ['$scope', '$timeout', 'fs','rosters','competitionRosters', function($scope, $timeout, fs, rosters, competitionRosters) {
+
+  if($scope.$routeParams.category == 'fantasy_sport'){
+    $scope.shareUrl = 'https://predictthat.com/#/' + $scope.currentUser.currentCategory + '/' + $scope.currentUser.currentSport + '/market/' +
+      (($scope.$routeParams && $scope.$routeParams.market_id) || $scope.roster.market_id)  + '/roster/' +
+      (($scope.$routeParams && $scope.$routeParams.roster_id) || $scope.roster.id) + '?view_code=' +
+      (($scope.$routeParams && $scope.$routeParams.view_code) || ($scope.roster && $scope.roster.view_code ));
+  } else if($scope.$routeParams.category == 'sport') {
+    $scope.shareUrl = 'https://predictthat.com/#/' + $scope.currentUser.currentCategory + '/' + $scope.currentUser.currentSport + 'competition_roster'
+  }
+
+
+  $scope.rosters = rosters;
+  $scope.competitionRosters = competitionRosters;
+
+  // Facebook
+  $scope.fbShare = function() {
+    FB.ui(
+      {
+        method: 'feed',
+        name: 'My Roster on PredictThat.com',
+        link: $scope.shareUrl,
+        picture: '<%= SITE %>/assets/icon-h2h.png',
+        caption: 'Think you can do better?',
+        description: 'PredictThat has daily and weekly fantasy games with demand-based pricing and the highest payouts in the industry!'
+      },
+      function(response) {
+        if (response && response.post_id) {
+          $scope.addBonus('facebook_share');
+          $('.fb-share').parent().find('h3').addClass('success');
+          $scope.fbShared = true;
+        } else {
+          /* MT */
+        }
+      }
+    );
+  };
+
+  var highestPrize = $scope.roster && JSON.parse($scope.roster.contest_type.payout_structure)[0];
+    $timeout(function(){
+      if($scope.$routeParams.category == 'fantasy_sport'){
+        $scope.away_team = $scope.rosters.currentRoster.market.games[0].away_team;
+        $scope.home_team = $scope.rosters.currentRoster.market.games[0].home_team;
+        $scope.text = 'I built an epic roster ' + (highestPrize  && highestPrize > 8000 ? 'to win $' + highestPrize / 100 : '') + ' on Predict That. Check it out! #'+ $scope.$routeParams.category +' #'+ $scope.$routeParams.sport +' #'+ $scope.away_team +' #'+ $scope.home_team +' @predictthatnow';
+      } else if($scope.$routeParams.category == 'sports') {
+        $scope.text = 'I built an epic roster ' + (highestPrize  && highestPrize > 8000 ? 'to win $' + highestPrize / 100 : '') + ' on Predict That. Check it out! #'+ $scope.$routeParams.category +' #'+ $scope.$routeParams.sport +' @predictthatnow';
+      }
+
+    },1500);   // hacky.  Should really wait for roster
+
+  // Twitter
+  twttr.ready(function(twttr) {
+    $timeout(function() {
+      $('.twitter-share').each(function(i, elt) {
+        twttr.widgets.createShareButton(
+          $scope.shareUrl,
+          elt,
+          function (el) {
+            console.log("Button created.")
+          },
+          {
+            count: 'none',
+            text:  $scope.text,
+            size: 'large'
+          }
+        );
+      })
+
+//      twttr.widgets.createFollowButton(
+//        'Predict That',
+//        $('.twitter-follow').get(0),
+//        function (el) {
+//          console.log("Follow button created.")
+//        },
+//        {
+//          size: 'large'
+//        }
+//      );
+
+      twttr.events.bind('follow', function (event) {
+        if ($scope.noReport) { return; }
+        $('.twitter-follow').parent().find('h3').addClass('success');
+        $scope.addBonus('twitter_follow');
+      });
+      twttr.events.bind('tweet', function (event) {
+        if ($scope.noReport) { return; }
+        $('.twitter-share').parent().find('h3').addClass('success');
+        $scope.addBonus('twitter_share');
+      });
+    }, 1600); // hacky.  Should really wait for roster
+  });
+
+}]);
+

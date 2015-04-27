@@ -1,0 +1,17 @@
+<%= render partial: 'templates/rules_general' %>
+
+<% if @sport == 'NFL' %>
+  <div>
+    <%= render partial: 'templates/rules_nfl' %>
+  </div>
+<% end %>
+
+<% if @sport == 'NBA' %>
+  <div>
+    <%= render partial: 'templates/rules_nba' %>
+  </div>
+<% end %>
+
+<% if @sport == 'MLB' %>
+  <%= render partial: 'templates/rules_mlb' %>
+<% end %>

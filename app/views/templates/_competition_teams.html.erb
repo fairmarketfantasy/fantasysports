@@ -1,0 +1,88 @@
+<!-- Lots of states here -->
+<div class="players">
+  <!-- This is my roster -->
+  <div class="roster-height">
+    <div ng-show="competitionRosters.currentRoster.game_roster.state == 'finished'" class="result-area">
+      <div ng-controller="TwitterController">
+        <h3>You <span ng-show="competitionRosters.currentRoster.game_roster.amount_paid">took </span><span ng-hide="competitionRosters.currentRoster.game_roster.amount_paid"> are in </span>{{competitionRosters.currentRoster.game_roster.contest_rank | ordinal}} place
+          <span ng-show="competitionRosters.currentRoster.game_roster.paid_at">
+            <span ng-show="competitionRosters.currentRoster.game_roster.amount_paid > 0"><br/>and won
+              <span>{{competitionRosters.currentRoster.game_roster.amount_paid | centsToFanbucks}}</span>
+            </span>
+            <span ng-hide="competitionRosters.currentRoster.game_roster.amount_paid > 0">didn't win this time.</span>
+          </span>
+        </h3>
+        <h4>Share your roster</h4>
+        <span class="twitter-share"></span>
+      </div>
+    </div>
+    <!-- The market is published or open -->
+    <div ng-show="competitionRosters.currentRoster.game_roster.state == 'in_progress' || competitionRosters.currentRoster.game_roster.state == 'submitted' " class="players-area">
+      <div class="clearfix">
+        <input class="players-search pull-right" type="text" ng-model="searchTeam" placeholder="Team Search"/>
+      </div>
+      <div class="clearfix relative-parent">
+
+        <div class="fixed-table-header">
+          <table class="players-table table table-striped games-table">
+            <thead>
+              <tr>
+                <th class="less-larger"><a href="javascript://">Home</a></th>
+                <th class="less-larger"><a href="javascript://">Visitors</a></th>
+                <th class="tiny-ind"><span class="ind-pred-th">Start time</span></th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+      <div class="player-overflow">
+        <table class="players-table table table-striped">
+          <thead>
+          <tr>
+            <th class="less-larger"><a href="javascript://">Home</a></th>
+            <th class="less-larger"><a href="javascript://">Visitors</a></th>
+            <th class="tiny-ind"><span class="ind-pred-th">Start time</span></th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr class="roster-team-list" ng-repeat="teamList in gamePrediction.games | filter:searchTeam">
+              <td colspan="2" class="larger">
+                <div class="roster-team-list-block pull-left">
+                  <span ng-class="{'ip-btn-disable' : teamList.home_team.disable_pt}" class="pull-right pt home_pt" ng-click="openCompetitionPredictionDialog(teamList.home_team)">{{betAlias}}{{teamList.home_team.pt | toFixed}}
+                    <span ng-hide="teamList.home_team.disable_pt"  popover-trigger="mouseenter" popover="{{betAlias}}{{teamList.home_team.pt | toFixed}}, predict correctly and win {{teamList.home_team.pt | toFixed}}FB" popover-placement="top"></span>
+                  </span>
+                  <div class="mr-team-image pull-right" ng-style="{'background-image': teamList.home_team.logo_url && ('url(' + teamList.home_team.logo_url +')')}"></div>
+                  <p class="pull-right">{{teamList.home_team.name}}</p>
+                  <span ng-hide="teamList.home_team.is_added" class="add-team pull-left" ng-click="addTeamInRoster(teamList.home_team, teamList.away_team.name)" href="javascript://">+</span>
+                </div>
+                <div class="roster-team-list-block pull-left">
+                  <span ng-class="{'ip-btn-disable' : teamList.away_team.disable_pt}" class="pull-left pt away_pt" ng-click="openCompetitionPredictionDialog(teamList.away_team)">{{betAlias}}{{teamList.away_team.pt | toFixed}}
+                    <span ng-hide="teamList.away_team.disable_pt" popover-trigger="mouseenter" popover="{{betAlias}}{{teamList.away_team.pt | toFixed}}, predict correctly and win {{teamList.away_team.pt | toFixed}}FB" popover-placement="top"></span>
+                  </span>
+                  <div class="mr-team-image pull-left" ng-style="{'background-image': teamList.away_team.logo_url && ('url(' + teamList.away_team.logo_url +')')}"></div>
+                  <p class="pull-left">{{teamList.away_team.name}}</p>
+                  <span ng-hide="teamList.away_team.is_added" ng-click="addTeamInRoster(teamList.away_team, teamList.home_team.name)" class="pull-right add-team" href="javascript://">+</span>
+                </div>
+              </td>
+              <td class="tiny">
+                <p class="start-time">{{teamList.away_team.game_time | shortFormTime }}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!--<div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">-->
+      <!--<div class="roster-submit-center roster-submit">-->
+        <!--<a class="btn btn-large btn-contest-cta btn-success"  ng-click="finish()" href="javascript://" >Back to Contests</a>-->
+      <!--</div>-->
+    <!--</div>-->
+    <div ng-show="isValidRoster()" class="roster-alert clearfix" >
+      <div class="pull-right roster-submit">
+        <a ng-show="competitionRosters.currentRoster.game_roster.state == 'in_progress'" class="btn btn-large btn-success pull-right" ng-click="submitRoster()" href="javascript://" >Submit</a>
+        <a ng-show="competitionRosters.currentRoster.game_roster.state == 'submitted'" class="btn btn-large btn-success pull-right" ng-click="submitRoster()" href="javascript://" >Update Roster</a>
+        <a ng-show="competitionRosters.currentRoster.game_roster.state == 'finished'" class="btn btn-large btn-contest-cta btn-success"  ng-click="finish()" href="javascript://" >Back to Contests</a>
+      </div>
+    </div>
+  </div>
+</div>

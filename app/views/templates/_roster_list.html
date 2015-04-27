@@ -1,0 +1,67 @@
+<div class="roster-title">
+  <h3>Your {{currentUser.currentCategory | underscore}} {{currentTitle}} Predictions
+    <a ng-show="$routeParams.category == 'fantasy_sports'" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/individual_predictions">My Individual Predictions</a>
+    <a ng-show="$routeParams.category == 'sports'" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/game_predictions">My Game Predictions</a>
+  </h3>
+</div>
+<table class="table table-striped">
+  <thead>
+    <th>Prediction</th>
+    <th ng-show="$routeParams.category == 'fantasy_sports'">Game time</th>
+    <th>Day</th>
+    <th>State</th>
+    <th>Rank</th>
+    <th>Points</th>
+    <th>Award</th>
+    <th>Roster</th>
+  </thead>
+  <tbody>
+    <tr ng-repeat="roster in rosterList">
+      <td>
+        <div>{{roster.market.name}}
+        </div>
+        <div class="league-roster" ng-show="roster.league">{{ roster.league.name }} League Game</div>
+        <div>
+          {{ roster.contest_type.name | allCaps }}
+        </div>
+      </td>
+      <td ng-show="$routeParams.category == 'fantasy_sports'">
+          <span>{{roster.market.games[0].game_time | onlyFormTime}}</span>
+      </td>
+      <td >
+          <span ng-show="roster.live">LIVE</span>
+          <span ng-hide="roster.live">
+              <span ng-show="$routeParams.category == 'fantasy_sports'">{{roster.market.closed_at | longFormDate}}</span>
+              <span ng-show="$routeParams.category == 'sports'">{{roster.started_at | longFormDate}}</span>
+          </span>
+      </td>
+      <td >{{roster.state | capitalize}} <span ng-show="roster.cancelled_reason">{{roster.cancelled_reason}}</span></td>
+      <td>
+        <span ng-show="roster.contest_rank && inThePast(roster.started_at) && roster.state != 'cancelled'">{{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries | unlimitedIfZero}}</span>
+        <span ng-show="!inThePast(roster.started_at)">Not started yet</span>
+        <span ng-show="roster.state == 'cancelled'">N/A</span>
+      </td>
+      <td>
+        <span ng-show="inThePast(roster.started_at)">{{roster.score || 0}}</span>
+        <span ng-show="!inThePast(roster.started_at)">N/A</span>
+      </td>
+      <td>
+        <span ng-show="roster.state == 'submitted'">N/A</span>
+        <span ng-show="roster.state == 'cancelled'">Refunded on {{roster.cancelled_at | longFormDate}}</span>
+        <span ng-show="roster.state == 'finished'">
+            <span ng-show="inThePast(roster.started_at) && roster.state == 'finished'">{{roster.contest_rank_payout || 0 | centsToFanbucks}}</span>
+            <span ng-hide="inThePast(roster.started_at) && roster.state == 'finished'">N/A</span>
+        </span>
+      </td>
+      <td>
+        <a ng-show="$routeParams.category == 'fantasy_sports' && roster.state != 'canceled' && roster.state != 'cancelled'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{roster.market.id}}/roster/{{roster.id}}">view</a>
+        <a ng-show="$routeParams.category == 'sports' && roster.state != 'canceled' && roster.state != 'cancelled'" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/competition_roster/{{roster.id}}">view</a>
+        <span ng-show="roster.state == 'cancelled' || roster.state == 'canceled'">N/A</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div ng-hide="!landingShow" class='market-loader centered'>
+  <img src='/assets/ajax-loader-big.gif'>
+</div>
+<btn class="btn btn-info" ng-show="showMore" ng-click="fetchMore()">Show More</btn>

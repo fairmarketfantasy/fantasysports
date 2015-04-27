@@ -1,0 +1,18 @@
+:concurrency: 5
+:verbose: false
+:queues:
+  - [weekly_digest, 1]
+  - [mlb_teams_fetcher, 1]
+  - [players_fetcher, 1]
+  - [daily_schedule_fetcher, 1]
+  - [team_schedule_fetcher, 1]
+  - [game_stat_fetcher, 1]
+  - [season_stat_worker, 1]
+  - [game_listener, 1]
+  - [mlb_all_schedule_fetcher, 1]
+  - [unfetched_games_worker, 1]
+  - [sports_data_fetcher, 1]
+staging:
+  :concurrency: 10
+production:
+  :concurrency: 25

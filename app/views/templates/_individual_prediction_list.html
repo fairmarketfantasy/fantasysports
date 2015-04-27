@@ -1,0 +1,93 @@
+<div class="roster-title">
+  <h3 ng-show="currentUser.currentCategory == 'fantasy_sports'">Your {{currentUser.currentCategory | underscore}} {{currentTitle}} Individual Prediction
+    <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
+  </h3>
+  <h3 ng-show="currentUser.currentCategory == 'sports' && currentUser.currentSport != 'FWC'">Your {{currentUser.currentCategory}} {{currentTitle}} games Prediction
+    <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
+  </h3>
+  <h3 ng-show='currentUser.currentSport == "FWC"'>Your {{currentUser.currentCategory}} {{currentTitle}} my predictions
+    <a ng-hide='currentUser.currentSport == "FWC"' class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
+  </h3>
+</div>
+<table class="table table-striped">
+  <thead>
+    <th><a href="javascript://" ng-click="predicate = 'market_name'; reverse=!reverse">Event</a></th>
+    <th>Choice</th>
+    <th>Game time</th>
+    <th>Day</th>
+    <th>Result</th>
+    <th ng-show="$routeParams.category == 'fantasy_sports'">Prediction</th>
+    <th>{{betAlias}}</th>
+    <th>Award</th>
+    <th ng-show="prediction.state != 'finished'">Trade</th>
+    <!--<th ng-hide="pt_history"></th>-->
+  </thead>
+  <tbody>
+    <tr ng-repeat="prediction in predictionList | orderBy:predicate:reverse" >
+      <td>
+        <div>
+            <span>{{prediction.market_name}}</span>
+        </div>
+      </td>
+      <td>
+        <div>
+            <span>{{prediction.player_name}}</span>
+        </div>
+      </td>
+      <td>
+        <span>{{prediction.game_time | onlyFormTime | NAIfEmpty}}</span>
+      </td>
+      <td>
+        <span>{{prediction.game_time | longFormDate | NAIfEmpty}}</span>
+      </td>
+      <td>
+        <span ng-show="prediction.state == 'finished'">
+          {{prediction.game_result}}
+        </span>
+        <span ng-show="prediction.state == 'canceled'">
+          Did not play
+        </span>
+        <span ng-show="prediction.state == 'submitted'">
+          N/A
+        </span>
+      </td>
+      <td ng-show="$routeParams.category == 'fantasy_sports'" class="list-statistic">
+        <span ng-repeat="statistic in prediction.event_predictions">
+            {{statistic.diff | capitalize}}:
+            {{statistic.value}}&nbsp;
+            {{statistic.event_type}}
+        </span>
+      </td>
+      <td>
+        <div>
+            <span>{{prediction.pt}}</span>
+        </div>
+      </td>
+        <td>
+          <div>
+            <span ng-show="prediction.state == 'finished'">
+               {{prediction.award}}
+            </span>
+            <span ng-show="prediction.state == 'canceled'">
+               Did not play
+            </span>
+            <span ng-show="prediction.state == 'submitted'">
+               N/A
+            </span>
+            </div>
+        </td>
+        <td>
+           <a ng-show="prediction.show_trade && prediction.state != 'finished'" href="javascript://"  ng-click="openTradeDialog(prediction)">
+               Trade
+           </a>
+            <span ng-hide="prediction.show_trade && prediction.state != 'finished'">
+                N/A
+            </span>
+        </td>
+    </tr>
+  </tbody>
+</table>
+<div ng-hide="!landingShow" class='market-loader centered'>
+    <img src='/assets/ajax-loader-big.gif'>
+</div>
+<btn class="btn btn-info" ng-show="showMore" ng-click="fetchMore()">Show More</btn>

@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7]> <html class="ie ie6" lang="en" xmlns:fb="http://ogp.me/ns/fb#" xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 7]> <html class="ie ie7" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 8]> <html class="ie ie8" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if IE 9]> <html class="ie ie9" lang="en" xmlns:fb="http://ogp.me/ns/fb#"    xmlns:ng="http://angularjs.org" ng-app="app" id="app"> <![endif]-->
+<!--[if !IE]><!-->
+<html class="ng-scope" xmlns:ng="http://angularjs.org" ng-app="app" id="app" lang="en"><!--<![endif]--><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}</style>
+  <!-- http://docs.angularjs.org/guide/ie -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- CSS DIFF -->
+  <meta name="viewport" content="width=1200">
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+
+  <title>Predict That</title>
+
+  <!-- TODO: Fill in the og goodness -->
+  <!-- og: == 'Open Graph Protocol' - Makes you Facebook "Like" Button & Sharing Friendly -->
+  <meta name="title" content="Predict That" property="og:title">
+  <meta name="og:type" content="" property="og:type">
+  <meta name="og:url" content="" property="og:url">
+  <meta name="og:image" content="" property="og:image">
+  <meta name="og:site_name" content="" property="og:site_name">
+  <meta name="fb:app_id" content="" property="fb:app_id">
+  <meta name="fb:admins" content="" property="fb:admins">
+  <meta name="description" content="Predict That is the fairest Predict That sports gaming website out there" property="og:description">
+  <meta name="copyright" content="Predict That, LLC">
+  <meta name="author" content="Predict That, LLC">
+
+  <!-- SEO -->
+  <meta name="description" content="Predict That is the fairest Predict That sports gaming website out there">
+  <meta name="keywords" content="">
+
+  <meta content="authenticity_token" name="csrf-param">
+<meta content="5LUE7RqKbWTILB9NAl4bZe3hk05MZG5ZdK7HrFRtGyk=" name="csrf-token">
+  <link href="Predict%20That_files/application-9c863f0f6865a696d5693ad48d86b111.css" media="all" rel="stylesheet">
+<link href="Predict%20That_files/bootstrap_and_overrides-e4469e63a10d3f31ad04fd79f0fdafd7.css" media="all" rel="stylesheet">
+<link href="Predict%20That_files/skeuocard.css" media="all" rel="stylesheet">
+<link href="Predict%20That_files/skeuocard-5e386af8dbf9c4f7a4dd352bde721e4d.css" media="all" rel="stylesheet">
+<link href="Predict%20That_files/flat-ui-e9dd5070a8d732f8ec431799575d0c0e.css" media="all" rel="stylesheet">
+<link href="Predict%20That_files/fonts-b8e87ef02d92bb04188f1165ca52dc28.css" media="all" rel="stylesheet">
+<link href="Predict%20That_files/fmf-0969b05f9b1e2ffe17a84973e3680c32.css" media="all" rel="stylesheet">
+
+  <!-- TODO: make these icons -->
+  <link rel="shortcut icon" href="http://localhost:3000/assets/favicon-da71dfb1a1e48548ac54b72e79e9af45.ico">
+  <link rel="apple-touch-icon" href="http://localhost:3000/assets/favicon-da71dfb1a1e48548ac54b72e79e9af45.ico">
+
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+<style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}.fb_link img{border:none}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_reset .fb_dialog_legacy{overflow:visible}.fb_dialog_advanced{padding:10px;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}.fb_dialog_content{background:#fff;color:#333}.fb_dialog_close_icon{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;_background-image:url(http://static.ak.fbcdn.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif);cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{top:5px;left:5px;right:auto}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent;_background-image:url(http://static.ak.fbcdn.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_close_icon:active{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent;_background-image:url(http://static.ak.fbcdn.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_loader{background-color:#f2f2f2;border:1px solid #606060;font-size:24px;padding:20px}.fb_dialog_top_left,.fb_dialog_top_right,.fb_dialog_bottom_left,.fb_dialog_bottom_right{height:10px;width:10px;overflow:hidden;position:absolute}.fb_dialog_top_left{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 0;left:-10px;top:-10px}.fb_dialog_top_right{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -10px;right:-10px;top:-10px}.fb_dialog_bottom_left{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -20px;bottom:-10px;left:-10px}.fb_dialog_bottom_right{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -30px;right:-10px;bottom:-10px}.fb_dialog_vert_left,.fb_dialog_vert_right,.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{position:absolute;background:#525252;filter:alpha(opacity=70);opacity:.7}.fb_dialog_vert_left,.fb_dialog_vert_right{width:10px;height:100%}.fb_dialog_vert_left{margin-left:-10px}.fb_dialog_vert_right{right:0;margin-right:-10px}.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{width:100%;height:10px}.fb_dialog_horiz_top{margin-top:-10px}.fb_dialog_horiz_bottom{bottom:0;margin-bottom:-10px}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #3b5998;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{-webkit-transform:none;height:100%;margin:0;overflow:visible;position:absolute;top:-10000px;left:0;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{max-height:590px;min-height:590px;max-width:500px;min-width:500px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .45);position:absolute;left:0;top:0;width:100%;min-height:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_content .dialog_header{-webkit-box-shadow:white 0 1px 1px -1px inset;background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#738ABA), to(#2C4987));border-bottom:1px solid;border-color:#1d4088;color:#fff;font:14px Helvetica, sans-serif;font-weight:bold;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{-webkit-font-smoothing:subpixel-antialiased;height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4966A6), color-stop(.5, #355492), to(#2A4887));border:1px solid #29447e;-webkit-background-clip:padding-box;-webkit-border-radius:3px;-webkit-box-shadow:rgba(0, 0, 0, .117188) 0 1px 1px inset, rgba(255, 255, 255, .167969) 0 1px 0;display:inline-block;margin-top:3px;max-width:85px;line-height:18px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{border:none;background:none;color:#fff;font:12px Helvetica, sans-serif;font-weight:bold;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #555;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f2f2f2;border:1px solid #555;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_lift{z-index:1}.fb_hide_iframes iframe{position:relative;left:-10000px}.fb_iframe_widget_loader{position:relative;display:inline-block}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}.fb_iframe_widget_loader iframe{min-height:32px;z-index:2;zoom:1}.fb_iframe_widget_loader .FB_Loader{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat;height:32px;width:32px;margin-left:-16px;position:absolute;left:50%;z-index:4}
+.fb_connect_bar_container div,.fb_connect_bar_container span,.fb_connect_bar_container a,.fb_connect_bar_container img,.fb_connect_bar_container strong{background:none;border-spacing:0;border:0;direction:ltr;font-style:normal;font-variant:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal;vertical-align:baseline}.fb_connect_bar_container{position:fixed;left:0 !important;right:0 !important;height:42px !important;padding:0 25px !important;margin:0 !important;vertical-align:middle !important;border-bottom:1px solid #333 !important;background:#3b5998 !important;z-index:99999999 !important;overflow:hidden !important}.fb_connect_bar_container_ie6{position:absolute;top:expression(document.compatMode=="CSS1Compat"? document.documentElement.scrollTop+"px":body.scrollTop+"px")}.fb_connect_bar{position:relative;margin:auto;height:100%;width:100%;padding:6px 0 0 0 !important;background:none;color:#fff !important;font-family:"lucida grande", tahoma, verdana, arial, sans-serif !important;font-size:13px !important;font-style:normal !important;font-variant:normal !important;font-weight:normal !important;letter-spacing:normal !important;line-height:1 !important;text-decoration:none !important;text-indent:0 !important;text-shadow:none !important;text-transform:none !important;white-space:normal !important;word-spacing:normal !important}.fb_connect_bar a:hover{color:#fff}.fb_connect_bar .fb_profile img{height:30px;width:30px;vertical-align:middle;margin:0 6px 5px 0}.fb_connect_bar div a,.fb_connect_bar span,.fb_connect_bar span a{color:#bac6da;font-size:11px;text-decoration:none}.fb_connect_bar .fb_buttons{float:right;margin-top:7px}
+.fbpluginrecommendationsbarleft,.fbpluginrecommendationsbarright{position:fixed !important;bottom:0;z-index:999}.fbpluginrecommendationsbarleft{left:10px}.fbpluginrecommendationsbarright{right:10px}</style></head>
+
+<body data-twttr-rendered="true" ng-controller="ApplicationController" class="NBA fantasy_sports">
+<!-- FB SHIT -->
+<div class=" fb_reset" id="fb-root"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe src="Predict%20That_files/dgdTycPTSRj.html" style="border: medium none;" tab-index="-1" title="Facebook Cross Domain Communication Frame" aria-hidden="true" id="fb_xdm_frame_http" allowtransparency="true" name="fb_xdm_frame_http" frameborder="0" scrolling="no"></iframe><iframe src="Predict%20That_files/dgdTycPTSRj_002.html" style="border: medium none;" tab-index="-1" title="Facebook Cross Domain Communication Frame" aria-hidden="true" id="fb_xdm_frame_https" allowtransparency="true" name="fb_xdm_frame_https" frameborder="0" scrolling="no"></iframe></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div></div>
+<script src="Predict%20That_files/widgets.js" id="twitter-wjs"></script><script src="Predict%20That_files/analytics.js" async=""></script><script src="Predict%20That_files/all.js" id="facebook-jssdk"></script><script>
+  window.fbAsyncInit = function() {
+    // init the FB JS SDK
+    FB.init({
+      appId      : '162183927304348',             // App ID from the app dashboard
+      status     : true,                                 // Check Facebook Login status
+      xfbml      : true                                  // Look for social plugins on the page
+    });
+
+    // Additional initialization code such as adding Event Listeners goes here
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+<!-- GA SHIT -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46242308-1', 'fairmarketfantasy.com');
+  //ga('send', 'pageview'); // Handled by angulartics http://luisfarzati.github.io/angulartics/
+
+</script>
+
+  <div flash-alert="" active-class="alert in" class="fixed-flash fade ng-scope">
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <strong class="alert-heading"></strong>
+          <span class="alert-message ng-binding"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- This is where you work your magic, do your best! -->
+  <header class="full">
+    <div class="top-nav">
+      <div class="fixed-header">
+        <div class="container home clearfix">
+          <div class="span8 nav-span">
+            <h1 class="logo-font"><a href="http://localhost:3000/#/fantasy_sports/NBA/home">Predict <span class="logo-slash">That</span></a></h1>
+            <nav class="landing-nav">
+              <ul>
+                <!-- ngRepeat: category in sports --><li class="ng-scope" ng-repeat="category in sports">
+                  <div ng-show="category.note" ng-class="{in : popover_sports}" class="popover bottom fade header-popover ng-binding ng-hide"> <div class="arrow"></div></div>
+                  <a class="dropdown-toggle ng-binding" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">fantasy sports</a>
+                  <ul class="header-drop-menu dropdown-menu">
+                    <!-- ngRepeat: sport in category.sports --><li class="ng-scope ng-hide" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding" ng-hide="sport.coming_soon" href="http://localhost:3000/#/fantasy_sports/NFL/home">NFL</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding ng-hide" href="javascript://">NFL</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow active-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding" ng-hide="sport.coming_soon" href="http://localhost:3000/#/fantasy_sports/NBA/home">NBA</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding ng-hide" href="javascript://">NBA</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding" ng-hide="sport.coming_soon" href="http://localhost:3000/#/fantasy_sports/MLB/home">MLB</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding ng-hide" href="javascript://">MLB</a>
+                    </li><!-- end ngRepeat: sport in category.sports -->
+                  </ul>
+                </li><!-- end ngRepeat: category in sports --><li class="ng-scope" ng-repeat="category in sports">
+                  <div ng-show="category.note" ng-class="{in : popover_sports}" class="popover bottom fade header-popover ng-binding">COMING SOON <div class="arrow"></div></div>
+                  <a class="dropdown-toggle ng-binding" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">entertainment</a>
+                  <ul class="header-drop-menu dropdown-menu">
+                    <!-- ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/entertainment/MUSIC/home">MUSIC</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">MUSIC</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/entertainment/REALITY%20SHOWS/home">REALITY SHOWS</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">REALITY SHOWS</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/entertainment/OSCARS/home">OSCARS</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">OSCARS</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/entertainment/GRAMMYS/home">GRAMMYS</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">GRAMMYS</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/entertainment/CELEBRITY%20PROPOSITIONS/home">CELEBRITY PROPOSITIONS</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">CELEBRITY PROPOSITIONS</a>
+                    </li><!-- end ngRepeat: sport in category.sports -->
+                  </ul>
+                </li><!-- end ngRepeat: category in sports --><li class="ng-scope" ng-repeat="category in sports">
+                  <div ng-show="category.note" ng-class="{in : popover_sports}" class="popover bottom fade header-popover ng-binding">COMING SOON <div class="arrow"></div></div>
+                  <a class="dropdown-toggle ng-binding" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">politics</a>
+                  <ul class="header-drop-menu dropdown-menu">
+                    <!-- ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/politics/PRESIDENTAL%20CANDIDATES/home">PRESIDENTAL CANDIDATES</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">PRESIDENTAL CANDIDATES</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/politics/CONGRESSIONAL%20RACES/home">CONGRESSIONAL RACES</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">CONGRESSIONAL RACES</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/politics/SENATE%20RACES/home">SENATE RACES</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">SENATE RACES</a>
+                    </li><!-- end ngRepeat: sport in category.sports -->
+                  </ul>
+                </li><!-- end ngRepeat: category in sports --><li class="ng-scope" ng-repeat="category in sports">
+                  <div ng-show="category.note" ng-class="{in : popover_sports}" class="popover bottom fade header-popover ng-binding">COMING VERY SOON <div class="arrow"></div></div>
+                  <a class="dropdown-toggle ng-binding" ng-mouseleave="popover_sports = false" ng-mouseenter="popover_sports = true">sports</a>
+                  <ul class="header-drop-menu dropdown-menu">
+                    <!-- ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding" ng-hide="sport.coming_soon" href="http://localhost:3000/#/sports/MLB/home">MLB</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding ng-hide" href="javascript://">MLB</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/sports/NBA/home">NBA</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">NBA</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/sports/NFL/home">NFL</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">NFL</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/sports/NHL/home">NHL</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">NHL</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/sports/NASCAR/home">NASCAR</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">NASCAR</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/sports/GOLF/home">GOLF</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">GOLF</a>
+                    </li><!-- end ngRepeat: sport in category.sports --><li class="ng-scope" ng-repeat="sport in category.sports" ng-show="sport.is_active">
+                      <em class="menu-arrow" ng-class="{'active-arrow': $routeParams.sport == sport.name &amp;&amp; $routeParams.category == category.name}"></em>
+                      <a class="landing-nav-link ng-binding ng-hide" ng-hide="sport.coming_soon" href="http://localhost:3000/#/sports/TENNIS/home">TENNIS</a>
+                      <a style="cursor:default;" ng-show="sport.coming_soon" popover-trigger="mouseenter" popover="coming soon" popover-placement="right" class="landing-nav-link ng-scope ng-binding" href="javascript://">TENNIS</a>
+                    </li><!-- end ngRepeat: sport in category.sports -->
+                  </ul>
+                </li><!-- end ngRepeat: category in sports -->
+              </ul>
+            </nav>
+          </div>
+          <div class="span2 nav-span user-navigation">
+            <a target="_blank" href="https://itunes.apple.com/app/predictthat/id869434589?mt=8">
+              <img alt="Appstore" src="Predict%20That_files/appstore-fe7a6fd9de55f625c8f9a8713518cab3.png">
+            </a>
+          </div>
+          <div class="span2 nav-span user-navigation">
+            <a target="_blank" href="https://play.google.com/store/apps/details?id=com.fantasysport">
+              <img alt="Googleplay" src="Predict%20That_files/googleplay-2bfe1e87912db39e58ddc7f8dc7b9774.png">
+            </a>
+          </div>
+
+          <!--<div class="user-navigation">-->
+            <!--<div class="nav-mobile-app-links">-->
+              <!--<span class="ios-app-link" style=""></span>-->
+              <!--<span class="android-app-link" style=""></span>-->
+            <!--</div>-->
+          <!--</div>-->
+        </div>
+      </div>
+  </div>
+    <div class="container">
+
+    <div class="row header-bottom">
+      <div class="span12 user-container text-center">
+        <div class="clearfix user-box">
+          <img src="Predict%20That_files/images.xml" ng-src="https://fairmarketfantasy-dev.s3.amazonaws.com/uploads/user/165/images.jpeg?AWSAccessKeyId=AKIAJXV4UPD3IV4JK6DA&amp;Signature=3DrK8ROmPVA1gHG%2BBbw2dtQwIUg%3D&amp;Expires=1399906377" class="user-avatar">
+          <div class="user-info">
+            <span class="user-name ng-binding">andrew.kotov@easternpeak.com</span>
+            <a href="javascript://" class="txt-white txt-red-hover" ng-click="settingsModal()">My Account</a><br>
+            <a class="user-logout txt-red-hover" href="http://localhost:3000/users/sign_out">sign out</a>
+          </div>
+          <div class="user-balance no-border ng-binding">
+            <small>Cash:</small>&nbsp;&nbsp;$48.24
+          </div>
+          <div class="user-balance no-border" ng-click="addFundsModal()">
+            <a class="ng-binding" href="javascript://">
+              <!--<img class="nmw-info" src="/assets/info-icon-d81f85e3537584786112c70f7aaeb20b.png" width="17px"-->
+                <!--popover-trigger="mouseenter" popover="Fanbucks are how much you're up or down this month. Any positive balance is put in your account each month. Check out the FAQs for more info!" popover-placement="right">-->
+              <small>FanBucks:</small>&nbsp;&nbsp;0
+            </a>
+          </div>
+          <div class="user-balance no-border ng-binding">
+            <small>PresTige:</small>&nbsp;&nbsp;1233
+          </div>
+          <div class="user-dash no-border clearfix">
+            <a class="btn btn-small btn-success home-header-btn" href="http://localhost:3000/#/fantasy_sports/NBA/home">Home</a>
+            <a class="btn btn-small btn-success prediction-header-btn" href="http://localhost:3000/#/fantasy_sports/NBA/rosters">My Predictions</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </header>
+
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="span12 page-content">
+          <div class="padded-content">
+            <div class="content">
+              <!-- ngView:  --><div class="ng-scope" id="content" ng-view="">
+    <div class="ng-scope" ng-controller="SampleRosterController">
+
+  <div ng-hide="!marketService.currentMarket" class="landing-roster-header">
+    <h4>
+      Create a Fantasy Team and compete against others to win 100 Fanbucks
+    </h4>
+  </div>
+
+  <div repeat="market in marketService.upcoming track by market.id | orderBy:market.id:reverse=false" animation="slide" controlnav="false" animation-loop="false" slideshow="false" item-width="151" item-margin="0" class="carousel flexslider-container"><div class="flexslider"><div style="overflow: hidden; position: relative;" class="flex-viewport"><ul style="width: 400%; transition-duration: 0s; transform: translate3d(0px, 0px, 0px);" class="slides clearfix market-list">
+    <li style="width: 130.083px; float: left; display: block;" class="market-li ng-scope" ng-class="{'landing-border': $last }">
+      <a ng-click="reloadRoster(market.id)" class="market-link" ng-class="{'active-market': market.id == roster.market.id }">
+        <strong class="ng-binding">Heat @ Nets</strong>
+        <p class="ng-binding">03:00am</p>
+      </a>
+    </li>
+  
+    <li style="width: 130.083px; float: left; display: block;" class="market-li ng-scope" ng-class="{'landing-border': $last }">
+      <a ng-click="reloadRoster(market.id)" class="market-link active-market" ng-class="{'active-market': market.id == roster.market.id }">
+        <strong class="ng-binding">Spurs @ Trail Blazers</strong>
+        <p class="ng-binding">05:30am</p>
+      </a>
+    </li>
+  </ul></div><ol class="flex-control-nav flex-control-paging"></ol><ul class="flex-direction-nav"><li><a tabindex="-1" class="flex-prev flex-disabled" href="#">Previous</a></li><li><a tabindex="-1" class="flex-next flex-disabled" href="#">Next</a></li></ul></div></div>
+
+  <div class="roster-area">
+    <div class="loading-message ng-hide" ng-hide="!marketService.currentMarket || roster">
+      <img src="Predict%20That_files/a.gif">
+    </div>
+    <div class="loading-message ng-hide" ng-hide="marketService.currentMarket">
+      <h4 class="ng-binding"> </h4>
+    </div>
+
+    <div class="roster-overflow" ng-show="roster">
+      <ul class="no-no">
+        <!-- ngRepeat: player in roster.players --><li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix ng-scope" ng-repeat="player in roster.players">
+          <div style="background-image: url(&quot;https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/b1b2d578-44df-4e05-9884-31dd89e82cf0/65.jpg&quot;);" ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url &amp;&amp; ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon ng-hide">B</span></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled ng-hide"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name ng-binding">Tony Parker</h3>
+            <span class="mr-stats ng-binding">Spurs PG (16.66 PPG)</span>
+            <span class="mr-stats">
+              <span class="ng-binding">
+                $3,399
+              </span>
+            </span>
+          </div>
+					<div class="prediction">
+						<p class="" ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
+					</div>
+        </li><!-- end ngRepeat: player in roster.players --><li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix ng-scope" ng-repeat="player in roster.players">
+          <div style="background-image: url(&quot;https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/fcd32518-46a9-4cb1-b9f8-9271fe89b16e/65.jpg&quot;);" ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url &amp;&amp; ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon ng-hide">B</span></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled ng-hide"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name ng-binding">Jeff Ayres</h3>
+            <span class="mr-stats ng-binding">Spurs C (4.28 PPG)</span>
+            <span class="mr-stats">
+              <span class="ng-binding">
+                $3,399
+              </span>
+            </span>
+          </div>
+					<div class="prediction">
+						<p class="" ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
+					</div>
+        </li><!-- end ngRepeat: player in roster.players --><li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix ng-scope" ng-repeat="player in roster.players">
+          <div style="background-image: url(&quot;https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/95ca0a9b-4fd0-4ae8-8714-247b57fb84ea/65.jpg&quot;);" ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url &amp;&amp; ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon ng-hide">B</span></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled ng-hide"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name ng-binding">Manu Ginobili</h3>
+            <span class="mr-stats ng-binding">Spurs SG (12.40 PPG)</span>
+            <span class="mr-stats">
+              <span class="ng-binding">
+                $3,399
+              </span>
+            </span>
+          </div>
+					<div class="prediction">
+						<p class="" ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
+					</div>
+        </li><!-- end ngRepeat: player in roster.players --><li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix ng-scope" ng-repeat="player in roster.players">
+          <div style="background-image: url(&quot;https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/8da88be3-bc4a-406a-9e16-147bdac064eb/65.jpg&quot;);" ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url &amp;&amp; ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon ng-hide">B</span></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled ng-hide"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name ng-binding">Matt Bonner</h3>
+            <span class="mr-stats ng-binding">Spurs F (4.93 PPG)</span>
+            <span class="mr-stats">
+              <span class="ng-binding">
+                $3,399
+              </span>
+            </span>
+          </div>
+					<div class="prediction">
+						<p class="" ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
+					</div>
+        </li><!-- end ngRepeat: player in roster.players --><li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix ng-scope" ng-repeat="player in roster.players">
+          <div style="background-image: url(&quot;https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/52eba610-a87e-4c05-bb2d-dfb71bb32d03/65.jpg&quot;);" ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url &amp;&amp; ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon ng-hide">B</span></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled ng-hide"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name ng-binding">Boris Diaw</h3>
+            <span class="mr-stats ng-binding">Spurs PF (9.71 PPG)</span>
+            <span class="mr-stats">
+              <span class="ng-binding">
+                $3,399
+              </span>
+            </span>
+          </div>
+					<div class="prediction">
+						<p class="" ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
+					</div>
+        </li><!-- end ngRepeat: player in roster.players --><li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix ng-scope" ng-repeat="player in roster.players">
+          <div style="background-image: url(&quot;https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/478e5e20-5d59-402f-a901-b8e78f3e9508/65.jpg&quot;);" ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url &amp;&amp; ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon ng-hide">B</span></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled ng-hide"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name ng-binding">Danny Green</h3>
+            <span class="mr-stats ng-binding">Spurs UTIL (9.86 PPG)</span>
+            <span class="mr-stats">
+              <span class="ng-binding">
+                $3,399
+              </span>
+            </span>
+          </div>
+					<div class="prediction">
+						<p class="" ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
+					</div>
+        </li><!-- end ngRepeat: player in roster.players --><li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix ng-scope" ng-repeat="player in roster.players">
+          <div style="background-image: url(&quot;https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/a89ac040-715d-4057-8fc0-9d71ad06fa0a/65.jpg&quot;);" ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url &amp;&amp; ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon ng-hide">B</span></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled ng-hide"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name ng-binding">Nicolas Batum</h3>
+            <span class="mr-stats ng-binding">Trail Blazers SF (13.23 PPG)</span>
+            <span class="mr-stats">
+              <span class="ng-binding">
+                $3,399
+              </span>
+            </span>
+          </div>
+					<div class="prediction">
+						<p class="" ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
+					</div>
+        </li><!-- end ngRepeat: player in roster.players --><li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix ng-scope no-border" ng-repeat="player in roster.players">
+          <div style="background-image: url(&quot;https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/5769354c-0661-4ac7-86e5-3fd51506df36/65.jpg&quot;);" ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url &amp;&amp; ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon ng-hide">B</span></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled ng-hide"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name ng-binding">Cory Joseph</h3>
+            <span class="mr-stats ng-binding">Spurs G (6.24 PPG)</span>
+            <span class="mr-stats">
+              <span class="ng-binding">
+                $3,399
+              </span>
+            </span>
+          </div>
+					<div class="prediction">
+						<p class="" ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
+					</div>
+        </li><!-- end ngRepeat: player in roster.players -->
+      </ul>
+    </div>
+
+  </div>
+    <div class="text-center roster-area-footer" ng-show="roster">
+      <!--<p>-->
+        <!--<a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">enter roster to win 100 fanbucks</a>-->
+        <!--<a href="javascript://" class="btn btn-large btn-info" ng-click='reloadRoster(roster.market.id)'>get new lineup</a>-->
+      <!--</p>-->
+      <!--<p style="text-align: left">You will be able to trade, adjust, and change your lineup at will until the game begins.</p>-->
+    </div>
+
+  <div ng-show="roster" class="landing-ind-prediction">
+    <p class="individual-predict">OR Predict Individual Perfomances <br> and win Fanbucks</p>
+    <div class="landing-player-pos clearfix">
+      <div class="clearfix inline-block" ng-show="player.position != 'DEF'">
+        <div style="background-image: url(&quot;https://fairmarketfantasy-prod.s3-us-west-2.amazonaws.com/headshots/b1b2d578-44df-4e05-9884-31dd89e82cf0/65.jpg&quot;);" class="mr-player-image filled" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url &amp;&amp; ('url(' + player.headshot_url +')')}"></div>
+        <p><i class="ng-binding">Tony Parker</i></p>
+      </div>
+      <div class="ng-hide" ng-show="player.position == 'DEF'">
+        <p><i class="ng-binding">Tony Parker</i></p>
+        <div class="mr-player-image defense filled"></div>
+      </div>
+    </div>
+    <div>
+      <ul class="no-no landing-ind-list clearfix">
+        <!-- ngRepeat: stat in events --><li class="ng-scope" ng-repeat="stat in events">
+          <p class="pull-left ng-binding">points : 16.8</p>
+          <div class="pull-right">
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">less</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">more</a>
+          </div>
+        </li><!-- end ngRepeat: stat in events --><li class="ng-scope" ng-repeat="stat in events">
+          <p class="pull-left ng-binding">rebounds : 2.5</p>
+          <div class="pull-right">
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">less</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">more</a>
+          </div>
+        </li><!-- end ngRepeat: stat in events --><li class="ng-scope" ng-repeat="stat in events">
+          <p class="pull-left ng-binding">assists : 5.4</p>
+          <div class="pull-right">
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">less</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">more</a>
+          </div>
+        </li><!-- end ngRepeat: stat in events --><li class="ng-scope" ng-repeat="stat in events">
+          <p class="pull-left ng-binding">steals : 0.7</p>
+          <div class="pull-right">
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">less</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">more</a>
+          </div>
+        </li><!-- end ngRepeat: stat in events --><li class="ng-scope" ng-repeat="stat in events">
+          <p class="pull-left ng-binding">turnovers : 1.8</p>
+          <div class="pull-right">
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">less</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more ng-scope" popover-trigger="mouseenter" popover="PT25, predict correctly and win 25FB" popover-placement="top">more</a>
+          </div>
+        </li><!-- end ngRepeat: stat in events --><li class="ng-scope" ng-repeat="stat in events">
+          <p class="pull-left ng-binding">blocks : 0.1</p>
+          <div class="pull-right">
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less ng-scope" popover-trigger="mouseenter" popover="PT16.17, predict correctly and win 16.17FB" popover-placement="top">less</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more ng-scope" popover-trigger="mouseenter" popover="PT109.5, predict correctly and win 109.5FB" popover-placement="top">more</a>
+          </div>
+        </li><!-- end ngRepeat: stat in events --><li class="ng-scope" ng-repeat="stat in events">
+          <p class="pull-left ng-binding">3pt made : 0.4</p>
+          <div class="pull-right">
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less ng-scope" popover-trigger="mouseenter" popover="PT22, predict correctly and win 22FB" popover-placement="top">less</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more ng-scope" popover-trigger="mouseenter" popover="PT30.75, predict correctly and win 30.75FB" popover-placement="top">more</a>
+          </div>
+        </li><!-- end ngRepeat: stat in events -->
+      </ul>
+    </div>
+    <div style="margin-top: 10px; text-align: center;">Click on the PT icon to change the player to predict</div>
+  </div>
+</div>
+  </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="span12">
+            <div class="clearfix">
+                <h4 class="logo-font">Predict <span class="logo-slash">That</span></h4>
+                <ul class="footer-nav">
+                  <li class="nav-item"><a href="http://localhost:3000/#/fantasy_sports/NBA/home">Home</a></li>
+                  <!--<li class="nav-item nav-item-highlight" ng-show="sportHasPlayoffs()"><a href="/#/{{currentUser.currentSport}}/playoffs">Play the Playoffs</a></li>-->
+                  <!--<li class="nav-item"><a href="/#/{{currentUser.currentSport}}/history">History</a></li>-->
+                  <li class="nav-item hide"><a href="http://localhost:3000/#/leaderboard">Leaderboards</a></li>
+                  <li class="nav-item"><a href="http://localhost:3000/#/fantasy_sports/NBA/rules">Rules and Scoring</a></li>
+                  <li class="nav-item"><a href="http://localhost:3000/support" target="_blank">How it works/support</a></li>
+                  <li class="nav-item"><a href="http://localhost:3000/conditions" target="_blank">Subcription terms</a></li>
+                  <!--<li class="nav-item"><a href="/#/legal" >Legal Info</a></li>-->
+                  <!--<li class="nav-item"><a href="/#/support">Support</a></li>-->
+                  <li class="nav-item end"><a href="javascript://" ng-click="withdrawFundsModal()">Cash Out</a></li>
+                </ul>
+            </div>
+            <p>Copyright 2013, Fair Market Fantasy, LLC. All Rights Reserved.</p>
+            <p>Based in San Francisco, CA</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </article>
+
+
+<!-- Setup some handy globals -->
+<script type="text/javascript">
+  window.App = {
+    site: "http://localhost:3000",
+    currentUser: {"id":165,"name":"Andrey  Kotov","admin":false,"username":"andrew.kotov@easternpeak.com","email":"andrew.kotov@easternpeak.com","balance":4824,"image_url":"https://fairmarketfantasy-dev.s3.amazonaws.com/uploads/user/165/images.jpeg?AWSAccessKeyId=AKIAJXV4UPD3IV4JK6DA\u0026Signature=3DrK8ROmPVA1gHG%2BBbw2dtQwIUg%3D\u0026Expires=1399906377","win_percentile":"100.0","total_points":3052,"joined_at":"2014-02-05T11:25:02.018Z","token_balance":0,"provider":"facebook","amount":null,"bets":null,"winnings":null,"total_wins":19,"total_losses":0,"bonuses":{},"referral_code":"b5daa2fc54a139cd9ee41f8ae6737da8","inviter_id":null,"currentSport":"NBA","in_progress_roster_id":null,"abridged":false,"prestige":1233,"categories":[{"id":1,"name":"fantasy_sports","note":"","sports":[{"id":1,"name":"NFL","is_active":false,"playoffs_on":false,"coming_soon":false},{"id":867,"name":"NBA","is_active":true,"playoffs_on":false,"coming_soon":false},{"id":872,"name":"MLB","is_active":true,"playoffs_on":true,"coming_soon":false}]},{"id":2,"name":"entertainment","note":"COMING SOON","sports":[{"id":875,"name":"MUSIC","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":876,"name":"REALITY SHOWS","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":877,"name":"OSCARS","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":878,"name":"GRAMMYS","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":879,"name":"CELEBRITY PROPOSITIONS","is_active":true,"playoffs_on":false,"coming_soon":true}]},{"id":3,"name":"politics","note":"COMING SOON","sports":[{"id":880,"name":"PRESIDENTAL CANDIDATES","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":881,"name":"CONGRESSIONAL RACES","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":882,"name":"SENATE RACES","is_active":true,"playoffs_on":false,"coming_soon":true}]},{"id":4,"name":"sports","note":"COMING VERY SOON","sports":[{"id":883,"name":"MLB","is_active":true,"playoffs_on":false,"coming_soon":false},{"id":884,"name":"NBA","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":885,"name":"NFL","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":886,"name":"NHL","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":887,"name":"NASCAR","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":888,"name":"GOLF","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":889,"name":"TENNIS","is_active":true,"playoffs_on":false,"coming_soon":true}]}],"confirmed":true,"customer_object":{"id":157,"balance":4824,"net_monthly_winnings":"0.0","monthly_contest_entries":0,"contest_entries_deficit":"5.0","locked":false,"locked_reason":null,"cards":[{"id":76,"first_name":"assd","last_name":"sdfsdsd","type":null,"exp_month":1,"exp_year":2017,"obscured_number":"411111******1111","default":true}],"is_active":true,"has_agreed_terms":true,"contest_winnings_multiplier":"1.0","trial_started_at":"2014-03-16","monthly_award":"0.0"},"in_progress_roster":null,"leagues":[]},
+    isUserAdmin: false,
+    defaultSport: {"name":"NBA","category_name":"fantasy_sports"}
+  };
+
+window.App.sports = [{"id":1,"name":"fantasy_sports","note":"","sports":[{"id":1,"name":"NFL","is_active":false,"playoffs_on":false,"coming_soon":false},{"id":867,"name":"NBA","is_active":true,"playoffs_on":false,"coming_soon":false},{"id":872,"name":"MLB","is_active":true,"playoffs_on":true,"coming_soon":false}]},{"id":2,"name":"entertainment","note":"COMING SOON","sports":[{"id":875,"name":"MUSIC","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":876,"name":"REALITY SHOWS","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":877,"name":"OSCARS","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":878,"name":"GRAMMYS","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":879,"name":"CELEBRITY PROPOSITIONS","is_active":true,"playoffs_on":false,"coming_soon":true}]},{"id":3,"name":"politics","note":"COMING SOON","sports":[{"id":880,"name":"PRESIDENTAL CANDIDATES","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":881,"name":"CONGRESSIONAL RACES","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":882,"name":"SENATE RACES","is_active":true,"playoffs_on":false,"coming_soon":true}]},{"id":4,"name":"sports","note":"COMING VERY SOON","sports":[{"id":883,"name":"MLB","is_active":true,"playoffs_on":false,"coming_soon":false},{"id":884,"name":"NBA","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":885,"name":"NFL","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":886,"name":"NHL","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":887,"name":"NASCAR","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":888,"name":"GOLF","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":889,"name":"TENNIS","is_active":true,"playoffs_on":false,"coming_soon":true}]}];
+
+  window.setCurrentUser = function(user) {
+    window.App.currentUser = user;
+  };
+  window.refreshUser = function(amount) {
+    angular.element('body').injector().get('currentUserService').refreshUser();
+  };
+  window.addToBalance = function(amount) {
+    window.App.currentUser.balance = window.App.currentUser.balance + amount;
+    var $scope = $('body').scope();
+    $scope.$emit('user-changed');
+  };
+  window.addToTokenBalance = function(amount) {
+    window.App.currentUser.token_balance = window.App.currentUser.token_balance + amount;
+    var $scope = $('body').scope();
+    $scope.$emit('user-changed');
+  };
+</script>
+
+
+  <script type="text/ng-template" id="/rules_nba.html">
+    <h4>NBA Scoring</h4>
+<ul>
+  <li>1 pt per in game point scored</li>
+  <li>0.5 pts for every field goal</li>
+  <li>1.25 pts per rebound</li>
+  <li>1.5 pts per assist</li>
+  <li>2 pts per steal</li>
+  <li>2 pts per block</li>
+  <li>-0.5 pts per turnover</li>
+</ul>
+
+  </script>
+  <script type="text/ng-template" id="/leaderboard.html">
+    
+<ul>
+  <li><a href="javascript://" ng-class="{selected: timeframe == 'all'}" ng-click="timeframe = 'all'">All Time</a></li>
+  <li><a href="javascript://" ng-class="{selected: timeframe == 'season'}" ng-click="timeframe = 'season'">This Season</a></li>
+  <li><a href="javascript://" ng-class="{selected: timeframe == 'week'}" ng-click="timeframe = 'week'">This Week</a></li>
+</ul>
+
+<img ng-hide="leaderboards" src='/assets/ajax-loader-big.gif'/>
+
+<ul>
+  <li ng-repeat="(name, users) in leaderboards">
+  <h3>{{name}}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>User</th>
+        <th ng-show="users[0].amount">Amount</th>
+        <th ng-hide="users[0].amount">Ratio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in users">
+        <td>{{ $index }}</td>
+        <td>{{ user.username }}</td>
+        <td ng-show="user.amount">{{ user.amount }}</td>
+        <td ng-show="user.bets">{{ user.bets / user.winnings }}</td>
+        <td ng-show="user.total_wins">{{ user.total_wins }} / {{ user.total_losses }}</td>
+      </tr>
+    </tbody>
+    </table>
+  </li>
+</ul>
+
+  </script>
+  <script type="text/ng-template" id="/invite.html">
+    <div class='modal-header'>
+  <h3>Challenge your friends!</h3>
+</div>
+<div class='modal-body'>
+  <p>We give new friends you invite a free $1 game!  We also throw a buck your way to thank you for supporting us.</p>
+  <textarea ng-model="invitees" placeholder="Put your friend's email addresses in here"></textarea>
+  <textarea ng-model="message" placeholder="If you want to send a custom message, put it here"></textarea>
+  <p>Or send them this link:
+    <span class="invite-link">
+      <a href="http://localhost:3000/contests/join?contest_code={{ contest.invitation_code }}&referral_code={{ currentUser.referral_code }}">
+        http://localhost:3000/contests/join?contest_code={{ contest.invitation_code }}&referral_code={{ currentUser.referral_code }}
+      </a>
+    </span>
+  </p>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn btn-success" ng-click="sendInvites()">Send invitations</a>
+  <a href="javascript://" class="btn btn-info" ng-click="close()">close</a>
+</div>
+
+
+  </script>
+  <script type="text/ng-template" id="/create_contest.html">
+    <div class='modal-header'>
+  <h1>Create a Contest {{markets.currentMarket.started_at | shortFormTime }}</h1>
+</div>
+<div class='modal-body'>
+  <div class="clearfix">
+    <div class="full-row">
+      <!-- NOENTRY TODO: change these, no custom 27 H2H pricing -->
+      <h3>Contest Type</h3>
+      <ul class="contest-type-pills nav-pills modal-pills">
+        <li ng-class="{active: contest_type == '100/30/30'}"><a href="javascript://" ng-click="contest_type = '100/30/30'">100/30/30</a></li>
+        <li ng-class="{active: contest_type == '27 H2H'}"><a href="javascript://" ng-click="contest_type = '27 H2H'">27 H2H</a></li>
+      </ul>
+    </div>
+    <div class="full-row">
+      <h3>Make it Recurring</h3>
+      <div class="contest-name">
+        <input type="text" ng-model="league_name" placeholder="Name the league"/>
+        <p>and we'll invite everybody again next week</p>
+        <p class="tiny">or just leave it blank for a one time contest</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="clearfix">
+
+    <div class="full-row">
+      <h3>Invite friends</h3>
+      <textarea ng-model="invitees" placeholder="Put your friend's email addresses in here (comma or semicolon delimited)"></textarea>
+      <p>We give new friends you invite a free $1 game!  We also throw a buck your way to thank you for supporting us.</p>
+    </div>
+    <div class="full-row">
+      <h3>Custom note</h3>
+      <textarea ng-model="message" placeholder="If you want to send a custom message, put it here"></textarea>
+      <p>Also: If your friends don't fill up your contest, we'll fill it with generated rosters.</p>
+    </div>
+  </div>
+  <div>
+
+  </div>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn btn-success" ng-click="createContest()">Create Contest</a>
+  <a href="javascript://" class="btn btn-info" ng-click="close()">Cancel</a>
+</div>
+
+
+  </script>
+  <script type="text/ng-template" id="/legal.html">
+    <div class="alert alert-success">
+  <h3>Fantasy Sports Game Legality</h3>
+  <p>Fair Market Fantasy is a US-based skill games company, and all of our contests are operated 100% legally under United States and Canadian law. The US Government and 45 of the 50 states consider fantasy sports a game of skill.</p>
+  <p>We do not allow residents of Arizona, Iowa, Louisiana, Montana or the Canadian province of Quebec to participate in our contests due to state-specific regulation against cash prize awards. Also, due to agreements with our payment providers, Washington is restricted as well. We also require our users to be 18 years of age or older (19 in Alabama and Nebraska). We take the legal status of our contests very seriously. If you have any questions related to this topic, please <a href="/#/support">contact us</a>.</p>
+  <a href="/#/support" class="btn btn-primary btn-wide"><i class="fui-mail"></i> Contact Us</a>
+  <a href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/home" class="btn btn-info btn-wide">Let's Play!</a>
+</div>
+
+<h3>US Law</h3>
+
+<p>In 2006 the US Federal Government passed a law called the Unlawful Internet Gaming Enforcement Act. The law included a carve out that clarified the legality of fantasy sports. Specifically, it exempted "participation in any fantasy or simulation sports game or educational game or contest in which (if the game or contest involves a team or teams) no fantasy or simulation team is based on the current membership of an actual team that is a member of an amateur or professional sports organisation and meets the following conditions:</p>
+
+<ul>
+  <li>All prizes and awards offered to winning participants are established and made known to the participants in advance of the game or contest and their value is not determined by the number of participants or the amount of any fees paid by participants.</li>
+  <li>All winning outcomes reflect the relative knowledge and skill of the participants and are determined predominantly by accumulated statistical results of the performance of individuals (athletes in the case of sports events) in multiple real-world sporting or other events.
+  <li>No winning outcome is based:
+    <ul>
+      <li>On the score, point spread, or any performance or performances of any single real world team or any combination of such teams; or 
+      <li>Solely on any single performance of an individual athlete in any single real-world sporting or other event.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Fair Market Fantasy provides skill based fantasy sports contests that are specifically exempted under US law. However, it is unclear about the state law in the following states, Arizona, Iowa, Louisiana, Montana and Vermont or the law in the Province of Quebec. As such, Fair Market Fantasy has chosen to not allow users residing in the above localities to participate in any contests for money. Fair Market Fantasy takes the legal status of the games it offers very seriously and does its utmost to ensure compliance with existing State and Federal laws. If you have any further concerns or questions about the legality of our games please do get in touch.</p>
+
+  </script>
+  <script type="text/ng-template" id="/forgot_password_dialog.html">
+    <form name="forgotPasswordForm" ng-submit="submit()" novalidate data-annotate-blur class="annotate-blur">
+  <div class='modal-header'>
+    <h3>Forgot Password
+        <span class="close close-modal" ng-click="close()">×</span>
+    </h3>
+  </div>
+  <div class='modal-body clearfix'>
+    <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
+    <p>Enter your email address for instructions.</p>
+    <div class='modal-form-container'>
+      <input type='text' name="email" required placeholder='Email' ng-model="user.email" class='mvm' /><br />
+      <div class='mvm'>
+        Know your password?&nbsp;<a href="javascript://" ng-click="close('login')">Sign In</a>
+      </div>
+      <div class='mvm'>
+        Not a member?&nbsp;<a href="javascript://" ng-click="close('signUp')">Sign Up</a>
+      </div>
+    </div>
+      <div class='modal-form-container modal-line'>
+          <div></div>
+          <span>or</span>
+          <div></div>
+      </div>
+    <div class='modal-form-container secondary'>
+      <div class='mtl mbl inline-block'>Or, sign in with facebook</div><br />
+      <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
+    </div>
+  </div>
+  <div class='modal-footer'>
+    <input type="submit" class="btn btn-primary" value="Send Instructions">
+  </div>
+</form>
+
+  </script>
+  <script type="text/ng-template" id="/sign_up_dialog.html">
+    <form name="signUpForm" ng-submit="submit()" novalidate data-annotate-blur class="annotate-blur">
+  <div class='modal-header'>
+    <h3>Sign Up
+      <span class="close close-modal" ng-click="close()">×</span>
+    </h3>
+
+  </div>
+  <div class='modal-body clearfix'>
+    <p ng-show="message">{{message}}</p>
+    <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
+    <div class='modal-form-container'>
+      <input type='text' name="username" required placeholder='Username' ng-model="user.username" class='mvm' /><br />
+      <input type='text' name="name" required placeholder='Real Name' ng-model="user.name" class='mvm' /><br />
+      <input type='email' name="email" required placeholder='Email' ng-model="user.email" class='mvm' /><br />
+      <input type='password' ng-minlength="6" name="password" required placeholder='Password' ng-model="user.password" class='mvm'><br />
+      <input type='password' name="password_confirmation" required placeholder='Confirm' ng-model="user.password_confirmation" class='mvm'/><br />
+      <div class='mvm pull-left sing-up-link'>
+        Have an account?&nbsp;<a href="javascript://" ng-click="close('login')">Sign In</a>
+      </div>
+      <div class='mvm pull-left sing-up-link border-none'>
+        <a href="javascript://" ng-click="close('forgotPassword')">Forgot Your Password?</a>
+      </div>
+    </div>
+    <div class='modal-form-container modal-line'>
+        <div></div>
+        <span>or</span>
+        <div></div>
+    </div>
+    <div class='modal-form-container secondary'>
+      <div class='mtl mbl inline-block'>Or, sign up with facebook</div><br />
+      <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
+
+      <div class="promo-code" ng-show="noPromo">
+        <h4>Promo code?</h4>
+        <input type="text" name="promo_code" ng-model="promo_code">
+        <a ng-hide="promoSpinner" ng-click="applyPromo()" class="btn btn-success">Apply!</a>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='promoSpinner'/>
+      </div>
+    </div>
+  </div>
+  <div class='modal-footer'>
+      <div class='mvm pull-left'>
+          <a href="/conditions" target="_blank">Terms and Conditions</a>
+      </div>
+    <input type="submit" class="btn btn-primary" value="Sign Up">
+  </div>
+</form>
+
+  </script>
+  <script type="text/ng-template" id="/rules.html">
+    <h3>Rules and Scoring</h3>
+<p>In Predict That fantasy sports roster predictions you choose a new team every contest, up to a $100,000 salary cap, with player pricing based on market demand.</p>
+
+<h4>Markets</h4>
+<p>Prices are set based on user demand for each player, the more demand for a player, the higher the price goes. You can change your roster and trade back a player who is not locked (playing) and receive his current price and then purchase another player. If you purchase a player and then sell him back at a profit, it will raise your salary cap by that amount. Similarly, if you do so at a loss it will reduce your salary cap by that amount. Players are locked into your roster the minute their team begins its game. Up until that time you can trade back that player for any other unlocked player.</p>
+
+<h4>Salary Cap</h4>
+<p>While we call $100,000 the salary cap, it is not fixed. If you exceed the salary cap, we simply reduce the predict stats your team produces by the percent you exceeded the salary cap. Similarly, if you are below the salary cap we will increase your team's predict stats by a maximum of 3%, ie., for any team salaries $97,000 or more.</p>
+<div ng-show="currentUser.currentSport == 'NFL'">
+  <h4>NFL Scoring</h4>
+<h5>Quarterbacks (QB), Running Backs (RB), Wide Receivers (WR), Tight Ends (TE)</h5>
+<ul>
+  <li>6 pts per rushing or receiving TD</li>
+  <li>6 pts for player returning kick/punt for TD</li>
+  <li>0.01 pts per returning kick/punt yard (1pt/100yds)</li>
+  <li>6 pts for player returning or recovering a fumble for TD</li>
+  <li>4 pts per passing TD</li>
+  <li>2 pts per rushing or receiving 2 pt conversion  (note: teams do not receive points for yardage gained during the conversion)</li>
+  <li>2 pts per passing 2 pt conversion</li>
+  <li>0.1 pts per rushing or receiving yard (1pt/10yds</li>
+  <li>0.04s pt per passing yard (1pt/25yds)</li>
+  <li>1 pt per reception</li>
+  <li>-2 pts per intercepted pass</li>
+  <li>-2 pts per fumble lost</li>
+</ul>
+<!--Bonus Points
+   2 pts per rushing or receiving TD of 40 yards or more
+   2 pts per passing TD of 40 yards or more
+   (note: the player must score a touchdown to score the points)-->
+<h5>Kickers (K)</h5>
+<ul>
+  <li>5 pts per 50+ yard FG made</li>
+  <li>4 pts per 40-49 yard FG made</li>
+  <li>3 pts per FG made, 39 yards or less</li>
+  <li>2 pts per rushing, passing, or receiving 2 pt conversion</li>
+  <li>1 pt  per Extra Point made</li>
+  <li>-2 pts per missed FG (0-39 yds)</li>
+  <li>-1 pt  per missed FG (40-49 yds) (a missed FG includes any attempt that is blocked, deflected, etc.)</li>
+</ul>
+<h5>Defensive/Special Teams (D)</h5>
+<ul>
+  <li>10  pts for 0 points allowed</li>
+  <li>7 pts for 2-6 points allowed</li>
+  <li>4 pts for 7-13 points allowed</li>
+  <li>1 pt  for 14-17 points allowed</li>
+  <li>0 pts for 18-21 points allowed  (note: team defense is responsible for all points allowed)</li>
+  <li>-1  pts for 22-27 points allowed</li>
+  <li>-4  pts for 28-34 points allowed</li>
+  <li>-7  pts for 35-45 points allowed</li>
+  <li>-10 pts for 46+ points allowed</li>
+  <li>3 pts per defensive or special teams TD</li>
+  <li>2 pts per interception</li>
+  <li>2 pts per fumble recovery (Note: includes a fumble by the opposing team out of the end zone)</li>
+  <li>2 pts per blocked punt, PAT, or FG (Note: a deflected kick of any kind does not receive points)</li>
+  <li>2 pts per safety</li>
+  <li>1 pt  per sack</li>
+</ul>
+
+</div>
+
+<div ng-show="currentUser.currentSport == 'NBA'">
+  <h4>NBA Scoring</h4>
+<ul>
+  <li>1 pt per in game point scored</li>
+  <li>0.5 pts for every field goal</li>
+  <li>1.25 pts per rebound</li>
+  <li>1.5 pts per assist</li>
+  <li>2 pts per steal</li>
+  <li>2 pts per block</li>
+  <li>-0.5 pts per turnover</li>
+</ul>
+
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/reset_password_dialog.html">
+    <div class='modal-header'>
+  <h3>Reset Password
+    <span class="close close-modal" ng-click="close()">×</span>
+  </h3>
+</div>
+<div class='modal-body'>
+  <form>
+    <div class='clearfix'>
+      <input type='password' class='mvm' placeholder='Password' ng-model='user.password' /><br />
+      <input type='password' class='mvm' placeholder='Confirm' ng-model='user.password_confirmation' />
+    </div>
+  </form>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn btn-primary" ng-click="updatePassword()">Save</a>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/paying_terms.html">
+    <h3>Terms and Conditions of Subscription</h3>
+<p>By paying the monthly $10 subscription fee and agreeing to these Terms and Conditions, the User will be able to access all the content on an adfree service with information on event probabilities generated by PredictThat predictions, and they will be allowed to chat on the site about the relevant events (subject to rules of our chat rooms). Additionally, all Users, whether paid subscribers or using the Alternate Free Subcription method will be allowed to make all predictions on PredictThat for free with nothing at stake or at risk.  All awards for correct predictions will be denominated in Fanbucks and tallied on a monthly basis and will be reduced by a 15 Fanbuck charge per prediction made. At the end of the calendar month, the Fanbuck balance will be reduced by 25% of the amount by which is exceeds 100 fanbucks, an additional 25% of the amount by which it exceeds 200 fanbucks, and an additional 25% by the amount it exceeds 300 fanbucks, such amounts to be calculated concurrently, such reductions called Give Backs. After such Give Backs, the remaining Fanbuck balance will be converted into dollars on a one to one basis and deposited in the User's account balance. The amount of the Give Backs will be combined with Give Backs from the other user accounts and will be used solely to supplement normal contest prizes in special contests at the end of the following month that will be limited to users with negative Fanbuck balances at that time (Last Chance Contests). All Fanbuck balances will start the new calendar month at zero, ie. Positive fanbuck balances will be converted into dollars and moved into your account and negative fanbuck balances will be wiped out.</p>
+<p>At the beginning of each calendar month, PredictThat will deduct the $10 subscription fee from the user's account balance if there is a sufficient balance. To the extent the balance is insufficient to pay the subscription fee, PredictThat will require the user to pay the balance of the subscription fee when the User next visits the site in order to gain access to the site and its content. At any point in time, the User can terminate this subscription agreement by using a button marked Terminate Subscription right below.</p>
+  </script>
+  <script type="text/ng-template" id="/settings_dialog.html">
+    <div class='modal-header'>
+  <h3 class='inline-block'>Account Settings</h3>
+</div>
+<div class='modal-body'>
+  <div class='clearfix'>
+    <img ng-src="{{currentUser.image_url}}" class='user-avatar'/> <a href="javascript://" ng-hide='showUpload' ng-click="showUpload = true">Upload a new photo</a>
+    <form ng-upload action="/users/uploads" ng-show='showUpload'>
+      <input name="user[avatar]" type='file' accept='image/*' />
+      <a href="javascript://" class="btn btn-primary btn-mini" upload-submit="results(contents, completed)" >Upload Photo</a>
+      <a href="javascript://" class="btn btn-mini" ng-click='showUpload = false'>Cancel</a>
+    </form>
+  </div>
+  <div class='mtm mtm-email' ng-hide='isAuthedWithFacebook'>
+    <div ng-hide='showUserForm || showPasswordForm'>
+      <span class='user-info-label'>Email:</span>{{ currentUser.email }} &nbsp<span ng-show='currentUser.confirmed'><span class='fui-check txt-green'></span> Confirmed</span><a href="javascript://" ng-hide='currentUser.confirmed' ng-click="resendConfirmation()">Resend confirmation Email</a><br />
+      <span class='user-info-label'>Name:</span>{{ currentUser.name }}<br />
+      <span class='user-info-label'>Username:</span>{{ currentUser.username }}<br />
+      <span class='user-info-label'>Password:</span> <span class='bold'>*****</span><br />
+      <a href='javascript://' ng-click='editUser()' class='btn btn-mini btn-info'>Edit</a> <a href='javascript://' ng-click='showPasswordForm = true' class='btn btn-mini btn-info'>Change My Password</a>
+      <a class="btn btn-mini btn-success" href="javascript://" ng-click="addUnsubscribeModal()">Unsubscribe</a>
+    </div>
+    <form ng-show='showUserForm'>
+      <span class='user-info-label'>Email:</span><input type='text'  class='user-info-input' ng-model='userInfo.email' placeholder='Email' /><br />
+      <span class='user-info-label'>Name:</span><input type='text'  class='user-info-input' ng-model='userInfo.name' placeholder='Name' /><br />
+      <span class='user-info-label'>Username:</span><input type='text'  class='user-info-input' ng-model='userInfo.username' placeholder='Username' /><br />
+      <a href='javascript://' ng-click='updateUser()' class='btn btn-primary btn-mini'>Save</a>
+      <a href='javascript://' ng-click='showUserForm = false' class='btn btn-mini'>Cancel</a>
+    </form>
+    <form ng-show='showPasswordForm'>
+      <span class='user-info-label'>Current Password:</span><input type='password' class='user-info-input' ng-model='userInfo.current_password' placeholder='Current Password'/><br />
+      <span class='user-info-label'>New Password:</span><input type='password' class='user-info-input' ng-model='userInfo.password' placeholder='New Password'/><br />
+      <span class='user-info-label'>Confirmation:</span><input type='password' class='user-info-input' ng-model='userInfo.password_confirmation' placeholder='Confirm' /><br />
+      <a href='javascript://' ng-click='updateUser()' class='btn btn-primary btn-mini'>Save</a>
+      <a href='javascript://' ng-click='showPasswordForm = false' class='btn btn-mini'>Cancel</a>
+    </form>
+  </div>
+  <div class="mtm mtm-facebook" ng-show="isAuthedWithFacebook">
+    <span class='user-info-label'>Email:</span>{{ currentUser.email }} &nbsp<span ng-show='currentUser.confirmed'><span class='fui-check txt-green'></span> Confirmed</span><a href="javascript://" ng-hide='currentUser.confirmed' ng-click="resendConfirmation()">Resend confirmation Email</a><br />
+    <a class="btn btn-mini btn-success" href="javascript://" ng-click="addUnsubscribeModal()">Unsubscribe</a>
+  </div>
+
+  <div ng-controller="TransactionHistoryController">
+    <div ng-include="'/transactions.html'"></div>
+  </div>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn btn-info" ng-click="close()">close</a>
+</div>
+
+
+  </script>
+  <script type="text/ng-template" id="/sample_team.html">
+    <div ng-controller="SampleRosterController">
+
+  <div ng-hide="!marketService.currentMarket" class="landing-roster-header">
+    <h4>
+      Create a Fantasy Team and compete against others to win 100 Fanbucks
+    </h4>
+  </div>
+
+  <flex-slider class="carousel" repeat="market in marketService.upcoming track by market.id | orderBy:market.id:reverse=false" animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="151" item-margin="0">
+    <li class="market-li" ng-class="{'landing-border': $last }">
+      <a ng-click="reloadRoster(market.id)" class="market-link" ng-class="{'active-market': market.id == roster.market.id }">
+        <strong>{{market.name}}</strong>
+        <p>{{market.games[0].game_time | onlyFormTime}}</p>
+      </a>
+    </li>
+  </flex-slider>
+
+  <div class="roster-area">
+    <div class="loading-message" ng-hide="!marketService.currentMarket || roster">
+      <img src=/assets/ajax-throbber-e526662f6583647afa14d02a41779d00.gif/>
+    </div>
+    <div class="loading-message" ng-hide="marketService.currentMarket">
+      <h4>{{gameNotFound}} </h4>
+    </div>
+
+    <div class="roster-overflow" ng-show="roster">
+      <ul class="no-no">
+        <li ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }" class="mr-item clearfix" ng-repeat="player in roster.players">
+          <div ng-show="player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"><span ng-show="player.benched" class="benched-icon">B</span></div>
+          <div ng-show="player.position == 'DEF'" class="mr-player-image defense filled"></div>
+
+          <div class="mr-player-info">
+            <h3 class="mr-player-name" >{{player.name}}</h3>
+            <span class="mr-stats">{{player.team}} {{player.position}} ({{player.ppg | number:2 | zeroIfEmpty}} PPG)</span>
+            <span class="mr-stats" >
+              <span>
+                ${{player.buy_price | number:0}}
+              </span>
+            </span>
+          </div>
+					<div class="prediction">
+						<p ng-hide="player.benched || !player.ppg" ng-click="playerStats(player)">PT</p>
+					</div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+    <div class="text-center roster-area-footer" ng-show="roster">
+      <!--<p>-->
+        <!--<a href="javascript://" class="btn btn-large btn-success" ng-click="signUpModal('Sign up to claim this roster.', {claim_roster: roster.id})">enter roster to win 100 fanbucks</a>-->
+        <!--<a href="javascript://" class="btn btn-large btn-info" ng-click='reloadRoster(roster.market.id)'>get new lineup</a>-->
+      <!--</p>-->
+      <!--<p style="text-align: left">You will be able to trade, adjust, and change your lineup at will until the game begins.</p>-->
+    </div>
+
+  <div ng-show="roster" class="landing-ind-prediction">
+    <p class="individual-predict">OR Predict Individual Perfomances </br> and win Fanbucks</p>
+    <div class="landing-player-pos clearfix">
+      <div class="clearfix inline-block" ng-show="player.position != 'DEF'">
+        <div class="mr-player-image" ng-class="{filled: player.id}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
+        <p><i>{{player.name}}</i></p>
+      </div>
+      <div ng-show="player.position == 'DEF'">
+        <p><i>{{player.name}}</i></p>
+        <div class="mr-player-image defense filled"></div>
+      </div>
+    </div>
+    <div>
+      <ul class="no-no landing-ind-list clearfix">
+        <li ng-repeat="stat in events">
+          <p class="pull-left">{{stat.name}} : {{stat.value}}</p>
+          <div class="pull-right">
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-less" popover-trigger="mouseenter" popover="PT{{stat.less_pt | toFixed}}, predict correctly and win {{stat.less_pt | toFixed}}FB" popover-placement="top">less</a>
+            <a href="javascript://" ng-click="signUpModal()" class="btn prediction-more" popover-trigger="mouseenter" popover="PT{{stat.more_pt | toFixed}}, predict correctly and win {{stat.more_pt | toFixed}}FB" popover-placement="top">more</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div style="margin-top: 10px; text-align: center;">Click on the PT icon to change the player to predict</div>
+  </div>
+</div>
+  </script>
+  <script type="text/ng-template" id="/coming_soon.html">
+    <div class="coming-soon">
+  <h4>{{currentUser.currentSport}} is in the off season right now. <br/> We can't wait for it to be back either.  <br/><br/>Check back here when the pre-season starts!</h4>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/unsubscribe_dialog.html">
+    <div class='modal-header'>
+    <h3>Unsubscribe
+        <button class="close close-modal" ng-click="close()">×</button>
+    </h3>
+</div>
+<div class='modal-body clearfix'>
+    <span>Are you sure that you want to unsubscribe?</span>
+</div>
+<div class='modal-footer'>
+    <a class="btn btn-mini btn-success" href="javascript://" ng-click="unsubscribe()">yes</a>
+    <a class="btn btn-mini btn-info" href="javascript://" ng-click="close()">no</a>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/playoff_about.html">
+    <div class="alert alert-success">
+  <h3>Playoffs at Fair Market Fantasy</h3>
+  <p>For the NFL Playoffs we will have 2 new contest events, one to choose a lineup of players and one to choose a lineup of teams.</p>
+  <a href="/#/playoffs" class="btn btn-info btn-wide">Let's Play!</a>
+</div>
+
+
+<h3>Choose a Lineup of Players for the entire Playoffs</h3>
+
+<p>You will have a $100,000 salary cap to choose a lineup of players for the entire 
+
+playoffs. Your team will accumulate fantasy points based on the final players on the roster and the
+
+points they scored over the entire period of the playoffs. Thus, it will be extremely important to
+
+discern both the player's ability to score fantasy points and their team's likely chances of playing
+
+more games. As always, player's prices will be determined by demand for the player. In addition,
+
+each round of the playoffs, we will increase the salary cap by $20,000 allowing users to add
+
+reinforcements for their teams, as players on losing teams will be not play any more and so their
+
+fantasy points will stay the same.</p>
+
+<p>As always, you will be able to trade players back to the pool and
+
+select new players at the then existing market prices. Player's stats will travel with the player, so
+
+that once you trade a player and upgrade to another player you will lose the first player's stats and
+
+get the second player's stats.</p>
+
+<p>At the end of each playoff round, player prices will be adjusted to reflect the new expectations of 
+number of games for each team (ie. players on losing teams will have their prices reflect no more games 
+and players on winning teams will rise to reflect points scored plus new expectations of higher number of games played)</p>
+
+ 
+
+<h3>Choose a Set of Teams for the entire Playoffs</h3>
+
+<p>You will have $100,000  to spend, but  will not involve selecting players, but only selecting up to 6
+
+teams in the NFL Playoffs. Each NFL team will get 100 fantasy points for each victory, and extra
+
+50 points for a conference chamionship and an extra 100 points for winning the Super Bowl.
+
+Teams would also get 2 fantasy points for every point scored and -2 fantasy points for every point
+
+scored against them.</p>
+<p>Again, prices will be set by demand and yous will be able to trade teams.
+
+Team stats will travel with the team and so when you trade a team you will lose those stats and
+
+gain the stats of any team you acquire.</p>
+
+<p>At the end of each playoff round, team prices will be adjusted to reflect the new expectations of 
+number of games for each team (i.e.  losing teams will have their prices reflect just points scored with 
+no more games and winning teams will rise to reflect points scored plus new expectations of higher number of games played)</p>
+
+
+  </script>
+  <script type="text/ng-template" id="/create_individual_prediction.html">
+    <div class='modal-header'>
+    <h3 class="clearfix">
+        <div class="mr-player-image" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
+        <span class="ind-player-title" >{{player.name}} <span ng-hide="isHomeTeam(player.team)">@</span><span ng-show="isHomeTeam(player.team)">vs</span> {{opponentFor(player) | truncate:8}}</span>
+        <button class="close close-modal" ng-click="close()">×</button>
+    </h3>
+</div>
+<div class='modal-body clearfix'>
+    <ul class="no-no prediction-modal-body clearfix">
+        <li ng-repeat="point in points" class="clearfix">
+            <p>{{point.name | capitalize}} : {{point.value | toFixed}}</p>
+            <div class="clearfix pull-right">
+                <a href="javascript://" ng-disabled="point.bid_less" class="btn prediction-less" ng-click="confirmModal('less', point.value, point.name, point.bid_less, point.less_pt)" >
+                    less
+                    <span ng-hide="point.bid_less" popover-trigger="mouseenter" popover="PT{{point.less_pt | toFixed}}, predict correctly and win {{point.less_pt | toFixed}}FB" popover-placement="top"></span>
+                </a>
+                <a href="javascript://" ng-disabled="point.bid_more" class="btn prediction-more" ng-click="confirmModal('more', point.value, point.name, point.bid_more, point.more_pt)">
+                    more
+                    <span ng-hide="point.bid_more" popover-trigger="mouseenter" popover="PT{{point.more_pt | toFixed}}, predict correctly and win {{point.more_pt | toFixed}}FB" popover-placement="top"></span>
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class='modal-footer'>
+
+</div>
+
+<div class="confirm-modal" ng-show="confirmShow">
+    <div class="modal-body clearfix">
+        <h4 class="pull-left">Predict <span class="pt">PT{{confirm.current_pt | toFixed}}</span> {{player.name}} {{confirm.diff}} than {{confirm.value}} {{confirm.name}}?</h4>
+    </div>
+    <div class='modal-footer'>
+        <a href="javascript://" class="btn btn-success" ng-click="confirmSubmit()">Submit</a>
+        <a href="javascript://" class="btn btn-info" ng-click="confirmShow = false">Cancel</a>
+    </div>
+</div>
+<div class="confirm-backdrop" ng-show="confirmShow" ng-click="confirmShow = false"></div>
+
+
+  </script>
+  <script type="text/ng-template" id="/add_username_modal.html">
+    <div class='modal-header'>
+  <h3 class='inline-block'>Create a username</h3>
+</div>
+<div class='modal-body'>
+  <p class='inline-block pull-right'>This is what you'll be known as to other users</p>
+  <input type="text" ng-model="username" ng-change="checkUsername()">
+  <img src='/assets/ajax-loader-micro.gif' ng-show='working'/>
+  <!--<p ng-show="username && enabled">Looks good!</p>-->
+  <!--<p ng-show="username && !enabled">This username is taken</p>-->
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" ng-show="username" class="btn btn-info" ng-click="save()">Save</a>
+</div>
+
+
+  </script>
+  <script type="text/ng-template" id="/team.html">
+    <div class="roster home-roster">
+  <div class="roster-area">
+    <div class="clearfix">
+      <h4 class="team-heading inline-heading">Roster</h4>
+      <a class="btn btn-small btn-info pull-right autofill" href="javascript://" ng-show="roster.owner_id == currentUser.id && roster.state == 'in_progress'" ng-click="rosters.autoFill()">AutoFill</a>
+      <span class="remaining-salary" ng-show="rosters.opponentRoster">${{totalSalary(roster) | number:0}} total</span>
+      <span class="salary-cap score" ng-show="inThePast(market.started_at)" highlight-changes="roster.score">Team Score: {{roster.score | zeroIfEmpty}}</span>
+      <label ng-hide="inThePast(market.started_at)" class="remove-benched checkbox light-check" for="removeBenched" ng-click="rosters.currentRoster.remove_benched = !rosters.currentRosters.remove_benched" ng-class="{'checked': rosters.currentRoster.remove_benched}">
+        <span class="icons">
+          <span class="first-icon fui-checkbox-unchecked"></span>
+          <span class="second-icon fui-checkbox-checked"></span>
+        </span>
+        Auto-Remove Benched Players
+      </label>
+      <input id="removeBenched" class="hide" type="checkbox" ng-model="rosters.currentRoster.remove_benched" ng-change="rosters.toggleRemoveBenched()" />
+    </div>
+
+    <div class="roster-overflow">
+
+      <ul class="no-no" highlight-changes-in-list="roster.players" key-to-watch="score">
+        <li class="mr-item clearfix" ng-repeat="player in roster.players" ng-class="{'no-border': $index == rosters.playerNoBorder(roster.players.length) || $last }">
+          <div class="clearfix pull-left roster-avatar">
+              <div ng-show="showPlayer(roster, player) && player.position != 'DEF'" class="mr-player-image" ng-class="{'benched-image': player.benched , 'swapped-image' : player.swapped_player_name}" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')') }">
+                <span ng-show="player.benched" class="benched-icon">B</span>
+                <span ng-show="player.swapped_player_name" class="swapped-icon">S</span>
+              </div>
+              <div ng-show="showPlayer(roster, player) && player.position == 'DEF'" class="mr-player-image defense filled"></div>
+              <div ng-hide="showPlayer(roster, player)" class="mr-player-image"></div>
+            <p class="mr-player-score clearfix" ng-show="roster.state != 'in_progress' && inThePast(market.started_at)"><a href="javascript://" ng-click="openStatsDialog(player)">{{player.score | number:1}}</a></p>
+
+          </div>
+          <div class="mr-player-info">
+            <h3 class="mr-player-name" ng-show="showPlayer(roster, player)">{{player.name}}</h3>
+            <h3 class="mr-player-name not-selected" ng-show="!showPlayer(roster, player) && roster.owner_id != currentUser.id">{{player.position}} Not Locked In</h3>
+            <h3 class="mr-player-name not-selected" ng-show="!showPlayer(roster, player) && roster.owner_id == currentUser.id">{{player.position}} Not Selected</h3>
+            <span class="mr-stats" ng-show="showPlayer(roster, player)">{{player.team}} {{player.position}} ({{player.ppg | number:2 | zeroIfEmpty}} PPG)</span>
+            <span class="mr-stats" ng-show="showPlayer(roster, player)">
+              <span>
+                ${{player.purchase_price | number:0}}
+              </span>
+              <span ng-show="!player.locked && market.state != 'published' && roster.state != 'in_progress'">
+                (<span class="diff" ng-class="{negprice: (player.sell_price - player.purchase_price) < 0}">
+                  <span ng-show="player.sell_price - player.purchase_price >= 0">+</span>
+                  <span ng-show="player.sell_price - player.purchase_price < 0">-</span>
+                  ${{Math.abs(player.sell_price - player.purchase_price) | number:0}}
+                </span>)
+              </span>
+            </span>
+					</div>
+
+          <div class="mr-player-cta">
+            <span ng-show="roster.owner_id == currentUser.id">
+              <a class="btn btn-small btn-orange" ng-show="player.id && (market.state == 'published' || market.state == 'opened' && !player.locked)" href="javascript://" ng-click="removePlayer(player)">Trade</a>
+              <a class="btn btn-small btn-success" ng-show="!player.id" ng-click="filterPlayers({position: player.position}, true)" href="javascript://">Add {{player.position}} ></a>
+            </span>
+						<div class="prediction" style="margin: 3px 0 0 5px; display: inline;">
+							<p ng-hide="player.benched || !player.ppg || inThePast(market.started_at)" ng-click="openPredictionDialog(player)">PT</p>
+						</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/home.html">
+    <!--<p class="alert alert-success" ng-show="rosters.justSubmittedRoster">-->
+  <!--Your roster is looking great! Now that it's perfect, should we <a href="javascript://" ng-click="rosters.openInviteFriends(rosters.justSubmittedRoster)">Challenge Friends</a> or enter another contest?-->
+  <!--<a href="#/" ng-click="rosters.reset()">No thanks, I'm done</a>-->
+<!--</p>-->
+
+<!-- NFL PLAYOFFS -->
+<!--<div class="alert alert-info " ng-show="currentUser.currentSport == 'NFL' && !rosters.justSubmittedRoster">
+  <h3>The Playoffs are on. Have you made a roster yet?</h3>
+  <p>For the NFL Playoffs we will have 2 new contest events:</p>
+    <h6 class="subheader">Team Playoffs</h6>
+    <p style="font-size: 10px;">Teams get 100 fantasy points per win +2 per point scored and -2 per point scored against. They'll receive an additional 50 points for a conference championship and 100 points for a Super Bowl win.  You can trade teams whenever they're not playing and their stats travel with the teams.</p>
+    <h6 class="subheader">Player Playoffs</h6>
+    <p style="font-size: 10px;">Players get fantasy points for every game they play and 150% points in conference championship and 200% points in the Super Bowl. You can trade players whenever they're not playing and their points will travel with the players.</p>
+    <p><a href="/#/NFL/playoff_about">Read more about them</a> or <a href="/#/NFL/playoffs">Enter a contest</a></p>
+</div>-->
+
+<!--<div ng-hide="!rosters.mine($routeParams.sport).length" class="entries-container">-->
+  <!--<div class="roster-title">-->
+    <!--<h3>Live Entries</h3>-->
+  <!--</div>-->
+  <!--<ul class="entries-info-list clearfix">-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.mine($routeParams.sport).length}}</p>-->
+      <!--<span class="ei-info">Open Entries</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.myLiveStats($routeParams.sport).top}}</p>-->
+      <!--<span class="ei-info">Top Score</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.myLiveStats($routeParams.sport).avg | number:2}}</p>-->
+      <!--<span class="ei-info">Average Score</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.myLiveStats($routeParams.sport).total_payout | centsToDollars | number: 2 | zeroIfEmpty}}</p>-->
+      <!--<span class="ei-info">Current Payout</span>-->
+    <!--</li>-->
+  <!--</ul>-->
+
+  <!--<a class="see-all" href="/#/{{currentUser.currentSport}}/rosters">See All Live {{currentUser.currentSport}} Contests</a>-->
+
+<!--</div>-->
+<!--<div ng-show="!rosters.mine($routeParams.sport).length && rosters.pastStats().total_entries > 0" class="entries-container">-->
+  <!--<div class="roster-title">-->
+    <!--<h3>Past Entries</h3>-->
+  <!--</div>-->
+
+  <!--<ul class="entries-info-list clearfix">-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.pastStats().wins}}/{{rosters.pastStats().total_entries}}</p>-->
+      <!--<span class="ei-info">Wins/Entries</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.pastStats().top_score}}</p>-->
+      <!--<span class="ei-info">Top Score</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+    <!--<p class="ei-number">{{rosters.pastStats().avg_score | number:2}}</p>-->
+      <!--<span class="ei-info">Average Score</span>-->
+    <!--</li>-->
+    <!--<li class="ei-item">-->
+      <!--<p class="ei-number">{{rosters.pastStats().total_payout | dividedOneHundred | number:2}}</p>-->
+      <!--<span class="ei-info">Payout</span>-->
+    <!--</li>-->
+  <!--</ul>-->
+
+  <!--<a class="see-all" href="/#/{{$routeParams.sport}}/history">See All {{$routeParams.sport}} Past Contests</a>-->
+
+<!--</div>-->
+<!--<div ng-show="rosters.pastStats().total_entries == 0 && rosters.mine($routeParams.sport).length == 0" class="entries-container no-entries">-->
+  <!--<div class="rosters-title clearfix">-->
+    <!--<h3>Welcome to Fair Market Fantasy!</h3>-->
+    <!--<p class="about-text">Thanks for joining Fair Market Fantasy! We think you'll find it pretty easy to get started, but just in case you need help:</p>-->
+    <!--<ul>-->
+      <!--<li>Select a Market (Weekly or Daily Game) Timeframe.</li>-->
+      <!--<li>Click to enter a contest. Try out the 194% League, the top half wins 194% of the entry fee!</li>-->
+      <!--<li>Select players at each position, up to $100,000 total.</li>-->
+      <!--<li>Sit back and follow your live score while you watch the game!</li>-->
+    <!--</ul>-->
+  <!--</div>-->
+<!--</div>-->
+
+<div class="market-container">
+  <!--<div class="market-title clearfix">-->
+    <!-- Swap these around when playoffs end-->
+    <!--<h3>When would you like to play?</h3>-->
+    <!--<h3 style="padding-top: 5px">Play <span ng-hide="sportHasPlayoffs()">This week</span></h3>-->
+    <!--<ul ng-show="sportHasPlayoffs()"class="market-type-list">-->
+      <!--<li class="market-type-li" ng-class="{selected: markets.marketType == 'regular_season'}">-->
+        <!--<a class="market-type-selector" href="/#/{{currentUser.currentSport}}/home"><h3>This week</h3></a>-->
+      <!--</li>-->
+      <!--<li><h6>OR</h6></li>-->
+      <!--<li class="market-type-li" ng-class="{selected: markets.marketType == 'single_elimination'}"><a class="market-type-selector" href="/#/{{currentUser.currentSport}}/playoffs"><h3>The Playoffs</h3></a></li>-->
+    <!--</ul>-->
+    <!--<div class="league-selector" ng-show="currentUser.leagues.length == 0">-->
+      <!--<p>You aren't in any leagues yet. <br/>Create one below.</p>-->
+    <!--</div>-->
+    <!--<div class="league-selector" ng-show="currentUser.leagues.length > 0">-->
+      <!--<p>Or-->
+      <!--<select ng-model="league" name="league" ng-options="l as l.name for l in currentUser.leagues" ng-change="showNextLeagueRoster(league)">-->
+        <!--<option value="">Select a League</option>-->
+      <!--</select>-->
+      <!--</p>-->
+    <!--</div>-->
+  <!--</div>-->
+  <div ng-include="'/market.html'"></div>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/players.html">
+    <!-- Lots of states here -->
+<div class="players">
+  <!-- This is not my roster (or public) -->
+  <div ng-show="rosters.currentRoster.owner_id != currentUser.id" class="result-area">
+    <h3>{{rosters.currentRoster.owner_name}} is in {{rosters.currentRoster.contest_rank | ordinal}} place!
+      <span ng-show="rosters.currentRoster.paid_at">
+        <span ng-show="rosters.currentRoster.amount_paid > 0"><br/>and won
+          <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | number:0}}FF</span>
+          <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | centsToDollars}}</span>
+        </span>
+        <span ng-hide="rosters.currentRoster.amount_paid > 0">didn't win this time.</span>
+      </span>
+    </h3>
+    <div ng-show="!currentUser">
+      <a class="btn btn-info btn-large" href="javascript://" ng-show="!currentUser" ng-click="signUpModal()">Think you can do better?</a>
+    </div>
+  </div>
+  <!-- This is my roster -->
+  <div class="roster-height" ng-show="rosters.currentRoster.owner_id == currentUser.id">
+    <!-- The market is closed or complete -->
+    <div ng-show="market.state == 'closed'" class="result-area">
+      <p>This market is closed - no player sales are available.</p>
+    </div>
+    <div ng-show="market.state == 'closed' || market.state == 'complete'" class="result-area">
+      <div ng-init="noReport = true" ng-controller="TwitterController">
+        <h3>You <span ng-show="rosters.currentRoster.amount_paid">took </span><span ng-hide="rosters.currentRoster.amount_paid"> are in </span>{{rosters.currentRoster.contest_rank | ordinal}} place
+          <span ng-show="rosters.currentRoster.paid_at">
+            <span ng-show="rosters.currentRoster.amount_paid > 0"><br/>and won
+              <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | number:0}}FF</span>
+              <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{rosters.currentRoster.amount_paid | centsToFanbucks}}</span>
+            </span>
+            <span ng-hide="rosters.currentRoster.amount_paid > 0">didn't win this time.</span>
+          </span>
+        </h3>
+        <h4>Share your roster</h4>
+        <span class="twitter-share"></span>
+      </div>
+    </div>
+    <!-- The market is published or open -->
+    <div ng-show="(market.state == 'published' || market.state == 'opened')" class="players-area">
+      <div class="clearfix">
+        <input class="players-search pull-right" type="text" ng-model="name" ng-change="filterPlayers({autocomplete: name}, true)" placeholder="Player Search"/>
+        <!--<div class="dropdown game-dropdown">-->
+          <!--<div class="btn-group">-->
+            <!--<button class="btn btn-small btn-info" dropdown-toggle="game-dropdown">Games</button> -->
+            <!--<button class="btn btn-small btn-info" dropdown-toggle="game-dropdown"><span class="caret"></span></button> -->
+            <!--<ul class="dropdown-menu dropdown-inverse">-->
+              <!--<li ng-repeat="game in notStartedGames()" ng-model="game">-->
+                <!--<a href="javascript://" ng-click="filterPlayers({game: game.id}, true)">{{game.away_team}} @ {{game.home_team}}</a>-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</div>-->
+        <!--</div>-->
+      </div>
+      <div class="clearfix relative-parent">
+        <label class="checkbox light-check pull-left" for="removeLowFilter" ng-click="toggleChecked('removeLow')" ng-class="{'checked': removeLow}">
+          <span class="icons">
+            <span class="first-icon fui-checkbox-unchecked"></span>
+            <span class="second-icon fui-checkbox-checked"></span>
+          </span>
+          No Back-ups
+        </label>
+
+        <input id="removeLowFilter" class="hide" type="checkbox" ng-model="remove" ng-change="filterPlayers({removeLow: removeLow})" />
+
+        <ul ng-show="filter == 'positions'" class="positions-list clearfix">
+          <li class="position-item" ng-repeat="position in rosters.uniqPositionList" >
+            <a class="position-link" ng-click="filterPlayers({position: position}, true)" ng-class="{selected: filterPosition == position}" href="javascript://">{{position}}</a>
+          </li>
+        </ul>
+
+        <div class="fixed-table-header">
+          <table class="players-table table table-striped">
+            <thead>
+              <tr>
+                <th class="less-larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
+                <th class="tiny-ind"><span class="ind-pred-th">Individual Predictions**</span></th>
+                <th class="tiny" ng-hide="getFilterOpts().position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
+                <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
+                <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
+                <th class="tiny">
+                  <a href="javascript://" ng-show="pointsColumn() == 'ppg'" ng-click="filterPlayers({sort: 'ppg'})">PPG</a>
+                  <a href="javascript://" ng-show="pointsColumn() == 'score'" ng-click="filterPlayers({sort: 'score'})">Score</a>
+                </th>
+                <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
+                <th class="tiny-last"><a class="btn btn-small btn-invisible" href=""></a></th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+      <div class="player-overflow">
+        <table class="players-table table table-striped">
+          <thead>
+            <tr>
+              <th class="larger"><a href="javascript://" ng-click="filterPlayers({sort: 'name'})">Name</a></th>
+              <th class="tiny" ng-hide="getFilterOpts.position"><a href="javascript://" ng-click="filterPlayers({sort: 'position'})">Pos</a></th>
+              <th class="tiny"><a href="javascript://" ng-click="filterPlayers({sort: 'team'})">Team</a></th>
+              <th class="tiny" ng-show="getFilterOpts().position"><a href="javascript://">Opp</a></th>
+              <th class="tiny">
+                <a href="javascript://" ng-show="pointsColumn() == 'ppg'" ng-click="filterPlayers({sort: 'ppg'})">PPG</a>
+                <a href="javascript://" ng-show="pointsColumn() == 'score'" ng-click="">Score</a>
+              </th>
+              <th><a href="javascript://" ng-click="filterPlayers({sort: 'buy_price'})">Salary</a></th>
+              <th class="tiny-btn"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="player in players | filter:notInRoster">
+              <td class="larger">{{player.name_abbr}}
+                  <i ng-show="!player.benched" class="fui-check-inverted text-success" title="Active"></i>
+                  <i ng-show="player.benched" class="fui-cross-inverted text-danger" title="Inactive"></i>
+              </td>
+              <td class="tiny prediction"><p ng-hide="player.benched || !player.ppg" ng-click="openPredictionDialog(player)">PT</p></td>
+              <td class="tiny" ng-hide="getFilterOpts().position">{{player.position | dashIfDEF}}</td>
+              <td class="tiny">{{player.team | truncate:8}}</td>
+              <td class="tiny" ng-show="getFilterOpts().position"><span ng-hide="isHomeTeam(player.team)">@</span>{{opponentFor(player) | truncate:8}}</td>
+              <td class="tiny">
+                <span ng-show="pointsColumn() == 'ppg'">{{player.ppg | number:0 |zeroIfEmpty}}</span>
+                <span ng-show="pointsColumn() == 'score'">{{player.score | number:1 |zeroIfEmpty}}</span>
+              </td>
+              <td>${{player.buy_price | number:0}}</td>
+              <td class="tiny-btn"><a class="btn btn-small btn-success" href="javascript://" ng-click="addPlayer(player)">Add</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="home-prediction-info" ng-hide="rosters.currentRoster.state == 'finished'">**Click on the PT icon to submit your individual player predictions for the selected player</div>
+    </div>
+    <div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'submitted'">
+      <div class="roster-submit-center roster-submit">
+        <a class="btn btn-large btn-contest-cta btn-success"  ng-click="finish()" href="javascript://" >Back to Contests</a>
+      </div>
+      <!--<div class="pull-right roster-submit">-->
+        <!--<a ng-show="market.state == 'published' || market.state == 'opened'" class="btn btn-large btn-orange" href="javascript://" ng-click="enterAgain()">Enter Again</a>-->
+      <!--</div>-->
+    </div>
+    <div class="roster-alert clearfix" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">
+      <div class="pull-right roster-submit">
+        <span ng-show="show" class="roster-submit-hover submit-hth">Enter to win 27 FanBucks on head to head</span>
+        <a ng-mouseenter="show = true" ng-mouseleave="show = false" class="btn btn-large btn-success " ng-click="submitRoster('27 H2H')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit HTH 27FB</a>
+      </div>
+      <div class="pull-right roster-submit">
+        <span ng-show="show_hth" class="roster-submit-hover submit-top">Compete with 11 others to win 100FB first and 30FB second and third</span>
+        <a ng-mouseenter="show_hth = true" ng-mouseleave="show_hth = false"  class="btn btn-large btn-orange pull-right" ng-click="submitRoster('100/30/30')" href="javascript://" ng-show="isValidRoster() && rosters.currentRoster.state == 'in_progress'">Submit 100FB</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/conditions.html">
+    <div ng-controller="UnsubscribeController">
+
+  <h3>Terms and Conditions of Subscription</h3>
+<p>By paying the monthly $10 subscription fee and agreeing to these Terms and Conditions, the User will be able to access all the content on an adfree service with information on event probabilities generated by PredictThat predictions, and they will be allowed to chat on the site about the relevant events (subject to rules of our chat rooms). Additionally, all Users, whether paid subscribers or using the Alternate Free Subcription method will be allowed to make all predictions on PredictThat for free with nothing at stake or at risk.  All awards for correct predictions will be denominated in Fanbucks and tallied on a monthly basis and will be reduced by a 15 Fanbuck charge per prediction made. At the end of the calendar month, the Fanbuck balance will be reduced by 25% of the amount by which is exceeds 100 fanbucks, an additional 25% of the amount by which it exceeds 200 fanbucks, and an additional 25% by the amount it exceeds 300 fanbucks, such amounts to be calculated concurrently, such reductions called Give Backs. After such Give Backs, the remaining Fanbuck balance will be converted into dollars on a one to one basis and deposited in the User's account balance. The amount of the Give Backs will be combined with Give Backs from the other user accounts and will be used solely to supplement normal contest prizes in special contests at the end of the following month that will be limited to users with negative Fanbuck balances at that time (Last Chance Contests). All Fanbuck balances will start the new calendar month at zero, ie. Positive fanbuck balances will be converted into dollars and moved into your account and negative fanbuck balances will be wiped out.</p>
+<p>At the beginning of each calendar month, PredictThat will deduct the $10 subscription fee from the user's account balance if there is a sufficient balance. To the extent the balance is insufficient to pay the subscription fee, PredictThat will require the user to pay the balance of the subscription fee when the User next visits the site in order to gain access to the site and its content. At any point in time, the User can terminate this subscription agreement by using a button marked Terminate Subscription right below.</p>
+  <a class="btn btn-mini btn-success" ng-show="currentUser && currentUser.customer_object.is_active" href="javascript://" ng-click="confirmShow = true">Unsubscribe</a>
+  <p>No purchase is required to make predictions on the PredictThat site. An alternate means of making predictions is to signup on the PredictThat site and 15 days prior to the any month that you intend to participate, send a 3 x 5 inch card on which the user has legibly handwritten the user's PredictThat user name, First and Last Name, Complete Mailing Address (eg Street, City, State, Zip Code), Email Address, Date of Birth with a photocopy of Driver's License or other photo ID with the month that you intend to participate in mm/yyyy format. The card must be placed in a #10 envelope and mailed to PO Box 399 Ross CA 94957. No photo copies, reproductions or facsimiles of the 3inch x 5 inch card are allowed. Limit 1 card per envelope.</p>
+<p><b>Entries using the Altenate Free Subscription Mail in Option will have the exact same chance of winning as if that same prediction was made by a user using the regular Subscription Method. However, Users using the Altenate Entry will not be able to access the chat rooms, or see related content, including but not limited to player notes, probabilities, articles, statistics and past performances and might be on a site with more ads and a slower server.</b></p>
+  <div  class="confirm-modal display-none" ng-class="{'display-block' : confirmShow}">
+    <div class="modal-body clearfix">
+      <span>Are you sure that you want to unsubscribe?</span>
+    </div>
+    <div class='modal-footer'>
+      <a href="javascript://" class="btn btn-success" ng-click="unsubscribe()">Yes</a>
+      <a href="javascript://" class="btn btn-info" ng-click="confirmShow = false">No</a>
+    </div>
+  </div>
+  <div class="confirm-backdrop display-none" ng-class="{'display-block' : confirmShow}" ng-click="confirmShow = false"></div>
+
+</div>
+<style type="text/css">
+  .display-none{
+    display:none;
+  }
+  .display-block{
+   display:block;
+  }
+  .btn-success,
+  .btn-info{
+    background: none repeat scroll 0 0 #6FA648;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    padding:5px 10px;
+    margin-top: 10px;
+  }
+  .btn-info {
+    background: none repeat scroll 0 0 #375C89;
+    margin: 0 10px 0 0;
+  }
+
+  .confirm-backdrop  {
+    background-color: #243342;
+    height: 100%;
+    left: 0;
+    opacity: 0.55;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+  }
+  .confirm-modal {
+    background-color: #F9FAFB;
+    left: 50%;
+    margin-left: -370px;
+    position: fixed;
+    top: 36px;
+    width: 545px;
+    z-index: 1045;
+   border-radius:6px;
+  }
+  .modal-body {
+    padding: 15px;
+    width: 525px;
+  }
+  h4{
+    font-size:23px;
+  }
+
+  .modal-footer {
+    padding:0;
+  }
+
+</style>
+<script type="text/javascript">
+  window.App = {
+    site: "http://localhost:3000",
+    currentUser: {"id":165,"name":"Andrey  Kotov","admin":false,"username":"andrew.kotov@easternpeak.com","email":"andrew.kotov@easternpeak.com","balance":4824,"image_url":"https://fairmarketfantasy-dev.s3.amazonaws.com/uploads/user/165/images.jpeg?AWSAccessKeyId=AKIAJXV4UPD3IV4JK6DA\u0026Signature=3DrK8ROmPVA1gHG%2BBbw2dtQwIUg%3D\u0026Expires=1399906377","win_percentile":"100.0","total_points":3052,"joined_at":"2014-02-05T11:25:02.018Z","token_balance":0,"provider":"facebook","amount":null,"bets":null,"winnings":null,"total_wins":19,"total_losses":0,"bonuses":{},"referral_code":"b5daa2fc54a139cd9ee41f8ae6737da8","inviter_id":null,"currentSport":"NBA","in_progress_roster_id":null,"abridged":false,"prestige":1233,"categories":[{"id":1,"name":"fantasy_sports","note":"","sports":[{"id":1,"name":"NFL","is_active":false,"playoffs_on":false,"coming_soon":false},{"id":867,"name":"NBA","is_active":true,"playoffs_on":false,"coming_soon":false},{"id":872,"name":"MLB","is_active":true,"playoffs_on":true,"coming_soon":false}]},{"id":2,"name":"entertainment","note":"COMING SOON","sports":[{"id":875,"name":"MUSIC","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":876,"name":"REALITY SHOWS","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":877,"name":"OSCARS","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":878,"name":"GRAMMYS","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":879,"name":"CELEBRITY PROPOSITIONS","is_active":true,"playoffs_on":false,"coming_soon":true}]},{"id":3,"name":"politics","note":"COMING SOON","sports":[{"id":880,"name":"PRESIDENTAL CANDIDATES","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":881,"name":"CONGRESSIONAL RACES","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":882,"name":"SENATE RACES","is_active":true,"playoffs_on":false,"coming_soon":true}]},{"id":4,"name":"sports","note":"COMING VERY SOON","sports":[{"id":883,"name":"MLB","is_active":true,"playoffs_on":false,"coming_soon":false},{"id":884,"name":"NBA","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":885,"name":"NFL","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":886,"name":"NHL","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":887,"name":"NASCAR","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":888,"name":"GOLF","is_active":true,"playoffs_on":false,"coming_soon":true},{"id":889,"name":"TENNIS","is_active":true,"playoffs_on":false,"coming_soon":true}]}],"confirmed":true,"customer_object":{"id":157,"balance":4824,"net_monthly_winnings":"0.0","monthly_contest_entries":0,"contest_entries_deficit":"5.0","locked":false,"locked_reason":null,"cards":[{"id":76,"first_name":"assd","last_name":"sdfsdsd","type":null,"exp_month":1,"exp_year":2017,"obscured_number":"411111******1111","default":true}],"is_active":true,"has_agreed_terms":true,"contest_winnings_multiplier":"1.0","trial_started_at":"2014-03-16","monthly_award":"0.0"},"in_progress_roster":null,"leagues":[]},
+    isUserAdmin: false
+  };
+</script>
+  
+  <script type="text/ng-template" id="/stats_dialog.html">
+      <div class='modal-header'>
+    <h3>{{player.name}} Fantasy Points</h3>
+  </div>
+  <div class='modal-body clearfix'>
+    <img class="stats-headshot" ng-src="{{player.headshot_url}}" style="float: left">
+    <div class="stats-list">
+      <h4 class="stats-total">{{totalPoints()}} Points</h4>
+      <ul>
+        <li ng-repeat="stat in playerStats">
+          {{stat.activity}}: {{stat.point_value}}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class='modal-footer'>
+    <a href="javascript://" class="btn btn-info" ng-click="close()">close</a>
+  </div>
+
+  </script>
+  <script type="text/ng-template" id="/rules_general.html">
+    <h3>Rules and Scoring</h3>
+<p>In Predict That fantasy sports roster predictions you choose a new team every contest, up to a $100,000 salary cap, with player pricing based on market demand.</p>
+
+<h4>Markets</h4>
+<p>Prices are set based on user demand for each player, the more demand for a player, the higher the price goes. You can change your roster and trade back a player who is not locked (playing) and receive his current price and then purchase another player. If you purchase a player and then sell him back at a profit, it will raise your salary cap by that amount. Similarly, if you do so at a loss it will reduce your salary cap by that amount. Players are locked into your roster the minute their team begins its game. Up until that time you can trade back that player for any other unlocked player.</p>
+
+<h4>Salary Cap</h4>
+<p>While we call $100,000 the salary cap, it is not fixed. If you exceed the salary cap, we simply reduce the predict stats your team produces by the percent you exceeded the salary cap. Similarly, if you are below the salary cap we will increase your team's predict stats by a maximum of 3%, ie., for any team salaries $97,000 or more.</p>
+  </script>
+  <script type="text/ng-template" id="/rules_nfl.html">
+    <h4>NFL Scoring</h4>
+<h5>Quarterbacks (QB), Running Backs (RB), Wide Receivers (WR), Tight Ends (TE)</h5>
+<ul>
+  <li>6 pts per rushing or receiving TD</li>
+  <li>6 pts for player returning kick/punt for TD</li>
+  <li>0.01 pts per returning kick/punt yard (1pt/100yds)</li>
+  <li>6 pts for player returning or recovering a fumble for TD</li>
+  <li>4 pts per passing TD</li>
+  <li>2 pts per rushing or receiving 2 pt conversion  (note: teams do not receive points for yardage gained during the conversion)</li>
+  <li>2 pts per passing 2 pt conversion</li>
+  <li>0.1 pts per rushing or receiving yard (1pt/10yds</li>
+  <li>0.04s pt per passing yard (1pt/25yds)</li>
+  <li>1 pt per reception</li>
+  <li>-2 pts per intercepted pass</li>
+  <li>-2 pts per fumble lost</li>
+</ul>
+<!--Bonus Points
+   2 pts per rushing or receiving TD of 40 yards or more
+   2 pts per passing TD of 40 yards or more
+   (note: the player must score a touchdown to score the points)-->
+<h5>Kickers (K)</h5>
+<ul>
+  <li>5 pts per 50+ yard FG made</li>
+  <li>4 pts per 40-49 yard FG made</li>
+  <li>3 pts per FG made, 39 yards or less</li>
+  <li>2 pts per rushing, passing, or receiving 2 pt conversion</li>
+  <li>1 pt  per Extra Point made</li>
+  <li>-2 pts per missed FG (0-39 yds)</li>
+  <li>-1 pt  per missed FG (40-49 yds) (a missed FG includes any attempt that is blocked, deflected, etc.)</li>
+</ul>
+<h5>Defensive/Special Teams (D)</h5>
+<ul>
+  <li>10  pts for 0 points allowed</li>
+  <li>7 pts for 2-6 points allowed</li>
+  <li>4 pts for 7-13 points allowed</li>
+  <li>1 pt  for 14-17 points allowed</li>
+  <li>0 pts for 18-21 points allowed  (note: team defense is responsible for all points allowed)</li>
+  <li>-1  pts for 22-27 points allowed</li>
+  <li>-4  pts for 28-34 points allowed</li>
+  <li>-7  pts for 35-45 points allowed</li>
+  <li>-10 pts for 46+ points allowed</li>
+  <li>3 pts per defensive or special teams TD</li>
+  <li>2 pts per interception</li>
+  <li>2 pts per fumble recovery (Note: includes a fumble by the opposing team out of the end zone)</li>
+  <li>2 pts per blocked punt, PAT, or FG (Note: a deflected kick of any kind does not receive points)</li>
+  <li>2 pts per safety</li>
+  <li>1 pt  per sack</li>
+</ul>
+
+  </script>
+  <script type="text/ng-template" id="/join_contest_dialog.html">
+    <div class='modal-header'>
+  <h3 class='inline-block'>Epic Roster. Let's make it count!</h3>
+</div>
+<div class='modal-body'>
+  <div class="clearfix">
+    <h4 class="bonus-header">Share your entry and earn bonus fantasy points!</h4><span class="total-bonus-points">+{{roster.bonus_points}} total</span>
+    <div ng-controller="TwitterController">
+      <div class="bonus-points">Tweet your entry<h3>+1 points</h3>
+        <div class="twitter-share"></div>
+      </div>
+      <div ng-hide="currentUser.bonuses.twitter_follow" class="bonus-points">Follow us on Twitter!<h3>+1 points</h3>
+        <div class="twitter-follow"></div>
+      </div>
+      <div class="bonus-points">Share on Facebook<h3>+1 points</h3>
+        <a class="fb-share" href="javascript://" ng-hide="fbShared" ng-click="fbShare()"><img class="fb-share-btn" src="/assets/fb-share-btn-ced661736766ac6e03f8c8e18939da7e.png"/></a>
+      </div>
+    </div>
+  </div>
+  <h4>Win more. Enter another contest?</h4>
+  <div>
+    <ul class="clearfix no-no" ng-cloak>
+      <li class="contest-classes">
+      <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
+        <div >
+          <h2>New roster?</h2>
+        </div>
+        <div>
+          <ul class="contests no-no">
+            <li class="enter-contest">
+              <a class="btn btn-contest btn-orange" href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="close()" title="100/30/30">
+                <span>Enter</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <form>
+    <div class='clearfix'>
+    </div>
+  </form>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn btn-info" ng-show="buttonAction == 'enterAgain'" ng-click="close()">cancel</a>
+  <a href="javascript://" class="btn btn-info" ng-show="buttonAction == 'submitRoster'" ng-click="close()">no thanks</a>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/faq.html">
+    <h4>FAQ</h4>
+
+<p>Q: How do I play?<br>
+A: Choose your contest. You have $100,000 to build a team of players who you think will score more fantasy points in that contest than your opponent(s)</p>
+<p>Q: How long do the contests last?<br>
+A: Some contests last just a day others last up to a week. It will say on the contest entry.  The prizes are awarded to the winner(s) once the final scores have been tallied.<br>
+<p>Q: How is the distribution of prizes decided?<br>
+A: Each contest will explicitly detail the prize structure with either winner take all or some broader distribution of prizes.</p> 
+<p>Q: How many players do I need to choose to play?<br>
+A: Depending on the sport and contest it will detail a roster that needs to be filled out. The position requirements are further described in rules and scoring for the appropriate sport. For legality, you must pick at least 3 players on 2 different teams.</p>
+<p>Q: How are fantasy points calculated?<br>
+A: Each sport will have its own scoring. Link to rules and scoring...</p>
+<p>Q: How are the prices determined for each player?<br>
+A: Prices are set based on user demand for each player, the more demand for a player, the higher the price goes.</p>
+<p>Q: What is the Opening Period?<br>
+A: There is an opening period during which player prices are first determined. During this period, which will start after the Monday night game in Football (for example) and last until 9pm pst on Tuesday, the prices shown for players will only be indicative and not fixed. At the Opening  (9pm pst on Tuesday) the prices for all players on rosters will be set to that price as though the players were purchased at that time.</p>
+<p>Q: What happens after the Opening?<br>
+A: After the Opening, all player’s prices are fixed when you purchase them.</p> 
+<p>Q: Can I sell players back and buy other players?<br>
+A: Yes, at any time you can change your roster and trade back a player who is not locked (playing) and receive his current price and then purchase another player.</p>
+<p>Q: When are players locked into your roster?<br>
+A: Players are locked into your roster the minute their team begins its game. Up until that time you can trade back that player for any other unlocked player.</p>
+<p>Q: What happens if I exceed the salary cap?<br>
+A: While we call $100,000 the salary cap, it is not fixed. If you exceed the salary cap, we simply reduce the fantasy stats your team produces by the percent you exceeded the salary cap. Similarly, if you are below the salary cap we will increase your team’s fantasy stats by a maximum of 3%, ie., for any team salaries $97,000 or more.</p>
+<p>Q: What happens when I make a profit or loss on a player?<br>
+A: If you purchase a player and then sell him back at a profit, it will raise your salary cap by that amount. Similarly, if you do so at a loss it will reduce your salary cap by that amount.</p>
+<p>Q: How do I create a league?<br>
+A: One option FMF gives you is to create a private contest in which you choose one of our formats and invite friends to join you. The formats are double up, where half the entrants win almost double their entry, or winner take all, or 10 team head to head round robin, where each team faces each other team head to head. These can be played for free or for stated entries. We will only allow your invited friends into the contest until 9am pacific time on Sunday, at which time we will fill the contest with other public contestants to make sure it runs.</p>
+
+
+  </script>
+  <script type="text/ng-template" id="/market.html">
+    <div ng-controller="MarketController">
+  <div ng-hide="gameNotFound" class='market-loader centered'>
+    <img src='/assets/ajax-loader-big.gif'>
+  </div>
+  <div class="market-loader centered">
+    <h4>{{gameNotFound}}</h4>
+  </div>
+
+  <!--<ul class="clearfix market-list home-market" ng-show="marketService.upcoming">-->
+    <!--<li class="slider-prev" ng-click="prev()"></li>-->
+    <!--<li class="market-li home-market-li" ng-class="{'landing-border': $last }" ng-repeat="(i, market) in marketService.upcoming">-->
+      <!--<a  href="#/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">-->
+        <!--<strong>{{market.name}}</strong>-->
+      <!--</a>-->
+    <!--</li>-->
+    <!--<li class="slider-next" ng-click="next()"></li>-->
+  <!--</ul>-->
+
+  <!--<div class="contest-list">-->
+    <!--<h3 class="selected-market" ng-cloak>-->
+      <!--<span ng-show="marketService.currentMarket.market_duration == 'week'">Weekly</span>-->
+      <!--<span ng-show="marketService.currentMarket.market_duration == 'day'">Daily</span>-->
+      <!--<span ng-show="!marketService.currentMarket">There are no contents at this moment</span>-->
+      <!--<span ng-hide="!marketService.currentMarket"> Contests Beginning {{marketService.currentMarket.started_at | shortFormTime }}</span>-->
+    <!--</h3>-->
+
+    <!--<ul class="games hide" ng-cloak>-->
+      <!--<li ng-repeat="game in market.games" ng-class="{started: gameStarted(game)}">-->
+        <!--{{game.away_team}} @ {{game.home_team}} <br/>  on {{game.game_time | shortFormTime}} <br/> {{game.network}}-->
+      <!--</li>-->
+    <!--</ul>-->
+
+    <!--<div>-->
+      <!--<ul class="clearfix no-no" ng-cloak>-->
+        <!--&lt;!&ndash; Replace this when we want 5k back&ndash;&gt;-->
+        <!--<li ng-hide="!marketService.currentMarket" class="contest-classes full-row" ng-class="{realfull: !hasLollapalooza()}">-->
+        <!--&lt;!&ndash;<li class="contest-classes full-row realfull">&ndash;&gt;-->
+          <!--<h4>It's More Fun With Friends!</h4>-->
+          <!--<p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>-->
+          <!--<a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create your own private contest</a>-->
+        <!--</li>-->
+        <!--&lt;!&ndash; Replace this when we want 5k back&ndash;&gt;-->
+        <!--<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">-->
+        <!--&lt;!&ndash;<li class="contest-classes" ng-repeat="contestClass in contestTypeOrder" ng-class="{'full-row': isBigContest(contestClass), hide: isBigContest(contestClass)}" ng-show="contestClasses[contestClass].length">&ndash;&gt;-->
+          <!--<div ng-class="{'contest-copy': isBigContest(contestClass)}" >-->
+            <!--<img ng-src="/assets/icon-{{contestClass | slashesToDashes | lowercase}}.png" class="contest-image" />-->
+            <!--<h2><span ng-show="isBigContest(contestClass)">$</span>{{contestClass}}<span ng-show="contestClass == '194' || contestClass == '970'">%</span></h2>-->
+            <!--<p class="tiny-p">{{contestClasses[contestClass][0].max_entries}} Teams<br/> Guaranteed Run</p>-->
+          <!--</div>-->
+          <!--<div ng-class="{'contest-copy contest-long': isBigContest(contestClass)}">-->
+            <!--<p class="small-p">{{contestClasses[contestClass][0].contest_class_desc}}</p>-->
+            <!--<ul class="contests no-no">-->
+              <!--<li class="enter-contest" ng-repeat="contestType in contestClasses[contestClass]">-->
+                <!--<a class="btn btn-contest" ng-class="{'btn-orange': !contestType.takes_tokens, 'btn-blue': contestType.takes_tokens, 'btn-small': !isBigContest(contestClass), 'btn-primary': isBigContest(contestClass)}" href="javascript://" ng-click="joinContest(contestType)" title="{{contestType.description}}">-->
+                  <!--<span >Enter NOW!</span>-->
+                <!--</a>-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</div>-->
+        <!--</li>-->
+      <!--</ul>-->
+    <!--</div>-->
+  <!--</div>-->
+
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/login_dialog.html">
+    <form name="loginForm" ng-submit="submit()" novalidate data-annotate-blur class="annotate-blur">
+  <div class='modal-header'>
+    <h3>Sign In
+        <span class="close close-modal" ng-click="close()">×</span>
+    </h3>
+  </div>
+  <div class='modal-body clearfix'>
+    <p ng-show="message">{{message}}</p>
+    <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
+    <div class='modal-form-container'>
+      <input type='text' name="email" required placeholder='Email' ng-model="user.email" class='mvm' /><br />
+      <input type='password' name="password" required placeholder='Password' ng-model="user.password" class='mvm'><br />
+      <div class='mvm pull-left sing-up-link'>
+        Not a member?&nbsp;<a href="javascript://" ng-click="close('signUp')">Sign Up</a>
+      </div>
+      <div class='mvm pull-left sing-up-link border-none'>
+        <a href="javascript://" ng-click="close('forgotPassword')">Forgot Your Password?</a>
+      </div>
+    </div>
+    <div class='modal-form-container modal-line'>
+        <div></div>
+        <span>or</span>
+        <div></div>
+    </div>
+    <div class='modal-form-container secondary'>
+      <div class='mtl mbl inline-block'>Or, sign in with facebook</div><br />
+      <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
+    </div>
+  </div>
+  <div class='modal-footer'>
+    <input type="submit" class="btn btn-primary" value="Sign In">
+  </div>
+</form>
+
+  </script>
+  <script type="text/ng-template" id="/withdraw_funds_dialog.html">
+    <div class='modal-header'>
+  <h3 class='inline-block'>Bank Account</h3>
+  <p class='inline-block pull-right'>
+    Balance: <span class='balance'>{{ currentUser.balance | centsToDollars }}</span>
+  </p>
+</div>
+<div class='mal centered' ng-hide='loaded'>
+  <img src='/assets/ajax-loader-big.gif'>
+</div>
+<div class='modal-body' ng-show='loaded'>
+  <form >
+    <div ng-show='!currentUser.confirmed'>
+      <div class='alert alert-error'>
+        In order with withdraw funds, you must first confirm your email address.
+      </div>
+      <a href="javascript://" ng-click='resendConfirmation()'>Click here</a> to re-send the confirmation email.
+    </div>
+    <div ng-show='showAddNewAccount()'>
+      <h6>Add a PayPal email address</h6>
+      <p>We pay out through PayPal, so we just need to know what PayPal email address to send your funds to.  If you don't have a PayPal account, you can create one at <a href="http://paypal.com">paypal.com</a></p>
+      <input type="email" class='account-name' placeholder="PayPal Email Address" ng-model="newAccount.paypal_email"/><br />
+      <input type="email" class='account-number' placeholder="Confirm PayPal Email Address" ng-model="newAccount.paypal_email_confirmation"/><br />
+      <a href="javascript://" ng-click="createRecipient()" ng-hide='saveAcctSpinner' class='btn btn-primary account-create'>Save</a>
+      <img src='/assets/ajax-loader-micro.gif' ng-show='saveAcctSpinner'/>
+    </div>
+    <div ng-show='recipient'>
+      <ul class='unstyled recipient'>
+        <li class='recipient-type'>PayPal</li>
+        <li class='pull-right clickable' ng-click="showConfirm = true">x
+          <div ng-show="showConfirm" class='recipient-confirm-delete popover right'>
+            <div class='arrow'>
+            </div>
+            <h3 class='popover-title'>Are you sure?</h3>
+            <div class='popover-content'>
+              <a class='btn btn-mini btn-danger mtm' ng-hide='deleteRecipientSpinner' ng-click='deleteRecipient()'>Yes, delete</a>
+              <img src='/assets/ajax-loader-micro.gif' ng-show='deleteRecipientSpinner'/>
+              <a class='btn btn-mini btn-default mtm' ng-click="showConfirm = false">No, cancel</a>
+            </div>
+          </div>
+        </li>
+        <li>{{ recipient.paypal_email }}</li>
+      </ul>
+      <div class='inline-block mll'>
+        Withdraw some money:<br />
+        $ <input type='text' ng-model="withdrawAmount" focus-me='focusAmount' class='withdraw-amount'>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='startTransferSpinner'/>
+        <a hreft="javascript://" ng-click='initiateTransfer()' class='btn btn-primary' ng-hide='startTransferSpinner'>Start Transfer</a>
+      </div>
+    </div>
+  </form>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn" ng-click="close()">close</a>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/transactions.html">
+    <h4 class="dialog-body-header">Transaction History</h4>
+<ul class="transactions transactions-heading">
+  <li>
+    <div class="transaction-amount transaction-part">Date</div>
+    <div class="transaction-amount transaction-part">Amount</div>
+    <div class="transaction-event transaction-part">Event</div>
+    <div class="transaction-info transaction-part">Additional Information</div>
+  </li>
+</ul>
+<ul class="transactions transactions-body">
+  <li ng-repeat="transaction in transactions" ng-class="{gain: transaction.amount > 0, loss: transaction.amount < 0}">
+    <div class="transaction-amount transaction-part">{{transaction.created_at | longFormDate }}</div>
+    <div ng-show="transaction.is_tokens" class="transaction-amount transaction-part">{{transaction.amount}}FF</div>
+    <div ng-hide="transaction.is_tokens" class="transaction-amount transaction-part">{{transaction.amount | centsToFanbucks }}</div>
+    <div class="transaction-part transaction-event">{{transaction.event}}</div>
+    <div class="transaction-part transaction-info" ng-show="transaction.roster">
+      <div class="transaction-detail">
+        Status: {{transaction.roster.state}}
+      </div>
+      <div class="transaction-detail" ng-show="transaction.roster.next_game_time || transaction.roster.live">
+        <span ng-show="transaction.roster.live">LIVE</span>
+        <span ng-show="!roster.live && transaction.roster.next_game_time">Next Game: {{transaction.roster.next_game_time | shortFormTime }}</span>
+      </div>
+      <div class="transaction-detail">
+        Rank:
+        <span ng-show="transaction.roster.contest_rank && inThePast(transaction.roster.started_at) && transaction.roster.state != 'cancelled'">{{transaction.roster.contest_rank | ordinal}} of {{transaction.roster.contest_type.max_entries | unlimitedIfZero}}</span>
+        <span ng-show="!inThePast(transaction.roster.started_at)">Not started yet</span>
+        <span ng-show="transaction.roster.state == 'cancelled'">N/A</span>
+      </div>
+      <div class="transaction-detail">
+        Points:
+        <span ng-show="inThePast(transaction.roster.started_at)">{{transaction.roster.score || 0}}</span>
+        <span ng-show="!inThePast(transaction.roster.started_at)">N/A</span>
+      </div>
+      <div class="transaction-detail" >
+        Result:
+          <span ng-show="transaction.roster.state == 'submitted'">Not done yet</span>
+          <span ng-show="transaction.roster.state == 'finished'">
+          <span ng-show="inThePast(transaction.roster.started_at)  && transaction.is_tokens">Won: {{transaction.roster.contest_rank_payout || 0}}FF</span>
+          <span ng-show="inThePast(transaction.roster.started_at)  && !transaction.is_tokens">Won: {{transaction.roster.contest_rank_payout || 0 | centsToDollars}}</span>
+          <span ng-hide="inThePast(transaction.roster.started_at) ">N/A</span>
+          Paid {{transaction.roster.amount_paid | centsToDollars }} on {{transaction.roster.paid_at | shortFormTime}}
+        </span>
+        <span ng-show="roster.state == 'cancelled'">Refunded on {{transaction.roster.cancelled_at | shortFormTime}}. {{transaction.roster.cancelled_reason}}</span>
+      </div>
+      <div class="transaction-detail"><a ng-click="close()" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{transaction.roster.market.id}}/roster/{{transaction.roster.id}}">View roster</a></div>
+    </div>
+  </li>
+</ul>
+
+  </script>
+  <script type="text/ng-template" id="/add_funds_dialog.html">
+    <div class='modal-header'>
+  <h3 class='inline-block'>Account Balance</h3>
+  <p class='inline-block pull-right'>
+    Balance: <span class='balance'>{{ currentUser.balance | centsToDollars }}</span>
+  </p>
+</div>
+<div class='mal centered' ng-show='showSpinner'>
+  <img src='/assets/ajax-loader-big.gif'>
+</div>
+<div class='modal-body'>
+<!-- New Terms -->
+<div ng-show="!currentUser.customer_object.has_agreed_terms">
+  <h4>Predict That has new terms and conditions</h4>
+  <p>Predict That requires a subscription to view content, but you can choose a 15 day free trial.  After subscribing, you will also be able to make unlimited predictions for free.<a href="/support" target="_blank">Read more about how it works</a></p>
+  <label class="checkbox " for="agree-terms" ng-click="agreeToTerms()" ng-class="{'checked': currentUser.customer_object.has_agreed_terms}">
+    <span class="icons">
+      <span class="first-icon fui-checkbox-unchecked"></span>
+      <span class="second-icon fui-checkbox-checked"></span>
+    </span>
+		<a href="/conditions" target="_blank">Agree to subscription terms</a>
+  </label>
+  <input id="agree-terms" class="hide" type="checkbox" ng-model="currentUser.customer_object.has_agreed_terms" ng-change="agreeToTerms()" />
+</div>
+<!-- Paid subscription -->
+  <div ng-show="currentUser.customer_object.is_active">
+    <h4>Your Account This Month</h4>
+    <div class="account-states">
+      <div class="account-state">
+        <div class="account-state-header">FanBucks</div>
+        {{currentUser.customer_object.net_monthly_winnings | centsToFanbucks }}
+        <img class="state-info" src="/assets/info-icon-d81f85e3537584786112c70f7aaeb20b.png" width="17px"
+        popover-trigger="mouseenter" popover="Your Fanbuck balance is the amount of awards you have received less 15 Fanbucks per prediction made" popover-placement="right">
+      </div>
+      <div class="account-state">
+        <div class="account-state-header">Awards</div>
+        {{currentUser.customer_object.monthly_award }}
+        <img class="state-info" src="/assets/info-icon-d81f85e3537584786112c70f7aaeb20b.png" width="17px"
+             popover-trigger="mouseenter" popover="Awards is the cumulative awards received this calendar month" popover-placement="right">
+      </div>
+      <div class="account-state">
+        <div class="account-state-header">Predictions made</div>
+        {{currentUser.customer_object.monthly_contest_entries }}
+        <img class="state-info" src="/assets/info-icon-d81f85e3537584786112c70f7aaeb20b.png" width="17px"
+          popover-trigger="mouseenter" popover="Predictions Made is the amount of predictions you have made this calendar month" popover-placement="right">
+      </div>
+      <div class="account-state">
+        <div class="account-state-header">Winnings Multiplier</div>
+        {{currentUser.customer_object.contest_winnings_multiplier }}
+        <img class="state-info" src="/assets/info-icon-d81f85e3537584786112c70f7aaeb20b.png" width="17px"
+          popover-trigger="mouseenter" popover="The Awards Multiplier is the multiplier we use to increase your awards when you have a negative Fanbuck balance. We increase your awards by 5% times any negative Fanbuck balance you have." popover-placement="right">
+      </div>
+    </div>
+  </div>
+
+<!-- UnPaid subscription -->
+  <div ng-hide="currentUser.customer_object.is_active">
+    <h4>Looks like you need to pay your subscription this month</h4>
+		<div class="clearfix">
+			<ul class="nav nav-pills modal-pills pull-left">
+				<li ng-class="{active: payment_type == 'credit-card'}">
+					<a href="javascript://" ng-click="payment_type = 'credit-card'">Pay with Credit Card</a>
+				</li>
+				<li ng-class="{active: payment_type == 'paypal'}">
+					<a href="javascript://" ng-click="payment_type = 'paypal'; showCardForm = false">Pay with PayPal</a>
+				</li>
+
+			</ul>
+			<ul class="no-no pull-left trial-content" ng-show="!user_info.trial_started_at">
+				<li class="or">OR</li>
+				<li>
+					<a class="btn" href="javascript://" ng-click="submitTrial()">15 day free trial</a>
+				</li>
+			</ul>
+		</div>
+    <div ng-show="payment_type == 'credit-card'">
+      <div class='clearfix'>
+        <div class="add-funds-container">
+          <h5>Select a Card</h5>
+          <ul class='unstlyed card-list no-no' ng-hide="showCardForm">
+            <li class='inline-block clickable card' ng-repeat="card in cards" ng-class="{default: isSelectedCard(card) }" ng-click="setSelectedCard(card)">
+              <div class='card-token'>
+                <div class='relative pull-right delete-card'>
+                  <span ng-click='triggerConfirm(card.id)' class='clickable'>x</span>
+                  <div ng-show="showConfirm(card.id)" class='card-confirm-delete popover right'>
+                    <div class='arrow'>
+                    </div>
+                    <h3 class='popover-title'>Are you sure?</h3>
+                    <div class='popover-content'>
+                      <a class='btn btn-mini btn-danger mtm' ng-hide='deleteCardSpinner' ng-click='deleteCard(card.id)'>Yes, delete</a>
+                      <img src='/assets/ajax-loader-micro.gif' ng-show='deleteCardSpinner'/>
+                      <a class='btn btn-mini btn-default mtm' ng-click='closeConfirm(card.id)'>No, cancel</a>
+                    </div>
+                  </div>
+                </div>
+                <div class='overflow-hide'>
+                  {{ card.first_name }} {{card.last_name}}<br />
+                </div>
+                <div class="card-type">{{card.type}}</div>
+                <div class='ptm'>
+                  {{ card.obscured_number}}
+                </div>
+              </div>
+            </li>
+            <li class='add-card bold inline-block phm' ng-show="showAddCardButton()" ng-click="showCardForm = true">
+              <a href="javascript://" class='btn btn-info btn-mini'>Add a Card</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div ng-show="showCardForm" class='credit-card mal'>
+        <form>
+          <h6>Add a New Card</h6>
+          <div id="credit-card-form"  class="credit-card-input no-js">
+            <p class="no-support-warning">Either you have Javascript disabled, or you're using an unsupported browser, amigo.</p>
+            <label for="cc_type">Card Type</label>
+            <select name="cc_type" ng-model="cardInfo.type">
+              <option selected value="">...</option>
+              <option value="visa">Visa</option>
+              <option value="discover">Discover</option>
+              <option value="mastercard">MasterCard</option>
+              <option value="amex">American Express</option>
+            </select>
+            <label for="cc_number">Card Number</label>
+            <input type="text" name="cc_number" id="cc_number" ng-model="cardInfo.number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+            <label for="cc_exp_month">Expiration Month</label>
+            <input type="text" name="cc_exp_month" id="cc_exp_month" ng-model="cardInfo.exp_month" placeholder="00">
+            <label for="cc_exp_year">Expiration Year</label>
+            <input type="text" name="cc_exp_year" id="cc_exp_year" ng-model="cardInfo.exp_year" placeholder="00">
+            <label for="cc_name">Cardholder's Name</label>
+            <input type="text" name="cc_name" id="cc_name" ng-model="cardInfo.name" placeholder="John Doe">
+            <label for="cc_cvc">Card Validation Code</label>
+            <input type="text" name="cc_cvc" id="cc_cvc" ng-model="cardInfo.cvc" placeholder="123" maxlength="3" size="3">
+          </div>
+        </form>
+        <a href="javascript://" ng-click="showCardForm = false" class='btn btn-info'>cancel</a>
+        <a href="javascript://" ng-click="saveCard()" ng-disabled="!card.isValid()" class='btn btn-primary' ng-hide='saveCardSpinner'>Save</a>
+          <a class="secure-msg" href="javascript://" popover-trigger="mouseenter" popover="We never store your credit card information.  We use a safe, third-party financial provider to store and process all our credit card payments." popover-placement="right">
+            <img src="/assets/icons/secure-red-1307046a431b2db00396c9975e3abc4b.gif" height="16px" width="16px"/>
+            Why we&#39;re secure
+          </a>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='saveCardSpinner'/>
+      </div>
+      <!--<div ng-hide="showCardForm" class="add-funds-container">
+        <p>$<input type='text' ng-model="chargeAmt" focus-me='focusAmount' placeholder="Amount" class='add-funds-input mls'/>
+        <a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>Add Money</a>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>
+        </p>
+        <span class='muted tilt'>*At least $5.</span>
+      </div>-->
+    </div>
+    <div class="payment-container" ng-hide="showCardForm">
+      <h5>Checkout</h5>
+      <div ng-show="payment_type == 'paypal'">
+        <span class="payment-total">Total: $10</span><a href="javascript://" class='btn btn-primary' ng-click="addFunds()" ng-hide='addMoneySpinner'>
+          <span ng-show="payment_type == 'paypal'">Pay with PayPal</span>
+          <span ng-show="payment_type == 'credit-card'">Add Money</span>
+        </a>
+        <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
+      </div>
+      <div ng-show="payment_type == 'credit-card'">
+        <span ng-show='addMoneySpinner'><img src='/assets/ajax-loader-micro.gif' ng-show='addMoneySpinner'/>This can take up to a minute.</span>
+        <div ng-hide='addMoneySpinner'>
+          <div><span class="payment-total">Total: $10</span><a href="javascript://" class="btn btn-primary" ng-click="addFunds()">Submit</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" ng-show="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" ng-click="close()">close</a>
+  <a href="javascript://" ng-hide="!currentUser.customer_object.is_active || !currentUser.customer_object.has_agreed_terms || !agreeReload " class="btn btn-info pull-right" ng-click="close_reload()">close</a>
+  <a class="user-logout txt-red-hover pull-left" style="margin-top:10px;" ng-hide="currentUser.customer_object.is_active && !agreeReload" class="btn btn-info" href="/users/sign_out">sign out</a>
+</div>
+<div class="subscription-backdrop" ng-hide="currentUser.customer_object.is_active && !agreeReload"></div>
+
+
+  </script>
+  <script type="text/ng-template" id="/mobile_rules.html">
+    <h3>Rules and Scoring</h3>
+<p>In Predict That fantasy sports roster predictions you choose a new team every contest, up to a $100,000 salary cap, with player pricing based on market demand.</p>
+
+<h4>Markets</h4>
+<p>Prices are set based on user demand for each player, the more demand for a player, the higher the price goes. You can change your roster and trade back a player who is not locked (playing) and receive his current price and then purchase another player. If you purchase a player and then sell him back at a profit, it will raise your salary cap by that amount. Similarly, if you do so at a loss it will reduce your salary cap by that amount. Players are locked into your roster the minute their team begins its game. Up until that time you can trade back that player for any other unlocked player.</p>
+
+<h4>Salary Cap</h4>
+<p>While we call $100,000 the salary cap, it is not fixed. If you exceed the salary cap, we simply reduce the predict stats your team produces by the percent you exceeded the salary cap. Similarly, if you are below the salary cap we will increase your team's predict stats by a maximum of 3%, ie., for any team salaries $97,000 or more.</p>
+
+
+
+  </script>
+  <script type="text/ng-template" id="/roster.html">
+    <div ng-show="rosters.currentRoster">
+
+  <flex-slider class="carousel home-market" repeat="market in marketService.upcoming track by market.id"animation="slide" controlNav="false" animation-loop="false" slideshow="false"  item-width="160" item-margin="0">
+    <li class="market-li home-market-li" ng-class="{'landing-border': $last }">
+      <a  href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}" ng-click="reloadRoster(market.id)" class="market-link home-market-link" ng-class="{'active-market': isCurrent(market) }">
+        <strong>{{market.name}}</strong>
+        <p>{{market.games[0].game_time | onlyFormTime}}</p>
+      </a>
+    </li>
+  </flex-slider>
+
+  <div class="alert alert-info hide" ng-show="!rosters.justSubmittedRoster && false">
+  </div>
+  <!--<p class="alert alert-info" ng-show="market.state == 'published'">
+    This market's bell hasn't rung yet (it will open on or before {{dayBefore(market.opened_at) | shortFormTime}}). <br/>That means all prices are indicative. This helps keep our market fair. <a class="" href="/#rules">Learn More</a>.
+  </p>-->
+
+  <div class="contest-leaderboard" ng-show="rosters.currentRoster.state != 'in_progress' && rosters.currentRoster.contest_id && (inThePast(market.started_at) || rosters.currentRoster.contest.private)">
+    <table class="table table-striped">
+      <thead>
+        <th ng-show="rosters.contest_type.name == 'h2h rr'">Record</th>
+        <th ng-hide="rosters.contest_type.name == 'h2h rr'">Rank</th>
+        <th>User</th>
+        <th>Award</th>
+        <th>Points&nbsp;&nbsp;of: {{leaderboard[0].perfect_score | number:1}}</th>
+        <th>Roster</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="roster in leaderboard">
+          <td ng-show="roster.contest_type.name == 'h2h rr'">
+            <span ng-show="inThePast(market.started_at)">{{record(leaderboard, roster)}}</span>
+            <span ng-hide="inThePast(market.started_at)">Not Started</span>
+          </td>
+          <td ng-hide="roster.contest_type.name == 'h2h rr'">
+            <span ng-show="inThePast(market.started_at)">{{roster.contest_rank}}</span>
+            <span ng-hide="inThePast(market.started_at)">Not Started</span>
+          </td>
+          <td>{{roster.owner_name}}</td>
+          <td>
+            <span ng-show="rosters.currentRoster.contest_type.takes_tokens">{{roster.contest_rank_payout || 0}} FanFrees</span>
+            <span ng-hide="rosters.currentRoster.contest_type.takes_tokens">{{(roster.contest_rank_payout || 0) | centsToFanbucks}}</span>
+          </td>
+          <td>{{roster.score | number:2}}</td>
+          <td>
+            <span ng-show="roster.id == rosters.currentRoster.id">This roster</span>
+            <a ng-show="roster.owner_id == currentUser.id && roster.id != rosters.currentRoster.id" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{roster.id}}">View roster</a>
+            <a ng-show="roster.owner_id != currentUser.id" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{market.id}}/roster/{{rosters.currentRoster.id}}/vs/{{roster.id}}">See their roster</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <a href="javascript://" ng-click="showMoreLeaders()" class="show-more-leaders" ng-show="rosters.currentRoster.contest_type.max_entries > 10">Show More</a>
+  </div>
+
+  <div class="row">
+    <div class="span12">
+      <div class="entries-container">
+        <div class="roster-title my-roster-title clearfix">
+          <h3 class="inline-heading">
+            <span ng-show="rosters.currentRoster.owner_id == currentUser.id">Your Team</span>
+            <span ng-show="rosters.currentRoster.owner_id != currentUser.id">{{rosters.currentRoster.owner_name}}'s Team</span>
+          </h3>
+
+          <h3 class="inline-heading opponent" ng-show="rosters.opponentRoster">{{rosters.opponentRoster.owner_name | truncate:10}}</h3>
+
+          <div class="salary-cap" ng-class="{broke: rosters.currentRoster.remaining_salary <= 0}" ng-hide="rosters.opponentRoster">
+            Salary Remaining: ${{rosters.currentRoster.remaining_salary | number:0}}
+          </div>
+        </div>
+      </div>
+
+      <div class="team-selection clearfix">
+        <div ng-controller="IncludeController" ng-init="track({roster: 'rosters.currentRoster'})"><div ng-include="'/team.html'"></div></div>
+        <div ng-show="rosters.opponentRoster" ng-controller="IncludeController" ng-init="track({roster: 'rosters.opponentRoster'})"><div ng-include="'/team.html'"></div></div>
+        <div ng-hide="rosters.opponentRoster" class="clearfix" ng-include="'/players.html'"></div>
+        <div class="team-selection-info">
+          <p>Roster receives prediction points for correct predictions. most prediction points wins!</p>
+          <h3>your roster will complete agaist 11 other users and get points for correct predictions.</h3>
+        </div>
+      </div>
+    </div>
+    <div class="pull-left score-list" ng-hide="true">
+      <div class="league-selector" ng-show="currentUser.leagues.length > 0">
+        <select ng-model="league" name="league" ng-options="l as l.name for l in currentUser.leagues" ng-change="showNextLeagueRoster(league)">
+          <option value="">Select a League</option>
+        </select>
+      </div>
+      <ul class="clearfix no-no" ng-cloak>
+        <!-- Replace this when we want 5k back-->
+        <li ng-hide="!marketService.currentMarket" class="contest-classes full-row" ng-class="{realfull: !hasLollapalooza()}">
+          <!--<li class="contest-classes full-row realfull">-->
+          <h4>It's More Fun With Friends!</h4>
+          <p>Create a custom contest or league for you and your friends! Play for bragging rights or real money!</p>
+          <a class="btn btn-block btn-create-contest" href="javascript://" ng-click="openCreateDialog()" title="Create a contest">Create your own private contest</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="/purchase_terms.html">
+    <p>No purchase is required to make predictions on the PredictThat site. An alternate means of making predictions is to signup on the PredictThat site and 15 days prior to the any month that you intend to participate, send a 3 x 5 inch card on which the user has legibly handwritten the user's PredictThat user name, First and Last Name, Complete Mailing Address (eg Street, City, State, Zip Code), Email Address, Date of Birth with a photocopy of Driver's License or other photo ID with the month that you intend to participate in mm/yyyy format. The card must be placed in a #10 envelope and mailed to PO Box 399 Ross CA 94957. No photo copies, reproductions or facsimiles of the 3inch x 5 inch card are allowed. Limit 1 card per envelope.</p>
+<p><b>Entries using the Altenate Free Subscription Mail in Option will have the exact same chance of winning as if that same prediction was made by a user using the regular Subscription Method. However, Users using the Altenate Entry will not be able to access the chat rooms, or see related content, including but not limited to player notes, probabilities, articles, statistics and past performances and might be on a site with more ads and a slower server.</b></p>
+  </script>
+  <script type="text/ng-template" id="/individual_prediction_list.html">
+    <div class="roster-title">
+  <h3>Your {{currentUser.currentSport}} Individual Prediction
+      <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/rosters">My Predictions</a>
+      <!--<a ng-show="pt_history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/history">My Predictions History</a>-->
+  </h3>
+</div>
+<table class="table table-striped">
+  <thead>
+    <th>Event</th>
+    <th>Choice</th>
+    <th>Game time</th>
+    <th>Day</th>
+    <th>Result</th>
+    <th>Prediction</th>
+    <th>PT</th>
+    <th>Award</th>
+    <!--<th ng-hide="pt_history"></th>-->
+  </thead>
+  <tbody>
+    <tr ng-repeat="prediction in predictionList | orderBy:'id':reverse=true" >
+      <td>
+        <div>
+            <span>{{prediction.market_name}}</span>
+        </div>
+      </td>
+      <td>
+        <div>
+            <span>{{prediction.player_name}}</span>
+        </div>
+      </td>
+      <td>
+        <span>{{prediction.game_time | onlyFormTime}}</span>
+      </td>
+      <td>
+        <span>{{prediction.game_day | longFormDate}}</span>
+      </td>
+      <td>
+        <span ng-show="prediction.state == 'finished'">
+          {{prediction.game_result}}
+        </span>
+        <span ng-show="prediction.state == 'canceled'">
+          Did not play
+        </span>
+        <span ng-show="prediction.state == 'submitted'">
+          N/A
+        </span>
+      </td>
+      <td class="list-statistic">
+        <span ng-repeat="statistic in prediction.event_predictions">
+            {{statistic.diff | capitalize}}:
+            {{statistic.value}}&nbsp;
+            {{statistic.event_type}}
+        </span>
+      </td>
+      <td>
+        <div>
+            <span>{{prediction.pt}}</span>
+        </div>
+      </td>
+        <td>
+          <div>
+            <span ng-show="prediction.state == 'finished'">
+               {{prediction.award}}
+            </span>
+            <span ng-show="prediction.state == 'canceled'">
+               Did not play
+            </span>
+            <span ng-show="prediction.state == 'submitted'">
+               N/A
+            </span>
+            </div>
+        </td>
+        <!--<td>-->
+           <!--<a href="javascript://" ng-hide="prediction.finished" ng-click="openPredictionDialog(prediction.id, prediction.player_stat_id, prediction.player_name)">Edit</a>-->
+        <!--</td>-->
+    </tr>
+  </tbody>
+</table>
+<div ng-hide="!landingShow" class='market-loader centered'>
+    <img src='/assets/ajax-loader-big.gif'>
+</div>
+<btn class="btn btn-info" ng-show="showMore" ng-click="fetchMore()">Show More</btn>
+
+  </script>
+  <script type="text/ng-template" id="/promos.html">
+    <h3>Promos</h3>
+  </script>
+  <script type="text/ng-template" id="/roster_list.html">
+    <div class="roster-title">  
+  <h3>Your {{currentUser.currentSport}} Predictions
+    <a class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/individual_predictions">My Individual Predictions</a>
+    <!--<a ng-show="history" class="btn btn-small btn-success pull-right" href="/#/{{currentUser.currentSport}}/individual_predictions_history">My Individual Predictions History</a>-->
+  </h3>
+</div>
+<table class="table table-striped">
+  <thead>
+    <th>Prediction</th>
+    <th>Game time</th>
+    <th>Day</th>
+    <th>State</th>
+    <th>Rank</th>
+    <th>Points</th>
+    <th>Award</th>
+    <th>Roster</th>
+  </thead>
+  <tbody>
+    <tr ng-repeat="roster in rosterList">
+      <td>
+        <div>{{roster.market.name}}
+        </div>
+        <div class="league-roster" ng-show="roster.league">{{ roster.league.name }} League Game</div>
+        <div>
+          {{ roster.contest_type.name | allCaps }}
+        </div>
+      </td>
+      <td>
+          <span>{{roster.market.games[0].game_time | onlyFormTime}}</span>
+      </td>
+      <td ><span ng-show="roster.live">LIVE</span><span ng-hide="roster.live"><span>{{roster.market.closed_at | longFormDate}}</span></span></td>
+      <td >{{roster.state | capitalize}} <span ng-show="roster.cancelled_reason">{{roster.cancelled_reason}}</span></td>
+      <td>
+        <span ng-show="roster.contest_rank && inThePast(roster.started_at) && roster.state != 'cancelled'">{{roster.contest_rank | ordinal}} of {{roster.contest_type.max_entries | unlimitedIfZero}}</span>
+        <span ng-show="!inThePast(roster.started_at)">Not started yet</span>
+        <span ng-show="roster.state == 'cancelled'">N/A</span>
+      </td>
+      <td>
+        <span ng-show="inThePast(roster.started_at)">{{roster.score || 0}}</span>
+        <span ng-show="!inThePast(roster.started_at)">N/A</span>
+      </td>
+      <td>
+        <span ng-show="roster.state == 'submitted'">N/A</span>
+        <span ng-show="roster.state == 'cancelled'">Refunded on {{roster.cancelled_at | longFormDate}}</span>
+        <span ng-show="roster.state == 'finished'">
+            <span ng-show="inThePast(roster.started_at) && roster.state == 'finished'">{{roster.contest_rank_payout || 0 | centsToFanbucks}}</span>
+            <span ng-hide="inThePast(roster.started_at) && roster.state == 'finished'">N/A</span>
+        </span>
+      </td>
+      <td><a href="#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{roster.market.id}}/roster/{{roster.id}}">view</a></td>
+    </tr>
+  </tbody>
+</table>
+<div ng-hide="!landingShow" class='market-loader centered'>
+    <img src='/assets/ajax-loader-big.gif'>
+</div>
+<btn class="btn btn-info" ng-show="showMore" ng-click="fetchMore()">Show More</btn>
+
+  </script>
+  <script type="text/ng-template" id="/support.html">
+    <h3>How it Works</h3>
+
+<p>
+  PredictThat has many different events to Predict. They fall into two types, Fantasy and non-Fantasy. The Fantasy events will have a Salary Cap, typically $100,000 and each of the players will have a salary that is based on their expected fantasy point production. In non-Fantasy, choices will be made without any consideration of salary or other constraints other than positional requirements.
+</p>
+<h3>
+  On PredictThat we have predictions in two formats, Rosters and Individual predictions
+</h3>
+<p>
+  Roster Predictions
+</p>
+<p>
+  In a roster prediction, you pick from among the choices given to you a roster of predictions. The predictions might have to fit a positional requirement like qb rb wr for football or p 1b 3b for baseball or best picture, best actor, best actress for the oscars. In a roster prediction you are competing against other users for fanbuck prediction prizes and the winner is based on which roster scores the most fantasy points. In Fantasy, the fantasy points will be based on the statistics the players on your roster produced and the rules in effect for that sport. In non-fantasy, the fantasy points will be assigned up front as the PT value for that choice.
+</p>
+<h3>
+  Individual Predictions PT Values
+</h3>
+<p>
+  With each set of choices available, each choice will be available for an individual Prediction. In non-Fantasy there will be a stated PT Value for each choice and if you Predict That choice and are correct then that is the number of Fanbucks you will be awarded. To predict an individual performance, you press the PT button next to the player and it will show you various statistics with a more or less button next to it. Scroll over the more or less button and it will tell you the PT value of that prediction. In each case, if you are right, you will be awarded the PT value in Fanbucks.
+</p>
+<h3>
+  Prediction Charge
+</h3>
+<p>
+  For every Prediction that you make, roster or individual, you are charged 15 Fanbucks when the event happens.
+</p>
+<h3>
+  Fanbucks
+</h3>
+<p>
+  Fanbucks are a virtual currency with no value outside of the PredictThat website. They are used to accumulate awards and prediction charges. If at the end of the calendar month, your account has a positive Fanbuck balance, we will deposit the same amount as that balance in dollars into your PredictThat account balance and set your Fanbuck balance back to zero. If your Fanbuck balance is negative for the calendar month, it will be rolled over into the following month, but only to a maximum of negative 50 Fanbucks.
+</p>
+<h3>
+  Roster Predictions and Auto Fill
+</h3>
+<p>
+  Roster Predictions will have a fixed number of users competing for the awards. If there are less than the fixed number of users, the site will generate random rosters from the choices available to fill out the required number of users. This auto fill function is the same one as if you were to hit the autofill button for your own roster.
+</p>
+<h3>
+  Fantasy Salaries , Market Pricing, and Trading
+</h3>
+<p>
+  Fantasy salaries are initially set based on a projection of what the player's statistics are likely to be in the event being predicted. The salaries will then adjust based on the demand of users for each player. Once you have selected a player, you "own" him for that salary. You can trade (exchange) the player back for another player at any time up until the event begins. If the player salary has increased, you will record a "profit" and your salary cap will be increased by the difference. Similarly, if the player's salary has decreased, you will record a "loss" and your salary cap will be decreased by the difference.
+</p>
+<p>
+  Trading in non-Fantasy roster events will be allowed at any time up until the event happens. Individual predictions will not have any trading, once a prediction is made it is final.
+</p>
+<h3>
+  Prestige
+</h3>
+<p>
+  Prestige is a virtual currency that has no value except on PredictThat.When you correctly make a Prediction, you are awarded a certain amount of Fanbucks and the same amount will be added to your Prestige. PredictThat will regularly recognize and reward users with high levels of Prestige.
+</p>
+<h3>
+  Creating a League
+</h3>
+<p>
+  Instead of participating in a roster prediction against other public users on the site, you can create a league with your friends who will all make predictions in the same event. If you don't fill the league to the fixed number of users, PredictThat will add autofilled rosters to fill the league. (Temporarily disabled)
+</p>
+<h3>
+  Players not playing - Substitutions
+</h3>
+<p>
+  If you choose a player in a roster prediction and he hasn't played in the first half in basketball, or he doesn't start in baseball, we will substitute another player in the same event with approximately the same salary. That player will be marked with an S for substitution. If a player doesn't play in an individual prediction, the prediction is cancelled.
+</p>
+<h3>
+  Salary Cap
+</h3>
+<p>
+  While we call $100,000 the salary cap, it is not fixed. If you exceed the salary cap, we simply reduce the fantasy points you team produces by the percent you exceeded the salary cap. Similarly, if you are below the salary cap, we will increase your team's fantasy points by a maximum of 3%, ie. If your salary is 5% below we will only boost your team's fantasy points by 3%.
+</p>
+
+  </script>
+
+<script src="Predict%20That_files/polyfill-c231d03b02ba59a8f6c3970c11b234de.js"></script>
+<script src="Predict%20That_files/jquery-1.js"></script>
+<script src="Predict%20That_files/jquery_002.js"></script>
+<script src="Predict%20That_files/underscore-min-93e7e412498ddce0d0e4c8c92aa8ce1e.js"></script>
+<script src="Predict%20That_files/jsonh-4c9db26b01c8e0648746dfebc85a79f1.js"></script>
+<script src="Predict%20That_files/angular-1.js"></script>
+<script src="Predict%20That_files/angular-route-1.js"></script>
+<script src="Predict%20That_files/angular-ui-bootstrap-tpls-0.js"></script>
+<script src="Predict%20That_files/angular-flash-c1b5cddc6e857643d5ad75e3c56d3589.js"></script>
+<script src="Predict%20That_files/moment.js"></script>
+<script src="Predict%20That_files/angulartics-6c9ce73c0e5fa9f27dc4d11c2946e069.js"></script>
+<script src="Predict%20That_files/angulartics-google-analytics-8f399870ceb967e306df6152a5a71b8c.js"></script>
+<script src="Predict%20That_files/autofill-event-db4669200cfa8e002ddb92ba79636bed.js"></script>
+<script src="Predict%20That_files/jquery.js"></script>
+<script src="Predict%20That_files/angular-flexslider-db1f535d35a5cba19b23bc6ccaf90dea.js"></script>
+<script src="Predict%20That_files/skeuocard-ddd21e36ca1d874d7bf69d2e5445d708.js"></script>
+<script src="Predict%20That_files/angular_deps-a0e279bab4914046403d9e388ddf0729.js"></script>
+<script src="Predict%20That_files/add_funds_dialog_controller-066bb13048d86efd4e0b1932e59a3196.js"></script>
+<script src="Predict%20That_files/add_username_dialog_controller-531cfc2d142be2139360ea0cb2a5c5.js"></script>
+<script src="Predict%20That_files/application_controller-b5aa7704e7b484f9c9bc531d9ebc6468.js"></script>
+<script src="Predict%20That_files/create_contest_controller-1c1e76f95ff3641b8abda3f3c6ec6f8c.js"></script>
+<script src="Predict%20That_files/create_prediction_controller-4a93432a1b51d056de30b997ffdc1450.js"></script>
+<script src="Predict%20That_files/dummy_controller-a912d1c3041e5cc9bb693a8678514538.js"></script>
+<script src="Predict%20That_files/forgot_password_controller-fff82e118fbae04122cc1f0f1c1a1152.js"></script>
+<script src="Predict%20That_files/home_controller-dccbc1ad8ed3480d0e387bf3804af07f.js"></script>
+<script src="Predict%20That_files/include_controller-743fa5948c2012b32127c2bd88cd3ba6.js"></script>
+<script src="Predict%20That_files/individual_prediction_history_list_controller-be755358fd1149f.js"></script>
+<script src="Predict%20That_files/individual_prediction_list_controller-a1608692f550467afce96f9.js"></script>
+<script src="Predict%20That_files/invite_controller-158fbbf188603194c5a5c7e58ec6a667.js"></script>
+<script src="Predict%20That_files/join_contest_dialog_controller-c50ae0b69c736c4cc8b35859d1eca6.js"></script>
+<script src="Predict%20That_files/leaderboard_controller-12bb479206adb29fb66c51bba7a407e4.js"></script>
+<script src="Predict%20That_files/login_controller-1b9c4cad3746a39c9d6f48380d42e741.js"></script>
+<script src="Predict%20That_files/login_dialog_controller-92d469ad7d87b7db6e116add9f89562a.js"></script>
+<script src="Predict%20That_files/market_controller-5464911bb5541703147083feb9e6a197.js"></script>
+<script src="Predict%20That_files/reset_password_dialog_controller-bcef1cc07b3f44e6936b43d5adea.js"></script>
+<script src="Predict%20That_files/roster_controller-4c9d89c28b95aac842d24b72b8757dbf.js"></script>
+<script src="Predict%20That_files/roster_history_controller-09af7dab2604d0cbf320b40f09bd3e40.js"></script>
+<script src="Predict%20That_files/roster_list_controller-2d671def9c745cc150b415aa2e885389.js"></script>
+<script src="Predict%20That_files/rules_controller-1a367ebf7e11117d846434db82be688a.js"></script>
+<script src="Predict%20That_files/sample_roster_controller-61d42a56e4c2e904012f9fe8cf8d5cc4.js"></script>
+<script src="Predict%20That_files/settings_controller-791940e54f6d5f0d60f03d5c914828b6.js"></script>
+<script src="Predict%20That_files/sign_up_dialog_controller-2b4122a7bc1bdaf32f97d4e304610b3f.js"></script>
+<script src="Predict%20That_files/stats_dialog_controller-9967503bb428fb552ff3a830f420f8fd.js"></script>
+<script src="Predict%20That_files/support_controller-528704790bc94eba64c293b87fd18088.js"></script>
+<script src="Predict%20That_files/transaction_history_controller-da559d77b37a92736cb04d63bf0414.js"></script>
+<script src="Predict%20That_files/twitter_controller-4b6a76d735e1a512fd9918a1c393300b.js"></script>
+<script src="Predict%20That_files/unsubscribe-fd2c125564a620b80776a28e975eb69e.js"></script>
+<script src="Predict%20That_files/unsubscribe_dialog-4e46a7b21d031219453faa5c64e1baf2.js"></script>
+<script src="Predict%20That_files/update_prediction_controller-089b6f452fad34f3aa0430a1ebbc926f.js"></script>
+<script src="Predict%20That_files/withdraw_funds_dialog_controller-95686d6154f4b6c422f4519f0033.js"></script>
+<script src="Predict%20That_files/annotate-blur-6f3082eda455eb2ccdf800ecf5d28fc3.js"></script>
+<script src="Predict%20That_files/focus-me-f477e1a3990bb9bc5cf6b80abad3e7a4.js"></script>
+<script src="Predict%20That_files/highlight-changes-4fc084598a00034a013df118a00a215f.js"></script>
+<script src="Predict%20That_files/upload-157fec83258075054578a9facb321af7.js"></script>
+<script src="Predict%20That_files/fs-4c91d38a46c708c2c2726265baf670ec.js"></script>
+<script src="Predict%20That_files/markets-58619a754c80fe9f29e9323bdfe0e1d7.js"></script>
+<script src="Predict%20That_files/registration-8ba5bfc2f24568de28951af272a8ae5a.js"></script>
+<script src="Predict%20That_files/rosters-a20320a240086812dbd02a3b884ae97a.js"></script>
+<script src="Predict%20That_files/filters-2e00c07d0b384a21449a39a7c0ca22c4.js"></script>
+<script src="Predict%20That_files/angular_app-418ea4379b564625134c4bee8dd064df.js"></script>
+<script src="Predict%20That_files/application-d5193fe6ea59d173b1c6d9c53eb101fe.js"></script>
+
+
+
+
+
+
+
+</body></html>
+<!-- Another #winning product brought to you by MustWin! http://mustw.in -->

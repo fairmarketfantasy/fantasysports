@@ -1,0 +1,68 @@
+<form name="signUpForm" novalidate data-annotate-blur ng-submit="submit($event)" class="annotate-blur">
+  <div class='modal-header'>
+    <h3>Sign Up
+      <span class="close close-modal" ng-click="close()">×</span>
+    </h3>
+
+  </div>
+  <div class='modal-body clearfix'>
+    <p ng-show="message">{{message}}</p>
+    <p class="error" ng-show="errorMsg">{{errorMsg}}</p>
+    <div class='modal-form-container'>
+      <input type='text' name="username" required placeholder='Username' ng-model="user.username" class='mvm' /><br />
+      <input type='text' name="name" required placeholder='Real Name' ng-model="user.name" class='mvm' /><br />
+      <input type='email' name="email" required placeholder='Email' ng-model="user.email" class='mvm' /><br />
+      <input type='password' ng-minlength="6" name="password" required placeholder='Password' ng-model="user.password" class='mvm'><br />
+      <input type='password' name="password_confirmation" required placeholder='Confirm' ng-model="user.password_confirmation" class='mvm'/><br />
+      <div class='mvm pull-left sing-up-link'>
+        Have an account?&nbsp;<a href="javascript://" ng-click="close('login')">Sign In</a>
+      </div>
+      <div class='mvm pull-left sing-up-link border-none'>
+        <a href="javascript://" ng-click="close('forgotPassword')">Forgot Your Password?</a>
+      </div>
+    </div>
+    <div class='modal-form-container modal-line'>
+        <div></div>
+        <span>or</span>
+        <div></div>
+    </div>
+    <div class='modal-form-container secondary'>
+      <div class='mtl mbl inline-block'>Or, sign up with facebook</div><br />
+      <a href="javascript://" class="btn btn-oauth btn-social-facebook" ng-click="login('facebook')"><i class="icon fui-facebook"></i> Facebook</a>
+
+<!--      <div class="promo-code" ng-show="noPromo">
+        <h4>Promo code?</h4>
+        <input type="text" name="promo_code" ng-model="promo_code">
+        <a ng-hide="promoSpinner" ng-click="applyPromo()" class="btn btn-success">Apply!</a>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='promoSpinner'/>
+      </div>-->
+    </div>
+  </div>
+  <div class='modal-footer'>
+      <div class='pull-left sign-up-actions'>
+          <label class="checkbox " for="agree-terms" ng-class="{'checked': agreedTerms}">
+            <span class="icons">
+              <span class="first-icon fui-checkbox-unchecked"></span>
+              <span class="second-icon fui-checkbox-checked"></span>
+            </span>
+              <a href="/conditions" target="_blank">Agree to membership terms and conditions</a>
+          </label>
+          <input id="agree-terms" class="hide" type="checkbox" ng-model="agreedTerms"/>
+          <!--<a href="/conditions" target="_blank">Membership terms and conditions</a>-->
+          <input class="btn btn-lg btn-info" ng-disabled="!agreedTerms" ng-click="setSignUpType('trial')" type="submit" popover-trigger="mouseenter" popover="During free trial, Fanbucks will not be eligible for conversion into dollars." popover-placement="bottom" value="15 day trial">
+          <input class="btn btn-primary" ng-disabled="!agreedTerms" ng-click="setSignUpType('payment')" type="submit" value="pay $10 member fee">
+      </div>
+    <!--<input type="submit" class="btn btn-primary" value="Sign Up">-->
+      <div class='modal-line pull-left'>
+          <div></div>
+          <span>or</span>
+          <div></div>
+      </div>
+      <div class="promo-code pull-right" ng-show="noPromo">
+          <h4>Promo code?</h4>
+          <input type="text" name="promo_code" ng-model="promo_code">
+          <a ng-hide="promoSpinner" ng-click="applyPromo()" class="btn btn-success">Apply!</a>
+          <img src='/assets/ajax-loader-micro.gif' ng-show='promoSpinner'/>
+      </div>
+  </div>
+</form>

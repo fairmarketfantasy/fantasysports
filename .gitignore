@@ -1,0 +1,6 @@
+#ignore all logfiles and tempfiles.
+log/mail
+log/*.log
+/tmp
+public/uploads
+coverage

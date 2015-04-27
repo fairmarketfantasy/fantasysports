@@ -1,0 +1,54 @@
+angular.module('app', [
+      'app.services',
+      'app.data',
+      'app.directives',
+      'app.filters',
+      'app.controllers',
+      'app.templates',
+      'angular-flash.service', 'angular-flash.flash-alert-directive',
+      'ui.bootstrap',
+      'angulartics', 'angulartics.google.analytics',
+      'ngRoute',
+      'angular-flexslider'
+      ])
+.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
+  $routeProvider.
+    //PICK UP HERE, FIGURE OUT ROUTES
+      when('/', {redirectTo: function(){ return window.App.currentUser ? '/home' : '/external' }, reloadOnSearch: false}).
+      when('/external', { redirectTo: function() {
+        return 'sports/FWC/external' //App.defaultSport.category_name + '/' + App.defaultSport.name +'/external'
+      } }).
+      when('/home', { redirectTo: function() {
+        return 'sports/FWC/home' //App.defaultSport.category_name + '/' + App.defaultSport.name +'/home'
+      } }).
+      when('/:category/:sport/external', {templateUrl: '/sample_team.html'}).
+      when('/:category/:sport/home', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/:category/:sport/playoffs', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/:category/:sport/playoff_about', {templateUrl: '/playoff_about.html', controller: 'DummyController'}).
+      when('/:category/:sport/coming-soon', {templateUrl: '/coming_soon.html', controller: 'HomeController'}).
+      when('/:category/:sport/market/:market_id/roster/:roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
+      when('/:category/:sport/market/:market_id/roster/:roster_id/vs/:opponent_roster_id', {templateUrl: '/roster.html', controller: 'RosterController'}).
+      when('/:category/:sport/market/:market_id', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/:category/:sport/competition_roster', {templateUrl: '/competition_roster.html', controller: 'CompetitionRosterController'}).
+      when('/:category/:sport/competition_roster/:roster_id', {templateUrl: '/competition_roster.html', controller: 'CompetitionRosterController'}).
+      when('/:category/:sport/competition_roster/:roster_id/vs/:opponent_roster_id', {templateUrl: '/competition_roster.html', controller: 'CompetitionRosterController'}).
+      when('/:category/:sport/fifa_world_cup', {templateUrl: '/world_cup_roster.html', controller: 'WorldCupRosterController'}).
+      when('/:category/:sport/league/:league_id', {templateUrl: '/home.html', controller: 'HomeController'}).
+      when('/:category/:sport/rosters', {templateUrl: '/roster_list.html', controller: 'RosterListController'}).
+      when('/:category/:sport/history', {templateUrl: '/roster_list.html', controller: 'RosterHistoryController'}).
+      when('/:category/:sport/individual_predictions', {templateUrl: '/individual_prediction_list.html', controller: 'IndividualPredictionListController'}).
+      when('/:category/:sport/game_predictions', {templateUrl: '/individual_prediction_list.html', controller: 'IndividualPredictionListController'}).
+      when('/:category/:sport/individual_predictions_history', {templateUrl: '/individual_prediction_list.html', controller: 'IndividualPredictionHistoryController'}).
+      when('/:category/:sport/leaderboard', {templateUrl: '/leaderboard.html', controller: 'LeaderboardController'}).
+      when('/:category/:sport/rules', {templateUrl: '/rules.html', controller: 'RulesController'}).
+      when('/terms', {templateUrl: '/support.html', controller: 'RulesController'}).
+      when('/conditions', {templateUrl: '/conditions.html', controller: 'RulesController'}).
+      when('/promos', {templateUrl: '/promos.html', controller: 'DummyController'}).
+      when('/legal', {templateUrl: '/legal.html', controller: 'DummyController'}).
+      when('/support', {templateUrl: '/support.html', controller: 'SupportController'}).
+    //...
+      otherwise({redirectTo: '/'});
+
+    $httpProvider.defaults.useXDomain = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+  }]);

@@ -1,0 +1,38 @@
+angular.module("app.controllers")
+.controller('HomeController', ['$scope', 'rosters', 'markets', '$dialog', '$location', '$routeParams', '$timeout', function($scope, rosters, markets, $dialog, $location, $routeParams, $timeout) {
+  $scope.rosters = rosters;
+  $scope.landingShow = false;
+
+  if($routeParams.category == 'fantasy_sports'){
+    $scope.include = {url: '/market.html'};
+  } else if ($routeParams.category == 'sports'){
+    $scope.include = {url: '/competition_market.html'};
+  }
+
+
+  if ($scope.currentUser) {
+    rosters.fetchMine({category: $routeParams.category, sport: $routeParams.sport});
+//    rosters.fetchPastStats({sport: $routeParams.sport});
+    rosters.setPoller(function() { rosters.fetchMine({category: $scope.currentUser.currentCategory, sport: $scope.currentUser.currentSport}); }, <%= Rails.env == 'development' ? 30000 : 10000 %>);
+
+    // Force them to set a user!
+    if (_.isEmpty($scope.currentUser.username)) {
+      var dialogOpts = {
+            backdrop: true,
+            keyboard: false,
+            backdropClick: false,
+            dialogClass: 'modal',
+            templateUrl: '/add_username_modal.html',
+            controller: 'UserNameController'
+          };
+      var d = $dialog.dialog(dialogOpts);
+      d.open();
+    }
+
+    $scope.markets = markets;
+  }
+
+  //$scope.$watch('league')
+
+}]);
+

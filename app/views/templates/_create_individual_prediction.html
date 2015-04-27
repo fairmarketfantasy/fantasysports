@@ -1,0 +1,39 @@
+<div class='modal-header'>
+    <h3 class="clearfix">
+        <div class="mr-player-image" ng-style="{'background-image': player.headshot_url && ('url(' + player.headshot_url +')')}"></div>
+        <span class="ind-player-title" >{{player.name}} <span ng-hide="isHomeTeam(player.team)">@</span><span ng-show="isHomeTeam(player.team)">vs</span> {{opponentFor(player) | truncate:8}}</span>
+        <button class="close close-modal" ng-click="close()">×</button>
+    </h3>
+</div>
+<div class='modal-body clearfix'>
+    <ul class="no-no prediction-modal-body clearfix">
+        <li ng-repeat="point in points" class="clearfix">
+            <p>{{point.name | capitalize}} : {{point.value | toFixed}}</p>
+            <div class="clearfix pull-right">
+                <a href="javascript://" ng-disabled="point.bid_less" class="btn prediction-less" ng-click="confirmModal('less', point.value, point.name, point.bid_less, point.less_pt)" >
+                    less
+                    <span ng-hide="point.bid_less" popover-trigger="mouseenter" popover="{{betAlias}}{{point.less_pt | toFixed}}, predict correctly and win {{point.less_pt | toFixed}}FB" popover-placement="top"></span>
+                </a>
+                <a href="javascript://" ng-disabled="point.bid_more" class="btn prediction-more" ng-click="confirmModal('more', point.value, point.name, point.bid_more, point.more_pt)">
+                    more
+                    <span ng-hide="point.bid_more" popover-trigger="mouseenter" popover="{{betAlias}}{{point.more_pt | toFixed}}, predict correctly and win {{point.more_pt | toFixed}}FB" popover-placement="top"></span>
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class='modal-footer'>
+
+</div>
+
+<div class="confirm-modal" ng-show="confirmShow">
+    <div class="modal-body clearfix">
+        <h4 class="pull-left">Predict <span class="pt">{{betAlias}}{{confirm.current_pt | toFixed}}</span> {{player.name}} {{confirm.diff}} than {{confirm.value}} {{confirm.name}}?</h4>
+    </div>
+    <div class='modal-footer'>
+        <a href="javascript://" class="btn btn-success" ng-click="confirmSubmit()">Submit</a>
+        <a href="javascript://" class="btn btn-info" ng-click="confirmShow = false">Cancel</a>
+    </div>
+</div>
+<div class="confirm-backdrop" ng-show="confirmShow" ng-click="confirmShow = false"></div>
+

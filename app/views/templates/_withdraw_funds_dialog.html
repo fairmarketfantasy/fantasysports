@@ -1,0 +1,54 @@
+<div class='modal-header'>
+  <h3 class='inline-block'>Bank Account</h3>
+  <p class='inline-block pull-right'>
+    Balance: <span class='balance'>{{ currentUser.balance | centsToDollars }}</span>
+  </p>
+</div>
+<div class='mal centered' ng-hide='loaded'>
+  <img src='/assets/ajax-loader-big.gif'>
+</div>
+<div class='modal-body' ng-show='loaded'>
+  <form >
+    <div ng-show='!currentUser.confirmed'>
+      <div class='alert alert-error'>
+        In order with withdraw funds, you must first confirm your email address.
+      </div>
+      <a href="javascript://" ng-click='resendConfirmation()'>Click here</a> to re-send the confirmation email.
+    </div>
+    <div ng-show='showAddNewAccount()'>
+      <h6>Add a PayPal email address</h6>
+      <p>We pay out through PayPal, so we just need to know what PayPal email address to send your funds to.  If you don't have a PayPal account, you can create one at <a href="http://paypal.com">paypal.com</a></p>
+      <input type="email" class='account-name' placeholder="PayPal Email Address" ng-model="newAccount.paypal_email"/><br />
+      <input type="email" class='account-number' placeholder="Confirm PayPal Email Address" ng-model="newAccount.paypal_email_confirmation"/><br />
+      <a href="javascript://" ng-click="createRecipient()" ng-hide='saveAcctSpinner' class='btn btn-primary account-create'>Save</a>
+      <img src='/assets/ajax-loader-micro.gif' ng-show='saveAcctSpinner'/>
+    </div>
+    <div ng-show='recipient'>
+      <ul class='unstyled recipient'>
+        <li class='recipient-type'>PayPal</li>
+        <li class='pull-right clickable' ng-click="showConfirm = true">x
+          <div ng-show="showConfirm" class='recipient-confirm-delete popover right'>
+            <div class='arrow'>
+            </div>
+            <h3 class='popover-title'>Are you sure?</h3>
+            <div class='popover-content'>
+              <a class='btn btn-mini btn-danger mtm' ng-hide='deleteRecipientSpinner' ng-click='deleteRecipient()'>Yes, delete</a>
+              <img src='/assets/ajax-loader-micro.gif' ng-show='deleteRecipientSpinner'/>
+              <a class='btn btn-mini btn-default mtm' ng-click="showConfirm = false">No, cancel</a>
+            </div>
+          </div>
+        </li>
+        <li>{{ recipient.paypal_email }}</li>
+      </ul>
+      <div class='inline-block mll'>
+        Withdraw some money:<br />
+        $ <input type='text' ng-model="withdrawAmount" focus-me='focusAmount' class='withdraw-amount'>
+        <img src='/assets/ajax-loader-micro.gif' ng-show='startTransferSpinner'/>
+        <a hreft="javascript://" ng-click='initiateTransfer()' class='btn btn-primary' ng-hide='startTransferSpinner'>Start Transfer</a>
+      </div>
+    </div>
+  </form>
+</div>
+<div class='modal-footer'>
+  <a href="javascript://" class="btn" ng-click="close()">close</a>
+</div>

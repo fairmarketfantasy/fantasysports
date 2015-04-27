@@ -1,0 +1,28 @@
+<div class="home-roster">
+  <div class="roster-area">
+    <div class="clearfix">
+      <h4 class="team-heading inline-heading">Your Choices</h4>
+    </div>
+
+    <div class="roster-overflow daily-wins clearfix">
+      <div class="daily-team-block clearfix" ng-repeat="daily in types_games.daily_wins | limitTo:6" ng-class="{'add-bgc' : $odd, 'no-border' : $last}">
+        <div class="daily-team clearfix">
+          <span ng-class="{'ip-btn-disable' : daily.get_home_team.disable_pt}" ng-click="openCWorldCupPredictionDialog(daily.get_home_team)" class="pull-right pt home_pt" >{{betAlias}}{{daily.get_home_team.pt | toFixed}}
+            <span ng-hide="daily.get_home_team.disable_pt" popover-trigger="mouseenter" popover="{{daily.get_home_team.name}} {{betAlias}}{{daily.get_home_team.pt | toFixed}}, predict correctly and win {{daily.get_home_team.pt | toFixed}}FB" popover-placement="top"></span>
+          </span>
+        <div class="team-flag pull-right" ng-style="{'background-image': daily.get_home_team.logo_url && ('url(' + daily.get_home_team.logo_url +')')}"></div>
+          <p class="pull-right">{{daily.get_home_team.name}}</p>
+        </div>
+        <div class="daily-team clearfix">
+          <span ng-class="{'ip-btn-disable' : daily.get_away_team.disable_pt}" class="pull-left pt away_pt" ng-click="openCWorldCupPredictionDialog(daily.get_away_team)" >{{betAlias}}{{daily.get_away_team.pt | toFixed}}
+            <span ng-hide="daily.get_away_team.disable_pt" popover-trigger="mouseenter" popover="{{daily.get_away_team.name}} {{betAlias}}{{daily.get_away_team.pt| toFixed}}, predict correctly and win {{daily.get_away_team.pt | toFixed}}FB" popover-placement="top"></span>
+          </span>
+          <div class="team-flag pull-left" ng-style="{'background-image': daily.get_away_team.logo_url && ('url(' + daily.get_away_team.logo_url +')')}"></div>
+          <p class="pull-left">{{daily.get_away_team.name}}</p>
+          <p class="start-time">Start time:{{daily.game_time | shortFormTime}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

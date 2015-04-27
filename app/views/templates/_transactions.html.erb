@@ -1,0 +1,49 @@
+<h4 class="dialog-body-header">Transaction History</h4>
+<ul class="transactions transactions-heading">
+  <li>
+    <div class="transaction-amount transaction-part">Date</div>
+    <div class="transaction-amount transaction-part">Amount</div>
+    <div class="transaction-event transaction-part">Event</div>
+    <div class="transaction-info transaction-part">Additional Information</div>
+  </li>
+</ul>
+<ul class="transactions transactions-body">
+  <li ng-repeat="transaction in transactions" ng-class="{gain: transaction.amount > 0, loss: transaction.amount < 0}">
+    <div class="transaction-amount transaction-part">{{transaction.created_at | longFormDate }}</div>
+    <div ng-show="transaction.is_tokens" class="transaction-amount transaction-part">{{transaction.amount}}FF</div>
+    <div ng-hide="transaction.is_tokens" class="transaction-amount transaction-part">{{transaction.amount | centsToFanbucks }}</div>
+    <div class="transaction-part transaction-event">{{transaction.event}}</div>
+    <div class="transaction-part transaction-info" ng-show="transaction.roster">
+      <div class="transaction-detail">
+        Status: {{transaction.roster.state}}
+      </div>
+      <div class="transaction-detail" ng-show="transaction.roster.next_game_time || transaction.roster.live">
+        <span ng-show="transaction.roster.live">LIVE</span>
+        <span ng-show="!roster.live && transaction.roster.next_game_time">Next Game: {{transaction.roster.next_game_time | shortFormTime }}</span>
+      </div>
+      <div class="transaction-detail">
+        Rank:
+        <span ng-show="transaction.roster.contest_rank && inThePast(transaction.roster.started_at) && transaction.roster.state != 'cancelled'">{{transaction.roster.contest_rank | ordinal}} of {{transaction.roster.contest_type.max_entries | unlimitedIfZero}}</span>
+        <span ng-show="!inThePast(transaction.roster.started_at)">Not started yet</span>
+        <span ng-show="transaction.roster.state == 'cancelled'">N/A</span>
+      </div>
+      <div class="transaction-detail">
+        Points:
+        <span ng-show="inThePast(transaction.roster.started_at)">{{transaction.roster.score || 0}}</span>
+        <span ng-show="!inThePast(transaction.roster.started_at)">N/A</span>
+      </div>
+      <div class="transaction-detail" >
+        Result:
+          <span ng-show="transaction.roster.state == 'submitted'">Not done yet</span>
+          <span ng-show="transaction.roster.state == 'finished'">
+          <span ng-show="inThePast(transaction.roster.started_at)  && transaction.is_tokens">Won: {{transaction.roster.contest_rank_payout || 0}}FF</span>
+          <span ng-show="inThePast(transaction.roster.started_at)  && !transaction.is_tokens">Won: {{transaction.roster.contest_rank_payout || 0 | centsToDollars}}</span>
+          <span ng-hide="inThePast(transaction.roster.started_at) ">N/A</span>
+          Paid {{transaction.roster.amount_paid | centsToDollars }} on {{transaction.roster.paid_at | shortFormTime}}
+        </span>
+        <span ng-show="roster.state == 'cancelled'">Refunded on {{transaction.roster.cancelled_at | shortFormTime}}. {{transaction.roster.cancelled_reason}}</span>
+      </div>
+      <div class="transaction-detail"><a ng-click="close()" href="/#/{{currentUser.currentCategory}}/{{currentUser.currentSport}}/market/{{transaction.roster.market.id}}/roster/{{transaction.roster.id}}">View roster</a></div>
+    </div>
+  </li>
+</ul>
