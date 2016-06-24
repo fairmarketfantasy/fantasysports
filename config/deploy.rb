@@ -7,7 +7,7 @@ require 'rvm/capistrano'
 
 set :user, 'ubuntu'             # The server's user for deploys
 set :application, 'predictthat-2'
-set :repository, 'git@bitbucket.org:easternpeak/predictthat.git'
+set :repository, 'https://github.com/fairmarketfantasy/fantasysports.git'
 set :branch, 'staging'
 set :deploy_to, "/home/ubuntu/#{application}"
 set :use_sudo, false
