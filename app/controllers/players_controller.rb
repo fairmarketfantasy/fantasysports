@@ -3,11 +3,9 @@ class PlayersController < ApplicationController
 
   def index
     roster = Roster.find(params[:roster_id])
-    @player_prices = Rails.cache.fetch("market_prices_#{roster.market_id}_#{roster.players.count}", :expires_in => 1.minute) do
-      h = {}
-      roster.market.players.normal_positions(roster.market.sport_id).with_prices(roster.market, roster.buy_in).each{|p| h[p.id] = p }
-      h
-    end
+    h = {}
+    roster.market.players.normal_positions(roster.market.sport_id).with_prices(roster.market, roster.buy_in).each{|p| h[p.id] = p }
+    @player_prices = h
     @players = roster.market.players.normal_positions(roster.market.sport_id)
     benched_ids = Player.where(sport_id: roster.market.sport_id).benched.pluck(:id)
     if params[:removeLow] == 'true' && benched_ids.any? && params[:position] != 'RP'
@@ -79,7 +77,7 @@ class PlayersController < ApplicationController
 
   def swap_priced_players!
     # Swap out normal player records with the priced ones
-    @players = @players.map do |p|
+    @players.map! do |p|
       priced = @player_prices[p.id].dup
       priced.id = p.id
       priced.position =  p.position # Maintain position from original because pricing doesn't care, and will overwrite it
