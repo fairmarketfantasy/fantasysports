@@ -38,7 +38,7 @@ class PlayerSerializer < ActiveModel::Serializer
 
   # TODO: fix for NFL when no stats_id
   def team
-    object.team.name
+    Team.where(:stats_id => object[:team]).first.try(:name) || object.team.name
   rescue
   end
 
